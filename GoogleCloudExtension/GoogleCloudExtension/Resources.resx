@@ -1967,25 +1967,21 @@
     <value>New Subscription for Topic {0}</value>
     <comment>Text at the top of the NewSubscriptionWindow</comment>
   </data>
-  <data name="Validation255CharactersMessage" xml:space="preserve">
-    <value>Can not have more than 255 characters.</value>
-    <comment>Message displayed by validator limiting input to 255 characters.</comment>
-  </data>
   <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
-    <value>Can not start with "goog".</value>
-    <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
+    <value>{0} can not start with "goog".</value>
+    <comment>Message displayed by a validator disallowing input that starts with "goog". Takes the display name of the field.</comment>
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
-    <value>Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
-    <comment>Message displayed by validator limiting characters allowed in pub sub names.</comment>
+    <value>{0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
+    <comment>Message displayed by validator limiting characters allowed in pub sub names. Takes the display name of the field being validated.</comment>
   </data>
   <data name="ValidationStartWithLetterMessage" xml:space="preserve">
-    <value>Must start with a letter.</value>
-    <comment>Message displayed by validator requiring input to start with a letter.</comment>
+    <value>{0} must start with a letter.</value>
+    <comment>{Field} must start with a letter validation message.</comment>
   </data>
-  <data name="ValidationThreeCharactersMessage" xml:space="preserve">
-    <value>Must have at least 3 characters.</value>
-    <comment>Message displayed by validator requiring 3 characters.</comment>
+  <data name="ValidationMinCharactersMessage" xml:space="preserve">
+    <value>{0} must have at least {1} characters.</value>
+    <comment>{Field} must have at least {N} characters validation message.</comment>
   </data>
   <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
     <value>_Acknowledgement deadline (seconds):</value>
@@ -2106,6 +2102,66 @@
   <data name="SourceVersionUtilsVersionMismatchTitle" xml:space="preserve">
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
+  </data>
+  <data name="ValdiationNotEmptyMessage" xml:space="preserve">
+    <value>{0} can not be empty.</value>
+    <comment>{Field} can not be empty validation message.</comment>
+  </data>
+  <data name="ValidationStartLetterOrNumberMessage" xml:space="preserve">
+    <value>{0} must start with a letter or number.</value>
+    <comment>{Field} must start with a letter or number validation message.</comment>
+  </data>
+  <data name="ValidationAllLetterNumberOrDashMessage" xml:space="preserve">
+    <value>{0} can only contain letters, numbers, and dashes(-).</value>
+    <comment>{Field} can only contain letters, numbers and dashes validation message.</comment>
+  </data>
+  <data name="ValidationIntegerMessage" xml:space="preserve">
+    <value>{0} must be an integer.</value>
+    <comment>{Field} must be an integer validation message.</comment>
+  </data>
+  <data name="ValidationMaxCharactersMessage" xml:space="preserve">
+    <value>{0} must be less than {1} characters long.</value>
+    <comment>{Field} must be less than {N} characters long validation message.</comment>
+  </data>
+  <data name="ExceptionResourceNotFoundMessage" xml:space="preserve">
+    <value>The resource {0} was not found.</value>
+    <comment>Message to an argument exception when a resource was not found.</comment>
+  </data>
+  <data name="GkePublishDeploymentNameFieldName" xml:space="preserve">
+    <value>Deployment name</value>
+    <comment>Field display name for deployment name textbox. Shoud match GkePublishDeploymentNameMessage.</comment>
+  </data>
+  <data name="GkePublishDeploymentVersionFieldName" xml:space="preserve">
+    <value>Deployment version</value>
+    <comment>Field display name of the depoyment version textbox. Should match GkePublishDeploymentVersionMessage.</comment>
+  </data>
+  <data name="GkePublishReplicasFieldName" xml:space="preserve">
+    <value>Replicas</value>
+    <comment>Field display name of the replicas control. Should match GkePublishReplicasCaption.</comment>
+  </data>
+  <data name="NewSubscriptionWindowNameFieldName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The field display name of the name textbox in the new pub/sub subscription window. Shoud match NewSubscriptionWindowNameLabel.</comment>
+  </data>
+  <data name="NewTopicWindowNameFieldName" xml:space="preserve">
+    <value>Topic name</value>
+    <comment>Field display name for the topic name text box in the new pub/sub topic window. Should match NewTopicWindowNameLabel.</comment>
+  </data>
+  <data name="PublishDialogFlexVersionNameFieldName" xml:space="preserve">
+    <value>Version name</value>
+    <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
+  </data>
+  <data name="GitUtilsGitInstallLinkCaption" xml:space="preserve">
+    <value>Install Git for Windows</value>
+    <comment>Caption for the installation link</comment>
+  </data>
+  <data name="GitUtilsMissingGitErrorMessage" xml:space="preserve">
+    <value>Please follow the link to install Git for Windows</value>
+    <comment>The error message that asks to install Git for Windows</comment>
+  </data>
+  <data name="GitUtilsMissingGitErrorTitle" xml:space="preserve">
+    <value>Git for Windows is not found</value>
+    <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
   <data name="UiSkipButtonCaption" xml:space="preserve">
     <value>_Skip</value>

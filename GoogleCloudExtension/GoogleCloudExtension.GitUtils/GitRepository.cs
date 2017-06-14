@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private const string GitExecutable = "git.exe";
 
-        private static Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
+        private static readonly Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
 
         /// <summary>
         /// Git repository local root path.
@@ -40,6 +40,14 @@ namespace GoogleCloudExtension.GitUtils
         /// Return null if git.exe is not found.
         /// </summary>
         public static string GitPath => s_gitPathLazy.Value;
+
+        /// <summary>
+        /// Get Git.exe path by searching under PATH environment variable.
+        /// </summary>
+        /// <returns>
+        /// The full path or NULL if not found.
+        /// </returns>
+        public static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
         /// Returns a <seealso cref="GitRepository"/> object 
@@ -92,8 +100,6 @@ namespace GoogleCloudExtension.GitUtils
         {
             Root = gitLocalRoot;
         }
-
-        private static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
         /// Run a git command and return the output or error output.

@@ -55,9 +55,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public Service Service => _service;
 
-        public event EventHandler ItemChanged;
+        #region ICloudExplorerItemSource implementation
 
-        public object Item => GetItem();
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
+
+        object ICloudExplorerItemSource.Item => GetItem();
+
+        #endregion
 
         public bool ShowOnlyFlexVersions
         {
@@ -304,7 +312,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnPropertiesWindowCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(GetItem());
         }
 
         private async void OnOpenService()

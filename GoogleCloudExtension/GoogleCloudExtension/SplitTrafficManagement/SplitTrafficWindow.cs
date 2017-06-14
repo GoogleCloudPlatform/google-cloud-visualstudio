@@ -38,7 +38,8 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// <summary>
         /// Shows the dialog to the user.
         /// </summary>
-        /// <param name="instance">The instance on which to managed traffic splitting</param>
+        /// <param name="service">The instance on which to managed traffic splitting</param>
+        /// <param name="versions">The versions of the service.</param>
         /// <returns>The split traffic changes or null if the user cancelled the dialog.</returns>
         public static SplitTrafficChange PromptUser(Service service, IEnumerable<Version> versions)
         {

@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.DataSources
         /// Initializes an instance of LogEntryRequestResult.
         /// </summary>
         /// <param name="logEntries">A list of LogEntry objects. Null is valid input.</param>
-        /// <param name="pageToken">Next page token to retrieve more pages.</param>
+        /// <param name="nextPageToken">Next page token to retrieve more pages.</param>
         public LogEntryRequestResult(IList<LogEntry> logEntries, string nextPageToken)
         {
             LogEntries = logEntries;

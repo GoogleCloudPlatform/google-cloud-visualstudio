@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.PickFileDialog
     /// </summary>
     public class PickFileWindow : CommonDialogWindowBase
     {
-        private  PickFileWindowViewModel ViewModel { get; }
+        private PickFileWindowViewModel ViewModel { get; }
 
         private PickFileWindow(IEnumerable<string> fileList)
             : base(GoogleCloudExtension.Resources.SourceVersionPickFileDialogCaption)

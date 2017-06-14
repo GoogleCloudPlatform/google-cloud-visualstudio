@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel.Composition;
-using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using System.ComponentModel.Composition;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {

@@ -14,6 +14,8 @@
 
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
@@ -308,13 +310,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
-            SimpleTextSearchCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync));
+            SimpleTextSearchCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerSimpleTextSearchEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
-            SubmitAdvancedFilterCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync));
+            SubmitAdvancedFilterCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerAdvancedFilterEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
-            DateTimePickerModel.DateTimeFilterChange += (sender, e) => ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
             PropertyChanged += OnPropertyChanged;
             ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
@@ -334,7 +344,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            ErrorHandlerUtils.HandleExceptionsAsync(() => RequestLogFiltersWrapperAsync(PopulateResourceTypes));
+            ErrorHandlerUtils.HandleAsyncExceptions(() => RequestLogFiltersWrapperAsync(PopulateResourceTypes));
         }
 
         /// <summary>
@@ -348,14 +358,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            ErrorHandlerUtils.HandleExceptionsAsync(() => LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken)));
+            ErrorHandlerUtils.HandleAsyncExceptions(() => LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken)));
         }
 
         /// <summary>
         /// Send an advanced filter to Logs Viewer and display the results.
         /// </summary>
         /// <param name="advancedSearchText">The advance filter in text format.</param>
-        public void FilterLog(string advancedSearchText)
+        public async void FilterLog(string advancedSearchText)
         {
             IsAutoReloadChecked = false;
             if (String.IsNullOrWhiteSpace(advancedSearchText))
@@ -372,7 +382,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             AdvancedFilterText = filter.ToString();
-            ReloadAsync();
+            await ReloadAsync();
         }
 
         /// <summary>
@@ -399,8 +409,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             // Firstly compose a new filter line.
             StringBuilder newFilter = new StringBuilder();
-            newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
-            while ((node = node.Parent).Parent != null)     
+            newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");
+            while ((node = node.Parent).Parent != null)
             {
                 if (!string.IsNullOrWhiteSpace(node.FilterLabel))
                 {
@@ -411,8 +421,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Append the new filter line to existing filter text.
             // Or to the composed filter if it is currently showing simple filters.
             if (ShowAdvancedFilter)
-            {   
-                newFilter.Insert(0, Environment.NewLine); 
+            {
+                newFilter.Insert(0, Environment.NewLine);
                 newFilter.Insert(0, AdvancedFilterText);
             }
             else
@@ -423,14 +433,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Show advanced filter.
             AdvancedFilterText = newFilter.ToString();
             ShowAdvancedFilter = true;
-            ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
         }
 
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
             DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
-            ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
         }
 
         /// <summary>
@@ -474,6 +484,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             RequestStatusText = Resources.LogViewerRequestCancellingMessage;
             ShowCancelRequestButton = false;
             _cancellationTokenSource?.Cancel();
+
+            EventsReporterWrapper.ReportEvent(LogsViewerCancelRequestEvent.Create());
         }
 
         /// <summary>
@@ -562,34 +574,46 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (_logs.Count >= MaxLogEntriesCount)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: Resources.LogViewerResultSetTooLargeMessage, 
+                    message: Resources.LogViewerResultSetTooLargeMessage,
                     title: Resources.uiDefaultPromptTitle);
                 _cancellationTokenSource?.Cancel();
                 return;
             }
 
-            var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
-            int count = 0;
-            while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
+            try
             {
-                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
+                var startTimestamp = DateTime.Now;
 
-                // Here, it does not do pageSize: _defaultPageSize - count, 
-                // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
-                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
-                _nextPageToken = results.NextPageToken;
-                if (results?.LogEntries != null)
+                var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
+                int count = 0;
+                while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
                 {
-                    count += results.LogEntries.Count;
-                    AddLogs(results.LogEntries, autoReload);
+                    Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
+
+                    // Here, it does not do pageSize: _defaultPageSize - count, 
+                    // Because this is requried to use same page size for getting next page. 
+                    var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
+                        pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
+                    _nextPageToken = results.NextPageToken;
+                    if (results?.LogEntries != null)
+                    {
+                        count += results.LogEntries.Count;
+                        AddLogs(results.LogEntries, autoReload);
+                    }
+
+                    if (String.IsNullOrWhiteSpace(_nextPageToken))
+                    {
+                        _nextPageToken = null;
+                        break;
+                    }
                 }
 
-                if (String.IsNullOrWhiteSpace(_nextPageToken))
-                {
-                    _nextPageToken = null;
-                    break;
-                }
+                EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Failure));
+                throw;
             }
         }
 
@@ -651,6 +675,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void ShowAdvancedFilterHelp()
         {
+            EventsReporterWrapper.ReportEvent(LogsViewerShowAdvancedFilterHelpEvent.Create());
             Process.Start(AdvancedHelpLink);
         }
 
@@ -659,7 +684,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ShowAdvancedFilter = !ShowAdvancedFilter;
             AdvancedFilterText = ShowAdvancedFilter ? ComposeSimpleFilters() : null;
             SimpleSearchText = null;
-            ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
         }
 
         /// <summary>
@@ -693,7 +718,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             catch (DataSourceException ex)
             {
-                /// If it fails, show a tip, let refresh button retry it.
+                // If it fails, show a tip, let refresh button retry it.
                 RequestErrorMessage = ex.Message;
                 ShowRequestErrorMessage = true;
                 return;
@@ -751,15 +776,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 case nameof(LogIdsList.SelectedLogId):
                     if (LogIdList != null)
                     {
-                        ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+                        ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
                     }
                     break;
                 case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
                     LogIdList = null;
-                    ErrorHandlerUtils.HandleExceptionsAsync(() => RequestLogFiltersWrapperAsync(PopulateLogIds));
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => RequestLogFiltersWrapperAsync(PopulateLogIds));
                     break;
                 case nameof(SelectedLogSeverity):
-                    ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+                    ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
                     break;
                 default:
                     break;
@@ -780,7 +805,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Aggregate all selections into filter string.
         /// </summary>
-        /// <param name="ignoreTimeStamp">If the value is true,  does not add the timestamp clause.</param>
         private string ComposeSimpleFilters()
         {
             Debug.WriteLine("Entering ComposeSimpleFilters()");
@@ -840,12 +864,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // If it is in advanced filter, just do reload. 
             if (ShowAdvancedFilter)
             {
-                ErrorHandlerUtils.HandleExceptionsAsync(ReloadAsync);
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
                 return;
             }
 
             // TODO: auto scroll to last item in ascending order.
-            ErrorHandlerUtils.HandleExceptionsAsync(AppendNewerLogsAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(AppendNewerLogsAsync);
         }
 
         private async Task AppendNewerLogsAsync()

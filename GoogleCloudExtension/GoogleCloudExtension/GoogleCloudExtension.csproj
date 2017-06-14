@@ -24,7 +24,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DeployExtension>True</DeployExtension>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>pdbonly</DebugType>
@@ -48,6 +49,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStore.cs" />
@@ -68,6 +70,9 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
@@ -80,6 +85,12 @@
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerLogsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerShowAdvancedFilterHelpEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerSimpleTextSearchEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
@@ -87,6 +98,11 @@
     <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
     <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicCreatedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
     <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
@@ -251,6 +267,9 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
+    <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
+    <Compile Include="Utils\Validation\StringValidationResult.cs" />
+    <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -420,6 +439,7 @@
     <None Include="TargetOverrides.targets">
       <SubType>Designer</SubType>
     </None>
+    <Resource Include="Theming\Resources\ic_error_red_14px.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
     <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
@@ -547,68 +567,68 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.20.0\lib\net45\Google.Apis.dll</HintPath>
+    <Reference Include="Google.Apis, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.26.2\lib\net45\Google.Apis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Appengine.v1, Version=1.20.0.707, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Appengine.v1.1.20.0.707\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.26.2.875, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.26.2.875\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    <Reference Include="Google.Apis.Auth, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.26.2\lib\net45\Google.Apis.Auth.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.26.2\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.20.0.691, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.20.0.691\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.26.2.874\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.20.0.713\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.26.2.874\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.20.0.692, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.20.0.692\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.26.2.865, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.26.2.865\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Container.v1, Version=1.20.0.662, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Container.v1.1.20.0.662\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Container.v1, Version=1.26.2.850, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.26.2.850\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.20.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    <Reference Include="Google.Apis.Core, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.26.2\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.20.0.711, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.20.0.711\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.26.2.873, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.26.2.873\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.20.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.26.2\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Plus.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Plus.v1.1.20.0.713\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.26.2.874\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.20.0.754, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.20.0.754\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Pubsub.v1, Version=1.26.2.852, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.26.2.852\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.20.0.712, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.20.0.712\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.26.2.873, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.26.2.873\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.20.0.711, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.20.0.711\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.26.2.860, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.26.2.860\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
@@ -707,8 +727,8 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NuGet.VisualStudio, Version=4.0.0.2323, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -728,6 +748,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />

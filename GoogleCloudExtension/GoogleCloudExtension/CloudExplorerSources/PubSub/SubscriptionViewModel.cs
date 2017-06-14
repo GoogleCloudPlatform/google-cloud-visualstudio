@@ -11,7 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using Google.Apis.Pubsub.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -46,12 +49,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
 
+        #region ICloudExplorerItemSource implementation.
+
         /// <summary>
         /// The item this tree node represents.
         /// </summary>
-        public object Item => _subscriptionItem;
+        object ICloudExplorerItemSource.Item => _subscriptionItem;
 
-        public event EventHandler ItemChanged;
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
+
+        #endregion
 
         public SubscriptionViewModel(TopicViewModelBase owner, Subscription subscription)
         {
@@ -95,6 +106,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     if (doDelete)
                     {
                         await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
+
+                        EventsReporterWrapper.ReportEvent(PubSubSubscriptionDeletedEvent.Create(CommandStatus.Success));
                     }
                 }
                 catch (DataSourceException e)
@@ -103,6 +116,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     UserPromptUtils.ErrorPrompt(
                         Resources.PubSubDeleteSubscriptionErrorMessage,
                         Resources.PubSubDeleteSubscriptionErrorHeader);
+
+                    EventsReporterWrapper.ReportEvent(PubSubSubscriptionDeletedEvent.Create(CommandStatus.Failure));
                 }
                 await _owner.Refresh();
             }
@@ -117,7 +132,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         private void OnPropertiesWindowCommand()
         {
-            Context.ShowPropertiesWindow(Item);
+            Context.ShowPropertiesWindow(_subscriptionItem);
         }
     }
 }

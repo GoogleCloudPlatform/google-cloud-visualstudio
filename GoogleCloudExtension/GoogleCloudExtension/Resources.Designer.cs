@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2365,6 +2365,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The resource {0} was not found..
+        /// </summary>
+        public static string ExceptionResourceNotFoundMessage {
+            get {
+                return ResourceManager.GetString("ExceptionResourceNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The version name cannot be empty..
         /// </summary>
         public static string FlexPublishEmptyVersionMessage {
@@ -2572,6 +2581,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Git for Windows.
+        /// </summary>
+        public static string GitUtilsGitInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GitUtilsGitInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please follow the link to install Git for Windows properly.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorMessage {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Git for Windows is not found.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorTitle {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
@@ -2617,6 +2653,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment name.
+        /// </summary>
+        public static string GkePublishDeploymentNameFieldName {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentNameFieldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Deployment name:.
         /// </summary>
         public static string GkePublishDeploymentNameMessage {
@@ -2658,6 +2703,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishDeploymentUpdatedMessage {
             get {
                 return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment version.
+        /// </summary>
+        public static string GkePublishDeploymentVersionFieldName {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentVersionFieldName", resourceCulture);
             }
         }
         
@@ -2775,6 +2829,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishReplicasCaption {
             get {
                 return ResourceManager.GetString("GkePublishReplicasCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replicas.
+        /// </summary>
+        public static string GkePublishReplicasFieldName {
+            get {
+                return ResourceManager.GetString("GkePublishReplicasFieldName", resourceCulture);
             }
         }
         
@@ -3490,6 +3553,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string NewSubscriptionWindowNameFieldName {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowNameFieldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Name:.
         /// </summary>
         public static string NewSubscriptionWindowNameLabel {
@@ -3522,6 +3594,15 @@ namespace GoogleCloudExtension {
         public static string NewTopicWindowHeader {
             get {
                 return ResourceManager.GetString("NewTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic name.
+        /// </summary>
+        public static string NewTopicWindowNameFieldName {
+            get {
+                return ResourceManager.GetString("NewTopicWindowNameFieldName", resourceCulture);
             }
         }
         
@@ -3720,6 +3801,15 @@ namespace GoogleCloudExtension {
         public static string PublishDialogFlexVersionNameCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexVersionNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version name.
+        /// </summary>
+        public static string PublishDialogFlexVersionNameFieldName {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexVersionNameFieldName", resourceCulture);
             }
         }
         
@@ -4525,16 +4615,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not have more than 255 characters..
+        ///   Looks up a localized string similar to {0} can not be empty..
         /// </summary>
-        public static string Validation255CharactersMessage {
+        public static string ValdiationNotEmptyMessage {
             get {
-                return ResourceManager.GetString("Validation255CharactersMessage", resourceCulture);
+                return ResourceManager.GetString("ValdiationNotEmptyMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not start with &quot;goog&quot;..
+        ///   Looks up a localized string similar to {0} can only contain letters, numbers, and dashes(-)..
+        /// </summary>
+        public static string ValidationAllLetterNumberOrDashMessage {
+            get {
+                return ResourceManager.GetString("ValidationAllLetterNumberOrDashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can not start with &quot;goog&quot;..
         /// </summary>
         public static string ValidationDisallowStartGoogMessage {
             get {
@@ -4543,7 +4642,34 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
+        ///   Looks up a localized string similar to {0} must be an integer..
+        /// </summary>
+        public static string ValidationIntegerMessage {
+            get {
+                return ResourceManager.GetString("ValidationIntegerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be less than {1} characters long..
+        /// </summary>
+        public static string ValidationMaxCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationMaxCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must have at least {1} characters..
+        /// </summary>
+        public static string ValidationMinCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationMinCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
         /// </summary>
         public static string ValidationPubSubNameCharacterClassMessage {
             get {
@@ -4552,20 +4678,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must start with a letter..
+        ///   Looks up a localized string similar to {0} must start with a letter or number..
         /// </summary>
-        public static string ValidationStartWithLetterMessage {
+        public static string ValidationStartLetterOrNumberMessage {
             get {
-                return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
+                return ResourceManager.GetString("ValidationStartLetterOrNumberMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must have at least 3 characters..
+        ///   Looks up a localized string similar to {0} must start with a letter..
         /// </summary>
-        public static string ValidationThreeCharactersMessage {
+        public static string ValidationStartWithLetterMessage {
             get {
-                return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
+                return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
             }
         }
         

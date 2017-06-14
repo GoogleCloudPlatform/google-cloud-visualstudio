@@ -14,6 +14,8 @@
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
@@ -172,7 +174,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
         }
 
         /// <summary>
@@ -192,7 +194,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _groupStatsCollection.Clear();
             _nextPageToken = null;
-            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
         }
 
         /// <summary>
@@ -215,6 +217,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             IsLoadingNextPage = _nextPageToken != null;
             try
             {
+                var startTimestamp = DateTime.Now;
+
                 if (SelectedTimeRangeItem == null)
                 {
                     throw new ErrorReportingException(new InvalidOperationException(nameof(SelectedTimeRangeItem)));
@@ -223,16 +227,22 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     SelectedTimeRangeItem.GroupTimeRange,
                     SelectedTimeRangeItem.TimedCountDuration,
                     nextPageToken: _nextPageToken);
+
+                EventsReporterWrapper.ReportEvent(ErrorsViewerErrorsLoadedEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
             }
             catch (DataSourceException)
             {
                 ShowError = true;
                 ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
+
+                EventsReporterWrapper.ReportEvent(ErrorsViewerErrorsLoadedEvent.Create(CommandStatus.Failure));
             }
             catch (ErrorReportingException)
             {
                 ShowError = true;
                 ErrorString = Resources.ErrorReportingInternalCodeErrorGenericMessage;
+
+                EventsReporterWrapper.ReportEvent(ErrorsViewerErrorsLoadedEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -268,6 +278,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
             window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
+
+            EventsReporterWrapper.ReportEvent(ErrorsViewerNavigateToDetailWindowEvent.Create());
         }
 
         private StackdriverErrorReportingDataSource CreateDataSource()

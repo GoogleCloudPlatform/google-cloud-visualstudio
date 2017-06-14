@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -37,10 +40,7 @@ namespace GoogleCloudExtension.Utils
         public static string GetDefaultVersion()
         {
             var now = DateTime.Now;
-            return String.Format(
-                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
-                now.Year, now.Month, now.Day,
-                now.Hour, now.Minute, now.Second);
+            return $"{now.Year:0000}{now.Month:00}{now.Day:00}t{now.Hour:00}{now.Minute:00}{now.Second:00}";
         }
 
         /// <summary>
@@ -49,5 +49,41 @@ namespace GoogleCloudExtension.Utils
         /// <param name="name">The name to check.</param>
         /// <returns>True if the name is valid, false otherwise.</returns>
         public static bool IsValidName(string name) => !String.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+
+        public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValdiationNotEmptyMessage), fieldName);
+                yield break;
+            }
+            if (!Regex.IsMatch(name, @"^[a-z\d]"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationStartLetterOrNumberMessage), fieldName);
+            }
+            if (Regex.IsMatch(name, @"[^a-z\d\-]"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationAllLetterNumberOrDashMessage), fieldName);
+            }
+
+            if (name.Length > 100)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationMaxCharactersMessage), fieldName, 100);
+            }
+        }
+
+        public static IEnumerable<ValidationResult> ValidateInteger(string value, string fieldName)
+        {
+            int unused;
+            if (!int.TryParse(value, out unused))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationIntegerMessage), fieldName);
+            }
+        }
     }
 }
