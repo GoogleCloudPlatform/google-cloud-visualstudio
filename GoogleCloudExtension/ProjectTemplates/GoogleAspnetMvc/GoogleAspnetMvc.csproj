@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
@@ -55,6 +55,9 @@
     </VSTemplate>
   </ItemGroup>
   <ItemGroup>
+    <None Include=".nuget\Nuget.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="App_Start\BundleConfig.cs" />
     <None Include="App_Start\FilterConfig.cs" />
     <None Include="App_Start\IdentityConfig.cs" />
