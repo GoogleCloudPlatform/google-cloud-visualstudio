@@ -14,6 +14,8 @@
 
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.GcsUtils;
@@ -168,6 +170,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
+            EventsReporterWrapper.ReportEvent(GcsFileBrowserFilesDroppedEvent.Create());
+
             UploadFiles(files);
         }
 
@@ -265,6 +269,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     progressMessage: Resources.GcsFileBrowserRenamingFilesProgressMessage,
                     operations: renameDirectoryOperations.Operations,
                     cancellationTokenSource: cancellationTokenSource);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartRenameDirectoryEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -272,6 +278,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartRenameDirectoryEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -310,6 +318,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         Title = Resources.UiDefaultPromptTitle,
                         IsCancellable = false
                     });
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserRenameFileEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -317,6 +327,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserRenameFileEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -331,6 +343,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             if (row.IsDirectory)
             {
                 UpdateCurrentState(row.BlobName);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserOpenDirectoryEvent.Create());
             }
             else
             {
@@ -371,6 +385,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
                     operations: uploadOperationsQueue.Operations,
                     cancellationTokenSource: cancellationTokenSource);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartUploadEvent.Create(CommandStatus.Success));
             }
             catch (IOException ex)
             {
@@ -378,6 +394,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartUploadEvent.Create(CommandStatus.Failure));
             }
 
             UpdateCurrentState();
@@ -412,6 +430,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     progressMessage: Resources.GcsFileBrowserDownloadingOverallProgressMessage,
                     operations: downloadOperationsQueue.Operations,
                     cancellationTokenSource: cancellationTokenSource);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartDownloadEvent.Create(CommandStatus.Success));
             }
             catch (IOException ex)
             {
@@ -419,6 +439,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: Resources.GcsFileBrowserFailedToCreateDirMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartDownloadEvent.Create(CommandStatus.Failure));
                 return;
             }
             finally
@@ -454,6 +476,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     progressMessage: Resources.GcsFileBrowserDeletingOverallProgressMessage,
                     operations: deleteOperationsQueue.Operations,
                     cancellationTokenSource: cancellationTokenSource);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartDeleteEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -461,6 +485,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: Resources.GcsFileBrowserDeleteListErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserStartDeleteEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -484,8 +510,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
             try
             {
                 IsLoading = true;
+                var startTimestamp = DateTime.Now;
 
                 await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{CurrentState.CurrentPath}{name}/");
+
+                EventsReporterWrapper.ReportEvent(
+                    GcsFileBrowserNewFolderEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
             }
             catch (DataSourceException ex)
             {
@@ -493,6 +523,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     message: String.Format(Resources.GcsFileBrowserFailedToCreateRemoteFolder, name),
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserNewFolderEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -529,14 +561,21 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsBrowserState newState;
             try
             {
+                var startTimestamp = DateTime.Now;
+
                 // Reset the error and empty state while loading.
                 IsLoading = true;
                 newState = await LoadStateForDirectoryAsync(newPath);
+
+                EventsReporterWrapper.ReportEvent(
+                    GcsFileBrowserDirectoryLoadedEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
             }
             catch (DataSourceException ex)
             {
                 Debug.WriteLine($"Failed to update to path {newPath}: {ex.Message}");
                 newState = CreateErrorState(newPath);
+
+                EventsReporterWrapper.ReportEvent(GcsFileBrowserDirectoryLoadedEvent.Create(CommandStatus.Failure));
             }
             finally
             {
