@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// The datasource for the item.
         /// </summary>
-        public PubsubDataSource DataSource => _owner.DataSource;
+        public IPubsubDataSource DataSource => _owner.DataSource;
 
         #region ICloudExplorerItemSource implementation.
 
