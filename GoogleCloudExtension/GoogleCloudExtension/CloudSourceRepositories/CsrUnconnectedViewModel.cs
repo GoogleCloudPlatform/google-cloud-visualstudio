@@ -21,22 +21,22 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrUnconnectedViewModel : ViewModelBase
     {
-        private CsrSectionControlViewModel _owner;
+        private CsrSectionControlViewModel _parent;
 
         /// <summary>
         /// Respond to Connect link button
         /// </summary>
         public ProtectedCommand ConnectCommand { get; }
 
-        public CsrUnconnectedViewModel(CsrSectionControlViewModel ownerControl)
+        public CsrUnconnectedViewModel(CsrSectionControlViewModel parent)
         {
-            _owner = ownerControl;
+            _parent = parent;
             ConnectCommand = new ProtectedCommand(Connect);
         }
 
         private void Connect()
         {
-            _owner.Connect();
+            _parent.Connect();
         }
     }
 }
