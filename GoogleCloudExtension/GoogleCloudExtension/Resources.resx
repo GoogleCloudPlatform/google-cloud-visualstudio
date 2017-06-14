@@ -2163,4 +2163,132 @@
     <value>Git for Windows is not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
+  <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
+    <value>Attach Debugger</value>
+    <comment>Header for the attach remote debugger menu item.</comment>
+  </data>
+  <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
+    <value>No valid public IP address. To enable remote debugging, add a public IP address to the VM.</value>
+    <comment>Message when the GCE virtual machine does not have valid public IP address.</comment>
+  </data>
+  <data name="AttachDebuggerWindowCaptionFormat" xml:space="preserve">
+    <value>Attach debugger to {0}: {1}</value>
+    <comment>The caption for attach debugger window. {0} is public ip addres, {1} is instance name.</comment>
+  </data>
+  <data name="AttachDebuggerAddingFirewallRuleMessage" xml:space="preserve">
+    <value>Adding firewall rule</value>
+    <comment>The message that indicates adding firewall rule is in progress.</comment>
+  </data>
+  <data name="AttachDebuggerAskToTestConnectivityLaterMessage" xml:space="preserve">
+    <value>Firewall rules take effect within a few minutes. Click OK to test again.</value>
+    <comment>Ask user to retry testing connectivity if the user just enabled the firewwall rule.</comment>
+  </data>
+  <data name="AttachDebuggerCheckFirewallRuleMessage" xml:space="preserve">
+    <value>Checking debugger port firewall rule</value>
+    <comment>The message that indicates checking firewall rule is in progress.</comment>
+  </data>
+  <data name="AttachDebuggerOpenPortHelpLinkCaption" xml:space="preserve">
+    <value>Learn more</value>
+    <comment>Caption to the help link for openning a port. The page will help user to recognize security risk and tell the user how to disable the port.</comment>
+  </data>
+  <data name="AttachDebuggerPortDisabledMessageFormat" xml:space="preserve">
+    <value>Google Compute Engine firewall rule blocks port {0} for {1}. Click OK to add a firewall rule that allows traffic to the port.</value>
+    <comment>Message displayed if firewall blocks the port.  {0} is the port number. {1} is the port description. </comment>
+  </data>
+  <data name="AttachDebuggerTestConnectPortMessageFormat" xml:space="preserve">
+    <value>Test connecting to {0} at {1}:{2}</value>
+    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port description, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
+  </data>
+  <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
+    <value>Allow Visual Studio Debugger connections to the instance</value>
+    <comment>Description for the VSRemoteDebugger port.</comment>
+  </data>
+  <data name="PortManagerRemotePowershellDescription" xml:space="preserve">
+    <value>Allow Remote PowerShell HTTPS traffic to the instance</value>
+    <comment>Description for the RemotePowerShellHttps port.</comment>
+  </data>
+  <data name="AttachDebuggerAccountSelectionLabel" xml:space="preserve">
+    <value>Select an account</value>
+    <comment>Message for choosing or creating a user as remote debugger credential.</comment>
+  </data>
+  <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
+    <value>Installing, launching Remote Debugger</value>
+    <comment>The message indicates it is installing or launching debugger remote tools.</comment>
+  </data>
+  <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
+    <value>Attaching to {0}</value>
+    <comment>A message that indicates debugger is attaching to a process. {0} is the process name.</comment>
+  </data>
+  <data name="AttachDebuggerAutomaticallyDetectEngineTypeItemName" xml:space="preserve">
+    <value>Automatically detect</value>
+    <comment>When asking to pick a debugger engine type, add an item for automatically detect engine type.</comment>
+  </data>
+  <data name="AttachDebuggerChooseEngineTypeLable" xml:space="preserve">
+    <value>Debugger engine type</value>
+    <comment>Label to select debugger engine type combobox.</comment>
+  </data>
+  <data name="AttachDebuggerConnectingProgressMessage" xml:space="preserve">
+    <value>Connecting to debugger remote tool</value>
+    <comment>A message that indicates it is connecting to debugger remote tool.</comment>
+  </data>
+  <data name="AttachDebuggerListProcessEmptyResultErrorMessage" xml:space="preserve">
+    <value>Did not find any processes due to unknown error</value>
+    <comment>Error message shown when there is no any processes found. We don't indeed expect this error.</comment>
+  </data>
+  <data name="AttachDebuggerListProcessSaveDefaultLabel" xml:space="preserve">
+    <value>Save this choice and don't show the dialog again</value>
+    <comment>The label to check box of saving the selections as default in list processes step.</comment>
+  </data>
+  <data name="AttachDebuggerPickingProcessMessage" xml:space="preserve">
+    <value>Select a process to attach to:</value>
+    <comment>The message to show on top of the remote machine processes list. It asks user to pick one as debuggee.</comment>
+  </data>
+  <data name="AttachDebuggerProcessIdHeader" xml:space="preserve">
+    <value>PID</value>
+    <comment>The process id header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="AttachDebuggerProcessNameHeader" xml:space="preserve">
+    <value>Name</value>
+    <comment>The process name header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="AttachDebuggerProcessUsernameHeader" xml:space="preserve">
+    <value>Username</value>
+    <comment>The process id header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="AttachDebuggerHelpFirstPartMessage" xml:space="preserve">
+    <value>Unable to attach debugger to the selected machine.</value>
+    <comment>The attach debugger help message first part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpLastPartMessage" xml:space="preserve">
+    <value>setting up the debugger remote tools.</value>
+    <comment>The attach debugger help message last part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpStepLinkCpation" xml:space="preserve">
+    <value>Learn more about</value>
+    <comment>The attach debugger help step link caption</comment>
+  </data>
+  <data name="UiRefreshButtonCaption" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Caption for Refresh buttons.</comment>
+  </data>
+  <data name="AttachDebuggerAttachErrorMessageFormat" xml:space="preserve">
+    <value>Failed to attach to {0}</value>
+    <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
+  </data>
+  <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
+    <value>Attach Debugger after publishing</value>
+    <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
+  </data>
+  <data name="AttachDebuggerRemotePowerShellPortDescription" xml:space="preserve">
+    <value>Remote PowerShell</value>
+    <comment>The remote powershell port description</comment>
+  </data>
+  <data name="AttachDebuggerRemoteToolsPortDescription" xml:space="preserve">
+    <value>Remote Debugger</value>
+    <comment>The Visual Studio Remote debugging tools description</comment>
+  </data>
+  <data name="AttachDebuggerCreateManageAccountLinkCaption" xml:space="preserve">
+    <value>Create or manage accounts...</value>
+    <comment>The caption to create a new account or mange accounts link</comment>
+  </data>
 </root>

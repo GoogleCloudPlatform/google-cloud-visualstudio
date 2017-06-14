@@ -119,6 +119,13 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
+        /// Some context menu item needs to be enabled/disabled dynamically.
+        /// Override this method to update menu item state.
+        /// </summary>
+        public virtual void OnMenuItemOpen()
+        { }
+
+        /// <summary>
         /// Disables all items in the context menu if the node is in the IsError or IsLoading state. It is expected
         /// that after the state changes the node will be reloaded and the context menu replaced.
         /// </summary>

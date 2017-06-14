@@ -111,6 +111,10 @@
     <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
     <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubTopicCreatedEvent.cs" />
@@ -122,6 +126,41 @@
     <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerException.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerStepBase.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindow.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml.cs">
+      <DependentUpon>AttachDebuggerWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnableDebuggerPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePortStepContent.xaml.cs">
+      <DependentUpon>EnablePortStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\EnablePortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePowerShellPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPort.cs" />
+    <Compile Include="AttachDebuggerDialog\IAttachDebuggerStep.cs" />
+    <Compile Include="AttachDebuggerDialog\HelpStepContent.xaml.cs">
+      <DependentUpon>HelpStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml.cs">
+      <DependentUpon>InstallStartRemoteToolStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\HelpStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ListProcessStepContent.xaml.cs">
+      <DependentUpon>ListProcessStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\ListProcessStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ProcessItem.cs" />
+    <Compile Include="AttachDebuggerDialog\SetCredentialStepContent.xaml.cs">
+      <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\SetCredentialStepViewModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
@@ -134,6 +173,7 @@
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
@@ -147,7 +187,6 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceItem.cs" />
@@ -286,8 +325,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Accounts\CurrentAccountProjectSettings.cs" />
+    <Compile Include="SolutionUtils\SolutionUserOptions.cs" />
     <Compile Include="SolutionUtils\ProjectHelper.cs" />
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
+    <Compile Include="SolutionUtils\SolutionSettingKeyAttribute.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
     <Compile Include="SourceBrowsing\OpenGitFile.cs" />
@@ -377,10 +419,13 @@
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\IProtectedAction.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ProtectedAsyncTask.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
     <Compile Include="Theming\ButtonsList.cs" />
@@ -393,7 +438,6 @@
     <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
-    <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
@@ -794,6 +838,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\EnablePortStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\HelpStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\ListProcessStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\SetCredentialStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -983,6 +1051,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj">
+      <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
+      <Name>GoogleCloudExtension.PowerShellUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>

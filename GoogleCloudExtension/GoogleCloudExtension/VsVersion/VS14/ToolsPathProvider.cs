@@ -55,5 +55,15 @@ namespace GoogleCloudExtension.VsVersion.VS14
             GcpOutputWindow.OutputDebugLine($"Msdeploy path: {result}");
             return result;
         }
+
+        public string GetRemoteDebuggerToolsPath()
+        {
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            // TODO: add x86 support later
+            var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*");
+            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
+            GcpOutputWindow.OutputDebugLine($"Debugger remote tools V14 path: {result}");
+            return result;
+        }
     }
 }
