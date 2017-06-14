@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     /// <summary>
     /// Define interfance for Team Explorer section view model.
     /// </summary>
-    public interface ISectionViewModel : IDisposable
+    public interface ISectionViewModel
     {
         /// <summary>
         /// Responds to refresh event.
@@ -39,5 +39,10 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         /// When the value is null, it means currently there is no active repository.
         /// </param>
         void UpdateActiveRepo(string newRepoLocalPath);
+
+        /// <summary>
+        /// Called by ITeamExplorerSection to do final resource clean up.
+        /// </summary>
+        void Cleanup();
     }
 }

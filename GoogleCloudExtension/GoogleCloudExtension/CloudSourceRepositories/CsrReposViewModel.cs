@@ -35,7 +35,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private readonly ITeamExplorerUtils _teamExplorer;
         private RepoItem _activeRepo;
-        private CsrSectionControlViewModel _owner;
         private bool _isReady = true;
         private RepoItem _selectedRepo;
 
@@ -82,16 +81,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ProtectedCommand DisconnectCommand { get; }
 
         /// <summary>
-        /// Responds to double
+        /// Responds to list view double click event
         /// </summary>
-        public ProtectedCommand DoubleClickCommand { get; }
+        public ProtectedCommand ListDoubleClickCommand { get; }
 
-        public CsrReposViewModel(CsrSectionControlViewModel ownerControl, ITeamExplorerUtils teamExplorer)
+        public CsrReposViewModel(CsrSectionControlViewModel parent, ITeamExplorerUtils teamExplorer)
         {
-            _owner = ownerControl.ThrowIfNull(nameof(ownerControl));
+            parent.ThrowIfNull(nameof(parent));
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
-            DisconnectCommand = new ProtectedCommand(_owner.Disconnect);
-            DoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
+            DisconnectCommand = new ProtectedCommand(parent.Disconnect);
+            ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
         }
 
         /// <summary>

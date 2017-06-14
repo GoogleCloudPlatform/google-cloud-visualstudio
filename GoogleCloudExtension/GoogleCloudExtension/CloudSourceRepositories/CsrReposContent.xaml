@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"                      
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"             
              xmlns:local="clr-namespace:GoogleCloudExtension.CloudSourceRepositories"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
@@ -66,14 +65,16 @@
             VirtualizingPanel.ScrollUnit="Pixel"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
             Visibility="{Binding Repositories, Converter={StaticResource NullEmptyInvisibleConverter}}" >
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick" >
-                    <i:InvokeCommandAction Command="{Binding DoubleClickCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
+                        <Grid.InputBindings>
+                            <MouseBinding 
+                                Gesture="LeftDoubleClick" 
+                                Command="{Binding DataContext.ListDoubleClickCommand, 
+                                    RelativeSource ={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"/>
+                        </Grid.InputBindings>
+                        
                         <Grid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem 
@@ -102,7 +103,8 @@
                             Grid.Column="1" 
                             Text="{Binding Name}" 
                             Margin="0,0,6,0"
-                            FontWeight="{Binding IsActiveRepo, Converter={local:CsrFontWeightConverter}}"
+                            FontWeight="{Binding IsActiveRepo, 
+                                Converter={utils:BooleanConverter TrueValue='Bold', FalseValue='Normal'}}"
                             Style="{StaticResource CommonTextStyle}" />
 
                         <Separator       
@@ -130,8 +132,6 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock 
-                                        Grid.Row="0" 
-                                        Grid.Column="0"
                                         Margin="0,0,6,0"
                                         Text="{x:Static ext:Resources.CsrRepoNameLabel}"/>
 

@@ -34,6 +34,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public string LocalPath { get; }
 
         /// <summary>
+        /// Gets the repository full name.
+        /// </summary>
+        public string RepoFullName { get; }
+
+        /// <summary>
         /// Gets if the repository is currently active one.
         /// </summary>
         public bool IsActiveRepo
@@ -42,7 +47,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             set { SetValueAndRaise(ref _isActiveRepo, value); }
         }
 
-        public RepoItem()
-        { }
+        /// <summary>
+        /// The command that opens repository url.
+        /// </summary>
+        public ProtectedCommand VisitUrlCommand { get; }
     }
 }

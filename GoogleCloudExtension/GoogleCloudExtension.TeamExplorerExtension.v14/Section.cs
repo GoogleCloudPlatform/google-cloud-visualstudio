@@ -172,7 +172,8 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         void IDisposable.Dispose()
         {
-            _viewModel?.Dispose();
+            Debug.WriteLine($"CsrTeamExplorerSection.Dispose");
+            _viewModel?.Cleanup();
         }
 
         #endregion

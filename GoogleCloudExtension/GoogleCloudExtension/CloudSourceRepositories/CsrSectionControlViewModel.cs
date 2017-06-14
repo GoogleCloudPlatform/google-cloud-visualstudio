@@ -32,7 +32,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         /// Sometimes, the view and view model is recreated by Team Explorer.
         /// This is to preserve the states when a new user control is created.
-        /// Without doing so, user sees the view switches to unconnected without reason.
         private static bool s_isConnected = false;
         private static string s_currentAccount;
 
@@ -41,8 +40,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private CsrReposViewModel _reposViewModel;
         private CsrUnconnectedViewModel _unconnectedViewModel;
         private ContentControl _content;
-        private bool _inited;
-        private EventHandler _hander;
+        private EventHandler _accountChangedHandler;
 
         /// <summary>
         /// The content for the section control.
@@ -86,14 +84,18 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 Content = _reposContent;
                 s_isConnected = true;
-                (this as ISectionViewModel).Refresh();
+                Refresh();
             }
         }
 
 
         #region implement interface ISectionViewModel
 
-        void ISectionViewModel.Refresh()
+        /// <summary>
+        /// Implicit implementation to ISectionViewModel.Refresh. 
+        /// Using implicit declaration so that it can be accessed by 'this' object too.
+        /// </summary>
+        public void Refresh()
         {
             Debug.WriteLine("CsrSectionControlViewModel.Refresh");
             if (CredentialsStore.Default.CurrentAccount == null)
@@ -116,10 +118,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _reposContent.DataContext = _reposViewModel;
             _unconnectedContent.DataContext = _unconnectedViewModel;
 
-            _hander = (sender, e) => OnAccountChanged();
-            CredentialsStore.Default.CurrentAccountChanged += _hander;
-            CredentialsStore.Default.Reset += _hander;
-            _inited = true;
+            _accountChangedHandler = (sender, e) => OnAccountChanged();
+            CredentialsStore.Default.CurrentAccountChanged += _accountChangedHandler;
+            CredentialsStore.Default.Reset += _accountChangedHandler;
 
             if (s_isConnected && CredentialsStore.Default.CurrentAccount != null)
             {
@@ -142,12 +143,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _reposViewModel.SetActiveRepo(newRepoLocalPath);
         }
 
-        void IDisposable.Dispose()
+        void ISectionViewModel.Cleanup()
         {
-            if (_inited)
+            if (_accountChangedHandler != null)
             {
-                CredentialsStore.Default.Reset -= _hander;
-                CredentialsStore.Default.CurrentAccountChanged -= _hander;
+                CredentialsStore.Default.Reset -= _accountChangedHandler;
+                CredentialsStore.Default.CurrentAccountChanged -= _accountChangedHandler;
             }
         }
 
