@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// <summary>
     /// A repository object binding to list view item
     /// </summary>
-    public class RepoItem : Model
+    public class RepoItemViewModel : Model
     {
         private bool _isActiveRepo;
 

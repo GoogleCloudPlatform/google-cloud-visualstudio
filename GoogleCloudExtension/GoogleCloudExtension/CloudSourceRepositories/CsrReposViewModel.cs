@@ -18,6 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -31,12 +32,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the list when a new user control is created.
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
-        private static ObservableCollection<RepoItem> s_repoList;
+        private static ObservableCollection<RepoItemViewModel> s_repoList;
 
         private readonly ITeamExplorerUtils _teamExplorer;
-        private RepoItem _activeRepo;
+        private RepoItemViewModel _activeRepo;
         private bool _isReady = true;
-        private RepoItem _selectedRepo;
+        private RepoItemViewModel _selectedRepo;
 
         /// <summary>
         /// Indicates if the current view is not busy.
@@ -50,7 +51,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Show the list of repositories
         /// </summary>
-        public ObservableCollection<RepoItem> Repositories
+        public ObservableCollection<RepoItemViewModel> Repositories
         {
             get { return s_repoList; }
             private set { SetValueAndRaise(ref s_repoList, value); }
@@ -59,31 +60,53 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Currently selected repository
         /// </summary>
-        public RepoItem SelectedRepository
+        public RepoItemViewModel SelectedRepository
         {
             get { return _selectedRepo; }
             set { SetValueAndRaise(ref _selectedRepo, value); }
         }
 
         /// <summary>
+        /// Gets the current active Repo
+        /// </summary>
+        public RepoItemViewModel ActiveRepo
+        {
+            get { return _activeRepo; }
+            set
+            {
+                if (value != _activeRepo && _activeRepo != null)
+                {
+                    _activeRepo.IsActiveRepo = false;
+                }
+
+                if (value != null)
+                {
+                    value.IsActiveRepo = true;
+                }
+
+                _activeRepo = value;
+            }
+        }
+
+        /// <summary>
         /// Responds to Clone command
         /// </summary>
-        public ProtectedCommand CloneCommand { get; }
+        public ICommand CloneCommand { get; }
 
         /// <summary>
         /// Responds to Create command.
         /// </summary>
-        public ProtectedCommand CreateCommand { get; }
+        public ICommand CreateCommand { get; }
 
         /// <summary>
         /// Responds to Disconnect command
         /// </summary>
-        public ProtectedCommand DisconnectCommand { get; }
+        public ICommand DisconnectCommand { get; }
 
         /// <summary>
         /// Responds to list view double click event
         /// </summary>
-        public ProtectedCommand ListDoubleClickCommand { get; }
+        public ICommand ListDoubleClickCommand { get; }
 
         public CsrReposViewModel(CsrSectionControlViewModel parent, ITeamExplorerUtils teamExplorer)
         {
@@ -110,7 +133,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 SetCurrentRepo(SelectedRepository.LocalPath);
                 _teamExplorer.ShowHomeSection();
-                SetActiveRepo(SelectedRepository);
+                ActiveRepo = SelectedRepository;
             }
         }
 
@@ -122,22 +145,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             var repoItem = Repositories?.FirstOrDefault(
                 x => String.Compare(x.LocalPath, localPath, StringComparison.OrdinalIgnoreCase) == 0);
-            SetActiveRepo(repoItem);
-        }
-
-        private void SetActiveRepo(RepoItem newActiveRepo)
-        {
-            if (newActiveRepo != _activeRepo && _activeRepo != null)
-            {
-                _activeRepo.IsActiveRepo = false;
-            }
-
-            if (newActiveRepo != null)
-            {
-                newActiveRepo.IsActiveRepo = true;
-            }
-
-            _activeRepo = newActiveRepo;
+            ActiveRepo = repoItem;
         }
 
         private void SetCurrentRepo(string localPath)
@@ -153,7 +161,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             IsReady = false;
             Loading = true;
-            Repositories = new ObservableCollection<RepoItem>();
+            Repositories = new ObservableCollection<RepoItemViewModel>();
             try
             {
                 // Replace it with code that list repositories in next PR.

@@ -214,7 +214,7 @@
       <DependentUpon>CsrUnconnectedContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudSourceRepositories\CsrUnconnectedViewModel.cs" />
-    <Compile Include="CloudSourceRepositories\RepoItem.cs" />
+    <Compile Include="CloudSourceRepositories\RepoItemViewModel.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
