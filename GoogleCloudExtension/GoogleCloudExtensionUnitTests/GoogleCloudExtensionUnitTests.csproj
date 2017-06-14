@@ -212,6 +212,7 @@
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StringUtilTests.cs" />
     <Compile Include="StackframeParserTests.cs" />
+    <Compile Include="SolutionUserOptionsTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\PickProjectIdViewModelTests.cs" />

@@ -44,6 +44,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
+        private bool _launchRemoteDebugger;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -105,6 +106,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             get { return _openWebsite; }
             set { SetValueAndRaise(ref _openWebsite, value); }
+        }
+
+        /// <summary>
+        /// Whether to attach debugger after publising.
+        /// </summary>
+        public bool LaunchRemoteDebugger
+        {
+            get { return _launchRemoteDebugger; }
+            set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
         private GceStepViewModel(GceStepContent content)
@@ -181,6 +191,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     }
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+
+                    if (LaunchRemoteDebugger)
+                    {
+                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(SelectedInstance);
+                    }
                 }
                 else
                 {

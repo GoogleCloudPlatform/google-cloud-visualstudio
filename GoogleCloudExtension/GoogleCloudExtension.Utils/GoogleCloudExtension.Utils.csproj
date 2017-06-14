@@ -71,6 +71,7 @@
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisibilityConverter.cs" />
+    <Compile Include="WindowsCredentialManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

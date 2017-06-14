@@ -16,6 +16,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
@@ -50,6 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly GceSourceRootViewModel _owner;
         private Instance _instance;
+        private ProtectedCommand _attachDebuggerCommand;
 
         private Instance Instance
         {
@@ -89,6 +91,41 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Instance = instance;
 
             UpdateInstanceState();
+        }
+
+        public override void OnMenuItemOpen()
+        {
+            // In current code, _attachDebuggerCommand won't be null
+            // To be safe and in case the constructor/initiailzation code could be modified in the future.
+            if (_attachDebuggerCommand != null)
+            {
+                _attachDebuggerCommand.CanExecuteCommand = 
+                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
+            }
+            base.OnMenuItemOpen();
+        }
+
+        /// <summary>
+        /// Sync instance state when metadata of the instance changed outside.
+        /// </summary>
+        private async void RefreshInstanceState()
+        {
+            IsLoading = true;
+            try
+            {
+                Instance = await _owner.DataSource.RefreshInstance(Instance);
+            }
+            catch (DataSourceException ex)
+            {
+                Debug.WriteLine($"RefreshInstanceState failed {ex}");
+                IsError = true;     // Set state to error
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+            Caption = Instance.Name;
+            UpdateContextMenu();
         }
 
         private void UpdateInstanceState()
@@ -195,6 +232,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
             var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
+            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger);
 
             var menuItems = new List<MenuItem>
             {
@@ -202,7 +240,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
-                new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials }
+                new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials },
+                new MenuItem { Header = Resources.CloudExplorerGceAttachDebuggerMenuHeader, Command = _attachDebuggerCommand }
             };
 
             if (Instance.Id.HasValue)
@@ -231,6 +270,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
+        }
+
+        private void OnAttachDebugger()
+        {
+            AttachDebuggerWindow.PromptUser(_instance);
+            // Refresh instance state because the firewall rules may have been changed.
+            RefreshInstanceState();
         }
 
         private void OnSavePublishSettingsCommand()
