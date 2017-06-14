@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
 
 namespace $safeprojectname$.Controllers
 {
@@ -20,7 +22,7 @@ namespace $safeprojectname$.Controllers
             // Sends a message to configured loggers, including the Stackdriver logger.
             // The Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker logger will log all controller actions with
             // log level information. This log is for additional information.
-            _logger.LogInfo("Home page hit!");
+            _logger.LogInformation("Home page hit!");
             return View();
         }
 
