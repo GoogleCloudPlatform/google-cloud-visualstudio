@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -47,8 +48,8 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly SelectionUtils _selectionUtils;
         private readonly IEnumerable<ICloudExplorerSource> _sources;
         private bool _isBusy;
-        private AsyncPropertyValue<string> _profilePictureAsync;
-        private AsyncPropertyValue<string> _profileNameAsync;
+        private AsyncProperty<string> _profilePictureAsync;
+        private AsyncProperty<string> _profileNameAsync;
         private object _currentProject;
         private IList<Project> _projects;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
@@ -95,7 +96,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns the profile image URL.
         /// </summary>
-        public AsyncPropertyValue<string> ProfilePictureAsync
+        public AsyncProperty<string> ProfilePictureAsync
         {
             get { return _profilePictureAsync; }
             private set { SetValueAndRaise(ref _profilePictureAsync, value); }
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns the profile name.
         /// </summary>
-        public AsyncPropertyValue<string> ProfileNameAsync
+        public AsyncProperty<string> ProfileNameAsync
         {
             get { return _profileNameAsync; }
             private set { SetValueAndRaise(ref _profileNameAsync, value); }
@@ -215,7 +216,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new CloudConsoleSource(),
             };
 
-            var refreshButtonEnumerable = new ButtonDefinition[]
+            var refreshButtonEnumerable = new[]
             {
                 new ButtonDefinition
                 {
@@ -224,7 +225,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new ProtectedCommand(OnRefreshCommand),
                 }
             };
-            Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
+            Buttons = refreshButtonEnumerable.Concat(_sources.SelectMany(x => x.Buttons));
 
             ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
 
@@ -241,19 +242,13 @@ namespace GoogleCloudExtension.CloudExplorer
             return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
-        private static ResourceManagerDataSource CreateResourceManagerDataSource()
-        {
-            var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
-        }
-
         private void UpdateUserProfile()
         {
             if (_plusDataSource.Value != null)
             {
                 var profileTask = _plusDataSource.Value.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyValueUtils.CreateAsyncProperty(profileTask, x => x.Image.Url);
-                ProfileNameAsync = AsyncPropertyValueUtils.CreateAsyncProperty(
+                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x.Image.Url);
+                ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
                     x => x.Emails.FirstOrDefault()?.Value,
                     Resources.CloudExplorerLoadingMessage);
@@ -261,7 +256,7 @@ namespace GoogleCloudExtension.CloudExplorer
             else
             {
                 ProfilePictureAsync = null;
-                ProfileNameAsync = new AsyncPropertyValue<string>(Resources.CloudExplorerSelectAccountMessage);
+                ProfileNameAsync = new AsyncProperty<string>(Resources.CloudExplorerSelectAccountMessage);
             }
         }
 
@@ -343,11 +338,9 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
                 else
                 {
-                    var newCurrentProject = projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId);
-                    if (newCurrentProject == null)
-                    {
-                        newCurrentProject = projects.FirstOrDefault();
-                    }
+                    var newCurrentProject =
+                        projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId) ??
+                        projects.FirstOrDefault();
 
                     // Set the properties in the right order. This is needed because this in turn will
                     // set the properties in the list control in the right order to preserve the current
@@ -404,7 +397,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateAccountDependentDataSources()
         {
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
+            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceFactories.CreateResourceManagerDataSource);
             _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
         }
 

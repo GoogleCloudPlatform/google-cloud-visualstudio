@@ -129,6 +129,7 @@
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="IPubsubDataSource.cs" />
+    <Compile Include="IResourceManagerDataSource.cs" />
     <Compile Include="PubSubDataSource.cs" />
     <Compile Include="StackdriverErrorReportingDataSource.cs" />
     <Compile Include="FirewallPort.cs" />
