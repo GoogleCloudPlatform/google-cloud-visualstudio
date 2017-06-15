@@ -20,8 +20,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
@@ -329,13 +327,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
         private class TestableSourceRootviewModelBase : SourceRootViewModelBase
         {
-            // Avoid having to enable pack urls.
-            private readonly Mock<BitmapSource> _rootIconMock = new Mock<BitmapSource>();
 
             public TaskCompletionSource<IList<TreeNode>> LoadSource { get; private set; } =
                 new TaskCompletionSource<IList<TreeNode>>();
 
-            public override ImageSource RootIcon => _rootIconMock.Object;
             public override string RootCaption => MockRootCaption;
 
             public override TreeLeaf ErrorPlaceholder { get; } = new TreeLeaf

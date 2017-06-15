@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.CloudExplorer
     /// <summary>
     /// This class represetns a node in the tree that contains children nodes.
     /// </summary>
-    public class TreeHierarchy : TreeNode
+    public class TreeHierarchy : TreeNode, ITreeHierarchy
     {
         private bool _isExpanded;
 

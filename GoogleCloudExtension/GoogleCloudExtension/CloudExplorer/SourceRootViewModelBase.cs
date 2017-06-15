@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.CloudExplorer
     /// common credentials and project check and setting the right state depending on the results from the 
     /// underlying data source.
     /// </summary>
-    public abstract class SourceRootViewModelBase : TreeHierarchy
+    public abstract class SourceRootViewModelBase : TreeHierarchy, ISourceRootViewModelBase
     {
         private static readonly TreeLeaf s_noCredentialsPlacehodler =
             new TreeLeaf
