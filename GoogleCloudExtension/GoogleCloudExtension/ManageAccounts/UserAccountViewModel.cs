@@ -15,14 +15,15 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
     public class UserAccountViewModel : Model
     {
-        public AsyncPropertyValue<string> ProfilePictureAsync { get; }
+        public AsyncProperty<string> ProfilePictureAsync { get; }
 
-        public AsyncPropertyValue<string> NameAsync { get; }
+        public AsyncProperty<string> NameAsync { get; }
 
         public string AccountName { get; }
 
@@ -40,8 +41,8 @@ namespace GoogleCloudExtension.ManageAccounts
             var personTask = dataSource.GetProfileAsync();
 
             // TODO: Show the default image while it is being loaded.
-            ProfilePictureAsync = AsyncPropertyValueUtils.CreateAsyncProperty(personTask, x => x.Image.Url);
-            NameAsync = AsyncPropertyValueUtils.CreateAsyncProperty(personTask, x => x.DisplayName, Resources.CloudExplorerLoadingMessage);
+            ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x.Image.Url);
+            NameAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x.DisplayName, Resources.CloudExplorerLoadingMessage);
         }
     }
 }

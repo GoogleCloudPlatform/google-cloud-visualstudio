@@ -12,3 +12,4 @@
 **/*.pyc
 *.DotSettings.user
 *.user
+!**/GoogleCloudExtension.csproj.user

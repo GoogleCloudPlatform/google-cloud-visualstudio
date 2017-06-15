@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -237,6 +237,249 @@ namespace GoogleCloudExtension
         public static string AnalyticsPromptTitle {
             get {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an account.
+        /// </summary>
+        public static string AttachDebuggerAccountSelectionLabel {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAccountSelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding firewall rule.
+        /// </summary>
+        public static string AttachDebuggerAddingFirewallRuleMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAddingFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No valid public IP address. To enable remote debugging, add a public IP address to the VM..
+        /// </summary>
+        public static string AttachDebuggerAddPublicIpAddressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAddPublicIpAddressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall rules take effect within a few minutes. Click OK to test again..
+        /// </summary>
+        public static string AttachDebuggerAskToTestConnectivityLaterMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAskToTestConnectivityLaterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to attach to {0}.
+        /// </summary>
+        public static string AttachDebuggerAttachErrorMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAttachErrorMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attaching to {0}.
+        /// </summary>
+        public static string AttachDebuggerAttachingProcessMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAttachingProcessMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically detect.
+        /// </summary>
+        public static string AttachDebuggerAutomaticallyDetectEngineTypeItemName {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAutomaticallyDetectEngineTypeItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking debugger port firewall rule.
+        /// </summary>
+        public static string AttachDebuggerCheckFirewallRuleMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerCheckFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debugger engine type.
+        /// </summary>
+        public static string AttachDebuggerChooseEngineTypeLable {
+            get {
+                return ResourceManager.GetString("AttachDebuggerChooseEngineTypeLable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting to debugger remote tool.
+        /// </summary>
+        public static string AttachDebuggerConnectingProgressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerConnectingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create or manage accounts....
+        /// </summary>
+        public static string AttachDebuggerCreateManageAccountLinkCaption {
+            get {
+                return ResourceManager.GetString("AttachDebuggerCreateManageAccountLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to attach debugger to the selected machine..
+        /// </summary>
+        public static string AttachDebuggerHelpFirstPartMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpFirstPartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to setting up the debugger remote tools..
+        /// </summary>
+        public static string AttachDebuggerHelpLastPartMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpLastPartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about.
+        /// </summary>
+        public static string AttachDebuggerHelpStepLinkCpation {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpStepLinkCpation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing, launching Remote Debugger.
+        /// </summary>
+        public static string AttachDebuggerInstallSetupProgressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerInstallSetupProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Did not find any processes due to unknown error.
+        /// </summary>
+        public static string AttachDebuggerListProcessEmptyResultErrorMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerListProcessEmptyResultErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save this choice and don&apos;t show the dialog again.
+        /// </summary>
+        public static string AttachDebuggerListProcessSaveDefaultLabel {
+            get {
+                return ResourceManager.GetString("AttachDebuggerListProcessSaveDefaultLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more.
+        /// </summary>
+        public static string AttachDebuggerOpenPortHelpLinkCaption {
+            get {
+                return ResourceManager.GetString("AttachDebuggerOpenPortHelpLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a process to attach to:.
+        /// </summary>
+        public static string AttachDebuggerPickingProcessMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerPickingProcessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Compute Engine firewall rule blocks port {0} for {1}. Click OK to add a firewall rule that allows traffic to the port..
+        /// </summary>
+        public static string AttachDebuggerPortDisabledMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerPortDisabledMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PID.
+        /// </summary>
+        public static string AttachDebuggerProcessIdHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessIdHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string AttachDebuggerProcessNameHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string AttachDebuggerProcessUsernameHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessUsernameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote PowerShell.
+        /// </summary>
+        public static string AttachDebuggerRemotePowerShellPortDescription {
+            get {
+                return ResourceManager.GetString("AttachDebuggerRemotePowerShellPortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote Debugger.
+        /// </summary>
+        public static string AttachDebuggerRemoteToolsPortDescription {
+            get {
+                return ResourceManager.GetString("AttachDebuggerRemoteToolsPortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test connecting to {0} at {1}:{2}.
+        /// </summary>
+        public static string AttachDebuggerTestConnectPortMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerTestConnectPortMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach debugger to {0}: {1}.
+        /// </summary>
+        public static string AttachDebuggerWindowCaptionFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerWindowCaptionFormat", resourceCulture);
             }
         }
         
@@ -813,6 +1056,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerGaeVersionUrlDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionUrlDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach Debugger.
+        /// </summary>
+        public static string CloudExplorerGceAttachDebuggerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
             }
         }
         
@@ -1825,7 +2077,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select account....
+        ///   Looks up a localized string similar to Select _account....
         /// </summary>
         public static string CloudExplorerSelectAccountMessage {
             get {
@@ -1992,6 +2244,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerToolWindowCaptionNoAccount {
             get {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}:{2}).
+        /// </summary>
+        public static string DataTemplateGcpProjectFormat {
+            get {
+                return ResourceManager.GetString("DataTemplateGcpProjectFormat", resourceCulture);
             }
         }
         
@@ -2415,6 +2676,15 @@ namespace GoogleCloudExtension
         public static string FlexPublishSuccessMessage {
             get {
                 return ResourceManager.GetString("FlexPublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach Debugger after publishing.
+        /// </summary>
+        public static string GcePublishAttachDebuggerCaption {
+            get {
+                return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
             }
         }
         
@@ -3148,7 +3418,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please follow the link to install Git for Windows properly.
+        ///   Looks up a localized string similar to Please follow the link to install Git for Windows.
         /// </summary>
         public static string GitUtilsMissingGitErrorMessage {
             get {
@@ -4039,6 +4309,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string MoreInfoTitle {
+            get {
+                return ResourceManager.GetString("MoreInfoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
         /// </summary>
         public static string MySqlInstallerWindowBottomMessage {
@@ -4242,6 +4521,24 @@ namespace GoogleCloudExtension
         public static string PortManagerRdpDescription {
             get {
                 return ResourceManager.GetString("PortManagerRdpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Visual Studio Debugger connections to the instance.
+        /// </summary>
+        public static string PortManagerRemoteDebuggerDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRemoteDebuggerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Remote PowerShell HTTPS traffic to the instance.
+        /// </summary>
+        public static string PortManagerRemotePowershellDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRemotePowershellDescription", resourceCulture);
             }
         }
         
@@ -5164,6 +5461,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Skip.
+        /// </summary>
+        public static string UiSkipButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSkipButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -5313,6 +5619,69 @@ namespace GoogleCloudExtension
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Canceled.
+        /// </summary>
+        public static string WizardPickProjectIdCanceledTask {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdCanceledTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input project ID or select an existing project:.
+        /// </summary>
+        public static string WizardPickProjectIdDescription {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
+        /// </summary>
+        public static string WizardPickProjectIdHelpText {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdHelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Projects....
+        /// </summary>
+        public static string WizardPickProjectIdLoadingProjects {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading Projects.
+        /// </summary>
+        public static string WizardPickProjectIdLoadProjectsErrorMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enter project ID:.
+        /// </summary>
+        public static string WizardPickProjectIdTextLabel {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTextLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the Google Cloud Platform project that will run this project..
+        /// </summary>
+        public static string WizardPickProjectIdTitle {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
             }
         }
     }

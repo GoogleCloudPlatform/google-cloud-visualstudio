@@ -28,9 +28,13 @@ namespace $safeprojectname$
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            var projectId = GetProjectId();
+            // Add framework services.Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService
             services.AddMvc();
-            services.AddGoogleTrace(GetProjectId());
+            // Enables Stackdriver Trace.
+            services.AddGoogleTrace(projectId);
+            // Sends Exceptions to Stackdriver Error Reporting.
+            services.AddGoogleExceptionLogging(projectId, GetServiceName(), GetVersion());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,9 +42,11 @@ namespace $safeprojectname$
         {
             var projectId = GetProjectId();
 
+            // Only use Console and Debug logging during development.
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddGoogle(projectId);
             loggerFactory.AddDebug();
+            // Send logs to Stackdriver Logging.
+            loggerFactory.AddGoogle(projectId);
 
             if (env.IsDevelopment())
             {
@@ -50,9 +56,7 @@ namespace $safeprojectname$
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseGoogleExceptionLogging(projectId,
-                    Configuration["GoogleErrorReporting:ServiceName"],
-                    Configuration["GoogleErrorReporting:Version"]);
+                app.UseGoogleExceptionLogging();
             }
 
             app.UseStaticFiles();
@@ -68,24 +72,50 @@ namespace $safeprojectname$
 
         private string GetProjectId()
         {
-            string projectId = Configuration["ProjectId"];
-            if (projectId == ("YOUR-PROJECT-ID"))
+            var instance = Google.Api.Gax.Platform.Instance();
+            var projectId = instance?.ProjectId ?? Configuration["Google:ProjectId"];
+            if (string.IsNullOrEmpty(projectId))
             {
-                throw new Exception("Update appsettings.json and replace YOUR-PROJECT-ID"
-                    + " with your Google Cloud Project ID, and recompile.");
-            }
-            if (projectId == null)
-            {
-                var instance = Google.Api.Gax.Platform.Instance();
-                projectId = instance.GceDetails?.ProjectId ?? instance.GaeDetails?.ProjectId;
-                if (projectId == null)
-                {
-                    throw new Exception("The logging, tracing and error reporting libraries need a project ID. "
-                        + "Update appsettings.json and replace YOUR-PROJECT-ID with your "
-                        + "Google Cloud Project ID, and recompile.");
-                }
+                throw new Exception(
+                    "The logging, tracing and error reporting libraries need a project ID. " +
+                    "Update appsettings.json by setting the ProjectId property with your " +
+                    "Google Cloud Project ID, then recompile.");
             }
             return projectId;
+        }
+
+        private string GetServiceName()
+        {
+            var instance = Google.Api.Gax.Platform.Instance();
+            // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
+            var serviceName =
+                instance?.GaeDetails?.ServiceId ??
+                Configuration["Google:ErrorReporting:ServiceName"];
+            if (string.IsNullOrEmpty(serviceName))
+            {
+                throw new Exception(
+                    "The error reporting library needs a service name. " +
+                    "Update appsettings.json by setting the Google:ErrorReporting:ServiceName property with your " +
+                    "Service Id, then recompile.");
+            }
+            return serviceName;
+        }
+
+        private string GetVersion()
+        {
+            var instance = Google.Api.Gax.Platform.Instance();
+            // The source version of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
+            var versionId =
+                instance?.GaeDetails?.VersionId ??
+                Configuration["Google:ErrorReporting:Version"];
+            if (string.IsNullOrEmpty(versionId))
+            {
+                throw new Exception(
+                    "The error reporting library needs a version id. " +
+                    "Update appsettings.json by setting the Google:ErrorReporting:Version property with your " +
+                    "service version id, then recompile.");
+            }
+            return versionId;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.DataSources
     /// This class wraps the <seealso cref="Google.Apis.CloudResourceManager.v1.CloudResourceManagerService"/> class for
     /// a given set of credentials.
     /// </summary>
-    public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>
+    public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>, IResourceManagerDataSource
     {
         /// <param name="credential">The credentials to use for the service.</param>
         /// <param name="appName">The name of the application.</param>
