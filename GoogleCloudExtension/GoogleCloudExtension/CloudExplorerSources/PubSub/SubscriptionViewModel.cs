@@ -36,18 +36,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        private readonly TopicViewModelBase _owner;
+        private readonly ITopicViewModelBase _owner;
         private readonly SubscriptionItem _subscriptionItem;
 
         /// <summary>
         /// Returns the context in which this view model is working.
         /// </summary>
-        public ICloudSourceContext Context => _owner.Context;
+        private ICloudSourceContext Context => _owner.Context;
 
         /// <summary>
         /// The datasource for the item.
         /// </summary>
-        public IPubsubDataSource DataSource => _owner.DataSource;
+        private IPubsubDataSource DataSource => _owner.DataSource;
 
         #region ICloudExplorerItemSource implementation.
 
@@ -64,7 +64,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         #endregion
 
-        public SubscriptionViewModel(TopicViewModelBase owner, Subscription subscription)
+        public SubscriptionViewModel(ITopicViewModelBase owner, Subscription subscription)
         {
             _owner = owner;
             _subscriptionItem = new SubscriptionItem(subscription);
@@ -92,34 +92,34 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Prompts the user about deleting the subscription, then calls the datasource to delete it.
         /// </summary>
-        private async void OnDeleteSubscriptionCommand()
+        internal async void OnDeleteSubscriptionCommand()
         {
             IsLoading = true;
             try
             {
-                try
+                bool doDelete = UserPromptUtils.ActionPrompt(
+                    string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
+                    Resources.PubSubDeleteSubscriptionWindowHeader,
+                    actionCaption: Resources.UiDeleteButtonCaption);
+                if (doDelete)
                 {
-                    bool doDelete = UserPromptUtils.ActionPrompt(
-                        string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
-                        Resources.PubSubDeleteSubscriptionWindowHeader,
-                        actionCaption: Resources.UiDeleteButtonCaption);
-                    if (doDelete)
+                    try
                     {
                         await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
-
                         EventsReporterWrapper.ReportEvent(PubSubSubscriptionDeletedEvent.Create(CommandStatus.Success));
                     }
-                }
-                catch (DataSourceException e)
-                {
-                    Debug.Write(e.Message, "Delete Subscription");
-                    UserPromptUtils.ErrorPrompt(
-                        Resources.PubSubDeleteSubscriptionErrorMessage,
-                        Resources.PubSubDeleteSubscriptionErrorHeader);
+                    catch (DataSourceException e)
+                    {
+                        Debug.Write(e.Message, "Delete Subscription");
+                        EventsReporterWrapper.ReportEvent(PubSubSubscriptionDeletedEvent.Create(CommandStatus.Failure));
+                        UserPromptUtils.ErrorPrompt(
+                            Resources.PubSubDeleteSubscriptionErrorMessage,
+                            Resources.PubSubDeleteSubscriptionErrorHeader,
+                            e.Message);
 
-                    EventsReporterWrapper.ReportEvent(PubSubSubscriptionDeletedEvent.Create(CommandStatus.Failure));
+                    }
+                    await _owner.Refresh();
                 }
-                await _owner.Refresh();
             }
             finally
             {
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Opens the properties window for the subscription item.
         /// </summary>
-        private void OnPropertiesWindowCommand()
+        internal void OnPropertiesWindowCommand()
         {
             Context.ShowPropertiesWindow(_subscriptionItem);
         }
