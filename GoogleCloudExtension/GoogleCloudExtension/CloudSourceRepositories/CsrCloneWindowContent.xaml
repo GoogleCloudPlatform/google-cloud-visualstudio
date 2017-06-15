@@ -89,10 +89,10 @@
             </Grid>
 
             <ctrl:DotsProgressIndicator 
-                Margin="0,6,0,0" 
+                Margin="0,12,0,0" 
                 Width="60" 
                 HorizontalAlignment="Left" 
-                Visibility="{Binding Loading, Converter={utils:BooleanConverter TrueValue='Visible',FalseValue='Hidden'}}"/>
+                Visibility="{Binding IsReady, Converter={utils:BooleanConverter TrueValue='Hidden',FalseValue='Visible'}}"/>
 
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

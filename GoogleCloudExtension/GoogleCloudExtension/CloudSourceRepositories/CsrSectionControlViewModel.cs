@@ -133,6 +133,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Content = _reposContent;
                 if (s_currentAccount != CredentialsStore.Default.CurrentAccount?.AccountName)
                 {
+                    if (!SetGitCredential())
+                    {
+                        return;
+                    }
                     _reposViewModel.Refresh();
                 }
                 s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
