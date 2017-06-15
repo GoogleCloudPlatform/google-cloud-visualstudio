@@ -68,6 +68,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             gitCommand.ThrowIfNull(nameof(gitCommand));
             LocalPath = gitCommand.Root;
             Name = CsrUtils.GetRepoName(cloudRepo);
+            RepoFullName = cloudRepo.Name;
             VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));
         }
     }
