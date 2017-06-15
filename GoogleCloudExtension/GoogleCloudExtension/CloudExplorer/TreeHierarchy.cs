@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace GoogleCloudExtension.CloudExplorer
@@ -26,7 +27,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The children for this item.
         /// </summary>
-        public ObservableCollection<TreeNode> Children { get; } = new ObservableCollection<TreeNode>();
+        public IList<TreeNode> Children { get; } = new ObservableCollection<TreeNode>();
 
         /// <summary>
         /// Returns whether the hierarchy is expanded or not.

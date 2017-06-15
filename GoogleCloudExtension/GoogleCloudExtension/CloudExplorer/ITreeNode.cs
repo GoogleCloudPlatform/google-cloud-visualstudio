@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
-    public interface ITreeNode : INotifyPropertyChanged
+    public interface ITreeNode
     {
         /// <summary>
         /// Whether this node is in the loading state.

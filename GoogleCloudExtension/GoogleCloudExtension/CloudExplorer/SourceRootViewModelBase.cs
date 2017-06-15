@@ -43,12 +43,12 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns whether this view model is busy loading data.
         /// </summary>
-        public bool IsLoadingState { get; private set; }
+        private bool _isLoadingState;
 
         /// <summary>
         /// Returns whether this view model is already loaded with data.
         /// </summary>
-        public bool IsLoadedState { get; private set; }
+        private bool _isLoadedState;
 
         /// <summary>
         /// Returns the icon to use for the root for this data source. By default all sources use the
@@ -98,12 +98,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public virtual void Refresh()
         {
-            if (!IsLoadedState)
+            if (!_isLoadedState)
             {
                 return;
             }
 
-            IsLoadedState = false;
+            _isLoadedState = false;
             LoadingTask = LoadDataWrapper();
         }
 
@@ -112,12 +112,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
         protected override void OnIsExpandedChanged(bool newValue)
         {
-            if (IsLoadingState)
+            if (_isLoadingState)
             {
                 return;
             }
 
-            if (newValue && !IsLoadedState)
+            if (newValue && !_isLoadedState)
             {
                 LoadingTask = LoadDataWrapper();
             }
@@ -132,7 +132,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             try
             {
-                IsLoadingState = true;
+                _isLoadingState = true;
                 Children.Clear();
 
                 if (CredentialsStore.Default.CurrentAccount == null)
@@ -162,8 +162,8 @@ namespace GoogleCloudExtension.CloudExplorer
             }
             finally
             {
-                IsLoadingState = false;
-                IsLoadedState = true;
+                _isLoadingState = false;
+                _isLoadedState = true;
             }
         }
     }

@@ -12,56 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
     public interface ISourceRootViewModelBase : ITreeHierarchy
     {
         /// <summary>
-        /// Returns whether this view model is busy loading data.
-        /// </summary>
-        bool IsLoadingState { get; }
-
-        /// <summary>
-        /// Returns whether this view model is already loaded with data.
-        /// </summary>
-        bool IsLoadedState { get; }
-
-        /// <summary>
-        /// Returns the icon to use for the root for this data source. By default all sources use the
-        /// default <seealso cref="Theming.CommonImageResources.s_logoIcon"/>.
-        /// Each node can override the icon with a custom one if desired.
-        /// </summary>
-        ImageSource RootIcon { get; }
-
-        /// <summary>
-        /// Returns the caption to use for the root node for this data source.
-        /// </summary>
-        string RootCaption { get; }
-
-        /// <summary>
-        /// Returns the tree node to use when there's an error loading data.
-        /// </summary>
-        TreeLeaf ErrorPlaceholder { get; }
-
-        /// <summary>
-        /// Returns the tree node to use when there's no data returned by this data source.
-        /// </summary>
-        TreeLeaf NoItemsPlaceholder { get; }
-
-        /// <summary>
-        /// Returns the tree node to use while loading data.
-        /// </summary>
-        TreeLeaf LoadingPlaceholder { get; }
-
-        /// <summary>
         /// Returns the context in which this source root view model is working.
         /// </summary>
         ICloudSourceContext Context { get; }
 
+        /// <summary>
+        /// Initialize the view model using the given context.
+        /// </summary>
         void Initialize(ICloudSourceContext context);
+
+        /// <summary>
+        /// Refresh the state of the view model from external data sources.
+        /// </summary>
         void Refresh();
+
+        /// <summary>
+        /// Called when the current project or account changes.
+        /// </summary>
         void InvalidateProjectOrAccount();
     }
 }
