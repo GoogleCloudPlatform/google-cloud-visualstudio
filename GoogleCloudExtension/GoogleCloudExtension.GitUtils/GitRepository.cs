@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GitUtils
     /// <summary>
     /// A wrapper for executing git commands on a local git repository root.
     /// </summary>
-    public sealed class GitRepository
+    public class GitRepository
     {
         private const string GitExecutable = "git.exe";
 
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.GitUtils
         /// <summary>
         /// Run a git command and return the output or error output.
         /// </summary>
-        public static async Task<List<string>> RunGitCommandAsync(
+        private static async Task<List<string>> RunGitCommandAsync(
             string command,
             string gitLocalRoot,
             IList<string> standardInputs = null)

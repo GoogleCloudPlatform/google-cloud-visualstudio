@@ -139,6 +139,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (SelectedRepository?.IsActiveRepo == false)
             {
                 SetCurrentRepo(SelectedRepository.LocalPath);
+
+                // Note, the order is critical.
+                // When switching to HomeSection, current "this" object is destroyed.
                 ActiveRepo = SelectedRepository;
                 _teamExplorer.ShowHomeSection();
             }
@@ -182,13 +185,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
 
         /// <summary>
-        /// Get a list of local repositories.  It is saved to local localRepos.
+        /// Get a list of local repositories.  It is saved to local variable localRepos.
         /// For each local repository, get the URL.
         /// From the URL, get the project-id. 
-        /// Now, checkes if the list of repos under the project-id contains the URL.
-        /// If it does, add it to Repositories.
+        /// Now, check if the list of 'cloud repositories' under the project-id contains the URL.
+        /// If it does, the local repository with the URL will be shown to user.
         /// 
-        /// projectReposDictionay is used to cache the list of repos of the project-id.
+        /// projectReposDictionay is used to cache the list of 'cloud repos' of the project-id.
         /// </summary>
         private async Task ListRepositoryAsync()
         {
@@ -205,7 +208,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             try
             {
                 var projects = await CsrUtils.GetProjectsAsync();
-
                 if (!(projects?.Any() ?? false))
                 {
                     return;
@@ -220,9 +222,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                         Debug.WriteLine($"{localGitRepo.Root} does not get remote url");
                         continue;
                     }
-                    string projectId = CsrUtils.ParseProjectId(url);
                     IList<Repo> cloudRepos = null;
                     Project project = null;
+                    string projectId = CsrUtils.ParseProjectId(url);
                     if (String.IsNullOrWhiteSpace(projectId))
                     {
                         continue;
@@ -269,6 +271,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// The list of local git repositories that Visual Studio remembers.
         /// </summary>
+        /// <returns>
+        /// A list of local repositories.
+        /// Empty list is returned, never return null.
+        /// </returns>
         private async Task<List<GitRepository>> GetLocalGitRepositories()
         {
             List<GitRepository> localRepos = new List<GitRepository>();
