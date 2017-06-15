@@ -127,7 +127,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             if (!WindowsCredentialManager.Write(
                 Context.PublicIp,
                 Context.Credential.User,
-                Context.Credential.Password))
+                Context.Credential.Password,
+                WindowsCredentialManager.CredentialType.DomainPassword,
+                WindowsCredentialManager.CredentialPersistence.Session))
             {
                 Debug.WriteLine($"Failed to save credential for {Context.PublicIp}, last error is {Marshal.GetLastWin32Error()}");
                 // It's OKay to continue, the Debugger2 will prompt UI to ask for credential. 

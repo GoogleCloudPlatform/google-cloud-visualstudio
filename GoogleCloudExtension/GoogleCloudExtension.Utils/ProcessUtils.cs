@@ -92,18 +92,28 @@ namespace GoogleCloudExtension.Utils
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        /// <param name="standardInputs">Optional, a list of strings as console input to the process.</param>
         public static Task<bool> RunCommandAsync(
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
             string workingDir = null,
-            IDictionary<string, string> environment = null)
+            IDictionary<string, string> environment = null,
+            IList<string> standardInputs = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment);
 
             return Task.Run(async () =>
             {
                 var process = Process.Start(startInfo);
+                if (standardInputs != null)
+                {
+                    var streamWriter = process.StandardInput;
+                    foreach (string line in standardInputs)
+                    {
+                        streamWriter.WriteLine(line);
+                    }
+                }
                 var readErrorsTask = ReadLinesFromOutput(OutputStream.StandardError, process.StandardError, handler);
                 var readOutputTask = ReadLinesFromOutput(OutputStream.StandardOutput, process.StandardOutput, handler);
                 await readErrorsTask;

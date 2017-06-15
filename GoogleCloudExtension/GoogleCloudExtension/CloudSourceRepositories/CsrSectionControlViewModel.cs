@@ -13,12 +13,14 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -34,6 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the states when a new user control is created.
         private static bool s_isConnected = false;
         private static string s_currentAccount;
+        private static bool s_gitInited = false;
 
         private readonly CsrReposContent _reposContent = new CsrReposContent();
         private readonly CsrUnconnectedContent _unconnectedContent = new CsrUnconnectedContent();
@@ -70,8 +73,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Switch to connected view
         /// </summary>
-        public void Connect()
+        public async Task Connect()
         {
+            if (!(await InitializeGit()))
+            {
+                return;
+            }
             if (s_isConnected)
             {
                 return;
@@ -87,7 +94,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Refresh();
             }
         }
-
 
         #region implement interface ISectionViewModel
 
@@ -156,11 +162,51 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void OnAccountChanged()
         {
+            if (CredentialsStore.Default.CurrentAccount != null)
+            {
+                if (!SetGitCredential())
+                {
+                    return;
+                }
+            }
             if (s_isConnected && s_currentAccount == CredentialsStore.Default.CurrentAccount?.AccountName)
             {
                 return;
             }
             Refresh();
+        }
+
+        private async Task<bool> InitializeGit()
+        {
+            if (s_gitInited)
+            {
+                return true;
+            }
+
+            if (!await CsrGitUtils.SetUseHttpPath())
+            {
+                // TODO: show error message
+                return false;
+            }
+
+            s_gitInited = SetGitCredential();
+            return s_gitInited;
+        }
+
+        private bool SetGitCredential()
+        {
+            if (CredentialsStore.Default.CurrentAccount != null)
+            {
+                if (!CsrGitUtils.StoreCredential(
+                    "https://source.developers.google.com",
+                    CredentialsStore.Default.CurrentAccount.RefreshToken,
+                    useHttpPath: false))
+                {
+                    // TODO: show error message
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

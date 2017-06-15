@@ -171,6 +171,11 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
+      <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
+	</Compile>
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
@@ -870,6 +875,10 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CloudSourceRepositories\CsrReposContent.xaml">
       <Generator>MSBuild:Compile</Generator>

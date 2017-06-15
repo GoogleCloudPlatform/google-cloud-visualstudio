@@ -120,6 +120,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
+            CloneCommand = new ProtectedCommand(Clone);
         }
 
         /// <summary>
@@ -289,6 +290,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 }
             }
             return localRepos;
+        }
+
+        private void Clone()
+        {
+            var repoItem = CsrCloneWindow.PromptUser();
+            if (repoItem != null)
+            {
+                (Repositories ?? new ObservableCollection<RepoItemViewModel>()).Add(repoItem);
+            }
         }
     }
 }
