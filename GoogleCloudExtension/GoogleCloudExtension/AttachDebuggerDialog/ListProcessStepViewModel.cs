@@ -14,6 +14,8 @@
 
 using EnvDTE;
 using EnvDTE80;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using Shell = Microsoft.VisualStudio.Shell;
 using System;
@@ -42,7 +44,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         private List<string> _engineTypes;
         private string _selectedEngine;
-        private bool _saveSelection = true;
+        private bool _saveSelection;
 
         /// <summary>
         /// The progress message to display.
@@ -182,6 +184,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = String.Format(
                 Resources.AttachDebuggerAttachingProcessMessageFormat,
                 SelectedProcess.Name);
+
+            var startTimestamp = DateTime.Now;
+
             try
             {
                 if (SelectedEngine == s_detectEngineTypeItemName)
@@ -193,14 +198,22 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     SelectedProcess.Process.Attach2(SelectedEngine);
                 }
             }
-            catch (COMException)
+            catch (COMException ex)
             {
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerAttachedEvent.Create(CommandStatus.Failure));
+
+                Debug.WriteLine($"Attach debugger got exception. {ex}");
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
                 ResetDefaultSelection();
                 return HelpStepViewModel.CreateStep(Context);
             }
+
+            EventsReporterWrapper.ReportEvent(RemoteDebuggerAttachedEvent.Create(
+                CommandStatus.Success, DateTime.Now - startTimestamp));
+
             Context.DialogWindow.Close();
             return null;
         }

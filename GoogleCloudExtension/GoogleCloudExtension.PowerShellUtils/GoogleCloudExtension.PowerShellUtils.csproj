@@ -59,12 +59,8 @@
   <ItemGroup>
     <None Include="Key.snk" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\InstallRemoteTool.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\StartRemoteTool.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\InstallRemoteTool.ps1" />
+    <EmbeddedResource Include="Resources\StartRemoteTool.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

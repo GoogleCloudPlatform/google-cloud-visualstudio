@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using StringResources = GoogleCloudExtension.Resources;
@@ -53,6 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
 
             var dialog = new AttachDebuggerWindow(gceInstance);
+            EventsReporterWrapper.ReportEvent(RemoteDebuggerWindowOpenEvent.Create());
             dialog.ShowModal();
         }
     }

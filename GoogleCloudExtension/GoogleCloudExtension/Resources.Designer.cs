@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -241,7 +241,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose or create an account.
+        ///   Looks up a localized string similar to Select an account.
         /// </summary>
         public static string AttachDebuggerAccountSelectionLabel {
             get {
@@ -259,7 +259,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No valid public IP addres. To enable remote debugging, add a public IP address to the VM..
+        ///   Looks up a localized string similar to No valid public IP address. To enable remote debugging, add a public IP address to the VM..
         /// </summary>
         public static string AttachDebuggerAddPublicIpAddressMessage {
             get {
@@ -268,7 +268,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firewall rule may take a few minutes to become effective, click OK to test again..
+        ///   Looks up a localized string similar to Firewall rules take effect within a few minutes. Click OK to test again..
         /// </summary>
         public static string AttachDebuggerAskToTestConnectivityLaterMessage {
             get {
@@ -331,7 +331,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to attach debugger to the remote machine. Read.
+        ///   Looks up a localized string similar to Create or manage accounts....
+        /// </summary>
+        public static string AttachDebuggerCreateManageAccountLinkCaption {
+            get {
+                return ResourceManager.GetString("AttachDebuggerCreateManageAccountLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to attach debugger to the selected machine..
         /// </summary>
         public static string AttachDebuggerHelpFirstPartMessage {
             get {
@@ -340,7 +349,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to set up the debugging tool properly..
+        ///   Looks up a localized string similar to setting up the debugger remote tools..
         /// </summary>
         public static string AttachDebuggerHelpLastPartMessage {
             get {
@@ -349,7 +358,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the documentation.
+        ///   Looks up a localized string similar to Learn more about.
         /// </summary>
         public static string AttachDebuggerHelpStepLinkCpation {
             get {
@@ -358,7 +367,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install debugger remote tools.
+        ///   Looks up a localized string similar to Installing, launching Remote Debugger.
         /// </summary>
         public static string AttachDebuggerInstallSetupProgressMessage {
             get {
@@ -376,7 +385,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as preference, do not show the dialog again.
+        ///   Looks up a localized string similar to Save this choice and don&apos;t show the dialog again.
         /// </summary>
         public static string AttachDebuggerListProcessSaveDefaultLabel {
             get {
@@ -385,7 +394,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See more help.
+        ///   Looks up a localized string similar to Learn more.
         /// </summary>
         public static string AttachDebuggerOpenPortHelpLinkCaption {
             get {
@@ -394,7 +403,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pick a process to attach to.
+        ///   Looks up a localized string similar to Select a process to attach to:.
         /// </summary>
         public static string AttachDebuggerPickingProcessMessage {
             get {
@@ -403,7 +412,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud GCE firewall rule blocks port {0}. Click OK to add GCE firewall rule that allows traffic to the port..
+        ///   Looks up a localized string similar to Google Compute Engine firewall rule blocks port {0} for {1}. Click OK to add a firewall rule that allows traffic to the port..
         /// </summary>
         public static string AttachDebuggerPortDisabledMessageFormat {
             get {
@@ -439,7 +448,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test connecting to {0}:{1}.
+        ///   Looks up a localized string similar to Remote PowerShell.
+        /// </summary>
+        public static string AttachDebuggerRemotePowerShellPortDescription {
+            get {
+                return ResourceManager.GetString("AttachDebuggerRemotePowerShellPortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote Debugger.
+        /// </summary>
+        public static string AttachDebuggerRemoteToolsPortDescription {
+            get {
+                return ResourceManager.GetString("AttachDebuggerRemoteToolsPortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test connecting to {0} at {1}:{2}.
         /// </summary>
         public static string AttachDebuggerTestConnectPortMessageFormat {
             get {
@@ -2050,7 +2077,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select account....
+        ///   Looks up a localized string similar to Select _account....
         /// </summary>
         public static string CloudExplorerSelectAccountMessage {
             get {
@@ -2221,83 +2248,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clone.
+        ///   Looks up a localized string similar to {0} ({1}:{2}).
         /// </summary>
-        public static string CsrCloneLinkButtonCaption {
+        public static string DataTemplateGcpProjectFormat {
             get {
-                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect....
-        /// </summary>
-        public static string CsrConnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Google Cloud Source Repositories.
-        /// </summary>
-        public static string CsrConnectSectionTitle {
-            get {
-                return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create.
-        /// </summary>
-        public static string CsrCreateLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
-        /// </summary>
-        public static string CsrDescription {
-            get {
-                return ResourceManager.GetString("CsrDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
-        /// </summary>
-        public static string CsrDisconnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Local Path.
-        /// </summary>
-        public static string CsrRepoLocalPathLabel {
-            get {
-                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Repo Name.
-        /// </summary>
-        public static string CsrRepoNameLabel {
-            get {
-                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View the repository on web.
-        /// </summary>
-        public static string CsrVisitUrlMenuHeader {
-            get {
-                return ResourceManager.GetString("CsrVisitUrlMenuHeader", resourceCulture);
+                return ResourceManager.GetString("DataTemplateGcpProjectFormat", resourceCulture);
             }
         }
         
@@ -2716,7 +2671,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach remote debugger after publishing.
+        ///   Looks up a localized string similar to Attach Debugger after publishing.
         /// </summary>
         public static string GcePublishAttachDebuggerCaption {
             get {
@@ -2883,6 +2838,33 @@ namespace GoogleCloudExtension {
         public static string GenerateConfigurationOverwritePromptTitle {
             get {
                 return ResourceManager.GetString("GenerateConfigurationOverwritePromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Git for Windows.
+        /// </summary>
+        public static string GitUtilsGitInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GitUtilsGitInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please follow the link to install Git for Windows.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorMessage {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Git for Windows is not found.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorTitle {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorTitle", resourceCulture);
             }
         }
         
@@ -3760,6 +3742,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string MoreInfoTitle {
+            get {
+                return ResourceManager.GetString("MoreInfoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
         /// </summary>
         public static string MySqlInstallerWindowBottomMessage {
@@ -3940,7 +3931,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Visual Studio remote debugger port.
+        ///   Looks up a localized string similar to Allow Visual Studio Remote Debugger traffic to the instance.
         /// </summary>
         public static string PortManagerRemoteDebuggerDescription {
             get {
@@ -3949,7 +3940,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow traffic to remote PowerShell HTTPs port.
+        ///   Looks up a localized string similar to Allow remote PowerShell HTTPs traffic to the instance.
         /// </summary>
         public static string PortManagerRemotePowershellDescription {
             get {
@@ -4840,6 +4831,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Skip.
+        /// </summary>
+        public static string UiSkipButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSkipButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -4989,6 +4989,168 @@ namespace GoogleCloudExtension {
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Canceled.
+        /// </summary>
+        public static string WizardPickProjectIdCanceledTask {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdCanceledTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input project ID or select an existing project:.
+        /// </summary>
+        public static string WizardPickProjectIdDescription {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
+        /// </summary>
+        public static string WizardPickProjectIdHelpText {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdHelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Projects....
+        /// </summary>
+        public static string WizardPickProjectIdLoadingProjects {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading Projects.
+        /// </summary>
+        public static string WizardPickProjectIdLoadProjectsErrorMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enter project ID:.
+        /// </summary>
+        public static string WizardPickProjectIdTextLabel {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTextLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the Google Cloud Platform project that will run this project..
+        /// </summary>
+        public static string WizardPickProjectIdTitle {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string CsrCloneLinkButtonCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Connect....
+        /// </summary>
+        public static string CsrConnectLinkButtonCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Source Repositories.
+        /// </summary>
+        public static string CsrConnectSectionTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string CsrCreateLinkButtonCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
+        /// </summary>
+        public static string CsrDescription
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect.
+        /// </summary>
+        public static string CsrDisconnectLinkButtonCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Local Path.
+        /// </summary>
+        public static string CsrRepoLocalPathLabel
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Repo Name.
+        /// </summary>
+        public static string CsrRepoNameLabel
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to View the repository on web.
+        /// </summary>
+        public static string CsrVisitUrlMenuHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("CsrVisitUrlMenuHeader", resourceCulture);
             }
         }
     }

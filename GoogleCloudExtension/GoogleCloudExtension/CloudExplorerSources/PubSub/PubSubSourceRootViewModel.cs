@@ -14,6 +14,8 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -32,6 +34,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// </summary>
     internal class PubsubSourceRootViewModel : SourceRootViewModelBase
     {
+        internal const string PubSubConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub?project={0}";
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerPubSubLoadingTopicsCaption,
@@ -60,9 +64,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             "repository-changes.default"
         };
 
-        private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
+        private Lazy<IPubsubDataSource> _dataSource;
+        // Mockable static methods for testing.
+        private readonly Func<IPubsubDataSource> _dataSourceFactory;
+        internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
+        internal Func<string, Process> StartProcess = Process.Start;
 
-        public PubsubDataSource DataSource => _dataSource.Value;
+        public IPubsubDataSource DataSource => _dataSource.Value;
 
         public override string RootCaption => Resources.CloudExplorerPubSubRootCaption;
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
@@ -71,6 +79,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
         private string BlackListPrefix => $"projects/{CurrentProjectId}/topics/";
+
+        /// <summary>
+        /// Creates the pub sub source root view model.
+        /// </summary>
+        public PubsubSourceRootViewModel() : this(CreateDataSource)
+        { }
+
+        /// <summary>
+        /// For testing.
+        /// </summary>
+        internal PubsubSourceRootViewModel(Func<IPubsubDataSource> dataSourceFactory)
+        {
+            _dataSourceFactory = dataSourceFactory;
+            _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
+        }
 
         public override void Initialize(ICloudSourceContext context)
         {
@@ -100,7 +123,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the Pubsub source.");
-            _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
+            _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
         }
 
         /// <summary>
@@ -122,9 +145,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     Children.Add(new OrphanedSubscriptionsViewModel(this, subscriptions));
                 }
+
+                EventsReporterWrapper.ReportEvent(PubSubTopicsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException e)
             {
+                EventsReporterWrapper.ReportEvent(PubSubTopicsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(e.Message, e);
             }
         }
@@ -174,31 +200,35 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Opens the google pub sub cloud console.
         /// </summary>
-        private void OnOpenCloudConsoleCommand()
+        internal void OnOpenCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/cloudpubsub?project={CurrentProjectId}";
-            Process.Start(url);
+            var url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
+            StartProcess(url);
         }
 
         /// <summary>
         /// Opens the new pub sub topic dialog.
         /// </summary>
-        private async void OnNewTopicCommand()
+        internal async void OnNewTopicCommand()
         {
             try
             {
-                string topicName = NewTopicWindow.PromptUser(CurrentProjectId);
+                string topicName = NewTopicUserPrompt(CurrentProjectId);
                 if (topicName != null)
                 {
                     await DataSource.NewTopicAsync(topicName);
                     Refresh();
+
+                    EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Success));
                 }
             }
             catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "New Topic");
                 UserPromptUtils.ErrorPrompt(
-                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
+                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader, e.Message);
+
+                EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
         }
     }

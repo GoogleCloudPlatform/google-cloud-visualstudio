@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// Data source that returns information about Pubsub resources.
     /// </summary>
-    public class PubsubDataSource : DataSourceBase<PubsubService>
+    public class PubsubDataSource : DataSourceBase<PubsubService>, IPubsubDataSource
     {
         /// <summary>s
         /// Initializes a new data source that connects to Google Cloud Pub/Sub.
@@ -39,27 +39,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         { }
 
         /// <summary>
+        /// For Testing.
+        /// </summary>
+        internal PubsubDataSource(PubsubService service, string projectId) : base(projectId, null, init => service, null) { }
+
+        /// <summary>
         /// Gets all of the topics of the current project.
         /// </summary>
         public async Task<IList<Topic>> GetTopicListAsync()
         {
-            try
-            {
-                ProjectsResource.TopicsResource.ListRequest request =
-                    Service.Projects.Topics.List(ProjectResourceName);
-                return await LoadPagedListAsync(
-                    token =>
-                    {
-                        request.PageToken = token;
-                        return request.ExecuteAsync();
-                    },
-                    response => response.Topics,
-                    response => response.NextPageToken);
-            }
-            catch (GoogleApiException e)
-            {
-                throw new DataSourceException(e.Message, e);
-            }
+            ProjectsResource.TopicsResource.ListRequest request =
+                Service.Projects.Topics.List(ProjectResourceName);
+            return await LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                response => response.Topics,
+                response => response.NextPageToken);
         }
 
         /// <summary>
@@ -67,23 +65,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         public async Task<IList<Subscription>> GetSubscriptionListAsync()
         {
-            try
-            {
-                ProjectsResource.SubscriptionsResource.ListRequest request =
-                    Service.Projects.Subscriptions.List(ProjectResourceName);
-                return await LoadPagedListAsync(
-                    token =>
-                    {
-                        request.PageToken = token;
-                        return request.ExecuteAsync();
-                    },
-                    response => response.Subscriptions,
-                    response => response.NextPageToken);
-            }
-            catch (GoogleApiException e)
-            {
-                throw new DataSourceException(e.Message, e);
-            }
+            ProjectsResource.SubscriptionsResource.ListRequest request =
+                Service.Projects.Subscriptions.List(ProjectResourceName);
+            return await LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                response => response.Subscriptions,
+                response => response.NextPageToken);
         }
 
         /// <summary>

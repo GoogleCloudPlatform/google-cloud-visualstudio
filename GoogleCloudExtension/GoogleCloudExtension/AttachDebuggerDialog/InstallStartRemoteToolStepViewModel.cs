@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.PowerShellUtils;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
@@ -29,8 +31,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     public class InstallStartRemoteToolStepViewModel : AttachDebuggerStepBase
     {
         private static readonly TimeSpan s_waitConnectionTimeout = TimeSpan.FromMinutes(3);
+
         private RemoteToolInstaller _installer;
-        private CancellationTokenSource _installerCancellationSource = new CancellationTokenSource();
         private string _progressMessage;
 
         /// <summary>
@@ -45,12 +47,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override IAttachDebuggerStep OnCancelCommand()
-        {
-            _installerCancellationSource.Cancel();
-            return null;
-        }
-
         // Okay button is not enabled at this step.
         // This method should never be called for this step.
         public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult<IAttachDebuggerStep>(null);
@@ -60,33 +56,80 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            if (await _installer.Install(_installerCancellationSource.Token))
-            {
-                IsCancelButtonEnabled = false;
 
-                var session = new RemoteToolSession(
-                    Context.PublicIp,
-                    Context.Credential.User,
-                    Context.Credential.Password,
-                    GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
-                    GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
+            bool installed = false;
+
+            var startTimestamp = DateTime.Now;
+
+            // The following try catch is for adding Analytics in failure case.
+            try
+            {
+                installed = await _installer.Install(CancelToken);
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsInstalledEvent.Create(CommandStatus.Failure));
+                throw;
+            }
+
+            if (installed)
+            {
+                EventsReporterWrapper.ReportEvent(RemoteDebuggerRemoteToolsInstalledEvent.Create(
+                    CommandStatus.Success, DateTime.Now - startTimestamp));
+            }
+            else if (!CancelToken.IsCancellationRequested)
+            {
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsInstalledEvent.Create(CommandStatus.Failure));
+            }
+
+            if (installed)
+            {
+                // Reset start time to measure performance of starting remote tools
+                startTimestamp = DateTime.Now;
+
+                RemoteToolSession session;
+
+                // The following try catch is for adding analytics where there is exception
+                try
+                {
+                    session = new RemoteToolSession(
+                        Context.PublicIp,
+                        Context.Credential.User,
+                        Context.Credential.Password,
+                        GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
+                        GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
+                }
+                catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+                {
+                    EventsReporterWrapper.ReportEvent(
+                        RemoteDebuggerRemoteToolsStartedEvent.Create(CommandStatus.Failure));
+                    throw;
+                }
 
                 ProgressMessage = String.Format(
                     Resources.AttachDebuggerTestConnectPortMessageFormat,
+                    Context.DebuggerPort.Description,
                     Context.PublicIp,
                     Context.DebuggerPort.PortInfo.Port);
 
                 Stopwatch watch = Stopwatch.StartNew();
-                while (!_installerCancellationSource.IsCancellationRequested &&
+                while (!CancelToken.IsCancellationRequested &&
                        watch.Elapsed < s_waitConnectionTimeout &&
                        !session.IsStopped)
                 {
-                    if (await Context.DebuggerPort.ConnectivityTest())
+                    if (await Context.DebuggerPort.ConnectivityTest(CancelToken))
                     {
+                        EventsReporterWrapper.ReportEvent(RemoteDebuggerRemoteToolsStartedEvent.Create(
+                            CommandStatus.Success, DateTime.Now - startTimestamp));
                         return ListProcessStepViewModel.CreateStep(Context);
                     }
                     await Task.Delay(500);
                 }
+
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsStartedEvent.Create(CommandStatus.Failure));
             }
 
             return HelpStepViewModel.CreateStep(Context);

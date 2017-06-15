@@ -25,8 +25,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class HelpStepViewModel : AttachDebuggerStepBase
     {
-        // TODO: update the link when we have the doc ready.
-        private const string HelpLink = "https://cloud.google.com/tools/visual-studio/docs/how-to";
+        private const string HelpLink = "https://cloud.google.com/tools/visual-studio/docs/remote-debugging";
 
         /// <summary>
         /// The command to open the attaching remote debugger feature help web page.
@@ -40,7 +39,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// This is the last step. OK button simply closes the window.
         /// </summary>
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(OnCancelCommand());
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
+        {
+            Context.DialogWindow.Close();
+            return Task.FromResult<IAttachDebuggerStep>(null);
+        }
 
         public override Task<IAttachDebuggerStep> OnStartAsync()
         {
