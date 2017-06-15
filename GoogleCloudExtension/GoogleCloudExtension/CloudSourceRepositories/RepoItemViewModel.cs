@@ -12,7 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
+using System.Diagnostics;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -51,5 +56,19 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// The command that opens repository url.
         /// </summary>
         public ProtectedCommand VisitUrlCommand { get; }
+
+        /// <summary>
+        /// Initializes a new instance of <seealso cref="RepoItemViewModel"/> class.
+        /// </summary>
+        /// <param name="cloudRepo">The <seealso cref="Repo"/> object retrieved from GCP CSR service.</param>
+        /// <param name="gitCommand">A <seealso cref="GitRepository"/> object that represents loca repository.</param>
+        public RepoItemViewModel(Repo cloudRepo, GitRepository gitCommand)
+        {
+            cloudRepo.ThrowIfNull(nameof(cloudRepo));
+            gitCommand.ThrowIfNull(nameof(gitCommand));
+            LocalPath = gitCommand.Root;
+            Name = cloudRepo.Name?.Split('/').LastOrDefault();
+            VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));
+        }
     }
 }

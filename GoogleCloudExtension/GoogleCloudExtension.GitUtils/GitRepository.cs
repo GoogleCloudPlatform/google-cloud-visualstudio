@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GitUtils
     /// <summary>
     /// A wrapper for executing git commands on a local git repository root.
     /// </summary>
-    public class GitRepository
+    public sealed class GitRepository
     {
         private const string GitExecutable = "git.exe";
 
@@ -72,7 +72,12 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the directory is under a local git repository folder.
         /// </summary>
         /// <param name="dir">The file directory.</param>
-        public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("log -1", dir))?.Count > 0;
+        public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("rev-parse", dir)) != null;
+
+        /// <summary>
+        /// Returns the tracking remote url.
+        /// </summary>
+        public async Task<string> GetRemoteUrl() => (await ExecCommandAsync("config --get remote.origin.url"))?.FirstOrDefault();
 
         /// <summary>
         /// Returns true if the git repository contains the git SHA revision.
@@ -94,17 +99,12 @@ namespace GoogleCloudExtension.GitUtils
         public Task<List<string>> GetRevisionFileAsync(string sha, string relativePath)
             => ExecCommandAsync($"show {sha}:{relativePath.Replace('\\', '/')}");
 
-        private Task<List<string>> ExecCommandAsync(string command) => RunGitCommandAsync(command, Root);
-
-        private GitRepository(string gitLocalRoot)
-        {
-            Root = gitLocalRoot;
-        }
+        public Task<List<string>> ExecCommandAsync(string command) => RunGitCommandAsync(command, Root);
 
         /// <summary>
         /// Run a git command and return the output or error output.
         /// </summary>
-        private static async Task<List<string>> RunGitCommandAsync(
+        public static async Task<List<string>> RunGitCommandAsync(
             string command,
             string gitLocalRoot)
         {
@@ -119,6 +119,11 @@ namespace GoogleCloudExtension.GitUtils
                 handler: (o, e) => output.Add(e.Line),
                 workingDir: gitLocalRoot);
             return commandResult ? output : null;
+        }
+
+        private GitRepository(string gitLocalRoot)
+        {
+            Root = gitLocalRoot;
         }
     }
 }

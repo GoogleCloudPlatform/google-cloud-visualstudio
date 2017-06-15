@@ -143,6 +143,23 @@ namespace GoogleCloudExtension.Utils
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
+        /// <summary>
+        /// Used by CSR feature. 
+        /// A trick to set localPath as current selected repository.
+        /// </summary>
+        public static void CreateEmptySolution(string localPath, string name)
+        {
+            localPath.ThrowIfNullOrEmpty(nameof(localPath));
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            try
+            {
+                dte.Solution.Create(localPath, name);
+                dte.Solution.Close(false);
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            { }
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();

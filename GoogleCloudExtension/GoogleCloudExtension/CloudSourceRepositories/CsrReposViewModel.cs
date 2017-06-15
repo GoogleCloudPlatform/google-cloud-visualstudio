@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -150,22 +156,106 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void SetCurrentRepo(string localPath)
         {
-            // TODO: Add in next PR.
+            string guid = Guid.NewGuid().ToString();
+            try
+            {
+                ShellUtils.CreateEmptySolution(localPath, guid);
+            }
+            finally
+            {
+                try
+                {
+                    // Clean up the dummy `.vs` directory.
+                    string tmpPath = Path.Combine(localPath, ".vs", guid);
+                    if (Directory.Exists(tmpPath))
+                    {
+                        Directory.Delete(tmpPath, recursive: true);
+                    }
+                }
+                catch (Exception ex) when (
+                    ex is IOException ||
+                    ex is UnauthorizedAccessException)
+                { }
+            }
         }
 
+
+        /// <summary>
+        /// Get a list of local repositories.  It is saved to local localRepos.
+        /// For each local repository, get the URL.
+        /// From the URL, get the project-id. 
+        /// Now, checkes if the list of repos under the project-id contains the URL.
+        /// If it does, add it to Repositories.
+        /// 
+        /// projectReposDictionay is used to cache the list of repos of the project-id.
+        /// </summary>
         private async Task ListRepositoryAsync()
         {
             if (Loading)
             {
                 return;
             }
+
             IsReady = false;
             Loading = true;
             Repositories = new ObservableCollection<RepoItemViewModel>();
+            Dictionary<string, IList<Repo>> projectRepos 
+                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                // Replace it with code that list repositories in next PR.
-                await Task.Delay(10);   
+                var projects = await CsrUtils.GetProjectsAsync();
+
+                if (!(projects?.Any() ?? false))
+                {
+                    return;
+                }
+
+                var localRepos = await GetLocalGitRepositories();
+                foreach (var localGitRepo in localRepos)
+                {
+                    string url = await localGitRepo.GetRemoteUrl();
+                    if (String.IsNullOrWhiteSpace(url))
+                    {
+                        Debug.WriteLine($"{localGitRepo.Root} does not get remote url");
+                        continue;
+                    }
+                    string projectId = CsrUtils.ParseProjectId(url);
+                    IList<Repo> cloudRepos = null;
+                    Project project = null;
+                    if (String.IsNullOrWhiteSpace(projectId))
+                    {
+                        continue;
+                    }
+                    Debug.WriteLine($"Check project id {projectId}");
+                    if (!projectRepos.TryGetValue(projectId, out cloudRepos))
+                    {
+                        project = projects.FirstOrDefault(
+                            x => String.Compare(x.ProjectId, projectId, StringComparison.OrdinalIgnoreCase) == 0);
+                        if (project == null)
+                        {
+                            Debug.WriteLine($"{projectId} is invalid or unknown project id");
+                            continue;
+                        }
+                        cloudRepos = await CsrUtils.GetCloudReposAsync(project);
+                        projectRepos.Add(projectId, cloudRepos);
+                    }
+
+                    if (!(cloudRepos?.Any() ?? false))
+                    {
+                        Debug.WriteLine($"{projectId} has no repos found");
+                        continue;
+                    }
+
+                    var cloud = cloudRepos.FirstOrDefault(
+                        x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
+                    if (cloud == null)
+                    {
+                        Debug.WriteLine($"{projectId} repos does not contain {url}");
+                        continue;
+                    }
+                    Repositories.Add(new RepoItemViewModel(cloud, localGitRepo));
+                }
+
                 SetActiveRepo(_teamExplorer.GetActiveRepository());
             }
             finally
@@ -173,6 +263,32 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Loading = false;
                 IsReady = true;
             }
+        }
+
+        /// <summary>
+        /// The list of local git repositories that Visual Studio remembers.
+        /// </summary>
+        private async Task<List<GitRepository>> GetLocalGitRepositories()
+        {
+            List<GitRepository> localRepos = new List<GitRepository>();
+            var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            if (repos != null)
+            {
+                // Not using Linq because it's tricky to use await inside Linq.
+                foreach (var path in repos)
+                {
+                    if (String.IsNullOrWhiteSpace(path))
+                    {
+                        continue;
+                    }
+                    var git = await GitRepository.GetGitCommandWrapperForPathAsync(path);
+                    if (git != null)
+                    {
+                        localRepos.Add(git);
+                    }
+                }
+            }
+            return localRepos;
         }
     }
 }
