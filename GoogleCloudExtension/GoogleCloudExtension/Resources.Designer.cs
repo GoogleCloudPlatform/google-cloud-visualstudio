@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -331,7 +331,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create or manage accounts....
+        ///   Looks up a localized string similar to Or create a new account.
         /// </summary>
         public static string AttachDebuggerCreateManageAccountLinkCaption {
             get {
@@ -367,7 +367,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing, launching Remote Debugger.
+        ///   Looks up a localized string similar to Launching Remote Debugger.
         /// </summary>
         public static string AttachDebuggerInstallSetupProgressMessage {
             get {
@@ -1060,7 +1060,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach Debugger.
+        ///   Looks up a localized string similar to Attach debugger.
         /// </summary>
         public static string CloudExplorerGceAttachDebuggerMenuHeader {
             get {
@@ -2671,7 +2671,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach Debugger after publishing.
+        ///   Looks up a localized string similar to Attach debugger after publishing.
         /// </summary>
         public static string GcePublishAttachDebuggerCaption {
             get {
@@ -3931,7 +3931,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Visual Studio Remote Debugger traffic to the instance.
+        ///   Looks up a localized string similar to Allow Visual Studio Debugger connections to the instance.
         /// </summary>
         public static string PortManagerRemoteDebuggerDescription {
             get {
@@ -3940,7 +3940,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow remote PowerShell HTTPs traffic to the instance.
+        ///   Looks up a localized string similar to Allow Remote PowerShell HTTPS traffic to the instance.
         /// </summary>
         public static string PortManagerRemotePowershellDescription {
             get {

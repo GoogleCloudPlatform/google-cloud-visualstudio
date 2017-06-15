@@ -2204,7 +2204,7 @@
     <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
   <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
-    <value>Attach Debugger</value>
+    <value>Attach debugger</value>
     <comment>Header for the attach remote debugger menu item.</comment>
   </data>
   <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
@@ -2252,7 +2252,7 @@
     <comment>Message for choosing or creating a user as remote debugger credential.</comment>
   </data>
   <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
-    <value>Installing, launching Remote Debugger</value>
+    <value>Launching Remote Debugger</value>
     <comment>The message indicates it is installing or launching debugger remote tools.</comment>
   </data>
   <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
@@ -2316,7 +2316,7 @@
     <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
   </data>
   <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
-    <value>Attach Debugger after publishing</value>
+    <value>Attach debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
   </data>
   <data name="AttachDebuggerRemotePowerShellPortDescription" xml:space="preserve">
@@ -2328,7 +2328,7 @@
     <comment>The Visual Studio Remote debugging tools description</comment>
   </data>
   <data name="AttachDebuggerCreateManageAccountLinkCaption" xml:space="preserve">
-    <value>Create or manage accounts...</value>
+    <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
   </data>
 </root>
