@@ -19,6 +19,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Common visiblity converter, use this common instance in all data templates, instead of creating a new one. -->
@@ -75,19 +76,6 @@
                     <TextBlock Focusable="False" Text="{Binding Caption}" />
                 </Hyperlink>
             </TextBlock>
-            </DataTemplate>
-
-            <!-- Data template for the GCP project. -->
-            <DataTemplate DataType="{x:Type crm:Project}">
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} ({1}:{2})">
-                            <Binding Path="Name" />
-                            <Binding Path="ProjectId" />
-                            <Binding Path="ProjectNumber" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
             </DataTemplate>
 
             <!-- Data template for a placeholder message. -->

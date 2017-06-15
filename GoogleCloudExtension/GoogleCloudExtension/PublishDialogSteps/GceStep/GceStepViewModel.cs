@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
@@ -43,12 +44,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
+        private bool _launchRemoteDebugger;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
         /// the available target for the publish process.
         /// </summary>
-        public AsyncPropertyValue<IEnumerable<Instance>> Instances { get; }
+        public AsyncProperty<IEnumerable<Instance>> Instances { get; }
 
         /// <summary>
         /// The selected GCE VM that will be the target of the publish process.
@@ -106,11 +108,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        /// <summary>
+        /// Whether to attach debugger after publising.
+        /// </summary>
+        public bool LaunchRemoteDebugger
+        {
+            get { return _launchRemoteDebugger; }
+            set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
+        }
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
 
-            Instances = AsyncPropertyValueUtils.CreateAsyncProperty(GetAllWindowsInstances());
+            Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstances());
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -180,6 +191,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     }
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+
+                    if (LaunchRemoteDebugger)
+                    {
+                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(SelectedInstance);
+                    }
                 }
                 else
                 {

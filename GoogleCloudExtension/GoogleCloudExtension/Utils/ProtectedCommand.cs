@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
@@ -24,7 +25,7 @@ namespace GoogleCloudExtension.Utils
     public class ProtectedCommand : ICommand
     {
         private bool _canExecuteCommand;
-        private readonly ProtectedAction _action;
+        private readonly IProtectedAction _action;
 
         /// <summary>
         /// Initializes a new instance of ProtectedCommand.
@@ -34,6 +35,18 @@ namespace GoogleCloudExtension.Utils
         public ProtectedCommand(Action handler, bool canExecuteCommand = true)
         {
             _action = new ProtectedAction(handler);
+            CanExecuteCommand = canExecuteCommand;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of ProtectedCommand.
+        /// Swap the parameter order so that this constructor does not have conflict to the one above. 
+        /// </summary>
+        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
+        /// <param name="taskHandler">The async task to execute when the command is executed.</param>
+        public ProtectedCommand(bool canExecuteCommand = true, Func<Task> taskHandler = null)
+        {
+            _action = new ProtectedAsyncTask(taskHandler);
             this.CanExecuteCommand = canExecuteCommand;
         }
 
@@ -84,7 +97,7 @@ namespace GoogleCloudExtension.Utils
         public ProtectedCommand(Action<T> handler, bool canExecuteCommand = true)
         {
             _action = new ProtectedAction<T>(handler);
-            this.CanExecuteCommand = canExecuteCommand;
+            CanExecuteCommand = canExecuteCommand;
         }
 
         #region ICommand implementation.

@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// The PubsubDataSource to connect to.
         /// </summary>
-        public PubsubDataSource DataSource => Owner.DataSource;
+        public IPubsubDataSource DataSource => Owner.DataSource;
 
         /// <summary>
         /// Returns the context in which this view model is working.
