@@ -138,8 +138,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (SelectedRepository?.IsActiveRepo == false)
             {
                 SetCurrentRepo(SelectedRepository.LocalPath);
-                _teamExplorer.ShowHomeSection();
                 ActiveRepo = SelectedRepository;
+                _teamExplorer.ShowHomeSection();
             }
         }
 
