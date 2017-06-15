@@ -138,6 +138,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (SelectedRepository?.IsActiveRepo == false)
             {
                 SetCurrentRepo(SelectedRepository.LocalPath);
+
+                // Note, the order is critical.
+                // When switching to HomeSection, current "this" object is destroyed.
                 ActiveRepo = SelectedRepository;
                 _teamExplorer.ShowHomeSection();
             }
