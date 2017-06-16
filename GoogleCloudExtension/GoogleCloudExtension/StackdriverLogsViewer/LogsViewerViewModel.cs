@@ -575,7 +575,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.LogViewerResultSetTooLargeMessage,
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 _cancellationTokenSource?.Cancel();
                 return;
             }
