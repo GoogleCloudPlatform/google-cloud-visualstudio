@@ -2380,8 +2380,8 @@
     <comment>Error message when it fails to set git credential</comment>
   </data>
   <data name="CsrCloneLocalPathLabel" xml:space="preserve">
-    <value>Clone to</value>
-    <comment>Clone repository to a local path</comment>
+    <value>_Clone to:</value>
+    <comment>Label to the input local path text box</comment>
   </data>
   <data name="CsrCloneNoProject" xml:space="preserve">
     <value>There is no project</value>
@@ -2392,11 +2392,23 @@
     <comment>Folder browse button caption</comment>
   </data>
   <data name="CsrProjectSelectionLabel" xml:space="preserve">
-    <value>Project</value>
+    <value>_Project:</value>
     <comment>Project selection label</comment>
   </data>
   <data name="CsrRepositorySelectionLabel" xml:space="preserve">
-    <value>Repository</value>
+    <value>_Repository:</value>
     <comment>Repository selection label</comment>
+  </data>
+  <data name="CsrCloneLocalPathFieldName" xml:space="preserve">
+    <value>Local path</value>
+    <comment>The field name of the input local path text box</comment>
+  </data>
+  <data name="CsrClonePathExistNotEmptyMessageFormat" xml:space="preserve">
+    <value>The destination path {0} is not empty</value>
+    <comment>Error message when destination path is not empty. {0} is the destination path where repository is copied to.</comment>
+  </data>
+  <data name="CsrClonePathNotExistMessage" xml:space="preserve">
+    <value>The path does not exist</value>
+    <comment>Error message when the local path does not exists</comment>
   </data>
 </root>

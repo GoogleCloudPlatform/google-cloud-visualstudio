@@ -2275,7 +2275,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clone to.
+        ///   Looks up a localized string similar to Local path.
+        /// </summary>
+        public static string CsrCloneLocalPathFieldName {
+            get {
+                return ResourceManager.GetString("CsrCloneLocalPathFieldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clone to:.
         /// </summary>
         public static string CsrCloneLocalPathLabel {
             get {
@@ -2298,6 +2307,24 @@ namespace GoogleCloudExtension {
         public static string CsrClonePathBrowseButtonCaption {
             get {
                 return ResourceManager.GetString("CsrClonePathBrowseButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The destination path {0} is not empty.
+        /// </summary>
+        public static string CsrClonePathExistNotEmptyMessageFormat {
+            get {
+                return ResourceManager.GetString("CsrClonePathExistNotEmptyMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path does not exist.
+        /// </summary>
+        public static string CsrClonePathNotExistMessage {
+            get {
+                return ResourceManager.GetString("CsrClonePathNotExistMessage", resourceCulture);
             }
         }
         
@@ -2356,7 +2383,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project.
+        ///   Looks up a localized string similar to _Project:.
         /// </summary>
         public static string CsrProjectSelectionLabel {
             get {
@@ -2383,7 +2410,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repository.
+        ///   Looks up a localized string similar to _Repository:.
         /// </summary>
         public static string CsrRepositorySelectionLabel {
             get {

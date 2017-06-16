@@ -31,11 +31,11 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       Command="{Binding OkCommand}"
-                                      IsDefault="True"/>
+                                      IsDefault="True" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
-        
-        
+
+
         <StackPanel IsEnabled="{Binding IsReady}">
 
             <Label 
@@ -47,7 +47,8 @@
                 x:Name="ProjectsComboBox"
                 ItemsSource="{Binding Projects}"
                 SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
-                DisplayMemberPath="Name"                    
+                DisplayMemberPath="Name"        
+                IsSynchronizedWithCurrentItem="True"
                 IsTextSearchEnabled="True" />
 
             <Label 
@@ -60,6 +61,7 @@
                 x:Name="RepositoryComboBox"
                 ItemsSource="{Binding Repositories}"
                 SelectedItem="{Binding SelectedRepository, Mode=TwoWay}"
+                IsSynchronizedWithCurrentItem="True"
                 DisplayMemberPath="Name" 
                 IsTextSearchEnabled="True" />
 
@@ -71,21 +73,25 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="17*"/>
+                    <ColumnDefinition Width="48*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+
                 <TextBox 
                     x:Name="LocalPathTextBox"
-                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    Margin="0,0,6,0"/>
+                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextBoxStyle}"
+                    Margin="0,0,6,0" Grid.ColumnSpan="2"/>
+
                 <Button 
-                    Grid.Column="1"
-                    DockPanel.Dock="Right"
+                    Grid.Column="2"
                     Content="{x:Static ext:Resources.CsrClonePathBrowseButtonCaption}"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Command="{Binding PickFolderCommand}"
-                    Style="{StaticResource CommonButtonDynamicStyle}"/>
+                    Style="{StaticResource CommonButtonDynamicStyle}" Height="26" Margin="0,2"/>
+
             </Grid>
 
             <ctrl:DotsProgressIndicator 
@@ -96,5 +102,5 @@
 
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>
-    
+
 </UserControl>

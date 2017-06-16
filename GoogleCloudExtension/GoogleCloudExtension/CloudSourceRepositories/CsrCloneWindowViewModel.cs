@@ -17,20 +17,22 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// View model for user control PickFileWindowContent.xaml.
+    /// View model for user control CsrCloneWindowContent.xaml.
     /// </summary>
-    public class CsrCloneWindowViewModel : ViewModelBase
+    public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         private CsrCloneWindow _owner;
 
@@ -62,14 +64,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 SetValueAndRaise(ref _selectedProject, value);
                 if (_selectedProject != null && _isReady && oldValue != _selectedProject)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(
-                        () => ExecuteAsync(ListRepoAsync));
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(ListRepoAsync));
                 }
             }
         }
 
         /// <summary>
-        /// The list of repositories belong to the project
+        /// The list of repositories that belong to the project
         /// </summary>
         public IList<Repo> Repositories
         {
@@ -83,7 +84,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public Repo SelectedRepository
         {
             get { return _selectedRepo; }
-            set { SetValueAndRaise(ref _selectedRepo, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedRepo, value);
+                ValidateInputs();
+            }
         }
 
         /// <summary>
@@ -92,7 +97,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public string LocalPath
         {
             get { return _localPath; }
-            set { SetValueAndRaise(ref _localPath, value); }
+            set
+            {
+                SetValueAndRaise(ref _localPath, value);
+                ValidateInputs();
+            }
         }
 
         /// <summary>
@@ -112,7 +121,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Responds to OK button click event
         /// </summary>
-        public ICommand OkCommand { get; }
+        public ProtectedCommand OkCommand { get; }
 
         /// <summary>
         /// Final cloned repository
@@ -123,25 +132,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             _owner = owner.ThrowIfNull(nameof(owner));
             PickFolderCommand = new ProtectedCommand(PickFoloder);
-            OkCommand = new ProtectedCommand(taskHandler: () => ExecuteAsync(Clone));
-            ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(Init));
+            OkCommand = new ProtectedCommand(taskHandler: () => ExecuteAsync(CloneAsync), canExecuteCommand: false);
+            ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(InitializeAsync));
         }
 
-        private async Task Clone()
+        private async Task CloneAsync()
         {
-            if (SelectedRepository == null || String.IsNullOrWhiteSpace(LocalPath) 
-                || !Directory.Exists(LocalPath))
-            {
-                // TODO: show input validation error
-                return;
-            }
-
+            // If OkCommand is enabled, SelectedRepository and LocalPath is valid
             string destPath = Path.Combine(LocalPath, CsrUtils.GetRepoName(SelectedRepository));
-            if (Directory.Exists(destPath))
-            {
-                // TODO: show input validation error
-                return;
-            }
 
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
@@ -208,11 +206,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             SelectedRepository = Repositories?.FirstOrDefault();
         }
 
-        private async Task Init()
+        private async Task InitializeAsync()
         {
             Debug.WriteLine("Init");
 
-            Projects = await CsrUtils.GetProjectsAsync();
+            Projects = (await CsrUtils.GetProjectsAsync())?.OrderBy(x => x.Name);
             if (Projects?.Any() ?? false)
             {
                 SelectedProject = Projects.FirstOrDefault();
@@ -224,6 +222,39 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     message: Resources.CsrCloneNoProject,
                     title: Resources.uiDefaultPromptTitle);
                 _owner.Close();
+            }
+        }
+
+        private void ValidateInputs()
+        {
+            SetValidationResults(
+                ValidateLocalPath(LocalPath, Resources.CsrCloneLocalPathFieldName), 
+                nameof(LocalPath));
+            OkCommand.CanExecuteCommand = SelectedRepository != null && !HasErrors;
+        }
+
+        private IEnumerable<ValidationResult> ValidateLocalPath(string path, string fieldName)
+        {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValdiationNotEmptyMessage), fieldName);
+                yield break;
+            }
+            if (!Directory.Exists(path))
+            {
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
+                yield break;
+            }
+            if (SelectedRepository != null)
+            {
+                string destPath = Path.Combine(LocalPath, CsrUtils.GetRepoName(SelectedRepository));
+                if (Directory.Exists(destPath) && !PathUtils.IsPathEmpth(destPath))
+                {
+                    yield return StringValidationResult.FromResource(
+                        nameof(Resources.CsrClonePathExistNotEmptyMessageFormat), destPath);
+                    yield break;
+                }
             }
         }
     }

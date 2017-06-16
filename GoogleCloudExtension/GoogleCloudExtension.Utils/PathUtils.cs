@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -49,5 +50,7 @@ namespace GoogleCloudExtension.Utils
 
             return null;
         }
+
+        public static bool IsPathEmpth(string filePath) => !Directory.EnumerateFileSystemEntries(filePath).Any();
     }
 }
