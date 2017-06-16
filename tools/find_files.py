@@ -21,15 +21,29 @@ parser.add_argument('-d', '--directory',
 parser.add_argument('-e', '--extension',
                     help='The extension to filter by.',
                     required=True)
+parser.add_argument('-x', '--exclude',
+                    help='Paths to exclude.',
+                    nargs='+',
+                    dest='excluded_paths',
+                    required=False)
+
+
+def is_excluded(name):
+    if params.excluded_paths:
+        for path in params.excluded_paths:
+            if path in name:
+                return True
+    return False
 
 
 def print_all_files(dir):
     for root, _, filenames in os.walk(dir):
-        for name in filenames:
-            filename, ext = os.path.splitext(name)
-            if ext == params.extension:
-                sys.stdout.write(os.path.join(root, name).replace("\\", "/"))
-                sys.stdout.write("\n")
+        if not is_excluded(root):
+            for name in filenames:
+                filename, ext = os.path.splitext(name)
+                if ext == params.extension:
+                    sys.stdout.write(os.path.join(root, name).replace("\\", "/"))
+                    sys.stdout.write("\n")
 
 
 def main():
