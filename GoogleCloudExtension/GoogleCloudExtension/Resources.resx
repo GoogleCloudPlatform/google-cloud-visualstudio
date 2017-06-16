@@ -2331,4 +2331,16 @@
     <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
   </data>
+  <data name="WizardPickProjectIdNoAccountMessageAction" xml:space="preserve">
+    <value>select an account</value>
+    <comment>The clickable part of the message shown when there is no current user on the template wizard pick project window.</comment>
+  </data>
+  <data name="WizardPickProjectIdNoAccountMessageLeft" xml:space="preserve">
+    <value>To get a list of projects,</value>
+    <comment>The left part of the message shown when there is no current user on the template wizard pick project window.</comment>
+  </data>
+  <data name="WizardPickProjectIdNoAccountMessageRight" xml:space="preserve">
+    <value>.</value>
+    <comment>The right part of the message shown when there is no current user on the template wizard pick project window.</comment>
+  </data>
 </root>

@@ -5038,6 +5038,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select an account.
+        /// </summary>
+        public static string WizardPickProjectIdNoAccountMessageAction {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessageAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To get a list of projects,.
+        /// </summary>
+        public static string WizardPickProjectIdNoAccountMessageLeft {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessageLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string WizardPickProjectIdNoAccountMessageRight {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessageRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Enter project ID:.
         /// </summary>
         public static string WizardPickProjectIdTextLabel {
