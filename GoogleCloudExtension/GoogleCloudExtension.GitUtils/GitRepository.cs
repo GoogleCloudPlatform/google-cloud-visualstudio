@@ -75,9 +75,30 @@ namespace GoogleCloudExtension.GitUtils
         public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("rev-parse", dir)) != null;
 
         /// <summary>
-        /// Returns the tracking remote url.
+        /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
         /// </summary>
-        public async Task<string> GetRemoteUrl() => (await ExecCommandAsync("config --get remote.origin.url"))?.FirstOrDefault();
+        public async Task<List<string>> GetRemotes() => await ExecCommandAsync("remote");
+
+        /// <summary>
+        /// Returns a list of remote urls.
+        /// </summary>
+        public async Task<List<string>> GetRemotesUrls()
+        {
+            List<string> results = new List<string>();
+            var remotes = await GetRemotes();
+            if (remotes != null)
+            {
+                foreach (var origin in remotes)
+                {
+                    var urls = await ExecCommandAsync($"config --get remote.{origin}.url");
+                    if (urls != null)
+                    {
+                        results.AddRange(urls);
+                    }
+                }
+            }
+            return results;
+        }
 
         /// <summary>
         /// Returns true if the git repository contains the git SHA revision.

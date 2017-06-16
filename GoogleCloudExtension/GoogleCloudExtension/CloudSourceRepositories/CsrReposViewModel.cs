@@ -14,6 +14,8 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
@@ -39,9 +41,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
         private static ObservableCollection<RepoItemViewModel> s_repoList;
+        private static RepoItemViewModel _activeRepo;
 
         private readonly ITeamExplorerUtils _teamExplorer;
-        private RepoItemViewModel _activeRepo;
         private bool _isReady = true;
         private RepoItemViewModel _selectedRepo;
 
@@ -165,7 +167,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         /// <summary>
         /// Get a list of local repositories.  It is saved to local variable localRepos.
-        /// For each local repository, get the URL.
+        /// For each local repository, get remote urls list.
         /// From the URL, get the project-id. 
         /// Now, check if the list of 'cloud repositories' under the project-id contains the URL.
         /// If it does, the local repository with the URL will be shown to user.
@@ -186,7 +188,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                var projects = await CsrUtils.GetProjectsAsync();
+                var projects = await DataSourceFactories.CreateResourceManagerDataSource()?.GetSortedActiveProjectsAsync();
                 if (!(projects?.Any() ?? false))
                 {
                     return;
@@ -195,47 +197,51 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var localRepos = await GetLocalGitRepositories();
                 foreach (var localGitRepo in localRepos)
                 {
-                    string url = await localGitRepo.GetRemoteUrl();
-                    if (String.IsNullOrWhiteSpace(url))
+                    List<string> remoteUrls = await localGitRepo.GetRemotesUrls();
+                    if (!(remoteUrls?.Any() ?? false))
                     {
                         Debug.WriteLine($"{localGitRepo.Root} does not get remote url");
                         continue;
                     }
-                    IList<Repo> cloudRepos = null;
-                    Project project = null;
-                    string projectId = CsrUtils.ParseProjectId(url);
-                    if (String.IsNullOrWhiteSpace(projectId))
+                    foreach (var url in remoteUrls)
                     {
-                        continue;
-                    }
-                    Debug.WriteLine($"Check project id {projectId}");
-                    if (!projectRepos.TryGetValue(projectId, out cloudRepos))
-                    {
-                        project = projects.FirstOrDefault(
-                            x => String.Compare(x.ProjectId, projectId, StringComparison.OrdinalIgnoreCase) == 0);
-                        if (project == null)
+                        IList<Repo> cloudRepos = null;
+                        Project project = null;
+                        string projectId = CsrUtils.ParseProjectId(url);
+                        if (String.IsNullOrWhiteSpace(projectId))
                         {
-                            Debug.WriteLine($"{projectId} is invalid or unknown project id");
                             continue;
                         }
-                        cloudRepos = await CsrUtils.GetCloudReposAsync(project);
-                        projectRepos.Add(projectId, cloudRepos);
-                    }
+                        Debug.WriteLine($"Check project id {projectId}");
+                        if (!projectRepos.TryGetValue(projectId, out cloudRepos))
+                        {
+                            project = projects.FirstOrDefault(
+                                x => String.Compare(x.ProjectId, projectId, StringComparison.OrdinalIgnoreCase) == 0);
+                            if (project == null)
+                            {
+                                Debug.WriteLine($"{projectId} is invalid or unknown project id");
+                                continue;
+                            }
+                            cloudRepos = await CsrUtils.GetCloudReposAsync(project);
+                            projectRepos.Add(projectId, cloudRepos);
+                        }
 
-                    if (!(cloudRepos?.Any() ?? false))
-                    {
-                        Debug.WriteLine($"{projectId} has no repos found");
-                        continue;
-                    }
+                        if (!(cloudRepos?.Any() ?? false))
+                        {
+                            Debug.WriteLine($"{projectId} has no repos found");
+                            continue;
+                        }
 
-                    var cloud = cloudRepos.FirstOrDefault(
-                        x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
-                    if (cloud == null)
-                    {
-                        Debug.WriteLine($"{projectId} repos does not contain {url}");
-                        continue;
+                        var cloud = cloudRepos.FirstOrDefault(
+                            x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
+                        if (cloud == null)
+                        {
+                            Debug.WriteLine($"{projectId} repos does not contain {url}");
+                            continue;
+                        }
+                        Repositories.Add(new RepoItemViewModel(cloud, localGitRepo));
+                        break;
                     }
-                    Repositories.Add(new RepoItemViewModel(cloud, localGitRepo));
                 }
 
                 SetActiveRepo(_teamExplorer.GetActiveRepository());
