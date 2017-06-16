@@ -181,9 +181,6 @@ namespace GoogleCloudExtension
             {
                 base.OnLoadOptions(key, stream);
             }
-
-            var value = userSettings.Read(key);
-            WriteOptionStream(stream, value ?? NoneValue);
         }
 
         protected override void OnSaveOptions(string key, Stream stream)
