@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Download;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
+using Google.Apis.Upload;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -61,6 +66,324 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Items,
                 x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Lists all of the objects that exist under the given <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the objects.</param>
+        /// <param name="prefix">The prefix to start looking, can be null if no prefix is to be used.</param>
+        /// <returns>A list of all of the objects found, can be empty.</returns>
+        public async Task<IEnumerable<Google.Apis.Storage.v1.Data.Object>> GetObjectLisAsync(string bucket, string prefix)
+        {
+            var request = Service.Objects.List(bucket);
+            request.Prefix = prefix;
+
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.Items,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Lists all of the objects "directly" under the given <paramref name="prefix"/> together with all of the
+        /// sub-prefixes directly under the same <paramref name="prefix."/>. This method acts as if listing a directory
+        /// in the file system.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="prefix">The prefix to look for, can be null or empty.</param>
+        /// <returns>The "directory" defined by <paramref name="prefix"/>.</returns>
+        public async Task<GcsDirectory> GetDirectoryListAsync(string bucket, string prefix)
+        {
+            var request = Service.Objects.List(bucket);
+            request.Prefix = prefix;
+            request.Delimiter = "/";
+
+            try
+            {
+                string pageToken = null;
+                List<string> prefixes = new List<string>();
+                List<Google.Apis.Storage.v1.Data.Object> items = new List<Google.Apis.Storage.v1.Data.Object>();
+                do
+                {
+                    request.PageToken = pageToken;
+                    var response = await request.ExecuteAsync();
+
+                    if (response.Prefixes != null)
+                    {
+                        prefixes.AddRange(response.Prefixes);
+                    }
+
+                    if (response.Items != null)
+                    {
+                        items.AddRange(response.Items);
+                    }
+
+                    pageToken = response.NextPageToken;
+                } while (!String.IsNullOrEmpty(pageToken));
+
+                return new GcsDirectory(items, prefixes);
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to read GCS directory {prefix} in bucket {bucket}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Uploads the given <paramref name="stream"/> to the <paramref name="bucket"/> with the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that will own the file.</param>
+        /// <param name="name">The name to use.</param>
+        /// <param name="stream">The stream with the contents.</param>
+        /// <param name="contentType">The content type to use, optional.</param>
+        public async Task UploadStreamAsync(string bucket, string name, Stream stream, string contentType = null)
+        {
+            try
+            {
+                var request = Service.Objects.Insert(
+                    new Google.Apis.Storage.v1.Data.Object
+                    {
+                        Name = name,
+                        Size = (ulong)stream.Length,
+                        ContentType = contentType,
+                    },
+                    bucket,
+                    stream,
+                    null);
+                await request.UploadAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Renames a file in a given <paramref name="bucket"/>. Renaming consists of copying the file
+        /// to the destination and then deleting the source, in this order. This will prevent loss of data.
+        /// </summary>
+        /// <param name="bucket">The bucket where the files reside.</param>
+        /// <param name="sourceName">The source file to rename.</param>
+        /// <param name="destName">The name to rename to.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the rename operation is finished.</returns>
+        public async Task MoveFileAsync(string bucket, string sourceName, string destName)
+        {
+            try
+            {
+                await CopyFileAsync(bucket, sourceName, destName);
+                await DeleteFileAsync(bucket, sourceName);
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Copies a file within a bucket.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="sourceName">The source file name to copy.</param>
+        /// <param name="destName">The new file name.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the copy operation is completed.</returns>
+        public async Task CopyFileAsync(string bucket, string sourceName, string destName)
+        {
+            try
+            {
+                var request = Service.Objects.Copy(null, bucket, sourceName, bucket, destName);
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a file in a bucket.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="name">The name of the file.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the delete operation is completed.</returns>
+        public async Task DeleteFileAsync(string bucket, string name)
+        {
+            try
+            {
+                var request = Service.Objects.Delete(bucket, name);
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Starts a file upload operation reporting the status and progress to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="sourcePath">The path to the file to open, should be a full path.</param>
+        /// <param name="bucket">The bucket that will own the file.</param>
+        /// <param name="name">The name to use.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
+        public async void StartFileUploadOperation(
+            string sourcePath,
+            string bucket,
+            string name,
+            IGcsFileOperationCallback operation,
+            CancellationToken token)
+        {
+            try
+            {
+                using (var stream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
+                {
+                    var totalSize = (ulong)stream.Length;
+                    var request = Service.Objects.Insert(
+                        new Google.Apis.Storage.v1.Data.Object
+                        {
+                            Name = name,
+                            Size = totalSize,
+                        },
+                        bucket,
+                        stream,
+                        null);
+                    request.ProgressChanged += (p) => OnUploadProgress(p, totalSize, operation);
+                    var response = await request.UploadAsync(token);
+                    operation.Completed();
+                }
+            }
+            catch (IOException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (OperationCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+
+        /// <summary>
+        /// Starts a file download operation, reporting the status and progress to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the file.</param>
+        /// <param name="name">The file name.</param>
+        /// <param name="destPath">Where to save the file, this should be a full path.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
+        public async void StartFileDownloadOperation(
+            string bucket,
+            string name,
+            string destPath,
+            IGcsFileOperationCallback operation,
+            CancellationToken token)
+        {
+            try
+            {
+                using (var stream = new FileStream(destPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    // Find out the total size of the file to download.
+                    var request = Service.Objects.Get(bucket, name);
+                    var obj = await request.ExecuteAsync(token);
+                    ulong totalSize = obj.Size ?? 0;
+
+                    // Hookup the progress indicator.
+                    request.MediaDownloader.ProgressChanged += (p) => OnDownloadProgress(p, totalSize, operation);
+                    var response = await request.DownloadAsync(stream, token);
+                    operation.Completed();
+                }
+            }
+            catch (IOException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (OperationCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+
+        /// <summary>
+        /// Starts a delete operation, sending the notifications to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the file.</param>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
+        public async void StartDeleteOperation(string bucket, string name, IGcsFileOperationCallback operation, CancellationToken token)
+        {
+            try
+            {
+                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync(token);
+                operation.Completed();
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (OperationCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+        /// <summary>
+        /// Starts a move operation, sending the notifications to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket where the files reside.</param>
+        /// <param name="fromName">The file to move.</param>
+        /// <param name="toName">The new file name.</param>
+        /// <param name="operation">The operation to callback.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
+        public async void StartMoveOperation(
+            string bucket,
+            string fromName,
+            string toName,
+            IGcsFileOperationCallback operation,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Service.Objects.Copy(null, bucket, fromName, bucket, toName).ExecuteAsync(cancellationToken);
+                await Service.Objects.Delete(bucket, fromName).ExecuteAsync(cancellationToken);
+                operation.Completed();
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (OperationCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+
+        private void OnDownloadProgress(
+            IDownloadProgress downloadProgress,
+            ulong totalSize,
+            IGcsFileOperationCallback operation)
+        {
+            operation.Progress((double)downloadProgress.BytesDownloaded / totalSize);
+        }
+
+        private static void OnUploadProgress(
+            IUploadProgress uploadProgress,
+            ulong totalSize,
+            IGcsFileOperationCallback operation)
+        {
+            operation.Progress((double)uploadProgress.BytesSent / totalSize);
         }
     }
 }

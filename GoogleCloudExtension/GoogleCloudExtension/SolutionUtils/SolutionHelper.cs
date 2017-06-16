@@ -56,6 +56,11 @@ namespace GoogleCloudExtension.SolutionUtils
         }
 
         /// <summary>
+        /// Gets <seealso cref="EnvDTE.Solution"/> reference.
+        /// </summary>
+        public Solution solution => _solution;
+
+        /// <summary>
         /// Returns the path to the root of the solution.
         /// </summary>
         public string SolutionDirectory => Path.GetDirectoryName(_solution.FullName);

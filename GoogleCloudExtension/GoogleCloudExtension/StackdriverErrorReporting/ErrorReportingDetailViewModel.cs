@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private ErrorGroupItem _groupItem;
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
-        private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
+        private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
 
         /// <summary>
         /// Indicate the Google account is set.
