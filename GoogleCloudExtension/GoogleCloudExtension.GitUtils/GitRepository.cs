@@ -72,32 +72,26 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the directory is under a local git repository folder.
         /// </summary>
         /// <param name="dir">The file directory.</param>
-        public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("rev-parse", dir)) != null;
+        public static async Task<bool> IsGitRepositoryAsync(string dir) => 
+            (await RunGitCommandAsync("rev-parse", dir)) != null;
 
         /// <summary>
         /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
         /// </summary>
-        public async Task<List<string>> GetRemotes() => await ExecCommandAsync("remote");
+        public async Task<IList<string>> GetRemotes() => await ExecCommandAsync("remote");
 
         /// <summary>
         /// Returns a list of remote urls.
         /// </summary>
-        public async Task<List<string>> GetRemotesUrls()
+        public async Task<IList<string>> GetRemotesUrls()
         {
-            List<string> results = new List<string>();
             var remotes = await GetRemotes();
-            if (remotes != null)
+            if (remotes == null)
             {
-                foreach (var origin in remotes)
-                {
-                    var urls = await ExecCommandAsync($"config --get remote.{origin}.url");
-                    if (urls != null)
-                    {
-                        results.AddRange(urls);
-                    }
-                }
+                return new List<string>();
             }
-            return results;
+            var allUrls = await Task.WhenAll(remotes.Select(r => ExecCommandAsync($"config --get remote.{r}.url")));
+            return allUrls.SelectMany(urls => urls).ToList();
         }
 
         /// <summary>

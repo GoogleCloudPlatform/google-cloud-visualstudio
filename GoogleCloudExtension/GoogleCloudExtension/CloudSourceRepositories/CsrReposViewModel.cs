@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
         private static ObservableCollection<RepoItemViewModel> s_repoList;
-        private static RepoItemViewModel _activeRepo;
+        private static RepoItemViewModel s_activeRepo;
 
         private readonly ITeamExplorerUtils _teamExplorer;
         private bool _isReady = true;
@@ -79,12 +79,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public RepoItemViewModel ActiveRepo
         {
-            get { return _activeRepo; }
+            get { return s_activeRepo; }
             set
             {
-                if (value != _activeRepo && _activeRepo != null)
+                if (value != s_activeRepo && s_activeRepo != null)
                 {
-                    _activeRepo.IsActiveRepo = false;
+                    s_activeRepo.IsActiveRepo = false;
                 }
 
                 if (value != null)
@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     value.IsActiveRepo = true;
                 }
 
-                _activeRepo = value;
+                s_activeRepo = value;
             }
         }
 
@@ -188,8 +188,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
             try
             {
-                var projects = await DataSourceFactories.CreateResourceManagerDataSource()?.GetSortedActiveProjectsAsync();
-                if (!(projects?.Any() ?? false))
+                var resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+                if (resourceManager == null)
+                {
+                    return;
+                }
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                if (!projects.Any())
                 {
                     return;
                 }
@@ -197,16 +202,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var localRepos = await GetLocalGitRepositories();
                 foreach (var localGitRepo in localRepos)
                 {
-                    List<string> remoteUrls = await localGitRepo.GetRemotesUrls();
-                    if (!(remoteUrls?.Any() ?? false))
-                    {
-                        Debug.WriteLine($"{localGitRepo.Root} does not get remote url");
-                        continue;
-                    }
+                    IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
                     foreach (var url in remoteUrls)
                     {
-                        IList<Repo> cloudRepos = null;
-                        Project project = null;
+                        IList<Repo> cloudRepos;
+                        Project project;
                         string projectId = CsrUtils.ParseProjectId(url);
                         if (String.IsNullOrWhiteSpace(projectId))
                         {
@@ -222,7 +222,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                                 Debug.WriteLine($"{projectId} is invalid or unknown project id");
                                 continue;
                             }
-                            cloudRepos = await CsrUtils.GetCloudReposAsync(project);
+                            cloudRepos = await CsrUtils.GetCloudReposAsync(project.ProjectId);
                             projectRepos.Add(projectId, cloudRepos);
                         }
 
