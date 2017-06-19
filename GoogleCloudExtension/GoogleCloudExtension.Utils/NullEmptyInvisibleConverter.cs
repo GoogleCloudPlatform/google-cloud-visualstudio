@@ -21,8 +21,7 @@ using System.Windows.Markup;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// If the object is null,
-    /// or if it is string type and is null or empty or whitespace,
+    /// If the object is null, or if it is string type and is empty or whitespace,
     /// set the visibility to <seealso cref="Visibility.Collapsed"/>.
     /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
@@ -30,14 +29,14 @@ namespace GoogleCloudExtension.Utils
     public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
     {
         /// <summary>
-        /// If true, null or whitespace values will return <see cref="Visibility.Visible"/>
+        /// If true, null, empty and whitespace values will return <see cref="Visibility.Visible"/>
         /// instead of <see cref="Visibility.Collapsed"/>.
         /// </summary>
-        public bool Invert { private get; set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public bool Invert { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             var stringValue = value as string;
             if (stringValue != null)
             {

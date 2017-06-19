@@ -16,6 +16,10 @@
                 <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../../../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="SelectAccountButtonStyle" BasedOn="{StaticResource CommonButtonWideStyle}" TargetType="Button">
+                <Setter Property="Command" Value="{Binding ChangeUserCommand}"/>
+                <Setter Property="Content" Value="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -38,11 +42,7 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
-                <Button
-                    DockPanel.Dock="Right"
-                    Command="{Binding ChangeUserCommand}"
-                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"
-                    Style="{StaticResource CommonButtonWideStyle}"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
                 <controls:LabelWithHelp
                     Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
                     HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
@@ -66,16 +66,13 @@
                     </Style>
                 </Grid.Resources>
                 <Border Visibility="{Binding LoadTask, Converter={utils:NullEmptyInvisibleConverter Invert=True}}">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
-                        
-                        <Run Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessageLeft}"/>
-                        <Hyperlink Command="{Binding ChangeUserCommand}">
-                            <x:Static Member="ext:Resources.WizardPickProjectIdNoAccountMessageAction" />
-                        </Hyperlink>
-                        <Run Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessageRight}"/>
-                    </TextBlock>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessage}"/>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
+                    </StackPanel>
                 </Border>
                 <Border Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
                     <TextBlock
