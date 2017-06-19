@@ -60,8 +60,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public RepoItemViewModel(Repo cloudRepo, string localGitRoot)
         {
             cloudRepo.ThrowIfNull(nameof(cloudRepo));
-            localGitRoot.ThrowIfNullOrEmpty(nameof(localGitRoot));
-            LocalPath = localGitRoot;
+            LocalPath = localGitRoot.ThrowIfNullOrEmpty(nameof(localGitRoot));
             Name = cloudRepo.Name?.Split('/').LastOrDefault();
             RepoFullName = cloudRepo.Name;
             VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));
