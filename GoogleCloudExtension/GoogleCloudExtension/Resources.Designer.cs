@@ -5668,6 +5668,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To get a list of projects, select an account..
+        /// </summary>
+        public static string WizardPickProjectIdNoAccountMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Enter project ID:.
         /// </summary>
         public static string WizardPickProjectIdTextLabel {

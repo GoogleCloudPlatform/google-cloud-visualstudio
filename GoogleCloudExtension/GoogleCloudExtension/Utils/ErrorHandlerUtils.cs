@@ -41,10 +41,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 Debug.WriteLine($"Uncaught exception: {ex.Message}");
-                if (ErrorHandler.IsCriticalException(ex))
-                {
-                    throw;
-                }
+
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }
@@ -85,10 +82,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 Debug.WriteLine($"Uncaught exception: {ex.Message}");
-                if (ErrorHandler.IsCriticalException(ex))
-                {
-                    throw;
-                }
+
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }
