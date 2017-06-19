@@ -249,15 +249,21 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public async Task TestLoadBlacklistedTopics()
         {
             _objectUnderTest.Initialize(_contextMock.Object);
+            string gcrProjectId = MockProjectId.Replace(":", "%2F");
             _topicSource.SetResult(
                 new List<Topic>
                 {
                     new Topic {Name = $"{TopicPrefix}cloud-builds"},
                     new Topic {Name = $"{TopicPrefix}repository-changes.default"},
+                    new Topic {Name = $"{TopicPrefix}repository-changes.another-repo-name"},
+                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{MockProjectId}"},
                     new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{MockProjectId}"},
                     new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{MockProjectId}"}
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{MockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{gcrProjectId}"}
                 });
             _subscriptionSource.SetResult(new List<Subscription>());
 
