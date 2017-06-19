@@ -2788,7 +2788,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content Type.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string GcsFileBrowserContentTypeHeader {
             get {
@@ -2914,7 +2914,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load directory {0}..
+        ///   Looks up a localized string similar to Unable to load {0}. Try refreshing..
         /// </summary>
         public static string GcsFileBrowserFailedDirectoryLoadMessage {
             get {
@@ -2968,7 +2968,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content Type.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string GcsFileBrowserFileContentTypeDisplayName {
             get {
@@ -3112,7 +3112,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by clicking the upload files button or by selecting them in Windows Explorer and dragging them here..
+        ///   Looks up a localized string similar to Upload a file or drop one here from Windows Explorer..
         /// </summary>
         public static string GcsFileBrowserNoFilesMessage {
             get {
