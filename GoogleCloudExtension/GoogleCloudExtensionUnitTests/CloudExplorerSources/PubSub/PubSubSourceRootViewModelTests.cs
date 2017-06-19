@@ -250,6 +250,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         {
             _objectUnderTest.Initialize(_contextMock.Object);
             string gcrProjectId = MockProjectId.Replace(":", "%2F");
+            string nonBlacklistTopicName = $"{TopicPrefix}cloud-builds:projects:xxxx-id-xxx:topics";
             _topicSource.SetResult(
                 new List<Topic>
                 {
@@ -263,13 +264,17 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                     new Topic {Name = $"{TopicPrefix}gcr.io%2F{gcrProjectId}"},
                     new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{gcrProjectId}"},
                     new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{gcrProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{gcrProjectId}"}
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = nonBlacklistTopicName}
                 });
             _subscriptionSource.SetResult(new List<Subscription>());
 
             await _objectUnderTest.LoadData();
 
-            Assert.AreEqual(0, _objectUnderTest.Children.Count);
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            var topicNode = _objectUnderTest.Children[0] as TopicViewModel;
+            Assert.IsNotNull(topicNode);
+            Assert.AreEqual(nonBlacklistTopicName, topicNode.Item.FullName);
         }
 
         [TestMethod]

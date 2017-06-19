@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     internal class PubsubSourceRootViewModel : SourceRootViewModelBase, IPubsubSourceRootViewModel
     {
         internal const string PubSubConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub?project={0}";
-        private const string BlackListPrefix = "projects/{0}/topics/";
+        private const string BlackListPrefix = "^projects/{0}/topics/";
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -58,12 +58,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private static readonly string[] s_blacklistedTopics =
         {
-            Regex.Escape("asia.gcr.io%2F") + "{0}",
-            Regex.Escape("eu.gcr.io%2F") + "{0}",
-            Regex.Escape("gcr.io%2F") + "{0}",
-            Regex.Escape("us.gcr.io%2F") + "{0}",
-            Regex.Escape("cloud-builds"),
-            Regex.Escape("repository-changes.") + ".*"
+            "asia\\.gcr\\.io%2F{0}$",
+            "eu\\.gcr\\.io%2F{0}$",
+            "gcr\\.io%2F{0}$",
+            "us\\.gcr\\.io%2F{0}$",
+            "cloud-builds$",
+            "repository-changes\\..*$"
         };
 
         private Lazy<IPubsubDataSource> _dataSource;
@@ -177,10 +177,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </returns>
         private IEnumerable<string> FormatBlacklistedTopics(string blacklistedTopicString)
         {
-            string restUrlPrefix = Regex.Escape(string.Format(BlackListPrefix, CurrentProjectId));
-            yield return restUrlPrefix + string.Format(blacklistedTopicString, CurrentProjectId);
+            string escapedProjectId = Regex.Escape(CurrentProjectId);
+            string restUrlPrefix = string.Format(BlackListPrefix, escapedProjectId);
+            yield return restUrlPrefix + string.Format(blacklistedTopicString, escapedProjectId);
             yield return restUrlPrefix +
-                string.Format(blacklistedTopicString, Uri.EscapeDataString(CurrentProjectId.Replace(":", "/")));
+                string.Format(
+                    blacklistedTopicString, Regex.Escape(Uri.EscapeDataString(CurrentProjectId.Replace(":", "/"))));
         }
 
         /// <summary>
