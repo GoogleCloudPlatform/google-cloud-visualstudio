@@ -123,10 +123,16 @@
                             IsReadOnly="True">
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" MinWidth="5"/>
-                                <DataGridTextColumn Header="Project ID" Binding="{Binding ProjectId}" MinWidth="5"/>
                                 <DataGridTextColumn
-                                    Header="Project Number"
+                                    Header="{x:Static ext:Resources.GcpProjectNameHeader}"
+                                    Binding="{Binding Name}"
+                                    MinWidth="5"/>
+                                <DataGridTextColumn
+                                    Header="{x:Static ext:Resources.GcpProjectIdHeader}"
+                                    Binding="{Binding ProjectId}"
+                                    MinWidth="5"/>
+                                <DataGridTextColumn
+                                    Header="{x:Static ext:Resources.GcpProjectNumberHeader}"
                                     Binding="{Binding ProjectNumber}"
                                     MinWidth="5"/>
                             </DataGrid.Columns>
