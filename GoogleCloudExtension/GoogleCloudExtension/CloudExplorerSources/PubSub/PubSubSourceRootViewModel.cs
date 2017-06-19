@@ -171,6 +171,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         /// <param name="blacklistedTopicString">
         /// A format string of a blacklisted topic. It may take project id as the first format arg.
+        /// <example>
+        /// "us\\.gcr\\.io%2F{0}$" => "^projects/ProjectId/topics/us\\.gcr\\.io%2FProjectId$"
+        /// </example>
         /// </param>
         /// <returns>
         /// A regex string to match a blacklisted topic.
