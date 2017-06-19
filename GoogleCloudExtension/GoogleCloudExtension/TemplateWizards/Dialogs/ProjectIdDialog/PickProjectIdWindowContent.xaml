@@ -22,6 +22,7 @@
                 
                 <Setter Property="Command" Value="{Binding ChangeUserCommand}"/>
                 <Setter Property="Content" Value="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
+                <Setter Property="Margin" Value="3"/>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -106,16 +107,36 @@
                         </Border>
                     </ControlTemplate>
                     <ControlTemplate x:Key="Loaded">
-                        <ListBox
-                            SelectedItem="{Binding SelectedProject}"
+                        <DataGrid
                             ItemsSource="{Binding Projects}"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                            SelectedItem="{Binding SelectedProject}"
+                            SelectionMode="Single"
+                            SelectionUnit="FullRow"
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto"
+                            CanUserSortColumns="True"
+                            CanUserResizeColumns="True"
+                            CanUserReorderColumns="True"
+                            AutoGenerateColumns="False"
+                            VerticalGridLinesBrush="LightGray"
+                            HorizontalGridLinesBrush="LightGray"
+                            IsReadOnly="True">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" MinWidth="5"/>
+                                <DataGridTextColumn Header="Project ID" Binding="{Binding ProjectId}" MinWidth="5"/>
+                                <DataGridTextColumn
+                                    Header="Project Number"
+                                    Binding="{Binding ProjectNumber}"
+                                    MinWidth="5"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </ControlTemplate>
                 </Control.Resources>
                 <Control.Style>
                     <Style TargetType="Control">
                         <!-- Use this setter to change the template visible in the designer. -->
-                        <Setter Property="Template" Value="{StaticResource NoAccount}"/>
+                        <Setter Property="Template" Value="{StaticResource Loaded}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding LoadTask}" Value="{x:Null}">
                                 <Setter Property="Template" Value="{StaticResource NoAccount}"/>
