@@ -163,19 +163,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <returns>True if the topic is not blacklisted.</returns>
         private bool IsIncludedTopic(Topic topic)
         {
-            return !FormatedBlacklistedTopics.Any(s => Regex.IsMatch(topic.Name, s));
+            return !s_blacklistedTopics.SelectMany(FormatBlacklistedTopics).Any(s => Regex.IsMatch(topic.Name, s));
         }
 
-        private IEnumerable<string> FormatedBlacklistedTopics => s_blacklistedTopics.SelectMany(FormatBlacklistedTopics);
-
         /// <summary>
-        /// Gets the full formatted name of a blacklisted topic given a blacklisted topic format string.
+        /// Gets a regex to filter the blacklisted topics.
         /// </summary>
         /// <param name="blacklistedTopicString">
-        /// A format string of a blacklisted topic. Needs a project id as input.
+        /// A format string of a blacklisted topic. It may take project id as the first format arg.
         /// </param>
         /// <returns>
-        /// The full name of a blacklisted topic, including prefix and formatted with the project id.
+        /// A regex string to match a blacklisted topic.
         /// </returns>
         private IEnumerable<string> FormatBlacklistedTopics(string blacklistedTopicString)
         {
