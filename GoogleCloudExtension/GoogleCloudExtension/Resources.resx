@@ -1260,7 +1260,7 @@
     <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
   <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
-    <value>Content Type</value>
+    <value>Type</value>
     <comment>The header for the Content Type column in the data grid.</comment>
   </data>
   <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
@@ -1292,7 +1292,7 @@
     <comment>Message for the prgoress dialog for the download operations.</comment>
   </data>
   <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
-    <value>Failed to load directory {0}.</value>
+    <value>Unable to load {0}. Try refreshing.</value>
     <comment>Error message shown when failed to load a directory.</comment>
   </data>
   <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
@@ -1376,7 +1376,7 @@
     <comment>The description of the content type of the file.</comment>
   </data>
   <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
-    <value>Content Type</value>
+    <value>Type</value>
     <comment>The display name for the content type property of the file.</comment>
   </data>
   <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
@@ -2348,7 +2348,7 @@
     <comment>Message shown when there's a failure loading the root directory.</comment>
   </data>
   <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
-    <value>There are no files in this directory, you can upload files by clicking the upload files button or by selecting them in Windows Explorer and dragging them here.</value>
+    <value>Upload a file or drop one here from Windows Explorer.</value>
     <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
   </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
