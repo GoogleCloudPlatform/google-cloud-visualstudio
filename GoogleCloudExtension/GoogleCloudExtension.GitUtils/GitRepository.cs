@@ -72,12 +72,27 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the directory is under a local git repository folder.
         /// </summary>
         /// <param name="dir">The file directory.</param>
-        public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("rev-parse", dir)) != null;
+        public static async Task<bool> IsGitRepositoryAsync(string dir) => 
+            (await RunGitCommandAsync("rev-parse", dir)) != null;
 
         /// <summary>
-        /// Returns the tracking remote url.
+        /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
         /// </summary>
-        public async Task<string> GetRemoteUrl() => (await ExecCommandAsync("config --get remote.origin.url"))?.FirstOrDefault();
+        public async Task<IList<string>> GetRemotes() => await ExecCommandAsync("remote");
+
+        /// <summary>
+        /// Returns a list of remote urls.
+        /// </summary>
+        public async Task<IList<string>> GetRemotesUrls()
+        {
+            var remotes = await GetRemotes();
+            if (remotes == null)
+            {
+                return new List<string>();
+            }
+            var allUrls = await Task.WhenAll(remotes.Select(r => ExecCommandAsync($"config --get remote.{r}.url")));
+            return allUrls.SelectMany(urls => urls).ToList();
+        }
 
         /// <summary>
         /// Returns true if the git repository contains the git SHA revision.

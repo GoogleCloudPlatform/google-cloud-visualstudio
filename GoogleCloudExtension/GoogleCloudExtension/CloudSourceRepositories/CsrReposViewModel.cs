@@ -14,6 +14,8 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
@@ -39,11 +41,33 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
         private static ObservableCollection<RepoItemViewModel> s_repoList;
+        private static RepoItemViewModel s_activeRepo;
 
         private readonly ITeamExplorerUtils _teamExplorer;
-        private RepoItemViewModel _activeRepo;
         private bool _isReady = true;
         private RepoItemViewModel _selectedRepo;
+
+        /// <summary>
+        /// Gets the current active Repo
+        /// </summary>
+        static public RepoItemViewModel ActiveRepo
+        {
+            get { return s_activeRepo; }
+            set
+            {
+                if (value != s_activeRepo && s_activeRepo != null)
+                {
+                    s_activeRepo.IsActiveRepo = false;
+                }
+
+                if (value != null)
+                {
+                    value.IsActiveRepo = true;
+                }
+
+                s_activeRepo = value;
+            }
+        }
 
         /// <summary>
         /// Indicates if the current view is not busy.
@@ -70,28 +94,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             get { return _selectedRepo; }
             set { SetValueAndRaise(ref _selectedRepo, value); }
-        }
-
-        /// <summary>
-        /// Gets the current active Repo
-        /// </summary>
-        public RepoItemViewModel ActiveRepo
-        {
-            get { return _activeRepo; }
-            set
-            {
-                if (value != _activeRepo && _activeRepo != null)
-                {
-                    _activeRepo.IsActiveRepo = false;
-                }
-
-                if (value != null)
-                {
-                    value.IsActiveRepo = true;
-                }
-
-                _activeRepo = value;
-            }
         }
 
         /// <summary>
@@ -160,38 +162,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void SetCurrentRepo(string localPath)
         {
-            string guid = Guid.NewGuid().ToString();
-            try
-            {
-                ShellUtils.CreateEmptySolution(localPath, guid);
-            }
-            finally
-            {
-                try
-                {
-                    // Clean up the dummy `.vs` directory.
-                    string tmpPath = Path.Combine(localPath, ".vs", guid);
-                    if (Directory.Exists(tmpPath))
-                    {
-                        Directory.Delete(tmpPath, recursive: true);
-                    }
-                }
-                catch (Exception ex) when (
-                    ex is IOException ||
-                    ex is UnauthorizedAccessException)
-                { }
-            }
+            // TODO: Add in next PR.
         }
 
 
         /// <summary>
         /// Get a list of local repositories.  It is saved to local variable localRepos.
-        /// For each local repository, get the URL.
-        /// From the URL, get the project-id. 
+        /// For each local repository, get remote urls list.
+        /// From each URL, get the project-id. 
         /// Now, check if the list of 'cloud repositories' under the project-id contains the URL.
         /// If it does, the local repository with the URL will be shown to user.
-        /// 
-        /// projectReposDictionay is used to cache the list of 'cloud repos' of the project-id.
         /// </summary>
         private async Task ListRepositoryAsync()
         {
@@ -200,64 +180,25 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return;
             }
 
+            var resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return;
+            }
+
             IsReady = false;
             Loading = true;
             Repositories = new ObservableCollection<RepoItemViewModel>();
-            Dictionary<string, IList<Repo>> projectRepos 
-                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
+            
             try
             {
-                var projects = await CsrUtils.GetProjectsAsync();
-                if (!(projects?.Any() ?? false))
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                if (!projects.Any())
                 {
                     return;
                 }
 
-                var localRepos = await GetLocalGitRepositories();
-                foreach (var localGitRepo in localRepos)
-                {
-                    string url = await localGitRepo.GetRemoteUrl();
-                    if (String.IsNullOrWhiteSpace(url))
-                    {
-                        Debug.WriteLine($"{localGitRepo.Root} does not get remote url");
-                        continue;
-                    }
-                    IList<Repo> cloudRepos = null;
-                    Project project = null;
-                    string projectId = CsrUtils.ParseProjectId(url);
-                    if (String.IsNullOrWhiteSpace(projectId))
-                    {
-                        continue;
-                    }
-                    Debug.WriteLine($"Check project id {projectId}");
-                    if (!projectRepos.TryGetValue(projectId, out cloudRepos))
-                    {
-                        project = projects.FirstOrDefault(
-                            x => String.Compare(x.ProjectId, projectId, StringComparison.OrdinalIgnoreCase) == 0);
-                        if (project == null)
-                        {
-                            Debug.WriteLine($"{projectId} is invalid or unknown project id");
-                            continue;
-                        }
-                        cloudRepos = await CsrUtils.GetCloudReposAsync(project);
-                        projectRepos.Add(projectId, cloudRepos);
-                    }
-
-                    if (!(cloudRepos?.Any() ?? false))
-                    {
-                        Debug.WriteLine($"{projectId} has no repos found");
-                        continue;
-                    }
-
-                    var cloud = cloudRepos.FirstOrDefault(
-                        x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
-                    if (cloud == null)
-                    {
-                        Debug.WriteLine($"{projectId} repos does not contain {url}");
-                        continue;
-                    }
-                    Repositories.Add(new RepoItemViewModel(cloud, localGitRepo));
-                }
+                await AddLocalReposAsync(await GetLocalGitRepositories());
 
                 SetActiveRepo(_teamExplorer.GetActiveRepository());
             }
@@ -266,6 +207,60 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Loading = false;
                 IsReady = true;
             }
+        }
+
+        /// <summary>
+        /// projectRepos is used to cache the list of 'cloud repos' of the project-id.
+        /// </summary>
+        private async Task AddLocalReposAsync(IList<GitRepository> localRepos)
+        {
+            Dictionary<string, IList<Repo>> projectRepos
+                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var localGitRepo in localRepos)
+            {
+                IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
+                foreach (var url in remoteUrls)
+                {
+                    string projectId = CsrUtils.ParseProjectId(url);
+                    if (String.IsNullOrWhiteSpace(projectId))
+                    {
+                        continue;
+                    }
+
+                    var cloudRepo = await TryGetCloudRepoAsync(url, projectId, projectRepos);
+                    if (cloudRepo == null)
+                    {
+                        Debug.WriteLine($"{projectId} repos does not contain {url}");
+                        continue;
+                    }
+                    Repositories.Add(new RepoItemViewModel(cloudRepo, localGitRepo.Root));
+                    break;
+                }
+            }
+        }
+
+        private async Task<Repo> TryGetCloudRepoAsync(
+            string url, 
+            string projectId, 
+            Dictionary<string, IList<Repo>> projectReposMap)
+        {
+            IList<Repo> cloudRepos;
+            Debug.WriteLine($"Check project id {projectId}");
+            if (!projectReposMap.TryGetValue(projectId, out cloudRepos))
+            {
+
+                cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
+                projectReposMap.Add(projectId, cloudRepos);
+            }
+
+            if (!(cloudRepos != null && cloudRepos.Any()))
+            {
+                Debug.WriteLine($"{projectId} has no repos found");
+                return null;
+            }
+
+            return cloudRepos.FirstOrDefault(
+                x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         /// <summary>

@@ -57,17 +57,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public ProtectedCommand VisitUrlCommand { get; }
 
-        /// <summary>
-        /// Initializes a new instance of <seealso cref="RepoItemViewModel"/> class.
-        /// </summary>
-        /// <param name="cloudRepo">The <seealso cref="Repo"/> object retrieved from GCP CSR service.</param>
-        /// <param name="gitCommand">A <seealso cref="GitRepository"/> object that represents loca repository.</param>
-        public RepoItemViewModel(Repo cloudRepo, GitRepository gitCommand)
+        public RepoItemViewModel(Repo cloudRepo, string localGitRoot)
         {
             cloudRepo.ThrowIfNull(nameof(cloudRepo));
-            gitCommand.ThrowIfNull(nameof(gitCommand));
-            LocalPath = gitCommand.Root;
-            Name = CsrUtils.GetRepoName(cloudRepo);
+            LocalPath = localGitRoot.ThrowIfNullOrEmpty(nameof(localGitRoot));
+            Name = cloudRepo.Name?.Split('/').LastOrDefault();
             RepoFullName = cloudRepo.Name;
             VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));
         }

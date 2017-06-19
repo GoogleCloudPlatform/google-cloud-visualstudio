@@ -15,6 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
@@ -152,15 +153,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return;
             }
 
-            GitRepository gitCommand = await CsrGitUtils.Clone(SelectedRepository.Url, destPath);
-            if (gitCommand == null)
+            GitRepository localRepo = await CsrGitUtils.Clone(SelectedRepository.Url, destPath);
+            if (localRepo == null)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedToSetCredentialMessage,
                     title: Resources.uiDefaultPromptTitle);
                 return;
             }
-            Result = new RepoItemViewModel(SelectedRepository, gitCommand);
+            Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
             _owner.Close();
         }
 
@@ -202,7 +203,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return;
             }
 
-            Repositories = await CsrUtils.GetCloudReposAsync(SelectedProject);
+            Repositories = await CsrUtils.GetCloudReposAsync(SelectedProject.ProjectId);
             SelectedRepository = Repositories?.FirstOrDefault();
         }
 
@@ -210,8 +211,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             Debug.WriteLine("Init");
 
-            Projects = (await CsrUtils.GetProjectsAsync())?.OrderBy(x => x.Name);
-            if (Projects?.Any() ?? false)
+            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return;
+            }
+
+            Projects = await resourceManager.GetSortedActiveProjectsAsync();
+            if (Projects.Any())
             {
                 SelectedProject = Projects.FirstOrDefault();
                 await ListRepoAsync();

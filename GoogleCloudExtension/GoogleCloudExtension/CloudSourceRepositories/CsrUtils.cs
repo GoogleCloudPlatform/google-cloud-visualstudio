@@ -54,40 +54,32 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (url.StartsWith("https://source.developers.google.com", StringComparison.OrdinalIgnoreCase))
             {
                 string[] splits = url.Split('/');
-                return splits?.Length >= 3 ? splits[splits.Length - 3] : null;
+                return splits.Length >= 3 ? splits[splits.Length - 3] : null;
             }
             return null;
         }
 
         /// <summary>
-        /// Retrives the list of projects that belongs to current account.
-        /// </summary>
-        public static async Task<List<Project>> GetProjectsAsync()
-        {
-            var results = await CreateResourceManagerDataSource()?.GetProjectsListAsync();
-            return results?.Where(x => x.LifecycleState == "ACTIVE").ToList();
-        }
-
-        /// <summary>
         /// Retrives the list of <seealso cref="Repo"/> under the project.
         /// </summary>
-        public static async Task<IList<Repo>> GetCloudReposAsync(Project project)
+        public static async Task<IList<Repo>> GetCloudReposAsync(string projectId)
         {
-            var csrDataSource = CreateCsrDataSource(project.ProjectId);
+            projectId.ThrowIfNullOrEmpty(nameof(projectId));
+            var csrDataSource = CreateCsrDataSource(projectId);
+            if (csrDataSource == null)
+            {
+                return null;
+            }
             try
             {
                 return await csrDataSource?.ListReposAsync();
             }
             catch (DataSourceException ex)
+            // Call out "no permission" project.
+            when (ex.InnerGoogleApiException?.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                // Call out "no permission" project.
-                var innerEx = ex.InnerException as Google.GoogleApiException;
-                if (innerEx.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    Debug.WriteLine($"No permission to query repos from project {project.Name}");
-                    return null;
-                }
-                throw;
+                Debug.WriteLine($"No permission to query repos from project id {projectId}");
+                return null;
             }
         }
 
@@ -102,17 +94,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             return new CsrDataSource(
                 projectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
-        }
-
-        private static ResourceManagerDataSource CreateResourceManagerDataSource()
-        {
-            if (CredentialsStore.Default.CurrentGoogleCredential == null)
-            {
-                return null;
-            }
-            return new ResourceManagerDataSource(
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.VersionedApplicationName);
         }
