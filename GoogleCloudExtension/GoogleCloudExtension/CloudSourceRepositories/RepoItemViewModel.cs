@@ -57,11 +57,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public ProtectedCommand VisitUrlCommand { get; }
 
-        public RepoItemViewModel(Repo cloudRepo, GitRepository localGitRepo)
+        public RepoItemViewModel(Repo cloudRepo, string localGitRoot)
         {
             cloudRepo.ThrowIfNull(nameof(cloudRepo));
-            localGitRepo.ThrowIfNull(nameof(localGitRepo));
-            LocalPath = localGitRepo.Root;
+            localGitRoot.ThrowIfNullOrEmpty(nameof(localGitRoot));
+            LocalPath = localGitRoot;
             Name = cloudRepo.Name?.Split('/').LastOrDefault();
             RepoFullName = cloudRepo.Name;
             VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));

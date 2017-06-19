@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.DataSources
         /// A list of <seealso cref="Project"/>.
         /// It always return empty list if no item is found, caller can safely assume there is no null return.
         /// </returns>
-        public async Task<List<Project>> GetSortedActiveProjectsAsync() =>
+        public async Task<IList<Project>> GetSortedActiveProjectsAsync() =>
             (await GetProjectsListAsync())?
             .Where(x => x.LifecycleState == "ACTIVE")
             .OrderBy(x => x.Name)
