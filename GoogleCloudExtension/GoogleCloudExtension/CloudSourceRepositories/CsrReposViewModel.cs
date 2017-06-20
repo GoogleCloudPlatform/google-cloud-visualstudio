@@ -12,10 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -33,11 +41,33 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
         private static ObservableCollection<RepoItemViewModel> s_repoList;
+        private static RepoItemViewModel s_activeRepo;
 
         private readonly ITeamExplorerUtils _teamExplorer;
-        private RepoItemViewModel _activeRepo;
         private bool _isReady = true;
         private RepoItemViewModel _selectedRepo;
+
+        /// <summary>
+        /// Gets the current active Repo
+        /// </summary>
+        static public RepoItemViewModel ActiveRepo
+        {
+            get { return s_activeRepo; }
+            set
+            {
+                if (value != s_activeRepo && s_activeRepo != null)
+                {
+                    s_activeRepo.IsActiveRepo = false;
+                }
+
+                if (value != null)
+                {
+                    value.IsActiveRepo = true;
+                }
+
+                s_activeRepo = value;
+            }
+        }
 
         /// <summary>
         /// Indicates if the current view is not busy.
@@ -64,28 +94,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             get { return _selectedRepo; }
             set { SetValueAndRaise(ref _selectedRepo, value); }
-        }
-
-        /// <summary>
-        /// Gets the current active Repo
-        /// </summary>
-        public RepoItemViewModel ActiveRepo
-        {
-            get { return _activeRepo; }
-            set
-            {
-                if (value != _activeRepo && _activeRepo != null)
-                {
-                    _activeRepo.IsActiveRepo = false;
-                }
-
-                if (value != null)
-                {
-                    value.IsActiveRepo = true;
-                }
-
-                _activeRepo = value;
-            }
         }
 
         /// <summary>
@@ -132,8 +140,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (SelectedRepository?.IsActiveRepo == false)
             {
                 SetCurrentRepo(SelectedRepository.LocalPath);
-                _teamExplorer.ShowHomeSection();
+
+                // Note, the order is critical.
+                // When switching to HomeSection, current "this" object is destroyed.
                 ActiveRepo = SelectedRepository;
+                _teamExplorer.ShowHomeSection();
             }
         }
 
@@ -153,19 +164,41 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             // TODO: Add in next PR.
         }
 
+
+        /// <summary>
+        /// Get a list of local repositories.  It is saved to local variable localRepos.
+        /// For each local repository, get remote urls list.
+        /// From each URL, get the project-id. 
+        /// Now, check if the list of 'cloud repositories' under the project-id contains the URL.
+        /// If it does, the local repository with the URL will be shown to user.
+        /// </summary>
         private async Task ListRepositoryAsync()
         {
             if (Loading)
             {
                 return;
             }
+
+            var resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return;
+            }
+
             IsReady = false;
             Loading = true;
             Repositories = new ObservableCollection<RepoItemViewModel>();
+            
             try
             {
-                // Replace it with code that list repositories in next PR.
-                await Task.Delay(10);   
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                if (!projects.Any())
+                {
+                    return;
+                }
+
+                await AddLocalReposAsync(await GetLocalGitRepositories());
+
                 SetActiveRepo(_teamExplorer.GetActiveRepository());
             }
             finally
@@ -173,6 +206,80 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Loading = false;
                 IsReady = true;
             }
+        }
+
+        /// <summary>
+        /// projectRepos is used to cache the list of 'cloud repos' of the project-id.
+        /// </summary>
+        private async Task AddLocalReposAsync(IList<GitRepository> localRepos)
+        {
+            Dictionary<string, IList<Repo>> projectRepos
+                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var localGitRepo in localRepos)
+            {
+                IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
+                foreach (var url in remoteUrls)
+                {
+                    string projectId = CsrUtils.ParseProjectId(url);
+                    if (String.IsNullOrWhiteSpace(projectId))
+                    {
+                        continue;
+                    }
+
+                    var cloudRepo = await TryGetCloudRepoAsync(url, projectId, projectRepos);
+                    if (cloudRepo == null)
+                    {
+                        Debug.WriteLine($"{projectId} repos does not contain {url}");
+                        continue;
+                    }
+                    Repositories.Add(new RepoItemViewModel(cloudRepo, localGitRepo.Root));
+                    break;
+                }
+            }
+        }
+
+        private async Task<Repo> TryGetCloudRepoAsync(
+            string url, 
+            string projectId, 
+            Dictionary<string, IList<Repo>> projectReposMap)
+        {
+            IList<Repo> cloudRepos;
+            Debug.WriteLine($"Check project id {projectId}");
+            if (!projectReposMap.TryGetValue(projectId, out cloudRepos))
+            {
+
+                cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
+                projectReposMap.Add(projectId, cloudRepos);
+            }
+
+            if (!(cloudRepos != null && cloudRepos.Any()))
+            {
+                Debug.WriteLine($"{projectId} has no repos found");
+                return null;
+            }
+
+            return cloudRepos.FirstOrDefault(
+                x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
+        }
+
+        /// <summary>
+        /// The list of local git repositories that Visual Studio remembers.
+        /// </summary>
+        /// <returns>
+        /// A list of local repositories.
+        /// Empty list is returned, never return null.
+        /// </returns>
+        private async Task<List<GitRepository>> GetLocalGitRepositories()
+        {
+            List<GitRepository> localRepos = new List<GitRepository>();
+            var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            if (repos != null)
+            {
+                var localRepoTasks = repos.Where(r => !string.IsNullOrWhiteSpace(r))
+                        .Select(GitRepository.GetGitCommandWrapperForPathAsync);
+                localRepos.AddRange((await Task.WhenAll(localRepoTasks)).Where(r => r != null));
+            }
+            return localRepos;
         }
     }
 }

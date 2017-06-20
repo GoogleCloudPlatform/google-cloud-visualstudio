@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using System;
 using System.Runtime.Serialization;
 
@@ -23,6 +24,8 @@ namespace GoogleCloudExtension.DataSources
     [Serializable]
     public class DataSourceException : Exception
     {
+        public GoogleApiException InnerGoogleApiException { get; }
+
         public DataSourceException()
         {
         }
@@ -33,6 +36,7 @@ namespace GoogleCloudExtension.DataSources
 
         public DataSourceException(string message, Exception innerException) : base(message, innerException)
         {
+            InnerGoogleApiException = innerException as GoogleApiException;
         }
 
         protected DataSourceException(SerializationInfo info, StreamingContext context) : base(info, context)

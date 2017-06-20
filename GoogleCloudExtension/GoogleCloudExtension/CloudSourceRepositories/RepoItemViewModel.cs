@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Utils;
+using System.Diagnostics;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -51,5 +54,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// The command that opens repository url.
         /// </summary>
         public ProtectedCommand VisitUrlCommand { get; }
+
+        public RepoItemViewModel(Repo cloudRepo, string localGitRoot)
+        {
+            cloudRepo.ThrowIfNull(nameof(cloudRepo));
+            LocalPath = localGitRoot.ThrowIfNullOrEmpty(nameof(localGitRoot));
+            Name = cloudRepo.Name?.Split('/').LastOrDefault();
+            RepoFullName = cloudRepo.Name;
+            VisitUrlCommand = new ProtectedCommand(() => Process.Start(cloudRepo.Url));
+        }
     }
 }
