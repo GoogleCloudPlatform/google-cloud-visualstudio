@@ -2615,4 +2615,16 @@
     <value>To get a list of projects, select an account.</value>
     <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>
+  <data name="GcpProjectIdHeader" xml:space="preserve">
+    <value>Project ID</value>
+    <comment>Project ID column header for a GCP Project data grid.</comment>
+  </data>
+  <data name="GcpProjectNameHeader" xml:space="preserve">
+    <value>Project Name</value>
+    <comment>Project Name column header for a GCP Project data grid.</comment>
+  </data>
+  <data name="GcpProjectNumberHeader" xml:space="preserve">
+    <value>Project Number</value>
+    <comment>Project Number column header for a GCP Project data grid.</comment>
+  </data>
 </root>

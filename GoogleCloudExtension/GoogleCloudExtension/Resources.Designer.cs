@@ -2788,6 +2788,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project ID.
+        /// </summary>
+        public static string GcpProjectIdHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectIdHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        public static string GcpProjectNameHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Number.
+        /// </summary>
+        public static string GcpProjectNumberHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectNumberHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string GcsFileBrowserContentTypeHeader {
