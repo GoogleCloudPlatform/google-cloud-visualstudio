@@ -51,6 +51,7 @@ namespace GoogleCloudExtension.Utils
             return null;
         }
 
-        public static bool IsPathEmpth(string filePath) => !Directory.EnumerateFileSystemEntries(filePath).Any();
+        public static bool IsPathEmpth(string filePath) => 
+            !Directory.Exists(filePath) || !Directory.EnumerateFileSystemEntries(filePath).Any();
     }
 }

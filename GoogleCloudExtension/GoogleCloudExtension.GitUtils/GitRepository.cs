@@ -121,8 +121,7 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         public static async Task<List<string>> RunGitCommandAsync(
             string command,
-            string gitLocalRoot,
-            IList<string> standardInputs = null)
+            string gitLocalRoot)
         {
             if (!File.Exists(gitLocalRoot) && !Directory.Exists(gitLocalRoot))
             {
@@ -133,8 +132,7 @@ namespace GoogleCloudExtension.GitUtils
                 file: GitPath,
                 args: command,
                 handler: (o, e) => output.Add(e.Line),
-                workingDir: gitLocalRoot,
-                standardInputs: standardInputs);
+                workingDir: gitLocalRoot);
             return commandResult ? output : null;
         }
 
