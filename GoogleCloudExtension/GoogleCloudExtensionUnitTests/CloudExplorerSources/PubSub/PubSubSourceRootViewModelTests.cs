@@ -249,21 +249,32 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public async Task TestLoadBlacklistedTopics()
         {
             _objectUnderTest.Initialize(_contextMock.Object);
+            string gcrProjectId = MockProjectId.Replace(":", "%2F");
+            string nonBlacklistTopicName = $"{TopicPrefix}cloud-builds:projects:xxxx-id-xxx:topics";
             _topicSource.SetResult(
                 new List<Topic>
                 {
                     new Topic {Name = $"{TopicPrefix}cloud-builds"},
                     new Topic {Name = $"{TopicPrefix}repository-changes.default"},
+                    new Topic {Name = $"{TopicPrefix}repository-changes.another-repo-name"},
+                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{MockProjectId}"},
                     new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{MockProjectId}"},
                     new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{MockProjectId}"}
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{MockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{gcrProjectId}"},
+                    new Topic {Name = nonBlacklistTopicName}
                 });
             _subscriptionSource.SetResult(new List<Subscription>());
 
             await _objectUnderTest.LoadData();
 
-            Assert.AreEqual(0, _objectUnderTest.Children.Count);
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            var topicNode = _objectUnderTest.Children[0] as TopicViewModel;
+            Assert.IsNotNull(topicNode);
+            Assert.AreEqual(nonBlacklistTopicName, topicNode.Item.FullName);
         }
 
         [TestMethod]

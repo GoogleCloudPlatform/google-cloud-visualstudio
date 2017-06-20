@@ -27,7 +27,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
     [TestClass]
     public class SourceRootViewModelBaseTests
     {
-        public const string MockProjectId = "mock-project";
+        public const string MockProjectId = "parent.com:mock-project";
         public const string MockExceptionMessage = "MockException";
         private const string MockAccountName = "MockAccount";
         private const string MockRootCaption = "MockRootCaption";
