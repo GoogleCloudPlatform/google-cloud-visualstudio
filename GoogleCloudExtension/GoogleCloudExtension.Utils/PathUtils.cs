@@ -51,7 +51,13 @@ namespace GoogleCloudExtension.Utils
             return null;
         }
 
-        public static bool IsPathEmpth(string filePath) => 
-            !Directory.Exists(filePath) || !Directory.EnumerateFileSystemEntries(filePath).Any();
+        /// <summary>
+        /// Check if the path is empty.
+        /// If the path does not Exists, it returns true too.
+        /// </summary>
+        /// <param name="path">Folder name</param>
+        /// <returns>True: The path is empty or it does not exist.</returns>
+        public static bool IsDirectoryEmpty(string path) => 
+            !Directory.Exists(path) || !Directory.EnumerateFileSystemEntries(path).Any();
     }
 }

@@ -2248,7 +2248,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to clone the repository.
+        ///   Looks up a localized string similar to Failed to clone the repository..
         /// </summary>
         public static string CsrCloneFailedMessage {
             get {
@@ -2257,7 +2257,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to set credential.
+        ///   Looks up a localized string similar to Failed to set credential..
         /// </summary>
         public static string CsrCloneFailedToSetCredentialMessage {
             get {
@@ -2293,7 +2293,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no project.
+        ///   Looks up a localized string similar to There is no project..
         /// </summary>
         public static string CsrCloneNoProject {
             get {
@@ -2302,7 +2302,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ....
+        ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string CsrClonePathBrowseButtonCaption {
             get {
@@ -2311,7 +2311,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The destination path {0} is not empty.
+        ///   Looks up a localized string similar to The destination path {0} is not empty..
         /// </summary>
         public static string CsrClonePathExistNotEmptyMessageFormat {
             get {
@@ -2320,11 +2320,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The path does not exist.
+        ///   Looks up a localized string similar to The path does not exist..
         /// </summary>
         public static string CsrClonePathNotExistMessage {
             get {
                 return ResourceManager.GetString("CsrClonePathNotExistMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the local repository path. {path-input}\{repo-name} is used as the destination path.
+        /// </summary>
+        public static string CsrCloneToTextBoxToolTip {
+            get {
+                return ResourceManager.GetString("CsrCloneToTextBoxToolTip", resourceCulture);
             }
         }
         
@@ -2379,6 +2388,15 @@ namespace GoogleCloudExtension {
         public static string CsrDisconnectLinkButtonCaption {
             get {
                 return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty list, choose another project.
+        /// </summary>
+        public static string CsrProjectContainsNoRepoMessage {
+            get {
+                return ResourceManager.GetString("CsrProjectContainsNoRepoMessage", resourceCulture);
             }
         }
         

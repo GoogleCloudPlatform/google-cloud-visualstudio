@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using StringResources = GoogleCloudExtension.Resources;
 using GoogleCloudExtension.Theming;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -24,19 +26,20 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         private  CsrCloneWindowViewModel ViewModel { get; }
 
-        private CsrCloneWindow(): base(StringResources.CsrCloneWindowTitle)
+        private CsrCloneWindow(IList<Project> projects) : base(StringResources.CsrCloneWindowTitle)
         {
-            ViewModel = new CsrCloneWindowViewModel(this);
+            ViewModel = new CsrCloneWindowViewModel(this, projects);
             Content = new CsrCloneWindowContent { DataContext = ViewModel };
         }
 
         /// <summary>
         /// Clone a repository from Google Cloud Source Repository.
         /// </summary>
+        /// <param name="projects">A list of GCP <seealso cref="Project"/>.</param>
         /// <returns>The cloned repo item.</returns>
-        public static RepoItemViewModel PromptUser()
+        public static RepoItemViewModel PromptUser(IList<Project> projects)
         {
-            var dialog = new CsrCloneWindow();
+            var dialog = new CsrCloneWindow(projects);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

@@ -8,10 +8,10 @@
              xmlns:ctrl="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             x:Name="_cloneWindowContent"
              d:DataContext="{d:DesignInstance {x:Type local:CsrCloneWindowViewModel}}"             
-             d:DesignHeight="300" d:DesignWidth="280"
-             Width="280">
+             d:DesignHeight="300" d:DesignWidth="280">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,10 +24,10 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       Command="{Binding OkCommand}"
@@ -35,70 +35,85 @@
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-
         <StackPanel IsEnabled="{Binding IsReady}">
 
             <Label 
                 Content="{x:Static ext:Resources.CsrProjectSelectionLabel}"
-                Target="{Binding ElementName=ProjectsComboBox}"
+                Target="{Binding ElementName=_projectsComboBox}"
                 Style="{StaticResource CommonLabelStyle}" />
 
             <ComboBox 
-                x:Name="ProjectsComboBox"
+                x:Name="_projectsComboBox"
                 ItemsSource="{Binding Projects}"
-                SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                SelectedItem="{Binding SelectedProject}"
                 DisplayMemberPath="Name"        
                 IsSynchronizedWithCurrentItem="True"
-                IsTextSearchEnabled="True" />
+                IsTextSearchEnabled="True"
+                Style="{StaticResource CommonComboBoxStyle}"/>
 
             <Label 
                 Content="{x:Static ext:Resources.CsrRepositorySelectionLabel}"
-                Target="{Binding ElementName=RepositoryComboBox}"
+                Target="{Binding ElementName=_repositoryComboBox}"
                 Style="{StaticResource CommonLabelStyle}"
-                Margin="0,6,0,0"/>
+                Margin="0,5,0,0"/>
 
-            <ComboBox 
-                x:Name="RepositoryComboBox"
-                ItemsSource="{Binding Repositories}"
-                SelectedItem="{Binding SelectedRepository, Mode=TwoWay}"
-                IsSynchronizedWithCurrentItem="True"
-                DisplayMemberPath="Name" 
-                IsTextSearchEnabled="True" />
+            <Grid>
+                <!-- Show text "empty list, choose another project" -->
+                <ComboBox                    
+                    Visibility="{Binding ProjectHasRepo, Converter={utils:VisibilityConverter IsNegated=True}}"
+                    SelectedIndex="0"
+                    IsEnabled="False"
+                    FontStyle="Oblique"
+                    Style="{StaticResource CommonComboBoxStyle}">
+                    <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage}"/>
+                </ComboBox>
+
+                <ComboBox 
+                    Visibility="{Binding ProjectHasRepo, Converter={utils:VisibilityConverter}}"
+                    x:Name="_repositoryComboBox"
+                    ItemsSource="{Binding Repositories}"
+                    SelectedItem="{Binding SelectedRepository}"
+                    IsSynchronizedWithCurrentItem="True"
+                    DisplayMemberPath="Name" 
+                    IsTextSearchEnabled="True"
+                    Style="{StaticResource CommonComboBoxStyle}"/>                
+            </Grid>
 
             <Label 
                 Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"
-                Target="{Binding ElementName=LocalPathTextBox}"
+                Target="{Binding ElementName=_localPathTextBox}"
                 Style="{StaticResource CommonLabelStyle}" 
-                Margin="0,6,0,0" />
+                Margin="0,5,0,0" />
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="17*"/>
-                    <ColumnDefinition Width="48*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBox 
-                    x:Name="LocalPathTextBox"
-                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
-                    Style="{StaticResource CommonTextBoxStyle}"
-                    Margin="0,0,6,0" Grid.ColumnSpan="2"/>
-
+            <DockPanel>
                 <Button 
-                    Grid.Column="2"
+                    DockPanel.Dock="Right"
                     Content="{x:Static ext:Resources.CsrClonePathBrowseButtonCaption}"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Command="{Binding PickFolderCommand}"
-                    Style="{StaticResource CommonButtonDynamicStyle}" Height="26" Margin="0,2"/>
+                    Style="{StaticResource CommonButtonDynamicStyle}" />
 
-            </Grid>
+                <TextBox 
+                    x:Name="_localPathTextBox"
+                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextBoxStyle}"
+                    Margin="0,0,5,0">
+                    <TextBox.ToolTip>
+                        <ToolTip 
+                            Content="{x:Static ext:Resources.CsrCloneToTextBoxToolTip}"
+                            Style="{StaticResource CommonTooltipStyle}"/>
+                    </TextBox.ToolTip>
+                </TextBox>
+
+            </DockPanel>
 
             <ctrl:DotsProgressIndicator 
                 Margin="0,12,0,0" 
                 Width="60" 
                 HorizontalAlignment="Left" 
-                Visibility="{Binding IsReady, Converter={utils:BooleanConverter TrueValue='Hidden',FalseValue='Visible'}}"/>
+                Visibility="{Binding IsReady, 
+                    Converter={utils:VisibilityConverter IsNegated=True, InvisibleValue=Hidden}}"/>
 
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

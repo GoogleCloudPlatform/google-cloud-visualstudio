@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
-            CloneCommand = new ProtectedCommand(Clone);
+            CloneCommand = new ProtectedAsyncCommand(CloneAsync);
         }
 
         /// <summary>
@@ -283,12 +283,45 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             return localRepos;
         }
 
-        private void Clone()
+        private async Task CloneAsync()
         {
-            var repoItem = CsrCloneWindow.PromptUser();
-            if (repoItem != null)
+            IsReady = false;
+            Loading = true;
+
+            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
             {
-                (Repositories ?? new ObservableCollection<RepoItemViewModel>()).Add(repoItem);
+                return;
+            }
+
+            try
+            {
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                Loading = false;
+
+                if (!projects.Any())
+                {
+                    // TODO: Disconnect and show error message "no project"
+                    UserPromptUtils.OkPrompt(
+                        message: Resources.CsrCloneNoProject,
+                        title: Resources.UiDefaultPromptTitle);
+                    return;
+                }
+
+                var repoItem = CsrCloneWindow.PromptUser(projects);
+                if (repoItem != null)
+                {
+                    if (Repositories == null)
+                    {
+                        Repositories = new ObservableCollection<RepoItemViewModel>();
+                    }
+                    Repositories.Add(repoItem);
+                }
+            }
+            finally
+            {
+                IsReady = true;
+                Loading = false;
             }
         }
     }

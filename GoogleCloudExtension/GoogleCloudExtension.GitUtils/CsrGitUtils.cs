@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.IO;
@@ -28,6 +27,11 @@ namespace GoogleCloudExtension.GitUtils
     public static class CsrGitUtils
     {
         /// <summary>
+        /// The Google Cloud Source Repositories url scheme + host part.
+        /// </summary>
+        public const string CsrUrlAuthority = "https://source.developers.google.com";
+
+        /// <summary>
         /// Clone a Google Cloud Source Repository locally.
         /// </summary>
         /// <param name="url">The repository remote URL.</param>
@@ -36,6 +40,7 @@ namespace GoogleCloudExtension.GitUtils
         /// A <seealso cref="GitRepository"/> object if clone is successful.
         /// Or null if it fails for some reason.
         /// </returns>
+        /// <exception cref="CsrGitCommandException">Throw when git command fails</exception>
         public static async Task<GitRepository> Clone(string url, string localPath)
         {
             if (Directory.Exists(localPath))
@@ -43,17 +48,19 @@ namespace GoogleCloudExtension.GitUtils
                 throw new ArgumentException($"{localPath} arleady exists.");
             }
 
+            GitRepository gitRepo = null;
             Directory.CreateDirectory(localPath);
 
-            // git clone https://host/myrepo/ c:\git\myrepo --config credential.helper=manager
-            string command = $"clone {url} {localPath} --config credential.helper=manager";
+            // git clone https://host/myrepo/ "c:\git\myrepo" --config credential.helper=manager
+            string command = $@"clone {url} ""{localPath}"" --config credential.helper=manager";
             var output = await GitRepository.RunGitCommandAsync(command, localPath);
             Debug.WriteLine(output?.FirstOrDefault() ?? "");
-            if (output == null)
+            if (output == null ||
+                (gitRepo = await GitRepository.GetGitCommandWrapperForPathAsync(localPath)) == null)
             {
-                return null;    // Failed to clone
+                throw new CsrGitCommandException();
             }
-            return await GitRepository.GetGitCommandWrapperForPathAsync(localPath);
+            return gitRepo;
         }
 
         /// <summary>
@@ -61,7 +68,10 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         /// <param name="url">The repository url.</param>
         /// <param name="refreshToken">Google cloud credential refresh token.</param>
-        /// <param name="useHttpPath">Set for the path of for host</param>
+        /// <param name="useHttpPath">
+        /// True, store credential for the url path. i.e https://abc.com/urlpath
+        /// False: store credential for host.
+        /// </param>
         /// <returns>
         /// True: if credential is stored successfully.
         /// Otherwise false.
@@ -81,9 +91,13 @@ namespace GoogleCloudExtension.GitUtils
                 persistenceType: WindowsCredentialManager.CredentialPersistence.LocalMachine);
         }
 
+        /// <summary>
+        /// Set global git config useHttpPath for CSR host.
+        /// Refer to https://git-scm.com/docs/gitcredentials
+        /// </summary>
         public static async Task<bool> SetUseHttpPath() =>
             (await GitRepository.RunGitCommandAsync(
-                "config --global credential.https://source.developers.google.com.useHttpPath true", 
+                $"config --global credential.{CsrUrlAuthority}.useHttpPath true", 
                 Directory.GetCurrentDirectory())) != null;
     }
 }

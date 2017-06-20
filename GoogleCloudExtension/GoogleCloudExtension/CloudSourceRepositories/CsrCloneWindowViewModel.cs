@@ -15,7 +15,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
@@ -35,7 +34,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
-        private CsrCloneWindow _owner;
+        private readonly CsrCloneWindow _owner;
 
         private string _localPath;
         private IList<Repo> _repos;
@@ -43,6 +42,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private bool _isReady = true;
+        private bool _projectHasRepo;
+
+        /// <summary>
+        /// Indicate if the selected project has repository
+        /// </summary>
+        public bool ProjectHasRepo
+        {
+            get { return _projectHasRepo; }
+            private set { SetValueAndRaise(ref _projectHasRepo, value); }
+        }
 
         /// <summary>
         /// The projects list
@@ -129,11 +138,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public RepoItemViewModel Result { get; private set; }
 
-        public CsrCloneWindowViewModel(CsrCloneWindow owner)
+        public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
         {
             _owner = owner.ThrowIfNull(nameof(owner));
+            Projects = projects.ThrowIfNull(nameof(projects));
+            if (!Projects.Any())
+            {
+                throw new ArgumentException($"{nameof(projects)} must not be empty");
+            }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
-            OkCommand = new ProtectedCommand(taskHandler: () => ExecuteAsync(CloneAsync), canExecuteCommand: false);
+            OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
             ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(InitializeAsync));
         }
 
@@ -148,21 +162,24 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 useHttpPath: true))
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: Resources.CsrCloneFailedMessage,
-                    title: Resources.UiDefaultPromptTitle);
-                return;
-            }
-
-            GitRepository localRepo = await CsrGitUtils.Clone(SelectedRepository.Url, destPath);
-            if (localRepo == null)
-            {
-                UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedToSetCredentialMessage,
                     title: Resources.UiDefaultPromptTitle);
                 return;
             }
-            Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
-            _owner.Close();
+
+            try
+            {
+                GitRepository localRepo = await CsrGitUtils.Clone(SelectedRepository.Url, destPath);
+                Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
+                _owner.Close();
+            }
+            catch (CsrGitCommandException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.CsrCloneFailedMessage,
+                    title: Resources.UiDefaultPromptTitle);
+                return;
+            }
         }
 
         private void PickFoloder()
@@ -197,66 +214,42 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             Debug.WriteLine("ListRepoAsync");
 
-            Repositories = null;
-            if (SelectedProject == null)
-            {
-                return;
-            }
-
             Repositories = await CsrUtils.GetCloudReposAsync(SelectedProject.ProjectId);
             SelectedRepository = Repositories?.FirstOrDefault();
+            ProjectHasRepo = Repositories?.Any() ?? false;
         }
 
         private async Task InitializeAsync()
         {
             Debug.WriteLine("Init");
-
-            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
-            if (resourceManager == null)
-            {
-                return;
-            }
-
-            Projects = await resourceManager.GetSortedActiveProjectsAsync();
-            if (Projects.Any())
-            {
-                SelectedProject = Projects.FirstOrDefault();
-                await ListRepoAsync();
-            }
-            else
-            {
-                UserPromptUtils.ErrorPrompt(
-                    message: Resources.CsrCloneNoProject,
-                    title: Resources.UiDefaultPromptTitle);
-                _owner.Close();
-            }
+            SelectedProject = Projects.FirstOrDefault();
+            await ListRepoAsync();
         }
 
         private void ValidateInputs()
         {
-            SetValidationResults(
-                ValidateLocalPath(LocalPath, Resources.CsrCloneLocalPathFieldName), 
-                nameof(LocalPath));
+            SetValidationResults(ValidateLocalPath(), nameof(LocalPath));
             OkCommand.CanExecuteCommand = SelectedRepository != null && !HasErrors;
         }
 
-        private IEnumerable<ValidationResult> ValidateLocalPath(string path, string fieldName)
+        private IEnumerable<ValidationResult> ValidateLocalPath()
         {
-            if (String.IsNullOrWhiteSpace(path))
+            string fieldName = Resources.CsrCloneLocalPathFieldName;
+            if (String.IsNullOrEmpty(LocalPath))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
-            if (!Directory.Exists(path))
+            if (!Directory.Exists(LocalPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
                 yield break;
             }
             if (SelectedRepository != null)
             {
-                string destPath = Path.Combine(LocalPath, SelectedRepository?.GetRepoName());
-                if (Directory.Exists(destPath) && !PathUtils.IsPathEmpth(destPath))
+                string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
+                if (Directory.Exists(destPath) && !PathUtils.IsDirectoryEmpty(destPath))
                 {
                     yield return StringValidationResult.FromResource(
                         nameof(Resources.CsrClonePathExistNotEmptyMessageFormat), destPath);

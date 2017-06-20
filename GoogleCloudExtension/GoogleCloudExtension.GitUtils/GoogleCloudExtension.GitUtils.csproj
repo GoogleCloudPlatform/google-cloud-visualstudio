@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsrGitCommandException.cs" />
     <Compile Include="CsrGitUtils.cs" />
     <Compile Include="GitRepository.cs" />
     <Compile Include="GitCommit.cs" />

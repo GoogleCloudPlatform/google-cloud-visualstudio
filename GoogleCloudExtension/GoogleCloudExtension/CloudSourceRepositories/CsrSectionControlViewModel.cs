@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the states when a new user control is created.
         private static bool s_isConnected = false;
         private static string s_currentAccount;
-        private static bool s_gitInited = false;
+        private static bool s_gitInited;
 
         private readonly CsrReposContent _reposContent = new CsrReposContent();
         private readonly CsrUnconnectedContent _unconnectedContent = new CsrUnconnectedContent();
@@ -75,7 +75,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public async Task Connect()
         {
-            if (!(await InitializeGit()))
+            bool inited = await GitConfig();
+            if (!inited)
             {
                 return;
             }
@@ -180,29 +181,27 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             Refresh();
         }
 
-        private async Task<bool> InitializeGit()
+        private static async Task<bool> GitConfig()
         {
             if (s_gitInited)
             {
                 return true;
             }
-
             if (!await CsrGitUtils.SetUseHttpPath())
             {
                 // TODO: show error message
                 return false;
             }
 
-            s_gitInited = SetGitCredential();
-            return s_gitInited;
+            return s_gitInited = SetGitCredential();
         }
 
-        private bool SetGitCredential()
+        private static bool SetGitCredential()
         {
             if (CredentialsStore.Default.CurrentAccount != null)
             {
                 if (!CsrGitUtils.StoreCredential(
-                    "https://source.developers.google.com",
+                    CsrGitUtils.CsrUrlAuthority,
                     CredentialsStore.Default.CurrentAccount.RefreshToken,
                     useHttpPath: false))
                 {

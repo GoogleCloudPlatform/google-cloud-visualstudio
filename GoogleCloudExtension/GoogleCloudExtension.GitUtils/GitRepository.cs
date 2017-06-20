@@ -119,7 +119,7 @@ namespace GoogleCloudExtension.GitUtils
         /// <summary>
         /// Run a git command and return the output or error output.
         /// </summary>
-        public static async Task<List<string>> RunGitCommandAsync(
+        internal static async Task<List<string>> RunGitCommandAsync(
             string command,
             string gitLocalRoot)
         {
