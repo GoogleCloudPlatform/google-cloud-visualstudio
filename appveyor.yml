@@ -25,15 +25,30 @@ artifacts:
 
 # Run the analytics tests with code coverage report.
 test_script:
-  - ps: |
-      $testDllNames = @("GoogleAnalyticsUtilsTests.dll", "GoogleCloudExtensionUnitTests.dll",
-          "GoogleCloudExtension.Utils.UnitTests.dll", "GoogleCloudExtension.DataSources.UnitTests.dll")
-  - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\*
+  - ps: >
+      $testDllNames = 
+        "GoogleAnalyticsUtilsTests.dll",
+        "GoogleCloudExtensionUnitTests.dll",
+        "GoogleCloudExtension.Utils.UnitTests.dll",
+        "GoogleCloudExtension.DataSources.UnitTests.dll"
+  - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\Release\*
   - ps: $testContainerArgs = $testDlls.FullName -join " "
   - ps: $testArgs = "/logger:Appveyor $testContainerArgs"
   - ps: $testFilters = ($testDlls.BaseName | % { "-[$_]*"}) -join " "
-  - ps: $filter = "+[GoogleCloudExtension*]* +[GoogleAnalyticsUtils*]* -[*]XamlGeneratedNamespace* $testFilters"
-  - ps: OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$testArgs -output:codecoverage.xml -filter:$filter
+  - ps: >
+      $filter = "$testFilters
+                 +[GoogleCloudExtension*]*
+                 +[GoogleAnalyticsUtils*]*
+                 -[*]XamlGeneratedNamespace*
+                 -[*]GoogleCloudExtension*.Resources
+                 ".Trim()
+  - ps: >
+      OpenCover.Console.exe
+        -register:user
+        -target:vstest.console.exe
+        -targetargs:$testArgs
+        -output:codecoverage.xml
+        -filter:$filter
 
 # Upload to codecov.io
 after_test:
