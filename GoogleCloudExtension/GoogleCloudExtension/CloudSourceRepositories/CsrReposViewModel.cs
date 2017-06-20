@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Gets the current active Repo
         /// </summary>
-        static public RepoItemViewModel ActiveRepo
+        public static RepoItemViewModel ActiveRepo
         {
             get { return s_activeRepo; }
             set
@@ -279,90 +279,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var localRepoTasks = repos.Where(r => !string.IsNullOrWhiteSpace(r))
                         .Select(GitRepository.GetGitCommandWrapperForPathAsync);
                 localRepos.AddRange((await Task.WhenAll(localRepoTasks)).Where(r => r != null));
-            }
-            return localRepos;
-        }
-
-        /// <summary>
-        /// projectRepos is used to cache the list of 'cloud repos' of the project-id.
-        /// </summary>
-        private async Task AddLocalReposAsync(IList<GitRepository> localRepos)
-        {
-            Dictionary<string, IList<Repo>> projectRepos
-                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
-            foreach (var localGitRepo in localRepos)
-            {
-                IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
-                foreach (var url in remoteUrls)
-                {
-                    string projectId = CsrUtils.ParseProjectId(url);
-                    if (String.IsNullOrWhiteSpace(projectId))
-                    {
-                        continue;
-                    }
-
-                    var cloudRepo = await TryGetCloudRepoAsync(url, projectId, projectRepos);
-                    if (cloudRepo == null)
-                    {
-                        Debug.WriteLine($"{projectId} repos does not contain {url}");
-                        continue;
-                    }
-                    Repositories.Add(new RepoItemViewModel(cloudRepo, localGitRepo.Root));
-                    break;
-                }
-            }
-        }
-
-        private async Task<Repo> TryGetCloudRepoAsync(
-            string url, 
-            string projectId, 
-            Dictionary<string, IList<Repo>> projectReposMap)
-        {
-            IList<Repo> cloudRepos;
-            Debug.WriteLine($"Check project id {projectId}");
-            if (!projectReposMap.TryGetValue(projectId, out cloudRepos))
-            {
-
-                cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
-                projectReposMap.Add(projectId, cloudRepos);
-            }
-
-            if (!(cloudRepos != null && cloudRepos.Any()))
-            {
-                Debug.WriteLine($"{projectId} has no repos found");
-                return null;
-            }
-
-            return cloudRepos.FirstOrDefault(
-                x => String.Compare(x.Url, url, StringComparison.OrdinalIgnoreCase) == 0);
-        }
-
-        /// <summary>
-        /// The list of local git repositories that Visual Studio remembers.
-        /// </summary>
-        /// <returns>
-        /// A list of local repositories.
-        /// Empty list is returned, never return null.
-        /// </returns>
-        private async Task<List<GitRepository>> GetLocalGitRepositories()
-        {
-            List<GitRepository> localRepos = new List<GitRepository>();
-            var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
-            if (repos != null)
-            {
-                // Not using Linq because it's tricky to use await inside Linq.
-                foreach (var path in repos)
-                {
-                    if (String.IsNullOrWhiteSpace(path))
-                    {
-                        continue;
-                    }
-                    var git = await GitRepository.GetGitCommandWrapperForPathAsync(path);
-                    if (git != null)
-                    {
-                        localRepos.Add(git);
-                    }
-                }
             }
             return localRepos;
         }

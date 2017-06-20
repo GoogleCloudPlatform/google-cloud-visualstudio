@@ -140,7 +140,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task CloneAsync()
         {
             // If OkCommand is enabled, SelectedRepository and LocalPath is valid
-            string destPath = Path.Combine(LocalPath, CsrUtils.GetRepoName(SelectedRepository));
+            string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
 
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedMessage,
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedToSetCredentialMessage,
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 return;
             }
             Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
@@ -227,7 +227,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneNoProject,
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 _owner.Close();
             }
         }
@@ -255,7 +255,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             if (SelectedRepository != null)
             {
-                string destPath = Path.Combine(LocalPath, CsrUtils.GetRepoName(SelectedRepository));
+                string destPath = Path.Combine(LocalPath, SelectedRepository?.GetRepoName());
                 if (Directory.Exists(destPath) && !PathUtils.IsPathEmpth(destPath))
                 {
                     yield return StringValidationResult.FromResource(

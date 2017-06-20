@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -28,6 +29,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public static class CsrUtils
     {
+        /// <summary>
+        /// Gets repository name 
+        /// The Cloud Repository name has format $"{ProjectResourceName}/repos/{repoName}" };
+        /// Returns the last part which is the repo name.
+        /// </summary>
+        /// <param name="cloudRepo">Repository object</param>
+        /// <returns>Repository name</returns>
+        public static string GetRepoName(this Repo cloudRepo) => cloudRepo?.Name?.Split('/').LastOrDefault();
+
         /// <summary>
         /// Parse the repository url and get the project name portion
         /// </summary>
