@@ -32,48 +32,97 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private const string TestProjectId = "loaded-project-id";
         private const string TestInputProjectId = "input-project-id";
         private const string ReloadedProjectID = "reloaded-project-id";
-        protected abstract string DefaultProjectId { get; }
+        private const string MockUserName = "UserName";
+
+        private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
+        private static readonly Project s_reloadedProject = new Project { ProjectId = ReloadedProjectID };
 
         private TaskCompletionSource<IList<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
-        private readonly Project _testProject = new Project { ProjectId = TestProjectId };
-        private IList<Project> _testProjectList;
-        private readonly Project _reloadedProject = new Project { ProjectId = ReloadedProjectID };
-        private List<Project> _reloadedProjectList;
         private IList<string> _properiesChanged;
         private IList<string> _loadTaskPropertiesChanged;
+        private PropertyChangedEventHandler _addLoadTaskPropertyChanged;
+        private PropertyChangedEventHandler _addPropertiesChanged;
+        private PropertyChangedEventHandler _updateLoadTaskEvents;
+
         protected abstract Project DefaultProject { get; }
+        protected abstract string DefaultProjectId { get; }
 
         [TestInitialize]
         public void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(DefaultProject);
+            CredentialsStore.Default.CurrentAccount = new UserAccount { AccountName = MockUserName };
             _projectTaskSource = new TaskCompletionSource<IList<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
-            Func<IResourceManagerDataSource> dataSourceFactory = () =>
-            {
-                var dataSourceMock = new Mock<IResourceManagerDataSource>();
-                dataSourceMock.Setup(ds => ds.GetProjectsListAsync()).Returns(_projectTaskSource.Task);
-                return dataSourceMock.Object;
-            };
-            _testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, () => { });
-            _testProjectList = new[] { _testProject };
-            _reloadedProjectList = new List<Project> { _reloadedProject };
             _properiesChanged = new List<string>();
-            _testObject.PropertyChanged += (sender, args) => _properiesChanged.Add(args.PropertyName);
             _loadTaskPropertiesChanged = new List<string>();
-            PropertyChangedEventHandler addLoadTaskPropertyChanged =
-                (sender, args) => _loadTaskPropertiesChanged.Add(args.PropertyName);
-            _testObject.LoadTask.PropertyChanged += addLoadTaskPropertyChanged;
-            _testObject.PropertyChanged += (sender, args) =>
+            _addLoadTaskPropertyChanged = (sender, args) => _loadTaskPropertiesChanged.Add(args.PropertyName);
+            _addPropertiesChanged = (sender, args) => _properiesChanged.Add(args.PropertyName);
+            _updateLoadTaskEvents = (sender, args) =>
             {
-                if (nameof(PickProjectIdViewModel.LoadTask).Equals(args.PropertyName))
+                var model = sender as PickProjectIdViewModel;
+                if (model?.LoadTask != null &&
+                    (nameof(PickProjectIdViewModel.LoadTask).Equals(args.PropertyName) || args.PropertyName == null))
                 {
-                    _testObject.LoadTask.PropertyChanged += addLoadTaskPropertyChanged;
+                    model.LoadTask.PropertyChanged += _addLoadTaskPropertyChanged;
                 }
             };
+            _testObject = BuildTestObject();
+        }
+
+        private PickProjectIdViewModel BuildTestObject()
+        {
+            Func<Task<IList<Project>>> projectsListAsyncCallBack = async () =>
+            {
+                try
+                {
+                    return await _projectTaskSource.Task;
+                }
+                finally
+                {
+                    _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+                }
+            };
+            Func<IResourceManagerDataSource> dataSourceFactory =
+                () => Mock.Of<IResourceManagerDataSource>(
+                    ds => ds.GetProjectsListAsync() == projectsListAsyncCallBack());
+            var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, () => { });
+            testObject.PropertyChanged += _addPropertiesChanged;
+            if (testObject.LoadTask != null)
+            {
+                testObject.LoadTask.PropertyChanged += _addLoadTaskPropertyChanged;
+            }
+            testObject.PropertyChanged += _updateLoadTaskEvents;
+            return testObject;
+        }
+
+        [TestMethod]
+        public void TestNoUser()
+        {
+            CredentialsStore.Default.CurrentAccount = null;
+            _testObject = BuildTestObject();
+
+            Assert.IsNull(_testObject.LoadTask);
+            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsNull(_testObject.Projects);
+            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestNoUserOnReload()
+        {
+            CredentialsStore.Default.CurrentAccount = null;
+            _testObject.ChangeUserCommand.Execute(null);
+
+            Assert.IsNull(_testObject.LoadTask);
+            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsNull(_testObject.Projects);
+            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
@@ -164,7 +213,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_LoadCompleted()
         {
-            _projectTaskSource.SetResult(_testProjectList);
+            _projectTaskSource.SetResult(new[] { s_testProject });
 
             Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
             Assert.IsTrue(_testObject.LoadTask.IsSuccess);
@@ -178,14 +227,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             if (DefaultProjectId == null)
             {
                 Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.AreEqual(_testProject, _testObject.SelectedProject);
+                Assert.AreEqual(s_testProject, _testObject.SelectedProject);
             }
             else
             {
                 Assert.AreEqual(0, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
                 Assert.IsNull(_testObject.SelectedProject);
             }
-            Assert.AreEqual(_testProjectList, _testObject.Projects);
+            Assert.AreEqual(1, _testObject.Projects.Count);
+            Assert.AreEqual(s_testProject, _testObject.Projects[0]);
             Assert.AreEqual(DefaultProjectId ?? TestProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
             Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
@@ -194,7 +244,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_SelectCommandOnTask()
         {
-            _projectTaskSource.SetResult(_testProjectList);
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.OkCommand.Execute(null);
 
             _windowMock.Verify(window => window.Close());
@@ -215,7 +265,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void Test_InputBeforeLoad()
         {
             _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(_testProjectList);
+            _projectTaskSource.SetResult(new[] { s_testProject });
 
             Assert.IsFalse(_properiesChanged.Any(nameof(PickProjectIdViewModel.LoadTask).Equals));
             Assert.AreEqual(1, _loadTaskPropertiesChanged.Count);
@@ -223,7 +273,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            Assert.AreEqual(_testProjectList, _testObject.Projects);
+            Assert.AreEqual(1, _testObject.Projects.Count);
+            Assert.AreEqual(s_testProject, _testObject.Projects[0]);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
@@ -233,7 +284,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void Test_SelectCommandOnProjectInputBeforeLoad()
         {
             _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(_testProjectList);
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.OkCommand.Execute(null);
 
             _windowMock.Verify(window => window.Close());
@@ -243,8 +294,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_ReloadProjects()
         {
-            _projectTaskSource.SetResult(_testProjectList);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ChangeUserCommand.Execute(null);
 
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.LoadTask).Equals));
@@ -261,12 +311,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_ReloadProjectsWithEmptyInput()
         {
-            _projectTaskSource.SetResult(_testProjectList);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ProjectId = "";
             _testObject.ChangeUserCommand.Execute(null);
             _properiesChanged.Clear();
-            _projectTaskSource.SetResult(_reloadedProjectList);
+            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
@@ -278,10 +327,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_ReloadProjectsResult()
         {
-            _projectTaskSource.SetResult(_testProjectList);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(_reloadedProjectList);
+            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
 
             Assert.AreEqual(2, _loadTaskPropertiesChanged.Count);
@@ -291,14 +339,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             if (DefaultProjectId == null)
             {
                 Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.AreEqual(_reloadedProject, _testObject.SelectedProject);
+                Assert.AreEqual(s_reloadedProject, _testObject.SelectedProject);
             }
             else
             {
                 Assert.AreEqual(0, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
                 Assert.IsNull(_testObject.SelectedProject);
             }
-            Assert.AreEqual(_reloadedProjectList, _testObject.Projects);
+            Assert.AreEqual(1, _testObject.Projects.Count);
+            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
             Assert.AreEqual(DefaultProjectId ?? ReloadedProjectID, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
         }
@@ -306,11 +355,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void Test_ReloadProjectsResultWithInput()
         {
-            _projectTaskSource.SetResult(_testProjectList);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ChangeUserCommand.Execute(null);
             _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(_reloadedProjectList);
+            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
             Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
             Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
@@ -322,7 +370,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             {
                 Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
             }
-            Assert.AreEqual(_reloadedProjectList, _testObject.Projects);
+            Assert.AreEqual(1, _testObject.Projects.Count);
+            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
@@ -332,15 +381,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void Test_ReloadProjectsResultWithEarlyInput()
         {
             _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(_testProjectList);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(_reloadedProjectList);
+            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
             Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
             Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            Assert.AreEqual(_reloadedProjectList, _testObject.Projects);
+            Assert.AreEqual(1, _testObject.Projects.Count);
+            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);

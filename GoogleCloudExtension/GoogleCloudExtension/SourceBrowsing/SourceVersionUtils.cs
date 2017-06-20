@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             new ProgressDialogWindow.Options
             {
                 Message = Resources.SourceVersionProgressDialogMessage,
-                Title = Resources.uiDefaultPromptTitle,
+                Title = Resources.UiDefaultPromptTitle,
                 IsCancellable = false
             };
 
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             UserPromptUtils.ErrorPrompt(
                 message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
-                title: Resources.uiDefaultPromptTitle);
+                title: Resources.UiDefaultPromptTitle);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             if (UserPromptUtils.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
-                    title: Resources.uiDefaultPromptTitle,
+                    title: Resources.UiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
                 ShellUtils.OpenProject();
@@ -185,7 +185,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             UserPromptUtils.ErrorPrompt(
                 message: Resources.LogsViewerVersionInfoMissingMessage,
-                title: Resources.uiDefaultPromptTitle);
+                title: Resources.UiDefaultPromptTitle);
         }
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     message: String.Format(
                         Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                         filePath, commit.Sha, commit.Root),
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 relativePath = null;
             }
             else if (matchingFiles.Count() > 1)

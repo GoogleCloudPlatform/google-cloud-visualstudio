@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// Base class for Topic like view models.
     /// </summary>
-    internal abstract class TopicViewModelBase : TreeHierarchy, ICloudExplorerItemSource
+    internal abstract class TopicViewModelBase : TreeHierarchy, ITopicViewModelBase
     {
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
@@ -55,21 +55,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// The topic item of this view model.
         /// </summary>
-        public object Item => TopicItem;
+        object ICloudExplorerItemSource.Item => Item;
 
-        protected PubsubSourceRootViewModel Owner { get; }
-        protected ITopicItem TopicItem { get; }
+        protected IPubsubSourceRootViewModel Owner { get; }
+
+        public ITopicItem Item { get; }
 
         public event EventHandler ItemChanged;
 
         protected TopicViewModelBase(
-            PubsubSourceRootViewModel owner,
-            ITopicItem topicItem,
+            IPubsubSourceRootViewModel owner,
+            ITopicItem item,
             IEnumerable<Subscription> subscriptions)
         {
             Owner = owner;
-            TopicItem = topicItem;
-            Caption = TopicItem.DisplayName;
+            Item = item;
+            Caption = Item.DisplayName;
             AddSubscriptonsOfTopic(subscriptions);
         }
 
@@ -113,7 +114,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <param name="subscriptions">An enumeration of all subscriptions.</param>
         private void AddSubscriptonsOfTopic(IEnumerable<Subscription> subscriptions)
         {
-            foreach (Subscription subscription in subscriptions.Where(s => s.Topic == TopicItem.FullName))
+            foreach (Subscription subscription in subscriptions.Where(s => s.Topic == Item.FullName))
             {
                 Children.Add(new SubscriptionViewModel(this, subscription));
             }

@@ -129,7 +129,19 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             OkCommand = new ProtectedCommand(OnOk, false);
             SkipCommand = new ProtectedCommand(OnSkip);
             ProjectId = CredentialsStore.Default.CurrentProjectId;
-            LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+            StartLoadProjects();
+        }
+
+        private void StartLoadProjects()
+        {
+            if (CredentialsStore.Default.CurrentAccount != null)
+            {
+                LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+            }
+            else
+            {
+                LoadTask = null;
+            }
         }
 
         private async Task LoadProjectsAsync()
@@ -151,7 +163,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         private void OnChangeUser()
         {
             _promptAccountManagement();
-            LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+            StartLoadProjects();
         }
 
         private void OnOk()

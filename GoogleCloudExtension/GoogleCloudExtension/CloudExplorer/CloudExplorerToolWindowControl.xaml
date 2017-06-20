@@ -359,6 +359,8 @@
             SelectedItemChanged="TreeView_SelectedItemChanged"
             KeyDown="TreeView_KeyDown"
             Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter IsNegated=True}}"
+            utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
+            utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
             Grid.Row="2"
             Style="{StaticResource CloudExplorerTreeViewStyle}" />
 
