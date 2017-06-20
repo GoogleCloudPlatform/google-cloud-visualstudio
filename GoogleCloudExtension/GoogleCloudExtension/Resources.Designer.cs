@@ -331,7 +331,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create or manage accounts....
+        ///   Looks up a localized string similar to Or create a new account.
         /// </summary>
         public static string AttachDebuggerCreateManageAccountLinkCaption {
             get {
@@ -367,7 +367,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installing, launching Remote Debugger.
+        ///   Looks up a localized string similar to Launching Remote Debugger.
         /// </summary>
         public static string AttachDebuggerInstallSetupProgressMessage {
             get {
@@ -1060,7 +1060,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach Debugger.
+        ///   Looks up a localized string similar to Attach debugger.
         /// </summary>
         public static string CloudExplorerGceAttachDebuggerMenuHeader {
             get {
@@ -2437,6 +2437,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Enter name:.
+        /// </summary>
+        public static string EnterNameDialogNameMessage {
+            get {
+                return ResourceManager.GetString("EnterNameDialogNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
         public static string ErrorReporting1DayButtonCaption {
@@ -2851,7 +2860,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach Debugger after publishing.
+        ///   Looks up a localized string similar to Attach debugger after publishing.
         /// </summary>
         public static string GcePublishAttachDebuggerCaption {
             get {
@@ -2955,6 +2964,564 @@ namespace GoogleCloudExtension {
         public static string GCloudWrapperUtilsOldCloudSdkTitle {
             get {
                 return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string GcsFileBrowserContentTypeHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserContentTypeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to list objects to delete..
+        /// </summary>
+        public static string GcsFileBrowserDeleteListErrorMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeleteListErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete these files?.
+        /// </summary>
+        public static string GcsFileBrowserDeletePromptMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletePromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files deleted {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDeletingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting Files.
+        /// </summary>
+        public static string GcsFileBrowserDeletingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being deleted.
+        /// </summary>
+        public static string GcsFileBrowserDeletingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory.
+        /// </summary>
+        public static string GcsFileBrowserDirectoryCategory {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The full path to the directory..
+        /// </summary>
+        public static string GcsFileBrowserDirectoryFullPathDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryFullPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Storage Directory.
+        /// </summary>
+        public static string GcsFileBrowserDirectoryItemDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryItemDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the directory..
+        /// </summary>
+        public static string GcsFileBrowserDirectoryNameDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download....
+        /// </summary>
+        public static string GcsFileBrowserDonwloadHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDonwloadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files downloaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Files.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being downloaded:.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load {0}. Try refreshing..
+        /// </summary>
+        public static string GcsFileBrowserFailedDirectoryLoadMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedDirectoryLoadMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load directory..
+        /// </summary>
+        public static string GcsFileBrowserFailedLoadRootDirectoryMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedLoadRootDirectoryMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create directories for download..
+        /// </summary>
+        public static string GcsFileBrowserFailedToCreateDirMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedToCreateDirMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create folder {0}..
+        /// </summary>
+        public static string GcsFileBrowserFailedToCreateRemoteFolder {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedToCreateRemoteFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string GcsFileBrowserFileCategory {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the file..
+        /// </summary>
+        public static string GcsFileBrowserFileContentTypeDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileContentTypeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string GcsFileBrowserFileContentTypeDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileContentTypeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The full path to the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileFullPathDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileFullPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Storage File.
+        /// </summary>
+        public static string GcsFileBrowserFileItemDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileItemDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The last modified time stamp of the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileLastModifiedDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileLastModifiedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Modified.
+        /// </summary>
+        public static string GcsFileBrowserFileLastModifiedDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileLastModifiedDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileNameDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the blob in bytes..
+        /// </summary>
+        public static string GcsFileBrowserFileSizeDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileSizeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string GcsFileBrowserFileSizeDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileSizeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download files.
+        /// </summary>
+        public static string GcsFileBrowserFolderSelectionMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFolderSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCS Path.
+        /// </summary>
+        public static string GcsFileBrowserFullPathDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFullPathDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Modified.
+        /// </summary>
+        public static string GcsFileBrowserLastModifiedHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserLastModifiedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string GcsFileBrowserNameDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string GcsFileBrowserNameHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Folder....
+        /// </summary>
+        public static string GcsFileBrowserNewFolderHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string GcsFileBrowserNewFolderTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string GcsFileBrowserNewFolderTooltip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload a file or drop one here from Windows Explorer..
+        /// </summary>
+        public static string GcsFileBrowserNoFilesMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNoFilesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename {0}..
+        /// </summary>
+        public static string GcsFileBrowserRenameFailedMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename file....
+        /// </summary>
+        public static string GcsFileBrowserRenameFileHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename file.
+        /// </summary>
+        public static string GcsFileBrowserRenameFileTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder....
+        /// </summary>
+        public static string GcsFileBrowserRenameFolderHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder.
+        /// </summary>
+        public static string GcsFileBrowserRenameFolderTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFolderTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renaming files.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being renamed.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files renamed {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renaming file..
+        /// </summary>
+        public static string GcsFileBrowserRenamingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string GcsFileBrowserSizeHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserSizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesButtonCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesToolTip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files uploaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserUploadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading Files.
+        /// </summary>
+        public static string GcsFileBrowserUploadingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Files being uploaded:.
+        /// </summary>
+        public static string GcsFileBrowserUploadingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation cancelled.
+        /// </summary>
+        public static string GcsFileProgressDialogCancelledOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancelledOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling operation.
+        /// </summary>
+        public static string GcsFileProgressDialogCancellingOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancellingOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string GcsFileProgressDialogErrorState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogErrorState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to enumerate files..
+        /// </summary>
+        public static string GcsFileProgressDialogFailedToEnumerateFiles {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFailedToEnumerateFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string GcsFileProgressDialogFileHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide details.
+        /// </summary>
+        public static string GcsFileProgressDialogHideDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogHideDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string GcsFileProgressDialogPendingState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogPendingState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        public static string GcsFileProgressDialogProgressHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogProgressHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show details.
+        /// </summary>
+        public static string GcsFileProgressDialogShowDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogShowDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation starting.
+        /// </summary>
+        public static string GcsFileProgressDialogStartingOperation {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogStartingOperation", resourceCulture);
             }
         }
         
@@ -3958,6 +4525,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter name.
+        /// </summary>
+        public static string NamePromptCaption {
+            get {
+                return ResourceManager.GetString("NamePromptCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name cannot be empty..
+        /// </summary>
+        public static string NamePromptEmptyNameMessage {
+            get {
+                return ResourceManager.GetString("NamePromptEmptyNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name cannot contain invalid chars &apos;/&apos;.
+        /// </summary>
+        public static string NamePromptInvalidCharsMessage {
+            get {
+                return ResourceManager.GetString("NamePromptInvalidCharsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Acknowledgement deadline (seconds):.
         /// </summary>
         public static string NewSubscriptionWindowAckDeadlineLabel {
@@ -4822,6 +5416,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string UiBrowseMenuHeader {
+            get {
+                return ResourceManager.GetString("UiBrowseMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string UiCancelButtonCaption {
@@ -4860,9 +5463,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Tools.
         /// </summary>
-        public static string uiDefaultPromptTitle {
+        public static string UiDefaultPromptTitle {
             get {
-                return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
+                return ResourceManager.GetString("UiDefaultPromptTitle", resourceCulture);
             }
         }
         
@@ -4876,11 +5479,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string UiDeleteToolTip {
+            get {
+                return ResourceManager.GetString("UiDeleteToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Download.
         /// </summary>
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string UiErrorCaption {
+            get {
+                return ResourceManager.GetString("UiErrorCaption", resourceCulture);
             }
         }
         
@@ -5007,6 +5628,15 @@ namespace GoogleCloudExtension {
         public static string UiSearchMenuSearchBoxLabel {
             get {
                 return ResourceManager.GetString("UiSearchMenuSearchBoxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string UiSelectAllHeader {
+            get {
+                return ResourceManager.GetString("UiSelectAllHeader", resourceCulture);
             }
         }
         
@@ -5214,6 +5844,15 @@ namespace GoogleCloudExtension {
         public static string WizardPickProjectIdLoadProjectsErrorMessage {
             get {
                 return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To get a list of projects, select an account..
+        /// </summary>
+        public static string WizardPickProjectIdNoAccountMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessage", resourceCulture);
             }
         }
         

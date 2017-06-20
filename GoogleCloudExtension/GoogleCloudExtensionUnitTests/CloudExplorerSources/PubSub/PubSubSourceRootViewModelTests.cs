@@ -27,8 +27,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
@@ -38,30 +36,37 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class PubSubSourceRootViewModelTests
     {
-        private const string MockExceptionMessage = SourceRootViewModelBaseTests.MockExceptionMessage;
+        public const string MockTopicLeafName = "MockTopic";
+        public const string MockTopicFullName = TopicPrefix + MockTopicLeafName;
+        public const string MockSubscriptionLeafName = "MockSubscription";
+        public const string MockSubscriptionFullName = SubscriptionPrefix + MockSubscriptionLeafName;
+
+        public const string MockExceptionMessage = SourceRootViewModelBaseTests.MockExceptionMessage;
         private const string MockProjectId = SourceRootViewModelBaseTests.MockProjectId;
-        private const string MockTopicName = "MockTopic";
-        private const string MockSubscriptionName = "MockSubscription";
-        private const string TopicPrefix = "projects/" + MockProjectId + "/topics/";
+        private const string ProjectResourcePrefix = "projects/" + MockProjectId;
+        private const string TopicPrefix = ProjectResourcePrefix + "/topics/";
+        private const string SubscriptionPrefix = ProjectResourcePrefix + "/subscriptions/";
+
 
         /// <summary>
         /// Defined by the pub sub api.
         /// <see href="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics/delete"/>
         /// </summary>
-        private const string DeletedTopicName = "_deleted-topic_";
+        public const string DeletedTopicName = "_deleted-topic_";
 
-        private static readonly Topic s_topic = new Topic { Name = MockTopicName };
+
+        private static readonly Topic s_topic = new Topic { Name = MockTopicFullName };
 
         private static readonly Subscription s_childSubscription = new Subscription
         {
-            Topic = MockTopicName,
-            Name = MockSubscriptionName
+            Topic = MockTopicFullName,
+            Name = MockSubscriptionFullName
         };
 
         private static readonly Subscription s_orphanedSubscription = new Subscription
         {
             Topic = DeletedTopicName,
-            Name = MockSubscriptionName
+            Name = MockSubscriptionFullName
         };
 
         private Mock<IPubsubDataSource> _dataSourceMock;
@@ -211,11 +216,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TopicViewModel;
             Assert.IsNotNull(child);
-            Assert.AreEqual(MockTopicName, child.Caption);
+            Assert.AreEqual(MockTopicLeafName, child.Caption);
             Assert.AreEqual(1, child.Children.Count);
             var subChild = child.Children[0] as SubscriptionViewModel;
             Assert.IsNotNull(subChild);
-            Assert.AreEqual(MockSubscriptionName, subChild.Caption);
+            Assert.AreEqual(MockSubscriptionLeafName, subChild.Caption);
         }
 
         [TestMethod]
@@ -230,14 +235,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(2, _objectUnderTest.Children.Count);
             var topicChild = _objectUnderTest.Children[0] as TopicViewModel;
             Assert.IsNotNull(topicChild);
-            Assert.AreEqual(MockTopicName, topicChild.Caption);
+            Assert.AreEqual(MockTopicLeafName, topicChild.Caption);
             Assert.AreEqual(0, topicChild.Children.Count);
             var orphanedHolder = _objectUnderTest.Children[1] as OrphanedSubscriptionsViewModel;
             Assert.IsNotNull(orphanedHolder);
             Assert.AreEqual(1, orphanedHolder.Children.Count);
             var subChild = orphanedHolder.Children[0] as SubscriptionViewModel;
             Assert.IsNotNull(subChild);
-            Assert.AreEqual(MockSubscriptionName, subChild.Caption);
+            Assert.AreEqual(MockSubscriptionLeafName, subChild.Caption);
         }
 
         [TestMethod]
@@ -298,7 +303,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.NewTopicUserPrompt = projectId =>
             {
                 projectIdParam = projectId;
-                return MockTopicName;
+                return MockTopicFullName;
             };
             UserPromptWindow.PromptUserFunction = options =>
             {
@@ -311,8 +316,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.AreEqual(MockExceptionMessage, details);
             Assert.AreEqual(0, _objectUnderTest.RefreshHitCount);
-            _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicName), Times.Once);
-            _dataSourceMock.Verify(ds => ds.NewTopicAsync(It.IsNotIn(MockTopicName)), Times.Never);
+            _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicFullName), Times.Once);
+            _dataSourceMock.Verify(ds => ds.NewTopicAsync(It.IsNotIn(MockTopicFullName)), Times.Never);
         }
 
         [TestMethod]
@@ -325,7 +330,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.NewTopicUserPrompt = projectId =>
             {
                 projectIdParam = projectId;
-                return MockTopicName;
+                return MockTopicFullName;
             };
             UserPromptWindow.PromptUserFunction = options =>
             {
@@ -338,8 +343,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.IsNull(details);
             Assert.AreEqual(1, _objectUnderTest.RefreshHitCount);
-            _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicName), Times.Once);
-            _dataSourceMock.Verify(ds => ds.NewTopicAsync(It.IsNotIn(MockTopicName)), Times.Never);
+            _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicFullName), Times.Once);
+            _dataSourceMock.Verify(ds => ds.NewTopicAsync(It.IsNotIn(MockTopicFullName)), Times.Never);
         }
 
         [TestMethod]
@@ -360,11 +365,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
         private class TestablePubsubSourceRootViewModel : PubsubSourceRootViewModel
         {
-            // Avoid having to enable pack urls.
-            private readonly Mock<BitmapSource> _rootIconMock = new Mock<BitmapSource>();
-
-            public override ImageSource RootIcon => _rootIconMock.Object;
-
             public int RefreshHitCount { get; private set; }
 
             public TestablePubsubSourceRootViewModel(Func<IPubsubDataSource> factory) : base(factory) { }

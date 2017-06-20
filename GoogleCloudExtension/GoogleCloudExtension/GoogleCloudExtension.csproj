@@ -83,6 +83,16 @@
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserDirectoryLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserFilesDroppedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserOpenDirectoryEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserRenameFileEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartDeleteEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartDownloadEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserNewFolderEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserOpenEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartRenameDirectoryEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartUploadEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
@@ -161,7 +171,9 @@
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\IPubsubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\ITopicViewModelBase.cs" />
     <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
@@ -171,6 +183,9 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
+    <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
+    <Compile Include="CloudExplorer\ITreeNode.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
       <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
@@ -197,6 +212,7 @@
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
     <Compile Include="CloudExplorer\CloudConsoleSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\IAcceptInput.cs" />
     <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
@@ -245,6 +261,16 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsBrowserState.cs" />
+    <Compile Include="GcsFileBrowser\GcsBrowserViewModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsColumnSorter.cs" />
+    <Compile Include="GcsFileBrowser\GcsDirectoryItem.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">
+      <DependentUpon>GcsFileBrowserWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GcsFileBrowser\GcsRow.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileItem.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
@@ -265,6 +291,11 @@
     <Compile Include="Accounts\UserAccount.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerViewModel.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerWindow.cs" />
+    <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
+      <DependentUpon>NamePromptContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NamePrompt\NamePromptViewModel.cs" />
+    <Compile Include="NamePrompt\NamePromptWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -425,12 +456,18 @@
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogViewModel.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindow.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Theming\CommonImageResources.cs" />
     <Compile Include="TitleBar\TitleBar.xaml.cs">
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
+    <Compile Include="Utils\StringFormatUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\IProtectedAction.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
@@ -560,10 +597,16 @@
     <Resource Include="Controls\Resources\step_8_dark.png" />
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
+    <Resource Include="GcsFileBrowser\Resources\refresh.png" />
+    <Resource Include="GcsFileBrowser\Resources\folder.png" />
+    <Resource Include="GcsFileBrowser\Resources\file.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
+    <Resource Include="GcsFileBrowser\Resources\create_new_folder.png" />
+    <Resource Include="GcsFileBrowser\Resources\delete_forever.png" />
+    <Resource Include="GcsFileBrowser\Resources\file_upload.png" />
     <Resource Include="CloudSourceRepositories\Resources\cloud-source-repositories.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -912,6 +955,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -921,6 +968,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NamePrompt\NamePromptContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -965,6 +1016,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1086,6 +1141,10 @@
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj">
+      <Project>{0c891356-ccd7-4a10-ba27-c4a4359ea825}</Project>
+      <Name>GoogleCloudExtension.GcsUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
       <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
       <Name>GoogleCloudExtension.GitUtils</Name>
@@ -1098,15 +1157,9 @@
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj">
-      <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
-      <Name>GoogleCloudExtension.PowerShellUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj">
       <Project>{3febb10a-adaf-4807-b741-030b1f722d35}</Project>
       <Name>GoogleCloudExtension.TeamExplorerExtension.v14</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
       <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
@@ -1118,9 +1171,17 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj">
+      <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
+      <Name>GoogleCloudExtension.PowerShellUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
+      <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
       <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>
@@ -1149,12 +1210,6 @@
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
-      <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
-      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine($"Attach debugger got exception. {ex}");
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 ResetDefaultSelection();
                 return HelpStepViewModel.CreateStep(Context);
             }
@@ -264,7 +264,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.AttachDebuggerListProcessEmptyResultErrorMessage,
-                    title: Resources.uiDefaultPromptTitle);
+                    title: Resources.UiDefaultPromptTitle);
                 return false;
             }
 

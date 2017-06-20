@@ -1259,6 +1259,74 @@
     <value>Error Updating Firewall</value>
     <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
+  <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
+    <value>Type</value>
+    <comment>The header for the Content Type column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
+    <value>Failed to list objects to delete.</value>
+    <comment>Error message shown when failed to list all the files to be deleted.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletePromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete these files?</value>
+    <comment>Message for the delete confirmation prompt for GCS files.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressCaption" xml:space="preserve">
+    <value>Deleting Files</value>
+    <comment>Caption for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressMessage" xml:space="preserve">
+    <value>Files being deleted</value>
+    <comment>Message for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDonwloadHeader" xml:space="preserve">
+    <value>Download...</value>
+    <comment>Header for the Download option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressCaption" xml:space="preserve">
+    <value>Downloading Files</value>
+    <comment>Caption for the progress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressMessage" xml:space="preserve">
+    <value>Files being downloaded:</value>
+    <comment>Message for the prgoress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
+    <value>Unable to load {0}. Try refreshing.</value>
+    <comment>Error message shown when failed to load a directory.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
+    <value>Failed to create directories for download.</value>
+    <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
+  </data>
+  <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
+    <value>Download files</value>
+    <comment>Messagefor the dialog used to select a target folder.</comment>
+  </data>
+  <data name="GcsFileBrowserLastModifiedHeader" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The header for the Last Modified column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserNameHeader" xml:space="preserve">
+    <value>Name</value>
+    <comment>The header for the Name column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
+    <value>New Folder...</value>
+    <comment>Header for the New Folder option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserSizeHeader" xml:space="preserve">
+    <value>Size</value>
+    <comment>The header for the Size column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
+    <value>Uploading Files</value>
+    <comment>Caption for the progress dialog for the upload operations.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
+    <value>_Files being uploaded:</value>
+    <comment>Message for the progress dialog for the upload operations.</comment>
+  </data>
   <data name="LogViewerLogItemDateFormat" xml:space="preserve">
     <value>MM-dd-yyyy</value>
     <comment>Log item date format.</comment>
@@ -1266,6 +1334,14 @@
   <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
     <value>IPv6 Address (First Gen)</value>
     <comment>The display name for the IP v6 address.</comment>
+  </data>
+  <data name="UiBrowseMenuHeader" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Header for a browse menu item.</comment>
+  </data>
+  <data name="UiErrorCaption" xml:space="preserve">
+    <value>Error</value>
+    <comment>Generic error caption for error dialogs.</comment>
   </data>
   <data name="LogViewerLogItemTimeFormat" xml:space="preserve">
     <value>HH:mm:ss.fff</value>
@@ -1282,6 +1358,82 @@
   <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
     <value>Report Usage Statistics Enabled</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
+    <value>Directory</value>
+    <comment>The category for the directory properties.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryNameDescription" xml:space="preserve">
+    <value>The name of the directory.</value>
+    <comment>The description for the directory name property.</comment>
+  </data>
+  <data name="GcsFileBrowserFileCategory" xml:space="preserve">
+    <value>File</value>
+    <comment>The category for the file properties.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDescription" xml:space="preserve">
+    <value>The type of the file.</value>
+    <comment>The description of the content type of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
+    <value>Type</value>
+    <comment>The display name for the content type property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
+    <value>The full path to the blob.</value>
+    <comment>Description for the file full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFullPathDisplayName" xml:space="preserve">
+    <value>GCS Path</value>
+    <comment>The display name for the full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDescription" xml:space="preserve">
+    <value>The last modified time stamp of the blob.</value>
+    <comment>The description for the last modified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDisplayName" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The display name for the LastModified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileNameDescription" xml:space="preserve">
+    <value>Name of the blob.</value>
+    <comment>The description for the file name.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDescription" xml:space="preserve">
+    <value>Size of the blob in bytes.</value>
+    <comment>The description for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDisplayName" xml:space="preserve">
+    <value>Size</value>
+    <comment>The display name for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The display name for the name of the item.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryFullPathDescription" xml:space="preserve">
+    <value>The full path to the directory.</value>
+    <comment>Description of the GcsPath property of the directory.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage Directory</value>
+    <comment>Display name for a directory item.</comment>
+  </data>
+  <data name="GcsFileBrowserFileItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage File</value>
+    <comment>Display name for a file item.</comment>
+  </data>
+  <data name="NamePromptCaption" xml:space="preserve">
+    <value>Enter name</value>
+    <comment>Caption for the name prompt dialog.</comment>
+  </data>
+  <data name="NamePromptEmptyNameMessage" xml:space="preserve">
+    <value>Name cannot be empty.</value>
+    <comment>Message shown when a name is empty in the name prompt.</comment>
+  </data>
+  <data name="NamePromptInvalidCharsMessage" xml:space="preserve">
+    <value>Name cannot contain invalid chars '/'</value>
+    <comment>Message shown when a name contains invalid chars.</comment>
   </data>
   <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
     <value>Cancelling</value>
@@ -1483,6 +1635,10 @@
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
+  <data name="EnterNameDialogNameMessage" xml:space="preserve">
+    <value>_Enter name:</value>
+    <comment>Message to show on the dialog for the name text box.</comment>
+  </data>
   <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
     <value>All logs</value>
     <comment>The log name (log id) selection label for select all logs.</comment>
@@ -1515,7 +1671,7 @@
     <value>The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location.</value>
     <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
   </data>
-  <data name="uiDefaultPromptTitle" xml:space="preserve">
+  <data name="UiDefaultPromptTitle" xml:space="preserve">
     <value>Google Cloud Tools</value>
     <comment>The prompt title for source version utils message boxes.</comment>
   </data>
@@ -2103,6 +2259,122 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
+  <data name="GcsFileBrowserFailedToCreateRemoteFolder" xml:space="preserve">
+    <value>Failed to create folder {0}.</value>
+    <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
+  </data>
+  <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
+    <value>Error</value>
+    <comment>Message shown when an operation is in the error state.</comment>
+  </data>
+  <data name="GcsFileProgressDialogFailedToEnumerateFiles" xml:space="preserve">
+    <value>Failed to enumerate files.</value>
+    <comment>Error message shown when failed to enumerate files while uploading them.</comment>
+  </data>
+  <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
+    <value>File</value>
+    <comment>Header used in the file name column in the data grid for the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogPendingState" xml:space="preserve">
+    <value>Pending</value>
+    <comment>Message shown when an operation is still in the pending state.</comment>
+  </data>
+  <data name="GcsFileProgressDialogProgressHeader" xml:space="preserve">
+    <value>Progress</value>
+    <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingOverallProgressMessage" xml:space="preserve">
+    <value>Files deleted {0} of {1}</value>
+    <comment>Message shown while delete files. {0} is the count of files deleted, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingOverallProgressMessage" xml:space="preserve">
+    <value>Files downloaded {0} of {1}</value>
+    <comment>Message shown while downloading files. {0} is the count of files downloaded, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingOverallProgressMessage" xml:space="preserve">
+    <value>Files uploaded {0} of {1}</value>
+    <comment>Message shown while uploading files. {0} is the count of files uploaded, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
+    <value>Operation cancelled</value>
+    <comment>Message shown when the operation is cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancellingOperationMessage" xml:space="preserve">
+    <value>Cancelling operation</value>
+    <comment>Message shown while the operation is being cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogHideDetailsCaption" xml:space="preserve">
+    <value>Hide details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogShowDetailsCaption" xml:space="preserve">
+    <value>Show details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogStartingOperation" xml:space="preserve">
+    <value>Operation starting</value>
+    <comment>Message shown when the operation is started.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
+    <value>Failed to rename {0}.</value>
+    <comment>Message shown when the rename operation fails. {0} is the name of the file or directory.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
+    <value>Rename file...</value>
+    <comment>Header for the Rename File menu entry.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingProgressMessage" xml:space="preserve">
+    <value>Renaming file.</value>
+    <comment>Message shown while the rename operation is in flight.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFolderHeader" xml:space="preserve">
+    <value>Rename folder...</value>
+    <comment>Header used for the rename directory menu option.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
+    <value>Renaming files</value>
+    <comment>Caption for the progress dialog when renaming multiple files.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesMessage" xml:space="preserve">
+    <value>Files being renamed</value>
+    <comment>Message displayed when renaming multiple files.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesProgressMessage" xml:space="preserve">
+    <value>Files renamed {0} of {1}</value>
+    <comment>Message displayed to show the progress of renaming multiple files. {0} is the current count of completed operations, {1} is the total count of operations</comment>
+  </data>
+  <data name="GcsFileBrowserFailedLoadRootDirectoryMessage" xml:space="preserve">
+    <value>Failed to load directory.</value>
+    <comment>Message shown when there's a failure loading the root directory.</comment>
+  </data>
+  <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
+    <value>Upload a file or drop one here from Windows Explorer.</value>
+    <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
+  </data>
+  <data name="UiRefreshButtonCaption" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Caption for Refresh buttons.</comment>
+  </data>
+  <data name="UiSelectAllHeader" xml:space="preserve">
+    <value>Select all</value>
+    <comment>Header to be used in menus for select all operations.</comment>
+  </data>
+  <data name="GcsFileBrowserNewFolderTitle" xml:space="preserve">
+    <value>New folder</value>
+    <comment>Title for the new folder dialog.</comment>
+  </data>
+  <data name="GcsFileBrowserNewFolderTooltip" xml:space="preserve">
+    <value>New folder</value>
+    <comment>Tooltip to be shown in the new folder button.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFileTitle" xml:space="preserve">
+    <value>Rename file</value>
+    <comment>Title for the rename file dialog.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFolderTitle" xml:space="preserve">
+    <value>Rename folder</value>
+    <comment>Title for the rename folder dialog.</comment>
+  </data>
   <data name="ValdiationNotEmptyMessage" xml:space="preserve">
     <value>{0} can not be empty.</value>
     <comment>{Field} can not be empty validation message.</comment>
@@ -2150,6 +2422,18 @@
   <data name="PublishDialogFlexVersionNameFieldName" xml:space="preserve">
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadFilesButtonCaption" xml:space="preserve">
+    <value>_Upload files</value>
+    <comment>Caption for the upload button.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadFilesToolTip" xml:space="preserve">
+    <value>Upload files</value>
+    <comment>Toolstip shown on the upload files button.</comment>
+  </data>
+  <data name="UiDeleteToolTip" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Tooltip show on delete buttons.</comment>
   </data>
   <data name="GitUtilsGitInstallLinkCaption" xml:space="preserve">
     <value>Install Git for Windows</value>
@@ -2204,7 +2488,7 @@
     <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
   <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
-    <value>Attach Debugger</value>
+    <value>Attach debugger</value>
     <comment>Header for the attach remote debugger menu item.</comment>
   </data>
   <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
@@ -2252,7 +2536,7 @@
     <comment>Message for choosing or creating a user as remote debugger credential.</comment>
   </data>
   <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
-    <value>Installing, launching Remote Debugger</value>
+    <value>Launching Remote Debugger</value>
     <comment>The message indicates it is installing or launching debugger remote tools.</comment>
   </data>
   <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
@@ -2307,16 +2591,12 @@
     <value>Learn more about</value>
     <comment>The attach debugger help step link caption</comment>
   </data>
-  <data name="UiRefreshButtonCaption" xml:space="preserve">
-    <value>Refresh</value>
-    <comment>Caption for Refresh buttons.</comment>
-  </data>
   <data name="AttachDebuggerAttachErrorMessageFormat" xml:space="preserve">
     <value>Failed to attach to {0}</value>
     <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
   </data>
   <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
-    <value>Attach Debugger after publishing</value>
+    <value>Attach debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
   </data>
   <data name="AttachDebuggerRemotePowerShellPortDescription" xml:space="preserve">
@@ -2328,8 +2608,12 @@
     <comment>The Visual Studio Remote debugging tools description</comment>
   </data>
   <data name="AttachDebuggerCreateManageAccountLinkCaption" xml:space="preserve">
-    <value>Create or manage accounts...</value>
+    <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
+  </data>
+  <data name="WizardPickProjectIdNoAccountMessage" xml:space="preserve">
+    <value>To get a list of projects, select an account.</value>
+    <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>
   <data name="CsrConnectSectionTitle" xml:space="preserve">
     <value>Google Cloud Source Repositories</value>

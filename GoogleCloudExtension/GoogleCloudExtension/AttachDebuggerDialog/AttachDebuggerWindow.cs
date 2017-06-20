@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 UserPromptUtils.OkPrompt(
                     message: StringResources.AttachDebuggerAddPublicIpAddressMessage,
-                    title: StringResources.uiDefaultPromptTitle);
+                    title: StringResources.UiDefaultPromptTitle);
                 return;
             }
 

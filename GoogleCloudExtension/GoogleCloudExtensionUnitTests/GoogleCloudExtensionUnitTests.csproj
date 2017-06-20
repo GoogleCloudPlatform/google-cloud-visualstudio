@@ -186,6 +186,10 @@
   <ItemGroup>
     <Compile Include="AssemblyInitialize.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -222,7 +226,6 @@
     <Content Include="..\GoogleCloudExtension\source.extension.vsixmanifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Key.snk" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

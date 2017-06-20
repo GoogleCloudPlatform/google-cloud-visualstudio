@@ -36,7 +36,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private static readonly Lazy<ImageSource> s_topicIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        public TopicViewModel(PubsubSourceRootViewModel owner, Topic topic, IEnumerable<Subscription> subscriptions)
+        internal Func<string, Subscription> NewSubscriptionUserPrompt { private get; set; } =
+            NewSubscriptionWindow.PromptUser;
+
+        public TopicViewModel(IPubsubSourceRootViewModel owner, Topic topic, IEnumerable<Subscription> subscriptions)
             : base(owner, new TopicItem(topic), subscriptions)
         {
             Icon = s_topicIcon.Value;
@@ -66,30 +69,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Prompts the user for a new subscription, and creates it.
         /// </summary>
-        private async void OnNewSubscriptionCommand()
+        internal async void OnNewSubscriptionCommand()
         {
             IsLoading = true;
             try
             {
-                try
+                Subscription subscription = NewSubscriptionUserPrompt(Item.FullName);
+                if (subscription != null)
                 {
-                    Subscription subscription = NewSubscriptionWindow.PromptUser(TopicItem.FullName);
-                    if (subscription != null)
+                    try
                     {
                         await DataSource.NewSubscriptionAsync(subscription);
-
                         EventsReporterWrapper.ReportEvent(PubSubSubscriptionCreatedEvent.Create(CommandStatus.Success));
+                        await Refresh();
+                    }
+                    catch (DataSourceException e)
+                    {
+                        Debug.Write(e.Message, "New Subscription");
+                        EventsReporterWrapper.ReportEvent(PubSubSubscriptionCreatedEvent.Create(CommandStatus.Failure));
+
+                        Owner.Refresh();
+                        UserPromptUtils.ErrorPrompt(
+                            Resources.PubSubNewSubscriptionErrorMessage,
+                            Resources.PubSubNewSubscriptionErrorHeader,
+                            e.Message);
                     }
                 }
-                catch (DataSourceException e)
-                {
-                    Debug.Write(e.Message, "New Subscription");
-                    UserPromptUtils.ErrorPrompt(
-                        Resources.PubSubNewSubscriptionErrorMessage, Resources.PubSubNewSubscriptionErrorHeader);
-
-                    EventsReporterWrapper.ReportEvent(PubSubSubscriptionCreatedEvent.Create(CommandStatus.Failure));
-                }
-                await Refresh();
             }
             finally
             {
@@ -100,33 +105,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Prompts the user about deleting the topic, and deletes it.
         /// </summary>
-        private async void OnDeleteTopicCommand()
+        internal async void OnDeleteTopicCommand()
         {
             IsLoading = true;
             try
             {
-                try
+                bool doDelete = UserPromptUtils.ActionPrompt(
+                    string.Format(Resources.PubSubDeleteTopicWindowMessage, Item.DisplayName),
+                    Resources.PubSubDeleteTopicWindowHeader,
+                    actionCaption: Resources.UiDeleteButtonCaption);
+                if (doDelete)
                 {
-                    bool doDelete = UserPromptUtils.ActionPrompt(
-                        string.Format(Resources.PubSubDeleteTopicWindowMessage, TopicItem.DisplayName),
-                        Resources.PubSubDeleteTopicWindowHeader,
-                        actionCaption: Resources.UiDeleteButtonCaption);
-                    if (doDelete)
+                    try
                     {
-                        await DataSource.DeleteTopicAsync(TopicItem.FullName);
-
+                        await DataSource.DeleteTopicAsync(Item.FullName);
                         EventsReporterWrapper.ReportEvent(PubSubTopicDeletedEvent.Create(CommandStatus.Success));
                     }
-                }
-                catch (DataSourceException e)
-                {
-                    Debug.Write(e.Message, "Delete Topic");
-                    UserPromptUtils.ErrorPrompt(
-                        Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
+                    catch (DataSourceException e)
+                    {
+                        Debug.Write(e.Message, "Delete Topic");
+                        EventsReporterWrapper.ReportEvent(PubSubTopicDeletedEvent.Create(CommandStatus.Failure));
 
-                    EventsReporterWrapper.ReportEvent(PubSubTopicDeletedEvent.Create(CommandStatus.Failure));
+                        UserPromptUtils.ErrorPrompt(
+                            Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader, e.Message);
+                    }
+                    Owner.Refresh();
                 }
-                Owner.Refresh();
             }
             finally
             {
@@ -137,7 +141,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Opens the properties window to this topic item.
         /// </summary>
-        private void OnPropertiesWindowCommand()
+        internal void OnPropertiesWindowCommand()
         {
             Context.ShowPropertiesWindow(Item);
         }

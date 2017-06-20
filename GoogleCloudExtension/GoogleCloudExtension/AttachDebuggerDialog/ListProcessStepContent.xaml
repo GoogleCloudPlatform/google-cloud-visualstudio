@@ -9,7 +9,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600"                 
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False local:ListProcessStepViewModel}">
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=false,Type=local:ListProcessStepViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

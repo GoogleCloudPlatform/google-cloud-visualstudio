@@ -144,12 +144,14 @@
     <Compile Include="Google.Apis.Logging.v2.extensions.cs" />
     <Compile Include="LogEntryRequestResult.cs" />
     <Compile Include="GceDataSource.cs" />
+    <Compile Include="GcsDirectory.cs" />
     <Compile Include="GkeDataSource.cs" />
     <Compile Include="InstanceExtensions.cs" />
     <Compile Include="GceOperation.cs" />
     <Compile Include="GPlusDataSource.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="InstancesPerZone.cs" />
+    <Compile Include="IGcsFileOperationCallback.cs" />
     <Compile Include="LoggingDataSource.cs" />
     <Compile Include="Polling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
