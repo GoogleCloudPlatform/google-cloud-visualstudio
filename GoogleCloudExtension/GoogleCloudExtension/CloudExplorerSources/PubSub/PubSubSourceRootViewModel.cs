@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// Root node of the Pubsub tree.
     /// </summary>
-    internal class PubsubSourceRootViewModel : SourceRootViewModelBase
+    internal class PubsubSourceRootViewModel : SourceRootViewModelBase, IPubsubSourceRootViewModel
     {
         internal const string PubSubConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub?project={0}";
 

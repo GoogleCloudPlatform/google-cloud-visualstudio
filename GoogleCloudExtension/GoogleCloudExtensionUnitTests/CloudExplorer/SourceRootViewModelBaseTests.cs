@@ -18,10 +18,9 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Moq.Protected;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
@@ -37,73 +36,111 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private const string MockLoadingPlaceholderCaption = "LoadingPlaceholder";
         private const string ChildCaption = "ChildCaption";
 
-        private Mock<ICloudSourceContext> _contextMock;
-        private readonly Project _project = new Project { ProjectId = MockProjectId };
-        private readonly UserAccount _userAccount = new UserAccount { AccountName = MockAccountName };
-        private readonly TreeNode _childNode = new TreeNode { Caption = ChildCaption };
-        private TestableSourceRootviewModelBase _objectUnderTest;
+        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
+        {
+            Caption = MockLoadingPlaceholderCaption,
+            IsLoading = true
+        };
+
+        private static readonly TreeLeaf s_noItemsPlaceholder = new TreeLeaf
+        {
+            Caption = MockNoItemsPlaceholderCaption,
+            IsWarning = true
+        };
+
+        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
+        {
+            Caption = MockErrorPlaceholderCaption,
+            IsError = true
+        };
+        private static readonly Project s_project = new Project { ProjectId = MockProjectId };
+        private static readonly UserAccount s_userAccount = new UserAccount { AccountName = MockAccountName };
+        private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
+
+        private TaskCompletionSource<IList<TreeNode>> _loadDataSource;
+        private ICloudSourceContext _mockedContext;
+        private SourceRootViewModelBase _objectUnderTest;
+        private Mock<SourceRootViewModelBase> _objectUnderTestMock;
 
         [TestInitialize]
         public void Initialize()
         {
-            _contextMock = new Mock<ICloudSourceContext>();
-            _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(MockProjectId);
-            _objectUnderTest = new TestableSourceRootviewModelBase();
+            CredentialsStore.Default.UpdateCurrentProject(s_project);
+            CredentialsStore.Default.CurrentAccount = s_userAccount;
+
+            _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
+
+            _mockedContext = Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == MockProjectId);
+            _objectUnderTest = Mock.Of<SourceRootViewModelBase>(
+                o => o.RootCaption == MockRootCaption &&
+                o.ErrorPlaceholder == s_errorPlaceholder &&
+                o.LoadingPlaceholder == s_loadingPlaceholder &&
+                o.NoItemsPlaceholder == s_noItemsPlaceholder);
+            _objectUnderTestMock = Mock.Get(_objectUnderTest);
+            _objectUnderTestMock.CallBase = true;
+            _objectUnderTestMock.Protected().Setup<Task>("LoadDataOverride").Returns(
+                async () =>
+                {
+                    IList<TreeNode> childNodes;
+                    try
+                    {
+                        childNodes = await _loadDataSource.Task;
+                    }
+                    finally
+                    {
+                        _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
+                    }
+                    _objectUnderTest.Children.Clear();
+                    foreach (TreeNode child in childNodes)
+                    {
+                        _objectUnderTest.Children.Add(child);
+                    }
+                });
+            _objectUnderTest = _objectUnderTestMock.Object;
         }
 
         [TestMethod]
         public void TestInitialConditions()
         {
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
             Assert.IsNull(_objectUnderTest.Context);
             Assert.IsNull(_objectUnderTest.Icon);
             Assert.IsNull(_objectUnderTest.Caption);
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
-            Assert.IsNotNull(_objectUnderTest.LoadingTask);
-            Assert.IsTrue(_objectUnderTest.LoadingTask.IsCompleted);
-            Assert.IsFalse(_objectUnderTest.IsLoading);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
         }
 
         [TestMethod]
         public void TestInitialize()
         {
-            _objectUnderTest.Initialize(_contextMock.Object);
+            _objectUnderTest.Initialize(_mockedContext);
 
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.AreEqual(_contextMock.Object, _objectUnderTest.Context);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(_mockedContext, _objectUnderTest.Context);
             Assert.AreEqual(_objectUnderTest.RootIcon, _objectUnderTest.Icon);
             Assert.AreEqual(_objectUnderTest.RootCaption, _objectUnderTest.Caption);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestNotExpanded()
         {
-            _objectUnderTest.RunOnIsExpandedChanged(false);
+            _objectUnderTest.IsExpanded = false;
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoading);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
         }
 
         [TestMethod]
-        public void TestLoadingNoCredentials()
+        public async Task TestLoadingNoCredentials()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
             CredentialsStore.Default.CurrentAccount = null;
-            var originalLoadingTask = _objectUnderTest.LoadingTask;
 
-            _objectUnderTest.RunOnIsExpandedChanged(true);
+            _objectUnderTest.IsExpanded = true;
+            await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsTrue(_objectUnderTest.LoadingTask.IsCompleted);
-            Assert.AreNotSame(originalLoadingTask, _objectUnderTest.LoadingTask);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TreeLeaf;
             Assert.IsNotNull(child);
@@ -117,12 +154,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestLoadingNoProject()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
 
-            _objectUnderTest.RunOnIsExpandedChanged(true);
+            _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TreeLeaf;
             Assert.IsNotNull(child);
@@ -133,254 +169,216 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         }
 
         [TestMethod]
-        public void TestLoadingState()
+        public void TestLoading()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
+            _objectUnderTest.Initialize(_mockedContext);
+            _objectUnderTest.IsExpanded = true;
 
-            _objectUnderTest.Initialize(_contextMock.Object);
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.LoadingTask.IsCompleted);
-            Assert.IsTrue(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
-        }
-
-        [TestMethod]
-        public void TestLoadingAgain()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.Initialize(_contextMock.Object);
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.LoadingTask.IsCompleted);
-            Assert.IsTrue(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
-            Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestLoadingError()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.ErrorPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_errorPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestLoadingNoItems()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.NoItemsPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestLoadingSuccess()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode> { _childNode });
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_childNode, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
+        }
+
+        [TestMethod]
+        public async Task TestDoubleLoading()
+        {
+            _objectUnderTest.Initialize(_mockedContext);
+            _objectUnderTest.IsExpanded = true;
+            _objectUnderTest.IsExpanded = false;
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
+            await _objectUnderTest.LoadingTask;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            await _objectUnderTest.LoadingTask;
+
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
+        }
+
+        [TestMethod]
+        public async Task TestReloading()
+        {
+            _objectUnderTest.Initialize(_mockedContext);
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
+            await _objectUnderTest.LoadingTask;
+            _objectUnderTest.IsExpanded = false;
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            await _objectUnderTest.LoadingTask;
+
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(s_noItemsPlaceholder.Caption, _objectUnderTest.Children[0].Caption);
+        }
+
+        [TestMethod]
+        public async Task TestRefreshingUninitialized()
+        {
+            _objectUnderTest.Refresh();
+            await _objectUnderTest.LoadingTask;
+
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.Children.Count);
         }
 
         [TestMethod]
         public async Task TestRefreshingUnloaded()
         {
+            _objectUnderTest.Initialize(_mockedContext);
             _objectUnderTest.Refresh();
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
-            Assert.AreEqual(0, _objectUnderTest.Children.Count);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
-        public void TestRefreshOnLoading()
+        public async Task TestRefreshOnLoading()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.Initialize(_contextMock.Object);
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            var expandLoadTask = _objectUnderTest.LoadingTask;
+            _objectUnderTest.Initialize(_mockedContext);
+            _objectUnderTest.IsExpanded = true;
             _objectUnderTest.Refresh();
+            _loadDataSource.SetResult(new List<TreeNode>());
+            await _objectUnderTest.LoadingTask;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.AreEqual(expandLoadTask, _objectUnderTest.LoadingTask);
-            Assert.IsTrue(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestRefreshLoading()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
 
-            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsTrue(_objectUnderTest.IsLoadingState);
-            Assert.IsFalse(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestRefreshLoadError()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.ErrorPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_errorPlaceholder, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestRefreshLoadNoItems()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
+            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_objectUnderTest.NoItemsPlaceholder, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
 
         [TestMethod]
         public async Task TestRefreshLoadSuccess()
         {
-            CredentialsStore.Default.UpdateCurrentProject(_project);
-            CredentialsStore.Default.CurrentAccount = _userAccount;
-
-            _objectUnderTest.RunOnIsExpandedChanged(true);
-            _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _objectUnderTest.LoadSource.SetResult(new List<TreeNode> { _childNode });
+            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
-            Assert.IsFalse(_objectUnderTest.IsLoadingState);
-            Assert.IsTrue(_objectUnderTest.IsLoadedState);
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
-            Assert.AreEqual(_childNode, _objectUnderTest.Children[0]);
+            Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
 
-        private class TestableSourceRootviewModelBase : SourceRootViewModelBase
+        [TestMethod]
+        public async Task TestDoubleRefresh()
         {
-            // Avoid having to enable pack urls.
-            private readonly Mock<BitmapSource> _rootIconMock = new Mock<BitmapSource>();
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetResult(new List<TreeNode>());
+            await _objectUnderTest.LoadingTask;
+            _objectUnderTest.Refresh();
+            _objectUnderTest.Refresh();
+            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            await _objectUnderTest.LoadingTask;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            await _objectUnderTest.LoadingTask;
 
-            public TaskCompletionSource<IList<TreeNode>> LoadSource { get; private set; } =
-                new TaskCompletionSource<IList<TreeNode>>();
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
+        }
 
-            public override ImageSource RootIcon => _rootIconMock.Object;
-            public override string RootCaption => MockRootCaption;
+        [TestMethod]
+        public async Task TestRefreshAgain()
+        {
+            _objectUnderTest.IsExpanded = true;
+            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            await _objectUnderTest.LoadingTask;
+            _objectUnderTest.Refresh();
+            _loadDataSource.SetResult(new List<TreeNode>());
+            await _objectUnderTest.LoadingTask;
+            _objectUnderTest.Refresh();
+            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            await _objectUnderTest.LoadingTask;
 
-            public override TreeLeaf ErrorPlaceholder { get; } = new TreeLeaf
-            {
-                Caption = MockErrorPlaceholderCaption,
-                IsError = true
-            };
-
-            public override TreeLeaf NoItemsPlaceholder { get; } = new TreeLeaf
-            {
-                Caption = MockNoItemsPlaceholderCaption,
-                IsWarning = true
-            };
-
-            public override TreeLeaf LoadingPlaceholder { get; } = new TreeLeaf
-            {
-                Caption = MockLoadingPlaceholderCaption,
-                IsLoading = true
-            };
-
-            protected override async Task LoadDataOverride()
-            {
-                LoadDataOverrideHitCount++;
-                IList<TreeNode> childNodes;
-                try
-                {
-                    childNodes = await LoadSource.Task;
-                }
-                finally
-                {
-                    LoadSource = new TaskCompletionSource<IList<TreeNode>>();
-                }
-                Children.Clear();
-                foreach (TreeNode child in childNodes)
-                {
-                    Children.Add(child);
-                }
-            }
-
-            public int LoadDataOverrideHitCount { get; private set; } = 0;
-
-            internal void RunOnIsExpandedChanged(bool newValue)
-            {
-                OnIsExpandedChanged(newValue);
-            }
+            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(3));
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
     }
 }

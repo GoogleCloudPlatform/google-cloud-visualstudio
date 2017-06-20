@@ -16,6 +16,10 @@
                 <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../../../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="SelectAccountButtonStyle" BasedOn="{StaticResource CommonButtonWideStyle}" TargetType="Button">
+                <Setter Property="Command" Value="{Binding ChangeUserCommand}"/>
+                <Setter Property="Content" Value="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -38,11 +42,7 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
-                <Button
-                    DockPanel.Dock="Right"
-                    Command="{Binding ChangeUserCommand}"
-                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"
-                    Style="{StaticResource CommonButtonWideStyle}"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
                 <controls:LabelWithHelp
                     Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
                     HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
@@ -65,13 +65,22 @@
                         <Setter Property="Padding" Value="2"/>
                     </Style>
                 </Grid.Resources>
-                <Border Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}}">
+                <Border Visibility="{Binding LoadTask, Converter={utils:NullEmptyInvisibleConverter Invert=True}}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessage}"/>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+                <Border Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
                 </Border>
-                <Border Visibility="{Binding LoadTask.IsError, Converter={utils:VisibilityConverter}}">
+                <Border Visibility="{Binding LoadTask.IsError, Converter={utils:VisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
                     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
                         <TextBlock Text="{x:Static ext:Resources.WizardPickProjectIdLoadProjectsErrorMessage}"/>
                         <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
@@ -79,7 +88,7 @@
                         </Expander>
                     </StackPanel>
                 </Border>
-                <Border Visibility="{Binding LoadTask.IsCanceled, Converter={utils:VisibilityConverter}}">
+                <Border Visibility="{Binding LoadTask.IsCanceled, Converter={utils:VisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
                         VerticalAlignment="Center"
@@ -89,7 +98,7 @@
                     SelectedItem="{Binding SelectedProject}"
                     ItemsSource="{Binding Projects}"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Visibility="{Binding LoadTask.IsSuccess, Converter={utils:VisibilityConverter}}"/>
+                    Visibility="{Binding LoadTask.IsSuccess, Converter={utils:VisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}"/>
             </Grid>
         </DockPanel>
     </theming:CommonDialogWindowBaseContent>

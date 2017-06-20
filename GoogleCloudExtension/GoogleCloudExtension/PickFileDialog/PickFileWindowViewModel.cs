@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.PickFileDialog
     {
         private int _selectedIndex;
         private readonly IEnumerable<string> _fileList;
-        private PickFileWindow _owner;
+        private readonly PickFileWindow _owner;
 
         /// <summary>
         /// Gets the list of files.

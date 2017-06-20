@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.CloudExplorer
     /// <summary>
     /// A node in the UI tree for the cloud explorer.
     /// </summary>
-    public class TreeNode : Model
+    public class TreeNode : Model, ITreeNode
     {
         private const string ErrorIconPath = "CloudExplorer/Resources/error_icon.png";
         private const string WarningIconPath = "CloudExplorer/Resources/warning_icon.png";

@@ -90,6 +90,24 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
+        /// Attempts to move the VS window to the foreground.
+        /// </summary>
+        public static void SetForegroundWindow()
+        {
+            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell == null)
+            {
+                Debug.WriteLine($"Could not acquire {nameof(SVsUIShell)}");
+                return;
+            }
+
+            if (shell.SetForegroundWindow() != VSConstants.S_OK)
+            {
+                Debug.WriteLine($"Failed to call SetForegroundWindow.");
+            }
+        }
+
+        /// <summary>
         /// Executes the "File.OpenProject" command in the shell.
         /// </summary>
         public static void OpenProject()

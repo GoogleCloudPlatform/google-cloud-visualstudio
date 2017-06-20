@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -22,36 +21,41 @@ using System.Windows.Markup;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// If the object is null, 
-    /// or if it is string type and is null or empty or whitespace, 
+    /// If the object is null, or if it is string type and is empty or whitespace,
     /// set the visibility to <seealso cref="Visibility.Collapsed"/>.
     /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
     public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
     {
-        #region Implements interface IValueConverter.
+        /// <summary>
+        /// If true, null, empty and whitespace values will return <see cref="Visibility.Visible"/>
+        /// instead of <see cref="Visibility.Collapsed"/>.
+        /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
+        public bool Invert { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            var stringValue = value as string;
+            if (stringValue != null)
+            {
+                return (String.IsNullOrWhiteSpace(stringValue) ^ Invert) ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else if ((value == null) ^ Invert)
             {
                 return Visibility.Collapsed;
             }
-
-            if (value is string)
+            else
             {
-                return String.IsNullOrWhiteSpace(value as string) ? Visibility.Collapsed : Visibility.Visible;
+                return Visibility.Visible;
             }
-
-            Debug.WriteLine($"Unexpected value type, Value should be a string: {value}");
-            return DependencyProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
-        #endregion
 
         /// <summary>
         /// Implement interface MarkupExtension.

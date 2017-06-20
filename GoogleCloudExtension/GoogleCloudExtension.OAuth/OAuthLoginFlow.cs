@@ -188,7 +188,7 @@ namespace GoogleCloudExtension.OAuth
         /// Returns a task that can be awaited to get the task with the data. (There are two levels of await here). If
         /// the operation completed normally then <paramref name="sourceTask"/> is returend and when awaited the result of the
         /// operation is returned. If the operation is cancelled then a cancelled dummy task is returned, when awaited 
-        /// <seealso cref="TaskCanceledException"/> is thrown. This way any task can be made cancellable if the original 
+        /// <seealso cref="OperationCanceledException"/> is thrown. This way any task can be made cancellable if the original 
         /// source of the task doesn't support cancellation.
         /// </summary>
         private static Task<Task<T>> GetCancellableTaskAsync<T>(Task<T> sourceTask, CancellationToken token)
