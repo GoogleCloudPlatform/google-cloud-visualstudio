@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Linq;
