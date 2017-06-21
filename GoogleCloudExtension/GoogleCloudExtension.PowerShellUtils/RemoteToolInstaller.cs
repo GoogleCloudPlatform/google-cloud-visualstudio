@@ -76,8 +76,9 @@ namespace GoogleCloudExtension.PowerShellUtils
         public async Task<bool> Install(CancellationToken cancelToken)
         {
             try
-            {  
-                return await (new RemoteTarget(_computerName, _credential)).ExecuteAsync(AddInstallCommands, cancelToken);
+            {
+                var target = new RemoteTarget(_computerName, _credential);
+                return await target.ExecuteAsync(AddInstallCommands, cancelToken);
             }
             catch (Exception ex) when (
                 ex is ParameterBindingException && 
