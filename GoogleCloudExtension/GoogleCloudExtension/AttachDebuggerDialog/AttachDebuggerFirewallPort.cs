@@ -116,13 +116,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 foreach (var rule in rules)
                 {
                     // Left oprand is nullable bool.
-                    if (rule.TargetTags?.Contains(portTag) ?? false)
+                    if (rule?.TargetTags?.Contains(portTag) ?? false)
                     {
                         continue;   // Skip, rules does not contain the tag.
                     }
                     foreach (var allowed in rule.Allowed)
                     {
-                        if (allowed.IPProtocol == "tcp" && allowed.Ports.Any(y => y == PortInfo.Port.ToString()))
+                        if (allowed?.IPProtocol == "tcp" && 
+                            (allowed?.Ports?.Any(y => y == PortInfo.Port.ToString()) ?? false))
                         {
                             return true;
                         }
