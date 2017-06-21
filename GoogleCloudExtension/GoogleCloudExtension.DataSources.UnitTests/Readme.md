@@ -1,16 +1,15 @@
 ﻿# Writing Unit Tests for DataSources
-## [Moq][Moq] mocks of [Google.Apis][DotNetApis] services
+## Create [Moq][Moq] mocks of [Google.Apis][DotNetApis] services
 
 ### Intro
 
 Writing unit tests for [GoogleCloudExtension.DataSources][GoogleCloudExtension.DataSources] is hard because the
 [Google.Apis][DotNetApis] services are hard to mock.
-They have only a handful of interfaces and few virutal methods.
-Fortunatly, they are generated; once you figure out hot to mock one, you can mock them all.
+The [Moq][Moq] library used by the Google Cloud Visual Studio Extension unit test projects can only mock virtual
+members, and the [Google.Apis][DotNetApis] libraries have only a handful of interfaces and few virutal methods.
+Fortunatly, they are generated; once you figure out how to mock one, you can mock them all.
 
-The Google Cloud Visual Studio Extension unit test projects use the [Moq][Moq] library to build mocks. 
-
-### Getting service mocs for unit tests
+### Getting service mocks for unit tests
 
 ```
 PubsubService mockedService = GetMockedService(
@@ -32,16 +31,16 @@ The three expressions make the path to the request.
  * The second expression defines the path to the second resource (e.g. `p => p.Topics`).
  * The third expression defines the actaul request method to mock (e.g. `t => t.List(It.IsAny<string>())`).
      * Notice the use of [`Moq.It`][Moq.It] syntax to specify parameters.
- * The fourth argument is an array of additional argument to send to the contrustor.
+ * The fourth argument is an array of additional argument to send to the request constructor.
      * These should match the types taken by the request building method.
      * They are required because the request types do not have an empty constructor.
      * The values of this list do not matter; only the types matter. We can later verify the correct parameters were given,
        and we are mocking the result.
- * The final argument is the list responces you wish the request to return in sequence.
-   The first call to the request will return the first response; the second, the second etc.
-     * If the list is empty, the request will instead throw a GoogleApiException.
+ * The final argument is the list of responces you wish the request to return in sequence.
+     * The first call to the request will return the first element; the second call returns the second element and so on.
+     * If the list is empty, the request will instead throw a [`GoogleApiException`][GoogleApiException].
 
-The created service that will successfully handle calls to the request method without making any actual HTTP requests
+The created service will successfully handle calls to the request method without making any actual HTTP requests
 (e.g. `mockedService.Projects.Topics.List("TestString")`).
 
 ### Writing unit tests
@@ -63,7 +62,7 @@ Currently, `GetMockedService` only works for requests beneath two resource prope
 Because each resource is a type parameter to the method, different resource property depths will require different methods.
 Fortunatly most of the actual difficult work is done inside the `GetRequestMock()` method.
 Building new versions of `GetMockedService` to take different resource property depths should be a simple matter of 
-copying the existing function and adding or removing parameter, type parameters, mock local variables, and mock setups.
+copying the existing function and adding or removing parameters, type parameters, mock local variables, and mock setups.
 
 
 [Moq]: https://github.com/moq/moq4/blob/master/README.md
@@ -79,3 +78,4 @@ copying the existing function and adding or removing parameter, type parameters,
 [Projects]: https://developers.google.com/resources/api-libraries/documentation/pubsub/v1/csharp/latest/classGoogle_1_1Apis_1_1Pubsub_1_1v1_1_1ProjectsResource.html
 [Topics]: https://developers.google.com/resources/api-libraries/documentation/pubsub/v1/csharp/latest/classGoogle_1_1Apis_1_1Pubsub_1_1v1_1_1ProjectsResource_1_1TopicsResource.html
 [Topics.List]: https://developers.google.com/resources/api-libraries/documentation/pubsub/v1/csharp/latest/classGoogle_1_1Apis_1_1Pubsub_1_1v1_1_1ProjectsResource_1_1TopicsResource.html#aab633b6c978bbcb1fe154a1c441bc67d
+[GoogleApiException]: https://developers.google.com/api-client-library/dotnet/reference/1.9.2/classGoogle_1_1GoogleApiException
