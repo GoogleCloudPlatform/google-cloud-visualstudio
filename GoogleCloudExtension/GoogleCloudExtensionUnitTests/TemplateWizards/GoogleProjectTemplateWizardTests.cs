@@ -12,14 +12,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     [TestClass]
     public class GoogleProjectTemplateWizardTests
     {
-        private const string ProjectDirectory = "root:\\solution\\dir\\project\\dir";
-        private const string ProjectDirectoryEnd = ProjectDirectory + "\\";
-        private const string SolutionDirectory = "root:\\solution\\dir";
-        private const string SolutionDirectoryEnd = SolutionDirectory + "\\";
-        private const string ProjectDirectoryUnix = "root:/solution/dir/project/dir";
-        private const string ProjectDirectoryUnixEnd = ProjectDirectoryUnix + "/";
-        private const string SolutionDirectoryUnix = "root:/solution/dir";
-        private const string SolutionDirectoryUnixEnd = SolutionDirectoryUnix + "/";
+        private const string ProjectDirectoryBackslash = "root:\\solution\\dir\\project\\dir";
+        private const string ProjectDirectoryBackslashEnd = ProjectDirectoryBackslash + "\\";
+        private const string SolutionDirectoryBackslash = "root:\\solution\\dir";
+        private const string SolutionDirectoryBackslashEnd = SolutionDirectoryBackslash + "\\";
+        private const string ProjectDirectorySlash = "root:/solution/dir/project/dir";
+        private const string ProjectDirectorySlashEnd = ProjectDirectorySlash + "/";
+        private const string SolutionDirectorySlash = "root:/solution/dir";
+        private const string SolutionDirectorySlashEnd = SolutionDirectorySlash + "/";
         private const string DestinationDirectoryKey = "$destinationdirectory$";
         private const string ExclusiveProjectKey = "$exclusiveproject$";
         private const string SolutionDirectoryKey = "$solutiondirectory$";
@@ -31,10 +31,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string GlobalJsonFileName = "global.json";
 
         private static readonly string[] s_projectDirectoriesToTest =
-            {ProjectDirectory, ProjectDirectoryEnd, ProjectDirectoryUnix, ProjectDirectoryUnixEnd};
+            {ProjectDirectoryBackslash, ProjectDirectoryBackslashEnd, ProjectDirectorySlash, ProjectDirectorySlashEnd};
 
         private static readonly string[] s_solutionDirectoriesToTest =
-            {SolutionDirectory, SolutionDirectoryEnd, SolutionDirectoryUnix, SolutionDirectoryUnixEnd};
+            {SolutionDirectoryBackslash, SolutionDirectoryBackslashEnd, SolutionDirectorySlash, SolutionDirectorySlashEnd};
 
         private GoogleProjectTemplateWizard _objectUnderTest;
         private Mock<Action<string, bool>> _deleteDirectoryMock;
@@ -54,8 +54,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 };
             _replacementsDictionary = new Dictionary<string, string>
             {
-                {DestinationDirectoryKey, ProjectDirectory},
-                {SolutionDirectoryKey, SolutionDirectory}
+                {DestinationDirectoryKey, ProjectDirectoryBackslash},
+                {SolutionDirectoryKey, SolutionDirectoryBackslash}
             };
         }
 
@@ -77,12 +77,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
             finally
             {
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectory, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectory, It.IsNotIn(true)), Times.Never);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectory, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectory, It.IsNotIn(true)), Times.Never);
+                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, true), Times.Once);
+                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, It.IsNotIn(true)), Times.Never);
+                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, true), Times.Once);
+                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, It.IsNotIn(true)), Times.Never);
                 _deleteDirectoryMock.Verify(
-                    f => f(It.IsNotIn(ProjectDirectory, SolutionDirectory), It.IsAny<bool>()),
+                    f => f(It.IsNotIn(ProjectDirectoryBackslash, SolutionDirectoryBackslash), It.IsAny<bool>()),
                     Times.Never);
             }
         }
@@ -105,11 +105,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
             finally
             {
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectory, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectory, It.IsNotIn(true)), Times.Never);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectory, It.IsAny<bool>()), Times.Never);
+                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, true), Times.Once);
+                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, It.IsNotIn(true)), Times.Never);
+                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, It.IsAny<bool>()), Times.Never);
                 _deleteDirectoryMock.Verify(
-                    f => f(It.IsNotIn(ProjectDirectory, SolutionDirectory), It.IsAny<bool>()),
+                    f => f(It.IsNotIn(ProjectDirectoryBackslash, SolutionDirectoryBackslash), It.IsAny<bool>()),
                     Times.Never);
             }
         }

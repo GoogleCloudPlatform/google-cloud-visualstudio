@@ -37,7 +37,7 @@ namespace GoogleCloudExtensionUnitTests
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
-        private static Guid s_iidIUnknown = (Guid) Assembly.GetAssembly(typeof(VSConstants))
+        private static Guid s_iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
             .GetType("Microsoft.VisualStudio.NativeMethods")
             .GetField("IID_IUnknown").GetValue(null);
 
@@ -96,7 +96,7 @@ namespace GoogleCloudExtensionUnitTests
             // and causes it to use the mocked IServiceProvider.
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
             // This runs the Initialize() method.
-            ((IVsPackage) new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
+            ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
         }
 
         private static void SetupService<ServiceType, InterfaceType>(
