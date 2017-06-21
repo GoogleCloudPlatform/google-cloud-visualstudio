@@ -17,6 +17,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -75,6 +76,7 @@ namespace GoogleCloudExtension.Accounts
                 result = Directory.EnumerateFiles(instanceStoragePath)
                     .Where(x => Path.GetExtension(x) == PasswordFileExtension)
                     .Select(x => LoadEncryptedCredentials(x))
+                    .Where(x => x != null)
                     .OrderBy(x => x.User);
             }
             _credentialsForInstance[instancePath] = result;
@@ -127,11 +129,27 @@ namespace GoogleCloudExtension.Accounts
 
         private WindowsInstanceCredentials LoadEncryptedCredentials(string path)
         {
-            var userName = GetUserName(path);
-            var encryptedPassword = File.ReadAllBytes(path);
-            var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
+            try
+            {
+                var userName = GetUserName(path);
+                var encryptedPassword = File.ReadAllBytes(path);
+                var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
 
-            return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
+                return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
+            }
+            catch (CryptographicException)
+            {
+                Debug.WriteLine($"Failed to load credentials from: {path}");
+                try
+                {
+                    File.Delete(path);
+                }
+                catch (IOException)
+                {
+                    Debug.WriteLine($"Failed cleaning corrupted credentials {path}");
+                }
+                return null;
+            }
         }
 
         private void SaveEncryptedCredentials(string path, WindowsInstanceCredentials credentials)
