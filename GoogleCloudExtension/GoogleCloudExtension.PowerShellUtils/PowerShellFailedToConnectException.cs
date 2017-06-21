@@ -14,13 +14,18 @@
 
 using System;
 
-namespace GoogleCloudExtension.AttachDebuggerDialog
+namespace GoogleCloudExtension.PowerShellUtils
 {
-    /// <summary>
-    /// Define exception for attach debugger feature 
-    /// </summary>
-    public class AttachDebuggerException: Exception
+    public class PowerShellFailedToConnectException : Exception
     {
-        public AttachDebuggerException(string msg) : base(msg) { }
+        /// <summary>
+        /// This error message indicates it fails to establish connection.
+        /// </summary>
+        public const string SessionEmptyErrorMessage = 
+            @"Cannot validate argument on parameter 'Session'. The argument is null or empty.";
+
+        public PowerShellFailedToConnectException(Exception innerException) : 
+            base(innerException.Message, innerException)
+        { }
     }
 }

@@ -56,7 +56,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-
             bool installed = false;
 
             var startTimestamp = DateTime.Now;
@@ -66,11 +65,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 installed = await _installer.Install(CancelToken);
             }
+            catch (PowerShellFailedToConnectException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.AttachDebuggerConnectionFailedMessage,
+                    title: Resources.UiDefaultPromptTitle);
+            }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                EventsReporterWrapper.ReportEvent(
-                    RemoteDebuggerRemoteToolsInstalledEvent.Create(CommandStatus.Failure));
-                throw;
+                Debug.WriteLine($"{ex}");
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.AttachDebuggerInstallerError,
+                    title: Resources.UiDefaultPromptTitle,
+                    errorDetails: ex.Message);
             }
 
             if (installed)

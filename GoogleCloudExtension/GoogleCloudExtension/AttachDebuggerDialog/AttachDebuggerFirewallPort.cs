@@ -102,34 +102,32 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         /// <summary>
         /// Check if GCE firewall rules include a rule that enables the port to target GCE VM.
-        /// A firewall rule contains tag, 
-        /// if the GCE instance also has the tag, the rule is applied to the GCE instance.
+        /// If a firewall rule contains tag, 
+        /// and the GCE instance also has the tag, the rule is applied to the GCE instance.
         /// </summary>
         public async Task<bool> IsPortEnabled()
         {
             string portTag = PortInfo.GetTag(_gceInstance);
 
             // If the instance does not contain the tag, the firewall rule is not set.
-            if (_gceInstance.Tags?.Items?.Contains(portTag) ?? false)
+            if (_gceInstance.Tags?.Items?.Contains(portTag) != true)
             {
-                var rules = await _dataSource.GetFirewallListAsync();
-                foreach (var rule in rules)
-                {
-                    // Left oprand is nullable bool.
-                    if (rule.TargetTags?.Contains(portTag) ?? false)
-                    {
-                        continue;   // Skip, rules does not contain the tag.
-                    }
-                    foreach (var allowed in rule.Allowed)
-                    {
-                        if (allowed.IPProtocol == "tcp" && allowed.Ports.Any(y => y == PortInfo.Port.ToString()))
-                        {
-                            return true;
-                        }
-                    }
-                }
+                return false;
             }
-            return false;
+            var rules = await _dataSource.GetFirewallListAsync();
+
+            var query = rules
+                // x is FireWall, test if the rule contains the tag
+                .Where(x => x?.TargetTags?.Contains(portTag) ?? false)
+                .SelectMany(x => x.Allowed)
+                // x is now FireWall.AllowedData
+                // Check if the allowed protocol is tcp
+                .Where(x => x?.IPProtocol == "tcp" && x.Ports != null)  
+                .SelectMany(x => x.Ports)
+                // x is now port number in string type
+                // Check if the allowed port number matches
+                .Where(x => x == PortInfo.Port.ToString());
+            return query.Any();
         }
 
         /// <summary>

@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public static List<InstanceDefaultUser> ReadGceInstanceDefaultUsers()
         {
+            List<InstanceDefaultUser> results = null;
             if (File.Exists(DefaultUsersSettingsFullPath))
             {
                 string jsonText = File.ReadAllText(DefaultUsersSettingsFullPath);
@@ -42,13 +43,13 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 {
                     try
                     {
-                        return JsonConvert.DeserializeObject<List<InstanceDefaultUser>>(jsonText);
+                        results = JsonConvert.DeserializeObject<List<InstanceDefaultUser>>(jsonText);
                     }
                     catch (JsonSerializationException)
                     { }
                 }
             }
-            return new List<InstanceDefaultUser>();
+            return results ?? new List<InstanceDefaultUser>();
         }
 
         /// <summary>
