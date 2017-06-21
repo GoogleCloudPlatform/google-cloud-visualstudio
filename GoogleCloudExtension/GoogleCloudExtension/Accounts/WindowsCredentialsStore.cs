@@ -127,6 +127,15 @@ namespace GoogleCloudExtension.Accounts
             return Path.Combine(s_credentialsStoreRoot, instancePath);
         }
 
+        /// <summary>
+        /// Attempts to load and decrypt the credentials stored in <paramref name="path"/> and returns an
+        /// <seealso cref="WindowsInstanceCredentials"/> instance with the information stored in the file. If
+        /// the file cannot be loaded or decrypted it will return null.
+        /// 
+        /// Note: The function will attempt to delete the file if it cannot be decrypted, this typically means that
+        /// the user's key is no longer valid. The function does not attempt to delete the file in case of a <see cref="IOException"/>
+        /// since that will probably also throw again.
+        /// </summary>
         private WindowsInstanceCredentials LoadEncryptedCredentials(string path)
         {
             try
@@ -139,7 +148,7 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (CryptographicException)
             {
-                Debug.WriteLine($"Failed to load credentials from: {path}");
+                Debug.WriteLine($"Failed to decrypt credentials from: {path}");
                 try
                 {
                     File.Delete(path);
@@ -148,6 +157,11 @@ namespace GoogleCloudExtension.Accounts
                 {
                     Debug.WriteLine($"Failed cleaning corrupted credentials {path}");
                 }
+                return null;
+            }
+            catch (IOException)
+            {
+                Debug.WriteLine($"Failed to load credentials from: {path}");
                 return null;
             }
         }
