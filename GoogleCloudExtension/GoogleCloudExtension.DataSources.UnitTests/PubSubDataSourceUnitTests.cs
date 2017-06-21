@@ -39,7 +39,9 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         private const string TopicFullName = "projects/" + ProjectName + "/topics/" + TopicName;
         private const string SubscriptionName = "NewSubscriptionName";
         private const string SubscriptionFullName = "projects/" + ProjectName + "/subscriptions/" + SubscriptionName;
-        private static readonly Subscription s_newSubscription = new Subscription { Name = SubscriptionName, Topic = TopicName };
+
+        private static readonly Subscription s_newSubscription =
+            new Subscription { Name = SubscriptionName, Topic = TopicName };
 
         [TestMethod]
         public async Task TestGetTopicListAsyncSinglePage()

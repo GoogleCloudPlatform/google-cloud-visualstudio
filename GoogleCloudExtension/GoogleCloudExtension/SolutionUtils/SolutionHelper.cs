@@ -35,6 +35,9 @@ namespace GoogleCloudExtension.SolutionUtils
     {
         private const string ProjectJsonName = "project.json";
 
+        // This is the GUID for solution folder items.
+        private const string SolutionFolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
+
         private readonly Solution _solution;
 
         /// <summary>
@@ -100,7 +103,8 @@ namespace GoogleCloudExtension.SolutionUtils
             }
 
             // Fetch the project that lives in that directory and parse it.
-            foreach (Project p in _solution.Projects)
+            var projects = GetSolutionProjects();
+            foreach (Project p in projects)
             {
                 var projectDirectory = Path.GetDirectoryName(p.FullName);
                 if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
@@ -113,6 +117,61 @@ namespace GoogleCloudExtension.SolutionUtils
             Debug.WriteLine($"Could not find a project in {selectedProjectDirectory}");
             return null;
         }
+
+        /// <summary>
+        /// Lists all of the projects included in the solution, recursing as necessary to extract the
+        /// projects from the solution folders.
+        /// </summary>
+        private IList<Project> GetSolutionProjects()
+        {
+            List<Project> result = new List<Project>();
+
+            var rootProjects = _solution.Projects;
+            foreach (Project item in rootProjects)
+            {
+                if (item.Kind == SolutionFolderKind)
+                {
+                    result.AddRange(GetSolutionFolderProjects(item));
+                }
+                else
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a deep search into the given solution folder, looking for all of the projects
+        /// directly, or indirectly, under it.
+        /// </summary>
+        private IList<Project> GetSolutionFolderProjects(Project solutionDir)
+        {
+            List<Project> result = new List<Project>();
+
+            // Indexes in ProjectItems start at 1 and go through Count.
+            for (int i = 1; i <= solutionDir.ProjectItems.Count; ++i)
+            {
+                var item = solutionDir.ProjectItems.Item(i).SubProject;
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (item.Kind == SolutionFolderKind)
+                {
+                    result.AddRange(GetSolutionFolderProjects(item));
+                }
+                else
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
 
 
         /// <summary>
