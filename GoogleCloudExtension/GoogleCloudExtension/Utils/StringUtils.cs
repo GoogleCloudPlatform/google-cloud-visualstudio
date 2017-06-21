@@ -184,7 +184,7 @@ namespace GoogleCloudExtension.Utils
         public static string EnsureEndSeparator(this string directoryString)
         {
             directoryString.ThrowIfNull(nameof(directoryString));
-            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) || !directoryString.EndsWith("/"))
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
             {
                 return directoryString + Path.DirectorySeparatorChar;
             }

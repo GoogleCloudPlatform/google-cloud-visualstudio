@@ -13,9 +13,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     public class GoogleProjectTemplateWizardTests
     {
         private const string ProjectDirectory = "root:\\solution\\dir\\project\\dir";
+        private const string ProjectDirectoryEnd = ProjectDirectory + "\\";
         private const string SolutionDirectory = "root:\\solution\\dir";
+        private const string SolutionDirectoryEnd = SolutionDirectory + "\\";
         private const string ProjectDirectoryUnix = "root:/solution/dir/project/dir";
+        private const string ProjectDirectoryUnixEnd = ProjectDirectoryUnix + "/";
         private const string SolutionDirectoryUnix = "root:/solution/dir";
+        private const string SolutionDirectoryUnixEnd = SolutionDirectoryUnix + "/";
         private const string DestinationDirectoryKey = "$destinationdirectory$";
         private const string ExclusiveProjectKey = "$exclusiveproject$";
         private const string SolutionDirectoryKey = "$solutiondirectory$";
@@ -25,6 +29,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string PackagesPath = "..\\..\\packages\\";
         private const string RandomFileName = "random.file.name";
         private const string GlobalJsonFileName = "global.json";
+
+        private static readonly string[] s_projectDirectoriesToTest =
+            {ProjectDirectory, ProjectDirectoryEnd, ProjectDirectoryUnix, ProjectDirectoryUnixEnd};
+
+        private static readonly string[] s_solutionDirectoriesToTest =
+            {SolutionDirectory, SolutionDirectoryEnd, SolutionDirectoryUnix, SolutionDirectoryUnixEnd};
+
         private GoogleProjectTemplateWizard _objectUnderTest;
         private Mock<Action<string, bool>> _deleteDirectoryMock;
         private Mock<Func<string>> _pickProjectMock;
@@ -103,28 +114,35 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
         }
 
-        [DataTestMethod]
-        [DataRow(ProjectDirectory, SolutionDirectory)]
-        [DataRow(ProjectDirectory, SolutionDirectoryUnix)]
-        [DataRow(ProjectDirectoryUnix, SolutionDirectory)]
-        [DataRow(ProjectDirectoryUnix, SolutionDirectoryUnix)]
-        public void TestRunStartedPickProjectSkipped(string projectDir, string solutionDir)
+        [TestMethod]
+        public void TestRunStartedPickProjectSkipped()
         {
-            _replacementsDictionary[DestinationDirectoryKey] = projectDir;
-            _replacementsDictionary[SolutionDirectoryKey] = solutionDir;
             _pickProjectMock.Setup(x => x()).Returns(() => string.Empty);
+            foreach (var projectDir in s_projectDirectoriesToTest)
+            {
+                foreach (var solutionDir in s_solutionDirectoriesToTest)
+                {
+                    var message = $"For test case\nprojectDir: {projectDir}\nsolutionDir: {solutionDir}";
+                    _deleteDirectoryMock.ResetCalls();
+                    _replacementsDictionary = new Dictionary<string, string>
+                    {
+                        {DestinationDirectoryKey, projectDir},
+                        {SolutionDirectoryKey, solutionDir}
+                    };
 
-            _objectUnderTest.RunStarted(
-                Mock.Of<DTE>(),
-                _replacementsDictionary,
-                WizardRunKind.AsNewProject,
-                new object[0]);
+                    _objectUnderTest.RunStarted(
+                        Mock.Of<DTE>(),
+                        _replacementsDictionary,
+                        WizardRunKind.AsNewProject,
+                        new object[0]);
 
-            _deleteDirectoryMock.Verify(f => f(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
-            Assert.IsTrue(_replacementsDictionary.ContainsKey(GcpProjectIdKey));
-            Assert.AreEqual(string.Empty, _replacementsDictionary[GcpProjectIdKey]);
-            Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey));
-            Assert.AreEqual(PackagesPath, _replacementsDictionary[PackagesPathKey]);
+                    _deleteDirectoryMock.Verify(f => f(It.IsAny<string>(), It.IsAny<bool>()), Times.Never, message);
+                    Assert.IsTrue(_replacementsDictionary.ContainsKey(GcpProjectIdKey), message);
+                    Assert.AreEqual(string.Empty, _replacementsDictionary[GcpProjectIdKey], message);
+                    Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey), message);
+                    Assert.AreEqual(PackagesPath, _replacementsDictionary[PackagesPathKey], message);
+                }
+            }
         }
 
         [TestMethod]
