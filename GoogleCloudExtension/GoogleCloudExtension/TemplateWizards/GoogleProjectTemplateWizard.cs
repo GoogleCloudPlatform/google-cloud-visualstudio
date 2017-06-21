@@ -30,6 +30,10 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateWizard))]
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
+        // Mockable static methods for testing.
+        internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
+        internal Action<string, bool> DeleteDirectory = Directory.Delete;
+
         private const string GlobalJsonFileName = "global.json";
 
         ///<inheritdoc />
@@ -39,21 +43,23 @@ namespace GoogleCloudExtension.TemplateWizards
             WizardRunKind runKind,
             object[] customParams)
         {
-            string projectId = PickProjectIdWindow.PromptUser();
+            string projectId = PromptPickProjectId();
             if (projectId == null)
             {
-                Directory.Delete(replacementsDictionary["$destinationdirectory$"], true);
+                DeleteDirectory(replacementsDictionary["$destinationdirectory$"], true);
                 bool isExclusive;
                 if (bool.TryParse(replacementsDictionary["$exclusiveproject$"], out isExclusive) && isExclusive)
                 {
-                    Directory.Delete(replacementsDictionary["$solutiondirectory$"], true);
+                    DeleteDirectory(replacementsDictionary["$solutiondirectory$"], true);
                 }
                 throw new WizardBackoutException();
             }
             replacementsDictionary.Add("$gcpprojectid$", projectId);
-            var solutionDir = new Uri(StringUtils.EnsureEndSeparator(replacementsDictionary["$solutiondirectory$"]));
+            var solutionDir = new Uri(
+                replacementsDictionary["$solutiondirectory$"].EnsureEndSeparator().Replace('\\', '/'));
             var packageDir = new Uri(solutionDir, "packages/");
-            var projectDir = new Uri(StringUtils.EnsureEndSeparator(replacementsDictionary["$destinationdirectory$"]));
+            var projectDir = new Uri(
+                replacementsDictionary["$destinationdirectory$"].EnsureEndSeparator().Replace('\\', '/'));
             string packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
             replacementsDictionary.Add("$packagespath$", packagesPath.Replace('/', Path.DirectorySeparatorChar));
         }
