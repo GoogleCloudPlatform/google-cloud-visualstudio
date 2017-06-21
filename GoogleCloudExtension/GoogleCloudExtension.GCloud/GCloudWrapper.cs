@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.GCloud
             string userName,
             GCloudContext context) =>
             GetJsonOutputAsync<WindowsInstanceCredentials>(
-                $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user=\"{userName}\" --quiet ",
+                $"compute reset-windows-password {instanceName} --zone={zoneName} --user=\"{userName}\" --quiet ",
                 context);
 
         /// <summary>
