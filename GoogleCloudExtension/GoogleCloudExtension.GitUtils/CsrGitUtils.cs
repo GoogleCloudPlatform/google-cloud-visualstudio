@@ -27,6 +27,11 @@ namespace GoogleCloudExtension.GitUtils
     public static class CsrGitUtils
     {
         /// <summary>
+        /// To use refresh token to access CSR, the user name is required to be this constant name.
+        /// </summary>
+        private const string CsrRefreshTokenAccessUserName = "VisualStudioUser";
+
+        /// <summary>
         /// The Google Cloud Source Repositories url scheme + host part.
         /// </summary>
         public const string CsrUrlAuthority = "https://source.developers.google.com";
@@ -70,16 +75,30 @@ namespace GoogleCloudExtension.GitUtils
         /// True: if credential is stored successfully.
         /// Otherwise false.
         /// </returns>
-        public static bool StoreCredential(string url, string refreshToken, bool useHttpPath = false)
+        public static bool StoreCredential(
+            string url, 
+            string refreshToken, 
+            StoreCredentialPathOption pathOption)
         {
             url.ThrowIfNullOrEmpty(nameof(url));
-            refreshToken.ThrowIfNullOrEmpty(nameof(url));
+            refreshToken.ThrowIfNullOrEmpty(nameof(refreshToken));
 
             Uri uri = new Uri(url);
-            var uriPartial = useHttpPath ? UriPartial.Path : UriPartial.Authority;
+            UriPartial uriPartial;
+            switch(pathOption)
+            {
+                case StoreCredentialPathOption.UrlPath:
+                    uriPartial = UriPartial.Path;
+                    break;
+                case StoreCredentialPathOption.UrlHost:
+                    uriPartial = UriPartial.Authority;
+                    break;
+                default:
+                    throw new  ArgumentException(nameof(pathOption));
+            }
             return WindowsCredentialManager.Write(
                 $"git:{uri.GetLeftPart(uriPartial)}",
-                username: "VisualStudioUser",
+                username: CsrRefreshTokenAccessUserName,
                 password: refreshToken,
                 credentialType: WindowsCredentialManager.CredentialType.Generic,
                 persistenceType: WindowsCredentialManager.CredentialPersistence.LocalMachine);
@@ -89,9 +108,28 @@ namespace GoogleCloudExtension.GitUtils
         /// Set global git config useHttpPath for CSR host.
         /// Refer to https://git-scm.com/docs/gitcredentials
         /// </summary>
-        public static async Task SetUseHttpPathAsync() =>
-            await GitRepository.RunGitCommandAsync(
+        public static Task SetUseHttpPathAsync() =>
+            GitRepository.RunGitCommandAsync(
                 $"config --global credential.{CsrUrlAuthority}.useHttpPath true",
                 Directory.GetCurrentDirectory());
+
+        /// <summary>
+        /// Refer to <seealso cref="StoreCredential(string, string, StoreCredentialPathOption)"/>.
+        /// Store credential path option.
+        /// </summary>
+        public enum StoreCredentialPathOption
+        {
+            /// <summary>
+            /// Store credential for the host. 
+            /// Example: https://source.developers.google.com
+            /// </summary>
+            UrlHost,
+
+            /// <summary>
+            /// Store credential for the UrlPath. 
+            /// Example: https://source.developers.google.com/p/project-id/r/repo1 
+            /// </summary>
+            UrlPath
+        }
     }
 }

@@ -90,13 +90,13 @@
                 </ContentControl.Resources>
                 <ContentControl.Style>
                     <Style TargetType="ContentControl">
-                        <Setter Property="Content" Value="{StaticResource EmptyList}" />
+                        <Setter Property="Content" Value="{StaticResource LoadingList}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding ProjectHasRepo}" Value="True" >
-                                <Setter Property="Content" Value="{StaticResource NormalList}" />
+                            <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="NoItems" >
+                                <Setter Property="Content" Value="{StaticResource EmptyList}" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding RepositoriesAsync.IsPending}" Value="True" >
-                                <Setter Property="Content" Value="{StaticResource LoadingList}" />
+                            <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="HasItems" >
+                                <Setter Property="Content" Value="{StaticResource NormalList}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -137,8 +137,7 @@
                 Margin="0,12,0,0" 
                 Width="60" 
                 HorizontalAlignment="Left" 
-                Visibility="{Binding IsReady, 
-                    Converter={utils:VisibilityConverter IsNegated=True, InvisibleValue=Hidden}}"/>
+                Visibility="{Binding IsReady, Converter={utils:VisibilityConverter IsNegated=True}}"/>
 
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

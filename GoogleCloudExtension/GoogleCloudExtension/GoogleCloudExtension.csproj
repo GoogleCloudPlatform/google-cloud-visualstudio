@@ -189,9 +189,10 @@
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
       <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
+    <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />

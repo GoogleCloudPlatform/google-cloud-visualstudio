@@ -28,12 +28,6 @@ namespace GoogleCloudExtension.Utils
     public class VisibilityConverter : MarkupExtension, IValueConverter
     {
         /// <summary>
-        /// By default, invisible is converted to Collapsed.
-        /// This property allows caller to override the false conversion value to Hidden.
-        /// </summary>
-        public Visibility InvisibleValue { get; set; } = Visibility.Collapsed;
-
-        /// <summary>
         /// Determine if the value to convert should be negated before the conversion
         /// takes place, that is, if <c>IsNegated</c> is <c>True</c> then when converting
         /// <c>False</c> will be visible and <c>True</c> will be collapsed.
@@ -56,7 +50,7 @@ namespace GoogleCloudExtension.Utils
             if (value is bool)
             {
                 bool isVisible = IsNegated ^ (bool)value;
-                var result = isVisible ? Visibility.Visible : InvisibleValue;
+                var result = isVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (LoggingEnabled)
                 {
                     Debug.WriteLine($"{nameof(VisibilityConverter)}: {LoggingPrefix} converting {value} to {result}");

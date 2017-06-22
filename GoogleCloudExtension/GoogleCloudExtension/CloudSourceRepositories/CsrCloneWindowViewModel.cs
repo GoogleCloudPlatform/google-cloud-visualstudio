@@ -17,11 +17,9 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,23 +34,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         private readonly CsrCloneWindow _owner;
-
         private string _localPath;
-        private AsyncProperty<IList<Repo>> _repos;
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private bool _isReady = true;
-        private bool _projectHasRepo;
-
-        /// <summary>
-        /// Indicate if the selected project has repository
-        /// </summary>
-        public bool ProjectHasRepo
-        {
-            get { return _projectHasRepo; }
-            private set { SetValueAndRaise(ref _projectHasRepo, value); }
-        }
 
         /// <summary>
         /// The projects list
@@ -75,7 +61,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 SetValueAndRaise(ref _selectedProject, value);
                 if (_selectedProject != null && IsReady && oldValue != _selectedProject)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(StartListRepoTaskAsync);
+                    ErrorHandlerUtils.HandleAsyncExceptions(() =>
+                        RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
                 }
             }
         }
@@ -83,11 +70,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// The list of repositories that belong to the project
         /// </summary>
-        public AsyncProperty<IList<Repo>> RepositoriesAsync
-        {
-            get { return _repos; }
-            private set { SetValueAndRaise(ref _repos, value); }
-        }
+        public AsyncRepositories RepositoriesAsync { get; } = new AsyncRepositories();
 
         /// <summary>
         /// Currently selected repository
@@ -149,7 +132,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
-            SelectedProject = Projects.FirstOrDefault();
+
+            var projectId = CredentialsStore.Default.CurrentProjectId;
+            // If projectId is null, choose first project. Otherwise, choose the project.
+            SelectedProject = Projects.FirstOrDefault(x => projectId == null || x.ProjectId == projectId);
         }
 
         private async Task CloneAsync()
@@ -160,7 +146,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
                 CredentialsStore.Default.CurrentAccount.RefreshToken,
-                useHttpPath: true))
+                CsrGitUtils.StoreCredentialPathOption.UrlPath))
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedToSetCredentialMessage,
@@ -207,24 +193,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             finally
             {
                 IsReady = true;
-            }
-        }
-
-        private async Task StartListRepoTaskAsync()
-        {
-            Debug.WriteLine(nameof(StartListRepoTaskAsync));
-            // Reset SelectedRepository before running the async task.
-            // This disables OkCommand
-            RepositoriesAsync = null;
-            ProjectHasRepo = false;
-            AsyncProperty<IList<Repo>> repos =
-                AsyncPropertyUtils.CreateAsyncProperty(CsrUtils.GetCloudReposAsync(SelectedProject.ProjectId));
-            RepositoriesAsync = repos;
-            await repos.ValueTask;
-            if (RepositoriesAsync == repos)
-            {
-                SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
-                ProjectHasRepo = RepositoriesAsync.Value?.Any() ?? false;
             }
         }
 

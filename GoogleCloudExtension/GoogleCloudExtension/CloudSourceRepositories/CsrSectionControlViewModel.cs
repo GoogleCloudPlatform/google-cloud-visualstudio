@@ -207,7 +207,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 if (!CsrGitUtils.StoreCredential(
                     CsrGitUtils.CsrUrlAuthority,
                     CredentialsStore.Default.CurrentAccount.RefreshToken,
-                    useHttpPath: false))
+                    CsrGitUtils.StoreCredentialPathOption.UrlHost))
                 {
                     // TODO: show error message
                     return false;
