@@ -20,6 +20,7 @@ using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -132,10 +133,25 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
+            RepositoriesAsync.PropertyChanged += RepositoriesAsyncPropertyChanged;
 
             var projectId = CredentialsStore.Default.CurrentProjectId;
             // If projectId is null, choose first project. Otherwise, choose the project.
             SelectedProject = Projects.FirstOrDefault(x => projectId == null || x.ProjectId == projectId);
+        }
+
+        private void RepositoriesAsyncPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                // RaiseAllPropertyChanged set e.PropertyName as null
+                case null:
+                case nameof(AsyncRepositories.Value):
+                    SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private async Task CloneAsync()

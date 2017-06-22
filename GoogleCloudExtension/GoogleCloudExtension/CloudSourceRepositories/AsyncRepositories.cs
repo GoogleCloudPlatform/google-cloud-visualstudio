@@ -15,6 +15,7 @@
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,7 +24,6 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// Wrapper on top of AsyncProperty.
     /// Retrieves a list of <seealso cref="Repo"/> objects by calling async task.
     /// 
     /// The main goal is to allow user to choose different project while waiting for the list to be populated.
@@ -31,13 +31,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class AsyncRepositories : Model
     {
-        private AsyncProperty<IList<Repo>> _latest;
+        internal static Func<string, Task<IList<Repo>>> GetCloudReposAsync = CsrUtils.GetCloudReposAsync;
+        private Task<IList<Repo>> _latestTask;
 
         /// <summary>
         /// Gets the list of Repo objects
         /// It can be null if list task is not started or not completed.
         /// </summary>
-        public IList<Repo> Value => _latest?.Value;
+        public IList<Repo> Value => _latestTask?.IsCompleted ?? false ? _latestTask.Result : null;
 
         /// <summary>
         /// Returns the current repo list display option. Refer to <seealso cref="DisplayOptions"/>.
@@ -46,25 +47,25 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             get
             {
-                if (_latest?.Value == null || _latest.IsPending)
+                if (Value == null)
                 {
                     return DisplayOptions.Pending;
                 }
-                return _latest.Value.Any() ? DisplayOptions.HasItems : DisplayOptions.NoItems;
+                return Value.Any() ? DisplayOptions.HasItems : DisplayOptions.NoItems;
             }
         }
 
         /// <summary>
         /// Start an async task to get the list of repos.
-        /// Note: In the case of reentrancy, _latest is reset. Prior task values are abandoned.
+        /// Note: In the case of reentrancy, _latestTask is reset. Prior task values are abandoned.
         /// </summary>
         /// <param name="projectId">GCP project id.</param>
         public async Task StartListRepoTaskAsync(string projectId)
         {
             Debug.WriteLine(nameof(StartListRepoTaskAsync));
-            _latest = AsyncPropertyUtils.CreateAsyncProperty(CsrUtils.GetCloudReposAsync(projectId));
+            _latestTask = GetCloudReposAsync(projectId);
             RaiseAllPropertyChanged();
-            await _latest.ValueTask;
+            await _latestTask;
             RaiseAllPropertyChanged();
         }
 

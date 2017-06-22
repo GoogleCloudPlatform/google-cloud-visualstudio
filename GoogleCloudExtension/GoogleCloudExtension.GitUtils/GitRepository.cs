@@ -149,7 +149,14 @@ namespace GoogleCloudExtension.GitUtils
                 args: command,
                 handler: (o, e) => output.Add(e.Line),
                 workingDir: gitLocalRoot);
-            return commandResult ? output : null;
+            if (!commandResult && throwOnError)
+            {
+                throw new GitCommandException();
+            }
+            else
+            {
+                return commandResult ? output : null;
+            }
         }
 
         private GitRepository(string gitLocalRoot)
