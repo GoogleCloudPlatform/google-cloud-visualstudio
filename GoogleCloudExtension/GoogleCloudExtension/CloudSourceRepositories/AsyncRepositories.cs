@@ -25,6 +25,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// <summary>
     /// Wrapper on top of AsyncProperty.
     /// Retrieves a list of <seealso cref="Repo"/> objects by calling async task.
+    /// 
+    /// The main goal is to allow user to choose different project while waiting for the list to be populated.
+    /// Anytime, user can change project and then it calls StartListRepoTaskAsync to update the repo list.
     /// </summary>
     public class AsyncRepositories : Model
     {

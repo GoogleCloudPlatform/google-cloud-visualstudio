@@ -67,10 +67,7 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         /// <param name="url">The repository url.</param>
         /// <param name="refreshToken">Google cloud credential refresh token.</param>
-        /// <param name="useHttpPath">
-        /// True, store credential for the url path. i.e https://abc.com/urlpath
-        /// False: store credential for host.
-        /// </param>
+        /// <param name="pathOption"><seealso cref="StoreCredentialPathOption"/> </param>
         /// <returns>
         /// True: if credential is stored successfully.
         /// Otherwise false.
