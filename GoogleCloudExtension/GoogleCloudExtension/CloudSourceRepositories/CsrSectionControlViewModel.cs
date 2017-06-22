@@ -187,7 +187,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 return true;
             }
-            if (!await CsrGitUtils.SetUseHttpPath())
+            try
+            {
+                await CsrGitUtils.SetUseHttpPathAsync();
+            }
+            catch (GitCommandException)
             {
                 // TODO: show error message
                 return false;

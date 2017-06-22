@@ -40,27 +40,21 @@ namespace GoogleCloudExtension.GitUtils
         /// A <seealso cref="GitRepository"/> object if clone is successful.
         /// Or null if it fails for some reason.
         /// </returns>
-        /// <exception cref="CsrGitCommandException">Throw when git command fails</exception>
-        public static async Task<GitRepository> Clone(string url, string localPath)
+        /// <exception cref="GitCommandException">Throw when git command fails</exception>
+        public static async Task<GitRepository> CloneAsync(string url, string localPath)
         {
             if (Directory.Exists(localPath))
             {
                 throw new ArgumentException($"{localPath} arleady exists.");
             }
 
-            GitRepository gitRepo = null;
             Directory.CreateDirectory(localPath);
 
             // git clone https://host/myrepo/ "c:\git\myrepo" --config credential.helper=manager
             string command = $@"clone {url} ""{localPath}"" --config credential.helper=manager";
             var output = await GitRepository.RunGitCommandAsync(command, localPath);
-            Debug.WriteLine(output?.FirstOrDefault() ?? "");
-            if (output == null ||
-                (gitRepo = await GitRepository.GetGitCommandWrapperForPathAsync(localPath)) == null)
-            {
-                throw new CsrGitCommandException();
-            }
-            return gitRepo;
+            Debug.WriteLine(output.FirstOrDefault() ?? "");
+            return await GitRepository.GetGitCommandWrapperForPathAsync(localPath);
         }
 
         /// <summary>
@@ -95,9 +89,9 @@ namespace GoogleCloudExtension.GitUtils
         /// Set global git config useHttpPath for CSR host.
         /// Refer to https://git-scm.com/docs/gitcredentials
         /// </summary>
-        public static async Task<bool> SetUseHttpPath() =>
-            (await GitRepository.RunGitCommandAsync(
-                $"config --global credential.{CsrUrlAuthority}.useHttpPath true", 
-                Directory.GetCurrentDirectory())) != null;
+        public static async Task SetUseHttpPathAsync() =>
+            await GitRepository.RunGitCommandAsync(
+                $"config --global credential.{CsrUrlAuthority}.useHttpPath true",
+                Directory.GetCurrentDirectory());
     }
 }

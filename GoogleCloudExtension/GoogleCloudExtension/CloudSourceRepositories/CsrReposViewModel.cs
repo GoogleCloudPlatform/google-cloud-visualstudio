@@ -285,14 +285,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private async Task CloneAsync()
         {
-            IsReady = false;
-            Loading = true;
-
             ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
                 return;
             }
+
+            IsReady = false;
+            Loading = true;
 
             try
             {

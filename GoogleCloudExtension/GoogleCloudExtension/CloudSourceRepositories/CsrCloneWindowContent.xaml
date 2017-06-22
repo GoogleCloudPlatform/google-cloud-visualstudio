@@ -57,27 +57,52 @@
                 Style="{StaticResource CommonLabelStyle}"
                 Margin="0,5,0,0"/>
 
-            <Grid>
-                <!-- Show text "empty list, choose another project" -->
-                <ComboBox                    
-                    Visibility="{Binding ProjectHasRepo, Converter={utils:VisibilityConverter IsNegated=True}}"
-                    SelectedIndex="0"
-                    IsEnabled="False"
-                    FontStyle="Oblique"
-                    Style="{StaticResource CommonComboBoxStyle}">
-                    <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage}"/>
-                </ComboBox>
+            <ContentControl>
+                <ContentControl.Resources>
+                    <!-- Show text "empty list, choose another project" -->
+                    <ComboBox
+                        x:Key="EmptyList"
+                        SelectedIndex="0"
+                        IsEnabled="False"
+                        FontStyle="Oblique"
+                        Style="{StaticResource CommonComboBoxStyle}">
+                        <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage }"/>
+                    </ComboBox>
 
-                <ComboBox 
-                    Visibility="{Binding ProjectHasRepo, Converter={utils:VisibilityConverter}}"
-                    x:Name="_repositoryComboBox"
-                    ItemsSource="{Binding Repositories}"
-                    SelectedItem="{Binding SelectedRepository}"
-                    IsSynchronizedWithCurrentItem="True"
-                    DisplayMemberPath="Name" 
-                    IsTextSearchEnabled="True"
-                    Style="{StaticResource CommonComboBoxStyle}"/>                
-            </Grid>
+                    <ComboBox
+                        x:Key="LoadingList"
+                        SelectedIndex="0"
+                        IsEnabled="False"
+                        FontStyle="Oblique"
+                        Style="{StaticResource CommonComboBoxStyle}">
+                        <ComboBoxItem Content="{x:Static ext:Resources.CsrLoadingRepoMessage}"/>
+                    </ComboBox>
+
+                    <ComboBox
+                        x:Key="NormalList"
+                        x:Name="_repositoryComboBox"
+                        ItemsSource="{Binding RepositoriesAsync.Value}"
+                        SelectedItem="{Binding SelectedRepository}"
+                        IsSynchronizedWithCurrentItem="True"
+                        DisplayMemberPath="Name" 
+                        IsTextSearchEnabled="True"
+                        Style="{StaticResource CommonComboBoxStyle}"/>
+                </ContentControl.Resources>
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="Content" Value="{StaticResource EmptyList}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ProjectHasRepo}" Value="True" >
+                                <Setter Property="Content" Value="{StaticResource NormalList}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RepositoriesAsync.IsPending}" Value="True" >
+                                <Setter Property="Content" Value="{StaticResource LoadingList}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+               
+            </ContentControl>
 
             <Label 
                 Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"

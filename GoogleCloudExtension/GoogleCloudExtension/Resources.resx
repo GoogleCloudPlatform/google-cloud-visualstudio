@@ -2703,4 +2703,8 @@
     <value>Empty list, choose another project</value>
     <comment>The selected project does not have any repository, asks to select a different one</comment>
   </data>
+  <data name="CsrLoadingRepoMessage" xml:space="preserve">
+    <value>Loading repositories ...</value>
+    <comment>Message when loading repositories</comment>
+  </data>
 </root>

@@ -79,8 +79,10 @@ namespace GoogleCloudExtension.Utils
         private static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] UInt32 flags);
 
         /// <summary>
-        /// For more detail, use MSDN to check CREDENTIAL structure and
-        /// CRED_PERSIST_SESSION, CRED_PERSIST_LOCAL_MACHINE and CRED_PERSIST_ENTERPRISE.
+        /// For more detail, 
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
+        /// CREDENTIAL structure</see>
+        /// Checkout Persist field.
         /// </summary>
         public enum CredentialPersistence : uint
         {
@@ -90,7 +92,10 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// For more detail, use MSDN to check CREDENTIAL structure Type field.
+        /// For more detail, 
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
+        /// CREDENTIAL structure</see>
+        /// Checkout Type field.
         /// </summary>
         public enum CredentialType
         {

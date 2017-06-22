@@ -17,6 +17,7 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private readonly CsrCloneWindow _owner;
 
         private string _localPath;
-        private IList<Repo> _repos;
+        private AsyncProperty<IList<Repo>> _repos;
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -72,9 +73,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var oldValue = _selectedProject;
                 SetValueAndRaise(ref _selectedProject, value);
-                if (_selectedProject != null && _isReady && oldValue != _selectedProject)
+                if (_selectedProject != null && IsReady && oldValue != _selectedProject)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(ListRepoAsync));
+                    ErrorHandlerUtils.HandleAsyncExceptions(StartListRepoTaskAsync);
                 }
             }
         }
@@ -82,7 +83,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// The list of repositories that belong to the project
         /// </summary>
-        public IList<Repo> Repositories
+        public AsyncProperty<IList<Repo>> RepositoriesAsync
         {
             get { return _repos; }
             private set { SetValueAndRaise(ref _repos, value); }
@@ -148,7 +149,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
-            ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(InitializeAsync));
+            SelectedProject = Projects.FirstOrDefault();
         }
 
         private async Task CloneAsync()
@@ -169,11 +170,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             try
             {
-                GitRepository localRepo = await CsrGitUtils.Clone(SelectedRepository.Url, destPath);
+                GitRepository localRepo = await CsrGitUtils.CloneAsync(SelectedRepository.Url, destPath);
                 Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
                 _owner.Close();
             }
-            catch (CsrGitCommandException)
+            catch (GitCommandException)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedMessage,
@@ -209,20 +210,22 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        private async Task ListRepoAsync()
+        private async Task StartListRepoTaskAsync()
         {
-            Debug.WriteLine("ListRepoAsync");
-
-            Repositories = await CsrUtils.GetCloudReposAsync(SelectedProject.ProjectId);
-            SelectedRepository = Repositories?.FirstOrDefault();
-            ProjectHasRepo = Repositories?.Any() ?? false;
-        }
-
-        private async Task InitializeAsync()
-        {
-            Debug.WriteLine("Init");
-            SelectedProject = Projects.FirstOrDefault();
-            await ListRepoAsync();
+            Debug.WriteLine(nameof(StartListRepoTaskAsync));
+            // Reset SelectedRepository before running the async task.
+            // This disables OkCommand
+            RepositoriesAsync = null;
+            ProjectHasRepo = false;
+            AsyncProperty<IList<Repo>> repos =
+                AsyncPropertyUtils.CreateAsyncProperty(CsrUtils.GetCloudReposAsync(SelectedProject.ProjectId));
+            RepositoriesAsync = repos;
+            await repos.ValueTask;
+            if (RepositoriesAsync == repos)
+            {
+                SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
+                ProjectHasRepo = RepositoriesAsync.Value?.Any() ?? false;
+            }
         }
 
         private void ValidateInputs()

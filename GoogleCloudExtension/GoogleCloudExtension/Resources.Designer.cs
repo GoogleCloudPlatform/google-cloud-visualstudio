@@ -2392,6 +2392,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading repositories ....
+        /// </summary>
+        public static string CsrLoadingRepoMessage {
+            get {
+                return ResourceManager.GetString("CsrLoadingRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty list, choose another project.
         /// </summary>
         public static string CsrProjectContainsNoRepoMessage {

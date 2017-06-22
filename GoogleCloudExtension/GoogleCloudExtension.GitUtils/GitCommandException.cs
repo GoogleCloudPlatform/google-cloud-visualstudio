@@ -17,11 +17,11 @@ using System;
 namespace GoogleCloudExtension.GitUtils
 {
     /// <summary>
-    /// Exception if CSR git command fails
+    /// Exception if git command fails
     /// </summary>
-    public class CsrGitCommandException : Exception
+    public class GitCommandException : Exception
     {
-        public CsrGitCommandException()
+        public GitCommandException()
         { }
     }
 }
