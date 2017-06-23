@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
@@ -23,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -123,6 +121,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
             CloneCommand = new ProtectedAsyncCommand(CloneAsync);
+            CreateCommand = new ProtectedAsyncCommand(CreateAsync);
         }
 
         /// <summary>
@@ -180,24 +179,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return;
             }
 
-            var resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
-            if (resourceManager == null)
-            {
-                return;
-            }
-
             IsReady = false;
             Loading = true;
+
             Repositories = new ObservableCollection<RepoItemViewModel>();
-            
             try
             {
-                var projects = await resourceManager.GetSortedActiveProjectsAsync();
-                if (!projects.Any())
-                {
-                    return;
-                }
-
                 await AddLocalReposAsync(await GetLocalGitRepositories());
 
                 SetActiveRepo(_teamExplorer.GetActiveRepository());
@@ -285,10 +272,46 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private async Task CloneAsync()
         {
+            var projects = await GetProjectsAsync();
+            if (!projects.Any())
+            {
+                return;
+            }
+
+            var repoItem = CsrCloneWindow.PromptUser(projects);
+            if (repoItem != null)
+            {
+                if (Repositories == null)
+                {
+                    Repositories = new ObservableCollection<RepoItemViewModel>();
+                }
+                Repositories.Add(repoItem);
+            }
+        }
+
+        private async Task CreateAsync()
+        {
+            var projects = await GetProjectsAsync();
+            if (!projects.Any())
+            {
+                return;
+            }
+            var repoItem = CsrCreateWindow.PromptUser(projects);
+            if (repoItem != null)
+            {
+                SetCurrentRepo(repoItem.LocalPath);
+            }
+        }
+
+        /// <summary>
+        /// Return a list of projects. Returns empty list if no item is found.
+        /// </summary>
+        private async Task<IList<Project>> GetProjectsAsync()
+        {
             ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
-                return;
+                return new List<Project>();
             }
 
             IsReady = false;
@@ -297,26 +320,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             try
             {
                 var projects = await resourceManager.GetSortedActiveProjectsAsync();
-                Loading = false;
-
                 if (!projects.Any())
                 {
-                    // TODO: Disconnect and show error message "no project"
                     UserPromptUtils.OkPrompt(
-                        message: Resources.CsrCloneNoProject,
-                        title: Resources.UiDefaultPromptTitle);
-                    return;
+                        message: Resources.CsrNoProjectMessage,
+                        title: Resources.CsrConnectSectionTitle);
                 }
-
-                var repoItem = CsrCloneWindow.PromptUser(projects);
-                if (repoItem != null)
-                {
-                    if (Repositories == null)
-                    {
-                        Repositories = new ObservableCollection<RepoItemViewModel>();
-                    }
-                    Repositories.Add(repoItem);
-                }
+                return projects;
             }
             finally
             {

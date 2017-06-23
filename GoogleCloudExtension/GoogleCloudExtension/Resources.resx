@@ -2687,8 +2687,8 @@
     <value>_Clone to:</value>
     <comment>Label to the input local path text box</comment>
   </data>
-  <data name="CsrCloneNoProject" xml:space="preserve">
-    <value>There is no project.</value>
+  <data name="CsrNoProjectMessage" xml:space="preserve">
+    <value>Current GCP account has no project.</value>
     <comment>Error message if the user account has no any project</comment>
   </data>
   <data name="CsrClonePathBrowseButtonCaption" xml:space="preserve">
@@ -2726,5 +2726,25 @@
   <data name="CsrLoadingRepoMessage" xml:space="preserve">
     <value>Loading repositories ...</value>
     <comment>Message when loading repositories</comment>
+  </data>
+  <data name="CsrCreateMirrorAfterPublish" xml:space="preserve">
+    <value>After creation, goto GCP console to mirror repository from GitHub or Gitbuckets (git only).</value>
+    <comment>Caption for checkbox that asks to goto CSR page after repo is created</comment>
+  </data>
+  <data name="CsrRepoNameValidationMessage" xml:space="preserve">
+    <value>Supported characters are A-Z, a-z, 0-9, -, and _</value>
+    <comment>Repo name validation error message</comment>
+  </data>
+  <data name="CsrCreateRepoNameTextBoxLabel" xml:space="preserve">
+    <value>Repository name</value>
+    <comment>Label to repository name input text box</comment>
+  </data>
+  <data name="CsrRepoNameStartWithMessageFormat" xml:space="preserve">
+    <value>Repo name must start with A-Z, a-z, 0-9 or _</value>
+    <comment>Repository name first charactor validation message.</comment>
+  </data>
+  <data name="CsrCreateWindowTitle" xml:space="preserve">
+    <value>Create Google Cloud Source Repositories</value>
+    <comment>The title to create CSR Repository window</comment>
   </data>
 </root>
