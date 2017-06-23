@@ -2392,6 +2392,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Goto Google CSR page to mirror repo from GitHub or Gitbuckets (git only).
+        /// </summary>
+        public static string CsrCreateMirrorAfterPublish {
+            get {
+                return ResourceManager.GetString("CsrCreateMirrorAfterPublish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository name.
+        /// </summary>
+        public static string CsrCreateRepoNameTextBoxLebel {
+            get {
+                return ResourceManager.GetString("CsrCreateRepoNameTextBoxLebel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supported characters are A-Z, a-z, 0-9, -, and _.
+        /// </summary>
+        public static string CsrCreateRepoNameValidationMessage {
+            get {
+                return ResourceManager.GetString("CsrCreateRepoNameValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
         /// </summary>
         public static string CsrDescription {
@@ -2446,11 +2473,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The repository name already exists.
+        /// </summary>
+        public static string CsrRepoNameAlreadyExitstsMessage {
+            get {
+                return ResourceManager.GetString("CsrRepoNameAlreadyExitstsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repo Name.
         /// </summary>
         public static string CsrRepoNameLabel {
             get {
                 return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repo name must start with A-Z, a-z, 0-9 or _.
+        /// </summary>
+        public static string CsrRepoNameStartWithMessageFormat {
+            get {
+                return ResourceManager.GetString("CsrRepoNameStartWithMessageFormat", resourceCulture);
             }
         }
         

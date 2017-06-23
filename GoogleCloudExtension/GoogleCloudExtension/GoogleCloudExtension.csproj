@@ -185,11 +185,15 @@
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneCreateViewModelBase.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
       <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCreateWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCreateWindowContent.xaml.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCreateWindowViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
@@ -920,6 +924,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrCreateWindowContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

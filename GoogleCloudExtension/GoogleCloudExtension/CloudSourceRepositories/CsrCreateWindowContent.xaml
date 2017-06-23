@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="GoogleCloudExtension.CloudSourceRepositories.CsrCreateWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.CloudSourceRepositories"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ctrl="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type=local:CsrCreateWindowViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
+                <ResourceDictionary Source="./CsrResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                                      Command="{Binding OkCommand}"
+                                      IsDefault="True"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel IsEnabled="{Binding IsReady}">
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrProjectSelectionLabel}"
+                Target="{Binding ElementName=_projectsComboBox}"
+                Style="{StaticResource CommonLabelStyle}" />
+
+            <ComboBox 
+                x:Name="_projectsComboBox"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject}"
+                DisplayMemberPath="Name"        
+                IsSynchronizedWithCurrentItem="True"
+                IsTextSearchEnabled="True"
+                Style="{StaticResource CommonComboBoxStyle}"/>
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrRepositorySelectionLabel}"
+                Target="{Binding ElementName=_repositoryTextBox}"
+                Style="{StaticResource CommonLabelStyle}"
+                Margin="0,5,0,0"/>
+
+            <TextBox 
+                x:Name="_repositoryTextBox"
+                Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, 
+                    ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                Style="{StaticResource CommonTextBoxStyle}"
+                MaxLength="{Binding REPO_NAME_LEN}"
+                Margin="0,0,6,0" />
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"
+                Target="{Binding ElementName=_localPathTextBox}"
+                Style="{StaticResource CommonLabelStyle}" 
+                Margin="0,5,0,0" />
+
+            <DockPanel>
+                <Button 
+                    DockPanel.Dock="Right"
+                    Content="{x:Static ext:Resources.CsrClonePathBrowseButtonCaption}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Command="{Binding PickFolderCommand}"
+                    Style="{StaticResource CommonButtonDynamicStyle}" />
+
+                <TextBox 
+                    x:Name="_localPathTextBox"
+                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextBoxStyle}"
+                    Margin="0,0,5,0">
+                    <TextBox.ToolTip>
+                        <ToolTip 
+                            Content="{x:Static ext:Resources.CsrCloneToTextBoxToolTip}"
+                            Style="{StaticResource CommonTooltipStyle}"/>
+                    </TextBox.ToolTip>
+                </TextBox>
+
+            </DockPanel>
+
+            <CheckBox 
+                Margin="0,6,0,0"
+                VerticalAlignment="Center"
+                IsChecked="{Binding GotoCsrWebPage}" >
+                <TextBlock Text="{x:Static ext:Resources.CsrCreateMirrorAfterPublish}"
+                            TextWrapping="NoWrap"
+                            TextTrimming="CharacterEllipsis"
+                            Style="{StaticResource CommonTextStyle}"/>
+            </CheckBox>
+
+            <ctrl:DotsProgressIndicator 
+                Margin="0,12,0,0" 
+                Width="60" 
+                HorizontalAlignment="Left" 
+                Visibility="{Binding IsReady, Converter={utils:VisibilityConverter IsNegated=True}}"/>
+
+        </StackPanel>
+    </theming:CommonDialogWindowBaseContent>
+    
+</UserControl>
