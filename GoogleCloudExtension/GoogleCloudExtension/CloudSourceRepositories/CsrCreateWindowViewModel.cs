@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private static readonly Lazy<HashSet<char>> 
             s_repoNmaeCharSet = new Lazy<HashSet<char>>(CreateRepoNameCharSet);
 
-        private string _repoName;
+        private string _repositoryName;
         private bool _gotoCsrWebPage = true;
 
         protected override string RepoName => RepositoryName;
@@ -65,10 +65,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public string RepositoryName
         {
-            get { return _repoName; }
+            get { return _repositoryName; }
             set
             {
-                SetValueAndRaise(ref _repoName, value);
+                SetValueAndRaise(ref _repositoryName, value);
                 ValidateInputs();
             }
         }
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), 
-                    Resources.CsrCreateRepoNameTextBoxLebel);
+                    Resources.CsrCreateRepoNameTextBoxLabel);
                 yield break;
             }
 
@@ -149,6 +149,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             AddCharRange(set, 'a', 'z');
             AddCharRange(set, 'A', 'Z');
             AddCharRange(set, '0', '9');
+            set.Add('_');
             return set;
         }
 

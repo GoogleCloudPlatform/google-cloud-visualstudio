@@ -2383,7 +2383,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to After creation, goto Google CSR page to mirror repository from GitHub or Gitbuckets (git only)..
+        ///   Looks up a localized string similar to After creation, goto GCP console to mirror repository from GitHub or Gitbuckets (git only)..
         /// </summary>
         public static string CsrCreateMirrorAfterPublish {
             get {
@@ -2394,9 +2394,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Repository name.
         /// </summary>
-        public static string CsrCreateRepoNameTextBoxLebel {
+        public static string CsrCreateRepoNameTextBoxLabel {
             get {
-                return ResourceManager.GetString("CsrCreateRepoNameTextBoxLebel", resourceCulture);
+                return ResourceManager.GetString("CsrCreateRepoNameTextBoxLabel", resourceCulture);
             }
         }
         

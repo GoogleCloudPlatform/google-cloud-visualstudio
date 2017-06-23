@@ -61,8 +61,7 @@
                 Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, 
                     ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
                 Style="{StaticResource CommonTextBoxStyle}"
-                MaxLength="{Binding RepoNameMaxLength}"
-                Margin="0,0,6,0" />
+                MaxLength="{Binding RepoNameMaxLength}" />
 
             <Label 
                 Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"
@@ -95,7 +94,7 @@
             </DockPanel>
 
             <CheckBox 
-                Margin="0,6,0,0"
+                Margin="0,5,0,0"
                 VerticalAlignment="Center"
                 IsChecked="{Binding GotoCsrWebPage}" >
                 <TextBlock Text="{x:Static ext:Resources.CsrCreateMirrorAfterPublish}"

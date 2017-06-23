@@ -184,7 +184,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-                dialog.Description = Resources.CsrCloneLocalPathLabel;
                 dialog.SelectedPath = LocalPath;
                 dialog.ShowNewFolderButton = true;
                 var result = dialog.ShowDialog();
