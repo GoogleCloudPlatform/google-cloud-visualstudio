@@ -24,15 +24,15 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.CsrCloneRepoButtonCaption}"
                                       Command="{Binding OkCommand}"
                                       IsDefault="True" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel IsEnabled="{Binding IsReady}">
@@ -57,52 +57,60 @@
                 Style="{StaticResource CommonLabelStyle}"
                 Margin="0,5,0,0"/>
 
-            <ContentControl>
-                <ContentControl.Resources>
-                    <!-- Show text "empty list, choose another project" -->
-                    <ComboBox
-                        x:Key="EmptyList"
-                        SelectedIndex="0"
-                        IsEnabled="False"
-                        FontStyle="Oblique"
-                        Style="{StaticResource CommonComboBoxStyle}">
-                        <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage }"/>
-                    </ComboBox>
+            <DockPanel>
+                <Button DockPanel.Dock="Right" 
+                        Margin="5,0,0,0"
+                        Content="Add Repo"
+                        Style="{StaticResource CommonButtonStandardStyle}"
+                        Command="{Binding CreateRepoCommand}"
+                        />
+                <ContentControl>
+                    <ContentControl.Resources>
+                        <!-- Show text "empty list, choose another project" -->
+                        <ComboBox
+                            x:Key="EmptyList"
+                            SelectedIndex="0"
+                            IsEnabled="False"
+                            FontStyle="Oblique"
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage }"/>
+                        </ComboBox>
 
-                    <ComboBox
-                        x:Key="LoadingList"
-                        SelectedIndex="0"
-                        IsEnabled="False"
-                        FontStyle="Oblique"
-                        Style="{StaticResource CommonComboBoxStyle}">
-                        <ComboBoxItem Content="{x:Static ext:Resources.CsrLoadingRepoMessage}"/>
-                    </ComboBox>
+                        <ComboBox
+                            x:Key="LoadingList"
+                            SelectedIndex="0"
+                            IsEnabled="False"
+                            FontStyle="Oblique"
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBoxItem Content="{x:Static ext:Resources.CsrLoadingRepoMessage}"/>
+                        </ComboBox>
 
-                    <ComboBox
-                        x:Key="NormalList"
-                        x:Name="_repositoryComboBox"
-                        ItemsSource="{Binding RepositoriesAsync.Value}"
-                        SelectedItem="{Binding SelectedRepository}"
-                        IsSynchronizedWithCurrentItem="True"
-                        DisplayMemberPath="Name" 
-                        IsTextSearchEnabled="True"
-                        Style="{StaticResource CommonComboBoxStyle}"/>
-                </ContentControl.Resources>
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Setter Property="Content" Value="{StaticResource LoadingList}" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="NoItems" >
-                                <Setter Property="Content" Value="{StaticResource EmptyList}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="HasItems" >
-                                <Setter Property="Content" Value="{StaticResource NormalList}" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
+                        <ComboBox
+                            x:Key="NormalList"
+                            x:Name="_repositoryComboBox"
+                            ItemsSource="{Binding RepositoriesAsync.Value}"
+                            SelectedItem="{Binding SelectedRepository}"
+                            IsSynchronizedWithCurrentItem="True"
+                            DisplayMemberPath="Name" 
+                            IsTextSearchEnabled="True"
+                            Style="{StaticResource CommonComboBoxStyle}"/>
+                    </ContentControl.Resources>
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Content" Value="{StaticResource LoadingList}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="NoItems" >
+                                    <Setter Property="Content" Value="{StaticResource EmptyList}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="HasItems" >
+                                    <Setter Property="Content" Value="{StaticResource NormalList}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
                
-            </ContentControl>
+                </ContentControl>
+            </DockPanel>
 
             <Label 
                 Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"
@@ -117,7 +125,7 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Command="{Binding PickFolderCommand}"
-                    Style="{StaticResource CommonButtonDynamicStyle}" />
+                    Style="{StaticResource CommonButtonStandardStyle}" />
 
                 <TextBox 
                     x:Name="_localPathTextBox"

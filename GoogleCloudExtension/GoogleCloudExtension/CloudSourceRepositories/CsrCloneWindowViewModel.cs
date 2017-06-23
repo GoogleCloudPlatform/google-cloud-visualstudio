@@ -36,6 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         private readonly CsrCloneWindow _owner;
         private string _localPath;
+        private Repo _latestCreatedRepo;
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -119,6 +120,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ProtectedCommand OkCommand { get; }
 
         /// <summary>
+        /// Responds to create repo button click event
+        /// </summary>
+        public ProtectedCommand CreateRepoCommand { get; }
+        
+        /// <summary>
         /// Final cloned repository
         /// </summary>
         public RepoItemViewModel Result { get; private set; }
@@ -133,6 +139,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
+            CreateRepoCommand = new ProtectedCommand(OpenCreateRepoDialog, canExecuteCommand: false);
             RepositoriesAsync.PropertyChanged += RepositoriesAsyncPropertyChanged;
 
             var projectId = CredentialsStore.Default.CurrentProjectId;
@@ -147,6 +154,21 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 // RaiseAllPropertyChanged set e.PropertyName as null
                 case null:
                 case nameof(AsyncRepositories.Value):
+                    CreateRepoCommand.CanExecuteCommand =
+                        RepositoriesAsync.DisplayState != AsyncRepositories.DisplayOptions.Pending;
+
+                    // Set last created repo as default
+                    if (_latestCreatedRepo != null)
+                    {
+                        SelectedRepository = RepositoriesAsync.Value?
+                            .FirstOrDefault(x => x.Name == _latestCreatedRepo.Name);
+                        if (SelectedRepository != null)
+                        {
+                            break;  
+                        }
+                        // else if it is null, user may have changed project, continue to select first repo.
+                    }
+
                     SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
                     break;
                 default:
@@ -241,6 +263,17 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                         nameof(Resources.CsrClonePathExistNotEmptyMessageFormat), destPath);
                     yield break;
                 }
+            }
+        }
+
+        private void OpenCreateRepoDialog()
+        {
+            _latestCreatedRepo = CsrAddRepoWindow.PromptUser(RepositoriesAsync.Value, SelectedProject);
+            if (_latestCreatedRepo != null)
+            {
+                // Update the repos list
+                ErrorHandlerUtils.HandleAsyncExceptions(
+                    () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
             }
         }
     }

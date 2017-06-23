@@ -17,11 +17,11 @@ using System.Windows.Controls;
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// Interaction logic for CsrCloneWindowContent.xaml
+    /// Interaction logic for CsrAddRepoWindowContent.xaml
     /// </summary>
-    public partial class CsrCloneWindowContent : UserControl
+    public partial class CsrAddRepoWindowContent : UserControl
     {
-        public CsrCloneWindowContent()
+        public CsrAddRepoWindowContent()
         {
             InitializeComponent();
         }

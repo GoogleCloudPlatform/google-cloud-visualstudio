@@ -2266,6 +2266,51 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add an empty repository for project {0}..
+        /// </summary>
+        public static string CsrAddRepoForProjectMessageFormat {
+            get {
+                return ResourceManager.GetString("CsrAddRepoForProjectMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Console.
+        /// </summary>
+        public static string CsrAddRepoVisitCsrLinkCaption {
+            get {
+                return ResourceManager.GetString("CsrAddRepoVisitCsrLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For more options, visit.
+        /// </summary>
+        public static string CsrAddRepoVisitCsrLinkMessageFirstPart {
+            get {
+                return ResourceManager.GetString("CsrAddRepoVisitCsrLinkMessageFirstPart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new repository.
+        /// </summary>
+        public static string CsrAddRepoWindowTitle {
+            get {
+                return ResourceManager.GetString("CsrAddRepoWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone or Create.
+        /// </summary>
+        public static string CsrCloneCreateLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCloneCreateLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to clone the repository..
         /// </summary>
         public static string CsrCloneFailedMessage {
@@ -2280,15 +2325,6 @@ namespace GoogleCloudExtension {
         public static string CsrCloneFailedToSetCredentialMessage {
             get {
                 return ResourceManager.GetString("CsrCloneFailedToSetCredentialMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clone.
-        /// </summary>
-        public static string CsrCloneLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
             }
         }
         
@@ -2313,9 +2349,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to There is no project..
         /// </summary>
-        public static string CsrCloneNoProject {
+        public static string CsrCloneNoProjectMessage {
             get {
-                return ResourceManager.GetString("CsrCloneNoProject", resourceCulture);
+                return ResourceManager.GetString("CsrCloneNoProjectMessage", resourceCulture);
             }
         }
         
@@ -2343,6 +2379,15 @@ namespace GoogleCloudExtension {
         public static string CsrClonePathNotExistMessage {
             get {
                 return ResourceManager.GetString("CsrClonePathNotExistMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string CsrCloneRepoButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCloneRepoButtonCaption", resourceCulture);
             }
         }
         
@@ -2383,11 +2428,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create.
+        ///   Looks up a localized string similar to Local Path.
         /// </summary>
-        public static string CsrCreateLinkButtonCaption {
+        public static string CsrContextMenuRepoLocalPathLabel {
             get {
-                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
+                return ResourceManager.GetString("CsrContextMenuRepoLocalPathLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repo Name.
+        /// </summary>
+        public static string CsrContextMenuRepoNameLabel {
+            get {
+                return ResourceManager.GetString("CsrContextMenuRepoNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository name.
+        /// </summary>
+        public static string CsrCreateRepoNameTextBoxFieldName {
+            get {
+                return ResourceManager.GetString("CsrCreateRepoNameTextBoxFieldName", resourceCulture);
             }
         }
         
@@ -2419,7 +2482,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty list, choose another project.
+        ///   Looks up a localized string similar to Empty list,  add a new repository or choose another project.
         /// </summary>
         public static string CsrProjectContainsNoRepoMessage {
             get {
@@ -2437,20 +2500,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local Path.
+        ///   Looks up a localized string similar to The repository name already exists.
         /// </summary>
-        public static string CsrRepoLocalPathLabel {
+        public static string CsrRepoNameExistsMessage {
             get {
-                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
+                return ResourceManager.GetString("CsrRepoNameExistsMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repo Name.
+        ///   Looks up a localized string similar to Repo name must start with A-Z, a-z, 0-9 or _.
         /// </summary>
-        public static string CsrRepoNameLabel {
+        public static string CsrRepoNameStartWithMessageFormat {
             get {
-                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
+                return ResourceManager.GetString("CsrRepoNameStartWithMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Repository Name:.
+        /// </summary>
+        public static string CsrRepoNameTextBoxLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoNameTextBoxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supported characters are A-Z, a-z, 0-9, -, and _.
+        /// </summary>
+        public static string CsrRepoNameValidationMessage {
+            get {
+                return ResourceManager.GetString("CsrRepoNameValidationMessage", resourceCulture);
             }
         }
         

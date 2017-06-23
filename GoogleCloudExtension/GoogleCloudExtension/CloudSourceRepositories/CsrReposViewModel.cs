@@ -99,12 +99,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Responds to Clone command
         /// </summary>
-        public ICommand CloneCommand { get; }
-
-        /// <summary>
-        /// Responds to Create command.
-        /// </summary>
-        public ICommand CreateCommand { get; }
+        public ICommand CloneCreateRepoCommand { get; }
 
         /// <summary>
         /// Responds to Disconnect command
@@ -122,7 +117,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
-            CloneCommand = new ProtectedAsyncCommand(CloneAsync);
+            CloneCreateRepoCommand = new ProtectedAsyncCommand(CloneCreateRepoAsync);
         }
 
         /// <summary>
@@ -283,7 +278,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             return localRepos;
         }
 
-        private async Task CloneAsync()
+        private async Task CloneCreateRepoAsync()
         {
             ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
             if (resourceManager == null)
@@ -303,7 +298,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 {
                     // TODO: Disconnect and show error message "no project"
                     UserPromptUtils.OkPrompt(
-                        message: Resources.CsrCloneNoProject,
+                        message: Resources.CsrCloneNoProjectMessage,
                         title: Resources.UiDefaultPromptTitle);
                     return;
                 }
