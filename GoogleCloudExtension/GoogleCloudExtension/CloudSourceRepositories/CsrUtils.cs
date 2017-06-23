@@ -15,10 +15,12 @@
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -28,6 +30,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public static class CsrUtils
     {
+        /// <summary>
+        /// Gets repository name 
+        /// The Cloud Repository name has format $"{ProjectResourceName}/repos/{repoName}" };
+        /// Returns the last part which is the repo name.
+        /// </summary>
+        /// <param name="cloudRepo">Repository object</param>
+        /// <returns>Repository name</returns>
+        public static string GetRepoName(this Repo cloudRepo) => cloudRepo.Name?.Split('/').LastOrDefault();
+
         /// <summary>
         /// Parse the repository url and get the project name portion
         /// </summary>
@@ -40,7 +51,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public static string ParseProjectId(string url)
         {
             url.ThrowIfNullOrEmpty(nameof(url));
-            if (url.StartsWith("https://source.developers.google.com", StringComparison.OrdinalIgnoreCase))
+            if (url.StartsWith(CsrGitUtils.CsrUrlAuthority, StringComparison.OrdinalIgnoreCase))
             {
                 string[] splits = url.Split('/');
                 return splits.Length >= 3 ? splits[splits.Length - 3] : null;
@@ -61,7 +72,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             try
             {
-                return await csrDataSource?.ListReposAsync();
+                return await csrDataSource.ListReposAsync();
             }
             catch (DataSourceException ex)
             // Call out "no permission" project.

@@ -32,7 +32,12 @@ namespace GoogleCloudExtension.Utils
         /// </param>
         /// <param name="username">The credential username.</param>
         /// <param name="password">The credential password.</param>
-        public static bool Write(string targetName, string username, string password)
+        /// <param name="credentialType">Credentrial type</param>
+        /// <param name="persistenceType">Credential persistence type</param>
+        public static bool Write(
+            string targetName, string username, string password,
+            CredentialType credentialType,
+            CredentialPersistence persistenceType)
         {
             password.ThrowIfNullOrEmpty(nameof(password));
             username.ThrowIfNullOrEmpty(nameof(username));
@@ -50,8 +55,8 @@ namespace GoogleCloudExtension.Utils
             credential.Attributes = IntPtr.Zero;
             credential.Comment = IntPtr.Zero;
             credential.TargetAlias = IntPtr.Zero;
-            credential.Type = CredentialType.DomainPassword;
-            credential.Persist = (uint)CredentialPersistence.Session;
+            credential.Type = credentialType;
+            credential.Persist = (uint)persistenceType;
             credential.CredentialBlobSize = (uint)(byteArray == null ? 0 : byteArray.Length);
             credential.TargetName = Marshal.StringToCoTaskMemUni(targetName);
             credential.CredentialBlob = Marshal.StringToCoTaskMemUni(password);
@@ -73,11 +78,35 @@ namespace GoogleCloudExtension.Utils
         [DllImport("Advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] UInt32 flags);
 
-        private enum CredentialPersistence : uint
+        /// <summary>
+        /// For more detail, 
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
+        /// CREDENTIAL structure</see>
+        /// Checkout Persist field.
+        /// </summary>
+        public enum CredentialPersistence : uint
         {
             Session = 1,
             LocalMachine,
             Enterprise
+        }
+
+        /// <summary>
+        /// For more detail, 
+        /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
+        /// CREDENTIAL structure</see>
+        /// Checkout Type field.
+        /// </summary>
+        public enum CredentialType
+        {
+            Generic = 1,
+            DomainPassword,
+            DomainCertificate,
+            DomainVisiblePassword,
+            GenericCertificate,
+            DomainExtended,
+            Maximum,
+            MaximumEx = Maximum + 1000,
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -95,18 +124,6 @@ namespace GoogleCloudExtension.Utils
             public IntPtr Attributes;
             public IntPtr TargetAlias;
             public IntPtr UserName;
-        }
-
-        private enum CredentialType
-        {
-            Generic = 1,
-            DomainPassword,
-            DomainCertificate,
-            DomainVisiblePassword,
-            GenericCertificate,
-            DomainExtended,
-            Maximum,
-            MaximumEx = Maximum + 1000,
         }
     }
 }

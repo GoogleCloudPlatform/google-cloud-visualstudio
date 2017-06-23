@@ -2651,5 +2651,60 @@
     <value>View the repository on web</value>
     <comment>The menu header for visiting souce repository on web page</comment>
   </data>
-
+  <data name="CsrCloneWindowTitle" xml:space="preserve">
+    <value>Clone Google Cloud Source Repository</value>
+    <comment>The title of the clone CSR window</comment>
+  </data>
+  <data name="CsrCloneFailedMessage" xml:space="preserve">
+    <value>Failed to clone the repository.</value>
+    <comment>Error message when it fails to clone for some reason.</comment>
+  </data>
+  <data name="CsrCloneFailedToSetCredentialMessage" xml:space="preserve">
+    <value>Failed to set credential.</value>
+    <comment>Error message when it fails to set git credential</comment>
+  </data>
+  <data name="CsrCloneLocalPathLabel" xml:space="preserve">
+    <value>_Clone to:</value>
+    <comment>Label to the input local path text box</comment>
+  </data>
+  <data name="CsrCloneNoProject" xml:space="preserve">
+    <value>There is no project.</value>
+    <comment>Error message if the user account has no any project</comment>
+  </data>
+  <data name="CsrClonePathBrowseButtonCaption" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Folder browse button caption</comment>
+  </data>
+  <data name="CsrProjectSelectionLabel" xml:space="preserve">
+    <value>_Project:</value>
+    <comment>Project selection label</comment>
+  </data>
+  <data name="CsrRepositorySelectionLabel" xml:space="preserve">
+    <value>_Repository:</value>
+    <comment>Repository selection label</comment>
+  </data>
+  <data name="CsrCloneLocalPathFieldName" xml:space="preserve">
+    <value>Local path</value>
+    <comment>The field name of the input local path text box</comment>
+  </data>
+  <data name="CsrClonePathExistNotEmptyMessageFormat" xml:space="preserve">
+    <value>The destination path {0} is not empty.</value>
+    <comment>Error message when destination path is not empty. {0} is the destination path where repository is copied to.</comment>
+  </data>
+  <data name="CsrClonePathNotExistMessage" xml:space="preserve">
+    <value>The path does not exist.</value>
+    <comment>Error message when the local path does not exists</comment>
+  </data>
+  <data name="CsrCloneToTextBoxToolTip" xml:space="preserve">
+    <value>Set the local repository path. {path-input}\{repo-name} is used as the destination path</value>
+    <comment>Tooltip to the "Clone to" text box on the clone dialog.</comment>
+  </data>
+  <data name="CsrProjectContainsNoRepoMessage" xml:space="preserve">
+    <value>Empty list, choose another project</value>
+    <comment>The selected project does not have any repository, asks to select a different one</comment>
+  </data>
+  <data name="CsrLoadingRepoMessage" xml:space="preserve">
+    <value>Loading repositories ...</value>
+    <comment>Message when loading repositories</comment>
+  </data>
 </root>

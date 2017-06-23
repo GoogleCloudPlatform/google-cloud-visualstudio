@@ -13,12 +13,14 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -34,6 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the states when a new user control is created.
         private static bool s_isConnected = false;
         private static string s_currentAccount;
+        private static bool s_gitInited;
 
         private readonly CsrReposContent _reposContent = new CsrReposContent();
         private readonly CsrUnconnectedContent _unconnectedContent = new CsrUnconnectedContent();
@@ -70,8 +73,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Switch to connected view
         /// </summary>
-        public void Connect()
+        public async Task Connect()
         {
+            bool inited = await GitConfig();
+            if (!inited)
+            {
+                return;
+            }
             if (s_isConnected)
             {
                 return;
@@ -87,7 +95,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Refresh();
             }
         }
-
 
         #region implement interface ISectionViewModel
 
@@ -127,6 +134,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 Content = _reposContent;
                 if (s_currentAccount != CredentialsStore.Default.CurrentAccount?.AccountName)
                 {
+                    if (!SetGitCredential())
+                    {
+                        return;
+                    }
                     _reposViewModel.Refresh();
                 }
                 s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
@@ -156,11 +167,53 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void OnAccountChanged()
         {
+            if (CredentialsStore.Default.CurrentAccount != null)
+            {
+                if (!SetGitCredential())
+                {
+                    return;
+                }
+            }
             if (s_isConnected && s_currentAccount == CredentialsStore.Default.CurrentAccount?.AccountName)
             {
                 return;
             }
             Refresh();
+        }
+
+        private static async Task<bool> GitConfig()
+        {
+            if (s_gitInited)
+            {
+                return true;
+            }
+            try
+            {
+                await CsrGitUtils.SetUseHttpPathAsync();
+            }
+            catch (GitCommandException)
+            {
+                // TODO: show error message
+                return false;
+            }
+
+            return s_gitInited = SetGitCredential();
+        }
+
+        private static bool SetGitCredential()
+        {
+            if (CredentialsStore.Default.CurrentAccount != null)
+            {
+                if (!CsrGitUtils.StoreCredential(
+                    CsrGitUtils.CsrUrlAuthority,
+                    CredentialsStore.Default.CurrentAccount.RefreshToken,
+                    CsrGitUtils.StoreCredentialPathOption.UrlHost))
+                {
+                    // TODO: show error message
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

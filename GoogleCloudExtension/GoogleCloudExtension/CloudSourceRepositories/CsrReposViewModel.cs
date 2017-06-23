@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Gets the current active Repo
         /// </summary>
-        static public RepoItemViewModel ActiveRepo
+        public static RepoItemViewModel ActiveRepo
         {
             get { return s_activeRepo; }
             set
@@ -122,6 +122,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
+            CloneCommand = new ProtectedAsyncCommand(CloneAsync);
         }
 
         /// <summary>
@@ -280,6 +281,48 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 localRepos.AddRange((await Task.WhenAll(localRepoTasks)).Where(r => r != null));
             }
             return localRepos;
+        }
+
+        private async Task CloneAsync()
+        {
+            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return;
+            }
+
+            IsReady = false;
+            Loading = true;
+
+            try
+            {
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                Loading = false;
+
+                if (!projects.Any())
+                {
+                    // TODO: Disconnect and show error message "no project"
+                    UserPromptUtils.OkPrompt(
+                        message: Resources.CsrCloneNoProject,
+                        title: Resources.UiDefaultPromptTitle);
+                    return;
+                }
+
+                var repoItem = CsrCloneWindow.PromptUser(projects);
+                if (repoItem != null)
+                {
+                    if (Repositories == null)
+                    {
+                        Repositories = new ObservableCollection<RepoItemViewModel>();
+                    }
+                    Repositories.Add(repoItem);
+                }
+            }
+            finally
+            {
+                IsReady = true;
+                Loading = false;
+            }
         }
     }
 }

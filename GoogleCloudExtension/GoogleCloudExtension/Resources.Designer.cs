@@ -2248,6 +2248,213 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to clone the repository..
+        /// </summary>
+        public static string CsrCloneFailedMessage {
+            get {
+                return ResourceManager.GetString("CsrCloneFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set credential..
+        /// </summary>
+        public static string CsrCloneFailedToSetCredentialMessage {
+            get {
+                return ResourceManager.GetString("CsrCloneFailedToSetCredentialMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string CsrCloneLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local path.
+        /// </summary>
+        public static string CsrCloneLocalPathFieldName {
+            get {
+                return ResourceManager.GetString("CsrCloneLocalPathFieldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clone to:.
+        /// </summary>
+        public static string CsrCloneLocalPathLabel {
+            get {
+                return ResourceManager.GetString("CsrCloneLocalPathLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no project..
+        /// </summary>
+        public static string CsrCloneNoProject {
+            get {
+                return ResourceManager.GetString("CsrCloneNoProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string CsrClonePathBrowseButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrClonePathBrowseButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The destination path {0} is not empty..
+        /// </summary>
+        public static string CsrClonePathExistNotEmptyMessageFormat {
+            get {
+                return ResourceManager.GetString("CsrClonePathExistNotEmptyMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path does not exist..
+        /// </summary>
+        public static string CsrClonePathNotExistMessage {
+            get {
+                return ResourceManager.GetString("CsrClonePathNotExistMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the local repository path. {path-input}\{repo-name} is used as the destination path.
+        /// </summary>
+        public static string CsrCloneToTextBoxToolTip {
+            get {
+                return ResourceManager.GetString("CsrCloneToTextBoxToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone Google Cloud Source Repository.
+        /// </summary>
+        public static string CsrCloneWindowTitle {
+            get {
+                return ResourceManager.GetString("CsrCloneWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect....
+        /// </summary>
+        public static string CsrConnectLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Source Repositories.
+        /// </summary>
+        public static string CsrConnectSectionTitle {
+            get {
+                return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string CsrCreateLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
+        /// </summary>
+        public static string CsrDescription {
+            get {
+                return ResourceManager.GetString("CsrDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect.
+        /// </summary>
+        public static string CsrDisconnectLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading repositories ....
+        /// </summary>
+        public static string CsrLoadingRepoMessage {
+            get {
+                return ResourceManager.GetString("CsrLoadingRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty list, choose another project.
+        /// </summary>
+        public static string CsrProjectContainsNoRepoMessage {
+            get {
+                return ResourceManager.GetString("CsrProjectContainsNoRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Project:.
+        /// </summary>
+        public static string CsrProjectSelectionLabel {
+            get {
+                return ResourceManager.GetString("CsrProjectSelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Path.
+        /// </summary>
+        public static string CsrRepoLocalPathLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repo Name.
+        /// </summary>
+        public static string CsrRepoNameLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Repository:.
+        /// </summary>
+        public static string CsrRepositorySelectionLabel {
+            get {
+                return ResourceManager.GetString("CsrRepositorySelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the repository on web.
+        /// </summary>
+        public static string CsrVisitUrlMenuHeader {
+            get {
+                return ResourceManager.GetString("CsrVisitUrlMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1}:{2}).
         /// </summary>
         public static string DataTemplateGcpProjectFormat {
@@ -5691,105 +5898,6 @@ namespace GoogleCloudExtension {
         public static string WizardPickProjectIdTitle {
             get {
                 return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Clone.
-        /// </summary>
-        public static string CsrCloneLinkButtonCaption
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Connect....
-        /// </summary>
-        public static string CsrConnectLinkButtonCaption
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Google Cloud Source Repositories.
-        /// </summary>
-        public static string CsrConnectSectionTitle
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Create.
-        /// </summary>
-        public static string CsrCreateLinkButtonCaption
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
-        /// </summary>
-        public static string CsrDescription
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrDescription", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
-        /// </summary>
-        public static string CsrDisconnectLinkButtonCaption
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Local Path.
-        /// </summary>
-        public static string CsrRepoLocalPathLabel
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Repo Name.
-        /// </summary>
-        public static string CsrRepoNameLabel
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to View the repository on web.
-        /// </summary>
-        public static string CsrVisitUrlMenuHeader
-        {
-            get
-            {
-                return ResourceManager.GetString("CsrVisitUrlMenuHeader", resourceCulture);
             }
         }
     }

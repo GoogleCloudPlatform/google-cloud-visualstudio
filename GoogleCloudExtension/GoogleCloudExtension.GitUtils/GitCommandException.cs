@@ -12,27 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using System.Windows.Input;
+using System;
 
-namespace GoogleCloudExtension.CloudSourceRepositories
+namespace GoogleCloudExtension.GitUtils
 {
     /// <summary>
-    /// View model to CsrUnconnectedContent.xaml
+    /// Exception if git command fails
     /// </summary>
-    public class CsrUnconnectedViewModel : ViewModelBase
+    public class GitCommandException : Exception
     {
-        private CsrSectionControlViewModel _parent;
-
-        /// <summary>
-        /// Respond to Connect link button
-        /// </summary>
-        public ICommand ConnectCommand { get; }
-
-        public CsrUnconnectedViewModel(CsrSectionControlViewModel parent)
-        {
-            _parent = parent;
-            ConnectCommand = new ProtectedAsyncCommand(parent.Connect);
-        }
+        public GitCommandException()
+        { }
     }
 }
