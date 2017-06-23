@@ -62,21 +62,7 @@ namespace GoogleCloudExtension.Utils.Validation
         /// </summary>
         /// <param name="propertyName">The name of the property to get the validation errors for.</param>
         /// <returns>A readonly list of validation error for the property.</returns>
-        public IEnumerable<ValidationResult> GetErrors(string propertyName)
-        {
-            if (propertyName == null)
-            {
-                return _validationsMap.Values.SelectMany(r => r);
-            }
-            else if (_validationsMap.ContainsKey(propertyName))
-            {
-                return new ReadOnlyCollection<ValidationResult>(_validationsMap[propertyName]);
-            }
-            else
-            {
-                return Enumerable.Empty<ValidationResult>();
-            }
-        }
+        public IEnumerable<ValidationResult> GetErrors(string propertyName) => GetErrorsInternal(propertyName);
 
         protected void SetAndRaiseWithValidation<T>(
             ref T storage,
@@ -110,6 +96,23 @@ namespace GoogleCloudExtension.Utils.Validation
             _pendingResultsMap[property] = validationResults;
             HasErrorsChangedInternal();
             ScheduleUpdateErrors(property, validationResults);
+        }
+
+        internal IEnumerable<ValidationResult> GetErrorsInternal(string propertyName, bool fromPendingMap = false)
+        {
+            var map = fromPendingMap ? _pendingResultsMap : _validationsMap;
+            if (propertyName == null)
+            {
+                return map.Values.SelectMany(r => r);
+            }
+            else if (map.ContainsKey(propertyName))
+            {
+                return new ReadOnlyCollection<ValidationResult>(map[propertyName]);
+            }
+            else
+            {
+                return Enumerable.Empty<ValidationResult>();
+            }
         }
 
         private async void ScheduleUpdateErrors(string property, List<ValidationResult> validationResults)
