@@ -115,9 +115,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ICommand PickFolderCommand { get; }
 
         /// <summary>
-        /// Responds to OK button click event
+        /// Responds to Clone button click event
         /// </summary>
-        public ProtectedCommand OkCommand { get; }
+        public ProtectedCommand CloneRepoCommand { get; }
 
         /// <summary>
         /// Responds to create repo button click event
@@ -138,7 +138,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 throw new ArgumentException($"{nameof(projects)} must not be empty");
             }
             PickFolderCommand = new ProtectedCommand(PickFoloder);
-            OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
+            CloneRepoCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
             CreateRepoCommand = new ProtectedCommand(OpenCreateRepoDialog, canExecuteCommand: false);
             RepositoriesAsync.PropertyChanged += RepositoriesAsyncPropertyChanged;
 
@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private void ValidateInputs()
         {
             SetValidationResults(ValidateLocalPath(), nameof(LocalPath));
-            OkCommand.CanExecuteCommand = SelectedRepository != null && !HasErrors;
+            CloneRepoCommand.CanExecuteCommand = SelectedRepository != null && !HasErrors;
         }
 
         private IEnumerable<ValidationResult> ValidateLocalPath()

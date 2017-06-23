@@ -30,7 +30,7 @@
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.CsrCloneRepoButtonCaption}"
-                                      Command="{Binding OkCommand}"
+                                      Command="{Binding CloneRepoCommand}"
                                       IsDefault="True" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
