@@ -181,10 +181,10 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="directoryString">The directory path string.</param>
         /// <returns>The path to the directory with a trailing separator character.</returns>
-        public static string EnsureEndSeparator(string directoryString)
+        public static string EnsureEndSeparator(this string directoryString)
         {
             directoryString.ThrowIfNull(nameof(directoryString));
-            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) || !directoryString.EndsWith("/"))
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
             {
                 return directoryString + Path.DirectorySeparatorChar;
             }

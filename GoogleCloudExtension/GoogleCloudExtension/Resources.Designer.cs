@@ -331,6 +331,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to establish Remote PowerShell connection..
+        /// </summary>
+        public static string AttachDebuggerConnectionFailedMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerConnectionFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Or create a new account.
         /// </summary>
         public static string AttachDebuggerCreateManageAccountLinkCaption {
@@ -363,6 +372,15 @@ namespace GoogleCloudExtension {
         public static string AttachDebuggerHelpStepLinkCpation {
             get {
                 return ResourceManager.GetString("AttachDebuggerHelpStepLinkCpation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote PowerShell error..
+        /// </summary>
+        public static string AttachDebuggerInstallerError {
+            get {
+                return ResourceManager.GetString("AttachDebuggerInstallerError", resourceCulture);
             }
         }
         
@@ -2991,6 +3009,33 @@ namespace GoogleCloudExtension {
         public static string GCloudWrapperUtilsOldCloudSdkTitle {
             get {
                 return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project ID.
+        /// </summary>
+        public static string GcpProjectIdHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectIdHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Name.
+        /// </summary>
+        public static string GcpProjectNameHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Number.
+        /// </summary>
+        public static string GcpProjectNumberHeader {
+            get {
+                return ResourceManager.GetString("GcpProjectNumberHeader", resourceCulture);
             }
         }
         

@@ -79,7 +79,7 @@ namespace GoogleCloudExtensionUnitTests
             return identity?.Attribute("Version")?.Value;
         }
 
-        private static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
+        public static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
         {
             var serviceProviderMock = new Mock<IServiceProvider>();
             var dteMock = new Mock<DTE>();
@@ -89,6 +89,9 @@ namespace GoogleCloudExtensionUnitTests
             dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
             SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
+
+            // Remove the old GlobalProvider if it exists.
+            ServiceProvider.GlobalProvider?.Dispose();
             // This sets the ServiceProvider.GlobalProvider
             // and causes it to use the mocked IServiceProvider.
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);

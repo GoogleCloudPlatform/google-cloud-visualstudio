@@ -2615,6 +2615,26 @@
     <value>To get a list of projects, select an account.</value>
     <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>
+  <data name="GcpProjectIdHeader" xml:space="preserve">
+    <value>Project ID</value>
+    <comment>Project ID column header for a GCP Project data grid.</comment>
+  </data>
+  <data name="GcpProjectNameHeader" xml:space="preserve">
+    <value>Project Name</value>
+    <comment>Project Name column header for a GCP Project data grid.</comment>
+  </data>
+  <data name="GcpProjectNumberHeader" xml:space="preserve">
+    <value>Project Number</value>
+    <comment>Project Number column header for a GCP Project data grid.</comment>
+  </data>
+  <data name="AttachDebuggerConnectionFailedMessage" xml:space="preserve">
+    <value>Failed to establish Remote PowerShell connection.</value>
+    <comment>Error message indicates it failed to establish Remote Powershell connection.</comment>
+  </data>
+  <data name="AttachDebuggerInstallerError" xml:space="preserve">
+    <value>Remote PowerShell error.</value>
+    <comment>Generic error message on executing Remote PowerShell commands.</comment>
+  </data>
   <data name="CsrConnectSectionTitle" xml:space="preserve">
     <value>Google Cloud Source Repositories</value>
     <comment>The title of connect section of Cloud Source Repositories at Visual Studio Team Explorer.</comment>

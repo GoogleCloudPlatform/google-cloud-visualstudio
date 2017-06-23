@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Management.Automation;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,8 +73,20 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <summary>
         /// Execute remote PowerShell command to copy/setup debugger remote tools.
         /// </summary>
-        public Task<bool> Install(CancellationToken cancelToken) 
-            => (new RemoteTarget(_computerName, _credential)).ExecuteAsync(AddInstallCommands, cancelToken);
+        public async Task<bool> Install(CancellationToken cancelToken)
+        {
+            try
+            {
+                var target = new RemoteTarget(_computerName, _credential);
+                return await target.ExecuteAsync(AddInstallCommands, cancelToken);
+            }
+            catch (Exception ex) when (
+                ex is ParameterBindingException && 
+                ex.Message.Contains(PowerShellFailedToConnectException.SessionEmptyErrorMessage))
+            {
+                throw new PowerShellFailedToConnectException(ex);
+            }
+        }
 
         private void AddInstallCommands(PowerShell powerShell)
         {
