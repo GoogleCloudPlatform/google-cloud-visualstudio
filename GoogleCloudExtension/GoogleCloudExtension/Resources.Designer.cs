@@ -2473,15 +2473,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The repository name already exists.
-        /// </summary>
-        public static string CsrRepoNameAlreadyExitstsMessage {
-            get {
-                return ResourceManager.GetString("CsrRepoNameAlreadyExitstsMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Repo Name.
         /// </summary>
         public static string CsrRepoNameLabel {

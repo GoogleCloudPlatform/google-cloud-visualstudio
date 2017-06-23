@@ -2739,10 +2739,6 @@
     <value>Repository name</value>
     <comment>Label to repository name input text box</comment>
   </data>
-  <data name="CsrRepoNameAlreadyExitstsMessage" xml:space="preserve">
-    <value>The repository name already exists</value>
-    <comment>Validation message tells that the input repository name already exists.</comment>
-  </data>
   <data name="CsrRepoNameStartWithMessageFormat" xml:space="preserve">
     <value>Repo name must start with A-Z, a-z, 0-9 or _</value>
     <comment>Repository name first charactor validation message.</comment>
