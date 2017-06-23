@@ -194,6 +194,7 @@
     <Compile Include="CloudSourceRepositories\CsrCreateWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCreateWindowContent.xaml.cs" />
     <Compile Include="CloudSourceRepositories\CsrCreateWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
@@ -237,7 +238,6 @@
     <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
       <DependentUpon>CsrReposContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
       <DependentUpon>CsrSectionControl.xaml</DependentUpon>
     </Compile>

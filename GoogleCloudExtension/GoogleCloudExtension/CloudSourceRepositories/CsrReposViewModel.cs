@@ -19,10 +19,13 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -123,6 +126,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
             CloneCommand = new ProtectedAsyncCommand(CloneAsync);
+            CreateCommand = new ProtectedAsyncCommand(CreateAsync);
         }
 
         /// <summary>
@@ -323,6 +327,114 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 IsReady = true;
                 Loading = false;
             }
+        }
+
+        private async Task CreateAsync()
+        {
+            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return;
+            }
+
+            IsReady = false;
+            Loading = true;
+
+            RepoItemViewModel repoItem = null;
+            try
+            {
+                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                Loading = false;
+                repoItem = CsrCreateWindow.PromptUser(projects);
+
+                if (!projects.Any())
+                {
+                    // TODO: Disconnect and show error message "no project"
+                    UserPromptUtils.OkPrompt(
+                        message: Resources.CsrCloneNoProject,
+                        title: Resources.UiDefaultPromptTitle);
+                    return;
+                }
+            }
+            finally
+            {
+                IsReady = true;
+                Loading = false;
+            }
+
+            if (repoItem != null)
+            {
+                SetCurrentRepo(repoItem.LocalPath);
+
+                var msg = string.Format("The repository {0} has been created successfully.", repoItem.Name);
+                msg += " " + string.Format("[Create a new project or solution]({0}) now.", repoItem.LocalPath);
+
+                (Repositories ?? new ObservableCollection<RepoItemViewModel>()).Add(repoItem);
+                _teamExplorer.ShowMessage(msg,
+                    command: new ProtectedCommand(handler: () =>
+                    {
+                        SetDefaultProjectPath(repoItem.LocalPath);
+                        var serviceProvider = ShellUtils.GetGloblalServiceProvider();
+                        var solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+                        solution?.CreateNewProjectViaDlg(null, null, 0);
+                        _teamExplorer.ShowHomeSection();
+                    }));
+            }
+        }
+
+        const string NewProjectDialogKeyPath = @"Software\Microsoft\VisualStudio\14.0\NewProjectDialog";
+        const string MRUKeyPath = "MRUSettingsLocalProjectLocationEntries";
+        internal static string SetDefaultProjectPath(string path)
+        {
+            var old = String.Empty;
+            try
+            {
+                var newProjectKey = Registry.CurrentUser.OpenSubKey(NewProjectDialogKeyPath, true) ??
+                    Registry.CurrentUser.CreateSubKey(NewProjectDialogKeyPath);
+                Debug.Assert(newProjectKey != null, string.Format(CultureInfo.CurrentCulture,
+                    "Could not open or create registry key '{0}'", NewProjectDialogKeyPath));
+
+                using (newProjectKey)
+                {
+                    var mruKey = newProjectKey.OpenSubKey(MRUKeyPath, true) ?? Registry.CurrentUser.CreateSubKey(MRUKeyPath);
+                    Debug.Assert(mruKey != null, string.Format(CultureInfo.CurrentCulture,
+                        "Could not open or create registry key '{0}'", MRUKeyPath));
+
+                    using (mruKey)
+                    {
+                        // is this already the default path? bail
+                        old = (string)mruKey.GetValue("Value0", string.Empty,
+                            RegistryValueOptions.DoNotExpandEnvironmentNames);
+                        if (String.Equals(path.TrimEnd('\\'), old.TrimEnd('\\'),
+                            StringComparison.CurrentCultureIgnoreCase))
+                            return old;
+
+                        // grab the existing list of recent paths, throwing away the last one
+                        var numEntries = (int)mruKey.GetValue("MaximumEntries", 5);
+                        var entries = new List<string>(numEntries);
+                        for (int i = 0; i < numEntries - 1; i++)
+                        {
+                            var val = (string)mruKey.GetValue("Value" + i, String.Empty,
+                                RegistryValueOptions.DoNotExpandEnvironmentNames);
+                            if (!String.IsNullOrEmpty(val))
+                                entries.Add(val);
+                        }
+
+                        newProjectKey.SetValue("LastUsedNewProjectPath", path);
+                        mruKey.SetValue("Value0", path);
+                        // bump list of recent paths one entry down
+                        for (int i = 0; i < entries.Count; i++)
+                            mruKey.SetValue("Value" + (i + 1), entries[i]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //VsOutputLogger.WriteLine(string.Format(CultureInfo.CurrentCulture, "Error setting the create project path in the registry '{0}'", ex));
+                Debug.WriteLine(string.Format(CultureInfo.CurrentCulture,
+                    "Error setting the create project path in the registry '{0}'", ex));
+            }
+            return old;
         }
     }
 }

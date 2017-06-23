@@ -2392,7 +2392,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Goto Google CSR page to mirror repo from GitHub or Gitbuckets (git only).
+        ///   Looks up a localized string similar to After creation, goto Google CSR page to mirror repository from GitHub or Gitbuckets (git only)..
         /// </summary>
         public static string CsrCreateMirrorAfterPublish {
             get {
@@ -2410,11 +2410,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supported characters are A-Z, a-z, 0-9, -, and _.
+        ///   Looks up a localized string similar to Create Google Cloud Source Repositories.
         /// </summary>
-        public static string CsrCreateRepoNameValidationMessage {
+        public static string CsrCreateWindowTitle {
             get {
-                return ResourceManager.GetString("CsrCreateRepoNameValidationMessage", resourceCulture);
+                return ResourceManager.GetString("CsrCreateWindowTitle", resourceCulture);
             }
         }
         
@@ -2496,6 +2496,15 @@ namespace GoogleCloudExtension {
         public static string CsrRepoNameStartWithMessageFormat {
             get {
                 return ResourceManager.GetString("CsrRepoNameStartWithMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supported characters are A-Z, a-z, 0-9, -, and _.
+        /// </summary>
+        public static string CsrRepoNameValidationMessage {
+            get {
+                return ResourceManager.GetString("CsrRepoNameValidationMessage", resourceCulture);
             }
         }
         

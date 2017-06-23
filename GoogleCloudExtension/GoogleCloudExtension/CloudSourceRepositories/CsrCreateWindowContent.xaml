@@ -17,17 +17,16 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
-                <ResourceDictionary Source="./CsrResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       Command="{Binding OkCommand}"
@@ -62,7 +61,7 @@
                 Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, 
                     ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
                 Style="{StaticResource CommonTextBoxStyle}"
-                MaxLength="{Binding REPO_NAME_LEN}"
+                MaxLength="{Binding RepoNameMaxLength}"
                 Margin="0,0,6,0" />
 
             <Label 
@@ -82,7 +81,8 @@
 
                 <TextBox 
                     x:Name="_localPathTextBox"
-                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, 
+                        ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
                     Style="{StaticResource CommonTextBoxStyle}"
                     Margin="0,0,5,0">
                     <TextBox.ToolTip>
@@ -99,7 +99,7 @@
                 VerticalAlignment="Center"
                 IsChecked="{Binding GotoCsrWebPage}" >
                 <TextBlock Text="{x:Static ext:Resources.CsrCreateMirrorAfterPublish}"
-                            TextWrapping="NoWrap"
+                            TextWrapping="Wrap"
                             TextTrimming="CharacterEllipsis"
                             Style="{StaticResource CommonTextStyle}"/>
             </CheckBox>

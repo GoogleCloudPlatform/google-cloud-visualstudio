@@ -14,20 +14,14 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GitUtils;
-using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -37,15 +31,38 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrCreateWindowViewModel : CsrCloneCreateViewModelBase
     {
+        private static readonly Lazy<HashSet<char>> s_repoNameFirstCharSet = 
+            new Lazy<HashSet<char>>(CreateRepoNameFistCharSet);
+        private static readonly Lazy<HashSet<char>> 
+            s_repoNmaeCharSet = new Lazy<HashSet<char>>(CreateRepoNameCharSet);
+
         private string _repoName;
         private bool _gotoCsrWebPage = true;
 
+        protected override string RepoName => RepositoryName;
+
+        /// <summary>
+        /// Gets the repo name max length
+        /// </summary>
+        public int RepoNameMaxLength => 128;
+
+        /// <summary>
+        /// Responds to Ok button command
+        /// </summary>
+        public override ProtectedCommand OkCommand { get; }
+
+        /// <summary>
+        /// Get whether go to GCP console after creation
+        /// </summary>
         public bool GotoCsrWebPage
         {
             get { return _gotoCsrWebPage; }
             set { SetValueAndRaise(ref _gotoCsrWebPage, value); }
         }
 
+        /// <summary>
+        /// Gets repository name
+        /// </summary>
         public string RepositoryName
         {
             get { return _repoName; }
@@ -56,15 +73,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        protected override string RepoName => RepositoryName;
-
-        public override ProtectedCommand OkCommand { get; }
-
-        public int REPO_NAME_LEN => 128;
-
         public CsrCreateWindowViewModel(CsrCreateWindow owner, IList<Project> projects) : base(owner, projects)
         {
             OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CreateAsync), canExecuteCommand: false);
+        }
+
+        protected override void ValidateInputs()
+        {
+            SetValidationResults(ValidateRepoName(), nameof(RepositoryName));
+            // Note: Call the base ValidateInputs after ValidateRepoName. Order matters.
+            base.ValidateInputs();
         }
 
         private async Task CreateAsync()
@@ -80,7 +98,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 UserPromptUtils.ErrorPrompt(
                     message: ex.Message,
-                    title: "Create repository");
+                    title: Resources.CsrCreateWindowTitle);
                 return;
             }
 
@@ -94,41 +112,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        protected override void ValidateInputs()
+        private IEnumerable<ValidationResult> ValidateRepoName()
         {
-            SetValidationResults(ValidateRepoName(RepositoryName), nameof(RepositoryName));
-            // Note: Call the base ValidateInputs after ValidateRepoName.
-            base.ValidateInputs();
-        }
-
-        private static readonly HashSet<char> REPO_NAME_FIRST_CHAR = new HashSet<char>();
-        //    CharMatcher.inRange('A', 'Z')
-        //        .or(CharMatcher.inRange('a', 'z'))
-        //        .or(CharMatcher.inRange('0', '9'))
-        //        .or(CharMatcher.is('_'));
-        private static HashSet<char> REPO_NAME_MATCHER;
-
-        private static void AddCharRange(char low, char high)
-        {
-            for (char ch = low; ch <= high; ++ch)
-            {
-                REPO_NAME_FIRST_CHAR.Add(ch);
-            }
-        }
-
-        private IEnumerable<ValidationResult> ValidateRepoName(string name)
-        {
-            if (!REPO_NAME_FIRST_CHAR.Any())
-            {
-                AddCharRange('a', 'z');
-                AddCharRange('A', 'Z');
-                AddCharRange('0', '9');
-                REPO_NAME_FIRST_CHAR.Add('_');
-                REPO_NAME_MATCHER = new HashSet<char>(REPO_NAME_FIRST_CHAR);
-                REPO_NAME_MATCHER.Add('-');
-            }
-
-            if (String.IsNullOrWhiteSpace(name))
+            if (String.IsNullOrWhiteSpace(RepositoryName))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), 
@@ -136,17 +122,41 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 yield break;
             }
 
-            if (!REPO_NAME_FIRST_CHAR.Contains(name[0]))
+            if (!s_repoNameFirstCharSet.Value.Contains(RepositoryName[0]))
             { 
-                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameStartWithMessageFormat), name);
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameStartWithMessageFormat));
                 yield break;
             }
 
-            if (name.Skip(1).Any(x => !REPO_NAME_MATCHER.Contains(x)))
+            if (RepositoryName.Any(x => !s_repoNmaeCharSet.Value.Contains(x)))
             {
-                yield return StringValidationResult.FromResource(nameof(Resources.CsrCreateRepoNameValidationMessage), name);
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameValidationMessage));
                 yield break;
             }
+        }
+
+        private static void AddCharRange(HashSet<char> set, char low, char high)
+        {
+            for (char ch = low; ch <= high; ++ch)
+            {
+                set.Add(ch);
+            }
+        }
+
+        private static HashSet<char> CreateRepoNameFistCharSet()
+        {
+            var set = new HashSet<char>();
+            AddCharRange(set, 'a', 'z');
+            AddCharRange(set, 'A', 'Z');
+            AddCharRange(set, '0', '9');
+            return set;
+        }
+
+        private static HashSet<char> CreateRepoNameCharSet()
+        {
+            var set = new HashSet<char>(s_repoNameFirstCharSet.Value);
+            set.Add('-');
+            return set;
         }
     }
 }

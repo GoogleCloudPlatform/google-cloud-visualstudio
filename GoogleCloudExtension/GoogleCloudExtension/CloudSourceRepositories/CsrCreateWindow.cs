@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         private  CsrCreateWindowViewModel ViewModel { get; }
 
-        private CsrCreateWindow(IList<Project> projects): base("Create Google repository")
+        private CsrCreateWindow(IList<Project> projects): base(StringResources.CsrCreateWindowTitle)
         {
             ViewModel = new CsrCreateWindowViewModel(this, projects);
             Content = new CsrCreateWindowContent { DataContext = ViewModel };
