@@ -2311,15 +2311,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no project..
-        /// </summary>
-        public static string CsrCloneNoProject {
-            get {
-                return ResourceManager.GetString("CsrCloneNoProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string CsrClonePathBrowseButtonCaption {
@@ -2442,6 +2433,15 @@ namespace GoogleCloudExtension {
         public static string CsrLoadingRepoMessage {
             get {
                 return ResourceManager.GetString("CsrLoadingRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current GCP account has no project..
+        /// </summary>
+        public static string CsrNoProjectMessage {
+            get {
+                return ResourceManager.GetString("CsrNoProjectMessage", resourceCulture);
             }
         }
         
