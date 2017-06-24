@@ -2762,4 +2762,8 @@
     <value>The repository name already exists</value>
     <comment>Duplicate repo name error message</comment>
   </data>
+  <data name="CsrAddRepoButtonCaption" xml:space="preserve">
+    <value>Add repo</value>
+    <comment>Caption of add repository button</comment>
+  </data>
 </root>

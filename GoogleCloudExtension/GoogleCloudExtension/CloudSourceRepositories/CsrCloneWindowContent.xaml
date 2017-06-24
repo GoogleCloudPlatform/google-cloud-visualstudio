@@ -60,7 +60,7 @@
             <DockPanel>
                 <Button DockPanel.Dock="Right" 
                         Margin="5,0,0,0"
-                        Content="Add Repo"
+                        Content="{x:Static ext:Resources.CsrAddRepoButtonCaption}"
                         Style="{StaticResource CommonButtonStandardStyle}"
                         Command="{Binding CreateRepoCommand}"
                         />

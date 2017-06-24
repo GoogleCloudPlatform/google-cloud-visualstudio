@@ -2266,6 +2266,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add repo.
+        /// </summary>
+        public static string CsrAddRepoButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrAddRepoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add an empty repository for project {0}..
         /// </summary>
         public static string CsrAddRepoForProjectMessageFormat {
