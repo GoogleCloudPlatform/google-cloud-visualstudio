@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// For unit test only, don't call it in production code.
         /// </summary>
-        internal CsrAddRepoWindow() : base("") { }
+        internal CsrAddRepoWindow() : base(StringResources.CsrAddRepoWindowTitle) { }
 
         /// <summary>
         /// Create Google Cloud Source Repository.
