@@ -2734,10 +2734,6 @@
     <value>_Repository Name:</value>
     <comment>Repository name text box label</comment>
   </data>
-  <data name="CsrCreateRepoNameTextBoxFieldName" xml:space="preserve">
-    <value>Repository name</value>
-    <comment>Repository text box field name</comment>
-  </data>
   <data name="CsrAddRepoForProjectMessageFormat" xml:space="preserve">
     <value>Add an empty repository for project {0}.</value>
     <comment>The message tells it is going to add an empty repository.</comment>

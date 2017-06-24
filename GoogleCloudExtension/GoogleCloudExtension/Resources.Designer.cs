@@ -2455,15 +2455,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repository name.
-        /// </summary>
-        public static string CsrCreateRepoNameTextBoxFieldName {
-            get {
-                return ResourceManager.GetString("CsrCreateRepoNameTextBoxFieldName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
         /// </summary>
         public static string CsrDescription {
