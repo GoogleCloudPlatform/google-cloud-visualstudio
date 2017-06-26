@@ -32,7 +32,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         private Mock<CsrAddRepoWindow> _addRepoWindowMock;
         private Mock<Project> _projectMock;
 
-
         [TestInitialize]
         public void Initialize()
         {
@@ -44,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         }
 
         [TestMethod]
-        public void TestInitialState()
+        public void InitialStateTest()
         {
             Assert.IsFalse(_testViewModel.OkCommand.CanExecuteCommand);
             Assert.IsFalse(_testViewModel.HasErrors);
@@ -53,7 +52,29 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         }
 
         [TestMethod]
-        public void RepoNameValidation()
+        public void RepoNameLengthValidationTest()
+        {
+            TestRepoNameLengthOutofRange("v");
+            TestRepoNameLengthOutofRange("vv");
+            string longName = new string('v', 63);
+            TestValidRepoName(longName);
+            TestRepoNameLengthOutofRange(longName + 'w');   // 64 characters
+        }
+
+        [TestMethod]
+        public void InvalidRepoNameFirstCharTest()
+        {
+            _testViewModel.RepositoryName = '-' + "valid";
+            Assert.IsFalse(_testViewModel.OkCommand.CanExecuteCommand);
+            Assert.IsTrue(_testViewModel.HasErrors);
+            var error = _testViewModel.GetErrorsInternal(
+                nameof(CsrAddRepoWindowViewModel.RepositoryName), fromPendingMap: true).FirstOrDefault();
+            Assert.IsNotNull(error);
+            Assert.AreEqual(Resources.CsrRepoNameFirstCharacterExtraRuleMessage, error.ErrorContent);
+        }
+
+        [TestMethod]
+        public void RepoNameValidationTest()
         {
             TestValidRepoName("valid_name");
 
@@ -62,13 +83,23 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             TestRepoNameValidRange('0', '9');
             TestValidRepoName("_This-is_valid");    // _ and - character
 
-            TestInvalidRepoNameFirstChar('-');
             TestRepoNameInvalidRange(Convert.ToChar(0), Convert.ToChar(44));    // 45 is -
             TestRepoNameInvalidRange(Convert.ToChar(46), Convert.ToChar(47));   // 48 is 0
             TestRepoNameInvalidRange(Convert.ToChar(58), Convert.ToChar(64));   // 57 is 9, 66 is A
             TestRepoNameInvalidRange(Convert.ToChar(91), Convert.ToChar(94));   // 90 is Z, 95 is _
             TestRepoNameInvalidRange(Convert.ToChar(96), Convert.ToChar(96));   // 97 is a,  122 is z
             TestRepoNameInvalidRange(Convert.ToChar(123), Convert.ToChar(255));
+        }
+
+        private void TestRepoNameLengthOutofRange(string name)
+        {
+            _testViewModel.RepositoryName = name;
+            Assert.IsFalse(_testViewModel.OkCommand.CanExecuteCommand);
+            Assert.IsTrue(_testViewModel.HasErrors);
+            var error = _testViewModel.GetErrorsInternal(
+                nameof(CsrAddRepoWindowViewModel.RepositoryName), fromPendingMap: true).FirstOrDefault();
+            Assert.IsNotNull(error);
+            Assert.AreEqual(Resources.CsrRepoNameLengthLimitMessage, error.ErrorContent);
         }
 
         private void TestRepoNameValidRange(char low, char high)
@@ -83,10 +114,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             for (char ch = low; ch <= high; ++ch)
             {
-                if (!Char.IsWhiteSpace(ch))
-                {
-                    TestInvalidRepoNameFirstChar(ch);
-                }
                 TestInvalidRepoNameChar(ch);
             }
         }
@@ -98,16 +125,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             Assert.IsFalse(_testViewModel.HasErrors);
         }
 
-        private void TestInvalidRepoNameFirstChar(char ch)
-        {
-            _testViewModel.RepositoryName = ch.ToString() + "valid";
-            Assert.IsFalse(_testViewModel.OkCommand.CanExecuteCommand);
-            Assert.IsTrue(_testViewModel.HasErrors);
-            var error = _testViewModel.GetErrorsInternal(
-                nameof(CsrAddRepoWindowViewModel.RepositoryName), fromPendingMap: true).FirstOrDefault();
-            Assert.IsNotNull(error);
-            Assert.AreEqual(Resources.CsrRepoNameStartWithMessageFormat, error.ErrorContent);
-        }
+
 
         private void TestInvalidRepoNameChar(char ch)
         {
@@ -117,7 +135,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             var error = _testViewModel.GetErrorsInternal(
                 nameof(CsrAddRepoWindowViewModel.RepositoryName), fromPendingMap: true).FirstOrDefault();
             Assert.IsNotNull(error);
-            Assert.AreEqual(Resources.CsrRepoNameValidationMessage, error.ErrorContent);
+            Assert.AreEqual(Resources.CsrRepoNameRuleMessage, error.ErrorContent);
         }
     }
 }

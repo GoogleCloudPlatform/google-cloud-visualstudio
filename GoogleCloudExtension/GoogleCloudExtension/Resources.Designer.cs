@@ -2266,7 +2266,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add repo.
+        ///   Looks up a localized string similar to Add new.
         /// </summary>
         public static string CsrAddRepoButtonCaption {
             get {
@@ -2275,7 +2275,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add an empty repository for project {0}..
+        ///   Looks up a localized string similar to Add a new repository for project {0}..
         /// </summary>
         public static string CsrAddRepoForProjectMessageFormat {
             get {
@@ -2284,20 +2284,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud Console.
+        ///   Looks up a localized string similar to Visit Google Cloud Console for more options.
         /// </summary>
         public static string CsrAddRepoVisitCsrLinkCaption {
             get {
                 return ResourceManager.GetString("CsrAddRepoVisitCsrLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For more options, visit.
-        /// </summary>
-        public static string CsrAddRepoVisitCsrLinkMessageFirstPart {
-            get {
-                return ResourceManager.GetString("CsrAddRepoVisitCsrLinkMessageFirstPart", resourceCulture);
             }
         }
         
@@ -2509,11 +2500,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repo name must start with A-Z, a-z, 0-9 or _.
+        ///   Looks up a localized string similar to Repository name can not start with dash.
         /// </summary>
-        public static string CsrRepoNameStartWithMessageFormat {
+        public static string CsrRepoNameFirstCharacterExtraRuleMessage {
             get {
-                return ResourceManager.GetString("CsrRepoNameStartWithMessageFormat", resourceCulture);
+                return ResourceManager.GetString("CsrRepoNameFirstCharacterExtraRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository name must contain between 3 and 63 characters.
+        /// </summary>
+        public static string CsrRepoNameLengthLimitMessage {
+            get {
+                return ResourceManager.GetString("CsrRepoNameLengthLimitMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository name must be alphanumeric characters, underscores or dashes.
+        /// </summary>
+        public static string CsrRepoNameRuleMessage {
+            get {
+                return ResourceManager.GetString("CsrRepoNameRuleMessage", resourceCulture);
             }
         }
         
@@ -2523,15 +2532,6 @@ namespace GoogleCloudExtension {
         public static string CsrRepoNameTextBoxLabel {
             get {
                 return ResourceManager.GetString("CsrRepoNameTextBoxLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Supported characters are A-Z, a-z, 0-9, -, and _.
-        /// </summary>
-        public static string CsrRepoNameValidationMessage {
-            get {
-                return ResourceManager.GetString("CsrRepoNameValidationMessage", resourceCulture);
             }
         }
         

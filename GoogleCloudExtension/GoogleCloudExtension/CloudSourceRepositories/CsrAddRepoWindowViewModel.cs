@@ -31,8 +31,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrAddRepoWindowViewModel : ValidatingViewModelBase
     {
-        private const string RepoNameFirstCharacterPattern = "[a-zA-Z0-9_]";
-        private const string RepoNameCharacterPattern = "^[a-zA-Z0-9_-]*$";
+        private static readonly Regex s_repoNameRegex = new Regex("^[a-zA-Z0-9_-]*$");
+        private const char RepoNameExcludingCharacter = '-';
         private readonly IList<Repo> _repos;
         private readonly Project _project;
         private readonly CsrAddRepoWindow _owner;
@@ -40,7 +40,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private bool _isReady = true;
 
         private string CSRConsoleLink =>
-            $"https://pantheon.corp.google.com/code/develop/repo?project={_project.ProjectId}";
+            $"https://console.google.com/code/develop/repo?project={_project.ProjectId}";
+
+        /// <summary>
+        /// Limit the input box length to 63 characters
+        /// </summary>
+        public int NameMaxLength => 63;
 
         /// <summary>
         /// The repository name 
@@ -60,7 +65,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public string AddRepoForProjectMessage => 
             String.Format(Resources.CsrAddRepoForProjectMessageFormat, _project.Name);
-
 
         /// <summary>
         /// Indicates if there is async task running that UI should be disabled.
@@ -128,15 +132,22 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 yield break;
             }
 
-            if (!Regex.IsMatch(name.Substring(0, 1), RepoNameFirstCharacterPattern))
+            if (name.Length < 3 || name.Length > NameMaxLength)
             {
-                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameStartWithMessageFormat));
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameLengthLimitMessage));
                 yield break;
             }
 
-            if (!Regex.IsMatch(name, RepoNameCharacterPattern))
+            if (!s_repoNameRegex.IsMatch(name))
             {
-                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameValidationMessage));
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameRuleMessage));
+                yield break;
+            }
+
+            if (name[0] == RepoNameExcludingCharacter)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.CsrRepoNameFirstCharacterExtraRuleMessage));
                 yield break;
             }
 

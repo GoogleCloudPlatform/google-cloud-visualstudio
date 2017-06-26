@@ -2735,23 +2735,15 @@
     <comment>Repository name text box label</comment>
   </data>
   <data name="CsrAddRepoForProjectMessageFormat" xml:space="preserve">
-    <value>Add an empty repository for project {0}.</value>
+    <value>Add a new repository for project {0}.</value>
     <comment>The message tells it is going to add an empty repository.</comment>
   </data>
   <data name="CsrAddRepoVisitCsrLinkCaption" xml:space="preserve">
-    <value>Google Cloud Console</value>
+    <value>Visit Google Cloud Console for more options</value>
     <comment>The caption to Google Cloud Console CSR page link.</comment>
   </data>
-  <data name="CsrAddRepoVisitCsrLinkMessageFirstPart" xml:space="preserve">
-    <value>For more options, visit</value>
-    <comment>The text before the visit Google Cloud Console CSR page link.</comment>
-  </data>
-  <data name="CsrRepoNameStartWithMessageFormat" xml:space="preserve">
-    <value>Repo name must start with A-Z, a-z, 0-9 or _</value>
-    <comment>Repository name first charactor validation message.</comment>
-  </data>
-  <data name="CsrRepoNameValidationMessage" xml:space="preserve">
-    <value>Supported characters are A-Z, a-z, 0-9, -, and _</value>
+  <data name="CsrRepoNameRuleMessage" xml:space="preserve">
+    <value>Repository name must be alphanumeric characters, underscores or dashes</value>
     <comment>Repo name validation error message</comment>
   </data>
   <data name="CsrRepoNameExistsMessage" xml:space="preserve">
@@ -2759,7 +2751,15 @@
     <comment>Duplicate repo name error message</comment>
   </data>
   <data name="CsrAddRepoButtonCaption" xml:space="preserve">
-    <value>Add repo</value>
+    <value>Add new</value>
     <comment>Caption of add repository button</comment>
+  </data>
+  <data name="CsrRepoNameFirstCharacterExtraRuleMessage" xml:space="preserve">
+    <value>Repository name can not start with dash</value>
+    <comment>Repo name first character extra rule message</comment>
+  </data>
+  <data name="CsrRepoNameLengthLimitMessage" xml:space="preserve">
+    <value>Repository name must contain between 3 and 63 characters</value>
+    <comment>Repo name length validation message</comment>
   </data>
 </root>

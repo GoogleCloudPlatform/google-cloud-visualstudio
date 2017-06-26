@@ -45,6 +45,7 @@
                 x:Name="_repoNameTextBox"
                 Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, 
                     ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                MaxLength="{Binding NameMaxLength}"
                 Style="{StaticResource CommonTextBoxStyle}"
                 Margin="0,0,5,0">
             </TextBox>
@@ -53,7 +54,6 @@
                 Margin="0,5,0,0"
                 Style="{StaticResource CommonTextStyle}">
                 <Run Text="{Binding AddRepoForProjectMessage, Mode=OneWay}" />         
-                <Run Text="{x:Static ext:Resources.CsrAddRepoVisitCsrLinkMessageFirstPart}"/>
                 <Hyperlink Command="{Binding CsrLinkCommand}" 
                            Style="{StaticResource CommonHyperlinkStyle}">
                     <Run Text="{x:Static ext:Resources.CsrAddRepoVisitCsrLinkCaption}" />
