@@ -23,10 +23,10 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent HasBanner="True">
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       Command="{Binding OkCommand}"
@@ -52,8 +52,9 @@
 
             <TextBlock 
                 Margin="0,5,0,0"
-                Style="{StaticResource CommonTextStyle}">
-                <Run Text="{Binding AddRepoForProjectMessage, Mode=OneWay}" />         
+                Style="{StaticResource CommonTextStyle}"
+                Text="{Binding AddRepoForProjectMessage}" />
+            <TextBlock>         
                 <Hyperlink Command="{Binding CsrLinkCommand}" 
                            Style="{StaticResource CommonHyperlinkStyle}">
                     <Run Text="{x:Static ext:Resources.CsrAddRepoVisitCsrLinkCaption}" />

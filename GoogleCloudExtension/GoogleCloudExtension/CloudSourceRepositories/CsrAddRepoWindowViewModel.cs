@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private bool _isReady = true;
 
         private string CSRConsoleLink =>
-            $"https://console.google.com/code/develop/repo?project={_project.ProjectId}";
+            $"https://console.cloud.google.com/code/develop/repo?project={_project.ProjectId}";
 
         /// <summary>
         /// Limit the input box length to 63 characters
@@ -132,12 +132,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 yield break;
             }
 
-            if (name.Length < 3 || name.Length > NameMaxLength)
-            {
-                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameLengthLimitMessage));
-                yield break;
-            }
-
             if (!s_repoNameRegex.IsMatch(name))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameRuleMessage));
@@ -148,6 +142,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.CsrRepoNameFirstCharacterExtraRuleMessage));
+                yield break;
+            }
+
+            if (name.Length < 3 || name.Length > NameMaxLength)
+            {
+                yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameLengthLimitMessage));
                 yield break;
             }
 
