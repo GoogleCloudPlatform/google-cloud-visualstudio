@@ -219,6 +219,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException("GroupItem is null.");
             }
 
+            // In most caes, it is because Project id is null
+            if (_datasource?.Value == null)
+            {
+                return;
+            }
+
             IsGroupLoading = true;
             ShowError = false;
             try
@@ -273,6 +279,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private async Task UpdateEventAsync()
         {
             EventItemCollection = null;
+
+            // In most caes, it is because Project id is null
+            if (_datasource?.Value == null)
+            {
+                return;
+            }
+
             if (GroupItem.ErrorGroup.TimedCounts != null)
             {
                 IsEventLoading = true;
