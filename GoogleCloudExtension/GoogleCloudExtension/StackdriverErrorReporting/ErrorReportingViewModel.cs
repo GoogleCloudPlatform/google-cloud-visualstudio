@@ -204,6 +204,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private async Task LoadAsync()
         {
+            if (_dataSource?.Value == null)
+            {
+                return;
+            }
             if (_isLoading)
             {
                 Debug.WriteLine("_isLoading is true, quit LoadAsync.");
