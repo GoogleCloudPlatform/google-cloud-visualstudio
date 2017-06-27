@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private string _repoName;
         private bool _isReady = true;
 
-        private string CSRConsoleLink =>
+        private string CsrConsoleLink =>
             $"https://console.cloud.google.com/code/develop/repo?project={_project.ProjectId}";
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _repos = repos.ThrowIfNull(nameof(repos));
             _project = project.ThrowIfNull(nameof(project));
             OkCommand = new ProtectedAsyncCommand(CreateRepoAsync, canExecuteCommand: false);
-            CsrLinkCommand = new ProtectedCommand(() => Process.Start(CSRConsoleLink));
+            CsrLinkCommand = new ProtectedCommand(() => Process.Start(CsrConsoleLink));
         }
 
         private async Task CreateRepoAsync()
@@ -135,26 +135,22 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (!s_repoNameRegex.IsMatch(name))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameRuleMessage));
-                yield break;
             }
 
             if (name[0] == RepoNameExcludingCharacter)
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.CsrRepoNameFirstCharacterExtraRuleMessage));
-                yield break;
             }
 
             if (name.Length < 3 || name.Length > NameMaxLength)
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameLengthLimitMessage));
-                yield break;
             }
 
             if (_repos.Any(x => String.Compare(x.GetRepoName(), name, ignoreCase: true) == 0))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameExistsMessage));
-                yield break;
             }
         }
     }

@@ -43,8 +43,7 @@
 
             <TextBox 
                 x:Name="_repoNameTextBox"
-                Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, 
-                    ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                Text="{Binding RepositoryName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                 MaxLength="{Binding NameMaxLength}"
                 Style="{StaticResource CommonTextBoxStyle}"
                 Margin="0,0,5,0">
