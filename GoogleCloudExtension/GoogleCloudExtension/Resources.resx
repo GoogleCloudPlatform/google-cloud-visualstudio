@@ -2639,17 +2639,13 @@
     <value>Google Cloud Source Repositories</value>
     <comment>The title of connect section of Cloud Source Repositories at Visual Studio Team Explorer.</comment>
   </data>
-  <data name="CsrCloneLinkButtonCaption" xml:space="preserve">
-    <value>Clone</value>
-    <comment>The clone link button caption</comment>
+  <data name="CsrCloneCreateLinkButtonCaption" xml:space="preserve">
+    <value>Clone or Create</value>
+    <comment>The clone or create repo link button caption</comment>
   </data>
   <data name="CsrConnectLinkButtonCaption" xml:space="preserve">
     <value>Connect...</value>
     <comment>The connect link button caption</comment>
-  </data>
-  <data name="CsrCreateLinkButtonCaption" xml:space="preserve">
-    <value>Create</value>
-    <comment>The create link button caption</comment>
   </data>
   <data name="CsrDescription" xml:space="preserve">
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
@@ -2659,11 +2655,11 @@
     <value>Disconnect</value>
     <comment>The Disconnect link button caption</comment>
   </data>
-  <data name="CsrRepoLocalPathLabel" xml:space="preserve">
+  <data name="CsrContextMenuRepoLocalPathLabel" xml:space="preserve">
     <value>Local Path</value>
     <comment>Repository local path label</comment>
   </data>
-  <data name="CsrRepoNameLabel" xml:space="preserve">
+  <data name="CsrContextMenuRepoNameLabel" xml:space="preserve">
     <value>Repo Name</value>
     <comment>Repository name label</comment>
   </data>
@@ -2687,9 +2683,9 @@
     <value>_Clone to:</value>
     <comment>Label to the input local path text box</comment>
   </data>
-  <data name="CsrCloneNoProject" xml:space="preserve">
+  <data name="CsrCloneNoProjectMessage" xml:space="preserve">
     <value>There is no project.</value>
-    <comment>Error message if the user account has no any project</comment>
+    <comment>Prompt message if the user account has no any project</comment>
   </data>
   <data name="CsrClonePathBrowseButtonCaption" xml:space="preserve">
     <value>Browse</value>
@@ -2720,11 +2716,50 @@
     <comment>Tooltip to the "Clone to" text box on the clone dialog.</comment>
   </data>
   <data name="CsrProjectContainsNoRepoMessage" xml:space="preserve">
-    <value>Empty list, choose another project</value>
-    <comment>The selected project does not have any repository, asks to select a different one</comment>
+    <value>Empty list,  add a new repository or choose another project</value>
+    <comment>The selected project does not have any repository, asks to select a different one or add a new repository.</comment>
   </data>
   <data name="CsrLoadingRepoMessage" xml:space="preserve">
     <value>Loading repositories ...</value>
     <comment>Message when loading repositories</comment>
+  </data>
+  <data name="CsrCloneRepoButtonCaption" xml:space="preserve">
+    <value>Clone</value>
+    <comment>Clone repository button caption</comment>
+  </data>
+  <data name="CsrAddRepoWindowTitle" xml:space="preserve">
+    <value>Add a new repository</value>
+  </data>
+  <data name="CsrRepoNameTextBoxLabel" xml:space="preserve">
+    <value>_Repository Name:</value>
+    <comment>Repository name text box label</comment>
+  </data>
+  <data name="CsrAddRepoForProjectMessageFormat" xml:space="preserve">
+    <value>Add a new repository for project {0}.</value>
+    <comment>The message tells it is going to add an empty repository.</comment>
+  </data>
+  <data name="CsrAddRepoVisitCsrLinkCaption" xml:space="preserve">
+    <value>Visit Google Cloud Console for more options</value>
+    <comment>The caption to Google Cloud Console CSR page link.</comment>
+  </data>
+  <data name="CsrRepoNameRuleMessage" xml:space="preserve">
+    <value>Repository name must be alphanumeric characters, underscores or dashes</value>
+    <comment>Repo name validation error message</comment>
+  </data>
+  <data name="CsrRepoNameExistsMessage" xml:space="preserve">
+    <value>The repository name already exists</value>
+    <comment>Duplicate repo name error message</comment>
+  </data>
+  <data name="CsrAddRepoButtonCaption" xml:space="preserve">
+    <value>Add new</value>
+    <comment>Caption of add repository button</comment>
+  </data>
+  <data name="CsrRepoNameFirstCharacterExtraRuleMessage" xml:space="preserve">
+    <value>Repository name can not start with dash</value>
+    <comment>Repo name first character extra rule message</comment>
+  </data>
+  <data name="CsrRepoNameLengthLimitMessage" xml:space="preserve">
+    <value>Repository name must contain between 3 and 63 characters</value>
+    <comment>Repo name length validation message</comment>
   </data>
 </root>

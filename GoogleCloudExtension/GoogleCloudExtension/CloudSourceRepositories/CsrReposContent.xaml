@@ -30,15 +30,8 @@
         <WrapPanel Orientation="Horizontal" Margin="6,0,0,6" DockPanel.Dock="Top">
             <Button Style="{StaticResource SectionButtonStyle}" 
                     KeyboardNavigation.TabIndex="0" 
-                    Command="{Binding CloneCommand}" 
-                    Content="{x:Static ext:Resources.CsrCloneLinkButtonCaption}" />
-
-            <Separator Margin="3,0,3,0" Style="{StaticResource VerticalSeparatorStyle}" />
-
-            <Button Style="{StaticResource SectionButtonStyle}" 
-                    KeyboardNavigation.TabIndex="1" 
-                    Command="{Binding CreateCommand}" 
-                    Content="{x:Static ext:Resources.CsrCreateLinkButtonCaption}" />
+                    Command="{Binding CloneCreateRepoCommand}" 
+                    Content="{x:Static ext:Resources.CsrCloneCreateLinkButtonCaption}" />
 
             <Separator Margin="3,0,3,0" Style="{StaticResource VerticalSeparatorStyle}" />
 
@@ -132,7 +125,7 @@
 
                                     <TextBlock 
                                         Margin="0,0,6,0"
-                                        Text="{x:Static ext:Resources.CsrRepoNameLabel}"/>
+                                        Text="{x:Static ext:Resources.CsrContextMenuRepoNameLabel}"/>
 
                                     <TextBlock 
                                         Grid.Row="0"
@@ -144,7 +137,7 @@
                                         Grid.Row="1" 
                                         Grid.Column="0"
                                         Margin="0,0,6,0"                                        
-                                        Text="{x:Static ext:Resources.CsrRepoLocalPathLabel}" />
+                                        Text="{x:Static ext:Resources.CsrContextMenuRepoLocalPathLabel}" />
 
                                     <TextBlock 
                                         Grid.Row="1" 
