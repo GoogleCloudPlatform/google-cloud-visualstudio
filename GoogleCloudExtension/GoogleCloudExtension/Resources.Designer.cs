@@ -2446,15 +2446,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
-        /// </summary>
-        public static string CsrDisconnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Loading repositories ....
         /// </summary>
         public static string CsrLoadingRepoMessage {
@@ -2532,6 +2523,15 @@ namespace GoogleCloudExtension {
         public static string CsrRepositorySelectionLabel {
             get {
                 return ResourceManager.GetString("CsrRepositorySelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in.
+        /// </summary>
+        public static string CsrSignInLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrSignInLinkButtonCaption", resourceCulture);
             }
         }
         

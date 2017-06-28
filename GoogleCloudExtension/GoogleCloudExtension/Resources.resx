@@ -2647,10 +2647,6 @@
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
     <comment>Description of CSR. Intend to be attractive text.</comment>
   </data>
-  <data name="CsrDisconnectLinkButtonCaption" xml:space="preserve">
-    <value>Disconnect</value>
-    <comment>The Disconnect link button caption</comment>
-  </data>
   <data name="CsrContextMenuRepoLocalPathLabel" xml:space="preserve">
     <value>Local Path</value>
     <comment>Repository local path label</comment>
@@ -2769,5 +2765,9 @@
   <data name="GitUtilsGitCredentialManagerNotInstalledMessage" xml:space="preserve">
     <value>Git credential manager for Windows is not installed. Please install or re-install Git for Windows to fix the problem.</value>
     <comment>Git credential manager for Windows is not found error.</comment>
+  </data>
+  <data name="CsrSignInLinkButtonCaption" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>The caption for sign in link button</comment>
   </data>
 </root>
