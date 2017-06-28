@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         /// <summary>
         /// Gets repository name 
-        /// The Cloud Repository name has format $"{ProjectResourceName}/repos/{repoName}" };
+        /// The Cloud Repository name has format $"projects/{ProjectId}/repos/{repoName}" };
         /// Returns the last part which is the repo name.
         /// </summary>
         /// <param name="cloudRepo">Repository object</param>
