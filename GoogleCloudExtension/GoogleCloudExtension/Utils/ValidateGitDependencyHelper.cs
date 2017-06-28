@@ -15,7 +15,6 @@
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.LinkPrompt;
 using System;
-using System.Threading;
 
 namespace GoogleCloudExtension.Utils
 {

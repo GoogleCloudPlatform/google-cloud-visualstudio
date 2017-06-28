@@ -120,10 +120,17 @@ namespace GoogleCloudExtension.GitUtils
             RunGitCommandAsync(command, Root, throwOnError: false);
 
         /// <summary>
-        /// Verifies git credential manager is installed propoerly.
+        /// Verifies git-credential-manager is installed properly.
         /// </summary>
-        public static Task GitCredentialManagerInstalled() =>
-            GitRepository.RunGitCommandAsync("credential-manager version", Directory.GetCurrentDirectory());
+        /// <returns>
+        /// true: Verified, git-credential-manager command executed successfully.
+        /// false: The command failed for some reason.
+        /// </returns>
+        public static async Task<bool> IsGitCredentialManagerInstalledAsync() =>
+            (await GitRepository.RunGitCommandAsync(
+                "credential-manager version", 
+                Directory.GetCurrentDirectory(),
+                throwOnError: false)) != null;
 
         /// <summary>
         /// Run a git command and return the output or error output.

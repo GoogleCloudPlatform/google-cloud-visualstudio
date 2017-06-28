@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrGitSetupWarningViewModel : ViewModelBase
     {
         private readonly CsrSectionControlViewModel _parent;
-        private bool _isEnabled = false;
+        private bool _isEnabled = true;
         private string _errorMessage;
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public static bool GitInstallationVerified { get; private set; }
 
         /// <summary>
-        /// Enalbe or disable the control
+        /// Enable or disable the control.
         /// </summary>
-        public bool IsEnable
+        public bool IsEnabled
         {
             get { return _isEnabled; }
             private set { SetValueAndRaise(ref _isEnabled, value);  }
@@ -68,54 +68,54 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _parent = parent;
             InstallGitCommand = new ProtectedCommand(
                 () => Process.Start(ValidateGitDependencyHelper.GitInstallationLink));
-            VerifyCommand = new ProtectedAsyncCommand(VerifyInstallation);
+            VerifyCommand = new ProtectedAsyncCommand(async () =>
+            {
+                if (await CheckInstallationAsync())
+                {
+                    _parent.OnGitInstallationCheckSuccess();
+                }
+            });
         }
 
         /// <summary>
         /// Check if Git for Windows dependency is installed properly.
-        /// Set s_error so that the error shows 
+        /// Set ErrorMessage so that the error shows 
         /// </summary>
-        public async Task CheckInstallation()
+        /// <returns>
+        /// true: Verified git is installed.  false: git is not installed properly.
+        /// </returns>
+        public async Task<bool> CheckInstallationAsync()
         {
             if (GitInstallationVerified)
             {
-                return;
+                return true;
             }
 
             if (String.IsNullOrWhiteSpace(GitRepository.GetGitPath()))
             {
                 ErrorMessage = Resources.GitUtilsMissingGitErrorTitle;
-                return;
-            }
-            try
-            {
-                await GitRepository.GitCredentialManagerInstalled();
-            }
-            catch (GitCommandException)
-            {
-                ErrorMessage = Resources.GitUtilsGitCredentialManagerNotInstalledMessage;
-                return;
+                return false;
             }
 
-            ErrorMessage = null;
-            GitInstallationVerified = true;
-        }
-
-        private async Task VerifyInstallation()
-        {
-            IsEnable = false;
+            IsEnabled = false;
             try
             {
-                await CheckInstallation();
-                if (GitInstallationVerified)
+                if (await GitRepository.IsGitCredentialManagerInstalledAsync())
                 {
-                    _parent.OnGitInstallationCheckSuccess();
+                    ErrorMessage = null;
+                    GitInstallationVerified = true;
+                }
+                else
+                {
+                    ErrorMessage = Resources.GitUtilsGitCredentialManagerNotInstalledMessage;
                 }
             }
             finally
             {
-                IsEnable = true;
+                IsEnabled = true;
             }
+
+            return GitInstallationVerified;
         }
     }
 }

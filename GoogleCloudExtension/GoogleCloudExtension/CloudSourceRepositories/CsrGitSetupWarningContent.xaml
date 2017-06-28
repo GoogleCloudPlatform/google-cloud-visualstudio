@@ -20,7 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
+    <StackPanel IsEnabled="{Binding IsEnabled}">
 
         <Image 
             HorizontalAlignment="Left" 
@@ -28,11 +28,7 @@
             Stretch="None"
             Source="{mp:ImageResource Theming/Resources/GCP_logo_horizontal.png}" />
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <DockPanel>
             <Image 
                 Margin="0,5,6,0"
                 HorizontalAlignment="Left" 
@@ -40,11 +36,11 @@
                 Stretch="None"
                 Source="{mp:ImageResource Theming/Resources/ic_error_red_14px.png}" />
 
-            <TextBlock Grid.Column="1"
+            <TextBlock DockPanel.Dock="Right"
                 Text="{Binding ErrorMessage}"
                 Margin="0,5,0,0"
                 Style="{StaticResource CommonTextStyle}"/>
-        </Grid>
+        </DockPanel>
 
         <WrapPanel Orientation="Horizontal">
             <Button Style="{StaticResource SectionButtonStyle}" 
