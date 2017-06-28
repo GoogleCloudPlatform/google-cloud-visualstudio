@@ -185,6 +185,7 @@
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml.cs">
