@@ -28,7 +28,11 @@
             Stretch="None"
             Source="{mp:ImageResource Theming/Resources/GCP_logo_horizontal.png}" />
 
-        <StackPanel Orientation="Horizontal">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Image 
                 Margin="0,5,6,0"
                 HorizontalAlignment="Left" 
@@ -36,11 +40,11 @@
                 Stretch="None"
                 Source="{mp:ImageResource Theming/Resources/ic_error_red_14px.png}" />
 
-            <TextBlock 
+            <TextBlock Grid.Column="1"
                 Text="{Binding ErrorMessage}"
                 Margin="0,5,0,0"
                 Style="{StaticResource CommonTextStyle}"/>
-        </StackPanel>
+        </Grid>
 
         <WrapPanel Orientation="Horizontal">
             <Button Style="{StaticResource SectionButtonStyle}" 

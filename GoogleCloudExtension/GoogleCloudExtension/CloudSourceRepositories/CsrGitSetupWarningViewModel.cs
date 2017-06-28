@@ -26,7 +26,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrGitSetupWarningViewModel : ViewModelBase
     {
-
         private readonly CsrSectionControlViewModel _parent;
         private bool _isEnabled = false;
         private string _errorMessage;
