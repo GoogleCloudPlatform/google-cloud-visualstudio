@@ -195,6 +195,10 @@
     </Compile>
     <Compile Include="CloudSourceRepositories\CsrAddRepoWindowViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml.cs">
+      <DependentUpon>CsrGitSetupWarningContent.xaml</DependentUpon>
+    </Compile>	
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
@@ -929,6 +933,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

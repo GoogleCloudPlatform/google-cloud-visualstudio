@@ -15,6 +15,7 @@
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.LinkPrompt;
 using System;
+using System.Threading;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -23,6 +24,11 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ValidateGitDependencyHelper
     {
+        /// <summary>
+        /// The link to install git.
+        /// </summary>
+        internal const string GitInstallationLink = "https://git-scm.com/download/win";
+
         /// <summary>
         /// Asking to install Git for Windows if git.exe is not found
         /// </summary>
@@ -37,7 +43,7 @@ namespace GoogleCloudExtension.Utils
                 LinkPromptDialogWindow.PromptUser(
                         Resources.GitUtilsMissingGitErrorTitle,
                         Resources.GitUtilsMissingGitErrorMessage,
-                        new LinkInfo(link: "https://git-scm.com/download/win", caption: Resources.GitUtilsGitInstallLinkCaption));
+                        new LinkInfo(link: GitInstallationLink, caption: Resources.GitUtilsGitInstallLinkCaption));
                 return false;
             }
             return true;

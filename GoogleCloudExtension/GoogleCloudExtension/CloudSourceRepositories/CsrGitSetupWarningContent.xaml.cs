@@ -12,27 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using System.Windows.Input;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// View model to CsrUnconnectedContent.xaml
+    /// Interaction logic for CsrGitSetupWarningContent.xaml
     /// </summary>
-    public class CsrUnconnectedViewModel : ViewModelBase
+    public partial class CsrGitSetupWarningContent : UserControl
     {
-        private CsrSectionControlViewModel _parent;
-
-        /// <summary>
-        /// Respond to Connect link button
-        /// </summary>
-        public ICommand ConnectCommand { get; }
-
-        public CsrUnconnectedViewModel(CsrSectionControlViewModel parent)
+        public CsrGitSetupWarningContent()
         {
-            _parent = parent;
-            ConnectCommand = new ProtectedCommand(parent.SignIn);
+            InitializeComponent();
         }
     }
 }
