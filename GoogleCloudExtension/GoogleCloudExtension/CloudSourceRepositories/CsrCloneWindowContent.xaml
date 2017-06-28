@@ -8,6 +8,7 @@
              xmlns:ctrl="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:csr="clr-namespace:Google.Apis.CloudSourceRepositories.v1.Data;assembly=Google.Apis.CloudSourceRepositories.v1"
              mc:Ignorable="d"
              x:Name="_cloneWindowContent"
              d:DataContext="{d:DesignInstance {x:Type local:CsrCloneWindowViewModel}}"             
@@ -91,9 +92,14 @@
                             ItemsSource="{Binding RepositoriesAsync.Value}"
                             SelectedItem="{Binding SelectedRepository}"
                             IsSynchronizedWithCurrentItem="True"
-                            DisplayMemberPath="Name" 
                             IsTextSearchEnabled="True"
-                            Style="{StaticResource CommonComboBoxStyle}"/>
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type csr:Repo}">
+                                    <TextBlock Text="{Binding Converter={local:RepoNameConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </ContentControl.Resources>
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
