@@ -2410,15 +2410,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect....
-        /// </summary>
-        public static string CsrConnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Google Cloud Source Repositories.
         /// </summary>
         public static string CsrConnectSectionTitle {

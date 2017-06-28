@@ -2643,10 +2643,6 @@
     <value>Clone or Create</value>
     <comment>The clone or create repo link button caption</comment>
   </data>
-  <data name="CsrConnectLinkButtonCaption" xml:space="preserve">
-    <value>Connect...</value>
-    <comment>The connect link button caption</comment>
-  </data>
   <data name="CsrDescription" xml:space="preserve">
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
     <comment>Description of CSR. Intend to be attractive text.</comment>
