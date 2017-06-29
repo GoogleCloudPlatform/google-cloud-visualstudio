@@ -50,9 +50,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DeployExtension>False</DeployExtension>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
