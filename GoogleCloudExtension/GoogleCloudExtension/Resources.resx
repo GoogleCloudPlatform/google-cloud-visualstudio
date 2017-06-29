@@ -2643,17 +2643,9 @@
     <value>Clone or Create</value>
     <comment>The clone or create repo link button caption</comment>
   </data>
-  <data name="CsrConnectLinkButtonCaption" xml:space="preserve">
-    <value>Connect...</value>
-    <comment>The connect link button caption</comment>
-  </data>
   <data name="CsrDescription" xml:space="preserve">
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
     <comment>Description of CSR. Intend to be attractive text.</comment>
-  </data>
-  <data name="CsrDisconnectLinkButtonCaption" xml:space="preserve">
-    <value>Disconnect</value>
-    <comment>The Disconnect link button caption</comment>
   </data>
   <data name="CsrContextMenuRepoLocalPathLabel" xml:space="preserve">
     <value>Local Path</value>
@@ -2761,6 +2753,22 @@
   <data name="CsrRepoNameLengthLimitMessage" xml:space="preserve">
     <value>Repository name must contain between 3 and 63 characters</value>
     <comment>Repo name length validation message</comment>
+  </data>
+  <data name="GitInitilizationFailedMessage" xml:space="preserve">
+    <value>Google Cloud Source Repositories: Failed to initialize git. Fix your Git for Windows installation and refresh.</value>
+    <comment>When calling git set credential, or git config failed at initilization, the error message shown in Team Explorer notification area. </comment>
+  </data>
+  <data name="GitInstallationVerifyAgainCaption" xml:space="preserve">
+    <value>Verify again</value>
+    <comment>The caption to the link button that asks to verify again.</comment>
+  </data>
+  <data name="GitUtilsGitCredentialManagerNotInstalledMessage" xml:space="preserve">
+    <value>Git credential manager for Windows is not installed. Please install or re-install Git for Windows to fix the problem.</value>
+    <comment>Git credential manager for Windows is not found error.</comment>
+  </data>
+  <data name="CsrSignInLinkButtonCaption" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>The caption for sign in link button</comment>
   </data>
   <data name="CsrCloneRepoNotificationFormat" xml:space="preserve">
     <value>The repository {0} has been cloned successfully. [Switch to the repo]({1}) now.</value>

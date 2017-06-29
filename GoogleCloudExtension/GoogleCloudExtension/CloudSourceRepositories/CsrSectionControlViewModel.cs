@@ -34,14 +34,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         /// Sometimes, the view and view model is recreated by Team Explorer.
         /// This is to preserve the states when a new user control is created.
-        private static bool s_isConnected = false;
         private static string s_currentAccount;
         private static bool s_gitInited;
 
+        private ITeamExplorerUtils _teamExplorerService;
         private readonly CsrReposContent _reposContent = new CsrReposContent();
         private readonly CsrUnconnectedContent _unconnectedContent = new CsrUnconnectedContent();
+        private readonly CsrGitSetupWarningContent _gitSetupContent = new CsrGitSetupWarningContent();
         private CsrReposViewModel _reposViewModel;
         private CsrUnconnectedViewModel _unconnectedViewModel;
+        private CsrGitSetupWarningViewModel _gitSetupViewModel;
         private ContentControl _content;
         private EventHandler _accountChangedHandler;
 
@@ -63,36 +65,51 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Display the unconnected view
         /// </summary>
-        public void Disconnect()
+        public void ShowUnconnectedView()
         {
             Content = _unconnectedContent;
-            s_isConnected = false;
             s_currentAccount = null;
         }
 
         /// <summary>
         /// Switch to connected view
         /// </summary>
-        public async Task Connect()
+        public void SignIn()
         {
-            bool inited = await GitConfig();
-            if (!inited)
-            {
-                return;
-            }
-            if (s_isConnected)
-            {
-                return;
-            }
             if (CredentialsStore.Default.CurrentAccount == null)
             {
                 ManageAccountsWindow.PromptUser();
             }
-            if (CredentialsStore.Default.CurrentAccount != null)
+            Refresh();
+        }
+
+        /// <summary>
+        /// Continue on by showing unconnected or connected view,
+        /// after it checks git is installed.
+        /// </summary>
+        public void OnGitInstallationCheckSuccess()
+        {
+            ErrorHandlerUtils.HandleAsyncExceptions(() => InitializeGitAsync(_teamExplorerService));
+
+            _accountChangedHandler = (sender, e) => OnAccountChanged();
+            CredentialsStore.Default.CurrentAccountChanged += _accountChangedHandler;
+            CredentialsStore.Default.Reset += _accountChangedHandler;
+
+            if (CredentialsStore.Default.CurrentAccount == null)
+            {
+                ShowUnconnectedView();
+            }
+            else
             {
                 Content = _reposContent;
-                s_isConnected = true;
-                Refresh();
+                if (s_currentAccount != CredentialsStore.Default.CurrentAccount?.AccountName)
+                {
+                    SetGitCredential(_teamExplorerService);
+                    // Continue regardless of whether SetGitCredential succeeds or not.
+
+                    _reposViewModel.Refresh();
+                    s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
+                }
             }
         }
 
@@ -105,12 +122,20 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public void Refresh()
         {
             Debug.WriteLine("CsrSectionControlViewModel.Refresh");
-            if (CredentialsStore.Default.CurrentAccount == null)
+
+            if (!CsrGitSetupWarningViewModel.GitInstallationVerified)
             {
-                Disconnect();
+                ErrorHandlerUtils.HandleAsyncExceptions(CheckGitInstallationAsync);
             }
-            else if (s_isConnected)
+            else if (CredentialsStore.Default.CurrentAccount == null)
             {
+                ShowUnconnectedView();
+            }
+            else
+            {
+                ErrorHandlerUtils.HandleAsyncExceptions(() => InitializeGitAsync(_teamExplorerService));
+
+                Content = _reposContent;
                 s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
                 _reposViewModel.Refresh();
             }
@@ -119,32 +144,22 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
         {
             Debug.WriteLine("CsrSectionControlViewModel Initialize");
-            teamExplorerService.ThrowIfNull(nameof(teamExplorerService));
-            _reposViewModel = new CsrReposViewModel(teamExplorerService);
-            _unconnectedViewModel = new CsrUnconnectedViewModel(this);
+
+            _teamExplorerService = teamExplorerService.ThrowIfNull(nameof(teamExplorerService));
+            _reposViewModel = new CsrReposViewModel(_teamExplorerService);
             _reposContent.DataContext = _reposViewModel;
+            _unconnectedViewModel = new CsrUnconnectedViewModel(this);
             _unconnectedContent.DataContext = _unconnectedViewModel;
+            _gitSetupViewModel = new CsrGitSetupWarningViewModel(this);
+            _gitSetupContent.DataContext = _gitSetupViewModel;
 
-            _accountChangedHandler = (sender, e) => OnAccountChanged();
-            CredentialsStore.Default.CurrentAccountChanged += _accountChangedHandler;
-            CredentialsStore.Default.Reset += _accountChangedHandler;
-
-            if (s_isConnected && CredentialsStore.Default.CurrentAccount != null)
+            if (!CsrGitSetupWarningViewModel.GitInstallationVerified)
             {
-                Content = _reposContent;
-                if (s_currentAccount != CredentialsStore.Default.CurrentAccount?.AccountName)
-                {
-                    if (!SetGitCredential())
-                    {
-                        return;
-                    }
-                    _reposViewModel.Refresh();
-                }
-                s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
+                ErrorHandlerUtils.HandleAsyncExceptions(CheckGitInstallationAsync);
             }
             else
             {
-                Disconnect();
+                OnGitInstallationCheckSuccess();
             }
         }
 
@@ -165,42 +180,58 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         #endregion
 
+        private async Task CheckGitInstallationAsync()
+        {            
+            if (await _gitSetupViewModel.CheckInstallationAsync())
+            {
+                OnGitInstallationCheckSuccess();
+            }
+            else
+            {
+                Content = _gitSetupContent;
+            }
+        }
+
         private void OnAccountChanged()
         {
-            if (CredentialsStore.Default.CurrentAccount != null)
-            {
-                if (!SetGitCredential())
-                {
-                    return;
-                }
-            }
-            if (s_isConnected && s_currentAccount == CredentialsStore.Default.CurrentAccount?.AccountName)
+            if (s_currentAccount == CredentialsStore.Default.CurrentAccount?.AccountName)
             {
                 return;
             }
+            SetGitCredential(_teamExplorerService);
             Refresh();
         }
 
-        private static async Task<bool> GitConfig()
+        private static async Task<bool> InitializeGitAsync(ITeamExplorerUtils teamExplorer)
         {
             if (s_gitInited)
             {
                 return true;
             }
+
+            return s_gitInited = (await SetUseHttpPathAsync(teamExplorer)) && SetGitCredential(teamExplorer);
+        }
+
+        private static async Task<bool> SetUseHttpPathAsync(ITeamExplorerUtils teamExplorer)
+        {
+            bool ret;
             try
             {
                 await CsrGitUtils.SetUseHttpPathAsync();
+                ret = true;
             }
             catch (GitCommandException)
             {
-                // TODO: show error message
-                return false;
+                ret = false;
             }
-
-            return s_gitInited = SetGitCredential();
+            if (!ret)
+            {
+                teamExplorer.ShowMessage(Resources.GitInitilizationFailedMessage, null);
+            }
+            return ret;
         }
 
-        private static bool SetGitCredential()
+        private static bool SetGitCredential(ITeamExplorerUtils teamExplorer)
         {
             if (CredentialsStore.Default.CurrentAccount != null)
             {
@@ -209,8 +240,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     CredentialsStore.Default.CurrentAccount.RefreshToken,
                     CsrGitUtils.StoreCredentialPathOption.UrlHost))
                 {
-                    // TODO: show error message
-                    return false;
+                    teamExplorer.ShowMessage(Resources.GitInitilizationFailedMessage, null);
+                    return s_gitInited = false;
                 }
             }
             return true;

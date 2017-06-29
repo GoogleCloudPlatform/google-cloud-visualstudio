@@ -2410,15 +2410,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect....
-        /// </summary>
-        public static string CsrConnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Google Cloud Source Repositories.
         /// </summary>
         public static string CsrConnectSectionTitle {
@@ -2460,15 +2451,6 @@ namespace GoogleCloudExtension {
         public static string CsrDescription {
             get {
                 return ResourceManager.GetString("CsrDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
-        /// </summary>
-        public static string CsrDisconnectLinkButtonCaption {
-            get {
-                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
             }
         }
         
@@ -2568,6 +2550,15 @@ namespace GoogleCloudExtension {
         public static string CsrRepositorySelectionLabel {
             get {
                 return ResourceManager.GetString("CsrRepositorySelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in.
+        /// </summary>
+        public static string CsrSignInLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrSignInLinkButtonCaption", resourceCulture);
             }
         }
         
@@ -3765,6 +3756,33 @@ namespace GoogleCloudExtension {
         public static string GenerateConfigurationOverwritePromptTitle {
             get {
                 return ResourceManager.GetString("GenerateConfigurationOverwritePromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Source Repositories: Failed to initialize git. Fix your Git for Windows installation and refresh..
+        /// </summary>
+        public static string GitInitilizationFailedMessage {
+            get {
+                return ResourceManager.GetString("GitInitilizationFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verify again.
+        /// </summary>
+        public static string GitInstallationVerifyAgainCaption {
+            get {
+                return ResourceManager.GetString("GitInstallationVerifyAgainCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Git credential manager for Windows is not installed. Please install or re-install Git for Windows to fix the problem..
+        /// </summary>
+        public static string GitUtilsGitCredentialManagerNotInstalledMessage {
+            get {
+                return ResourceManager.GetString("GitUtilsGitCredentialManagerNotInstalledMessage", resourceCulture);
             }
         }
         

@@ -146,7 +146,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         /// <summary>
-        /// Set a repository as active, show the item in Bold font.
+        /// Set the repository at the path as active, show the item in Bold font.
         /// </summary>
         /// <param name="localPath">The repository local path</param>
         public void ShowActiveRepo(string localPath)
@@ -205,7 +205,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             Repositories = new ObservableCollection<RepoItemViewModel>();
             try
             {
-                await AddLocalReposAsync(await GetLocalGitRepositories(), projects);
+                await AddLocalReposAsync(await GetLocalGitRepositoriesAsync(), projects);
 
                 ShowActiveRepo(_teamExplorer.GetActiveRepository());
             }
@@ -284,7 +284,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// A list of local repositories.
         /// Empty list is returned, never return null.
         /// </returns>
-        private async Task<List<GitRepository>> GetLocalGitRepositories()
+        private async Task<List<GitRepository>> GetLocalGitRepositoriesAsync()
         {
             List<GitRepository> localRepos = new List<GitRepository>();
             var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
@@ -326,10 +326,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     command: new ProtectedCommand(handler: () =>
                     {
                         SetRepoActive(repoItem);
-                        SolutionHelper.SetDefaultProjectPath(repoItem.LocalPath);
-                        var serviceProvider = ShellUtils.GetGloblalServiceProvider();
-                        var solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
-                        solution?.CreateNewProjectViaDlg(null, null, 0);
+                        CreateSolutionForRepo(repoItem);
                         _teamExplorer.ShowHomeSection();
                     }));
             }
@@ -373,6 +370,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 IsReady = true;
             }
+        }
+
+        private void CreateSolutionForRepo(RepoItemViewModel repoItem)
+        {
+            SolutionHelper.SetDefaultProjectPath(repoItem.LocalPath);
+            var serviceProvider = ShellUtils.GetGloblalServiceProvider();
+            var solution = serviceProvider?.GetService(typeof(SVsSolution)) as IVsSolution;
+            solution?.CreateNewProjectViaDlg(null, null, 0);
         }
     }
 }

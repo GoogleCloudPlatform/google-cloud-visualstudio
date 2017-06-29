@@ -20,9 +20,6 @@
                 <ResourceDictionary Source="./CsrSectionStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <utils:VisibilityConverter x:Key="VisibilityConverter" />
-            <utils:NullEmptyInvisibleConverter x:Key="NullEmptyInvisibleConverter" />
-
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -32,13 +29,6 @@
                     KeyboardNavigation.TabIndex="0" 
                     Command="{Binding CloneCreateRepoCommand}" 
                     Content="{x:Static ext:Resources.CsrCloneCreateLinkButtonCaption}" />
-
-            <Separator Margin="3,0,3,0" Style="{StaticResource VerticalSeparatorStyle}" />
-
-            <Button Style="{StaticResource SectionButtonStyle}" 
-                    KeyboardNavigation.TabIndex="2" 
-                    Content="{x:Static ext:Resources.CsrDisconnectLinkButtonCaption}" 
-                    Command="{Binding DisconnectCommand}"/>
 
         </WrapPanel>
 
@@ -56,8 +46,7 @@
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.ScrollUnit="Pixel"
-            VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
-            Visibility="{Binding Repositories, Converter={StaticResource NullEmptyInvisibleConverter}}" >
+            VirtualizingPanel.IsVirtualizingWhenGrouping="True" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -89,7 +78,7 @@
                             Stretch="Uniform"
                             Width="16"
                             Height="16"
-                            Source="{mp:ImageResource CloudSourceRepositories/Resources/cloud-source-repositories.png}" />
+                            Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
                         
                         <TextBlock       
                             Grid.Column="1" 
@@ -155,7 +144,7 @@
         <controls:DotsProgressIndicator
             Margin="6"
             HorizontalAlignment="Left"
-            Visibility="{Binding Loading, Converter={StaticResource VisibilityConverter}}" />
+            Visibility="{Binding IsReady, Converter={utils:VisibilityConverter IsNegated=True}}" />
         
     </StackPanel>
 
