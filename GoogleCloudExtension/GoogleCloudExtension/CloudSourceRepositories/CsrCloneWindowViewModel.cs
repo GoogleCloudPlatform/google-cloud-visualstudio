@@ -126,9 +126,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ProtectedCommand CreateRepoCommand { get; }
         
         /// <summary>
-        /// Final cloned repository
+        /// Gets a result of type <seealso cref="CloneDialogResult"/>.
+        /// null inidcates no result is created, user cancelled the operation.
         /// </summary>
-        public CloneWindowResult Result { get; private set; }
+        public CloneDialogResult Result { get; private set; }
 
         public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
         {
@@ -196,7 +197,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             try
             {
                 GitRepository localRepo = await CsrGitUtils.CloneAsync(SelectedRepository.Url, destPath);
-                Result = new CloneWindowResult
+                Result = new CloneDialogResult
                 {
                     RepoItem = new RepoItemViewModel(SelectedRepository, localRepo.Root),
                     JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)

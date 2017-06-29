@@ -14,19 +14,16 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -121,6 +118,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             ListDoubleClickCommand = new ProtectedCommand(() =>
             {
                 SetRepoActive(SelectedRepository);
+                // Note, the order is critical.
+                // When switching to HomeSection, current "this" object is destroyed.
                 _teamExplorer.ShowHomeSection();
             });
             CloneCreateRepoCommand = new ProtectedAsyncCommand(CloneCreateRepoAsync);
@@ -141,10 +140,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             if (repo?.IsActiveRepo == false)
             {
-                SetCurrentRepo(repo.LocalPath);
-
-                // Note, the order is critical.
-                // When switching to HomeSection, current "this" object is destroyed.
+                CreateEmptySolutionAtPath(repo.LocalPath);
                 ActiveRepo = repo;
             }
         }
@@ -160,7 +156,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             ActiveRepo = repoItem;
         }
 
-        private void SetCurrentRepo(string localPath)
+        /// <summary>
+        /// By creating an empty solution at the path, Visual Studio git service sets the repo as current.
+        /// </summary>
+        private void CreateEmptySolutionAtPath(string localPath)
         {
             string guid = Guid.NewGuid().ToString();
             try
@@ -200,7 +199,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return;
             }
 
-            // GetProjectsAsync set/reset IsReady, put it before the following IsReady flag
             var projects = await GetProjectsAsync();
 
             IsReady = false;
@@ -263,9 +261,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 }
                 catch (DataSourceException)
                 {
-                    _teamExplorer.ShowMessage(
-                        $"Failed to get repos for GCP project {projectId}",
-                        null);
+                    _teamExplorer.ShowMessage(String.Format(Resources.CsrFetchReposErrorMessage, projectId), null);
                     cloudRepos = null;
                 }
                 projectReposMap.Add(projectId, cloudRepos);
@@ -310,22 +306,23 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
 
             var result = CsrCloneWindow.PromptUser(projects);
-            if (result != null)
+            if (result == null)
             {
-                var repoItem = result.RepoItem;
-                if (Repositories == null)
-                {
-                    Repositories = new ObservableCollection<RepoItemViewModel>();
-                }
-                Repositories.Add(repoItem);
+                return;
+            }
 
-                // Created a new repo and cloned locally
-                if (result.JustCreatedRepo)
-                {
-                    var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, 
-                        repoItem.Name, repoItem.LocalPath);
+            var repoItem = result.RepoItem;
+            if (Repositories == null)
+            {
+                Repositories = new ObservableCollection<RepoItemViewModel>();
+            }
+            Repositories.Add(repoItem);
 
-                    _teamExplorer.ShowMessage(msg,
+            // Created a new repo and cloned locally
+            if (result.JustCreatedRepo)
+            {
+                var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
+                _teamExplorer.ShowMessage(msg,
                     command: new ProtectedCommand(handler: () =>
                     {
                         SetRepoActive(repoItem);
@@ -335,19 +332,17 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                         solution?.CreateNewProjectViaDlg(null, null, 0);
                         _teamExplorer.ShowHomeSection();
                     }));
-                }
-                else
-                {
-                    var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, 
-                        repoItem.Name, repoItem.LocalPath);
+            }
+            else
+            {
+                var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
 
-                    _teamExplorer.ShowMessage(msg,
+                _teamExplorer.ShowMessage(msg,
                     command: new ProtectedCommand(handler: () =>
                     {
                         SetRepoActive(repoItem);
                         _teamExplorer.ShowHomeSection();
                     }));
-                }
             }
         }
 

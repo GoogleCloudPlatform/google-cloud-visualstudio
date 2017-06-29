@@ -2473,6 +2473,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to get repos for GCP project of id {0}..
+        /// </summary>
+        public static string CsrFetchReposErrorMessage {
+            get {
+                return ResourceManager.GetString("CsrFetchReposErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading repositories ....
         /// </summary>
         public static string CsrLoadingRepoMessage {
