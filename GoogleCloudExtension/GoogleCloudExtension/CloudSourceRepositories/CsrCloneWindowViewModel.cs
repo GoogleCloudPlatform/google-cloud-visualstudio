@@ -181,7 +181,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task CloneAsync()
         {
             // If OkCommand is enabled, SelectedRepository and LocalPath is valid
-            string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
+            string destPath = Path.Combine(LocalPath.Trim(), SelectedRepository.GetRepoName());
 
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
@@ -249,6 +249,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<ValidationResult> ValidateLocalPath()
         {
             string fieldName = Resources.CsrCloneLocalPathFieldName;
+            string localPath = LocalPath?.Trim();
             if (String.IsNullOrEmpty(LocalPath))
             {
                 yield return StringValidationResult.FromResource(
