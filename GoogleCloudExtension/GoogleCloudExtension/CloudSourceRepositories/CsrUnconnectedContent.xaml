@@ -37,7 +37,7 @@
                 KeyboardNavigation.TabIndex="0" 
                 Command="{Binding ConnectCommand}" 
                 Margin="0,5,0,0"
-                Content="{x:Static ext:Resources.CsrConnectLinkButtonCaption}" />
+                Content="{x:Static ext:Resources.CsrSignInLinkButtonCaption}" />
 
     </StackPanel>
 </UserControl>

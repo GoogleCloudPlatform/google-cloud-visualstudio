@@ -111,11 +111,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public ICommand ListDoubleClickCommand { get; }
 
-        public CsrReposViewModel(CsrSectionControlViewModel parent, ITeamExplorerUtils teamExplorer)
+        public CsrReposViewModel(ITeamExplorerUtils teamExplorer)
         {
-            parent.ThrowIfNull(nameof(parent));
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
-            DisconnectCommand = new ProtectedCommand(parent.Disconnect);
             ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
             CloneCreateRepoCommand = new ProtectedAsyncCommand(CloneCreateRepoAsync);
         }
