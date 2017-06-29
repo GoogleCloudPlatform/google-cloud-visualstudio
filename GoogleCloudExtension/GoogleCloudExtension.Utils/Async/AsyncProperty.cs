@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.Utils.Async
             {
                 if (t.IsCompleted)
                 {
-                    Value = t.Result;
+                    Value = AsyncPropertyUtils.SafeGetTaskResult(t);
                 }
                 _completionSource.Value.SetResult(true);
                 RaiseAllPropertyChanged();

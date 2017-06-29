@@ -49,11 +49,16 @@ namespace GoogleAnalyticsUtils
         public async void SendHitData(Dictionary<string, string> hitData)
         {
             var client = _httpClient.Value;
-            using (var form = new FormUrlEncodedContent(hitData))
-            using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
+            try
             {
-                DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync(), hitData);
+                using (var form = new FormUrlEncodedContent(hitData))
+                using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
+                {
+                    DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync(), hitData);
+                }
             }
+            // Catch everything or it terminates Visual Studio.
+            catch { }
         }
 
         /// <summary>

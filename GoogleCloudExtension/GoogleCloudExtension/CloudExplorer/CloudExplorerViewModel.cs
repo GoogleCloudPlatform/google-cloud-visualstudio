@@ -382,6 +382,8 @@ namespace GoogleCloudExtension.CloudExplorer
                     button.IsEnabled = IsNotEmptyState;
                 }
             }
+            // Catch all, otherwise it terminates Visual Studio
+            catch { }
             finally
             {
                 IsBusy = false;
