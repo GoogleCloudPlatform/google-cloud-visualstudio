@@ -35,6 +35,27 @@ namespace GoogleCloudExtension.GitUtils
         /// Get local repositories Visual Studio registry.
         /// </summary>
         /// <param name="vsVersion">The current Visual Studio version passed in by caller.</param>
+        /// <param name="name">The git repository name</param>
+        /// <param name="localGitRoot">Git local root</param>
+        public static void AddLocalRepositories(string vsVersion, string name, string localGitRoot)
+        {
+            switch (vsVersion)
+            {
+                case VisualStudio2015Version:
+                    AddRepository(Vs14GitKey, name, localGitRoot);
+                    break;
+                case VisualStudio2017Version:
+                    AddRepository(Vs15GitKey, name, localGitRoot);
+                    break;
+                default:
+                    throw new NotSupportedException($"Version {vsVersion} is not supported.");
+            }
+        }
+
+        /// <summary>
+        /// Get local repositories Visual Studio registry.
+        /// </summary>
+        /// <param name="vsVersion">The current Visual Studio version passed in by caller.</param>
         /// <returns>
         /// A list of local repository paths.
         /// </returns>
@@ -84,6 +105,33 @@ namespace GoogleCloudExtension.GitUtils
             {
                 return null;
             }
+        }
+
+        private static void AddRepository(string gitKeyPath, string name, string gitLocalPath)
+        {
+            try
+            {
+                using (var key = OpenGitKey(gitKeyPath, "Repositories", writable: true))
+                {
+                    if (key == null)
+                    {
+                        return;
+                    }
+
+                    using (var newKey = key.CreateSubKey(Guid.NewGuid().ToString()))
+                    {
+                        newKey.SetValue("Name", name);
+                        newKey.SetValue("Path", gitLocalPath);
+                    }
+                }
+            }
+            catch (Exception ex) when (
+                ex is SecurityException ||
+                ex is ObjectDisposedException || // The RegistryKey is closed (closed keys cannot be accessed).
+                ex is UnauthorizedAccessException ||
+                ex is IOException
+                )
+            { }
         }
     }
 }

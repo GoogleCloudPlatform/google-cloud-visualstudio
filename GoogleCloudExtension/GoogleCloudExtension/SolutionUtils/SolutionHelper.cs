@@ -16,15 +16,19 @@ using EnvDTE;
 using EnvDTE80;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
@@ -92,6 +96,69 @@ namespace GoogleCloudExtension.SolutionUtils
         {
             var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
             return query.ToList<ProjectSourceFile>();
+        }
+
+        public static string SetDefaultProjectPath(string path)
+        {
+            string MruKeyPath = "MRUSettingsLocalProjectLocationEntries";
+            var keyPath = VsVersionUtils.NewProjectDialogKeyPath;
+            var old = String.Empty;
+            try
+            {
+                var newProjectKey = Registry.CurrentUser.OpenSubKey(keyPath, true) ??
+                    Registry.CurrentUser.CreateSubKey(keyPath);
+                if (newProjectKey == null)
+                {
+                    return old;
+                }
+                using (newProjectKey)
+                {
+                    var mruKey = newProjectKey.OpenSubKey(MruKeyPath, true) 
+                        ?? Registry.CurrentUser.CreateSubKey(MruKeyPath);
+                    if (mruKey == null)
+                    {
+                        return old;
+                    }
+                    using (mruKey)
+                    {
+                        // is this already the default path
+                        old = (string)mruKey.GetValue("Value0", string.Empty, 
+                            RegistryValueOptions.DoNotExpandEnvironmentNames);
+                        if (String.Equals(path.TrimEnd('\\'), old.TrimEnd('\\'),
+                            StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            return old;
+                        }
+
+                        // grab the existing list of recent paths, throwing away the last one
+                        var numEntries = (int)mruKey.GetValue("MaximumEntries", 5);
+                        var entries = new List<string>(numEntries);
+                        for (int i = 0; i < numEntries - 1; i++)
+                        {
+                            var val = (string)mruKey.GetValue("Value" + i, String.Empty,
+                                RegistryValueOptions.DoNotExpandEnvironmentNames);
+                            if (!String.IsNullOrEmpty(val))
+                                entries.Add(val);
+                        }
+
+                        newProjectKey.SetValue("LastUsedNewProjectPath", path);
+                        mruKey.SetValue("Value0", path);
+                        // bump list of recent paths one entry down
+                        for (int i = 0; i < entries.Count; i++)
+                            mruKey.SetValue("Value" + (i + 1), entries[i]);
+                    }
+                }
+            }
+            catch (Exception ex) when (
+                ex is SecurityException ||
+                ex is ObjectDisposedException || // The RegistryKey is closed (closed keys cannot be accessed).
+                ex is UnauthorizedAccessException ||
+                ex is IOException
+                )
+            {
+                Debug.WriteLine($"Error setting the create project path in the registry '{ex}'");
+            }
+            return old;
         }
 
         private IParsedProject GetSelectedProject()

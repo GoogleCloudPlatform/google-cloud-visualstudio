@@ -2683,8 +2683,8 @@
     <value>_Clone to:</value>
     <comment>Label to the input local path text box</comment>
   </data>
-  <data name="CsrCloneNoProjectMessage" xml:space="preserve">
-    <value>There is no project.</value>
+  <data name="CsrNoProjectMessage" xml:space="preserve">
+    <value>Current selected GCP account has no active project.</value>
     <comment>Prompt message if the user account has no any project</comment>
   </data>
   <data name="CsrClonePathBrowseButtonCaption" xml:space="preserve">
@@ -2761,5 +2761,13 @@
   <data name="CsrRepoNameLengthLimitMessage" xml:space="preserve">
     <value>Repository name must contain between 3 and 63 characters</value>
     <comment>Repo name length validation message</comment>
+  </data>
+  <data name="CsrCloneRepoNotificationFormat" xml:space="preserve">
+    <value>The repository {0} has been cloned successfully. [Switch to the repo]({1}) now.</value>
+    <comment>When cloned a new SCR repo, show the message at Team Explorer. {0} is the repo name.  {1} is the local git root path.</comment>
+  </data>
+  <data name="CsrCreateRepoNotificationFormat" xml:space="preserve">
+    <value>The repository {0} has been created successfully. [Create a new project or solution]({1}) now.</value>
+    <comment>When created and cloned a new CSR repo, show the message inside Team Explorer. {0} is the repo name. {1} is the local git root path.</comment>
   </data>
 </root>

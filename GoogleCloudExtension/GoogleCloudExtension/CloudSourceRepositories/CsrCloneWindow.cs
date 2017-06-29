@@ -19,6 +19,13 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
+    public class CloneWindowResult
+    {
+        public bool JustCreatedRepo { get; set; }
+
+        public RepoItemViewModel RepoItem { get; set; }
+    }
+
     /// <summary>
     /// Dialog to clone Google Cloud Source Repository.
     /// </summary>
@@ -37,7 +44,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         /// <param name="projects">A list of GCP <seealso cref="Project"/>.</param>
         /// <returns>The cloned repo item.</returns>
-        public static RepoItemViewModel PromptUser(IList<Project> projects)
+        public static CloneWindowResult PromptUser(IList<Project> projects)
         {
             var dialog = new CsrCloneWindow(projects);
             dialog.ShowModal();

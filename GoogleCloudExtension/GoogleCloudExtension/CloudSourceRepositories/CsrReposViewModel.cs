@@ -14,15 +14,19 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -111,12 +115,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public ICommand ListDoubleClickCommand { get; }
 
-        public CsrReposViewModel(CsrSectionControlViewModel parent, ITeamExplorerUtils teamExplorer)
+        public CsrReposViewModel(ITeamExplorerUtils teamExplorer)
         {
-            parent.ThrowIfNull(nameof(parent));
             _teamExplorer = teamExplorer.ThrowIfNull(nameof(teamExplorer));
-            DisconnectCommand = new ProtectedCommand(parent.Disconnect);
-            ListDoubleClickCommand = new ProtectedCommand(SetSelectedRepoActive);
+            ListDoubleClickCommand = new ProtectedCommand(() =>
+            {
+                SetRepoActive(SelectedRepository);
+                _teamExplorer.ShowHomeSection();
+            });
             CloneCreateRepoCommand = new ProtectedAsyncCommand(CloneCreateRepoAsync);
         }
 
@@ -131,16 +137,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// When user double clicks at a repository, set it as active repo.
         /// </summary>
-        public void SetSelectedRepoActive()
+        public void SetRepoActive(RepoItemViewModel repo)
         {
-            if (SelectedRepository?.IsActiveRepo == false)
+            if (repo?.IsActiveRepo == false)
             {
-                SetCurrentRepo(SelectedRepository.LocalPath);
+                SetCurrentRepo(repo.LocalPath);
 
                 // Note, the order is critical.
                 // When switching to HomeSection, current "this" object is destroyed.
-                ActiveRepo = SelectedRepository;
-                _teamExplorer.ShowHomeSection();
+                ActiveRepo = repo;
             }
         }
 
@@ -148,7 +153,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Set a repository as active, show the item in Bold font.
         /// </summary>
         /// <param name="localPath">The repository local path</param>
-        public void SetActiveRepo(string localPath)
+        public void ShowActiveRepo(string localPath)
         {
             var repoItem = Repositories?.FirstOrDefault(
                 x => String.Compare(x.LocalPath, localPath, StringComparison.OrdinalIgnoreCase) == 0);
@@ -157,7 +162,27 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void SetCurrentRepo(string localPath)
         {
-            // TODO: Add in next PR.
+            string guid = Guid.NewGuid().ToString();
+            try
+            {
+                ShellUtils.CreateEmptySolution(localPath, guid);
+            }
+            finally
+            {
+                try
+                {
+                    // Clean up the dummy `.vs` directory.
+                    string tmpPath = Path.Combine(localPath, ".vs", guid);
+                    if (Directory.Exists(tmpPath))
+                    {
+                        Directory.Delete(tmpPath, recursive: true);
+                    }
+                }
+                catch (Exception ex) when (
+                    ex is IOException ||
+                    ex is UnauthorizedAccessException)
+                { }
+            }
         }
 
 
@@ -170,36 +195,24 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task ListRepositoryAsync()
         {
-            if (Loading)
+            if (!IsReady)
             {
                 return;
             }
 
-            var resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
-            if (resourceManager == null)
-            {
-                return;
-            }
+            // GetProjectsAsync set/reset IsReady, put it before the following IsReady flag
+            var projects = await GetProjectsAsync();
 
             IsReady = false;
-            Loading = true;
             Repositories = new ObservableCollection<RepoItemViewModel>();
-            
             try
             {
-                var projects = await resourceManager.GetSortedActiveProjectsAsync();
-                if (!projects.Any())
-                {
-                    return;
-                }
+                await AddLocalReposAsync(await GetLocalGitRepositories(), projects);
 
-                await AddLocalReposAsync(await GetLocalGitRepositories());
-
-                SetActiveRepo(_teamExplorer.GetActiveRepository());
+                ShowActiveRepo(_teamExplorer.GetActiveRepository());
             }
             finally
             {
-                Loading = false;
                 IsReady = true;
             }
         }
@@ -207,17 +220,18 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// projectRepos is used to cache the list of 'cloud repos' of the project-id.
         /// </summary>
-        private async Task AddLocalReposAsync(IList<GitRepository> localRepos)
+        private async Task AddLocalReposAsync(IList<GitRepository> localRepos, IList<Project> projects)
         {
-            Dictionary<string, IList<Repo>> projectRepos
-                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, IEnumerable<Repo>> projectRepos
+                = new Dictionary<string, IEnumerable<Repo>>(StringComparer.OrdinalIgnoreCase);
             foreach (var localGitRepo in localRepos)
             {
                 IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
                 foreach (var url in remoteUrls)
                 {
                     string projectId = CsrUtils.ParseProjectId(url);
-                    if (String.IsNullOrWhiteSpace(projectId))
+                    if (String.IsNullOrWhiteSpace(projectId) ||
+                        !projects.Any(x => x.ProjectId == projectId))
                     {
                         continue;
                     }
@@ -237,18 +251,27 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task<Repo> TryGetCloudRepoAsync(
             string url, 
             string projectId, 
-            Dictionary<string, IList<Repo>> projectReposMap)
+            Dictionary<string, IEnumerable<Repo>> projectReposMap)
         {
-            IList<Repo> cloudRepos;
+            IEnumerable<Repo> cloudRepos;
             Debug.WriteLine($"Check project id {projectId}");
             if (!projectReposMap.TryGetValue(projectId, out cloudRepos))
             {
-
-                cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
+                try
+                {
+                    cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
+                }
+                catch (DataSourceException)
+                {
+                    _teamExplorer.ShowMessage(
+                        $"Failed to get repos for GCP project {projectId}",
+                        null);
+                    cloudRepos = null;
+                }
                 projectReposMap.Add(projectId, cloudRepos);
             }
 
-            if (!(cloudRepos != null && cloudRepos.Any()))
+            if (cloudRepos == null || !cloudRepos.Any())
             {
                 Debug.WriteLine($"{projectId} has no repos found");
                 return null;
@@ -280,43 +303,80 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private async Task CloneCreateRepoAsync()
         {
-            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
-            if (resourceManager == null)
+            var projects = await GetProjectsAsync();
+            if (!projects.Any())
             {
                 return;
             }
 
-            IsReady = false;
-            Loading = true;
+            var result = CsrCloneWindow.PromptUser(projects);
+            if (result != null)
+            {
+                var repoItem = result.RepoItem;
+                if (Repositories == null)
+                {
+                    Repositories = new ObservableCollection<RepoItemViewModel>();
+                }
+                Repositories.Add(repoItem);
 
+                // Created a new repo and cloned locally
+                if (result.JustCreatedRepo)
+                {
+                    var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, 
+                        repoItem.Name, repoItem.LocalPath);
+
+                    _teamExplorer.ShowMessage(msg,
+                    command: new ProtectedCommand(handler: () =>
+                    {
+                        SetRepoActive(repoItem);
+                        SolutionHelper.SetDefaultProjectPath(repoItem.LocalPath);
+                        var serviceProvider = ShellUtils.GetGloblalServiceProvider();
+                        var solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+                        solution?.CreateNewProjectViaDlg(null, null, 0);
+                        _teamExplorer.ShowHomeSection();
+                    }));
+                }
+                else
+                {
+                    var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, 
+                        repoItem.Name, repoItem.LocalPath);
+
+                    _teamExplorer.ShowMessage(msg,
+                    command: new ProtectedCommand(handler: () =>
+                    {
+                        SetRepoActive(repoItem);
+                        _teamExplorer.ShowHomeSection();
+                    }));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return a list of projects. Returns empty list if no item is found.
+        /// </summary>
+        private async Task<IList<Project>> GetProjectsAsync()
+        {
+            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            if (resourceManager == null)
+            {
+                return new List<Project>();
+            }
+
+            IsReady = false;
             try
             {
                 var projects = await resourceManager.GetSortedActiveProjectsAsync();
-                Loading = false;
-
                 if (!projects.Any())
                 {
-                    // TODO: Disconnect and show error message "no project"
                     UserPromptUtils.OkPrompt(
-                        message: Resources.CsrCloneNoProjectMessage,
-                        title: Resources.UiDefaultPromptTitle);
-                    return;
+                        message: Resources.CsrNoProjectMessage,
+                        title: Resources.CsrConnectSectionTitle);
                 }
-
-                var repoItem = CsrCloneWindow.PromptUser(projects);
-                if (repoItem != null)
-                {
-                    if (Repositories == null)
-                    {
-                        Repositories = new ObservableCollection<RepoItemViewModel>();
-                    }
-                    Repositories.Add(repoItem);
-                }
+                return projects;
             }
             finally
             {
                 IsReady = true;
-                Loading = false;
             }
         }
     }

@@ -120,7 +120,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             Debug.WriteLine("CsrSectionControlViewModel Initialize");
             teamExplorerService.ThrowIfNull(nameof(teamExplorerService));
-            _reposViewModel = new CsrReposViewModel(this, teamExplorerService);
+            _reposViewModel = new CsrReposViewModel(teamExplorerService);
             _unconnectedViewModel = new CsrUnconnectedViewModel(this);
             _reposContent.DataContext = _reposViewModel;
             _unconnectedContent.DataContext = _unconnectedViewModel;
@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         void ISectionViewModel.UpdateActiveRepo(string newRepoLocalPath)
         {
             Debug.WriteLine($"CsrSectionControlViewModel.UpdateActiveRepo {newRepoLocalPath}");
-            _reposViewModel.SetActiveRepo(newRepoLocalPath);
+            _reposViewModel.ShowActiveRepo(newRepoLocalPath);
         }
 
         void ISectionViewModel.Cleanup()

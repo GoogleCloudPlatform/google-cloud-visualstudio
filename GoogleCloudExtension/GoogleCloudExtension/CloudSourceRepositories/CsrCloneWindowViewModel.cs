@@ -37,6 +37,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private readonly CsrCloneWindow _owner;
         private string _localPath;
         private Repo _latestCreatedRepo;
+        private HashSet<string> _newReposList = new HashSet<string>();
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -127,7 +128,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Final cloned repository
         /// </summary>
-        public RepoItemViewModel Result { get; private set; }
+        public CloneWindowResult Result { get; private set; }
 
         public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
         {
@@ -195,7 +196,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             try
             {
                 GitRepository localRepo = await CsrGitUtils.CloneAsync(SelectedRepository.Url, destPath);
-                Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
+                Result = new CloneWindowResult
+                {
+                    RepoItem = new RepoItemViewModel(SelectedRepository, localRepo.Root),
+                    JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)
+                };
                 _owner.Close();
             }
             catch (GitCommandException)
@@ -271,6 +276,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _latestCreatedRepo = CsrAddRepoWindow.PromptUser(RepositoriesAsync.Value, SelectedProject);
             if (_latestCreatedRepo != null)
             {
+                _newReposList.Add(_latestCreatedRepo.Name);
                 // Update the repos list
                 ErrorHandlerUtils.HandleAsyncExceptions(
                     () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));

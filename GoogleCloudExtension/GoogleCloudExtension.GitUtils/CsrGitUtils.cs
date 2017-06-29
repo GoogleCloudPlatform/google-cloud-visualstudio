@@ -42,8 +42,7 @@ namespace GoogleCloudExtension.GitUtils
         /// <param name="url">The repository remote URL.</param>
         /// <param name="localPath">Local path to save the repository</param>
         /// <returns>
-        /// A <seealso cref="GitRepository"/> object if clone is successful.
-        /// Or null if it fails for some reason.
+        /// A <seealso cref="GitRepository"/> object.
         /// </returns>
         /// <exception cref="GitCommandException">Throw when git command fails</exception>
         public static async Task<GitRepository> CloneAsync(string url, string localPath)
