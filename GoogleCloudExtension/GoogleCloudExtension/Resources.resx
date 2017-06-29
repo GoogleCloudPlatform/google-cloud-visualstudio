@@ -2779,7 +2779,7 @@
     <comment>When created and cloned a new CSR repo, show the message inside Team Explorer. {0} is the repo name. {1} is the local git root path.</comment>
   </data>
   <data name="CsrFetchReposErrorMessage" xml:space="preserve">
-    <value>Failed to get repos for GCP project of id {0}.</value>
-    <comment>Show error message at Team Explorer when it fails to fetch repo for the project. {0} is the project id.</comment>
+    <value>Failed to get repositories for Google Cloud project(s) {0}.</value>
+    <comment>Show error message at Team Explorer when it fails to fetch repo for the project. {0} is the project name list.</comment>
   </data>
 </root>

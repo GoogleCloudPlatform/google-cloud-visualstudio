@@ -2455,7 +2455,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to get repos for GCP project of id {0}..
+        ///   Looks up a localized string similar to Failed to get repositories for Google Cloud project(s) {0}..
         /// </summary>
         public static string CsrFetchReposErrorMessage {
             get {

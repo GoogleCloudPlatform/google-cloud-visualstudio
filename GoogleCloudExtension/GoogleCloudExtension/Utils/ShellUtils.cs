@@ -160,11 +160,12 @@ namespace GoogleCloudExtension.Utils
             var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
-    
+
         /// <summary>
-        /// Used by CSR feature. 
-        /// A trick to set localPath as current selected repository.
+        /// Create empty solution at the <paramref name="localPath"/>
         /// </summary>
+        /// <param name="localPath">Create the solution at the path.</param>
+        /// <param name="name">The solution name.</param>
         public static void CreateEmptySolution(string localPath, string name)
         {
             localPath.ThrowIfNullOrEmpty(nameof(localPath));

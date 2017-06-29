@@ -19,7 +19,6 @@ using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,25 +61,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Retrives the list of <seealso cref="Repo"/> under the project.
         /// </summary>
+        /// <exception cref="DataSourceException">When there is error in calling CSR API.</exception>
         public static async Task<IList<Repo>> GetCloudReposAsync(string projectId)
         {
             projectId.ThrowIfNullOrEmpty(nameof(projectId));
             var csrDataSource = CreateCsrDataSource(projectId);
             if (csrDataSource == null)
             {
-                return null;
+                return new List<Repo>();
             }
-            try
-            {
-                return await csrDataSource.ListReposAsync();
-            }
-            catch (DataSourceException ex)
-            // Call out "no permission" project.
-            when (ex.InnerGoogleApiException?.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                Debug.WriteLine($"No permission to query repos from project id {projectId}");
-                return null;
-            }
+            return await csrDataSource.ListReposAsync();
         }
 
         /// <summary>

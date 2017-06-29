@@ -98,7 +98,12 @@ namespace GoogleCloudExtension.SolutionUtils
             return query.ToList<ProjectSourceFile>();
         }
 
-        public static string SetDefaultProjectPath(string path)
+        /// <summary>
+        /// Set default project path in registry.
+        /// When create a new project etc, the default path is used at select path dialog.
+        /// </summary>
+        /// <param name="path">The default project path to set</param>
+        public static void SetDefaultProjectPath(string path)
         {
             string MruKeyPath = "MRUSettingsLocalProjectLocationEntries";
             var keyPath = VsVersionUtils.NewProjectDialogKeyPath;
@@ -109,7 +114,7 @@ namespace GoogleCloudExtension.SolutionUtils
                     Registry.CurrentUser.CreateSubKey(keyPath);
                 if (newProjectKey == null)
                 {
-                    return old;
+                    return;
                 }
                 using (newProjectKey)
                 {
@@ -117,7 +122,7 @@ namespace GoogleCloudExtension.SolutionUtils
                         ?? Registry.CurrentUser.CreateSubKey(MruKeyPath);
                     if (mruKey == null)
                     {
-                        return old;
+                        return;
                     }
                     using (mruKey)
                     {
@@ -127,7 +132,7 @@ namespace GoogleCloudExtension.SolutionUtils
                         if (String.Equals(path.TrimEnd('\\'), old.TrimEnd('\\'),
                             StringComparison.CurrentCultureIgnoreCase))
                         {
-                            return old;
+                            return;
                         }
 
                         // grab the existing list of recent paths, throwing away the last one
@@ -158,7 +163,6 @@ namespace GoogleCloudExtension.SolutionUtils
             {
                 Debug.WriteLine($"Error setting the create project path in the registry '{ex}'");
             }
-            return old;
         }
 
         private IParsedProject GetSelectedProject()

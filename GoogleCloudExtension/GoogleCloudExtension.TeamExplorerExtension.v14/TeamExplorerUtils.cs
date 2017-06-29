@@ -63,10 +63,18 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         public void ShowMessage(string message, ICommand command) =>
             NotificationManager?.ShowNotification(
-                message, 
-                NotificationType.Information, 
+                message,
+                NotificationType.Information,
                 NotificationFlags.None,
-                command, 
+                command,
+                default(Guid));
+
+        public void ShowError(string message) =>
+            NotificationManager?.ShowNotification(
+                message, 
+                NotificationType.Error, 
+                NotificationFlags.RequiresConfirmation, 
+                null, 
                 default(Guid));
 
         #endregion

@@ -41,7 +41,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the list when a new user control is created.
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
-        private static ObservableCollection<RepoItemViewModel> s_repoList;
+        private static ObservableCollection<RepoItemViewModel> s_repoList 
+            = new ObservableCollection<RepoItemViewModel>();
         private static RepoItemViewModel s_activeRepo;
 
         private readonly ITeamExplorerUtils _teamExplorer;
@@ -85,7 +86,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ObservableCollection<RepoItemViewModel> Repositories
         {
             get { return s_repoList; }
-            private set { SetValueAndRaise(ref s_repoList, value); }
         }
 
         /// <summary>
@@ -202,11 +202,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             var projects = await GetProjectsAsync();
 
             IsReady = false;
-            Repositories = new ObservableCollection<RepoItemViewModel>();
+            Repositories.Clear();
             try
             {
                 await AddLocalReposAsync(await GetLocalGitRepositoriesAsync(), projects);
-
                 ShowActiveRepo(_teamExplorer.GetActiveRepository());
             }
             finally
@@ -220,6 +219,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task AddLocalReposAsync(IList<GitRepository> localRepos, IList<Project> projects)
         {
+            List<string> dataSourceErrorProjects = new List<string>();
             Dictionary<string, IEnumerable<Repo>> projectRepos
                 = new Dictionary<string, IEnumerable<Repo>>(StringComparer.OrdinalIgnoreCase);
             foreach (var localGitRepo in localRepos)
@@ -228,21 +228,36 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 foreach (var url in remoteUrls)
                 {
                     string projectId = CsrUtils.ParseProjectId(url);
-                    if (String.IsNullOrWhiteSpace(projectId) ||
-                        !projects.Any(x => x.ProjectId == projectId))
+                    var project = projects.FirstOrDefault(x => x.ProjectId == projectId);
+                    if (String.IsNullOrWhiteSpace(projectId) || project == null)
                     {
                         continue;
                     }
 
-                    var cloudRepo = await TryGetCloudRepoAsync(url, projectId, projectRepos);
-                    if (cloudRepo == null)
+                    try
                     {
-                        Debug.WriteLine($"{projectId} repos does not contain {url}");
-                        continue;
+                        var cloudRepo = await TryGetCloudRepoAsync(url, projectId, projectRepos);
+                        if (cloudRepo == null)
+                        {
+                            Debug.WriteLine($"{projectId} repos does not contain {url}");
+                            continue;
+                        }
+                        Repositories.Add(new RepoItemViewModel(cloudRepo, localGitRepo.Root));
+                        break;
                     }
-                    Repositories.Add(new RepoItemViewModel(cloudRepo, localGitRepo.Root));
-                    break;
+                    catch (DataSourceException)
+                    {
+                        dataSourceErrorProjects.Add(project.Name);
+                    }
                 }
+            }
+
+            if (dataSourceErrorProjects.Any())
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: String.Format(
+                        Resources.CsrFetchReposErrorMessage, String.Join(", ", dataSourceErrorProjects)),
+                    title: Resources.CsrConnectSectionTitle);
             }
         }
 
@@ -258,13 +273,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 try
                 {
                     cloudRepos = await CsrUtils.GetCloudReposAsync(projectId);
+                    projectReposMap.Add(projectId, cloudRepos);
                 }
                 catch (DataSourceException)
                 {
-                    _teamExplorer.ShowMessage(String.Format(Resources.CsrFetchReposErrorMessage, projectId), null);
-                    cloudRepos = null;
+                    projectReposMap.Add(projectId, null);
+                    throw;
                 }
-                projectReposMap.Add(projectId, cloudRepos);
             }
 
             if (cloudRepos == null || !cloudRepos.Any())
@@ -312,10 +327,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
 
             var repoItem = result.RepoItem;
-            if (Repositories == null)
-            {
-                Repositories = new ObservableCollection<RepoItemViewModel>();
-            }
             Repositories.Add(repoItem);
 
             // Created a new repo and cloned locally
@@ -333,7 +344,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             else
             {
                 var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
-
                 _teamExplorer.ShowMessage(msg,
                     command: new ProtectedCommand(handler: () =>
                     {

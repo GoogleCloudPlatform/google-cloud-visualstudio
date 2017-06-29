@@ -226,7 +226,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             if (!ret)
             {
-                teamExplorer.ShowMessage(Resources.GitInitilizationFailedMessage, null);
+                teamExplorer.ShowError(Resources.GitInitilizationFailedMessage);
             }
             return ret;
         }
@@ -240,7 +240,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     CredentialsStore.Default.CurrentAccount.RefreshToken,
                     CsrGitUtils.StoreCredentialPathOption.UrlHost))
                 {
-                    teamExplorer.ShowMessage(Resources.GitInitilizationFailedMessage, null);
+                    teamExplorer.ShowError(Resources.GitInitilizationFailedMessage);
                     return s_gitInited = false;
                 }
             }
