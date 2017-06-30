@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Utils.Async
             Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
             return new AsyncProperty<T>(
-                valueSource.ContinueWith(t => SafeFuncCall(func, SafeGetTaskResult(t), defaultValue)), 
+                valueSource.ContinueWith(t => SafeFuncCall(func, t.GetTaskResultSafe(), defaultValue)), 
                 defaultValue);
         }
 
@@ -46,24 +46,23 @@ namespace GoogleCloudExtension.Utils.Async
             return new AsyncProperty(sourceTask);
         }
 
-        public static TIn SafeGetTaskResult<TIn>(Task<TIn> task)
+        public static TIn GetTaskResultSafe<TIn>(this Task<TIn> task, TIn defaultValue = default(TIn))
         {
-            try
+            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
             {
                 return task.Result;
             }
-            // catch all, otherwise it terminates Visual Studio
-            catch
+            else
             {
-                return default(TIn);
+                return defaultValue;
             }
         }
 
-        private static T SafeFuncCall<TIn, T>(Func<TIn, T> func, TIn t, T defaultValue)
+        private static T SafeFuncCall<TIn, T>(Func<TIn, T> func, TIn tIn, T defaultValue)
         {
             try
             {
-                return func(t);
+                return func(tIn);
             }
             // catch all, otherwise it terminates Visual Studio
             catch
