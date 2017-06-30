@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.GitUtils
         }
 
         /// <summary>
-        /// Get local repositories Visual Studio registry.
+        /// Get local repositories from Visual Studio registry.
         /// </summary>
         /// <param name="vsVersion">The current Visual Studio version passed in by caller.</param>
         /// <returns>

@@ -16,19 +16,15 @@ using EnvDTE;
 using EnvDTE80;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
