@@ -29,6 +29,12 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         void ShowMessage(string message, ICommand command);
 
         /// <summary>
+        /// Show an error message on top of the Team Explorer 
+        /// </summary>
+        /// <param name="message">The error message to display.</param>
+        void ShowError(string message);
+
+        /// <summary>
         /// Returns current active repository.
         /// </summary>
         string GetActiveRepository();

@@ -20,6 +20,22 @@ using System.Collections.Generic;
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
+    /// Encapsulates a repo item and a flag that indicates if the repo is just created.
+    /// </summary>
+    public class CloneDialogResult
+    {
+        /// <summary>
+        /// Indicates if the repo was newly created.
+        /// </summary>
+        public bool JustCreatedRepo { get; set; }
+
+        /// <summary>
+        /// Gets a <seealso cref="RepoItemViewModel"/> object.
+        /// </summary>
+        public RepoItemViewModel RepoItem { get; set; }
+    }
+
+    /// <summary>
     /// Dialog to clone Google Cloud Source Repository.
     /// </summary>
     public class CsrCloneWindow : CommonDialogWindowBase
@@ -36,8 +52,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Clone a repository from Google Cloud Source Repository.
         /// </summary>
         /// <param name="projects">A list of GCP <seealso cref="Project"/>.</param>
-        /// <returns>The cloned repo item.</returns>
-        public static RepoItemViewModel PromptUser(IList<Project> projects)
+        /// <returns>
+        /// The cloned repo item or null if no repo is cloned.
+        /// </returns>
+        public static CloneDialogResult PromptUser(IList<Project> projects)
         {
             var dialog = new CsrCloneWindow(projects);
             dialog.ShowModal();

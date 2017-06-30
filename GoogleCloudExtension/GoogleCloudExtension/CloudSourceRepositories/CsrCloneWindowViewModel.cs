@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         private readonly CsrCloneWindow _owner;
+        private readonly HashSet<string> _newReposList = new HashSet<string>();
         private string _localPath;
         private Repo _latestCreatedRepo;
         private Repo _selectedRepo;
@@ -125,9 +126,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ProtectedCommand CreateRepoCommand { get; }
         
         /// <summary>
-        /// Final cloned repository
+        /// Gets a result of type <seealso cref="CloneDialogResult"/>.
+        /// null inidcates no result is created, user cancelled the operation.
         /// </summary>
-        public RepoItemViewModel Result { get; private set; }
+        public CloneDialogResult Result { get; private set; }
 
         public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
         {
@@ -179,7 +181,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task CloneAsync()
         {
             // If OkCommand is enabled, SelectedRepository and LocalPath is valid
-            string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
+            string destPath = Path.Combine(LocalPath.Trim(), SelectedRepository.GetRepoName());
 
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
@@ -195,7 +197,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             try
             {
                 GitRepository localRepo = await CsrGitUtils.CloneAsync(SelectedRepository.Url, destPath);
-                Result = new RepoItemViewModel(SelectedRepository, localRepo.Root);
+                Result = new CloneDialogResult
+                {
+                    RepoItem = new RepoItemViewModel(SelectedRepository, localRepo.Root),
+                    JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)
+                };
                 _owner.Close();
             }
             catch (GitCommandException)
@@ -243,20 +249,21 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<ValidationResult> ValidateLocalPath()
         {
             string fieldName = Resources.CsrCloneLocalPathFieldName;
-            if (String.IsNullOrEmpty(LocalPath))
+            string localPath = LocalPath?.Trim();
+            if (String.IsNullOrEmpty(localPath))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
-            if (!Directory.Exists(LocalPath))
+            if (!Directory.Exists(localPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
                 yield break;
             }
             if (SelectedRepository != null)
             {
-                string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
+                string destPath = Path.Combine(localPath, SelectedRepository.GetRepoName());
                 if (Directory.Exists(destPath) && !PathUtils.IsDirectoryEmpty(destPath))
                 {
                     yield return StringValidationResult.FromResource(
@@ -271,6 +278,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             _latestCreatedRepo = CsrAddRepoWindow.PromptUser(RepositoriesAsync.Value, SelectedProject);
             if (_latestCreatedRepo != null)
             {
+                _newReposList.Add(_latestCreatedRepo.Name);
                 // Update the repos list
                 ErrorHandlerUtils.HandleAsyncExceptions(
                     () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));

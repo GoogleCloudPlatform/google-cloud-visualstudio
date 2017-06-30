@@ -2347,15 +2347,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no project..
-        /// </summary>
-        public static string CsrCloneNoProjectMessage {
-            get {
-                return ResourceManager.GetString("CsrCloneNoProjectMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string CsrClonePathBrowseButtonCaption {
@@ -2388,6 +2379,15 @@ namespace GoogleCloudExtension {
         public static string CsrCloneRepoButtonCaption {
             get {
                 return ResourceManager.GetString("CsrCloneRepoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The repository {0} has been cloned successfully. [Switch to the repo]({1}) now..
+        /// </summary>
+        public static string CsrCloneRepoNotificationFormat {
+            get {
+                return ResourceManager.GetString("CsrCloneRepoNotificationFormat", resourceCulture);
             }
         }
         
@@ -2437,6 +2437,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The repository {0} has been created successfully. [Create a new project or solution]({1}) now..
+        /// </summary>
+        public static string CsrCreateRepoNotificationFormat {
+            get {
+                return ResourceManager.GetString("CsrCreateRepoNotificationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
         /// </summary>
         public static string CsrDescription {
@@ -2446,11 +2455,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to get repositories for Google Cloud project(s) {0}..
+        /// </summary>
+        public static string CsrFetchReposErrorMessage {
+            get {
+                return ResourceManager.GetString("CsrFetchReposErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading repositories ....
         /// </summary>
         public static string CsrLoadingRepoMessage {
             get {
                 return ResourceManager.GetString("CsrLoadingRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current selected GCP account has no active project..
+        /// </summary>
+        public static string CsrNoProjectMessage {
+            get {
+                return ResourceManager.GetString("CsrNoProjectMessage", resourceCulture);
             }
         }
         
