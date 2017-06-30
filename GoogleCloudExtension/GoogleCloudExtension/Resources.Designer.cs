@@ -2419,24 +2419,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local Path.
-        /// </summary>
-        public static string CsrContextMenuRepoLocalPathLabel {
-            get {
-                return ResourceManager.GetString("CsrContextMenuRepoLocalPathLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Repo Name.
-        /// </summary>
-        public static string CsrContextMenuRepoNameLabel {
-            get {
-                return ResourceManager.GetString("CsrContextMenuRepoNameLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The repository {0} has been created successfully. [Create a new project or solution]({1}) now..
         /// </summary>
         public static string CsrCreateRepoNotificationFormat {
@@ -2496,6 +2478,24 @@ namespace GoogleCloudExtension {
         public static string CsrProjectSelectionLabel {
             get {
                 return ResourceManager.GetString("CsrProjectSelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Path.
+        /// </summary>
+        public static string CsrRepoItemTooltipLocalPathLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoItemTooltipLocalPathLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repo Name.
+        /// </summary>
+        public static string CsrRepoItemTooltipRepoNameLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoItemTooltipRepoNameLabel", resourceCulture);
             }
         }
         

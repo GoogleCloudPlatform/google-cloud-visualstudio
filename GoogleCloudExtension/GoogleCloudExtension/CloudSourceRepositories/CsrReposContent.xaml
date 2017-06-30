@@ -114,7 +114,7 @@
 
                                     <TextBlock 
                                         Margin="0,0,6,0"
-                                        Text="{x:Static ext:Resources.CsrContextMenuRepoNameLabel}"/>
+                                        Text="{x:Static ext:Resources.CsrRepoItemTooltipRepoNameLabel}"/>
 
                                     <TextBlock 
                                         Grid.Row="0"
@@ -126,7 +126,7 @@
                                         Grid.Row="1" 
                                         Grid.Column="0"
                                         Margin="0,0,6,0"                                        
-                                        Text="{x:Static ext:Resources.CsrContextMenuRepoLocalPathLabel}" />
+                                        Text="{x:Static ext:Resources.CsrRepoItemTooltipLocalPathLabel}" />
 
                                     <TextBlock 
                                         Grid.Row="1" 

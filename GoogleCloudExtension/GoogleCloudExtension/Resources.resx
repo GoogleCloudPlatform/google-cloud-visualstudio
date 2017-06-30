@@ -2647,11 +2647,11 @@
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
     <comment>Description of CSR. Intend to be attractive text.</comment>
   </data>
-  <data name="CsrContextMenuRepoLocalPathLabel" xml:space="preserve">
+  <data name="CsrRepoItemTooltipLocalPathLabel" xml:space="preserve">
     <value>Local Path</value>
     <comment>Repository local path label</comment>
   </data>
-  <data name="CsrContextMenuRepoNameLabel" xml:space="preserve">
+  <data name="CsrRepoItemTooltipRepoNameLabel" xml:space="preserve">
     <value>Repo Name</value>
     <comment>Repository name label</comment>
   </data>
