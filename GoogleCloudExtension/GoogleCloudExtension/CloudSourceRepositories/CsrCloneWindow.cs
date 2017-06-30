@@ -20,7 +20,7 @@ using System.Collections.Generic;
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// Encapsulate a repo item and a flag indicates if the repo is just created.
+    /// Encapsulates a repo item and a flag that indicates if the repo is just created.
     /// </summary>
     public class CloneDialogResult
     {
@@ -53,8 +53,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         /// <param name="projects">A list of GCP <seealso cref="Project"/>.</param>
         /// <returns>
-        /// The cloned repo item. 
-        /// Or null if no repo is cloned.
+        /// The cloned repo item or null if no repo is cloned.
         /// </returns>
         public static CloneDialogResult PromptUser(IList<Project> projects)
         {

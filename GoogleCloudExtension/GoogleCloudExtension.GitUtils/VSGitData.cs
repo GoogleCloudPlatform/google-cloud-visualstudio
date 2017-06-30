@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.GitUtils
         private const string Vs15GitKey = @"Software\Microsoft\VisualStudio\15.0\TeamFoundation\GitSourceControl";
 
         /// <summary>
-        /// Get local repositories Visual Studio registry.
+        /// Add local git root to Visual Studio registry.
         /// </summary>
         /// <param name="vsVersion">The current Visual Studio version passed in by caller.</param>
         /// <param name="name">The git repository name</param>

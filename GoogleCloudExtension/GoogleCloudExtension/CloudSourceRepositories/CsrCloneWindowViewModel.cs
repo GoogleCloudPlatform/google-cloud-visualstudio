@@ -35,9 +35,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         private readonly CsrCloneWindow _owner;
+        private readonly HashSet<string> _newReposList = new HashSet<string>();
         private string _localPath;
         private Repo _latestCreatedRepo;
-        private HashSet<string> _newReposList = new HashSet<string>();
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -250,20 +250,20 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             string fieldName = Resources.CsrCloneLocalPathFieldName;
             string localPath = LocalPath?.Trim();
-            if (String.IsNullOrEmpty(LocalPath))
+            if (String.IsNullOrEmpty(localPath))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
-            if (!Directory.Exists(LocalPath))
+            if (!Directory.Exists(localPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
                 yield break;
             }
             if (SelectedRepository != null)
             {
-                string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
+                string destPath = Path.Combine(localPath, SelectedRepository.GetRepoName());
                 if (Directory.Exists(destPath) && !PathUtils.IsDirectoryEmpty(destPath))
                 {
                     yield return StringValidationResult.FromResource(

@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the list when a new user control is created.
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
-        private static ObservableCollection<RepoItemViewModel> s_repoList 
+        private readonly static ObservableCollection<RepoItemViewModel> s_repoList 
             = new ObservableCollection<RepoItemViewModel>();
         private static RepoItemViewModel s_activeRepo;
 
@@ -220,8 +220,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task AddLocalReposAsync(IList<GitRepository> localRepos, IList<Project> projects)
         {
             List<string> dataSourceErrorProjects = new List<string>();
-            Dictionary<string, IEnumerable<Repo>> projectRepos
-                = new Dictionary<string, IEnumerable<Repo>>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, IList<Repo>> projectRepos
+                = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
             foreach (var localGitRepo in localRepos)
             {
                 IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
@@ -264,9 +264,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task<Repo> TryGetCloudRepoAsync(
             string url, 
             string projectId, 
-            Dictionary<string, IEnumerable<Repo>> projectReposMap)
+            Dictionary<string, IList<Repo>> projectReposMap)
         {
-            IEnumerable<Repo> cloudRepos;
+            IList<Repo> cloudRepos;
             Debug.WriteLine($"Check project id {projectId}");
             if (!projectReposMap.TryGetValue(projectId, out cloudRepos))
             {
@@ -337,7 +337,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     command: new ProtectedCommand(handler: () =>
                     {
                         SetRepoActive(repoItem);
-                        CreateSolutionForRepo(repoItem);
+                        ShellUtils.LaunchCreateSolutionDialog(repoItem.LocalPath);
                         _teamExplorer.ShowHomeSection();
                     }));
             }
@@ -380,14 +380,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 IsReady = true;
             }
-        }
-
-        private void CreateSolutionForRepo(RepoItemViewModel repoItem)
-        {
-            SolutionHelper.SetDefaultProjectPath(repoItem.LocalPath);
-            var serviceProvider = ShellUtils.GetGloblalServiceProvider();
-            var solution = serviceProvider?.GetService(typeof(SVsSolution)) as IVsSolution;
-            solution?.CreateNewProjectViaDlg(null, null, 0);
         }
     }
 }

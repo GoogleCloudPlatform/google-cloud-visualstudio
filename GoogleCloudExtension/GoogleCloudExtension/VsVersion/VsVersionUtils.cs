@@ -38,24 +38,6 @@ namespace GoogleCloudExtension.VsVersion
         /// </summary>
         public static IToolsPathProvider ToolsPathProvider => s_toolsPathProvider.Value;
 
-        public static string NewProjectDialogKeyPath
-        {
-            get
-            {
-                switch (GoogleCloudExtensionPackage.VsVersion)
-                {
-                    case VisualStudio2015Version:
-                        return @"Software\Microsoft\VisualStudio\14.0\NewProjectDialog";
-
-                    case VisualStudio2017Version:
-                        return @"Software\Microsoft\VisualStudio\15.0\NewProjectDialog";
-
-                    default:
-                        throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.VsVersion} is not supported.");
-                }
-            }
-        }
-
         private static IToolsPathProvider GetTooslPathProvider()
         {
             switch (GoogleCloudExtensionPackage.VsVersion)

@@ -179,6 +179,27 @@ namespace GoogleCloudExtension.Utils
             { }
         }
 
+        /// <summary>
+        /// Open a create solution dialog on the given path.
+        /// </summary>
+        /// <param name="path">The initial path in the create solution dialog.</param>
+        public static void LaunchCreateSolutionDialog(string path)
+        {
+            path.ThrowIfNullOrEmpty(nameof(path));
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+
+            // Set default project location
+            // Refer to https://msdn.microsoft.com/en-us/library/ms165643.aspx
+            var locationItem = dte.Properties["Environment", "ProjectsAndSolution"].Item("ProjectsLocation");
+            if (locationItem != null)
+            {
+                locationItem.Value = path;
+            }
+
+            var solution = GetGloblalServiceProvider()?.GetService(typeof(SVsSolution)) as IVsSolution;
+            solution?.CreateNewProjectViaDlg(null, null, 0);
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();
