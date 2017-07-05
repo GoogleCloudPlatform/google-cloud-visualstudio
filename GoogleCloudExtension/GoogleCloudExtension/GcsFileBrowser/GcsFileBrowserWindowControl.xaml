@@ -57,6 +57,7 @@
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.StartPageSelectedItemBackgroundKey}}"/>
                         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.StartPageSelectedItemBackgroundKey}}"/>
+                        <Setter Property="Foreground" Value="White" />
                     </Trigger>
 
                     <!-- Trigger for the case the row is selected but not foccused. -->
@@ -67,6 +68,7 @@
                         </MultiTrigger.Conditions>
                         <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.FileTabInactiveDocumentBorderBackgroundKey}}"/>
                         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.FileTabInactiveDocumentBorderBackgroundKey}}"/>
+                        <Setter Property="Foreground" Value="White" />
                     </MultiTrigger>
 
                     <!-- Disabled. -->
