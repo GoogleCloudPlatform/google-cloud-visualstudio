@@ -145,6 +145,8 @@
                   ContextMenu="{Binding ContextMenu}"
                   ContextMenuOpening="DataGrid_ContextMenuOpening"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
+                  GridLinesVisibility="None"
+                  AlternationCount="2"
                   utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
                   SelectionChanged="OnDataGridSelectionChanged">
@@ -152,6 +154,15 @@
                 <Style TargetType="{x:Type DataGridRow}">
                     <EventSetter Event="DataGridRow.ContextMenuOpening" Handler="DataGrid_RowContextMenuOpening" />
                     <EventSetter Event="DataGridRow.PreviewMouseRightButtonDown" Handler="DataGrid_RowRightClickPreview" />
+                    <Style.Triggers>
+                        <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
+                        <Trigger Property="AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#F5F5F5"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFFFD6" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>            
             
