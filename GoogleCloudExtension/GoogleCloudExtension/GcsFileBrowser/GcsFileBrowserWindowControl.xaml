@@ -35,10 +35,10 @@
                 <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="DataGrid_RowRightClickPreview" />
 
                 <Style.Triggers>
-                    <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
                     <Trigger Property="AlternationIndex" Value="1">
                         <Setter Property="Background" Value="#F5F5F5"/>
                     </Trigger>
+                    
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#FFFFD6" />
                     </Trigger>
