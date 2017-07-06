@@ -262,10 +262,10 @@ namespace GoogleCloudExtension.CloudExplorer
             if (_plusDataSource.Value != null)
             {
                 var profileTask = _plusDataSource.Value.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x.Image.Url);
+                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
-                    x => x.Emails.FirstOrDefault()?.Value,
+                    x => x?.Emails.FirstOrDefault()?.Value,
                     Resources.CloudExplorerLoadingMessage);
             }
             else

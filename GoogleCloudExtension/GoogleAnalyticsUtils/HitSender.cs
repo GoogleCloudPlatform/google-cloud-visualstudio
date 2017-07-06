@@ -57,8 +57,10 @@ namespace GoogleAnalyticsUtils
                     DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync(), hitData);
                 }
             }
-            // Catch everything or it terminates Visual Studio.
-            catch { }
+            catch (Exception ex) when (
+                ex is HttpRequestException ||
+                ex is TaskCanceledException )   // timeout
+            { }
         }
 
         /// <summary>

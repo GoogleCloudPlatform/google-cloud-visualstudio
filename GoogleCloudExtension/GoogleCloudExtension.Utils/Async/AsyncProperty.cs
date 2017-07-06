@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.Utils.Async
             _valueSource.ContinueWith((t) =>
             {
                 // Value is initiated with defaultValue at constructor.
-                Value = t.GetTaskResultSafe(defaultValue: Value);
+                Value = AsyncPropertyUtils.GetTaskResultSafe(t, defaultValue: Value);
                 _completionSource.Value.SetResult(true);
                 RaiseAllPropertyChanged();
             });
