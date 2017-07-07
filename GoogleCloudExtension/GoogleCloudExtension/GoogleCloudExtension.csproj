@@ -69,6 +69,8 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrRepositoryListedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrRepositoryCreatedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrRepositoryClonedEvent.cs" />
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
@@ -110,6 +113,7 @@
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrConnectSectionOpenEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />

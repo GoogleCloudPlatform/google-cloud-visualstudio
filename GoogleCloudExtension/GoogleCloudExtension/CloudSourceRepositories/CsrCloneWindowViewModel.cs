@@ -15,12 +15,15 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -196,6 +199,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             try
             {
+                var watch = Stopwatch.StartNew();
                 GitRepository localRepo = await CsrGitUtils.CloneAsync(SelectedRepository.Url, destPath);
                 Result = new CloneDialogResult
                 {
@@ -203,12 +207,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)
                 };
                 _owner.Close();
+                EventsReporterWrapper.ReportEvent(
+                    CsrRepositoryClonedEvent.Create(CommandStatus.Success, watch.Elapsed));
             }
             catch (GitCommandException)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedMessage,
                     title: Resources.UiDefaultPromptTitle);
+                EventsReporterWrapper.ReportEvent(CsrRepositoryClonedEvent.Create(CommandStatus.Failure));
                 return;
             }
         }

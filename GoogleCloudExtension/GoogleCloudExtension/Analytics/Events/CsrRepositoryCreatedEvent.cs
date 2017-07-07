@@ -16,15 +16,18 @@ using System;
 
 namespace GoogleCloudExtension.Analytics.Events
 {
-    internal static class RemoteDebuggerRemoteToolsInstalledEvent
+    /// <summary>
+    /// This event is sent after a CSR repo is created.
+    /// </summary>
+    internal static class CsrRepositoryCreatedEvent
     {
-        private const string RemoteDebuggerRemoteToolsInstalledEventName = "remoteDebuggerRemoteToolsInstalled";
+        private const string CsrRepositoryCreatedEventName = "csrCreateRepo";
         private const string DurationProperty = "duration";
 
         public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
-                RemoteDebuggerRemoteToolsInstalledEventName,
+                CsrRepositoryCreatedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
                 DurationProperty, duration.TotalSeconds.ToString());
         }

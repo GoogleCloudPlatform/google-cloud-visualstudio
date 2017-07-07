@@ -14,6 +14,8 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
@@ -105,9 +107,17 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             IsReady = false;
             try
             {
+                var watch = Stopwatch.StartNew();
                 // No null check. By the time user gets here, csrDatasource won't be null.
                 Result = await csrDatasource.CreateRepoAsync(RepositoryName.Trim());
+                EventsReporterWrapper.ReportEvent(
+                    CsrRepositoryCreatedEvent.Create(CommandStatus.Success, duration: watch.Elapsed));
                 _owner.Close();
+            }
+            catch (Exception)
+            {
+                EventsReporterWrapper.ReportEvent(CsrRepositoryCreatedEvent.Create(CommandStatus.Failure));
+                throw;
             }
             finally
             {
