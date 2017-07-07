@@ -2383,7 +2383,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The repository {0} has been cloned successfully. [Switch to the repo]({1}) now..
+        ///   Looks up a localized string similar to The repository {0} has been cloned successfully.[Switch to the repo]({1}) now..
         /// </summary>
         public static string CsrCloneRepoNotificationFormat {
             get {
@@ -2419,7 +2419,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The repository {0} has been created successfully. [Create a new project or solution]({1}) now..
+        ///   Looks up a localized string similar to The repository {0} has been created successfully.[Create a new source code project]({1}) now..
         /// </summary>
         public static string CsrCreateRepoNotificationFormat {
             get {
@@ -2464,7 +2464,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty list,  add a new repository or choose another project.
+        ///   Looks up a localized string similar to Empty, add a new repo or choose another project.
         /// </summary>
         public static string CsrProjectContainsNoRepoMessage {
             get {
@@ -2527,7 +2527,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repository name must be alphanumeric characters, underscores or dashes.
+        ///   Looks up a localized string similar to Repository can only contain alphanumeric characters, underscores, and dashes.
         /// </summary>
         public static string CsrRepoNameRuleMessage {
             get {
@@ -2563,7 +2563,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View the repository on web.
+        ///   Looks up a localized string similar to View the repository in Google Cloud Console.
         /// </summary>
         public static string CsrVisitUrlMenuHeader {
             get {
@@ -3769,11 +3769,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verify again.
+        ///   Looks up a localized string similar to Check again.
         /// </summary>
-        public static string GitInstallationVerifyAgainCaption {
+        public static string GitInstallationCheckAgainCaption {
             get {
-                return ResourceManager.GetString("GitInstallationVerifyAgainCaption", resourceCulture);
+                return ResourceManager.GetString("GitInstallationCheckAgainCaption", resourceCulture);
             }
         }
         
@@ -3805,7 +3805,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Git for Windows is not found.
+        ///   Looks up a localized string similar to Git for Windows not found.
         /// </summary>
         public static string GitUtilsMissingGitErrorTitle {
             get {
