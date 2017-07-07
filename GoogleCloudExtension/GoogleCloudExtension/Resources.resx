@@ -2444,7 +2444,7 @@
     <comment>The error message that asks to install Git for Windows</comment>
   </data>
   <data name="GitUtilsMissingGitErrorTitle" xml:space="preserve">
-    <value>Git for Windows is not found</value>
+    <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
   <data name="UiSkipButtonCaption" xml:space="preserve">
@@ -2647,17 +2647,17 @@
     <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
     <comment>Description of CSR. Intend to be attractive text.</comment>
   </data>
-  <data name="CsrContextMenuRepoLocalPathLabel" xml:space="preserve">
+  <data name="CsrRepoItemTooltipLocalPathLabel" xml:space="preserve">
     <value>Local Path</value>
     <comment>Repository local path label</comment>
   </data>
-  <data name="CsrContextMenuRepoNameLabel" xml:space="preserve">
+  <data name="CsrRepoItemTooltipRepoNameLabel" xml:space="preserve">
     <value>Repo Name</value>
     <comment>Repository name label</comment>
   </data>
   <data name="CsrVisitUrlMenuHeader" xml:space="preserve">
-    <value>View the repository on web</value>
-    <comment>The menu header for visiting souce repository on web page</comment>
+    <value>View the repository in Google Cloud Console</value>
+    <comment>The menu header for visiting souce repository in Google Cloud Console on the web.</comment>
   </data>
   <data name="CsrCloneWindowTitle" xml:space="preserve">
     <value>Clone Google Cloud Source Repository</value>
@@ -2708,7 +2708,7 @@
     <comment>Tooltip to the "Clone to" text box on the clone dialog.</comment>
   </data>
   <data name="CsrProjectContainsNoRepoMessage" xml:space="preserve">
-    <value>Empty list,  add a new repository or choose another project</value>
+    <value>Empty, add a new repo or choose another project</value>
     <comment>The selected project does not have any repository, asks to select a different one or add a new repository.</comment>
   </data>
   <data name="CsrLoadingRepoMessage" xml:space="preserve">
@@ -2721,6 +2721,7 @@
   </data>
   <data name="CsrAddRepoWindowTitle" xml:space="preserve">
     <value>Add a new repository</value>
+    <comment>The add repository dialog title</comment>
   </data>
   <data name="CsrRepoNameTextBoxLabel" xml:space="preserve">
     <value>_Repository Name:</value>
@@ -2735,7 +2736,7 @@
     <comment>The caption to Google Cloud Console CSR page link.</comment>
   </data>
   <data name="CsrRepoNameRuleMessage" xml:space="preserve">
-    <value>Repository name must be alphanumeric characters, underscores or dashes</value>
+    <value>Repository can only contain alphanumeric characters, underscores, and dashes</value>
     <comment>Repo name validation error message</comment>
   </data>
   <data name="CsrRepoNameExistsMessage" xml:space="preserve">
@@ -2758,9 +2759,9 @@
     <value>Google Cloud Source Repositories: Failed to initialize git. Fix your Git for Windows installation and refresh.</value>
     <comment>When calling git set credential, or git config failed at initilization, the error message shown in Team Explorer notification area. </comment>
   </data>
-  <data name="GitInstallationVerifyAgainCaption" xml:space="preserve">
-    <value>Verify again</value>
-    <comment>The caption to the link button that asks to verify again.</comment>
+  <data name="GitInstallationCheckAgainCaption" xml:space="preserve">
+    <value>Check again</value>
+    <comment>The caption to the link button that asks to check again.</comment>
   </data>
   <data name="GitUtilsGitCredentialManagerNotInstalledMessage" xml:space="preserve">
     <value>Git credential manager for Windows is not installed. Please install or re-install Git for Windows to fix the problem.</value>
@@ -2771,11 +2772,11 @@
     <comment>The caption for sign in link button</comment>
   </data>
   <data name="CsrCloneRepoNotificationFormat" xml:space="preserve">
-    <value>The repository {0} has been cloned successfully. [Switch to the repo]({1}) now.</value>
+    <value>The repository {0} has been cloned successfully.[Switch to the repo]({1}) now.</value>
     <comment>When cloned a new SCR repo, show the message at Team Explorer. {0} is the repo name.  {1} is the local git root path.</comment>
   </data>
   <data name="CsrCreateRepoNotificationFormat" xml:space="preserve">
-    <value>The repository {0} has been created successfully. [Create a new project or solution]({1}) now.</value>
+    <value>The repository {0} has been created successfully.[Create a new source code project]({1}) now.</value>
     <comment>When created and cloned a new CSR repo, show the message inside Team Explorer. {0} is the repo name. {1} is the local git root path.</comment>
   </data>
   <data name="CsrFetchReposErrorMessage" xml:space="preserve">

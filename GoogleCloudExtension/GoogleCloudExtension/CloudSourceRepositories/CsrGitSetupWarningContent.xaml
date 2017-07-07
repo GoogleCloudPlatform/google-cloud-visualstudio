@@ -53,7 +53,7 @@
                 KeyboardNavigation.TabIndex="1" 
                 Command="{Binding VerifyCommand}" 
                 Margin="0,5,8,0"
-                Content="{x:Static ext:Resources.GitInstallationVerifyAgainCaption}" />
+                Content="{x:Static ext:Resources.GitInstallationCheckAgainCaption}" />
         </WrapPanel>
 
     </StackPanel>
