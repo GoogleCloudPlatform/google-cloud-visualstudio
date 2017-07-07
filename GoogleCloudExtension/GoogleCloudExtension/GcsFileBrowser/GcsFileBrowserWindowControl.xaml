@@ -129,7 +129,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Text="/"
-                                       Style="{StaticResource CommonTextStyle}"
+                                       Style="{StaticResource DynamicColorTextStyle}"
                                        Margin="10,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
@@ -223,7 +223,7 @@
                                 <TextBlock Text="{Binding LeafName}"
                                            TextTrimming="CharacterEllipsis"
                                            TextWrapping="NoWrap"
-                                           Style="{StaticResource CommonTextStyle}" />
+                                           Style="{StaticResource DynamicColorTextStyle}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -237,7 +237,7 @@
                             <TextBlock Text="{Binding FormattedSize}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -250,7 +250,7 @@
                             <TextBlock Text="{Binding LastModified}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -263,7 +263,7 @@
                             <TextBlock Text="{Binding ContentType}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -12,9 +12,15 @@
 
     <!-- Text style. -->
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    
+
+    <!-- This style is to be used on TextBlocks that are to have dynamic colors. -->
+    <Style x:Key="DynamicColorTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
     <!-- Large text style. -->
     <Style x:Key="CommonTextStyleLarge" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
         <Setter Property="TextElement.FontSize" Value="20px" />
