@@ -47,7 +47,9 @@ namespace GoogleCloudExtension.TemplateWizards
             var dte = (DTE)automationObject;
             bool isEmbedded = dte.CommandLineArguments.Contains("-Embedding");
 
-            string projectId = isEmbedded ? CredentialsStore.Default.CurrentProjectId : PromptPickProjectId();
+            string projectId = isEmbedded ?
+                CredentialsStore.Default.CurrentProjectId ?? "dummy-project" :
+                PromptPickProjectId();
 
             if (projectId == null)
             {

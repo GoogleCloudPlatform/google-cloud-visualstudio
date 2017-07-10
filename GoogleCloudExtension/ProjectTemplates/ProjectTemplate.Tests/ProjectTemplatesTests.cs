@@ -16,7 +16,6 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -39,23 +38,21 @@ namespace ProjectTemplate.Tests
         [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public TestContext TestContext { get; set; }
         private static DTE2 Dte => s_visualStudio.Dte;
+        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+        private static Solution2 Solution => (Solution2)Dte.Solution;
         private static string SolutionFolderPath => Path.Combine(Path.GetTempPath(), SolutionName);
-        private static string ProjectTemplateDirectoryPath => Path.GetFullPath(@"..\..\..");
 
         private string TemplateName { get; set; }
         private string ProjectName => $"Test{TemplateName}Project";
         private string ProjectPath => Path.Combine(SolutionFolderPath, ProjectName);
-
-        private string TemplatePath =>
-            Path.Combine(ProjectTemplateDirectoryPath, $@"{TemplateName}\{TemplateName}.vstemplate");
 
         [ClassInitialize]
         public static void InitClass(TestContext context)
         {
             s_visualStudio = VisualStudioWrapper.CreateExperimentalInstance();
             CreateSolutionDirectory();
-            Dte.Solution.Create(SolutionFolderPath, SolutionFileName);
-            Dte.Solution.SaveAs(Path.Combine(SolutionFolderPath, SolutionFileName));
+            Solution.Create(SolutionFolderPath, SolutionFileName);
+            Solution.SaveAs(Path.Combine(SolutionFolderPath, SolutionFileName));
         }
 
         private static void CreateSolutionDirectory()
@@ -84,14 +81,9 @@ namespace ProjectTemplate.Tests
         private static void KillMsBuild()
         {
             Process[] msBuildProcesses = Process.GetProcessesByName("MSBuild");
-            var killedProcesses = new List<Process>();
-            foreach (var process in msBuildProcesses)
+            foreach (Process killedProcess in msBuildProcesses.SelectMany(p => p.KillProcessTree()).ToList())
             {
-                killedProcesses.AddRange(process.KillProcessTree());
-            }
-            foreach (var process in killedProcesses)
-            {
-                process.WaitForExit();
+                killedProcess.WaitForExit();
             }
         }
 
@@ -109,66 +101,36 @@ namespace ProjectTemplate.Tests
         [TestCleanup]
         public void AfterEach()
         {
-            foreach (var project in Dte.Solution.Projects.OfType<Project>())
+            foreach (var project in Solution.Projects.OfType<Project>())
             {
                 if (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed)
                 {
                     TestContext.WriteLine(project.FullName);
                 }
-                Dte.Solution.Remove(project);
+                Solution.Remove(project);
             }
         }
 
         [TestMethod]
-        public void TestGoogleAspnetWebApi()
+        [DataSource(
+            "Microsoft.VisualStudio.TestTools.DataSource.CSV",
+            @"|DataDirectory|\Templates.csv",
+            "Templates#csv",
+            DataAccessMethod.Random)]
+        public void TestCompile()
         {
-            TemplateName = "GoogleAspnetWebApi";
+            TemplateName = Convert.ToString(TestContext.DataRow[0]);
+            TestContext.WriteLine($"Testing template {TemplateName}");
 
             CreateProjectFromTemplate();
-            Dte.Solution.SolutionBuild.Build(true);
+            Solution.SolutionBuild.Build(true);
 
-            Assert.AreEqual(vsBuildState.vsBuildStateDone, Dte.Solution.SolutionBuild.BuildState);
+            Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
             string descriptions = GetErrorDescriptions();
-            Assert.AreEqual(0, Dte.ToolWindows.ErrorList.ErrorItems.Count, $"Error descriptions:{descriptions}");
-        }
-
-        [TestMethod]
-        public void TestGoogleAspnetCoreWebApi()
-        {
-            TemplateName = "GoogleAspNetCoreWebApi";
-
-            CreateProjectFromTemplate();
-            Dte.Solution.SolutionBuild.Build(true);
-
-            Assert.AreEqual(vsBuildState.vsBuildStateDone, Dte.Solution.SolutionBuild.BuildState);
-            string descriptions = GetErrorDescriptions();
-            Assert.AreEqual(0, Dte.ToolWindows.ErrorList.ErrorItems.Count, $"Error descriptions:{descriptions}");
-        }
-
-        [TestMethod]
-        public void TestGoogleAspnetMvc()
-        {
-            TemplateName = "GoogleAspnetMvc";
-
-            CreateProjectFromTemplate();
-            Dte.Solution.SolutionBuild.Build(true);
-
-            Assert.AreEqual(vsBuildState.vsBuildStateDone, Dte.Solution.SolutionBuild.BuildState);
-            string descriptions = GetErrorDescriptions();
-            Assert.AreEqual(0, Dte.ToolWindows.ErrorList.ErrorItems.Count, $"Error descriptions:{descriptions}");
-        }
-
-        [TestMethod]
-        public void TestGoogleAspnetCoreMvc()
-        {
-            TemplateName = "GoogleAspNetCoreMvc";
-
-            CreateProjectFromTemplate();
-            Dte.Solution.SolutionBuild.Build(true);
-
-            Assert.AreEqual(vsBuildState.vsBuildStateDone, Dte.Solution.SolutionBuild.BuildState);
-            string descriptions = GetErrorDescriptions();
-            Assert.AreEqual(0, Dte.ToolWindows.ErrorList.ErrorItems.Count, $"Error descriptions:\n{descriptions}");
+            Assert.AreEqual(
+                0,
+                Dte.ToolWindows.ErrorList.ErrorItems.Count,
+                $"{TemplateName} error descriptions:{descriptions}");
         }
 
         private string GetErrorDescriptions()
@@ -193,8 +155,9 @@ namespace ProjectTemplate.Tests
         private void CreateProjectFromTemplate()
         {
             Directory.CreateDirectory(ProjectPath);
-            Dte.Solution.AddFromTemplate(TemplatePath, ProjectPath, ProjectName);
-            Project project = Dte.Solution.Projects.OfType<Project>().First(p => p.Name == ProjectName);
+            string templatePath = Solution.GetProjectTemplate(TemplateName, "CSharp");
+            Solution.AddFromTemplate(templatePath, ProjectPath, ProjectName);
+            Project project = Solution.Projects.OfType<Project>().First(p => p.Name == ProjectName);
             project.Save();
         }
     }
