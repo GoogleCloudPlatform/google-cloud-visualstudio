@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace GoogleCloudExtension.Analytics.Events
 {
-    internal static class RemoteDebuggerRemoteToolsInstalledEvent
+    /// <summary>
+    /// This event is sent when the CSR section at Connect tab of Team Explorer is open.
+    /// </summary>
+    internal static class CsrConnectSectionOpenEvent
     {
-        private const string RemoteDebuggerRemoteToolsInstalledEventName = "remoteDebuggerRemoteToolsInstalled";
-        private const string DurationProperty = "duration";
+        private const string CsrConnectSectionOpenEventName = "csrConnectSectionOpen";
 
-        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
+        public static AnalyticsEvent Create()
         {
-            return new AnalyticsEvent(
-                RemoteDebuggerRemoteToolsInstalledEventName,
-                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
-                DurationProperty, duration.TotalSeconds.ToString());
+            return new AnalyticsEvent(CsrConnectSectionOpenEventName);
         }
     }
 }

@@ -14,6 +14,8 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.TeamExplorerExtension;
@@ -203,8 +205,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             Repositories.Clear();
             try
             {
+                var watch = Stopwatch.StartNew();
                 await AddLocalReposAsync(await GetLocalGitRepositoriesAsync(), projects);
+                EventsReporterWrapper.ReportEvent(
+                    CsrListedEvent.Create(CommandStatus.Success, watch.Elapsed));
                 ShowActiveRepo(_teamExplorer.GetActiveRepository());
+            }
+            catch (Exception)
+            {
+                EventsReporterWrapper.ReportEvent(CsrListedEvent.Create(CommandStatus.Failure));
+                throw;
             }
             finally
             {

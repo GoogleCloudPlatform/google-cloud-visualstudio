@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.TeamExplorerExtension;
@@ -143,6 +145,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
         {
+            EventsReporterWrapper.ReportEvent(CsrConnectSectionOpenEvent.Create());
             Debug.WriteLine("CsrSectionControlViewModel Initialize");
 
             _teamExplorerService = teamExplorerService.ThrowIfNull(nameof(teamExplorerService));
