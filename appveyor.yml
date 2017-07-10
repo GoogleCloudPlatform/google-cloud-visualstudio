@@ -30,7 +30,8 @@ test_script:
           "GoogleAnalyticsUtilsTests.dll",
           "GoogleCloudExtensionUnitTests.dll",
           "GoogleCloudExtension.Utils.UnitTests.dll",
-          "GoogleCloudExtension.DataSources.UnitTests.dll"
+          "GoogleCloudExtension.DataSources.UnitTests.dll",
+          "ProjectTemplate.Tests.dll"
   - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\Release\*
   - ps: $testContainerArgs = $testDlls.FullName -join " "
   - ps: $testArgs = "/logger:Appveyor $testContainerArgs"
