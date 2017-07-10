@@ -27,6 +27,7 @@ using Thread = System.Threading.Thread;
 namespace ProjectTemplate.Tests
 {
     [TestClass]
+    [DeploymentItem("Templates.csv")]
     public class ProjectTemplatesTests
     {
         private const string SolutionName = "TestSolution";
