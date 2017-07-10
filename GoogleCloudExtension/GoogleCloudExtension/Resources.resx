@@ -2708,7 +2708,7 @@
     <comment>Tooltip to the "Clone to" text box on the clone dialog.</comment>
   </data>
   <data name="CsrProjectContainsNoRepoMessage" xml:space="preserve">
-    <value>Empty, add a new repo or choose another project</value>
+    <value>&lt;none found&gt; Add a new repo</value>
     <comment>The selected project does not have any repository, asks to select a different one or add a new repository.</comment>
   </data>
   <data name="CsrLoadingRepoMessage" xml:space="preserve">

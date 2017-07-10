@@ -2464,7 +2464,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty, add a new repo or choose another project.
+        ///   Looks up a localized string similar to &lt;none found&gt; Add a new repo.
         /// </summary>
         public static string CsrProjectContainsNoRepoMessage {
             get {
