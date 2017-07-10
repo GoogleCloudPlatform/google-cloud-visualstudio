@@ -16,7 +16,7 @@ build_script:
   - bash -c ./tools/ensure_no_unused_strings.sh
   - nuget restore .\GoogleCloudExtension
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Debug /p:DeployExtension=False /p:TreatWarningsAsErrors=True
-  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release /p:DeployExtension=False /p:TreatWarningsAsErrors=True
+  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release /p:DeployExtension=True /p:TreatWarningsAsErrors=True
 
 # Defines the artifacts to be saved.
 artifacts:
