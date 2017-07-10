@@ -16,11 +16,10 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Process = System.Diagnostics.Process;
 using Thread = System.Threading.Thread;
 
@@ -127,30 +126,26 @@ namespace ProjectTemplate.Tests
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
-            string descriptions = GetErrorDescriptions();
-            Assert.AreEqual(
-                0,
-                Dte.ToolWindows.ErrorList.ErrorItems.Count,
-                $"{TemplateName} error descriptions:{descriptions}");
+            IList<ErrorItem> errors = GetErrors();
+            Assert.AreEqual(0, errors.Count, $"{TemplateName} error descriptions:{errors.Select(e => e.Description)}");
         }
 
-        private string GetErrorDescriptions()
+        private IList<ErrorItem> GetErrors()
         {
-            StringBuilder builder = new StringBuilder();
+            var list = new List<ErrorItem>();
             for (int i = 0; i < Dte.ToolWindows.ErrorList.ErrorItems.Count; i++)
             {
                 try
                 {
-                    builder.AppendLine(Dte.ToolWindows.ErrorList.ErrorItems.Item(i).Description);
+                    list.Add(Dte.ToolWindows.ErrorList.ErrorItems.Item(i));
                 }
                 // ErrorItems.Count sometimes is out of sync with the underlying collection.
-                // Catching this exception seems to get it back in sync when the actual assert occurs.
                 catch (IndexOutOfRangeException e)
                 {
-                    Debug.WriteLine(e);
+                    TestContext.WriteLine("{0}", e);
                 }
             }
-            return builder.ToString();
+            return list;
         }
 
         private void CreateProjectFromTemplate()
