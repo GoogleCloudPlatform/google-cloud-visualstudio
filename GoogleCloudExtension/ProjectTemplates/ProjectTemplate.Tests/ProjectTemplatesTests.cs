@@ -127,7 +127,8 @@ namespace ProjectTemplate.Tests
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
             IList<ErrorItem> errors = GetErrors();
-            Assert.AreEqual(0, errors.Count, $"{TemplateName} error descriptions:{errors.Select(e => e.Description)}");
+            string descriptions = string.Join("\n", errors.Select(e => e.Description));
+            Assert.AreEqual(0, errors.Count, $"{TemplateName} error descriptions: {descriptions}");
         }
 
         private IList<ErrorItem> GetErrors()
@@ -142,7 +143,7 @@ namespace ProjectTemplate.Tests
                 // ErrorItems.Count sometimes is out of sync with the underlying collection.
                 catch (IndexOutOfRangeException e)
                 {
-                    TestContext.WriteLine("{0}", e);
+                    TestContext.WriteLine("In template {0}: {1}", TemplateName, e);
                 }
             }
             return list;
