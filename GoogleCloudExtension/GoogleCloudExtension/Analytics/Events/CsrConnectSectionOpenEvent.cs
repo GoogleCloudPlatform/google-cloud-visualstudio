@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is sent when the CSR section at Connect tab of Team Explorer is open.
+    /// </summary>
     internal static class CsrConnectSectionOpenEvent
     {
         private const string CsrConnectSectionOpenEventName = "csrConnectSectionOpen";

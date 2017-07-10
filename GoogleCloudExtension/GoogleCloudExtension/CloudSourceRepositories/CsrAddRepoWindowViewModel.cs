@@ -111,12 +111,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 // No null check. By the time user gets here, csrDatasource won't be null.
                 Result = await csrDatasource.CreateRepoAsync(RepositoryName.Trim());
                 EventsReporterWrapper.ReportEvent(
-                    CsrRepositoryCreatedEvent.Create(CommandStatus.Success, duration: watch.Elapsed));
+                    CsrCreatedEvent.Create(CommandStatus.Success, duration: watch.Elapsed));
                 _owner.Close();
             }
             catch (Exception)
             {
-                EventsReporterWrapper.ReportEvent(CsrRepositoryCreatedEvent.Create(CommandStatus.Failure));
+                EventsReporterWrapper.ReportEvent(CsrCreatedEvent.Create(CommandStatus.Failure));
                 throw;
             }
             finally

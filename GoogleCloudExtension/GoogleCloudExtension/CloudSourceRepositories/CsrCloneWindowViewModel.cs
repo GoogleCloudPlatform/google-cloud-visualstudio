@@ -208,14 +208,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 };
                 _owner.Close();
                 EventsReporterWrapper.ReportEvent(
-                    CsrRepositoryClonedEvent.Create(CommandStatus.Success, watch.Elapsed));
+                    CsrClonedEvent.Create(CommandStatus.Success, watch.Elapsed));
             }
             catch (GitCommandException)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.CsrCloneFailedMessage,
                     title: Resources.UiDefaultPromptTitle);
-                EventsReporterWrapper.ReportEvent(CsrRepositoryClonedEvent.Create(CommandStatus.Failure));
+                EventsReporterWrapper.ReportEvent(CsrClonedEvent.Create(CommandStatus.Failure));
                 return;
             }
         }

@@ -208,12 +208,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var watch = Stopwatch.StartNew();
                 await AddLocalReposAsync(await GetLocalGitRepositoriesAsync(), projects);
                 EventsReporterWrapper.ReportEvent(
-                    CsrRepositoryListedEvent.Create(CommandStatus.Success, watch.Elapsed));
+                    CsrListedEvent.Create(CommandStatus.Success, watch.Elapsed));
                 ShowActiveRepo(_teamExplorer.GetActiveRepository());
             }
             catch (Exception)
             {
-                EventsReporterWrapper.ReportEvent(CsrRepositoryListedEvent.Create(CommandStatus.Failure));
+                EventsReporterWrapper.ReportEvent(CsrListedEvent.Create(CommandStatus.Failure));
                 throw;
             }
             finally

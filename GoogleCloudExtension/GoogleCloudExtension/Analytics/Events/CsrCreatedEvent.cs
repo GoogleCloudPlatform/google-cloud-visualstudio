@@ -17,17 +17,17 @@ using System;
 namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
-    /// This event is sent after CSR repos are shown in Team Explorer.
+    /// This event is sent after a CSR repo is created.
     /// </summary>
-    internal static class CsrRepositoryListedEvent
+    internal static class CsrCreatedEvent
     {
-        private const string CsrRepositoryListedEventName = "csrListRepo";
+        private const string CsrCreatedEventName = "csrCreateRepo";
         private const string DurationProperty = "duration";
 
         public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
-                CsrRepositoryListedEventName,
+                CsrCreatedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
                 DurationProperty, duration.TotalSeconds.ToString());
         }

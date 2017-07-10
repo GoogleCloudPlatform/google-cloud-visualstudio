@@ -17,17 +17,17 @@ using System;
 namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
-    /// This event is sent after a CSR repo is created.
+    /// This event is sent after a CSR repo is cloned.
     /// </summary>
-    internal static class CsrRepositoryCreatedEvent
+    internal static class CsrClonedEvent
     {
-        private const string CsrRepositoryCreatedEventName = "csrCreateRepo";
+        private const string CsrClonedEventName = "csrCloneRepo";
         private const string DurationProperty = "duration";
 
         public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
-                CsrRepositoryCreatedEventName,
+                CsrClonedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
                 DurationProperty, duration.TotalSeconds.ToString());
         }
