@@ -34,6 +34,7 @@ namespace GoogleCloudExtension.TemplateWizards
         // Mockable static methods for testing.
         internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
         internal Action<string, bool> DeleteDirectory = Directory.Delete;
+        private string _oldWorkingDirectory;
 
         private const string GlobalJsonFileName = "global.json";
 
@@ -70,6 +71,10 @@ namespace GoogleCloudExtension.TemplateWizards
                 replacementsDictionary["$destinationdirectory$"].EnsureEndSeparator().Replace('\\', '/'));
             string packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
             replacementsDictionary.Add("$packagespath$", packagesPath.Replace('/', Path.DirectorySeparatorChar));
+            // To perform an upgrade, VS needs to create a new Proj.xproj for some reason.
+            // It was trying to do that in the devenv folder. Instead do it in the temp folder.
+            _oldWorkingDirectory = Directory.GetCurrentDirectory();
+            Directory.SetCurrentDirectory(Path.GetTempPath());
         }
 
         ///<inheritdoc />
@@ -88,6 +93,7 @@ namespace GoogleCloudExtension.TemplateWizards
         ///<inheritdoc />
         public void RunFinished()
         {
+            Directory.SetCurrentDirectory(_oldWorkingDirectory);
         }
 
         ///<inheritdoc />
