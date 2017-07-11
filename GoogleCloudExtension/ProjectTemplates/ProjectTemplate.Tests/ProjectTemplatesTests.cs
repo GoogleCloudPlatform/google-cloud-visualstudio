@@ -74,7 +74,7 @@ namespace ProjectTemplate.Tests
                     Directory.Delete(SolutionFolderPath, true);
                 }
             }
-            while (Directory.Exists(SolutionFolderPath))
+            if (Directory.Exists(SolutionFolderPath))
             {
                 // Allow Directory.Delete to finish before creating.
                 Thread.Sleep(200);
@@ -87,7 +87,7 @@ namespace ProjectTemplate.Tests
             Process[] msBuildProcesses = Process.GetProcessesByName("MSBuild");
             foreach (Process killedProcess in msBuildProcesses.SelectMany(p => p.KillProcessTree()).ToList())
             {
-                killedProcess.WaitForExit();
+                killedProcess.WaitForExit((int)TimeSpan.FromSeconds(30).TotalMilliseconds);
             }
         }
 

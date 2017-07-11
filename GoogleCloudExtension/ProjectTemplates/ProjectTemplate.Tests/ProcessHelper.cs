@@ -16,10 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management;
-using System.Runtime.ExceptionServices;
 
 namespace ProjectTemplate.Tests
 {
+    /// <summary>
+    /// The methods of this class help to manage processes.
+    /// </summary>
     public static class ProcessHelper
     {
         /// <summary>
@@ -61,21 +63,12 @@ namespace ProjectTemplate.Tests
                 exceptions.Add(e);
             }
 
-            RethrowAnyExceptions(exceptions);
-            return killedProcesses;
-        }
-
-        private static void RethrowAnyExceptions(IReadOnlyList<Exception> exceptions)
-        {
-            if (exceptions.Count > 1)
+            if (exceptions.Count != 0)
             {
                 throw new AggregateException(exceptions);
             }
-            else if (exceptions.Count == 1)
-            {
-                // Keep exception context.
-                ExceptionDispatchInfo.Capture(exceptions[0]).Throw();
-            }
+
+            return killedProcesses;
         }
     }
 }
