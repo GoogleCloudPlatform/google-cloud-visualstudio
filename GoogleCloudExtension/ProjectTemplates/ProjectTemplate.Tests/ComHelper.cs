@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -27,6 +28,12 @@ namespace ProjectTemplate.Tests
     /// <seealso href="http://www.helixoft.com/blog/creating-envdte-dte-for-vs-2017-from-outside-of-the-devenv-exe.html"/>
     public static class ComHelper
     {
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        private static class HRESULT
+        {
+            public const int S_OK = 0;
+        }
+
         ///<see href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms678542"/>
         [DllImport("ole32.dll")]
         private static extern int CreateBindCtx(uint zero, out IBindCtx ctx);
@@ -66,7 +73,7 @@ namespace ProjectTemplate.Tests
             int fetchSize = 1;
             var monikers = new IMoniker[fetchSize];
             IntPtr fetchedCount = IntPtr.Zero;
-            while (monikersEnum.Next(fetchSize, monikers, fetchedCount) == 0)
+            while (monikersEnum.Next(fetchSize, monikers, fetchedCount) == HRESULT.S_OK)
             {
                 var currentMoniker = monikers[0];
                 if (currentMoniker != null)

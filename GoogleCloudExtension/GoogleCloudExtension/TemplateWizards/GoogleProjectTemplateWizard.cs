@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.TemplateWizards
             var dte = (DTE)automationObject;
             bool isEmbedded = dte.CommandLineArguments.Contains("-Embedding");
 
+            // When running as an embedded process, don't show the popup.
             string projectId = isEmbedded ?
                 CredentialsStore.Default.CurrentProjectId ?? "dummy-project" :
                 PromptPickProjectId();

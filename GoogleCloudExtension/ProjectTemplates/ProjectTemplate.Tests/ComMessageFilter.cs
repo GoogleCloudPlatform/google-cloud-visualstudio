@@ -27,7 +27,6 @@ namespace ProjectTemplate.Tests
     /// <seealso href="https://www.viva64.com/en/b/0169/"/>
     public class ComMessageFilter : MarshalByRefObject, IDisposable, IMessageFilter
     {
-
         private readonly IMessageFilter _oldFilter;
 
         public ComMessageFilter()
