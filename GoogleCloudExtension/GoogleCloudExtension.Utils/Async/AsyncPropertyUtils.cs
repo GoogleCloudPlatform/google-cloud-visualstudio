@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio;
 using System;
 using System.Threading.Tasks;
 
@@ -48,11 +49,11 @@ namespace GoogleCloudExtension.Utils.Async
 
         public static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default(TIn))
         {
-            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
+            try
             {
                 return task.Result;
             }
-            else
+            catch (Exception ex) when (!ErrorHandler.IsCriticalException(ex))
             {
                 return defaultValue;
             }
