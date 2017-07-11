@@ -383,7 +383,8 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             }
             // Catch all, otherwise it terminates Visual Studio
-            catch { }
+            catch (Exception ex) when (ErrorHandlerUtils.IsCriticalException(ex))
+            { }
             finally
             {
                 IsBusy = false;
