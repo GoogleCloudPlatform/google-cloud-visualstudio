@@ -16,6 +16,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -34,14 +35,17 @@ namespace ProjectTemplate.Tests
 
         private static VisualStudioWrapper s_visualStudio;
 
-        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-        public TestContext TestContext { get; set; }
+        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+        private static IEnumerable<ErrorItem> ErrorItems =>
+            ((IEnumerable)Dte.ToolWindows.ErrorList.ErrorItems).Cast<ErrorItem>();
         private static DTE2 Dte => s_visualStudio.Dte;
         [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
         private static Solution2 Solution => (Solution2)Dte.Solution;
         private static string SolutionFolderPath => Path.Combine(Path.GetTempPath(), SolutionName);
 
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+        public TestContext TestContext { get; set; }
         private string TemplateName { get; set; }
         private string ProjectName => $"Test{TemplateName}Project";
         private string ProjectPath => Path.Combine(SolutionFolderPath, ProjectName);
@@ -126,27 +130,9 @@ namespace ProjectTemplate.Tests
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
-            IList<ErrorItem> errors = GetErrors();
-            string descriptions = string.Join("\n", errors.Select(e => e.Description));
-            Assert.AreEqual(0, errors.Count, $"{TemplateName} error descriptions: {descriptions}");
-        }
-
-        private IList<ErrorItem> GetErrors()
-        {
-            var list = new List<ErrorItem>();
-            for (int i = 0; i < Dte.ToolWindows.ErrorList.ErrorItems.Count; i++)
-            {
-                try
-                {
-                    list.Add(Dte.ToolWindows.ErrorList.ErrorItems.Item(i));
-                }
-                // ErrorItems.Count sometimes is out of sync with the underlying collection.
-                catch (IndexOutOfRangeException e)
-                {
-                    TestContext.WriteLine("In template {0}: {1}", TemplateName, e);
-                }
-            }
-            return list;
+            string descriptions = string.Join("\n", ErrorItems.Select(e => e.Description));
+            Assert.AreEqual(0, ErrorItems.Count(), $"{TemplateName} error descriptions: {descriptions}");
+            Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo, TemplateName);
         }
 
         private void CreateProjectFromTemplate()
