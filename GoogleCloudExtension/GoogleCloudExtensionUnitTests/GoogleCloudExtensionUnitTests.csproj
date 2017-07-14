@@ -68,6 +68,10 @@
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.26.2.874\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.26.2.878, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.26.2.878\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.26.2\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
@@ -203,6 +207,8 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
+    <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
+    <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />

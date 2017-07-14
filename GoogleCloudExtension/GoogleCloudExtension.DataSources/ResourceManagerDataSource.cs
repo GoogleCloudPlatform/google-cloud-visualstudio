@@ -18,6 +18,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -36,6 +37,7 @@ namespace GoogleCloudExtension.DataSources
 
         /// <summary>
         /// Returns the complete list of projects for the current credentials.
+        /// It always return empty list if no item is found, caller can safely assume there is no null return.
         /// </summary>
         public Task<IList<Project>> GetProjectsListAsync()
         {
@@ -67,5 +69,20 @@ namespace GoogleCloudExtension.DataSources
         {
             return Service.Projects.Get(projectId).ExecuteAsync();
         }
+
+
+        /// <summary>
+        /// Retrives the list of "ACTIVE" projects that belongs to current account.
+        /// Sort the resulsts by project name.
+        /// </summary>
+        /// <returns>
+        /// A list of <seealso cref="Project"/>.
+        /// It always return empty list if no item is found, caller can safely assume there is no null return.
+        /// </returns>
+        public async Task<IList<Project>> GetSortedActiveProjectsAsync() =>
+            (await GetProjectsListAsync())?
+            .Where(x => x.LifecycleState == "ACTIVE")
+            .OrderBy(x => x.Name)
+            .ToList();
     }
 }

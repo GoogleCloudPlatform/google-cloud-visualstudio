@@ -69,6 +69,8 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrListedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrCreatedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrClonedEvent.cs" />
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
@@ -110,6 +113,7 @@
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrConnectSectionOpenEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
@@ -185,6 +189,23 @@
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
+    <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml.cs">
+      <DependentUpon>CsrAddRepoWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
+      <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml.cs">
+      <DependentUpon>CsrGitSetupWarningContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
+    <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
@@ -223,6 +244,19 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
+      <DependentUpon>CsrReposContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
+      <DependentUpon>CsrSectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedContent.xaml.cs">
+      <DependentUpon>CsrUnconnectedContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\RepoItemViewModel.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
@@ -676,6 +710,10 @@
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.26.2.874\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.26.2.878, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.26.2.878\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.26.2.865, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.26.2.865\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
@@ -893,6 +931,34 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrReposContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrUnconnectedContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\DotsProgressIndicatorResources.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1112,6 +1178,14 @@
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj">
+      <Project>{3febb10a-adaf-4807-b741-030b1f722d35}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v14</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
+      <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj">
       <Project>{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}</Project>
       <Name>GoogleCloudExtension.TemplateWizards</Name>
@@ -1125,6 +1199,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
+      <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
       <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>

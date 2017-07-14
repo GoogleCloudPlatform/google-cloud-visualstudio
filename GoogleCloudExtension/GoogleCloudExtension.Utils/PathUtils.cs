@@ -15,6 +15,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -49,5 +50,14 @@ namespace GoogleCloudExtension.Utils
 
             return null;
         }
+
+        /// <summary>
+        /// Check if the path is empty.
+        /// If the path does not Exists, it returns true too.
+        /// </summary>
+        /// <param name="path">Folder name</param>
+        /// <returns>True: The path is empty or it does not exist.</returns>
+        public static bool IsDirectoryEmpty(string path) => 
+            !Directory.Exists(path) || !Directory.EnumerateFileSystemEntries(path).Any();
     }
 }
