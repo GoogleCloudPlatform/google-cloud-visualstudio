@@ -384,7 +384,9 @@ namespace GoogleCloudExtension.CloudExplorer
             }
             // Catch all, otherwise it terminates Visual Studio
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            { }
+            {
+                Debug.WriteLine($"Exception at CloudExplorerViewModel.ResetCredentials. {ex}");
+            }
             finally
             {
                 IsBusy = false;
