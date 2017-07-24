@@ -148,7 +148,7 @@ namespace ProjectTemplate.Tests
             DateTimeOffset timeout = DateTimeOffset.Now.Add(s_timeout);
             while (timeout > DateTimeOffset.Now)
             {
-                var dte = (DTE2)ComHelper.GetRunningObject(IsMatchingMonikerName);
+                var dte = ComHelper.GetRunningObject(IsMatchingMonikerName) as DTE2;
                 if (dte != null)
                 {
                     return dte;
@@ -160,18 +160,22 @@ namespace ProjectTemplate.Tests
 
         private bool IsMatchingMonikerName(IMoniker moniker, IBindCtx bindCtx)
         {
-            string name;
             try
             {
+                string name;
                 moniker.GetDisplayName(bindCtx, null, out name);
+                return !string.IsNullOrWhiteSpace(name) &&
+                    name.StartsWith("!VisualStudio.DTE") &&
+                    name.EndsWith(":" + _devEnvProcess.Id);
             }
-            catch
+            catch (NotImplementedException)
             {
                 return false;
             }
-            return !String.IsNullOrWhiteSpace(name) &&
-                name.StartsWith("!VisualStudio.DTE") &&
-                name.EndsWith(":" + _devEnvProcess.Id);
+            catch (COMException)
+            {
+                return false;
+            }
         }
     }
 }

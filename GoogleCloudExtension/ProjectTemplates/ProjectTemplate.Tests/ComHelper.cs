@@ -48,7 +48,7 @@ namespace ProjectTemplate.Tests
             Marshal.ThrowExceptionForHR(CreateBindCtx(0, out bindCtx));
             IRunningObjectTable rot;
             bindCtx.GetRunningObjectTable(out rot);
-            var targetMoniker = rot.GetRunningMonikers().FirstOrDefault(m => predicate(m, bindCtx));
+            IMoniker targetMoniker = rot.GetRunningMonikers().FirstOrDefault(m => predicate(m, bindCtx));
             if (targetMoniker != null)
             {
                 object dte;
@@ -70,17 +70,19 @@ namespace ProjectTemplate.Tests
 
         private static IEnumerable<IMoniker> ToEnumerable(this IEnumMoniker monikersEnum)
         {
-            int fetchSize = 1;
+            const int fetchSize = 1;
             var monikers = new IMoniker[fetchSize];
             IntPtr fetchedCount = IntPtr.Zero;
-            while (monikersEnum.Next(fetchSize, monikers, fetchedCount) == HRESULT.S_OK)
+            int hResult;
+            while ((hResult = monikersEnum.Next(fetchSize, monikers, fetchedCount)) == HRESULT.S_OK)
             {
-                var currentMoniker = monikers[0];
+                IMoniker currentMoniker = monikers[0];
                 if (currentMoniker != null)
                 {
                     yield return currentMoniker;
                 }
             }
+            Marshal.ThrowExceptionForHR(hResult);
         }
     }
 }

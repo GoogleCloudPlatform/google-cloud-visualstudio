@@ -22,10 +22,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Process = System.Diagnostics.Process;
-using Thread = System.Threading.Thread;
 
 namespace ProjectTemplate.Tests
 {
+    /// <summary>
+    /// This class tests project templates by creating a new visual studio experimental instance,
+    /// creating new projects from the templates, and compiling them.
+    /// </summary>
     [TestClass]
     [DeploymentItem("Templates.csv")]
     public class ProjectTemplatesTests
@@ -53,42 +56,10 @@ namespace ProjectTemplate.Tests
         [ClassInitialize]
         public static void InitClass(TestContext context)
         {
-            s_visualStudio = VisualStudioWrapper.CreateExperimentalInstance();
             CreateSolutionDirectory();
+            s_visualStudio = VisualStudioWrapper.CreateExperimentalInstance();
             Solution.Create(SolutionFolderPath, SolutionFileName);
             Solution.SaveAs(Path.Combine(SolutionFolderPath, SolutionFileName));
-        }
-
-        private static void CreateSolutionDirectory()
-        {
-            if (Directory.Exists(SolutionFolderPath))
-            {
-                try
-                {
-                    Directory.Delete(SolutionFolderPath, true);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    // MSBuild sometimes persists and holds a handle on a file in the solution package directory.
-                    KillMsBuild();
-                    Directory.Delete(SolutionFolderPath, true);
-                }
-            }
-            if (Directory.Exists(SolutionFolderPath))
-            {
-                // Allow Directory.Delete to finish before creating.
-                Thread.Sleep(200);
-            }
-            Directory.CreateDirectory(SolutionFolderPath);
-        }
-
-        private static void KillMsBuild()
-        {
-            Process[] msBuildProcesses = Process.GetProcessesByName("MSBuild");
-            foreach (Process killedProcess in msBuildProcesses.SelectMany(p => p.KillProcessTree()).ToList())
-            {
-                killedProcess.WaitForExit((int)TimeSpan.FromSeconds(30).TotalMilliseconds);
-            }
         }
 
         [ClassCleanup]
@@ -105,7 +76,7 @@ namespace ProjectTemplate.Tests
         [TestCleanup]
         public void AfterEach()
         {
-            foreach (var project in Solution.Projects.OfType<Project>())
+            foreach (Project project in Solution.Projects.OfType<Project>())
             {
                 if (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed)
                 {
@@ -120,19 +91,65 @@ namespace ProjectTemplate.Tests
             "Microsoft.VisualStudio.TestTools.DataSource.CSV",
             @"|DataDirectory|\Templates.csv",
             "Templates#csv",
-            DataAccessMethod.Random)]
+            DataAccessMethod.Sequential)]
         public void TestCompile()
         {
             TemplateName = Convert.ToString(TestContext.DataRow[0]);
-            TestContext.WriteLine($"Testing template {TemplateName}");
 
             CreateProjectFromTemplate();
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
-            string descriptions = string.Join("\n", ErrorItems.Select(e => e.Description));
-            Assert.AreEqual(0, ErrorItems.Count(), $"{TemplateName} error descriptions: {descriptions}");
-            Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo, TemplateName);
+            Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo,
+                $"{TemplateName} build output:{Environment.NewLine}{GetBuildOutput()}");
+            string descriptions = string.Join(Environment.NewLine, ErrorItems.Select(e => e.Description));
+            Assert.AreEqual(0, ErrorItems.Count(),
+                $"{TemplateName} error descriptions:{Environment.NewLine}{descriptions}");
+        }
+
+        private static void CreateSolutionDirectory()
+        {
+            if (Directory.Exists(SolutionFolderPath))
+            {
+                var watcher = new FileSystemWatcher(SolutionFolderPath);
+                try
+                {
+                    Directory.Delete(SolutionFolderPath, true);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // MSBuild sometimes persists and holds a handle on a file in the solution package directory.
+                    KillMsBuild();
+                    Directory.Delete(SolutionFolderPath, true);
+                }
+                if (Directory.Exists(SolutionFolderPath))
+                {
+                    // Allow Directory.Delete to finish before creating.
+                    WaitForChangedResult result = watcher.WaitForChanged(WatcherChangeTypes.Deleted, 1000);
+                    if (result.TimedOut && Directory.Exists(SolutionFolderPath))
+                    {
+                        throw new TimeoutException($"Time out waiting for deletion of {SolutionFolderPath}");
+                    }
+                }
+            }
+            Directory.CreateDirectory(SolutionFolderPath);
+        }
+
+        private static void KillMsBuild()
+        {
+            Process[] msBuildProcesses = Process.GetProcessesByName("MSBuild");
+            foreach (Process msBuildProcess in msBuildProcesses)
+            {
+                msBuildProcess.KillProcessTreeAndWait(TimeSpan.FromSeconds(30));
+            }
+        }
+
+        private static string GetBuildOutput()
+        {
+            OutputWindowPane buildWindow = Dte.ToolWindows.OutputWindow.OutputWindowPanes.Item("Build");
+            TextSelection buildSelection = buildWindow.TextDocument.Selection;
+            buildSelection.SelectAll();
+            return buildSelection.Text;
         }
 
         private void CreateProjectFromTemplate()
