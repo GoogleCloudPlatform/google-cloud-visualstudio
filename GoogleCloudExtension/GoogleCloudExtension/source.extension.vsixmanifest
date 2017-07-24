@@ -5,7 +5,7 @@
     The Version attribute of the Identity element *must* match the version number in Properties\AssemblyInfo.cs, to ensure 
     accurate metrics.
     -->
-    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="1.2.4.0" Language="en-US" Publisher="Google Inc." />
+    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="1.2.5.0" Language="en-US" Publisher="Google Inc." />
     <DisplayName>Google Cloud Tools for Visual Studio</DisplayName>
     <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
     <MoreInfo>https://cloud.google.com/visual-studio/</MoreInfo>
@@ -24,6 +24,8 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v14" Path="|GoogleCloudExtension.TeamExplorerExtension.v14|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v15" Path="|GoogleCloudExtension.TeamExplorerExtension.v15|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspNetCoreMvc" d:TargetPath="|GoogleAspNetCoreMvc;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspNetCoreWebApi" d:TargetPath="|GoogleAspNetCoreWebApi;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspnetMvc" d:TargetPath="|GoogleAspnetMvc;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />

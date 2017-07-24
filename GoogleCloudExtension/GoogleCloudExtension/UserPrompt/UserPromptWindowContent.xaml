@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent>
