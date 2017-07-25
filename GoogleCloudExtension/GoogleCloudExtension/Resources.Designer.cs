@@ -4507,7 +4507,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Stackdriver Logging.
+        ///   Looks up a localized string similar to Stackdriver Logging.
         /// </summary>
         public static string LogViewerToolWindowCaption {
             get {
