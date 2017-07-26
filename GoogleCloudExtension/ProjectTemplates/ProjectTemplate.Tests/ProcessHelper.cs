@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
 using System.Threading.Tasks;
@@ -43,7 +44,9 @@ namespace ProjectTemplate.Tests
                 process.Kill();
                 killedProcesses.Add(process);
             }
-            catch (Exception e)
+            catch (Exception e) when (
+                e is Win32Exception ||
+                e is InvalidOperationException)
             {
                 exceptions.Add(e);
             }
@@ -60,7 +63,12 @@ namespace ProjectTemplate.Tests
                 {
                     exceptions.AddRange(e.InnerExceptions);
                 }
-                catch (Exception e)
+                catch (Exception e) when (
+                    e is FormatException ||
+                    e is InvalidCastException ||
+                    e is OverflowException ||
+                    e is ArgumentException ||
+                    e is InvalidOperationException)
                 {
                     exceptions.Add(e);
                 }
