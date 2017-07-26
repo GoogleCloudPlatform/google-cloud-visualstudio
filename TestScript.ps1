@@ -1,10 +1,16 @@
+Param([string]$Configuration)
+
+if(-not $Configuration) {
+    $Configuration = "Release"
+}
+
 $testDllNames = "GoogleAnalyticsUtilsTests.dll",
     "GoogleCloudExtensionUnitTests.dll",
     "GoogleCloudExtension.Utils.UnitTests.dll",
     "GoogleCloudExtension.DataSources.UnitTests.dll",
     "ProjectTemplate.Tests.dll"
 
-$testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\Release\*
+$testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\$Configuration\*
 
 $testContainerArgs = $testDlls.FullName -join " "
 
@@ -23,3 +29,5 @@ $filter = $testFilters,
     "-[*]GoogleCloudExtension*.Resources" -join " "
 
 OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$testArgs -output:codecoverage.xml -filter:$filter
+
+Write-Host "Finished code coverage."
