@@ -96,23 +96,28 @@ namespace ProjectTemplate.Tests
         public void TestCompile()
         {
             TemplateName = Convert.ToString(TestContext.DataRow[0]);
+            bool isCoreTemplate = Convert.ToBoolean(TestContext.DataRow[1]);
 
             CreateProjectFromTemplate();
-            RestorePackages();
+            if (isCoreTemplate)
+            {
+                RestorePackages();
+            }
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
             Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo,
                 $"{TemplateName} build output:{Environment.NewLine}{GetBuildOutput()}");
-            string descriptions = string.Join(Environment.NewLine, ErrorItems.Select(e => e.Project + ":" + e.Description));
+            string descriptions = string.Join(
+                Environment.NewLine, ErrorItems.Select(e => e.Project + ":" + e.Description));
             Assert.AreEqual(0, ErrorItems.Count(e => e.Project == ProjectName),
                 $"{TemplateName} error descriptions:{Environment.NewLine}{descriptions}");
         }
 
         private void RestorePackages()
         {
-            Process dotnetRestore = Process.Start(new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = ProjectPath });
-            dotnetRestore.WaitForExit();
+            var dotNetRestoreInfo = new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = ProjectPath };
+            Process.Start(dotNetRestoreInfo)?.WaitForExit();
         }
 
         private static void CreateSolutionDirectory()
