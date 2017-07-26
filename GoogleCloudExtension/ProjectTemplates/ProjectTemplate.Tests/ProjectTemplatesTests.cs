@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -97,14 +98,21 @@ namespace ProjectTemplate.Tests
             TemplateName = Convert.ToString(TestContext.DataRow[0]);
 
             CreateProjectFromTemplate();
+            RestorePackages();
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
             Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo,
                 $"{TemplateName} build output:{Environment.NewLine}{GetBuildOutput()}");
-            string descriptions = string.Join(Environment.NewLine, ErrorItems.Select(e => e.Description));
-            Assert.AreEqual(0, ErrorItems.Count(),
+            string descriptions = string.Join(Environment.NewLine, ErrorItems.Select(e => e.Project + ":" + e.Description));
+            Assert.AreEqual(0, ErrorItems.Count(e => e.Project == ProjectName),
                 $"{TemplateName} error descriptions:{Environment.NewLine}{descriptions}");
+        }
+
+        private void RestorePackages()
+        {
+            Process dotnetRestore = Process.Start(new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = ProjectPath });
+            dotnetRestore.WaitForExit();
         }
 
         private static void CreateSolutionDirectory()
@@ -125,10 +133,17 @@ namespace ProjectTemplate.Tests
                 if (Directory.Exists(SolutionFolderPath))
                 {
                     // Allow Directory.Delete to finish before creating.
-                    WaitForChangedResult result = watcher.WaitForChanged(WatcherChangeTypes.Deleted, 1000);
-                    if (result.TimedOut && Directory.Exists(SolutionFolderPath))
+                    try
                     {
-                        throw new TimeoutException($"Time out waiting for deletion of {SolutionFolderPath}");
+                        WaitForChangedResult result = watcher.WaitForChanged(WatcherChangeTypes.Deleted, 1000);
+                        if (result.TimedOut && Directory.Exists(SolutionFolderPath))
+                        {
+                            throw new TimeoutException($"Time out waiting for deletion of {SolutionFolderPath}");
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        // Directory was deleted between the "if(exists)" and the "watcher.WaitForChanged".
                     }
                 }
             }
