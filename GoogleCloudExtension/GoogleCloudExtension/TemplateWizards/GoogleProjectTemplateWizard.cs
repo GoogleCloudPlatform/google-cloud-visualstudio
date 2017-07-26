@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
@@ -44,9 +45,17 @@ namespace GoogleCloudExtension.TemplateWizards
             WizardRunKind runKind,
             object[] customParams)
         {
-            string projectId = PromptPickProjectId();
+            var dte = (DTE)automationObject;
+            bool isEmbedded = dte.CommandLineArguments.Contains("-Embedding");
+
+            // When running as an embedded process, don't show the popup.
+            string projectId = isEmbedded ?
+                CredentialsStore.Default.CurrentProjectId ?? "dummy-project" :
+                PromptPickProjectId();
+
             if (projectId == null)
             {
+                // Null indicates a canceled operation.
                 DeleteDirectory(replacementsDictionary["$destinationdirectory$"], true);
                 bool isExclusive;
                 if (bool.TryParse(replacementsDictionary["$exclusiveproject$"], out isExclusive) && isExclusive)
