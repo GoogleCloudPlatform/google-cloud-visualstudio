@@ -12,10 +12,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     [TestClass]
     public class GoogleProjectTemplateWizardTests
     {
-        private const string ProjectDirectoryBackslash = "root:\\solution\\dir\\project\\dir";
-        private const string ProjectDirectoryBackslashEnd = ProjectDirectoryBackslash + "\\";
-        private const string SolutionDirectoryBackslash = "root:\\solution\\dir";
-        private const string SolutionDirectoryBackslashEnd = SolutionDirectoryBackslash + "\\";
+        private const string ProjectDirectoryBackslash = @"root:\solution\dir\project\dir";
+        private const string ProjectDirectoryBackslashEnd = ProjectDirectoryBackslash + @"\";
+        private const string SolutionDirectoryBackslash = @"root:\solution\dir";
+        private const string SolutionDirectoryBackslashEnd = SolutionDirectoryBackslash + @"\";
         private const string ProjectDirectorySlash = "root:/solution/dir/project/dir";
         private const string ProjectDirectorySlashEnd = ProjectDirectorySlash + "/";
         private const string SolutionDirectorySlash = "root:/solution/dir";
@@ -26,7 +26,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string MockProjectId = "mock-project-id";
         private const string GcpProjectIdKey = "$gcpprojectid$";
         private const string PackagesPathKey = "$packagespath$";
-        private const string PackagesPath = "..\\..\\packages\\";
+        private const string PackagesPath = @"..\..\packages\";
         private const string RandomFileName = "random.file.name";
         private const string GlobalJsonFileName = "global.json";
 
@@ -40,10 +40,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private Mock<Action<string, bool>> _deleteDirectoryMock;
         private Mock<Func<string>> _pickProjectMock;
         private Dictionary<string, string> _replacementsDictionary;
+        private DTE _mockedDte;
 
         [TestInitialize]
         public void BeforeEachTest()
         {
+            _mockedDte = Mock.Of<DTE>(dte => dte.CommandLineArguments == "");
             _pickProjectMock = new Mock<Func<string>>();
             _deleteDirectoryMock = new Mock<Action<string, bool>>();
             _objectUnderTest =
@@ -69,7 +71,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             try
             {
                 _objectUnderTest.RunStarted(
-                    Mock.Of<DTE>(),
+                    _mockedDte,
                     _replacementsDictionary,
                     WizardRunKind.AsNewProject,
                     new object[0]);
@@ -97,7 +99,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             try
             {
                 _objectUnderTest.RunStarted(
-                    Mock.Of<DTE>(),
+                    _mockedDte,
                     _replacementsDictionary,
                     WizardRunKind.AsNewProject,
                     new object[0]);
@@ -131,7 +133,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                     };
 
                     _objectUnderTest.RunStarted(
-                        Mock.Of<DTE>(),
+                        _mockedDte,
                         _replacementsDictionary,
                         WizardRunKind.AsNewProject,
                         new object[0]);
@@ -151,7 +153,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
 
             _objectUnderTest.RunStarted(
-                Mock.Of<DTE>(),
+                _mockedDte,
                 _replacementsDictionary,
                 WizardRunKind.AsNewProject,
                 new object[0]);
