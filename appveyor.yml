@@ -16,7 +16,7 @@ build_script:
   - bash -c ./tools/ensure_no_unused_strings.sh
   - nuget restore .\GoogleCloudExtension
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Debug /p:DeployExtension=False /p:TreatWarningsAsErrors=True
-  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release /p:DeployExtension=False /p:TreatWarningsAsErrors=True
+  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release /p:TreatWarningsAsErrors=True
 
 # Defines the artifacts to be saved.
 artifacts:
@@ -25,31 +25,7 @@ artifacts:
 
 # Run the analytics tests with code coverage report.
 test_script:
-  - ps: >
-      $testDllNames = 
-          "GoogleAnalyticsUtilsTests.dll",
-          "GoogleCloudExtensionUnitTests.dll",
-          "GoogleCloudExtension.Utils.UnitTests.dll",
-          "GoogleCloudExtension.DataSources.UnitTests.dll"
-  - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\Release\*
-  - ps: $testContainerArgs = $testDlls.FullName -join " "
-  - ps: $testArgs = "/logger:Appveyor $testContainerArgs"
-  - ps: $testFilters = ($testDlls.BaseName | % { "-[$_]*"}) -join " "
-  - ps: >
-        $filter = "
-        $testFilters
-        +[GoogleCloudExtension*]*
-        +[GoogleAnalyticsUtils*]*
-        -[*]XamlGeneratedNamespace*
-        -[*]GoogleCloudExtension*.Resources
-        ".Trim()
-  - ps: >
-        OpenCover.Console.exe
-        -register:user
-        -target:vstest.console.exe
-        -targetargs:$testArgs
-        -output:codecoverage.xml
-        -filter:$filter
+  - ps: .\TestScript.ps1
 
 # Upload to codecov.io
 after_test:
