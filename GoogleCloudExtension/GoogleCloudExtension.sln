@@ -67,6 +67,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TeamEx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTemplate.Tests", "ProjectTemplates\ProjectTemplate.Tests\ProjectTemplate.Tests.csproj", "{03C93F30-2ED3-4F20-BFEC-F172937454A1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{A31CD856-439B-427E-8475-C00495ECD737}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoApp", "TestProjects\EchoApp\EchoApp.csproj", "{108901A6-861D-4021-A2C9-CE93554A26F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +173,10 @@ Global
 		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,5 +187,6 @@ Global
 		{AF37626B-D22B-408A-BC79-C25C097FECF7} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
 		{30CB8C77-59A5-4E6C-B122-F614135CE7DA} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
 		{03C93F30-2ED3-4F20-BFEC-F172937454A1} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{108901A6-861D-4021-A2C9-CE93554A26F5} = {A31CD856-439B-427E-8475-C00495ECD737}
 	EndGlobalSection
 EndGlobal
