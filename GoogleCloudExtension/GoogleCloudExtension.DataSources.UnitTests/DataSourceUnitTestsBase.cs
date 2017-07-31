@@ -17,6 +17,7 @@ using Google.Apis.Http;
 using Google.Apis.Requests;
 using Google.Apis.Services;
 using Moq;
+using Moq.Language.Flow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     public class DataSourceUnitTestsBase
     {
         protected const string MockExceptionMessage = "MockException";
+        protected const string DummyString = "DummyString";
 
         /// <summary>
         /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
@@ -72,11 +74,50 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             var serviceMock = new Mock<S>();
             var outerResourceMock = new Mock<P1>(clientServiceMock.Object);
             var innerResourceMock = new Mock<P2>(clientServiceMock.Object);
-            var requestMock = GetRequestMock<RequestType, ResponseType>(responses, parameterValues, clientServiceMock);
+            Mock<RequestType> requestMock =
+                GetRequestMock<RequestType, ResponseType>(responses, parameterValues, clientServiceMock);
 
             innerResourceMock.Setup(requestMethod).Returns(requestMock.Object);
             outerResourceMock.Setup(innerResourcePath).Returns(innerResourceMock.Object);
             serviceMock.Setup(outerResourcePath).Returns(outerResourceMock.Object);
+            return serviceMock.Object;
+        }
+
+        /// <summary>
+        /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
+        /// </summary>
+        /// <typeparam name="S">The type of service to mock.</typeparam>
+        /// <typeparam name="P">A resource type of the service.</typeparam>
+        /// <typeparam name="RequestType">The type of the request.</typeparam>
+        /// <typeparam name="ResponseType">The type of the response the request returns.</typeparam>
+        /// <param name="resourcePath">
+        ///     The path to a resource of the service. (e.g. (PubsubService service) => service.Projects)
+        /// </param>
+        /// <param name="requestMethod">
+        ///     The request expression on the resource (e.g. Topics => Topics.List(It.IsAny&lt;string&gt;()))
+        /// </param>
+        /// <param name="parameterValues">
+        ///     Parameter values to pretend the method was given.
+        /// </param>
+        /// <param name="responses">The list of reponses for the request to return.</param>
+        /// <returns>A mocked version of the service.</returns>
+        protected static S GetMockedService<S, P, RequestType, ResponseType>(
+            Expression<Func<S, P>> resourcePath,
+            Expression<Func<P, RequestType>> requestMethod,
+            IEnumerable<object> parameterValues,
+            IEnumerable<ResponseType> responses)
+            where S : BaseClientService
+            where P : class
+            where RequestType : ClientServiceRequest<ResponseType>
+        {
+            var clientServiceMock = new Mock<IClientService>();
+            var serviceMock = new Mock<S>();
+            var resourceMock = new Mock<P>(clientServiceMock.Object);
+            Mock<RequestType> requestMock =
+                GetRequestMock<RequestType, ResponseType>(responses, parameterValues, clientServiceMock);
+
+            resourceMock.Setup(requestMethod).Returns(requestMock.Object);
+            serviceMock.Setup(resourcePath).Returns(resourceMock.Object);
             return serviceMock.Object;
         }
 
@@ -119,7 +160,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             clientServiceMock.Setup(c => c.Serializer.Format).Returns("json");
             clientServiceMock.Setup(c => c.SerializeObject(It.IsAny<object>())).Returns("{}");
 
-            var deserializeSetup =
+            ISetup<IClientService, Task<ResponeType>> deserializeSetup =
                 clientServiceMock.Setup(c => c.DeserializeResponse<ResponeType>(It.IsAny<HttpResponseMessage>()));
             var responseQueue =
                 new Queue<Task<ResponeType>>(
@@ -132,6 +173,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             {
                 deserializeSetup.Returns(responseQueue.Dequeue);
             }
+
             requestMock.Setup(r => r.RestPath).Returns("/");
             requestMock.Object.RequestParameters.Clear();
             return requestMock;

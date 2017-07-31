@@ -28,7 +28,6 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     [TestClass]
     public class PubSubDataSourceUnitTests : DataSourceUnitTestsBase
     {
-        private const string DummyString = "DummyString";
         private const string MockedTopicName = "MockedTopicName";
         private const string MockedSubscriptionName = "MockedSubscriptionName";
         private const string FirstName = "FirstName";
