@@ -18,7 +18,7 @@ using System.IO;
 namespace GoogleCloudExtension.Projects.DotNetCore
 {
     /// <summary>
-    /// This class represetns a project.json based .NET Core project.
+    /// This class represents a project.json based .NET Core project.
     /// </summary>
     internal class JsonProject : IParsedProject
     {
