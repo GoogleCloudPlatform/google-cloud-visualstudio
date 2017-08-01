@@ -24,24 +24,24 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     [TestClass]
     public class ResourceManagerDataSourceUnitTests : DataSourceUnitTestsBase
     {
-        private const string FirstProjectName = "SomeProjectName";
-        private const string FirstProjectId = "some-project-id";
-        private const string SecondProjectName = "AProjectName";
-        private const string SecondProjectId = "a-project-id";
+        private const string SomeProjectName = "SomeProjectName";
+        private const string SomeProjectId = "some-project-id";
+        private const string AProjectName = "AProjectName";
+        private const string AProjectId = "a-project-id";
         private const string DisabledProjectName = "DisabledProjectName";
         private const string DisabledProjectId = "disabled-project-id";
 
-        private static readonly Project s_firstProject = new Project
+        private static readonly Project s_someProject = new Project
         {
-            Name = FirstProjectName,
-            ProjectId = FirstProjectId,
+            Name = SomeProjectName,
+            ProjectId = SomeProjectId,
             LifecycleState = ResourceManagerDataSource.LifecycleState.Active
         };
 
-        private static readonly Project s_secondProject = new Project
+        private static readonly Project s_aProject = new Project
         {
-            Name = SecondProjectName,
-            ProjectId = SecondProjectId,
+            Name = AProjectName,
+            ProjectId = AProjectId,
             LifecycleState = ResourceManagerDataSource.LifecycleState.Active
         };
 
@@ -54,8 +54,9 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
         [TestMethod]
         [ExpectedException(typeof(DataSourceException))]
-        public async Task GetProjectsListAsync_Exception()
+        public async Task GetProjectsListAsyncTestException()
         {
+            // Empty response list triggers GoogleApiException.
             var responses = new ListProjectsResponse[0];
             CloudResourceManagerService service = GetMockedService(
                 (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
@@ -65,18 +66,18 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
-        public async Task GetProjectsListAsync_SinglePage()
+        public async Task GetProjectsListAsyncTestSinglePage()
         {
             var responses = new[]
             {
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_firstProject, s_disabledProject},
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
                     NextPageToken = null
                 },
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_secondProject},
+                    Projects = new List<Project> {s_aProject},
                     NextPageToken = null
                 }
             };
@@ -87,23 +88,23 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
             Assert.AreEqual(2, projects.Count);
-            Assert.AreEqual(s_firstProject, projects[0]);
+            Assert.AreEqual(s_someProject, projects[0]);
             Assert.AreEqual(s_disabledProject, projects[1]);
         }
 
         [TestMethod]
-        public async Task GetProjectsListAsync_MultiPage()
+        public async Task GetProjectsListAsyncTestMultiPage()
         {
             var responses = new[]
             {
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_firstProject, s_disabledProject},
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
                     NextPageToken = "2"
                 },
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_secondProject},
+                    Projects = new List<Project> {s_aProject},
                     NextPageToken = null
                 }
             };
@@ -114,45 +115,48 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
             Assert.AreEqual(3, projects.Count);
-            Assert.AreEqual(s_firstProject, projects[0]);
+            Assert.AreEqual(s_someProject, projects[0]);
             Assert.AreEqual(s_disabledProject, projects[1]);
-            Assert.AreEqual(s_secondProject, projects[2]);
+            Assert.AreEqual(s_aProject, projects[2]);
         }
 
         [TestMethod]
         [ExpectedException(typeof(DataSourceException))]
-        public async Task GetProject_Exception()
+        public async Task GetProjectTestException()
         {
+            // Empty response list triggers GoogleApiException.
+            var responses = new Project[0];
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), new Project[0]);
+                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
-            await dataSource.GetProjectAsync(FirstProjectId);
+            await dataSource.GetProjectAsync(SomeProjectId);
         }
 
         [TestMethod]
-        public async Task GetProject_Success()
+        public async Task GetProjectTestSuccess()
         {
             var responses = new[]
             {
-                s_firstProject
+                s_someProject
             };
             CloudResourceManagerService service = GetMockedService(
                 (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
-            Project project = await dataSource.GetProjectAsync(FirstProjectId);
+            Project project = await dataSource.GetProjectAsync(SomeProjectId);
 
-            Assert.AreEqual(s_firstProject, project);
+            Assert.AreEqual(s_someProject, project);
             Mock<ProjectsResource> projectsResource = Mock.Get(service.Projects);
-            projectsResource.Verify(r => r.Get(FirstProjectId), Times.Once);
-            projectsResource.Verify(r => r.Get(It.IsNotIn(FirstProjectId)), Times.Never);
+            projectsResource.Verify(r => r.Get(SomeProjectId), Times.Once);
+            projectsResource.Verify(r => r.Get(It.IsNotIn(SomeProjectId)), Times.Never);
         }
 
         [TestMethod]
         [ExpectedException(typeof(DataSourceException))]
-        public async Task GetSortedActiveProjectsAsync_Exception()
+        public async Task GetSortedActiveProjectsAsyncTestException()
         {
+            // Empty response list triggers GoogleApiException.
             var responses = new ListProjectsResponse[0];
             CloudResourceManagerService service = GetMockedService(
                 (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
@@ -162,18 +166,18 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
-        public async Task GetSortedActiveProjectsAsync_Success()
+        public async Task GetSortedActiveProjectsAsyncTestSuccess()
         {
             var responses = new[]
             {
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_firstProject, s_disabledProject},
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
                     NextPageToken = "2"
                 },
                 new ListProjectsResponse
                 {
-                    Projects = new List<Project> {s_secondProject},
+                    Projects = new List<Project> {s_aProject},
                     NextPageToken = null
                 }
             };
@@ -184,8 +188,8 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             IList<Project> projects = await dataSource.GetSortedActiveProjectsAsync();
 
             Assert.AreEqual(2, projects.Count);
-            Assert.AreEqual(s_secondProject, projects[0]);
-            Assert.AreEqual(s_firstProject, projects[1]);
+            Assert.AreEqual(s_aProject, projects[0]);
+            Assert.AreEqual(s_someProject, projects[1]);
         }
     }
 }
