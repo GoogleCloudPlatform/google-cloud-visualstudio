@@ -35,119 +35,120 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     public class DataSourceUnitTestsBase
     {
         protected const string MockExceptionMessage = "MockException";
-        protected const string DummyString = "DummyString";
 
         /// <summary>
         /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
         /// </summary>
-        /// <typeparam name="S">The type of service to mock.</typeparam>
-        /// <typeparam name="P1">The first resource type of the service.</typeparam>
-        /// <typeparam name="P2">The second resource type of the servcie.</typeparam>
-        /// <typeparam name="RequestType">The type of the request.</typeparam>
-        /// <typeparam name="ResponseType">The type of the response the request returns.</typeparam>
-        /// <param name="outerResourcePath">
+        /// <typeparam name="TService">The type of service to mock.</typeparam>
+        /// <typeparam name="TResource1">A resource type in the service.</typeparam>
+        /// <typeparam name="TResource2">A resource type in the outer resource type.</typeparam>
+        /// <typeparam name="TRequest">The type of the request.</typeparam>
+        /// <typeparam name="TResponse">The type of the response the request returns.</typeparam>
+        /// <param name="outerResourceExpression">
         ///     The path to the resource of the service. (e.g. (PubsubService service) => service.Projects)
         /// </param>
-        /// <param name="innerResourcePath">
+        /// <param name="innerResourceExpression">
         ///     The path to the inner resource of the outer resource. (e.g. Projects => Projects.Topics)
         /// </param>
-        /// <param name="requestMethod">
+        /// <param name="requestExpression">
         ///     The request expression on the second resource (e.g. Topics => Topics.List(It.IsAny&lt;string&gt;()))
-        /// </param>
-        /// <param name="parameterValues">
-        ///     Parameter values to pretend the method was given.
         /// </param>
         /// <param name="responses">The list of reponses for the request to return.</param>
         /// <returns>A mocked version of the service.</returns>
-        protected static S GetMockedService<S, P1, P2, RequestType, ResponseType>(
-            Expression<Func<S, P1>> outerResourcePath,
-            Expression<Func<P1, P2>> innerResourcePath,
-            Expression<Func<P2, RequestType>> requestMethod,
-            IEnumerable<object> parameterValues,
-            IEnumerable<ResponseType> responses)
-            where S : BaseClientService
-            where P1 : class
-            where P2 : class
-            where RequestType : ClientServiceRequest<ResponseType>
+        protected static TService GetMockedService<TService, TResource1, TResource2, TRequest, TResponse>(
+            Expression<Func<TService, TResource1>> outerResourceExpression,
+            Expression<Func<TResource1, TResource2>> innerResourceExpression,
+            Expression<Func<TResource2, TRequest>> requestExpression,
+            IEnumerable<TResponse> responses)
+            where TService : BaseClientService
+            where TResource1 : class
+            where TResource2 : class
+            where TRequest : ClientServiceRequest<TResponse>
         {
-            var clientServiceMock = new Mock<IClientService>();
-            var serviceMock = new Mock<S>();
-            var outerResourceMock = new Mock<P1>(clientServiceMock.Object);
-            var innerResourceMock = new Mock<P2>(clientServiceMock.Object);
-            Mock<RequestType> requestMock =
-                GetRequestMock<RequestType, ResponseType>(responses, parameterValues, clientServiceMock);
+            IClientService clientService = GetMockedClientService<TRequest, TResponse>(responses);
+            TRequest request = GetMockedRequest<TRequest, TResponse>(requestExpression, clientService);
 
-            innerResourceMock.Setup(requestMethod).Returns(requestMock.Object);
-            outerResourceMock.Setup(innerResourcePath).Returns(innerResourceMock.Object);
-            serviceMock.Setup(outerResourcePath).Returns(outerResourceMock.Object);
+            var innerResourceMock = new Mock<TResource2>(clientService);
+            innerResourceMock.Setup(requestExpression).Returns(request);
+
+            var outerResourceMock = new Mock<TResource1>(clientService);
+            outerResourceMock.Setup(innerResourceExpression).Returns(innerResourceMock.Object);
+
+            var serviceMock = new Mock<TService>();
+            serviceMock.Setup(outerResourceExpression).Returns(outerResourceMock.Object);
             return serviceMock.Object;
         }
 
         /// <summary>
         /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
         /// </summary>
-        /// <typeparam name="S">The type of service to mock.</typeparam>
-        /// <typeparam name="P">A resource type of the service.</typeparam>
-        /// <typeparam name="RequestType">The type of the request.</typeparam>
-        /// <typeparam name="ResponseType">The type of the response the request returns.</typeparam>
-        /// <param name="resourcePath">
+        /// <typeparam name="TService">The type of service to mock.</typeparam>
+        /// <typeparam name="TResource">A resource type of the service.</typeparam>
+        /// <typeparam name="TRequest">The type of the request.</typeparam>
+        /// <typeparam name="TResponse">The type of the response the request returns.</typeparam>
+        /// <param name="resourceExpression">
         ///     The path to a resource of the service. (e.g. (PubsubService service) => service.Projects)
         /// </param>
-        /// <param name="requestMethod">
+        /// <param name="requestExpression">
         ///     The request expression on the resource (e.g. Topics => Topics.List(It.IsAny&lt;string&gt;()))
-        /// </param>
-        /// <param name="parameterValues">
-        ///     Parameter values to pretend the method was given.
         /// </param>
         /// <param name="responses">The list of reponses for the request to return.</param>
         /// <returns>A mocked version of the service.</returns>
-        protected static S GetMockedService<S, P, RequestType, ResponseType>(
-            Expression<Func<S, P>> resourcePath,
-            Expression<Func<P, RequestType>> requestMethod,
-            IEnumerable<object> parameterValues,
-            IEnumerable<ResponseType> responses)
-            where S : BaseClientService
-            where P : class
-            where RequestType : ClientServiceRequest<ResponseType>
+        protected static TService GetMockedService<TService, TResource, TRequest, TResponse>(
+            Expression<Func<TService, TResource>> resourceExpression,
+            Expression<Func<TResource, TRequest>> requestExpression,
+            IEnumerable<TResponse> responses)
+            where TService : BaseClientService
+            where TResource : class
+            where TRequest : ClientServiceRequest<TResponse>
         {
-            var clientServiceMock = new Mock<IClientService>();
-            var serviceMock = new Mock<S>();
-            var resourceMock = new Mock<P>(clientServiceMock.Object);
-            Mock<RequestType> requestMock =
-                GetRequestMock<RequestType, ResponseType>(responses, parameterValues, clientServiceMock);
 
-            resourceMock.Setup(requestMethod).Returns(requestMock.Object);
-            serviceMock.Setup(resourcePath).Returns(resourceMock.Object);
+            IClientService clientService = GetMockedClientService<TRequest, TResponse>(responses);
+            TRequest request = GetMockedRequest<TRequest, TResponse>(requestExpression, clientService);
+
+            var resourceMock = new Mock<TResource>(clientService);
+            resourceMock.Setup(requestExpression).Returns(request);
+
+            var serviceMock = new Mock<TService>();
+            serviceMock.Setup(resourceExpression).Returns(resourceMock.Object);
             return serviceMock.Object;
         }
 
-        /// <summary>
-        ///     Gets a mock for a request that returns the given responce values.
-        /// </summary>
-        /// <typeparam name="RequestType">The type of request to mock.</typeparam>
-        /// <typeparam name="ResponeType">The type of the responce the request gives.</typeparam>
-        /// <param name="responses">The list of responses to return.</param>
-        /// <param name="additionalConstructorParams">
-        ///     Any additional parameters the request type constructor requires.
-        /// </param>
-        /// <param name="clientServiceMock">
-        ///     The mock of the <see cref="IClientService"/> for the requests to use.
-        /// </param>
-        /// <returns>A mock of the given request type.</returns>
-        private static Mock<RequestType> GetRequestMock<RequestType, ResponeType>(
-            IEnumerable<ResponeType> responses,
-            IEnumerable<object> additionalConstructorParams,
-            Mock<IClientService> clientServiceMock)
-            where RequestType : ClientServiceRequest<ResponeType>
+        private static TRequest GetMockedRequest<TRequest, TResponse>(
+            LambdaExpression requestExpression,
+            IClientService clientService)
+            where TRequest : ClientServiceRequest<TResponse>
         {
-            var requestMock =
-                new Mock<RequestType>(
-                    Enumerable.Repeat(clientServiceMock.Object, 1).Concat(additionalConstructorParams).ToArray())
-                {
-                    CallBase = true
-                };
+            var requestMethod = requestExpression.Body as MethodCallExpression;
+            if (requestMethod == null)
+            {
+                throw new ArgumentException(
+                    $"{nameof(requestExpression)}.{nameof(requestExpression.Body)} " +
+                    $"must be of type {nameof(MethodCallExpression)} " +
+                    $"but was {requestExpression.Body.GetType()}");
+            }
 
-            var handlerMock = new Mock<HttpMessageHandler>();
+            IEnumerable<object> methodArgs =
+                requestMethod.Arguments.Select(a => a.Type)
+                .Select(Expression.Default)
+                .Select(e => Expression.Convert(e, typeof(object)))
+                .Select(e => Expression.Lambda<Func<object>>(e).Compile()());
+            object[] constructorArgs = new[] { clientService }.Concat(methodArgs).ToArray();
+            var requestMock = new Mock<TRequest>(constructorArgs)
+            {
+                CallBase = true
+            };
+
+            requestMock.Setup(r => r.RestPath).Returns("/");
+            requestMock.Object.RequestParameters.Clear();
+            return requestMock.Object;
+        }
+
+        private static IClientService GetMockedClientService<TRequest, TResponse>(IEnumerable<TResponse> responses)
+            where TRequest : ClientServiceRequest<TResponse>
+        {
+            var clientServiceMock = new Mock<IClientService>();
+            var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             // Use MockBehavior.Strict to ensure we make no acutal http requests.
             var configurableHandlerMock =
                 new Mock<ConfigurableMessageHandler>(MockBehavior.Strict, handlerMock.Object);
@@ -160,23 +161,20 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             clientServiceMock.Setup(c => c.Serializer.Format).Returns("json");
             clientServiceMock.Setup(c => c.SerializeObject(It.IsAny<object>())).Returns("{}");
 
-            ISetup<IClientService, Task<ResponeType>> deserializeSetup =
-                clientServiceMock.Setup(c => c.DeserializeResponse<ResponeType>(It.IsAny<HttpResponseMessage>()));
+            ISetup<IClientService, Task<TResponse>> deserializeSetup =
+                clientServiceMock.Setup(c => c.DeserializeResponse<TResponse>(It.IsAny<HttpResponseMessage>()));
             var responseQueue =
-                new Queue<Task<ResponeType>>(
-                    responses?.Select(Task.FromResult) ?? Enumerable.Empty<Task<ResponeType>>());
+                new Queue<Task<TResponse>>(
+                    responses?.Select(Task.FromResult) ?? Enumerable.Empty<Task<TResponse>>());
             if (responseQueue.Count == 0)
             {
-                deserializeSetup.Throws(new GoogleApiException(typeof(RequestType).FullName, MockExceptionMessage));
+                deserializeSetup.Throws(new GoogleApiException(typeof(TRequest).FullName, MockExceptionMessage));
             }
             else
             {
                 deserializeSetup.Returns(responseQueue.Dequeue);
             }
-
-            requestMock.Setup(r => r.RestPath).Returns("/");
-            requestMock.Object.RequestParameters.Clear();
-            return requestMock;
+            return clientServiceMock.Object;
         }
     }
 }

@@ -60,7 +60,6 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.List(It.IsAny<string>()),
-                new[] { DummyString },
                 responses);
 
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
@@ -92,7 +91,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.List(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
 
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
             IList<Topic> topics = await sourceUnderTest.GetTopicListAsync();
@@ -114,7 +113,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.List(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try
@@ -148,7 +147,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.List(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             IList<Subscription> subscriptions = await sourceUnderTest.GetSubscriptionListAsync();
@@ -179,7 +178,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.List(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             IList<Subscription> subscriptions = await sourceUnderTest.GetSubscriptionListAsync();
@@ -201,7 +200,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.List(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try
@@ -225,7 +224,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.Create(It.IsAny<Topic>(), It.IsAny<string>()),
-                new object[] { new Topic(), DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             var topic = await sourceUnderTest.NewTopicAsync(TopicName);
@@ -245,7 +244,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.Create(It.IsAny<Topic>(), It.IsAny<string>()),
-                new object[] { new Topic(), DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try
@@ -269,7 +268,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.Delete(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             await sourceUnderTest.DeleteTopicAsync(TopicFullName);
@@ -288,7 +287,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Topics,
                 t => t.Delete(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try
@@ -312,7 +311,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.Create(It.IsAny<Subscription>(), It.IsAny<string>()),
-                new object[] { new Subscription(), DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             var subscription = await sourceUnderTest.NewSubscriptionAsync(s_newSubscription);
@@ -333,7 +332,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.Create(It.IsAny<Subscription>(), It.IsAny<string>()),
-                new object[] { new Subscription(), DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try
@@ -357,7 +356,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.Delete(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             await sourceUnderTest.DeleteSubscriptionAsync(SubscriptionFullName);
@@ -376,7 +375,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (PubsubService s) => s.Projects,
                 p => p.Subscriptions,
                 s => s.Delete(It.IsAny<string>()),
-                new[] { DummyString }, responses);
+                responses);
             var sourceUnderTest = new PubsubDataSource(service, ProjectName);
 
             try

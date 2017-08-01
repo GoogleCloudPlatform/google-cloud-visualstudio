@@ -1,4 +1,18 @@
-﻿using Google.Apis.CloudResourceManager.v1;
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -44,7 +58,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         {
             var responses = new ListProjectsResponse[0];
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), new object[0], responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             await dataSource.GetProjectsListAsync();
@@ -67,7 +81,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 }
             };
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), new object[0], responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
@@ -94,7 +108,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 }
             };
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), new object[0], responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
@@ -110,10 +124,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         public async Task GetProject_Exception()
         {
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects,
-                p => p.Get(It.IsAny<string>()),
-                new[] { DummyString },
-                new Project[0]);
+                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), new Project[0]);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             await dataSource.GetProjectAsync(FirstProjectId);
@@ -127,10 +138,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 s_firstProject
             };
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects,
-                p => p.Get(It.IsAny<string>()),
-                new[] { DummyString },
-                responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             Project project = await dataSource.GetProjectAsync(FirstProjectId);
@@ -147,7 +155,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         {
             var responses = new ListProjectsResponse[0];
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), new object[0], responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             await dataSource.GetSortedActiveProjectsAsync();
@@ -170,7 +178,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 }
             };
             CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), new object[0], responses);
+                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
             IList<Project> projects = await dataSource.GetSortedActiveProjectsAsync();
