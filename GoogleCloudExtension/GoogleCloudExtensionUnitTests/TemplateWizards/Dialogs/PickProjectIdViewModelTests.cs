@@ -31,11 +31,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private const string TestExceptionMessage = "Test Exception";
         private const string TestProjectId = "loaded-project-id";
         private const string TestInputProjectId = "input-project-id";
-        private const string ReloadedProjectID = "reloaded-project-id";
+        private const string ReloadedProjectId = "reloaded-project-id";
         private const string MockUserName = "UserName";
 
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
-        private static readonly Project s_reloadedProject = new Project { ProjectId = ReloadedProjectID };
+        private static readonly Project s_reloadedProject = new Project { ProjectId = ReloadedProjectId };
 
         private TaskCompletionSource<IList<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
@@ -88,7 +88,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             };
             Func<IResourceManagerDataSource> dataSourceFactory =
                 () => Mock.Of<IResourceManagerDataSource>(
-                    ds => ds.GetProjectsListAsync() == projectsListAsyncCallBack());
+                    ds => ds.GetSortedActiveProjectsAsync() == projectsListAsyncCallBack());
             var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, () => { });
             testObject.PropertyChanged += _addPropertiesChanged;
             if (testObject.LoadTask != null)
@@ -320,7 +320,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
             Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(ReloadedProjectID, _testObject.ProjectId);
+            Assert.AreEqual(ReloadedProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
         }
 
@@ -348,7 +348,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             }
             Assert.AreEqual(1, _testObject.Projects.Count);
             Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
-            Assert.AreEqual(DefaultProjectId ?? ReloadedProjectID, _testObject.ProjectId);
+            Assert.AreEqual(DefaultProjectId ?? ReloadedProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
         }
 
