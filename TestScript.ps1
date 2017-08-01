@@ -1,20 +1,24 @@
-Param([string]$Configuration)
+Param([string]$Configuration, [switch]$FunctionalTests)
 
-if(-not $Configuration) {
+if (-not $Configuration) {
     $Configuration = "Release"
 }
 
 $testDllNames = "GoogleAnalyticsUtilsTests.dll",
     "GoogleCloudExtensionUnitTests.dll",
     "GoogleCloudExtension.Utils.UnitTests.dll",
-    "GoogleCloudExtension.DataSources.UnitTests.dll",
-    "ProjectTemplate.Tests.dll"
+    "GoogleCloudExtension.DataSources.UnitTests.dll"
+
+if ($env:APPVEYOR_SCHEDULED_BUILD -or $FunctionalTests) {
+    # Don't run functional tests on triggered (PR) builds.
+    $testDllNames += "ProjectTemplate.Tests.dll"
+}
 
 $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\$Configuration\*
 
 $testContainerArgs = $testDlls.FullName -join " "
 
-if($env:APPVEYOR) {
+if ($env:APPVEYOR) {
     $testArgs = "/logger:Appveyor $testContainerArgs"
 } else {
     $testArgs = $testContainerArgs
