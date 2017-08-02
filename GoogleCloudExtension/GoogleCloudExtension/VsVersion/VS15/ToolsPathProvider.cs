@@ -41,7 +41,10 @@ namespace GoogleCloudExtension.VsVersion.VS15
 
         public string GetExternalToolsPath()
         {
-            return "";
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\Web\External");
+            GcpOutputWindow.OutputDebugLine($"External tools path: {result}");
+            return result;
         }
 
         public string GetMsbuildPath()
