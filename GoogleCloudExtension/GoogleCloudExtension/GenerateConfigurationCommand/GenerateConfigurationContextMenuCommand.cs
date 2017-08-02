@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -161,7 +162,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
 
             // Ensure that the menu entry is only available for ASP.NET Core projects.
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            if (selectedProject == null || selectedProject.ProjectType != KnownProjectTypes.NetCoreWebApplication1_0)
+            if (selectedProject == null || !PublishDialogWindow.CanPublish(selectedProject))
             {
                 menuCommand.Visible = false;
             }
