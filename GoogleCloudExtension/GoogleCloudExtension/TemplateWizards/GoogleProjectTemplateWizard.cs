@@ -13,15 +13,24 @@
 // limitations under the License.
 
 using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -35,8 +44,12 @@ namespace GoogleCloudExtension.TemplateWizards
         internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
         internal Action<string, bool> DeleteDirectory = Directory.Delete;
         private string _oldWorkingDirectory;
+        private DTE2 Dte { get; set; }
+
+        private IServiceProvider ServiceProvider => (IServiceProvider)Dte;
 
         private const string GlobalJsonFileName = "global.json";
+        private const string TargetFrameworkMoniker = "TargetFrameworkMoniker";
 
         ///<inheritdoc />
         public void RunStarted(
@@ -45,8 +58,8 @@ namespace GoogleCloudExtension.TemplateWizards
             WizardRunKind runKind,
             object[] customParams)
         {
-            var dte = (DTE)automationObject;
-            bool isEmbedded = dte.CommandLineArguments.Contains("-Embedding");
+            Dte = (DTE2)automationObject;
+            bool isEmbedded = Dte.CommandLineArguments.Contains("-Embedding");
 
             // When running as an embedded process, don't show the popup.
             string projectId = isEmbedded ?
@@ -110,6 +123,34 @@ namespace GoogleCloudExtension.TemplateWizards
         ///<inheritdoc />
         public void ProjectFinishedGenerating(Project project)
         {
+            if (GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version &&
+                ProjectParser.ParseProject(project).ProjectType == KnownProjectTypes.NetCoreWebApplication1_0)
+            {
+                // VS 2015 style .NET Core project report the wrong framework type. Don't update it.
+                return;
+            }
+            string currentFrameworkString = project.Properties.Item(TargetFrameworkMoniker)?.Value?.ToString();
+            if (currentFrameworkString != null)
+            {
+                var currentFramework = new FrameworkName(currentFrameworkString);
+                var frameworkService =
+                    (IVsFrameworkMultiTargeting)ServiceProvider.QueryService<SVsFrameworkMultiTargeting>();
+                Array supportedFrameworks;
+                Marshal.ThrowExceptionForHR(frameworkService.GetSupportedFrameworks(out supportedFrameworks));
+                FrameworkName newestFramework = supportedFrameworks.Cast<string>()
+                    .Select(s => new FrameworkName(s))
+                    .Where(fn =>
+                        fn.Identifier.Equals(currentFramework.Identifier, StringComparison.OrdinalIgnoreCase) &&
+                        fn.Profile.Equals(currentFramework.Profile, StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(fn => fn.Version)
+                    .LastOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(newestFramework?.FullName))
+                {
+                    project.Properties.Item(TargetFrameworkMoniker).Value = newestFramework.FullName;
+                    project.Save(project.FullName);
+                }
+            }
         }
     }
 }
