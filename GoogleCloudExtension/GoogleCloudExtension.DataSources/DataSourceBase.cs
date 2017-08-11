@@ -46,11 +46,6 @@ namespace GoogleCloudExtension.DataSources
         protected TService Service { get; }
 
         /// <summary>
-        /// The application name.
-        /// </summary>
-        protected string AppName { get; }
-
-        /// <summary>
         /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="serviceFactory"/> to
         /// create an instance of the service to wrap.
         /// </summary>
@@ -70,7 +65,6 @@ namespace GoogleCloudExtension.DataSources
                 HttpClientInitializer = credentials,
                 ApplicationName = appName,
             });
-            AppName = appName;
         }
 
         /// <summary>

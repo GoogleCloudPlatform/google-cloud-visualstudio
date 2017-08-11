@@ -33,5 +33,15 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId">The project ID of the project to return.</param>
         Task<Project> GetProjectAsync(string projectId);
+
+        /// <summary>
+        /// Retrives the list of "ACTIVE" projects that belongs to current account.
+        /// Sort the results by project name.
+        /// </summary>
+        /// <returns>
+        /// A list of <seealso cref="Project"/>.
+        /// It always return empty list if no item is found, caller can safely assume there is no null return.
+        /// </returns>
+        Task<IList<Project>> GetSortedActiveProjectsAsync();
     }
 }

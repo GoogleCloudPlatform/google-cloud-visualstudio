@@ -146,7 +146,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 
         private async Task LoadProjectsAsync()
         {
-            Projects = await _resourceManagerDataSourceFactory().GetProjectsListAsync();
+            Projects = await _resourceManagerDataSourceFactory().GetSortedActiveProjectsAsync();
             if (string.IsNullOrEmpty(ProjectId) || ProjectId == SelectedProject?.ProjectId)
             {
                 // Updates ProjectId within the property.
