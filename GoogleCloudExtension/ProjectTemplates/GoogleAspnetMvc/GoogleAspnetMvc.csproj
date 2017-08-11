@@ -67,7 +67,6 @@
     <None Include="Controllers\HomeController.cs" />
     <None Include="Controllers\ManageController.cs" />
     <None Include="Global.asax.cs" />
-    <None Include="Global.asax" />
     <None Include="Models\AccountViewModels.cs" />
     <None Include="Models\IdentityModels.cs" />
     <None Include="Models\ManageViewModels.cs" />
