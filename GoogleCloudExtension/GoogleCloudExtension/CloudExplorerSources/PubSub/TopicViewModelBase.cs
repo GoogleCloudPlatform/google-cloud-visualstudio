@@ -61,7 +61,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         public ITopicItem Item { get; }
 
-        public event EventHandler ItemChanged;
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
 
         protected TopicViewModelBase(
             IPubsubSourceRootViewModel owner,

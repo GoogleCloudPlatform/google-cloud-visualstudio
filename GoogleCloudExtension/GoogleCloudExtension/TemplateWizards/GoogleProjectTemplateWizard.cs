@@ -31,6 +31,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using MsBuildProject = Microsoft.Build.Evaluation.Project;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -40,16 +41,19 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateWizard))]
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
+        internal const string TargetFrameworkMoniker = "TargetFrameworkMoniker";
+        internal const string SupportedTargetFrameworkItemName = "SupportedTargetFramework";
+        internal const string GlobalJsonFileName = "global.json";
+
         // Mockable static methods for testing.
         internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
         internal Action<string, bool> DeleteDirectory = Directory.Delete;
+        internal IProjectParser Parser = ProjectParser.Instance;
         private string _oldWorkingDirectory;
+        internal Func<string, MsBuildProject> GetMsBuildProject = projectName => new MsBuildProject(projectName);
         private DTE2 Dte { get; set; }
 
         private IServiceProvider ServiceProvider => (IServiceProvider)Dte;
-
-        private const string GlobalJsonFileName = "global.json";
-        private const string TargetFrameworkMoniker = "TargetFrameworkMoniker";
 
         ///<inheritdoc />
         public void RunStarted(
@@ -124,20 +128,23 @@ namespace GoogleCloudExtension.TemplateWizards
         public void ProjectFinishedGenerating(Project project)
         {
             if (GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version &&
-                ProjectParser.ParseProject(project).ProjectType == KnownProjectTypes.NetCoreWebApplication1_0)
+                Parser.ParseProject(project).ProjectType == KnownProjectTypes.NetCoreWebApplication1_0)
             {
                 // VS 2015 style .NET Core project report the wrong framework type. Don't update it.
                 return;
             }
-            string currentFrameworkString = project.Properties.Item(TargetFrameworkMoniker)?.Value?.ToString();
-            if (currentFrameworkString != null)
+            string currentFrameworkFullName = project.Properties.Item(TargetFrameworkMoniker)?.Value?.ToString();
+            if (currentFrameworkFullName != null)
             {
-                var currentFramework = new FrameworkName(currentFrameworkString);
+                var currentFramework = new FrameworkName(currentFrameworkFullName);
                 var frameworkService =
                     (IVsFrameworkMultiTargeting)ServiceProvider.QueryService<SVsFrameworkMultiTargeting>();
-                Array supportedFrameworks;
-                Marshal.ThrowExceptionForHR(frameworkService.GetSupportedFrameworks(out supportedFrameworks));
-                FrameworkName newestFramework = supportedFrameworks.Cast<string>()
+                MsBuildProject buildProject = GetMsBuildProject(project.FullName);
+
+                IEnumerable<string> supportedFrameworks = buildProject.GetItems(SupportedTargetFrameworkItemName)
+                    .Select(item => item.EvaluatedInclude)
+                    .Concat(GetSupportedFrameworks(frameworkService));
+                FrameworkName newestFramework = supportedFrameworks
                     .Select(s => new FrameworkName(s))
                     .Where(fn =>
                         fn.Identifier.Equals(currentFramework.Identifier, StringComparison.OrdinalIgnoreCase) &&
@@ -145,12 +152,21 @@ namespace GoogleCloudExtension.TemplateWizards
                     .OrderBy(fn => fn.Version)
                     .LastOrDefault();
 
-                if (!string.IsNullOrWhiteSpace(newestFramework?.FullName))
+                string newestFrameworkFullName = newestFramework?.FullName;
+                if (!string.IsNullOrWhiteSpace(newestFrameworkFullName) &&
+                    newestFrameworkFullName != currentFrameworkFullName)
                 {
-                    project.Properties.Item(TargetFrameworkMoniker).Value = newestFramework.FullName;
+                    project.Properties.Item(TargetFrameworkMoniker).Value = newestFrameworkFullName;
                     project.Save(project.FullName);
                 }
             }
+        }
+
+        private static IList<string> GetSupportedFrameworks(IVsFrameworkMultiTargeting frameworkService)
+        {
+            Array supportedFrameworks;
+            Marshal.ThrowExceptionForHR(frameworkService.GetSupportedFrameworks(out supportedFrameworks));
+            return (string[])supportedFrameworks;
         }
     }
 }
