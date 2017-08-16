@@ -43,12 +43,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             GoogleProjectTemplateWizard.SupportedTargetFrameworkItemName;
 
         private const string MockedProjectPath = @"c:\ProjectFullName.csproj";
-        private const string Net451FrameworkName = ".Net Framework,Version=v4.5.1";
-        private const string Net452FrameworkName = ".Net Framework,Version=v4.5.2";
-        private const string Net46FrameworkName = ".Net Framework,Version=v4.6.0";
-        private const string NetCore10FrameworkName = ".Net Core,Version=v1.0.0";
-        private const string NetCore11FrameworkName = ".Net Core,Version=v1.1.0";
-        private const string NetCore20FrameworkName = ".Net Core,Version=v2.0.0";
+        private const string Net451FrameworkName = ".NETFramework,Version=v4.5.1";
+        private const string Net452FrameworkName = ".NETFramework,Version=v4.5.2";
+        private const string Net46FrameworkName = ".NETFramework,Version=v4.6.0";
+        private const string NetCore10FrameworkName = ".NETCore,Version=v1.0.0";
+        private const string NetCore11FrameworkName = ".NETCore,Version=v1.1.0";
+        private const string NetCore20FrameworkName = ".NETCore,Version=v2.0.0";
+        private const string FrameworkVersionKey = GoogleProjectTemplateWizard.FrameworkVersionKey;
+        private const string DefaultFrameworkVersion = "v" + GoogleProjectTemplateWizard.DefaultFrameworkVersion;
 
         private static readonly string[] s_projectDirectoriesToTest =
             {ProjectDirectoryBackslash, ProjectDirectoryBackslashEnd, ProjectDirectorySlash, ProjectDirectorySlashEnd};
@@ -75,7 +77,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             _dteMock = new Mock<DTE2>().As<DTE>();
             _dteMock.Setup(dte => dte.CommandLineArguments).Returns("");
+
             _frameworkServiceMock = new Mock<IVsFrameworkMultiTargeting>();
+            // ReSharper disable once RedundantAssignment
+            Array supportedFrameworks = new string[0];
+            _frameworkServiceMock.Setup(s => s.GetSupportedFrameworks(out supportedFrameworks)).Returns(VSConstants.S_OK);
             GoogleCloudExtensionPackageTests.SetupService<SVsFrameworkMultiTargeting, IVsFrameworkMultiTargeting>(
                 _dteMock.As<IServiceProvider>(), _frameworkServiceMock);
 
@@ -179,6 +185,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                         {SolutionDirectoryKey, solutionDir}
                     };
 
+                    GoogleCloudExtensionPackageTests.InitGlobalServiceProvider(_dteMock);
                     _objectUnderTest.RunStarted(
                         _dteMock.Object,
                         _replacementsDictionary,
@@ -191,6 +198,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                     Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey), message);
                     Assert.AreEqual(PackagesPath, _replacementsDictionary[PackagesPathKey], message);
                     Assert.AreEqual(Path.GetTempPath(), Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+                    Assert.IsTrue(_replacementsDictionary.ContainsKey(FrameworkVersionKey));
+                    Assert.AreEqual(DefaultFrameworkVersion, _replacementsDictionary[FrameworkVersionKey]);
                 }
             }
         }
@@ -200,7 +209,16 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             Directory.SetCurrentDirectory(TestContext.TestDeploymentDir);
             _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
+            // ReSharper disable once RedundantAssignment
+            Array supportedFrameworks = new[]
+            {
+                Net451FrameworkName, Net452FrameworkName, Net46FrameworkName
+            };
+            _frameworkServiceMock.Setup(s => s.GetSupportedFrameworks(out supportedFrameworks)).Returns(VSConstants.S_OK);
+            GoogleCloudExtensionPackageTests.SetupService<SVsFrameworkMultiTargeting, IVsFrameworkMultiTargeting>(
+                _dteMock.As<IServiceProvider>(), _frameworkServiceMock);
 
+            GoogleCloudExtensionPackageTests.InitGlobalServiceProvider(_dteMock);
             _objectUnderTest.RunStarted(
                 _dteMock.Object,
                 _replacementsDictionary,
@@ -213,6 +231,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey));
             Assert.AreEqual(PackagesPath, _replacementsDictionary[PackagesPathKey]);
             Assert.AreEqual(Path.GetTempPath(), Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar);
+            Assert.IsTrue(_replacementsDictionary.ContainsKey(FrameworkVersionKey));
+            Assert.AreEqual("v4.6.0", _replacementsDictionary[FrameworkVersionKey]);
         }
 
         [TestMethod]
@@ -254,32 +274,38 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _projectMock.VerifySet(
                 p => p.Properties.Item(TargetFrameworkMoniker).Value = It.IsAny<object>(), Times.Never);
-            _projectMock.Verify(p => p.Save(MockedProjectPath), Times.Never);
         }
 
         [TestMethod]
-        public void ProjectFinishedGeneratingDotNetFrameworkUpdate()
+        public void ProjectFinishedGenerating2015DotNetFrameworkKeep()
         {
             _dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version);
             _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
             _projectParserMock.Setup(p => p.ParseProject(It.IsAny<Project>())).Returns(
                 Mock.Of<IParsedProject>(p => p.ProjectType == KnownProjectTypes.WebApplication));
-            // ReSharper disable once RedundantAssignment
-            Array supportedFrameworks = new[]
-            {
-                Net451FrameworkName, Net452FrameworkName, Net46FrameworkName
-            };
-            _frameworkServiceMock.Setup(s => s.GetSupportedFrameworks(out supportedFrameworks)).Returns(VSConstants.S_OK);
-            _projectMock.Setup(p => p.Properties.Item(TargetFrameworkMoniker).Value).Returns(Net452FrameworkName);
-            _projectMock.Setup(p => p.FullName).Returns(MockedProjectPath);
 
             GoogleCloudExtensionPackageTests.InitGlobalServiceProvider(_dteMock);
             _objectUnderTest.RunStarted(
                 _dteMock.Object, _replacementsDictionary, WizardRunKind.AsNewProject, new object[0]);
             _objectUnderTest.ProjectFinishedGenerating(_projectMock.Object);
 
-            _projectMock.VerifySet(p => p.Properties.Item(TargetFrameworkMoniker).Value = Net46FrameworkName, Times.Once);
-            _projectMock.Verify(p => p.Save(MockedProjectPath), Times.Once);
+            _projectMock.VerifySet(p => p.Properties.Item(TargetFrameworkMoniker).Value = It.IsAny<object>(), Times.Never);
+        }
+
+        [TestMethod]
+        public void ProjectFinishedGenerating2017DotNetFrameworkKeep()
+        {
+            _dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version);
+            _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
+            _projectParserMock.Setup(p => p.ParseProject(It.IsAny<Project>())).Returns(
+                Mock.Of<IParsedProject>(p => p.ProjectType == KnownProjectTypes.WebApplication));
+
+            GoogleCloudExtensionPackageTests.InitGlobalServiceProvider(_dteMock);
+            _objectUnderTest.RunStarted(
+                _dteMock.Object, _replacementsDictionary, WizardRunKind.AsNewProject, new object[0]);
+            _objectUnderTest.ProjectFinishedGenerating(_projectMock.Object);
+
+            _projectMock.VerifySet(p => p.Properties.Item(TargetFrameworkMoniker).Value = It.IsAny<object>(), Times.Never);
         }
 
         [TestMethod]
@@ -289,9 +315,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
             _projectParserMock.Setup(p => p.ParseProject(It.IsAny<Project>())).Returns(
                 Mock.Of<IParsedProject>(p => p.ProjectType == KnownProjectTypes.WebApplication));
-            // ReSharper disable once RedundantAssignment
-            Array supportedFrameworks = new string[0];
-            _frameworkServiceMock.Setup(s => s.GetSupportedFrameworks(out supportedFrameworks)).Returns(VSConstants.S_OK);
             _projectMock.Setup(p => p.Properties.Item(TargetFrameworkMoniker).Value).Returns(Net452FrameworkName);
             _projectMock.Setup(p => p.FullName).Returns(MockedProjectPath);
 
@@ -302,7 +325,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _projectMock.VerifySet(
                 p => p.Properties.Item(TargetFrameworkMoniker).Value = It.IsAny<object>(), Times.Never);
-            _projectMock.Verify(p => p.Save(MockedProjectPath), Times.Never);
         }
 
         [TestMethod]
@@ -313,12 +335,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _projectParserMock.Setup(p => p.ParseProject(It.IsAny<Project>())).Returns(
                 Mock.Of<IParsedProject>(p => p.ProjectType == KnownProjectTypes.NetCoreWebApplication1_0));
             _buildProject.AddItem(SupportedTargetFrameworkItemName, NetCore10FrameworkName);
-            // ReSharper disable once RedundantAssignment
-            Array supportedFrameworks = new[]
-            {
-                Net451FrameworkName, Net452FrameworkName, Net46FrameworkName
-            };
-            _frameworkServiceMock.Setup(s => s.GetSupportedFrameworks(out supportedFrameworks)).Returns(VSConstants.S_OK);
             _projectMock.Setup(p => p.Properties.Item(TargetFrameworkMoniker).Value).Returns(NetCore10FrameworkName);
             _projectMock.Setup(p => p.FullName).Returns(MockedProjectPath);
 
@@ -329,7 +345,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _projectMock.VerifySet(
                 p => p.Properties.Item(TargetFrameworkMoniker).Value = It.IsAny<string>(), Times.Never);
-            _projectMock.Verify(p => p.Save(It.IsAny<string>()), Times.Never);
         }
 
         [TestMethod]
@@ -357,7 +372,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _projectMock.VerifySet(
                 p => p.Properties.Item(TargetFrameworkMoniker).Value = NetCore11FrameworkName, Times.Once);
-            _projectMock.Verify(p => p.Save(MockedProjectPath), Times.Once);
         }
 
         [TestMethod]
@@ -386,7 +400,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _projectMock.VerifySet(
                 p => p.Properties.Item(TargetFrameworkMoniker).Value = NetCore20FrameworkName, Times.Once);
-            _projectMock.Verify(p => p.Save(MockedProjectPath), Times.Once);
         }
 
         [TestMethod]
