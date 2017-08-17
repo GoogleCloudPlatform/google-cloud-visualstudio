@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <VSTemplate Include="GoogleAspNetCoreWebApi.vstemplate">
+    <VSTemplate Include="GWC.vstemplate">
       <OutputSubPath>Google Cloud Platform</OutputSubPath>
       <Culture>127</Culture>
     </VSTemplate>
