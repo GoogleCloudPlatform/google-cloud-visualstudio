@@ -1,5 +1,5 @@
 TemplateName, IsCoreTemplate
-GoogleAspNetCoreWebApi, true
-GoogleAspNetCoreMvc, true
-GoogleAspnetMvc, false
-GoogleAspnetWebApi, false
+GMC, true
+GM, false
+GWC, true
+GW, false
