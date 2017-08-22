@@ -33,7 +33,8 @@ namespace GoogleCloudExtension.Deployment
         private static readonly Dictionary<KnownProjectTypes, string> s_knownRuntimeImages = new Dictionary<KnownProjectTypes, string>
         {
             [ KnownProjectTypes.NetCoreWebApplication1_0 ] = "gcr.io/google-appengine/aspnetcore:1.0",
-            [ KnownProjectTypes.NetCoreWebApplication1_1 ] = "gcr.io/google-appengine/aspnetcore:1.1"
+            [ KnownProjectTypes.NetCoreWebApplication1_1 ] = "gcr.io/google-appengine/aspnetcore:1.1",
+            [ KnownProjectTypes.NetCoreWEbApplication2_0 ] = "gcr.io/google-appengine/aspnetcore:2.0"
         };
 
         /// <summary>
