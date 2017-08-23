@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.Utils
 
     /// <summary>
     /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
-    /// in <seealso cref="ErrorHandlerUtils.HandleAsyncExceptions(Func{Task})(taskHandler)"/> 
+    /// in <seealso cref="ErrorHandlerUtils.HandleAsyncExceptions(Func{Task})"/> 
     /// to handle the exceptions that could escape.
     /// </summary>
     public class ProtectedAsyncCommand : ProtectedCommand
