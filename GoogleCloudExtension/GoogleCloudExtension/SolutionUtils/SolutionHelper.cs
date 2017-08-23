@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 var projectDirectory = Path.GetDirectoryName(p.FullName);
                 if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    return ProjectParser.ParseProject(p);
+                    return ProjectParser.Instance.ParseProject(p);
                 }
             }
 
@@ -252,7 +252,7 @@ namespace GoogleCloudExtension.SolutionUtils
             {
                 if (p.Name == projectName)
                 {
-                    return ProjectParser.ParseProject(p);
+                    return ProjectParser.Instance.ParseProject(p);
                 }
             }
 

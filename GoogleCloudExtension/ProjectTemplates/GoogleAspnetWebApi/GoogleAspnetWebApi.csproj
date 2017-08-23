@@ -88,7 +88,6 @@
     <None Include="Controllers\HomeController.cs" />
     <None Include="Controllers\ValuesController.cs" />
     <None Include="Global.asax.cs" />
-    <None Include="Global.asax" />
     <None Include="Models\AccountBindingModels.cs" />
     <None Include="Models\AccountViewModels.cs" />
     <None Include="Models\IdentityModels.cs" />

@@ -20,7 +20,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
@@ -37,22 +38,33 @@ namespace GoogleCloudExtensionUnitTests
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
-        private static Guid s_iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
-            .GetType("Microsoft.VisualStudio.NativeMethods")
-            .GetField("IID_IUnknown").GetValue(null);
+        /// <summary>
+        /// IID of <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms680509">IUnknown</see>.
+        /// </summary>
+        private static Guid s_iidIUnknown = new Guid("00000000-0000-0000-C000-000000000046");
+
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+        public TestContext TestContext { get; set; }
+
+        private Mock<DTE> _dteMock;
+
+        [TestInitialize]
+        public void BeforeEachTest()
+        {
+            _dteMock = new Mock<DTE>();
+        }
 
         [TestMethod]
         public void TestPackageValues()
         {
-            string mockedVersion = "MockVsVersion";
-            string mockedEdition = "MockedEdition";
-            InitPackageMock(
-                dteMock =>
-                {
-                    dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-                    dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
-                });
+            const string mockedVersion = "MockVsVersion";
+            const string mockedEdition = "MockedEdition";
+            _dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+            _dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
             string expectedAssemblyVersion = GetVsixManifestVersion();
+
+            InitGlobalServiceProvider(_dteMock);
 
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
@@ -69,9 +81,9 @@ namespace GoogleCloudExtensionUnitTests
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
         }
 
-        private static string GetVsixManifestVersion()
+        private string GetVsixManifestVersion()
         {
-            XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
+            XDocument vsixManifest = XDocument.Load(Path.Combine(TestContext.TestDeploymentDir, VsixManifestFileName));
             XNamespace ns = vsixManifest.Root?.Name.Namespace ?? XNamespace.None;
             XElement manifestRoot = vsixManifest.Element(ns.GetName("PackageManifest"));
             XElement metadata = manifestRoot?.Element(ns.GetName("Metadata"));
@@ -79,14 +91,12 @@ namespace GoogleCloudExtensionUnitTests
             return identity?.Attribute("Version")?.Value;
         }
 
-        public static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
+        public static void InitGlobalServiceProvider(Mock<DTE> dteMock)
         {
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var dteMock = new Mock<DTE>();
+            Mock<IServiceProvider> serviceProviderMock = dteMock.As<IServiceProvider>();
             var activityLogMock = new Mock<IVsActivityLog>();
             activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(VSConstants.S_OK);
-            dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
             SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
 
@@ -99,16 +109,16 @@ namespace GoogleCloudExtensionUnitTests
             ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
         }
 
-        private static void SetupService<ServiceType, InterfaceType>(
+        internal static void SetupService<ServiceType, InterfaceType>(
             Mock<IServiceProvider> serviceProviderMock,
             IMock<InterfaceType> mockObj) where InterfaceType : class
         {
-            var serviceGuid = typeof(ServiceType).GUID;
+            Guid serviceGuid = typeof(ServiceType).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
             serviceProviderMock
                 .Setup(x => x.QueryService(ref serviceGuid, ref s_iidIUnknown, out interfacePtr))
-                .Returns(0);
+                .Returns(VSConstants.S_OK);
         }
     }
 }

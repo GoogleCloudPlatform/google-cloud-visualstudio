@@ -28,8 +28,9 @@ namespace GoogleCloudExtension.Projects
     /// This class contains helpers to instantiate the right type of <seealso cref="IParsedProject"/> implementation
     /// depending on the project being loaded.
     /// </summary>
-    internal static class ProjectParser
+    internal class ProjectParser : IProjectParser
     {
+
         // Identifiers of an ASP.NET 4.x .csproj
         private const string MsbuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private const string WebApplicationGuid = "{349c5851-65df-11da-9384-00065b846f21}";
@@ -54,13 +55,17 @@ namespace GoogleCloudExtension.Projects
         // The Sdk attribute points to the SDK used to build this app, console or web.
         private const string SdkAttributeName = "Sdk";
 
+        private static readonly Lazy<ProjectParser> s_lazyInstance = new Lazy<ProjectParser>();
+
+        public static ProjectParser Instance => s_lazyInstance.Value;
+
         /// <summary>
         /// Parses the given <seealso cref="Project"/> instance and resturns a friendlier and more usable type to use for
         /// deployment and other operations.
         /// </summary>
         /// <param name="project">The <seealso cref="Project"/> instance to parse.</param>
         /// <returns>The resulting <seealso cref="IParsedProject"/> or null if the project is not supported.</returns>
-        public static IParsedProject ParseProject(Project project)
+        public IParsedProject ParseProject(Project project)
         {
             var extension = Path.GetExtension(project.FullName);
             switch (extension)
