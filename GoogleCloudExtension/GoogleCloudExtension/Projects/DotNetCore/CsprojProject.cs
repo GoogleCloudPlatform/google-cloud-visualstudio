@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.Projects.DotNetCore
                     break;
 
                 case "netcoreapp2.0":
-                    ProjectType = KnownProjectTypes.NetCoreWEbApplication2_0;
+                    ProjectType = KnownProjectTypes.NetCoreWebApplication2_0;
                     break;
 
                 default:

@@ -42,6 +42,6 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// An ASP.NET Core 2.0 app
         /// </summary>
-        NetCoreWEbApplication2_0,
+        NetCoreWebApplication2_0,
     }
 }
