@@ -82,7 +82,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public AttachDebuggerFirewallPort RemotePowerShellPort { get; }
 
         /// <summary>
-        /// Create the <seealso cref="Context"/> to associate the <paramref name="gceInstance"/>.
+        /// Create the <seealso cref="System.Runtime.Remoting.Contexts.Context"/>
+        /// to associate the <paramref name="gceInstance"/>.
         /// </summary>
         /// <param name="gceInstance">GCE VM instance object.</param>
         /// <param name="dialogWindow">The dialog window</param>
