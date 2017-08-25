@@ -53,6 +53,10 @@ namespace GoogleCloudExtension.Projects.DotNetCore
                     ProjectType = KnownProjectTypes.NetCoreWebApplication1_1;
                     break;
 
+                case "netcoreapp2.0":
+                    ProjectType = KnownProjectTypes.NetCoreWebApplication2_0;
+                    break;
+
                 default:
                     GcpOutputWindow.OutputDebugLine($"Unsopported target framework {targetFramework}");
                     ProjectType = KnownProjectTypes.None;
