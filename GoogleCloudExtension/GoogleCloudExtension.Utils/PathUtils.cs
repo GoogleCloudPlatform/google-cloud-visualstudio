@@ -63,14 +63,16 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Gets the relative path from one directory to another.
         /// </summary>
-        /// <param name="fromDirectory">The directory that is the start of</param>
-        /// <param name="toDirectory"></param>
-        /// <returns></returns>
+        /// <param name="fromDirectory">The directory that is the start location of the relative path.</param>
+        /// <param name="toDirectory">The directory that is the end location of the relative path.</param>
+        /// <returns>
+        /// The relative path from <paramref name="fromDirectory"/> to <paramref name="toDirectory"/>
+        /// </returns>
         public static string GetRelativePath(string fromDirectory, string toDirectory)
         {
-            var packageDir = new Uri(toDirectory.EnsureEndSeparator().Replace('\\', '/'));
-            var projectDir = new Uri(fromDirectory.EnsureEndSeparator().Replace('\\', '/'));
-            return projectDir.MakeRelativeUri(packageDir).ToString().Replace('/', Path.DirectorySeparatorChar);
+            var fromUri = new Uri(fromDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            var toUri = new Uri(toDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            return fromUri.MakeRelativeUri(toUri).ToString().Replace('/', Path.DirectorySeparatorChar);
         }
     }
 }
