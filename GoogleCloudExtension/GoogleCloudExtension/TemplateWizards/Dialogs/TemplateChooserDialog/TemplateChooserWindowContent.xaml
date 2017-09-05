@@ -62,7 +62,7 @@
                 </StackPanel>
             </DockPanel>
             <DockPanel Margin="0,5,0,0">
-                <TextBlock DockPanel.Dock="Top" Text="Features:"/>
+                <TextBlock DockPanel.Dock="Top" Text="{x:Static ext:Resources.WizardTemplateChooserFeaturesLabel}"/>
                 <StackPanel Orientation="Horizontal">
                     <RadioButton
                         GroupName="AppType"

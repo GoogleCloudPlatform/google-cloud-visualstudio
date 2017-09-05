@@ -6109,6 +6109,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Features:.
+        /// </summary>
+        public static string WizardTemplateChooserFeaturesLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserFeaturesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _MVC.
         /// </summary>
         public static string WizardTemplateChooserMvcLabel {
