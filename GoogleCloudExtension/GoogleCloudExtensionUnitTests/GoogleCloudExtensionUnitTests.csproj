@@ -212,9 +212,9 @@
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
-    <Compile Include="StringUtilTests.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />
+    <Compile Include="StringFormatUtilsTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />

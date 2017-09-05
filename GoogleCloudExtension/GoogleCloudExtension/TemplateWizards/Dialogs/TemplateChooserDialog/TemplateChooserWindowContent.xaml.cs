@@ -11,13 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-namespace GoogleCloudExtension.TemplateWizards
+
+using System.Windows.Controls;
+
+namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// Wizard for a project template. Delegates to GoogleProjecTemplateWizard
-    /// in GoogleCloudExtension.dll. That class can not be used directly because
-    /// of problems loading wizards from MEF component assemblies.
+    /// Interaction logic for TemplateChooserWindowContent.xaml
     /// </summary>
-    public class GoogleProjectTemplateWizard : DelegatingTemplateWizard<IGoogleProjectTemplateWizard>
-    {}
+    public partial class TemplateChooserWindowContent : UserControl
+    {
+        public TemplateChooserWindowContent()
+        {
+            InitializeComponent();
+        }
+    }
 }

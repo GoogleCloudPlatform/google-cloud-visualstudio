@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <TemplateID>{01125093-9342-496C-89FA-FBF6BD35CCD0}</TemplateID>
+    <Name>ASP.NET on Google Cloud Platform</Name>
+    <Description>Template for ASP.NET applications that run on Google Cloud Platform.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>Web</ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>GcpProject</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <Icon>__TemplateIcon.png</Icon>
+    <CreateInPlace>true</CreateInPlace>
+    <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+  </TemplateData>
+  <TemplateContent>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>GoogleCloudExtension.TemplateWizards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=919919421783e38f</Assembly>
+    <FullClassName>GoogleCloudExtension.TemplateWizards.GoogleProjectTemplateSelectorWizard</FullClassName>
+  </WizardExtension>
+</VSTemplate>

@@ -38,9 +38,6 @@
                 Command="{Binding OkCommand}"
                 IsDefault="True"/>
             <theming:DialogButtonInfo
-                Caption="{x:Static ext:Resources.UiSkipButtonCaption}"
-                Command="{Binding SkipCommand}"/>
-            <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
@@ -53,116 +50,100 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"/>
             </DockPanel>
-            <DockPanel DockPanel.Dock="Bottom">
-                <Label
-                    DockPanel.Dock="Left"
-                    Content="{x:Static ext:Resources.WizardPickProjectIdTextLabel}"
-                    Target="{Binding ElementName=ProjectIdTextBox}"/>
-                <TextBox x:Name="ProjectIdTextBox" Text="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}"/>
-            </DockPanel>
-            <Control>
-                <Control.Resources>
+            <ContentControl>
+                <ContentControl.Resources>
                     <Style TargetType="Border">
                         <Setter Property="BorderThickness" Value="1"/>
                         <Setter Property="BorderBrush" Value="DarkGray"/>
                         <Setter Property="Margin" Value="5"/>
                         <Setter Property="Padding" Value="2"/>
                     </Style>
-                    <ControlTemplate x:Key="NoAccount">
-                        <Border>
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessage}"/>
-                                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                    <ControlTemplate x:Key="Loading">
-                        <Border>
+                    <Border x:Key="NoAccount">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock
-                                Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
                                 VerticalAlignment="Center"
-                                HorizontalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                    <ControlTemplate x:Key="Error">
-                        <Border>
-                            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
-                                <TextBlock
-                                    Text="{x:Static ext:Resources.WizardPickProjectIdLoadProjectsErrorMessage}"/>
-                                <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
-                                    <TextBlock Text="{Binding LoadTask.ErrorMessage}"/>
-                                </Expander>
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                    <ControlTemplate x:Key="Canceled">
-                        <Border>
+                                HorizontalAlignment="Center"
+                                Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessage}"/>
+                            <Button Style="{StaticResource SelectAccountButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Key="Loading">
+                        <TextBlock
+                            Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+                    </Border>
+                    <Border x:Key="Error">
+                        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
                             <TextBlock
-                                Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                    <ControlTemplate x:Key="Loaded">
-                        <DataGrid
-                            ItemsSource="{Binding Projects}"
-                            SelectedItem="{Binding SelectedProject}"
-                            SelectionMode="Single"
-                            SelectionUnit="FullRow"
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto"
-                            CanUserSortColumns="True"
-                            CanUserResizeColumns="True"
-                            CanUserReorderColumns="True"
-                            AutoGenerateColumns="False"
-                            VerticalGridLinesBrush="LightGray"
-                            HorizontalGridLinesBrush="LightGray"
-                            IsReadOnly="True">
+                                Text="{x:Static ext:Resources.WizardPickProjectIdLoadProjectsErrorMessage}"/>
+                            <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
+                                <TextBlock Text="{Binding LoadTask.ErrorMessage}"/>
+                            </Expander>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Key="Canceled">
+                        <TextBlock
+                            Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+                    </Border>
+                    <DataGrid
+                        x:Key="Loaded"
+                        ItemsSource="{Binding Projects}"
+                        SelectedItem="{Binding SelectedProject}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto"
+                        CanUserSortColumns="True"
+                        CanUserResizeColumns="True"
+                        CanUserReorderColumns="True"
+                        AutoGenerateColumns="False"
+                        VerticalGridLinesBrush="LightGray"
+                        HorizontalGridLinesBrush="LightGray"
+                        IsReadOnly="True">
 
-                            <DataGrid.Columns>
-                                <DataGridTextColumn
-                                    Header="{x:Static ext:Resources.GcpProjectNameHeader}"
-                                    Binding="{Binding Name}"
-                                    MinWidth="5"/>
-                                <DataGridTextColumn
-                                    Header="{x:Static ext:Resources.GcpProjectIdHeader}"
-                                    Binding="{Binding ProjectId}"
-                                    MinWidth="5"/>
-                                <DataGridTextColumn
-                                    Header="{x:Static ext:Resources.GcpProjectNumberHeader}"
-                                    Binding="{Binding ProjectNumber}"
-                                    MinWidth="5"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </ControlTemplate>
-                </Control.Resources>
-                <Control.Style>
-                    <Style TargetType="Control">
-                        <!-- Use this setter to change the template visible in the designer. -->
-                        <Setter Property="Template" Value="{StaticResource Loaded}"/>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Header="{x:Static ext:Resources.GcpProjectNameHeader}"
+                                Binding="{Binding Name}"
+                                MinWidth="5"/>
+                            <DataGridTextColumn
+                                Header="{x:Static ext:Resources.GcpProjectIdHeader}"
+                                Binding="{Binding ProjectId}"
+                                MinWidth="5"/>
+                            <DataGridTextColumn
+                                Header="{x:Static ext:Resources.GcpProjectNumberHeader}"
+                                Binding="{Binding ProjectNumber}"
+                                MinWidth="5"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ContentControl.Resources>
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <!-- Use this setter to change the content visible in the designer. -->
+                        <Setter Property="Content" Value="{StaticResource Loaded}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding LoadTask}" Value="{x:Null}">
-                                <Setter Property="Template" Value="{StaticResource NoAccount}"/>
+                                <Setter Property="Content" Value="{StaticResource NoAccount}"/>
                             </DataTrigger>
                             <DataTrigger  Binding="{Binding LoadTask.IsPending, FallbackValue=False}" Value="True">
-                                <Setter Property="Template" Value="{StaticResource Loading}"/>
+                                <Setter Property="Content" Value="{StaticResource Loading}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding LoadTask.IsError, FallbackValue=False}" Value="True">
-                                <Setter Property="Template" Value="{StaticResource Error}"/>
+                                <Setter Property="Content" Value="{StaticResource Error}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding LoadTask.IsCanceled, FallbackValue=False}" Value="True">
-                                <Setter Property="Template" Value="{StaticResource Canceled}"/>
+                                <Setter Property="Content" Value="{StaticResource Canceled}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding LoadTask.IsSuccess, FallbackValue=False}" Value="True">
-                                <Setter Property="Template" Value="{StaticResource Loaded}"/>
+                                <Setter Property="Content" Value="{StaticResource Loaded}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Control.Style>
-            </Control>
+                </ContentControl.Style>
+            </ContentControl>
         </DockPanel>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

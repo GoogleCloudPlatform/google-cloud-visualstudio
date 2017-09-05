@@ -11,13 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+using Microsoft.VisualStudio.TemplateWizard;
+
 namespace GoogleCloudExtension.TemplateWizards
 {
     /// <summary>
-    /// Wizard for a project template. Delegates to GoogleProjecTemplateWizard
-    /// in GoogleCloudExtension.dll. That class can not be used directly because
-    /// of problems loading wizards from MEF component assemblies.
+    /// This interface is the export target of GoogleProjectTemplateSelectorWizard.
+    /// Import GoogleProjectTemplateSelectorWizard as an MEF component using this interface.
     /// </summary>
-    public class GoogleProjectTemplateWizard : DelegatingTemplateWizard<IGoogleProjectTemplateWizard>
-    {}
+    public interface IGoogleProjectTemplateSelectorWizard : IWizard { }
 }

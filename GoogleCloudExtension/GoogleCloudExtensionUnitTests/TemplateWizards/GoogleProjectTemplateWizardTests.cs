@@ -1,6 +1,5 @@
 ﻿using EnvDTE;
 using GoogleCloudExtension.TemplateWizards;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -28,7 +27,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string PackagesPathKey = "$packagespath$";
         private const string PackagesPath = @"..\..\packages\";
         private const string RandomFileName = "random.file.name";
-        private const string GlobalJsonFileName = "global.json";
 
         private static readonly string[] s_projectDirectoriesToTest =
             {ProjectDirectoryBackslash, ProjectDirectoryBackslashEnd, ProjectDirectorySlash, ProjectDirectorySlashEnd};
@@ -120,11 +118,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedPickProjectSkipped()
         {
             _pickProjectMock.Setup(x => x()).Returns(() => string.Empty);
-            foreach (var projectDir in s_projectDirectoriesToTest)
+            foreach (string projectDir in s_projectDirectoriesToTest)
             {
-                foreach (var solutionDir in s_solutionDirectoriesToTest)
+                foreach (string solutionDir in s_solutionDirectoriesToTest)
                 {
-                    var message = $"For test case\nprojectDir: {projectDir}\nsolutionDir: {solutionDir}";
+                    string message = $"For test case\nprojectDir: {projectDir}\nsolutionDir: {solutionDir}";
                     _deleteDirectoryMock.ResetCalls();
                     _replacementsDictionary = new Dictionary<string, string>
                     {
@@ -166,30 +164,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         }
 
         [TestMethod]
-        public void TestShouldAddProjectItemRandomFile()
+        public void TestShouldAddProjectItem()
         {
-            var result = _objectUnderTest.ShouldAddProjectItem(RandomFileName);
+            bool result = _objectUnderTest.ShouldAddProjectItem(RandomFileName);
             Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public void TestShouldAddProjectItemGlobal2015()
-        {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
-
-            var result = _objectUnderTest.ShouldAddProjectItem(GlobalJsonFileName);
-            Assert.IsTrue(result);
-        }
-
-        [TestMethod]
-        public void TestShouldAddProjectItemGlobal2017()
-        {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
-
-            var result = _objectUnderTest.ShouldAddProjectItem(GlobalJsonFileName);
-            Assert.IsFalse(result);
         }
     }
 }

@@ -14,10 +14,10 @@
 namespace GoogleCloudExtension.TemplateWizards
 {
     /// <summary>
-    /// Wizard for a project template. Delegates to GoogleProjecTemplateWizard
+    /// Wizard for a project template. Delegates to GoogleProjecTemplateSelectorWizard
     /// in GoogleCloudExtension.dll. That class can not be used directly because
     /// of problems loading wizards from MEF component assemblies.
     /// </summary>
-    public class GoogleProjectTemplateWizard : DelegatingTemplateWizard<IGoogleProjectTemplateWizard>
-    {}
+    public class GoogleProjectTemplateSelectorWizard : DelegatingTemplateWizard<IGoogleProjectTemplateSelectorWizard>
+    { }
 }

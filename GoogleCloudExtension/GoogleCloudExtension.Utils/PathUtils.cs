@@ -57,7 +57,20 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="path">Folder name</param>
         /// <returns>True: The path is empty or it does not exist.</returns>
-        public static bool IsDirectoryEmpty(string path) => 
+        public static bool IsDirectoryEmpty(string path) =>
             !Directory.Exists(path) || !Directory.EnumerateFileSystemEntries(path).Any();
+
+        /// <summary>
+        /// Gets the relative path from one directory to another.
+        /// </summary>
+        /// <param name="fromDirectory">The directory that is the start of</param>
+        /// <param name="toDirectory"></param>
+        /// <returns></returns>
+        public static string GetRelativePath(string fromDirectory, string toDirectory)
+        {
+            var packageDir = new Uri(toDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            var projectDir = new Uri(fromDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            return projectDir.MakeRelativeUri(packageDir).ToString().Replace('/', Path.DirectorySeparatorChar);
+        }
     }
 }

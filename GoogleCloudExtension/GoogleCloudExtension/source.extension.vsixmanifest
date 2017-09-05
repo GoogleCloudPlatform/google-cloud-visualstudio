@@ -1,43 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <!--
+    <Metadata>
+        <!--
     The Version attribute of the Identity element *must* match the version number in Properties\AssemblyInfo.cs, to ensure 
     accurate metrics.
     -->
-    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="1.2.8.0" Language="en-US" Publisher="Google Inc." />
-    <DisplayName>Google Cloud Tools for Visual Studio</DisplayName>
-    <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
-    <MoreInfo>https://cloud.google.com/visual-studio/</MoreInfo>
-    <License>License.txt</License>
-    <Icon>logo_cloud_128.png</Icon>
-    <PreviewImage>logo_cloud_512.png</PreviewImage>
-    <Tags>gcp, gcloud, google, cloud</Tags>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,15.0]" />
-  </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
-  </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v14" Path="|GoogleCloudExtension.TeamExplorerExtension.v14|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v15" Path="|GoogleCloudExtension.TeamExplorerExtension.v15|" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspNetCoreMvc" d:TargetPath="|GoogleAspNetCoreMvc;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspNetCoreWebApi" d:TargetPath="|GoogleAspNetCoreWebApi;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspnetMvc" d:TargetPath="|GoogleAspnetMvc;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GoogleAspnetWebApi" d:TargetPath="|GoogleAspnetWebApi;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="%CurrentProject%.TemplateWizards" Path="|GoogleCloudExtension.TemplateWizards|" AssemblyName="|GoogleCloudExtension.TemplateWizards;AssemblyName|" />
-  </Assets>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.Net.Core.Component.SDK" Version="[15.0.26208.0,16.0)" DisplayName=".NET Core 1.0.1 development tools" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[15.0.26208.0,16.0)" DisplayName="ASP.NET and web development tools" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0.26208.0,16.0)" DisplayName="C# and Visual Basic" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Git" Version="[15.0.26208.0,16.0)" DisplayName="Git for Windows" />
-    <Prerequisite Id="Microsoft.Component.MSBuild" Version="[15.0.26208.0,16.0)" DisplayName="MSBuild" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.26208.0,16.0)" DisplayName="Visual Studio core editor" />
-  </Prerequisites>
+        <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="1.2.8.0" Language="en-US" Publisher="Google Inc." />
+        <DisplayName>Google Cloud Tools for Visual Studio</DisplayName>
+        <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
+        <MoreInfo>https://cloud.google.com/visual-studio/</MoreInfo>
+        <License>License.txt</License>
+        <Icon>logo_cloud_128.png</Icon>
+        <PreviewImage>logo_cloud_512.png</PreviewImage>
+        <Tags>gcp, gcloud, google, cloud</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,15.0]" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v14" Path="|GoogleCloudExtension.TeamExplorerExtension.v14|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v15" Path="|GoogleCloudExtension.TeamExplorerExtension.v15|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="%CurrentProject%.TemplateWizards" Path="|GoogleCloudExtension.TemplateWizards|" AssemblyName="|GoogleCloudExtension.TemplateWizards;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="GcpProjectTemplate" d:TargetPath="|GcpProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.Net.Core.Component.SDK" Version="[15.0.26208.0,16.0)" DisplayName=".NET Core 1.0.1 development tools" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Web" Version="[15.0.26208.0,16.0)" DisplayName="ASP.NET and web development tools" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0.26208.0,16.0)" DisplayName="C# and Visual Basic" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.Git" Version="[15.0.26208.0,16.0)" DisplayName="Git for Windows" />
+        <Prerequisite Id="Microsoft.Component.MSBuild" Version="[15.0.26208.0,16.0)" DisplayName="MSBuild" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.26208.0,16.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
 </PackageManifest>
