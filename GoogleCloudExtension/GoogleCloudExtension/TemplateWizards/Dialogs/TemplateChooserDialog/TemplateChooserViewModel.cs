@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     public class TemplateChooserViewModel : ViewModelBase
     {
         private string _gcpProjectId;
-        private FrameworkType _selectedFramework;
+        private FrameworkType _selectedFramework = (FrameworkType)(-1);
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
         private bool _isMvc;
@@ -54,7 +53,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 if (_selectedFramework != value)
                 {
                     SetValueAndRaise(ref _selectedFramework, value);
-                    AvailableVersions = GetAvailableVersions();
+                    AvailableVersions = AspNetVersion.GetAvailableVersions(
+                        GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
         public TemplateChooserViewModel(Action closeWindow, Func<string> promptPickProject)
         {
-            AvailableFrameworks = FrameworkType.GetAvailableFrameworks();
+            AvailableFrameworks = (FrameworkType[])Enum.GetValues(typeof(FrameworkType));
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
                 () =>
@@ -155,36 +155,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 },
                 false);
             SelectProjectCommand = new ProtectedCommand(() => GcpProjectId = promptPickProject() ?? GcpProjectId);
-        }
-
-        private List<AspNetVersion> GetAvailableVersions()
-        {
-            switch (GoogleCloudExtensionPackage.VsVersion)
-            {
-                case VsVersionUtils.VisualStudio2015Version:
-                    if (SelectedFramework == FrameworkType.NetFramework)
-                    {
-                        return new List<AspNetVersion> { AspNetVersion.AspNet4 };
-                    }
-                    else if (SelectedFramework == FrameworkType.NetCoreApp)
-                    {
-                        return new List<AspNetVersion>(AspNetVersion.Vs2015AspNetCoreVersions);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Unknown Famework type: {SelectedFramework}");
-                    }
-                case VsVersionUtils.VisualStudio2017Version:
-                    var versions = new List<AspNetVersion>(AspNetVersion.Vs2017AspNetCoreVersions);
-                    if (SelectedFramework == FrameworkType.NetFramework)
-                    {
-                        versions.Add(AspNetVersion.AspNet4);
-                    }
-                    return versions;
-                default:
-                    throw new InvalidOperationException(
-                        $"Unknown Visual Studio Version: {GoogleCloudExtensionPackage.VsVersion}");
-            }
         }
     }
 }

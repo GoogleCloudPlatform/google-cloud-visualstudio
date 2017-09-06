@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.VsVersion;
+using System;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
@@ -44,19 +46,25 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// ASP.NET Core versions available to VS 2015.
         /// </summary>
-        public static IReadOnlyList<AspNetVersion> Vs2015AspNetCoreVersions { get; } = new List<AspNetVersion>
+        public static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
-            AspNetCore1Preview
-        };
+            return new List<AspNetVersion>
+            {
+                AspNetCore1Preview
+            };
+        }
 
         /// <summary>
         /// ASP.NET Core versions available to VS 2017.
         /// </summary>
-        public static IReadOnlyList<AspNetVersion> Vs2017AspNetCoreVersions { get; } = new List<AspNetVersion>
+        public static IList<AspNetVersion> GetVs2017AspNetCoreVersions()
         {
-            AspNetCore1,
-            AspNetCore2
-        };
+            return new List<AspNetVersion>
+            {
+                AspNetCore1,
+                AspNetCore2
+            };
+        }
 
         /// <summary>
         /// The version number of ASP.NET. This corrisponds to the version of .NET Core used as well.
@@ -66,7 +74,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// Whether this is ASP.NET or ASP.NET Core
         /// </summary>
-        public bool IsCore { get; }
+        private bool IsCore { get; }
 
         private AspNetVersion(string version, bool isCore = true)
         {
@@ -82,6 +90,33 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
             string nameFormat = IsCore ? Resources.AspNetCoreVersionedName : Resources.AspNetVersionedName;
             return string.Format(nameFormat, Version);
+        }
+
+        public static IList<AspNetVersion> GetAvailableVersions(string vsVersion, FrameworkType framework)
+        {
+            switch (vsVersion)
+            {
+                case VsVersionUtils.VisualStudio2015Version:
+                    switch (framework)
+                    {
+                        case FrameworkType.NetFramework:
+                            return new List<AspNetVersion> { AspNet4 };
+                        case FrameworkType.NetCore:
+                            return GetVs2015AspNetCoreVersions();
+                        default:
+                            throw new InvalidOperationException($"Unknown Famework type: {framework}");
+                    }
+                case VsVersionUtils.VisualStudio2017Version:
+                    IList<AspNetVersion> versions = GetVs2017AspNetCoreVersions();
+                    if (framework == FrameworkType.NetFramework)
+                    {
+                        versions.Add(AspNet4);
+                    }
+                    return versions;
+                default:
+                    throw new InvalidOperationException(
+                        $"Unknown Visual Studio Version: {GoogleCloudExtensionPackage.VsVersion}");
+            }
         }
     }
 }

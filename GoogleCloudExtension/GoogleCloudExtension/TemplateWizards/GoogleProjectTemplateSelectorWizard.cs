@@ -147,7 +147,7 @@ namespace GoogleCloudExtension.TemplateWizards
             {
                 frameworkMoniker = "net461";
             }
-            else if (result.SelectedFramework == FrameworkType.NetCoreApp)
+            else if (result.SelectedFramework == FrameworkType.NetCore)
             {
                 frameworkMoniker = $"netcoreapp{result.SelectedVersion.Version}";
             }

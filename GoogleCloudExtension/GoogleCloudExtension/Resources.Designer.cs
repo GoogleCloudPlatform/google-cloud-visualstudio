@@ -3022,20 +3022,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .NET Framework.
+        ///   Looks up a localized string similar to .NET Core.
         /// </summary>
-        public static string FrameworkTypeDisplayName_net {
+        public static string FrameworkTypeDisplayNameNetCore {
             get {
-                return ResourceManager.GetString("FrameworkTypeDisplayName_net", resourceCulture);
+                return ResourceManager.GetString("FrameworkTypeDisplayNameNetCore", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .NET Core.
+        ///   Looks up a localized string similar to .NET Framework.
         /// </summary>
-        public static string FrameworkTypeDisplayName_netcoreapp {
+        public static string FrameworkTypeDisplayNameNetFramework {
             get {
-                return ResourceManager.GetString("FrameworkTypeDisplayName_netcoreapp", resourceCulture);
+                return ResourceManager.GetString("FrameworkTypeDisplayNameNetFramework", resourceCulture);
             }
         }
         
@@ -5875,15 +5875,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Skip.
-        /// </summary>
-        public static string UiSkipButtonCaption {
-            get {
-                return ResourceManager.GetString("UiSkipButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -6087,15 +6078,6 @@ namespace GoogleCloudExtension {
         public static string WizardPickProjectIdNoAccountMessage {
             get {
                 return ResourceManager.GetString("WizardPickProjectIdNoAccountMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Enter project ID:.
-        /// </summary>
-        public static string WizardPickProjectIdTextLabel {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdTextLabel", resourceCulture);
             }
         }
         

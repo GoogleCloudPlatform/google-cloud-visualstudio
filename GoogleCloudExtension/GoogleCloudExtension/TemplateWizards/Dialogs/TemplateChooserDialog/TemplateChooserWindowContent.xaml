@@ -6,6 +6,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:local="clr-namespace:GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:TemplateChooserViewModel}">
     <UserControl.Resources>
@@ -14,6 +15,9 @@
                 <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../../../Theming/ThemingResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type local:FrameworkType}">
+                <TextBlock Text="{Binding Converter={utils:EnumDisplayNameConverter}}"/>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     

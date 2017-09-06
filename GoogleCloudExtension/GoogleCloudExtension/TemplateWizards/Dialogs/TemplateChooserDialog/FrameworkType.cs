@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
@@ -20,50 +20,18 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// <summary>
     /// An object that describes the type of framework.
     /// </summary>
-    public class FrameworkType
+    public enum FrameworkType
     {
         /// <summary>
-        /// The moniker for .NET Core.
+        /// The enum value for .NET Core.
         /// </summary>
-        public const string NetCoreAppMoniker = "netcoreapp";
+        [LocalizedDisplayName(nameof(Resources.FrameworkTypeDisplayNameNetCore))]
+        NetCore,
 
         /// <summary>
-        /// The moniker for .NET Framework.
+        /// The enum value for .NET Framework.
         /// </summary>
-        public const string NetFrameworkMoniker = "net";
-
-        /// <summary>
-        /// Defines .NET Core.
-        /// </summary>
-        public static readonly FrameworkType NetCoreApp = new FrameworkType(NetCoreAppMoniker);
-
-        /// <summary>
-        /// Defines .NET Framework.
-        /// </summary>
-        public static readonly FrameworkType NetFramework = new FrameworkType(NetFrameworkMoniker);
-
-        /// <summary>
-        /// The versionless moniker of this framework.
-        /// </summary>
-        public string Moniker { get; }
-
-        /// <summary>
-        /// Returns a list of available frameworks.
-        /// </summary>
-        public static IList<FrameworkType> GetAvailableFrameworks() => new List<FrameworkType> { NetCoreApp, NetFramework };
-
-        private FrameworkType(string moniker)
-        {
-            Moniker = moniker;
-
-        }
-
-        /// <summary>
-        /// Returns a localized, human readable description of the framework type.
-        /// </summary>
-        public override string ToString()
-        {
-            return Resources.ResourceManager.GetString($"FrameworkTypeDisplayName_{Moniker}", Resources.Culture);
-        }
+        [LocalizedDisplayName(nameof(Resources.FrameworkTypeDisplayNameNetFramework))]
+        NetFramework
     }
 }

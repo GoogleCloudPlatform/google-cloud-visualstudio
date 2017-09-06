@@ -2447,10 +2447,6 @@
     <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="UiSkipButtonCaption" xml:space="preserve">
-    <value>_Skip</value>
-    <comment>Caption for a Skip button in a UI.</comment>
-  </data>
   <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
     <value>Task Canceled</value>
     <comment>Text to diplay if a task was canceled.</comment>
@@ -2466,10 +2462,6 @@
   <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
-  </data>
-  <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
-    <value>_Enter project ID:</value>
-    <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
   </data>
   <data name="WizardPickProjectIdTitle" xml:space="preserve">
     <value>Select the Google Cloud Platform project that will run this project.</value>
@@ -2791,11 +2783,11 @@
     <value>ASP.NET Framework {0}</value>
     <comment>The display name of an ASP.NET version. The parameter is the version number.</comment>
   </data>
-  <data name="FrameworkTypeDisplayName_net" xml:space="preserve">
+  <data name="FrameworkTypeDisplayNameNetFramework" xml:space="preserve">
     <value>.NET Framework</value>
     <comment>The display name of .NET Framework</comment>
   </data>
-  <data name="FrameworkTypeDisplayName_netcoreapp" xml:space="preserve">
+  <data name="FrameworkTypeDisplayNameNetCore" xml:space="preserve">
     <value>.NET Core</value>
     <comment>The display name of .NET Core</comment>
   </data>
