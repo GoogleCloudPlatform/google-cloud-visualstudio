@@ -12,27 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// An object that describes the type of framework.
+    /// The types of applications we have templates for.
     /// </summary>
-    public enum FrameworkType
+    public enum AppType
     {
-        /// <summary>
-        /// A default empty value.
-        /// </summary>
         None,
-
-        /// <summary>
-        /// The enum value for .NET Core.
-        /// </summary>
-        NetCore,
-
-        /// <summary>
-        /// The enum value for .NET Framework.
-        /// </summary>
-        NetFramework
+        Mvc,
+        WebApi
     }
 }

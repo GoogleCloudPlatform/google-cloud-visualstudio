@@ -30,8 +30,8 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Action<string, bool> DeleteDirectory = Directory.Delete;
         internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
+        internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
         public void RunStarted(
@@ -65,13 +65,7 @@ namespace GoogleCloudExtension.TemplateWizards
             }
             catch
             {
-                DeleteDirectory(replacements[ReplacementsKeys.DestinationDirectoryKey], true);
-                bool isExclusive;
-                if (bool.TryParse(replacements[ReplacementsKeys.ExclusiveProjectKey], out isExclusive) &&
-                    isExclusive)
-                {
-                    DeleteDirectory(replacements[ReplacementsKeys.SolutionDirectoryKey], true);
-                }
+                CleanupDirectories(replacements);
                 throw;
             }
         }

@@ -207,6 +207,7 @@
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModel.cs" />
@@ -216,6 +217,7 @@
       <DependentUpon>TemplateChooserWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
+    <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
     <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />

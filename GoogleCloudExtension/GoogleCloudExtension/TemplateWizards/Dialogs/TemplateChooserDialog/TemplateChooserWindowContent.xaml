@@ -6,7 +6,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:local="clr-namespace:GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog"
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:TemplateChooserViewModel}">
     <UserControl.Resources>
@@ -16,7 +16,15 @@
                 <ResourceDictionary Source="../../../Theming/ThemingResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <DataTemplate DataType="{x:Type local:FrameworkType}">
-                <TextBlock Text="{Binding Converter={utils:EnumDisplayNameConverter}}"/>
+                <TextBlock x:Name="TextDisplay"/>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static local:FrameworkType.NetFramework}">
+                        <Setter TargetName="TextDisplay" Property="Text" Value="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static local:FrameworkType.NetCore}">
+                        <Setter TargetName="TextDisplay" Property="Text" Value="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -71,11 +79,11 @@
                     <RadioButton
                         GroupName="AppType"
                         Content="{x:Static ext:Resources.WizardTemplateChooserMvcLabel}"
-                        IsChecked="{Binding IsMvc}"/>
+                        IsChecked="{Binding AppType, Converter={utils:RadioEnumConverter Target={x:Static local:AppType.Mvc}}}"/>
                     <RadioButton
                         GroupName="AppType"
                         Content="{x:Static ext:Resources.WizardTemplateChooserWebApiLabel}"
-                        IsChecked="{Binding IsWebApi}"/>
+                        IsChecked="{Binding AppType, Converter={utils:RadioEnumConverter Target={x:Static local:AppType.WebApi}}}"/>
                 </StackPanel>
             </DockPanel>
         </StackPanel>

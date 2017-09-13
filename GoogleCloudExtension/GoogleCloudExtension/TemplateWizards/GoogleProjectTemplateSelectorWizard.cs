@@ -37,8 +37,8 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
         // Mockable static methods for unit testing.
-        internal Action<string, bool> DeleteDirectory = Directory.Delete;
         internal Func<string, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
+        internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         /// <inheritdoc/>
         public void RunStarted(
@@ -49,9 +49,8 @@ namespace GoogleCloudExtension.TemplateWizards
         {
             try
             {
-                IServiceProvider serviceProvider = automationObject as IServiceProvider ??
-                    ServiceProvider.GlobalProvider.GetService(typeof(SVsServiceProvider)) as IServiceProvider;
-                var vsSolution = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
+
+                string projectName = replacements[ReplacementsKeys.ProjectNameKey];
 
                 TemplateChooserViewModelResult result;
                 // Enable shortcutting the ui for functional testing.
@@ -62,21 +61,26 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
                 else
                 {
-                    result = PromptUser(replacements[ReplacementsKeys.ProjectNameKey]);
+                    result = PromptUser(projectName);
                 }
                 if (result == null)
                 {
                     throw new WizardBackoutException();
                 }
-                string thisTemplateDirectory = Path.GetDirectoryName((string)customParams[0]);
+                string thisTemplateDirectory =
+                    Path.GetDirectoryName(
+                        Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName((string)customParams[0]))));
+
+
+                object[] newCustomParams = GetNewCustomParams(replacements, customParams.Skip(1), result);
 
                 string version = result.SelectedVersion.Version;
                 string templatePath = Path.Combine(
-                    thisTemplateDirectory, "..", "..", "..", result.AppType, "1033", version, $"{version}.vstemplate");
-                object[] newCustomParams = GetNewCustomParams(replacements, customParams.Skip(1), result);
-
-                string projectName = replacements[ReplacementsKeys.ProjectNameKey];
+                    thisTemplateDirectory, result.AppType.ToString(), "1033", version, $"{version}.vstemplate");
                 string destinationFolder = replacements[ReplacementsKeys.DestinationDirectoryKey];
+
+                var serviceProvider = automationObject as IServiceProvider;
+                var vsSolution = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
                 IVsHierarchy newProject;
                 Marshal.ThrowExceptionForHR(
                     vsSolution.AddNewProjectFromTemplate(
@@ -86,17 +90,7 @@ namespace GoogleCloudExtension.TemplateWizards
             }
             catch
             {
-                if (Directory.Exists(replacements[ReplacementsKeys.DestinationDirectoryKey]))
-                {
-                    DeleteDirectory(replacements[ReplacementsKeys.DestinationDirectoryKey], true);
-                }
-                bool isExclusive;
-                if (Directory.Exists(replacements[ReplacementsKeys.SolutionDirectoryKey]) &&
-                    bool.TryParse(replacements[ReplacementsKeys.ExclusiveProjectKey], out isExclusive) &&
-                    isExclusive)
-                {
-                    DeleteDirectory(replacements[ReplacementsKeys.SolutionDirectoryKey], true);
-                }
+                CleanupDirectories(replacements);
                 throw;
             }
             // Delegated wizard created the solution. Cancel repeated creation of the solution.

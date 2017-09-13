@@ -25,12 +25,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class TemplateChooserViewModel : ViewModelBase
     {
+
         private string _gcpProjectId;
-        private FrameworkType _selectedFramework = (FrameworkType)(-1);
+        private FrameworkType _selectedFramework = FrameworkType.None;
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
-        private bool _isMvc;
-        private bool _isWebApi;
+        private AppType _appType = AppType.None;
         private IList<FrameworkType> _availableFrameworks;
 
         /// <summary>
@@ -40,6 +40,22 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
             get { return _gcpProjectId; }
             set { SetValueAndRaise(ref _gcpProjectId, value); }
+        }
+
+        /// <summary>
+        /// The list of availeble frameworks.
+        /// </summary>
+        public IList<FrameworkType> AvailableFrameworks
+        {
+            get { return _availableFrameworks; }
+            private set
+            {
+                SetValueAndRaise(ref _availableFrameworks, value);
+                if (!AvailableFrameworks.Contains(SelectedFramework))
+                {
+                    SelectedFramework = AvailableFrameworks.First();
+                }
+            }
         }
 
         /// <summary>
@@ -55,31 +71,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     SetValueAndRaise(ref _selectedFramework, value);
                     AvailableVersions = AspNetVersion.GetAvailableVersions(
                         GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The selected version.
-        /// </summary>
-        public AspNetVersion SelectedVersion
-        {
-            get { return _selectedVersion; }
-            set { SetValueAndRaise(ref _selectedVersion, value); }
-        }
-
-        /// <summary>
-        /// The list of availeble frameworks.
-        /// </summary>
-        public IList<FrameworkType> AvailableFrameworks
-        {
-            get { return _availableFrameworks; }
-            private set
-            {
-                SetValueAndRaise(ref _availableFrameworks, value);
-                if (!AvailableFrameworks.Contains(SelectedFramework))
-                {
-                    SelectedFramework = AvailableFrameworks.First();
                 }
             }
         }
@@ -101,28 +92,24 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         }
 
         /// <summary>
-        /// If the app will be an MVC app.
+        /// The selected version.
         /// </summary>
-        public bool IsMvc
+        public AspNetVersion SelectedVersion
         {
-            get { return _isMvc; }
-            set
-            {
-                SetValueAndRaise(ref _isMvc, value);
-                OkCommand.CanExecuteCommand = IsMvc || IsWebApi;
-            }
+            get { return _selectedVersion; }
+            set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
         /// <summary>
-        /// If the app will be a WebAPI app.
+        /// The type of the app, MVC or WebAPI.
         /// </summary>
-        public bool IsWebApi
+        public AppType AppType
         {
-            get { return _isWebApi; }
+            get { return _appType; }
             set
             {
-                SetValueAndRaise(ref _isWebApi, value);
-                OkCommand.CanExecuteCommand = IsMvc || IsWebApi;
+                SetValueAndRaise(ref _appType, value);
+                OkCommand.CanExecuteCommand = _appType != AppType.None;
             }
         }
 
@@ -145,7 +132,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
         public TemplateChooserViewModel(Action closeWindow, Func<string> promptPickProject)
         {
-            AvailableFrameworks = (FrameworkType[])Enum.GetValues(typeof(FrameworkType));
+            AvailableFrameworks = new[] { FrameworkType.NetCore, FrameworkType.NetFramework };
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
                 () =>

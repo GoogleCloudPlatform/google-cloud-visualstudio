@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
     /// The results from the Template Chooser dialog.
+    /// This is an immutable subset of data of a <see cref="TemplateChooserViewModel"/>.
     /// </summary>
     public class TemplateChooserViewModelResult
     {
@@ -36,40 +37,32 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public AspNetVersion SelectedVersion { get; }
 
-        private readonly bool _isMvc;
-
-        private readonly bool _isWebApi;
-
         /// <summary>
         /// The type of application to create.
         /// </summary>
-        public string AppType
-        {
-            get
-            {
-                if (_isMvc)
-                {
-                    return "MVC";
-                }
-                else if (_isWebApi)
-                {
-                    return "WebAPI";
-                }
-                else
-                {
-                    throw new InvalidOperationException("Result should be either MVC or WebAPI.");
-                }
-            }
-        }
+        public AppType AppType { get; }
 
-        /// <param name="templateChooserViewModel">The view model this results object will pull its data from.</param>
+        /// <param name="templateChooserViewModel">The view model this result object will pull its data from.</param>
         public TemplateChooserViewModelResult(TemplateChooserViewModel templateChooserViewModel)
         {
             GcpProjectId = templateChooserViewModel.GcpProjectId;
             SelectedFramework = templateChooserViewModel.SelectedFramework;
             SelectedVersion = templateChooserViewModel.SelectedVersion;
-            _isMvc = templateChooserViewModel.IsMvc;
-            _isWebApi = templateChooserViewModel.IsWebApi;
+            AppType = templateChooserViewModel.AppType;
+        }
+
+        /// <summary>Constructor used for testing and for building from Json data.</summary>
+        [JsonConstructor]
+        internal TemplateChooserViewModelResult(
+            string gcpProjectId,
+            FrameworkType selectedFramework,
+            AspNetVersion selectedVersion,
+            AppType appType)
+        {
+            GcpProjectId = gcpProjectId;
+            SelectedFramework = selectedFramework;
+            SelectedVersion = selectedVersion;
+            AppType = appType;
         }
     }
 }

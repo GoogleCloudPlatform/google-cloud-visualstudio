@@ -23,7 +23,6 @@ using System.ComponentModel.Composition.Hosting;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
-
     /// <summary>
     /// A template wizard that delegates to an implementation of IWizard received via MEF.
     /// </summary>

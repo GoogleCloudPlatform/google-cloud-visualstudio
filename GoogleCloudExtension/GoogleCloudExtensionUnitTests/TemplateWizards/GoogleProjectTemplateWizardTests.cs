@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards
 {
+    /// <summary>
+    /// Class for testing <see cref="GoogleProjectTemplateWizard"/>
+    /// </summary>
     [TestClass]
     public class GoogleProjectTemplateWizardTests
     {
@@ -35,7 +38,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             {SolutionDirectoryBackslash, SolutionDirectoryBackslashEnd, SolutionDirectorySlash, SolutionDirectorySlashEnd};
 
         private GoogleProjectTemplateWizard _objectUnderTest;
-        private Mock<Action<string, bool>> _deleteDirectoryMock;
+        private Mock<Action<Dictionary<string, string>>> _cleanupDirectoriesMock;
         private Mock<Func<string>> _pickProjectMock;
         private Dictionary<string, string> _replacementsDictionary;
         private DTE _mockedDte;
@@ -45,12 +48,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             _mockedDte = Mock.Of<DTE>(dte => dte.CommandLineArguments == "");
             _pickProjectMock = new Mock<Func<string>>();
-            _deleteDirectoryMock = new Mock<Action<string, bool>>();
+            _cleanupDirectoriesMock = new Mock<Action<Dictionary<string, string>>>();
             _objectUnderTest =
                 new GoogleProjectTemplateWizard
                 {
                     PromptPickProjectId = _pickProjectMock.Object,
-                    DeleteDirectory = _deleteDirectoryMock.Object
+                    CleanupDirectories = _cleanupDirectoriesMock.Object
                 };
             _replacementsDictionary = new Dictionary<string, string>
             {
@@ -61,35 +64,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardBackoutException))]
-        public void TestRunStartedCanceledExclusive()
-        {
-            _pickProjectMock.Setup(x => x()).Returns(() => null);
-            _replacementsDictionary.Add(ExclusiveProjectKey, bool.TrueString);
-
-            try
-            {
-                _objectUnderTest.RunStarted(
-                    _mockedDte,
-                    _replacementsDictionary,
-                    WizardRunKind.AsNewProject,
-                    new object[0]);
-                Assert.Fail();
-            }
-            finally
-            {
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, It.IsNotIn(true)), Times.Never);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, It.IsNotIn(true)), Times.Never);
-                _deleteDirectoryMock.Verify(
-                    f => f(It.IsNotIn(ProjectDirectoryBackslash, SolutionDirectoryBackslash), It.IsAny<bool>()),
-                    Times.Never);
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(WizardBackoutException))]
-        public void TestRunStartedCanceledNonExclusive()
+        public void TestRunStartedCanceled()
         {
             _pickProjectMock.Setup(x => x()).Returns(() => null);
             _replacementsDictionary.Add(ExclusiveProjectKey, bool.FalseString);
@@ -105,12 +80,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
             finally
             {
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, true), Times.Once);
-                _deleteDirectoryMock.Verify(f => f(ProjectDirectoryBackslash, It.IsNotIn(true)), Times.Never);
-                _deleteDirectoryMock.Verify(f => f(SolutionDirectoryBackslash, It.IsAny<bool>()), Times.Never);
-                _deleteDirectoryMock.Verify(
-                    f => f(It.IsNotIn(ProjectDirectoryBackslash, SolutionDirectoryBackslash), It.IsAny<bool>()),
-                    Times.Never);
+                _cleanupDirectoriesMock.Verify(f => f(_replacementsDictionary), Times.Once);
+                _cleanupDirectoriesMock.Verify(f => f(It.IsNotIn(_replacementsDictionary)), Times.Never);
             }
         }
 
@@ -123,7 +94,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 foreach (string solutionDir in s_solutionDirectoriesToTest)
                 {
                     string message = $"For test case\nprojectDir: {projectDir}\nsolutionDir: {solutionDir}";
-                    _deleteDirectoryMock.ResetCalls();
+                    _cleanupDirectoriesMock.ResetCalls();
                     _replacementsDictionary = new Dictionary<string, string>
                     {
                         {DestinationDirectoryKey, projectDir},
@@ -136,7 +107,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                         WizardRunKind.AsNewProject,
                         new object[0]);
 
-                    _deleteDirectoryMock.Verify(f => f(It.IsAny<string>(), It.IsAny<bool>()), Times.Never, message);
+                    _cleanupDirectoriesMock.Verify(f => f(It.IsAny<Dictionary<string, string>>()), Times.Never, message);
                     Assert.IsTrue(_replacementsDictionary.ContainsKey(GcpProjectIdKey), message);
                     Assert.AreEqual(string.Empty, _replacementsDictionary[GcpProjectIdKey], message);
                     Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey), message);
@@ -156,7 +127,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 WizardRunKind.AsNewProject,
                 new object[0]);
 
-            _deleteDirectoryMock.Verify(f => f(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+            _cleanupDirectoriesMock.Verify(f => f(It.IsAny<Dictionary<string, string>>()), Times.Never);
             Assert.IsTrue(_replacementsDictionary.ContainsKey(GcpProjectIdKey));
             Assert.AreEqual(MockProjectId, _replacementsDictionary[GcpProjectIdKey]);
             Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey));

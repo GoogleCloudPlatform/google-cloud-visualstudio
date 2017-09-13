@@ -1,0 +1,9 @@
+﻿TemplateName, Framework, IsCoreTemplate, Version, AppType
+GcpAspNetCoreMvc10, NetCore, true, "v1.0", Mvc
+GcpAspNetCoreMvc11, NetCore, true, "v1.1", Mvc
+GcpAspNetCoreMvc20, NetCore, true, "v2.0", Mvc
+GcpAspNetMvc, NetFramework, false, v4, Mvc
+GcpAspNetCoreWebApi10, NetCore, true, "v1.0", WebApi
+GcpAspNetCoreWebApi11, NetCore, true, "v1.1", WebApi
+GcpAspNetCoreWebApi20, NetCore, true, "v2.0", WebApi
+GcpAspNetWebApi, NetFramework, false, v4, WebApi

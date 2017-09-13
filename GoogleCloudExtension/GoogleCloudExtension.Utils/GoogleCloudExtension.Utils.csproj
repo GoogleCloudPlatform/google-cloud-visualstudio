@@ -67,6 +67,7 @@
     <Compile Include="DataGridBehaviors.cs" />
     <Compile Include="DataGridColumnCustomSorter.cs" />
     <Compile Include="Disposable.cs" />
+    <Compile Include="RadioEnumConverter.cs" />
     <Compile Include="IColumnSorter.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
