@@ -19,8 +19,17 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public enum AppType
     {
+        /// <summary>
+        /// For selecting no template.
+        /// </summary>
         None,
+        /// <summary>
+        /// For a template using ASP.NET's Model View Controller pattern.
+        /// </summary>
         Mvc,
+        /// <summary>
+        /// For a template using ASP.NET's HTTP APIs.
+        /// </summary>
         WebApi
     }
 }
