@@ -127,14 +127,17 @@ namespace GoogleCloudExtension.Deployment
                 }
 
                 NetCoreAppUtils.CopyOrCreateDockerfile(project, appRootPath);
-                var image = CloudBuilderUtils.CreateBuildFile(
+                var imageTag = CloudBuilderUtils.GetImageTag(
                     project: options.GCloudContext.ProjectId,
                     imageName: options.DeploymentName,
-                    imageVersion: options.DeploymentVersion,
-                    buildFilePath: buildFilePath);
+                    imageVersion: options.DeploymentVersion);
 
                 if (!await ProgressHelper.UpdateProgress(
-                    GCloudWrapper.BuildContainerAsync(buildFilePath, appRootPath, outputAction, options.GCloudContext),
+                    GCloudWrapper.BuildContainerAsync(
+                        imageTag: imageTag,
+                        contentsPath: appRootPath,
+                        outputAction: outputAction,
+                        context: options.GCloudContext),
                     progress,
                     from: 0.4, to: 0.7))
                 {
@@ -159,7 +162,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine($"Creating new deployment {options.DeploymentName}");
                     if (!await KubectlWrapper.CreateDeploymentAsync(
                             name: options.DeploymentName,
-                            imageTag: image,
+                            imageTag: imageTag,
                             replicas: options.Replicas,
                             outputAction: outputAction,
                             context: options.KubectlContext))
@@ -174,7 +177,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine($"Updating existing deployment {options.DeploymentName}");
                     if (!await KubectlWrapper.UpdateDeploymentImageAsync(
                             options.DeploymentName,
-                            image,
+                            imageTag,
                             outputAction,
                             options.KubectlContext))
                     {
