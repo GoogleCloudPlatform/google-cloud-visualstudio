@@ -15,17 +15,6 @@
                 <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../../../Theming/ThemingResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate DataType="{x:Type local:FrameworkType}">
-                <TextBlock x:Name="TextDisplay"/>
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding}" Value="{x:Static local:FrameworkType.NetFramework}">
-                        <Setter TargetName="TextDisplay" Property="Text" Value="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding}" Value="{x:Static local:FrameworkType.NetCore}">
-                        <Setter TargetName="TextDisplay" Property="Text" Value="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"/>
-                    </DataTrigger>
-                </DataTemplate.Triggers>
-            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -52,9 +41,17 @@
                 <StackPanel Orientation="Horizontal">
                     <ComboBox
                         x:Name="_targetFramework"
-                        ItemsSource="{Binding AvailableFrameworks}"
-                        SelectedItem="{Binding SelectedFramework}"
-                        MinWidth="150px"/>
+                        SelectedValuePath="Tag"
+                        SelectedValue="{Binding SelectedFramework}"
+                        MinWidth="150px">
+                        
+                        <ComboBoxItem
+                            Tag="{x:Static local:FrameworkType.NetCore}"
+                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"/>
+                        <ComboBoxItem
+                            Tag="{x:Static local:FrameworkType.NetFramework}"
+                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}"/>
+                    </ComboBox>
                     <ComboBox
                         ItemsSource="{Binding AvailableVersions}"
                         SelectedItem="{Binding SelectedVersion}"
@@ -79,11 +76,11 @@
                     <RadioButton
                         GroupName="AppType"
                         Content="{x:Static ext:Resources.WizardTemplateChooserMvcLabel}"
-                        IsChecked="{Binding AppType, Converter={utils:RadioEnumConverter Target={x:Static local:AppType.Mvc}}}"/>
+                        IsChecked="{Binding IsMvc}"/>
                     <RadioButton
                         GroupName="AppType"
                         Content="{x:Static ext:Resources.WizardTemplateChooserWebApiLabel}"
-                        IsChecked="{Binding AppType, Converter={utils:RadioEnumConverter Target={x:Static local:AppType.WebApi}}}"/>
+                        IsChecked="{Binding IsWebApi}"/>
                 </StackPanel>
             </DockPanel>
         </StackPanel>

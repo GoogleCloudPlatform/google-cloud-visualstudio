@@ -59,10 +59,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
-
-            CollectionAssert.AreEqual(
-                new[] { FrameworkType.NetCore, FrameworkType.NetFramework },
-                _objectUnderTest.AvailableFrameworks.ToList());
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore1Preview }, _objectUnderTest.AvailableVersions.ToList());
@@ -77,9 +73,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            CollectionAssert.AreEqual(
-                new[] { FrameworkType.NetCore, FrameworkType.NetFramework },
-                _objectUnderTest.AvailableFrameworks.ToList());
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
@@ -88,29 +81,75 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void TestSetAppTypeMvc()
+        public void TestSetMvc()
         {
-            _objectUnderTest.AppType = AppType.Mvc;
+            _objectUnderTest.IsMvc = true;
 
+            Assert.IsTrue(_objectUnderTest.IsMvc);
+            Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
             Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void TestSetAppTypeWebApi()
+        public void TestChangeToMvc()
         {
-            _objectUnderTest.AppType = AppType.WebApi;
+            _objectUnderTest.IsWebApi = true;
 
+            _objectUnderTest.IsMvc = true;
+
+            Assert.IsTrue(_objectUnderTest.IsMvc);
+            Assert.IsFalse(_objectUnderTest.IsWebApi);
+            Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
+            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestUnsetMvc()
+        {
+            _objectUnderTest.IsMvc = true;
+
+            _objectUnderTest.IsMvc = false;
+
+            Assert.IsFalse(_objectUnderTest.IsMvc);
+            Assert.IsFalse(_objectUnderTest.IsWebApi);
+            Assert.AreEqual(AppType.None, _objectUnderTest.AppType);
+            Assert.IsFalse(_objectUnderTest.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestSetWebApi()
+        {
+            _objectUnderTest.IsWebApi = true;
+
+            Assert.IsFalse(_objectUnderTest.IsMvc);
+            Assert.IsTrue(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.WebApi, _objectUnderTest.AppType);
             Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void TestSetAppTypeNone()
+        public void TestChangeToWebApi()
         {
-            _objectUnderTest.AppType = AppType.Mvc;
-            _objectUnderTest.AppType = AppType.None;
+            _objectUnderTest.IsMvc = true;
 
+            _objectUnderTest.IsWebApi = true;
+
+            Assert.IsFalse(_objectUnderTest.IsMvc);
+            Assert.IsTrue(_objectUnderTest.IsWebApi);
+            Assert.AreEqual(AppType.WebApi, _objectUnderTest.AppType);
+            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestUnsetWebApi()
+        {
+            _objectUnderTest.IsWebApi = true;
+
+            _objectUnderTest.IsWebApi = false;
+
+            Assert.IsFalse(_objectUnderTest.IsMvc);
+            Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.None, _objectUnderTest.AppType);
             Assert.IsFalse(_objectUnderTest.OkCommand.CanExecuteCommand);
         }

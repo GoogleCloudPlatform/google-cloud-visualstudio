@@ -27,11 +27,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     {
 
         private string _gcpProjectId;
-        private FrameworkType _selectedFramework = FrameworkType.None;
+        private FrameworkType _selectedFramework;
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
         private AppType _appType = AppType.None;
-        private IList<FrameworkType> _availableFrameworks;
 
         /// <summary>
         /// The id of a google cloud project.
@@ -43,22 +42,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         }
 
         /// <summary>
-        /// The list of availeble frameworks.
-        /// </summary>
-        public IList<FrameworkType> AvailableFrameworks
-        {
-            get { return _availableFrameworks; }
-            private set
-            {
-                SetValueAndRaise(ref _availableFrameworks, value);
-                if (!AvailableFrameworks.Contains(SelectedFramework))
-                {
-                    SelectedFramework = AvailableFrameworks.First();
-                }
-            }
-        }
-
-        /// <summary>
         /// The selected framework.
         /// </summary>
         public FrameworkType SelectedFramework
@@ -66,12 +49,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             get { return _selectedFramework; }
             set
             {
-                if (_selectedFramework != value)
-                {
-                    SetValueAndRaise(ref _selectedFramework, value);
-                    AvailableVersions = AspNetVersion.GetAvailableVersions(
-                        GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
-                }
+                SetValueAndRaise(ref _selectedFramework, value);
+                AvailableVersions = AspNetVersion.GetAvailableVersions(
+                    GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
             }
         }
 
@@ -101,12 +81,50 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         }
 
         /// <summary>
+        /// True if the <see cref="AppType"/> is <see cref="TemplateChooserDialog.AppType.Mvc"/>
+        /// </summary>
+        public bool IsMvc
+        {
+            get { return AppType == AppType.Mvc; }
+            set
+            {
+                if (value)
+                {
+                    AppType = AppType.Mvc;
+                }
+                else if (AppType == AppType.Mvc)
+                {
+                    AppType = AppType.None;
+                }
+            }
+        }
+
+        /// <summary>
+        /// True if the <see cref="AppType"/> is <see cref="TemplateChooserDialog.AppType.WebApi"/>
+        /// </summary>
+        public bool IsWebApi
+        {
+            get { return AppType == AppType.WebApi; }
+            set
+            {
+                if (value)
+                {
+                    AppType = AppType.WebApi;
+                }
+                else if (AppType == AppType.WebApi)
+                {
+                    AppType = AppType.None;
+                }
+            }
+        }
+
+        /// <summary>
         /// The type of the app, MVC or WebAPI.
         /// </summary>
         public AppType AppType
         {
             get { return _appType; }
-            set
+            private set
             {
                 SetValueAndRaise(ref _appType, value);
                 OkCommand.CanExecuteCommand = _appType != AppType.None;
@@ -132,7 +150,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
         public TemplateChooserViewModel(Action closeWindow, Func<string> promptPickProject)
         {
-            AvailableFrameworks = new[] { FrameworkType.NetCore, FrameworkType.NetFramework };
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
                 () =>
@@ -142,6 +159,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 },
                 false);
             SelectProjectCommand = new ProtectedCommand(() => GcpProjectId = promptPickProject() ?? GcpProjectId);
+            SelectedFramework = FrameworkType.NetCore;
         }
     }
 }
