@@ -48,5 +48,124 @@ namespace GoogleCloudExtension.Utils.UnitTests
                 Environment.SetEnvironmentVariable("PATH", path);
             }
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void TestEnsureEndSeparatorNull()
+        {
+            PathUtils.EnsureEndSeparator(null);
+        }
+
+        [TestMethod]
+        public void TestEnsureEndSeparatorEndBackslash()
+        {
+            const string input = @"root:\\Directory\\";
+
+            string result = input.EnsureEndSeparator();
+
+            Assert.AreEqual(input, result);
+        }
+
+        [TestMethod]
+        public void TestEnsureEndSeparatorEndSlash()
+        {
+            const string input = "root:/Directory/";
+
+            string result = input.EnsureEndSeparator();
+
+            Assert.AreEqual(input, result);
+        }
+
+        [TestMethod]
+        public void TestEnsureEndSeparatorMissingBackslash()
+        {
+            const string input = @"root:\Directory";
+
+            string result = input.EnsureEndSeparator();
+
+            Assert.AreEqual(input + @"\", result);
+        }
+
+        [TestMethod]
+        public void TestEnsureEndSeparatorMissingSlash()
+        {
+            const string input = "root:/Directory";
+
+            string result = input.EnsureEndSeparator();
+
+            Assert.AreEqual(input + @"\", result);
+        }
+
+        [TestMethod]
+        public void TestGetRelativePathSame()
+        {
+            const string fromDir = @"root:\Directory";
+
+            string result1 = GetRelativePath(fromDir, fromDir);
+            string result2 = GetRelativePath(fromDir.Replace('\\', '/'), fromDir);
+            string result3 = GetRelativePath(fromDir, fromDir.Replace('\\', '/'));
+            string result4 = GetRelativePath(fromDir.Replace('\\', '/'), fromDir.Replace('\\', '/'));
+
+            const string expected = "";
+            Assert.AreEqual(expected, result1);
+            Assert.AreEqual(expected, result2);
+            Assert.AreEqual(expected, result3);
+            Assert.AreEqual(expected, result4);
+        }
+
+        [TestMethod]
+        public void TestGetRelativePathToParent()
+        {
+            const string fromDir = @"root:\BaseDir\Directory";
+            const string toDir = @"root:\BaseDir";
+
+            string result1 = GetRelativePath(fromDir, toDir);
+            string result2 = GetRelativePath(fromDir.Replace('\\', '/'), toDir);
+            string result3 = GetRelativePath(fromDir, toDir.Replace('\\', '/'));
+            string result4 = GetRelativePath(fromDir.Replace('\\', '/'), toDir.Replace('\\', '/'));
+
+            const string expected = @"..\";
+            Assert.AreEqual(expected, result1);
+            Assert.AreEqual(expected, result2);
+            Assert.AreEqual(expected, result3);
+            Assert.AreEqual(expected, result4);
+        }
+
+        [TestMethod]
+        public void TestGetRelativePathToChild()
+        {
+            const string fromDir = @"root:\BaseDir";
+            const string toDir = @"root:\BaseDir\Directory";
+
+
+            string result1 = GetRelativePath(fromDir, toDir);
+            string result2 = GetRelativePath(fromDir.Replace('\\', '/'), toDir);
+            string result3 = GetRelativePath(fromDir, toDir.Replace('\\', '/'));
+            string result4 = GetRelativePath(fromDir.Replace('\\', '/'), toDir.Replace('\\', '/'));
+
+            const string expected = @"Directory\";
+            Assert.AreEqual(expected, result1);
+            Assert.AreEqual(expected, result2);
+            Assert.AreEqual(expected, result3);
+            Assert.AreEqual(expected, result4);
+        }
+
+        [TestMethod]
+        public void TestGetRelativePathCousin()
+        {
+            const string fromDir = @"root:\BaseDir\SomeDir";
+            const string toDir = @"root:\BaseDir\OtherDir";
+
+            string result1 = GetRelativePath(fromDir, toDir);
+            string result2 = GetRelativePath(fromDir.Replace('\\', '/'), toDir);
+            string result3 = GetRelativePath(fromDir, toDir.Replace('\\', '/'));
+            string result4 = GetRelativePath(fromDir.Replace('\\', '/'), toDir.Replace('\\', '/'));
+
+            const string expected = @"..\OtherDir\";
+            Assert.AreEqual(expected, result1);
+            Assert.AreEqual(expected, result2);
+            Assert.AreEqual(expected, result3);
+            Assert.AreEqual(expected, result4);
+        }
     }
 }

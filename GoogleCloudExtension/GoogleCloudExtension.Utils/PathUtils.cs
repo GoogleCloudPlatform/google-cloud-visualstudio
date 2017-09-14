@@ -20,7 +20,7 @@ using System.Linq;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Helper functions for file path operations. 
+    /// Helper functions for file path operations.
     /// </summary>
     public static class PathUtils
     {
@@ -70,9 +70,29 @@ namespace GoogleCloudExtension.Utils
         /// </returns>
         public static string GetRelativePath(string fromDirectory, string toDirectory)
         {
+            // Ensure all path separator characters are '/', which Uri handles correctly.
             var fromUri = new Uri(fromDirectory.EnsureEndSeparator().Replace('\\', '/'));
             var toUri = new Uri(toDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            // Convert Uri path separators back to OS directory separators.
             return fromUri.MakeRelativeUri(toUri).ToString().Replace('/', Path.DirectorySeparatorChar);
+        }
+
+        /// <summary>
+        /// Adds a trailing slash if the directory is missing it.
+        /// </summary>
+        /// <param name="directoryString">The directory path string.</param>
+        /// <returns>The path to the directory with a trailing separator character.</returns>
+        public static string EnsureEndSeparator(this string directoryString)
+        {
+            directoryString.ThrowIfNull(nameof(directoryString));
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
+            {
+                return directoryString + Path.DirectorySeparatorChar;
+            }
+            else
+            {
+                return directoryString;
+            }
         }
     }
 }
