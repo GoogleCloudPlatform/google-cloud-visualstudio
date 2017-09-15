@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace $safeprojectname$.Controllers
+namespace SafeProjectName.Controllers
 {
     public class HomeController : Controller
     {

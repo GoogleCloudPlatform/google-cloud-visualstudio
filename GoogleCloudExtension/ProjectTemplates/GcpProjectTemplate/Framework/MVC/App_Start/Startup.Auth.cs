@@ -5,9 +5,9 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
-using $safeprojectname$.Models;
+using SafeProjectName.Models;
 
-namespace $safeprojectname$
+namespace SafeProjectName
 {
     public partial class Startup
     {

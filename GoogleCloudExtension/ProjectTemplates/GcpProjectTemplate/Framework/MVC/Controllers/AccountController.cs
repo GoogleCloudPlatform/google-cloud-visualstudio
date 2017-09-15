@@ -8,9 +8,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using $safeprojectname$.Models;
+using SafeProjectName.Models;
 
-namespace $safeprojectname$.Controllers
+namespace SafeProjectName.Controllers
 {
     [Authorize]
     public class AccountController : Controller

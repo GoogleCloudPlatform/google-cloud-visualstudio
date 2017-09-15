@@ -49,7 +49,6 @@ namespace GoogleCloudExtension.TemplateWizards
         {
             try
             {
-
                 string projectName = replacements[ReplacementsKeys.ProjectNameKey];
 
                 TemplateChooserViewModelResult result;
@@ -72,6 +71,7 @@ namespace GoogleCloudExtension.TemplateWizards
                         Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName((string)customParams[0]))));
 
 
+                var serviceProvider = automationObject as IServiceProvider;
                 object[] newCustomParams = GetNewCustomParams(replacements, customParams.Skip(1), result);
 
                 string version = result.SelectedVersion.Version;
@@ -79,7 +79,6 @@ namespace GoogleCloudExtension.TemplateWizards
                     thisTemplateDirectory, result.AppType.ToString(), "1033", version, $"{version}.vstemplate");
                 string destinationFolder = replacements[ReplacementsKeys.DestinationDirectoryKey];
 
-                var serviceProvider = automationObject as IServiceProvider;
                 var vsSolution = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
                 IVsHierarchy newProject;
                 Marshal.ThrowExceptionForHR(
@@ -128,7 +127,7 @@ namespace GoogleCloudExtension.TemplateWizards
         }
 
         private static object[] GetNewCustomParams(
-            Dictionary<string, string> replacements,
+            IReadOnlyDictionary<string, string> replacements,
             IEnumerable customParams,
             TemplateChooserViewModelResult result)
         {
@@ -136,27 +135,35 @@ namespace GoogleCloudExtension.TemplateWizards
             string projectDirectory = replacements[ReplacementsKeys.DestinationDirectoryKey];
             string packageDirectory = Path.Combine(solutionDirectory, "packages");
             string relativePackagesPath = PathUtils.GetRelativePath(projectDirectory, packageDirectory);
-            string frameworkMoniker;
-            if (result.SelectedFramework == FrameworkType.NetFramework)
-            {
-                frameworkMoniker = "net461";
-            }
-            else if (result.SelectedFramework == FrameworkType.NetCore)
-            {
-                frameworkMoniker = $"netcoreapp{result.SelectedVersion.Version}";
-            }
-            else
-            {
-                throw new InvalidOperationException($"Unknown {typeof(FrameworkType)}: {result.SelectedFramework}");
-            }
 
             var additionalCustomParams = new List<string>
             {
                 $"{ReplacementsKeys.GcpProjectIdKey}={result.GcpProjectId}",
                 $"{ReplacementsKeys.SolutionDirectoryKey}={solutionDirectory}",
                 $"{ReplacementsKeys.PackagesPathKey}={relativePackagesPath}",
-                $"{ReplacementsKeys.TargetFrameworkKey}={frameworkMoniker}"
             };
+
+            // TODO(jimwp): Find the latest framework version using IVsFrameworkMultiTargeting.
+            if (result.SelectedVersion.IsCore)
+            {
+                switch (result.SelectedFramework)
+                {
+                    case FrameworkType.NetFramework:
+                        var targetFramework = "net461";
+                        additionalCustomParams.Add($"netcoreapp{result.SelectedVersion.Version}={targetFramework}");
+                        break;
+                    case FrameworkType.NetCore:
+                        // Do nothing.
+                        break;
+                    case FrameworkType.None:
+                        throw new InvalidOperationException(
+                            $"{nameof(result.SelectedFramework)} must be one either " +
+                            $"{FrameworkType.NetCore} or {FrameworkType.NetFramework}.");
+                    default:
+                        throw new InvalidOperationException(
+                            $"Invalid {nameof(FrameworkType)}: {result.SelectedFramework}");
+                }
+            }
             return customParams.Cast<string>().Concat(additionalCustomParams).ToArray<object>();
         }
     }

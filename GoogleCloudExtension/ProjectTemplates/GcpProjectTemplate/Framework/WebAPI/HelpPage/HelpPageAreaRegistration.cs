@@ -1,7 +1,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 
-namespace $safeprojectname$.Areas.HelpPage
+namespace SafeProjectName.Areas.HelpPage
 {
     public class HelpPageAreaRegistration : AreaRegistration
     {

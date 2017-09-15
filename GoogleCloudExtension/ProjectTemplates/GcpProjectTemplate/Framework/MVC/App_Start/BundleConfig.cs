@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace $safeprojectname$
+namespace SafeProjectName
 {
     public class BundleConfig
     {

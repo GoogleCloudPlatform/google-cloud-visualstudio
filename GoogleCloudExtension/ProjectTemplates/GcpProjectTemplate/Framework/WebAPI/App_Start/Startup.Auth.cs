@@ -8,10 +8,10 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
-using $safeprojectname$.Providers;
-using $safeprojectname$.Models;
+using SafeProjectName.Providers;
+using SafeProjectName.Models;
 
-namespace $safeprojectname$
+namespace SafeProjectName
 {
     public partial class Startup
     {
