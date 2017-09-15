@@ -377,6 +377,30 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestRunStartedUnknownFrameworkType()
+        {
+            _promptResult = new TemplateChooserViewModelResult(
+                DefaultProjectId, (FrameworkType)(-1), AspNetVersion.AspNetCore10, DefaultAppType);
+            try
+            {
+                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+            }
+            catch (InvalidOperationException)
+            {
+                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
+                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
+                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Once);
+                _solutionMock.Verify(
+                    s => s.AddNewProjectFromTemplate(
+                        It.IsAny<string>(), It.IsAny<Array>(), It.IsAny<string>(),
+                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                    Times.Never);
+                throw;
+            }
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
         public void TestProjectFinishedGenerating()
         {
