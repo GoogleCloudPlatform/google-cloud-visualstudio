@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Microsoft.Win32;
 using Process = System.Diagnostics.Process;
 using Thread = System.Threading.Thread;
 
@@ -29,7 +30,7 @@ namespace ProjectTemplate.Tests
     /// the <see cref="DTE2"/> automation object,
     /// and a <see cref="ComMessageFilter"/>.
     /// </summary>
-    public class VisualStudioWrapper : IDisposable
+    public sealed class VisualStudioWrapper : IDisposable
     {
         private static readonly TimeSpan s_timeout = TimeSpan.FromMinutes(2);
         private static readonly int s_timeoutMills = (int)s_timeout.TotalMilliseconds;
@@ -80,7 +81,7 @@ namespace ProjectTemplate.Tests
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             try
             {
@@ -127,20 +128,49 @@ namespace ProjectTemplate.Tests
         {
             try
             {
-                // Try the devenv on the path first.
-                return new VisualStudioWrapper("devenv", "/rootSuffix Exp");
+                // Try the currently running Visual Studio instance first.
+                var tempDte = (DTE)Marshal.GetActiveObject("VisualStudio.DTE");
+                return new VisualStudioWrapper(tempDte.FullName, "/rootSuffix Exp");
             }
-            catch (FileNotFoundException)
+            catch (COMException)
             {
-                // Revert to trying for version 14.0.
-                return CreateExperimentalInstance("14.0");
+                // Revert to trying for version of VS this was compiled by.
             }
+
+            try
+            {
+#if VS2015
+                return CreateExperimentalInstance("14.0");
+#elif VS2017
+                return CreateExperimentalInstance("15.0");
+#endif
+            }
+            catch
+            {
+                // If any error occurs, default to the devenv on the path.
+            }
+            return new VisualStudioWrapper("devenv", "/rootSuffix Exp");
         }
 
         private static VisualStudioWrapper CreateExperimentalInstance(string version)
         {
-            var tempDte = (DTE)Marshal.GetActiveObject($"VisualStudio.DTE.{version}");
-            return new VisualStudioWrapper(tempDte.FullName, "/rootSuffix Exp");
+            string devEnvPath = GetDevEnvPath(version);
+            return new VisualStudioWrapper(devEnvPath, "/rootSuffix Exp");
+        }
+
+        private static string GetDevEnvPath(string version)
+        {
+            var installRoot = Registry.GetValue(
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7", version, null) as string;
+            if (installRoot != null)
+            {
+                return Path.Combine(installRoot, @"Common7\IDE\devenv.exe");
+            }
+            else
+            {
+                var tempDte = (DTE)Marshal.GetActiveObject($"VisualStudio.DTE.{version}");
+                return tempDte.FullName;
+            }
         }
 
         private DTE2 GetRunningDte()

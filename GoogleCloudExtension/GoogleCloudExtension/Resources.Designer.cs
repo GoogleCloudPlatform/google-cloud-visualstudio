@@ -241,6 +241,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASP.NET Core {0}.
+        /// </summary>
+        public static string AspNetCoreVersionedName {
+            get {
+                return ResourceManager.GetString("AspNetCoreVersionedName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASP.NET Framework {0}.
+        /// </summary>
+        public static string AspNetVersionedName {
+            get {
+                return ResourceManager.GetString("AspNetVersionedName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select an account.
         /// </summary>
         public static string AttachDebuggerAccountSelectionLabel {
@@ -3000,6 +3018,24 @@ namespace GoogleCloudExtension {
         public static string FlexPublishSuccessMessage {
             get {
                 return ResourceManager.GetString("FlexPublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET Core.
+        /// </summary>
+        public static string FrameworkTypeDisplayNameNetCore {
+            get {
+                return ResourceManager.GetString("FrameworkTypeDisplayNameNetCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET Framework.
+        /// </summary>
+        public static string FrameworkTypeDisplayNameNetFramework {
+            get {
+                return ResourceManager.GetString("FrameworkTypeDisplayNameNetFramework", resourceCulture);
             }
         }
         
@@ -5839,15 +5875,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Skip.
-        /// </summary>
-        public static string UiSkipButtonCaption {
-            get {
-                return ResourceManager.GetString("UiSkipButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -6010,7 +6037,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input project ID or select an existing project:.
+        ///   Looks up a localized string similar to Select a Google Cloud project:.
         /// </summary>
         public static string WizardPickProjectIdDescription {
             get {
@@ -6055,20 +6082,74 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Enter project ID:.
-        /// </summary>
-        public static string WizardPickProjectIdTextLabel {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdTextLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select the Google Cloud Platform project that will run this project..
         /// </summary>
         public static string WizardPickProjectIdTitle {
             get {
                 return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Features:.
+        /// </summary>
+        public static string WizardTemplateChooserFeaturesLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserFeaturesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _MVC.
+        /// </summary>
+        public static string WizardTemplateChooserMvcLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserMvcLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud _Project ID:.
+        /// </summary>
+        public static string WizardTemplateChooserProjectIdLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Select Project....
+        /// </summary>
+        public static string WizardTemplateChooserSelectProjectButton {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserSelectProjectButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Target Framework:.
+        /// </summary>
+        public static string WizardTemplateChooserTargetFrameworkLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserTargetFrameworkLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New ASP.NET on Google Cloud Platform Project - {0}.
+        /// </summary>
+        public static string WizardTemplateChooserTitle {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _WebAPI.
+        /// </summary>
+        public static string WizardTemplateChooserWebApiLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserWebApiLabel", resourceCulture);
             }
         }
     }

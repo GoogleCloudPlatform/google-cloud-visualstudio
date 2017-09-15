@@ -14,7 +14,11 @@
 
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +26,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Process = System.Diagnostics.Process;
 
 namespace ProjectTemplate.Tests
@@ -31,26 +36,35 @@ namespace ProjectTemplate.Tests
     /// creating new projects from the templates, and compiling them.
     /// </summary>
     [TestClass]
-    [DeploymentItem("Templates.csv")]
+    [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+    [DeploymentItem(TemplatesCsvFileName + ".csv")]
     public class ProjectTemplatesTests
     {
         private const string SolutionName = "TestSolution";
         private const string SolutionFileName = SolutionName + ".sln";
+#if VS2015
+        private const string TemplatesCsvFileName = "Templates2015";
+#elif VS2017
+        private const string TemplatesCsvFileName = "Templates2017";
+#endif
 
         private static VisualStudioWrapper s_visualStudio;
 
-        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
         private static IEnumerable<ErrorItem> ErrorItems =>
             ((IEnumerable)Dte.ToolWindows.ErrorList.ErrorItems).Cast<ErrorItem>();
         private static DTE2 Dte => s_visualStudio.Dte;
-        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
         private static Solution2 Solution => (Solution2)Dte.Solution;
         private static string SolutionFolderPath => Path.Combine(Path.GetTempPath(), SolutionName);
 
         [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
         [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public TestContext TestContext { get; set; }
+
         private string TemplateName { get; set; }
+        private string Framework { get; set; }
+        private bool IsCoreTemplate { get; set; }
+        private string Version { get; set; }
+        private string AppType { get; set; }
         private string ProjectName => $"Test{TemplateName}Project";
         private string ProjectPath => Path.Combine(SolutionFolderPath, ProjectName);
 
@@ -90,16 +104,19 @@ namespace ProjectTemplate.Tests
         [TestMethod]
         [DataSource(
             "Microsoft.VisualStudio.TestTools.DataSource.CSV",
-            @"|DataDirectory|\Templates.csv",
-            "Templates#csv",
+            @"|DataDirectory|\" + TemplatesCsvFileName + ".csv",
+            TemplatesCsvFileName + "#csv",
             DataAccessMethod.Sequential)]
         public void TestCompile()
         {
             TemplateName = Convert.ToString(TestContext.DataRow[0]);
-            bool isCoreTemplate = Convert.ToBoolean(TestContext.DataRow[1]);
+            Framework = Convert.ToString(TestContext.DataRow[1]);
+            IsCoreTemplate = Convert.ToBoolean(TestContext.DataRow[2]);
+            Version = Convert.ToString(TestContext.DataRow[3]).Substring(1);
+            AppType = Convert.ToString(TestContext.DataRow[4]);
 
             CreateProjectFromTemplate();
-            if (isCoreTemplate)
+            if (IsCoreTemplate)
             {
                 RestorePackages();
             }
@@ -175,8 +192,32 @@ namespace ProjectTemplate.Tests
         private void CreateProjectFromTemplate()
         {
             Directory.CreateDirectory(ProjectPath);
-            string templatePath = Solution.GetProjectTemplate(TemplateName, "CSharp");
-            Solution.AddFromTemplate(templatePath, ProjectPath, ProjectName);
+            string templatePath = Solution.GetProjectTemplate("Gcp", "CSharp");
+            var isp = Dte as IServiceProvider;
+            var sp = new ServiceProvider(isp);
+            var vsSolution = (IVsSolution6)sp.GetService(typeof(SVsSolution));
+            var resultObject = new JObject(
+                new JProperty("GcpProjectId", "test-project-id"),
+                new JProperty("SelectedFramework", Framework),
+                new JProperty("AppType", AppType),
+                new JProperty("SelectedVersion", new JObject(
+                    new JProperty("Version", Version),
+                    new JProperty("IsCore", IsCoreTemplate)))
+                );
+            Array customParams = new object[]
+            {
+                $"$templateChooserResult$={resultObject}"
+            };
+            IVsHierarchy newProject;
+            int hResult = vsSolution.AddNewProjectFromTemplate(
+                templatePath,
+                customParams,
+                "",
+                ProjectPath,
+                ProjectName,
+                null,
+                out newProject);
+            ErrorHandler.ThrowOnFailure(hResult, -2147221492);
             Project project = Solution.Projects.OfType<Project>().First(p => p.Name == ProjectName);
             project.Save();
         }

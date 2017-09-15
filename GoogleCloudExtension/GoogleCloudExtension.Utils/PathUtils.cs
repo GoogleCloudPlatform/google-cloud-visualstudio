@@ -20,7 +20,7 @@ using System.Linq;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Helper functions for file path operations. 
+    /// Helper functions for file path operations.
     /// </summary>
     public static class PathUtils
     {
@@ -57,7 +57,42 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="path">Folder name</param>
         /// <returns>True: The path is empty or it does not exist.</returns>
-        public static bool IsDirectoryEmpty(string path) => 
+        public static bool IsDirectoryEmpty(string path) =>
             !Directory.Exists(path) || !Directory.EnumerateFileSystemEntries(path).Any();
+
+        /// <summary>
+        /// Gets the relative path from one directory to another.
+        /// </summary>
+        /// <param name="fromDirectory">The directory that is the start location of the relative path.</param>
+        /// <param name="toDirectory">The directory that is the end location of the relative path.</param>
+        /// <returns>
+        /// The relative path from <paramref name="fromDirectory"/> to <paramref name="toDirectory"/>
+        /// </returns>
+        public static string GetRelativePath(string fromDirectory, string toDirectory)
+        {
+            // Ensure all path separator characters are '/', which Uri handles correctly.
+            var fromUri = new Uri(fromDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            var toUri = new Uri(toDirectory.EnsureEndSeparator().Replace('\\', '/'));
+            // Convert Uri path separators back to OS directory separators.
+            return fromUri.MakeRelativeUri(toUri).ToString().Replace('/', Path.DirectorySeparatorChar);
+        }
+
+        /// <summary>
+        /// Adds a trailing slash if the directory is missing it.
+        /// </summary>
+        /// <param name="directoryString">The directory path string.</param>
+        /// <returns>The path to the directory with a trailing separator character.</returns>
+        public static string EnsureEndSeparator(this string directoryString)
+        {
+            directoryString.ThrowIfNull(nameof(directoryString));
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
+            {
+                return directoryString + Path.DirectorySeparatorChar;
+            }
+            else
+            {
+                return directoryString;
+            }
+        }
     }
 }

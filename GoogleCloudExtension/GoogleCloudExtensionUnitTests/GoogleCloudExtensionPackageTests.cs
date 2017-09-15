@@ -19,8 +19,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using stdole;
 using System;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
@@ -28,7 +28,7 @@ using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 namespace GoogleCloudExtensionUnitTests
 {
     /// <summary>
-    /// Tests for the GoogleCloudExtensionPackage class.
+    /// Tests for <see cref="GoogleCloudExtensionPackage"/> class.
     /// </summary>
     [TestClass]
     [DeploymentItem(VsixManifestFileName)]
@@ -37,15 +37,11 @@ namespace GoogleCloudExtensionUnitTests
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
-        private static Guid s_iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
-            .GetType("Microsoft.VisualStudio.NativeMethods")
-            .GetField("IID_IUnknown").GetValue(null);
-
         [TestMethod]
         public void TestPackageValues()
         {
-            string mockedVersion = "MockVsVersion";
-            string mockedEdition = "MockedEdition";
+            const string mockedVersion = "MockVsVersion";
+            const string mockedEdition = "MockedEdition";
             InitPackageMock(
                 dteMock =>
                 {
@@ -103,11 +99,12 @@ namespace GoogleCloudExtensionUnitTests
             Mock<IServiceProvider> serviceProviderMock,
             IMock<InterfaceType> mockObj) where InterfaceType : class
         {
-            var serviceGuid = typeof(ServiceType).GUID;
+            Guid serviceGuid = typeof(ServiceType).GUID;
+            Guid iUnknownGuid = typeof(IUnknown).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
             serviceProviderMock
-                .Setup(x => x.QueryService(ref serviceGuid, ref s_iidIUnknown, out interfacePtr))
+                .Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
                 .Returns(0);
         }
     }

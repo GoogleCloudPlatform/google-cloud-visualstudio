@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2447,16 +2447,12 @@
     <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="UiSkipButtonCaption" xml:space="preserve">
-    <value>_Skip</value>
-    <comment>Caption for a Skip button in a UI.</comment>
-  </data>
   <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
     <value>Task Canceled</value>
     <comment>Text to diplay if a task was canceled.</comment>
   </data>
   <data name="WizardPickProjectIdDescription" xml:space="preserve">
-    <value>Input project ID or select an existing project:</value>
+    <value>Select a Google Cloud project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
   <data name="WizardPickProjectIdHelpText" xml:space="preserve">
@@ -2466,10 +2462,6 @@
   <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
-  </data>
-  <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
-    <value>_Enter project ID:</value>
-    <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
   </data>
   <data name="WizardPickProjectIdTitle" xml:space="preserve">
     <value>Select the Google Cloud Platform project that will run this project.</value>
@@ -2782,5 +2774,49 @@
   <data name="CsrFetchReposErrorMessage" xml:space="preserve">
     <value>Failed to get repositories for Google Cloud project(s) {0}.</value>
     <comment>Show error message at Team Explorer when it fails to fetch repo for the project. {0} is the project name list.</comment>
+  </data>
+  <data name="AspNetCoreVersionedName" xml:space="preserve">
+    <value>ASP.NET Core {0}</value>
+    <comment>The display name of an ASP.NET Core version, where the parameter is the Version.</comment>
+  </data>
+  <data name="AspNetVersionedName" xml:space="preserve">
+    <value>ASP.NET Framework {0}</value>
+    <comment>The display name of an ASP.NET version. The parameter is the version number.</comment>
+  </data>
+  <data name="FrameworkTypeDisplayNameNetFramework" xml:space="preserve">
+    <value>.NET Framework</value>
+    <comment>The display name of .NET Framework</comment>
+  </data>
+  <data name="FrameworkTypeDisplayNameNetCore" xml:space="preserve">
+    <value>.NET Core</value>
+    <comment>The display name of .NET Core</comment>
+  </data>
+  <data name="WizardTemplateChooserTitle" xml:space="preserve">
+    <value>New ASP.NET on Google Cloud Platform Project - {0}</value>
+    <comment>The title of the TemplateChooser window of the template wizards.</comment>
+  </data>
+  <data name="WizardTemplateChooserMvcLabel" xml:space="preserve">
+    <value>_MVC</value>
+    <comment>The label for the MVC app type radio button of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserProjectIdLabel" xml:space="preserve">
+    <value>Google Cloud _Project ID:</value>
+    <comment>The label for the Project ID input field of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserSelectProjectButton" xml:space="preserve">
+    <value>_Select Project...</value>
+    <comment>The label of the Select Project button of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserTargetFrameworkLabel" xml:space="preserve">
+    <value>_Target Framework:</value>
+    <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserWebApiLabel" xml:space="preserve">
+    <value>_WebAPI</value>
+    <comment>The label for the WebAPI app type radio button of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserFeaturesLabel" xml:space="preserve">
+    <value>Features:</value>
+    <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
 </root>

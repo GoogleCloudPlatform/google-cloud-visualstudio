@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <RestorePackages>false</RestorePackages>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GcpProjectTemplate</RootNamespace>
+    <AssemblyName>GcpProjectTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CreateVsixContainer>false</CreateVsixContainer>
+    <DeployExtension>false</DeployExtension>
+    <DeployVSTemplates>false</DeployVSTemplates>
+    <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Core\MVC\.bowerrc" />
+    <None Include="Core\MVC\appsettings.json" />
+    <None Include="Core\MVC\bower.json" />
+    <None Include="Core\MVC\bundleconfig.json" />
+    <None Include="Core\MVC\global.json" />
+    <None Include="Core\MVC\project.json" />
+    <None Include="Core\MVC\Properties\launchSettings.json" />
+    <None Include="Core\MVC\web.config" />
+    <None Include="Core\MVC\wwwroot\_references.js" />
+    <None Include="Core\MVC\wwwroot\css\site.css" />
+    <None Include="Core\MVC\wwwroot\css\site.min.css" />
+    <None Include="Core\MVC\wwwroot\favicon.ico" />
+    <None Include="Core\MVC\wwwroot\images\banner1.svg" />
+    <None Include="Core\MVC\wwwroot\images\banner2.svg" />
+    <None Include="Core\MVC\wwwroot\images\banner3.svg" />
+    <None Include="Core\MVC\wwwroot\images\banner4.svg" />
+    <None Include="Core\MVC\wwwroot\js\site.js" />
+    <None Include="Core\MVC\wwwroot\js\site.min.js" />
+    <VSTemplate Include="Core\MVC\1.0-preview.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <None Include="Core\MVC\Project_Readme.html" />
+    <VSTemplate Include="Core\WebAPI\1.0-preview.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="Core\MVC\1.0.vstemplate">
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="Core\MVC\2.0.vstemplate">
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="Core\MVC\1.1.vstemplate">
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Core\MVC\1.1.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Core\MVC\2.0.csproj" />
+    <Content Include="Core\MVC\1.0.csproj" />
+    <Content Include="Core\MVC\1.0-preview.xproj" />
+    <VSTemplate Include="Core\WebAPI\1.0.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
+    <VSTemplate Include="Core\WebAPI\2.0.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Core\MVC\__TemplateIcon.png" />
+    <VSTemplate Include="Core\WebAPI\1.1.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Core\WebAPI\1.0.csproj" />
+    <Content Include="Core\WebAPI\2.0.csproj" />
+    <Content Include="Core\WebAPI\1.0-preview.xproj" />
+    <Content Include="Core\WebAPI\Project_Readme.html" />
+    <Content Include="Core\WebAPI\1.1.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Core\WebAPI\__TemplateIcon.png" />
+    <Content Include="Framework\MVC\Content\bootstrap.css" />
+    <Content Include="Framework\MVC\Content\bootstrap.min.css" />
+    <Content Include="Framework\MVC\Content\Site.css" />
+    <Content Include="Framework\MVC\favicon.ico" />
+    <Content Include="Framework\MVC\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="Framework\MVC\Global.asax" />
+    <VSTemplate Include="Framework\MVC\4.vstemplate">
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Framework\MVC\Project.csproj">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Framework\MVC\Project_Readme.html" />
+    <Content Include="Framework\MVC\Scripts\bootstrap.js" />
+    <Content Include="Framework\MVC\Scripts\bootstrap.min.js" />
+    <Content Include="Framework\MVC\Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Framework\MVC\Scripts\jquery-1.10.2.js" />
+    <Content Include="Framework\MVC\Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Framework\MVC\Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Framework\MVC\Scripts\jquery.validate.js" />
+    <Content Include="Framework\MVC\Scripts\jquery.validate.min.js" />
+    <Content Include="Framework\MVC\Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Framework\MVC\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Framework\MVC\Scripts\modernizr-2.6.2.js" />
+    <Content Include="Framework\MVC\Scripts\respond.js" />
+    <Content Include="Framework\MVC\Scripts\respond.min.js" />
+    <Content Include="Framework\MVC\Scripts\_references.js" />
+    <Content Include="Framework\WebAPI\Content\bootstrap.css" />
+    <Content Include="Framework\WebAPI\Content\bootstrap.min.css" />
+    <Content Include="Framework\WebAPI\Content\Site.css" />
+    <Content Include="Framework\WebAPI\favicon.ico" />
+    <Content Include="Framework\WebAPI\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="Framework\WebAPI\Global.asax" />
+    <VSTemplate Include="Framework\WebAPI\4.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Framework\WebAPI\HelpPage\HelpPage.css" />
+    <Content Include="Framework\WebAPI\Project.csproj" />
+    <Content Include="Framework\WebAPI\Project_Readme.html" />
+    <Content Include="Framework\WebAPI\Scripts\bootstrap.js" />
+    <Content Include="Framework\WebAPI\Scripts\bootstrap.min.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery-1.10.2.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery.validate.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery.validate.min.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Framework\WebAPI\Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Framework\WebAPI\Scripts\modernizr-2.6.2.js" />
+    <Content Include="Framework\WebAPI\Scripts\respond.js" />
+    <Content Include="Framework\WebAPI\Scripts\respond.min.js" />
+    <Content Include="Framework\WebAPI\Scripts\_references.js" />
+    <Content Include="__TemplateIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\MVC\Views\Home\About.cshtml" />
+    <None Include="Core\MVC\Views\Home\Contact.cshtml" />
+    <None Include="Core\MVC\Views\Home\Index.cshtml" />
+    <None Include="Core\MVC\Views\Shared\Error.cshtml" />
+    <None Include="Core\MVC\Views\Shared\_Layout.cshtml" />
+    <None Include="Core\MVC\Views\_ViewImports.cshtml" />
+    <None Include="Core\MVC\Views\_ViewStart.cshtml" />
+    <None Include="Core\WebAPI\appsettings.json" />
+    <None Include="Core\WebAPI\global.json" />
+    <None Include="Core\WebAPI\project.json" />
+    <None Include="Core\WebAPI\Properties\launchSettings.json" />
+    <None Include="Core\WebAPI\web.config" />
+    <None Include="Framework\MVC\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Framework\MVC\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Framework\MVC\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Framework\MVC\packages.config" />
+    <None Include="Framework\MVC\Scripts\jquery-1.10.2.min.map" />
+    <None Include="Framework\MVC\Views\Account\ConfirmEmail.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ExternalLoginConfirmation.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ExternalLoginFailure.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ForgotPassword.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <None Include="Framework\MVC\Views\Account\Login.cshtml" />
+    <None Include="Framework\MVC\Views\Account\Register.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ResetPassword.cshtml" />
+    <None Include="Framework\MVC\Views\Account\ResetPasswordConfirmation.cshtml" />
+    <None Include="Framework\MVC\Views\Account\SendCode.cshtml" />
+    <None Include="Framework\MVC\Views\Account\VerifyCode.cshtml" />
+    <None Include="Framework\MVC\Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <None Include="Framework\MVC\Views\Home\About.cshtml" />
+    <None Include="Framework\MVC\Views\Home\Contact.cshtml" />
+    <None Include="Framework\MVC\Views\Home\Index.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\AddPhoneNumber.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\ChangePassword.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\Index.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\ManageLogins.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\SetPassword.cshtml" />
+    <None Include="Framework\MVC\Views\Manage\VerifyPhoneNumber.cshtml" />
+    <None Include="Framework\MVC\Views\Shared\Error.cshtml" />
+    <None Include="Framework\MVC\Views\Shared\Lockout.cshtml" />
+    <None Include="Framework\MVC\Views\Shared\_Layout.cshtml" />
+    <None Include="Framework\MVC\Views\Shared\_LoginPartial.cshtml" />
+    <None Include="Framework\MVC\Views\Web.config" />
+    <None Include="Framework\MVC\Views\_ViewStart.cshtml" />
+    <None Include="Framework\MVC\Web.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Framework\MVC\Web.Debug.config" />
+    <None Include="Framework\MVC\Web.Release.config" />
+    <None Include="Framework\WebAPI\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Framework\WebAPI\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Framework\WebAPI\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\ApiGroup.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\CollectionModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\ComplexTypeModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\DictionaryModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\EnumTypeModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\HelpPageApiModel.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\ImageSample.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\InvalidSample.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\KeyValuePairModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\ModelDescriptionLink.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\Parameters.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\Samples.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\SimpleTypeModelDescription.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\DisplayTemplates\TextSample.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\Views\Help\Api.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\Views\Help\Index.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\Views\Help\ResourceModel.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\Views\Shared\_Layout.cshtml" />
+    <None Include="Framework\WebAPI\HelpPage\Views\Web.config" />
+    <None Include="Framework\WebAPI\HelpPage\Views\_ViewStart.cshtml" />
+    <None Include="Framework\WebAPI\packages.config" />
+    <None Include="Framework\WebAPI\Scripts\jquery-1.10.2.min.map" />
+    <None Include="Framework\WebAPI\Views\Home\Index.cshtml" />
+    <None Include="Framework\WebAPI\Views\Shared\Error.cshtml" />
+    <None Include="Framework\WebAPI\Views\Shared\_Layout.cshtml" />
+    <None Include="Framework\WebAPI\Views\Web.config" />
+    <None Include="Framework\WebAPI\Views\_ViewStart.cshtml" />
+    <None Include="Framework\WebAPI\Web.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Framework\WebAPI\Web.Debug.config" />
+    <None Include="Framework\WebAPI\Web.Release.config" />
+    <None Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Gcp.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>Google Cloud Platform</OutputSubPath>
+    </VSTemplate>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\MVC\Controllers\HomeController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\MVC\Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\MVC\Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\WebAPI\Controllers\ValuesController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\WebAPI\Program.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\WebAPI\Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\App_Start\BundleConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\App_Start\FilterConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\App_Start\IdentityConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\App_Start\RouteConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\App_Start\Startup.Auth.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Controllers\AccountController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Controllers\HomeController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Controllers\ManageController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Models\AccountViewModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Models\IdentityModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Models\ManageViewModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\MVC\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\BundleConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\FilterConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\IdentityConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\RouteConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\Startup.Auth.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\App_Start\WebApiConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Controllers\AccountController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Controllers\HomeController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Controllers\ValuesController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ApiDescriptionExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\App_Start\HelpPageConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\Controllers\HelpController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\HelpPageAreaRegistration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\HelpPageConfigurationExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\CollectionModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ComplexTypeModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\DictionaryModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\EnumTypeModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\EnumValueDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\IModelDocumentationProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\KeyValuePairModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ModelDescriptionGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ModelNameAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ModelNameHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ParameterAnnotation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\ParameterDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\ModelDescriptions\SimpleTypeModelDescription.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\Models\HelpPageApiModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\HelpPageSampleGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\HelpPageSampleKey.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\ImageSample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\InvalidSample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\ObjectGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\SampleDirection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\SampleGeneration\TextSample.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\HelpPage\XmlDocumentationProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Models\AccountBindingModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Models\AccountViewModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Models\IdentityModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Providers\ApplicationOAuthProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Results\ChallengeResult.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Framework\WebAPI\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

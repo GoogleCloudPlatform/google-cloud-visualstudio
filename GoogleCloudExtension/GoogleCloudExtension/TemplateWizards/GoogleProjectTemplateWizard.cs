@@ -13,10 +13,8 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
@@ -33,68 +31,54 @@ namespace GoogleCloudExtension.TemplateWizards
     {
         // Mockable static methods for testing.
         internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
-        internal Action<string, bool> DeleteDirectory = Directory.Delete;
-        private string _oldWorkingDirectory;
-
-        private const string GlobalJsonFileName = "global.json";
+        internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
         public void RunStarted(
             object automationObject,
-            Dictionary<string, string> replacementsDictionary,
+            Dictionary<string, string> replacements,
             WizardRunKind runKind,
             object[] customParams)
         {
-            var dte = (DTE)automationObject;
-            bool isEmbedded = dte.CommandLineArguments.Contains("-Embedding");
-
-            // When running as an embedded process, don't show the popup.
-            string projectId = isEmbedded ?
-                CredentialsStore.Default.CurrentProjectId ?? "dummy-project" :
-                PromptPickProjectId();
-
-            if (projectId == null)
+            try
             {
-                // Null indicates a canceled operation.
-                DeleteDirectory(replacementsDictionary["$destinationdirectory$"], true);
-                bool isExclusive;
-                if (bool.TryParse(replacementsDictionary["$exclusiveproject$"], out isExclusive) && isExclusive)
+                // Don't show the popup if the key has already been set.
+                if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    DeleteDirectory(replacementsDictionary["$solutiondirectory$"], true);
+                    string projectId = PromptPickProjectId();
+
+                    if (projectId == null)
+                    {
+                        // Null indicates a canceled operation.
+                        throw new WizardBackoutException();
+                    }
+                    replacements.Add(ReplacementsKeys.GcpProjectIdKey, projectId);
                 }
-                throw new WizardBackoutException();
+                if (!replacements.ContainsKey(ReplacementsKeys.PackagesPathKey))
+                {
+                    string solutionDirectory = replacements[ReplacementsKeys.SolutionDirectoryKey];
+                    string projectDirectory = replacements[ReplacementsKeys.DestinationDirectoryKey];
+                    string packageDirectory = Path.Combine(solutionDirectory, "packages");
+                    string packagesPath = PathUtils.GetRelativePath(projectDirectory, packageDirectory);
+                    replacements.Add(ReplacementsKeys.PackagesPathKey, packagesPath);
+                }
             }
-            replacementsDictionary.Add("$gcpprojectid$", projectId);
-            var solutionDir = new Uri(
-                replacementsDictionary["$solutiondirectory$"].EnsureEndSeparator().Replace('\\', '/'));
-            var packageDir = new Uri(solutionDir, "packages/");
-            var projectDir = new Uri(
-                replacementsDictionary["$destinationdirectory$"].EnsureEndSeparator().Replace('\\', '/'));
-            string packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
-            replacementsDictionary.Add("$packagespath$", packagesPath.Replace('/', Path.DirectorySeparatorChar));
-            // To perform an upgrade, VS needs to create a new Proj.xproj for some reason.
-            // It was trying to do that in the devenv folder. Instead do it in the temp folder.
-            _oldWorkingDirectory = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(Path.GetTempPath());
+            catch
+            {
+                CleanupDirectories(replacements);
+                throw;
+            }
         }
 
         ///<inheritdoc />
         public bool ShouldAddProjectItem(string filePath)
         {
-            if (GlobalJsonFileName == Path.GetFileName(filePath))
-            {
-                return GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         ///<inheritdoc />
         public void RunFinished()
         {
-            Directory.SetCurrentDirectory(_oldWorkingDirectory);
         }
 
         ///<inheritdoc />
