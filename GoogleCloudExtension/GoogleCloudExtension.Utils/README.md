@@ -18,6 +18,18 @@ The `VisiblityConverter` class implements a value converter that converts a bool
 
 The common way of using this converter is to use it in a binding to a boolean property on the view model for the view, this boolean property controlling whether a UI item is visible or not.
 
+## General WPF utils
+These utility classes make developing WPF class using MVVM more convenient.
+
+### BindableList class
+The `BindableList<T>` class propagates the `DataContext` down to the `FrameworkElements` that it contains. It is very useful when developing custom controls.
+
+### DataGridBehaviors class
+The `DataGridBehaviors` class implements attached properties that can be applied to `DataGrid` instances to provide custom sorting behaviors for the columns. It interacts with the `DataGridCustomSorter` to control how the rows in a `DataGrid` instance are sorted.
+
+### PlaceholderMessage class
+The `PlaceholderMessage` class is a simple model class to be used when a dispaying a message instead of a real object in lists in the UI.
+
 ## General utils
 
 ### ProcessUtils
@@ -29,6 +41,12 @@ The class can run a sub-process in various modes:
 * Run the process and only know if the process failed or not, using the `ProcessUtils.LaunchCommandAsync` method. This method will run the process and return whether the process failed or not but nothing else.
 
 On top of these ther eis a helper that will run the process using `ProcessUtils.GetCommandOutputAsync` and parse the `stdout` output, if the process suceeded, parse it as json output and return that, very very useful for parsing the output of running gcloud commands.
+
+### Disposable class
+This class implements an extensible `IDisposable` pattern by allowing the user to specify an `Action` instance to be called when the object is disposed. This is very useful when combined with the `using` keyword in C# to ensure that a _cleanup_ action happens when existing a scope.
+
+### PathUtils class
+This class provides various utility methods for manipulating file paths.
 
 ### AsyncProperty
 This class enables binding to the completion of a `Task` that it wraps. This allows the UI to know when a task is completed and therefore when to change its visual state.
