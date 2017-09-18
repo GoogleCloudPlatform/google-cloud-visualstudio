@@ -18,22 +18,6 @@ The `VisiblityConverter` class implements a value converter that converts a bool
 
 The common way of using this converter is to use it in a binding to a boolean property on the view model for the view, this boolean property controlling whether a UI item is visible or not.
 
-## Weak action handlers.
-This weak action handlers help to ensure that there will not be any leaks when binding UI elements to view models and models, ensuring that the models will not keep the UI elements unnecessary alive.
-
-### WeakDelegate.
-The `WeakDelegate` class implements the same interface as a delegate but keeping a weak reference back to the delegate target.
-
-### WeakAction.
-The `WeakAction` class implements a class similar to `Action` but using `WeakDelegate` instead of a regular delegate.
-
-Simple overloads of the generic are available with, 1, 2 ad no parameters.
-
-### WeakCommand.
-The `WeakCommand` class implements the `ICommand` interface using `WeakActions` to point back to the actual handler of the commands.
-
-There is a variang of `WeakCommand` that accept a parameter and another one that doesn't . The `WeakCommand` variant that accept commands ensures that the argument is not `null` before invoking the command, as it is expected that the command will only support non-null arguments.
-
 ## General utils
 
 ### ProcessUtils
@@ -46,8 +30,11 @@ The class can run a sub-process in various modes:
 
 On top of these ther eis a helper that will run the process using `ProcessUtils.GetCommandOutputAsync` and parse the `stdout` output, if the process suceeded, parse it as json output and return that, very very useful for parsing the output of running gcloud commands.
 
-### AsyncPropertyValue<T>
-The `AsyncPropertyValue<T>` class enables binding to the result of the `Task<T>` it wraps. It exposes various properties about the state of the `Task<T>` so bindings to that state can be created.
+### AsyncProperty
+This class enables binding to the completion of a `Task` that it wraps. This allows the UI to know when a task is completed and therefore when to change its visual state.
 
-There are also helper methods to create instances of `AsynPropertyValue<T>` from `Task<T>` and even from just a `T`.
+### AsyncProperty<T>
+The `AsyncProperty<T>` class enables binding to the result of the `Task<T>` it wraps. It exposes various properties about the state of the `Task<T>` so bindings to that state can be created.
+
+There are also helper methods to create instances of `AsynProperty<T>` from `Task<T>` and even from just a `T`.
 
