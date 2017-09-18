@@ -381,7 +381,6 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
-    <Compile Include="Utils\EnumDisplayNameConverter.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
     <Compile Include="Utils\Validation\StringValidationResult.cs" />

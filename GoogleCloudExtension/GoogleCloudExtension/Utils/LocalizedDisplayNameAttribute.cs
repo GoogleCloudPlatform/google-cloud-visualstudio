@@ -17,7 +17,7 @@ using System.ComponentModel;
 
 namespace GoogleCloudExtension.Utils
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Event)]
     public class LocalizedDisplayNameAttribute : DisplayNameAttribute
     {
         public LocalizedDisplayNameAttribute(string key) : base(Resources.ResourceManager.GetString(key))
