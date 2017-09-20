@@ -76,10 +76,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
-            return new List<AspNetVersion>
-                {
-                    AspNetCore1Preview
-                };
+            return new List<AspNetVersion> {AspNetCore1Preview};
         }
 
         /// <summary>
