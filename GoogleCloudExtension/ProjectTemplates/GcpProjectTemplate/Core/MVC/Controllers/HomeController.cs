@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 
-namespace SafeProjectName.Controllers
+namespace _safe_project_name_.Controllers
 {
     public class HomeController : Controller
     {

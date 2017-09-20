@@ -9,7 +9,7 @@ using System.Web.Routing;
 using System.Xml;
 using System.Configuration;
 
-namespace SafeProjectName
+namespace _safe_project_name_
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

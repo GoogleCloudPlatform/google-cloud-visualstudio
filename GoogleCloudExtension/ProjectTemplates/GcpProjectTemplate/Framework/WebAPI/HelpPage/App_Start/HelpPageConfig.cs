@@ -16,7 +16,7 @@ using System.Web.Http;
 using System.Web.Http.OData;
 #endif
 
-namespace SafeProjectName.Areas.HelpPage
+namespace _safe_project_name_.Areas.HelpPage
 {
     /// <summary>
     /// Use this class to customize the Help Page.
@@ -26,7 +26,7 @@ namespace SafeProjectName.Areas.HelpPage
     public static class HelpPageConfig
     {
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
-            MessageId = "SafeProjectName.Areas.HelpPage.TextSample.#ctor(System.String)",
+            MessageId = "_safe_project_name_.Areas.HelpPage.TextSample.#ctor(System.String)",
             Justification = "End users may choose to merge this string with existing localized resources.")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly",
             MessageId = "bsonspec",

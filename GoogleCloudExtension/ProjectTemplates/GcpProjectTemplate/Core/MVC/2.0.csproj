@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>SafeProjectName</AssemblyName>
+    <AssemblyName>_safe_project_name_</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>SafeProjectName</PackageId>
+    <PackageId>_safe_project_name_</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

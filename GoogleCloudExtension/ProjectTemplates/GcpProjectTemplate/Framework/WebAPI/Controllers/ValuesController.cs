@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace SafeProjectName.Controllers
+namespace _safe_project_name_.Controllers
 {
     [Authorize]
     public class ValuesController : ApiController

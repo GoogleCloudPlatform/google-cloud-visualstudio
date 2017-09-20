@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SafeProjectName
+namespace _safe_project_name_
 {
     public class FilterConfig
     {

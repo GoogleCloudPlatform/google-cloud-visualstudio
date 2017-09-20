@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace SafeProjectName.Results
+namespace _safe_project_name_.Results
 {
     public class ChallengeResult : IHttpActionResult
     {

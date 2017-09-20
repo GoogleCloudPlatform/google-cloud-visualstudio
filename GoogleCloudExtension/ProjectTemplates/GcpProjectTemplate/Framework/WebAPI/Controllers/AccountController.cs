@@ -13,11 +13,11 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using SafeProjectName.Models;
-using SafeProjectName.Providers;
-using SafeProjectName.Results;
+using _safe_project_name_.Models;
+using _safe_project_name_.Providers;
+using _safe_project_name_.Results;
 
-namespace SafeProjectName.Controllers
+namespace _safe_project_name_.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]

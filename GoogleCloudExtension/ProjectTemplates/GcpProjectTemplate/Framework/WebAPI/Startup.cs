@@ -4,9 +4,9 @@ using System.Linq;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(SafeProjectName.Startup))]
+[assembly: OwinStartup(typeof(_safe_project_name_.Startup))]
 
-namespace SafeProjectName
+namespace _safe_project_name_
 {
     public partial class Startup
     {
