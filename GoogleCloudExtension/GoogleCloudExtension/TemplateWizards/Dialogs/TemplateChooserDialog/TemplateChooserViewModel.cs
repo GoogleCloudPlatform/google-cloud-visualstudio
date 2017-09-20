@@ -53,8 +53,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             set
             {
                 SetValueAndRaise(ref _selectedFramework, value);
-                AvailableVersions = AspNetVersion.GetAvailableVersions(
-                    GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
+                AvailableVersions = AspNetVersion.GetAvailableVersions(SelectedFramework);
             }
         }
 

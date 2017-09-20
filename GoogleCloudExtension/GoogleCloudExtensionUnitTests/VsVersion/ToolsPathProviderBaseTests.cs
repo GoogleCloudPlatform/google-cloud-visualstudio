@@ -35,7 +35,8 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         {
             _dotnetPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             _sdkPath = Path.Combine(_dotnetPath, ToolsPathProviderBase.SdkDirectoryName);
-            _objectUnderTest = Mock.Of<ToolsPathProviderBase>(p => p.GetDotnetPath() == _dotnetPath);
+            _objectUnderTest =
+                Mock.Of<ToolsPathProviderBase>(p => p.GetDotnetPath() == Path.Combine(_dotnetPath, "dotnet.exe"));
         }
 
         [TestCleanup]
