@@ -238,11 +238,16 @@
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\PickProjectIdViewModelTests.cs" />
+    <Compile Include="VsVersion\ToolsPathProviderBaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
       <Project>{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}</Project>
       <Name>GoogleCloudExtension.DataSources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
+      <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
+      <Name>GoogleCloudExtension.Deployment</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
       <Project>{856b9f2e-441f-405a-9d5c-af5dc5653902}</Project>

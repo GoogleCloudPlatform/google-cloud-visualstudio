@@ -16,6 +16,9 @@ using GoogleCloudExtension.VsVersion;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
@@ -72,9 +75,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
             return new List<AspNetVersion>
-            {
-                AspNetCore1Preview
-            };
+                {
+                    AspNetCore1Preview
+                };
         }
 
         /// <summary>
