@@ -49,6 +49,17 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
+        public void TestGetNetCoreSdkVersionsDotnetAsRoot()
+        {
+            _objectUnderTest = Mock.Of<ToolsPathProviderBase>(p => p.GetDotnetPath() == "c:\\");
+
+            IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
+
+            Assert.AreEqual(0, versions.Count());
+        }
+
+
+        [TestMethod]
         public void TestGetNetCoreSdkVersionsNoDotnetDirectory()
         {
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
