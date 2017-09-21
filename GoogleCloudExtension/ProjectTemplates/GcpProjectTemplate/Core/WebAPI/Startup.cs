@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class Startup
     {

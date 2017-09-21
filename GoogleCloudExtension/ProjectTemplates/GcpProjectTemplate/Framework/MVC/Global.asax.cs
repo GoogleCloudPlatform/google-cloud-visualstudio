@@ -9,7 +9,7 @@ using System.Xml;
 using System.Configuration;
 using log4net;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class MvcApplication : System.Web.HttpApplication
     {

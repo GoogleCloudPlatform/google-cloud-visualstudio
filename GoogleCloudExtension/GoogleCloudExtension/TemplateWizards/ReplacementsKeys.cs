@@ -24,7 +24,8 @@ namespace GoogleCloudExtension.TemplateWizards
         public const string SolutionDirectoryKey = "$solutiondirectory$";
         public const string PackagesPathKey = "$packagespath$";
         public const string ProjectNameKey = "$projectname$";
-        public const string TargetFrameworkKey = "$targetframework$";
         public const string TemplateChooserResultKey = "$templateChooserResult$";
+        public const string SafeProjectNameKey = "$safeprojectname$";
+        public const string EmbeddableSafeProjectNameKey = "_safe_project_name_";
     }
 }

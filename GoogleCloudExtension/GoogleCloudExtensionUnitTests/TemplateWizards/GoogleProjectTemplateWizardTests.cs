@@ -30,6 +30,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string PackagesPathKey = "$packagespath$";
         private const string PackagesPath = @"..\..\packages\";
         private const string RandomFileName = "random.file.name";
+        private const string ProjectName = "ProjectName";
 
         private static readonly string[] s_projectDirectoriesToTest =
             {ProjectDirectoryBackslash, ProjectDirectoryBackslashEnd, ProjectDirectorySlash, ProjectDirectorySlashEnd};
@@ -98,7 +99,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                     _replacementsDictionary = new Dictionary<string, string>
                     {
                         {DestinationDirectoryKey, projectDir},
-                        {SolutionDirectoryKey, solutionDir}
+                        {SolutionDirectoryKey, solutionDir},
+                        {ReplacementsKeys.SafeProjectNameKey, ProjectName}
                     };
 
                     _objectUnderTest.RunStarted(
@@ -120,6 +122,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedSuccess()
         {
             _pickProjectMock.Setup(x => x()).Returns(() => MockProjectId);
+            _replacementsDictionary.Add(ReplacementsKeys.SafeProjectNameKey, ProjectName);
 
             _objectUnderTest.RunStarted(
                 _mockedDte,
@@ -132,6 +135,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             Assert.AreEqual(MockProjectId, _replacementsDictionary[GcpProjectIdKey]);
             Assert.IsTrue(_replacementsDictionary.ContainsKey(PackagesPathKey));
             Assert.AreEqual(PackagesPath, _replacementsDictionary[PackagesPathKey]);
+            Assert.AreEqual(ProjectName, _replacementsDictionary[ReplacementsKeys.EmbeddableSafeProjectNameKey]);
         }
 
         [TestMethod]
@@ -139,6 +143,30 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             bool result = _objectUnderTest.ShouldAddProjectItem(RandomFileName);
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void RunFinished()
+        {
+            _objectUnderTest.RunFinished();
+        }
+
+        [TestMethod]
+        public void TestBeforeOpeningFile()
+        {
+            _objectUnderTest.BeforeOpeningFile(new Mock<ProjectItem>(MockBehavior.Strict).Object);
+        }
+
+        [TestMethod]
+        public void TestProjectItemFinishedGenerating()
+        {
+            _objectUnderTest.ProjectItemFinishedGenerating(new Mock<ProjectItem>(MockBehavior.Strict).Object);
+        }
+
+        [TestMethod]
+        public void TestProjectFinishedGenerating()
+        {
+            _objectUnderTest.ProjectFinishedGenerating(new Mock<Project>(MockBehavior.Strict).Object);
         }
     }
 }

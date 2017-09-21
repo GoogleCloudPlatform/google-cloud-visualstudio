@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// Whether this is ASP.NET or ASP.NET Core
         /// </summary>
-        private bool IsCore { get; }
+        public bool IsCore { get; }
 
         [JsonConstructor]
         private AspNetVersion(string version, bool isCore = true)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace $safeprojectname$.Models
+namespace _safe_project_name_.Models
 {
     // Models returned by AccountController actions.
 

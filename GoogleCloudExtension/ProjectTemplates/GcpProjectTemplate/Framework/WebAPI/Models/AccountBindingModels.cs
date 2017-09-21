@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace $safeprojectname$.Models
+namespace _safe_project_name_.Models
 {
     // Models used as parameters to AccountController actions.
 
