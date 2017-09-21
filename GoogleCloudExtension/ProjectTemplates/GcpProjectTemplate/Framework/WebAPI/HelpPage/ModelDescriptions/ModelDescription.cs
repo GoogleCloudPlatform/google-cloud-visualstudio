@@ -1,6 +1,6 @@
 using System;
 
-namespace $safeprojectname$.Areas.HelpPage.ModelDescriptions
+namespace _safe_project_name_.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.

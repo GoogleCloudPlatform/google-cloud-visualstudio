@@ -16,27 +16,19 @@ To support VS 2017 we're going to use the
  [Microsoft.VisualStudio.Sdk.BuildTasks.14.0](https://www.nuget.org/packages/Microsoft.VisualStudio.Sdk.BuildTasks.14.0/14.0.23-pre) package, instead of the current package being used [Microsoft.VSSDK.BuildTools](https://www.nuget.org/packages/Microsoft.VSSDK.BuildTools/). The reason is
 that the new package supports producing the new VSIX 3 format, which is the format supported by VS 2017.
 
-The problem that using the `Microsoft.VisualStudio.Sdk.BuildTasks.14.0` brings is that there's [a bug](https://github.com/Microsoft/extendvs/issues/41) in the tools that makes the build fail because the .vsix package fails to
-be extracted to the experimental instance. This is normally done to allow easy debugging of the extension. To make sure that 
-the build suceeds we have disabled the automatic deployment of the .vsix package.
-
-To continue being able to easily debug the extension we need to deploy the package by hand ourselves. I have created a small
-tools called [vsix-tool](https://github.com/ivannaranjo/vsix-tool) that can install the .vsix package in the experimental
-instance. Use this tool after a build and before you press F5 to debug the extension
-
 Because we work exclusively on VS 2015, to debug the extension to VS 2017 you need to just install the extension to it and
 debug the shell as it runs.
 
 ## Dependencies on Google Cloud SDK
-The Visual Studio extension depends on the Cloud SDK for certain functionality, make sure that you have at least version 146.0.0 of the Cloud SDK installed when running the extension.
+The Visual Studio extension depends on the Cloud SDK for certain functionality, make sure that you have at least version 164.0.0 of the Cloud SDK installed when running the extension.
 
 You can install the Google Cloud SDK from <https://cloud.google.com/sdk/>. You will also need to make sure that you have the "beta" and "kubectl" components.
-* The "beta" component is used for Windows VMs password management and for the deployment ASP.NET Core apps to App Engine Flex.
+* The "beta" component is used for the deployment ASP.NET Core apps to App Engine Flex.
 * The "kubectl" component is used for interactions with Google Container Engine.
 
 You can make sure that you have all the necessary components installed by running the command:
 ```bash
-gcloud components install beta kubectl
+gcloud components install kubectl beta
 ```
 
 ## Builds

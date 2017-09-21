@@ -1,4 +1,4 @@
-namespace $safeprojectname$.Areas.HelpPage
+namespace _safe_project_name_.Areas.HelpPage
 {
     /// <summary>
     /// Indicates whether the sample is used for request or response

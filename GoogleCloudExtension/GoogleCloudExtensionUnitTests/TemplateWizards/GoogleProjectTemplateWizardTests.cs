@@ -25,7 +25,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string MockProjectId = "mock-project-id";
         private const string PackagesPath = @"..\..\packages\";
         private const string RandomFileName = "random.file.name";
-        private const string DefaultProjectName = "DefaultProjectName";
+        private const string ProjectName = "ProjectName";
 
         private static readonly string[] s_projectDirectoriesToTest =
             {ProjectDirectoryBackslash, ProjectDirectoryBackslashEnd, ProjectDirectorySlash, ProjectDirectorySlashEnd};
@@ -60,7 +60,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             {
                 {ReplacementsKeys.DestinationDirectoryKey, ProjectDirectoryBackslash},
                 {ReplacementsKeys.SolutionDirectoryKey, SolutionDirectoryBackslash},
-                {ReplacementsKeys.ProjectNameKey, DefaultProjectName}
+                {ReplacementsKeys.ProjectNameKey, ProjectName}
             };
         }
 
@@ -101,7 +101,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                     {
                         {ReplacementsKeys.DestinationDirectoryKey, projectDir},
                         {ReplacementsKeys.SolutionDirectoryKey, solutionDir},
-                        {ReplacementsKeys.ProjectNameKey, DefaultProjectName}
+                        {ReplacementsKeys.ProjectNameKey, ProjectName},
+                        {ReplacementsKeys.SafeProjectNameKey, ProjectName}
                     };
 
                     _objectUnderTest.RunStarted(
@@ -124,6 +125,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedSuccess()
         {
             _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => MockProjectId);
+            _replacementsDictionary.Add(ReplacementsKeys.SafeProjectNameKey, ProjectName);
 
             _objectUnderTest.RunStarted(
                 _mockedDte,
@@ -136,6 +138,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             Assert.AreEqual(MockProjectId, _replacementsDictionary[ReplacementsKeys.GcpProjectIdKey]);
             Assert.IsTrue(_replacementsDictionary.ContainsKey(ReplacementsKeys.PackagesPathKey));
             Assert.AreEqual(PackagesPath, _replacementsDictionary[ReplacementsKeys.PackagesPathKey]);
+            Assert.AreEqual(ProjectName, _replacementsDictionary[ReplacementsKeys.EmbeddableSafeProjectNameKey]);
         }
 
         [TestMethod]
@@ -143,6 +146,30 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             bool result = _objectUnderTest.ShouldAddProjectItem(RandomFileName);
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void RunFinished()
+        {
+            _objectUnderTest.RunFinished();
+        }
+
+        [TestMethod]
+        public void TestBeforeOpeningFile()
+        {
+            _objectUnderTest.BeforeOpeningFile(new Mock<ProjectItem>(MockBehavior.Strict).Object);
+        }
+
+        [TestMethod]
+        public void TestProjectItemFinishedGenerating()
+        {
+            _objectUnderTest.ProjectItemFinishedGenerating(new Mock<ProjectItem>(MockBehavior.Strict).Object);
+        }
+
+        [TestMethod]
+        public void TestProjectFinishedGenerating()
+        {
+            _objectUnderTest.ProjectFinishedGenerating(new Mock<Project>(MockBehavior.Strict).Object);
         }
     }
 }

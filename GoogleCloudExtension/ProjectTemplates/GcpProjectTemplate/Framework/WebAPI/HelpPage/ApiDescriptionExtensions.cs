@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http.Description;
 
-namespace $safeprojectname$.Areas.HelpPage
+namespace _safe_project_name_.Areas.HelpPage
 {
     public static class ApiDescriptionExtensions
     {

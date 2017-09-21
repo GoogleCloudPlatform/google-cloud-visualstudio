@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class Program
     {

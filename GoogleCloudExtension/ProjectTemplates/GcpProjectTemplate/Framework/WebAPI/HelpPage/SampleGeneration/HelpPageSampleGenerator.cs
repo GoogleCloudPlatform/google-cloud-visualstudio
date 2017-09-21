@@ -13,7 +13,7 @@ using System.Web.Http.Description;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 
-namespace $safeprojectname$.Areas.HelpPage
+namespace _safe_project_name_.Areas.HelpPage
 {
     /// <summary>
     /// This class will generate the samples for the help page.

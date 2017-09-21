@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using System.Xml;
 using Google.Cloud.Diagnostics.AspNet;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class FilterConfig
     {

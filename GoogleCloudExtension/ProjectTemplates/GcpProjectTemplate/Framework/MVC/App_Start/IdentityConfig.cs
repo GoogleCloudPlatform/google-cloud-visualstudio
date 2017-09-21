@@ -10,9 +10,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using $safeprojectname$.Models;
+using _safe_project_name_.Models;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class EmailService : IIdentityMessageService
     {

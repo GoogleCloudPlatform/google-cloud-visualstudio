@@ -62,6 +62,8 @@ namespace GoogleCloudExtension.TemplateWizards
                     string packagesPath = PathUtils.GetRelativePath(projectDirectory, packageDirectory);
                     replacements.Add(ReplacementsKeys.PackagesPathKey, packagesPath);
                 }
+                replacements[ReplacementsKeys.EmbeddableSafeProjectNameKey] =
+                    replacements[ReplacementsKeys.SafeProjectNameKey];
             }
             catch
             {

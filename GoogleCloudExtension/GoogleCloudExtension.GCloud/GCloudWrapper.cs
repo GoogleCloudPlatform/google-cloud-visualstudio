@@ -134,14 +134,14 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Builds a container using the Container Builder service.
         /// </summary>
-        /// <param name="buildFilePath">The path to the cloudbuild.yaml file.</param>
-        /// <param name="contentsPath">The contents of the container.</param>
+        /// <param name="imageTag">The name of the image to build.</param>
+        /// <param name="contentsPath">The contents of the container, including the Dockerfile.</param>
         /// <param name="outputAction">The action to perform on each line of output.</param>
         /// <param name="context">The context under which the command is executed.</param>
-        public static Task<bool> BuildContainerAsync(string buildFilePath, string contentsPath, Action<string> outputAction, GCloudContext context)
+        public static Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Action<string> outputAction, GCloudContext context)
         {
             return RunCommandAsync(
-                $"container builds submit --config=\"{buildFilePath}\" \"{contentsPath}\"",
+                $"container builds submit --tag=\"{imageTag}\" \"{contentsPath}\"",
                 outputAction,
                 context);
         }

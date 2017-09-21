@@ -12,7 +12,7 @@ using System.Configuration;
 using log4net;
 using Google.Cloud.Diagnostics.AspNet;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public static class WebApiConfig
     {

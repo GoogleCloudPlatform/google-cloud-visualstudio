@@ -56,11 +56,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const AppType DefaultAppType = AppType.Mvc;
         private const FrameworkType DefaultFrameworkType = FrameworkType.NetCore;
 
-
-        private static readonly AspNetVersion s_defaultAspNetVersion = AspNetVersion.AspNetCore1Preview;
-
         private static readonly string s_defaultTargetTemplatePath =
-            string.Format(TargetTemplatePathFromat, DefaultAppType, s_defaultAspNetVersion.Version);
+            string.Format(TargetTemplatePathFromat, DefaultAppType, AspNetVersion.AspNetCore10.Version);
 
 
         private GoogleProjectTemplateSelectorWizard _objectUnderTest;
@@ -89,7 +86,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 DefaultSelectorTemplatePath
             };
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, DefaultFrameworkType, s_defaultAspNetVersion, DefaultAppType);
+                DefaultProjectId, DefaultFrameworkType, AspNetVersion.AspNetCore10, DefaultAppType);
 
             _promptUserMock = new Mock<Func<string, TemplateChooserViewModelResult>>();
             _promptUserMock.Setup(p => p(It.IsAny<string>())).Returns(() => _promptResult);
@@ -120,8 +117,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 {
                     {ReplacementsKeys.GcpProjectIdKey, DefaultProjectId},
                     {ReplacementsKeys.SolutionDirectoryKey, DefaultSolutionDirectory},
-                    {ReplacementsKeys.PackagesPathKey, @"..\packages\"},
-                    {ReplacementsKeys.TargetFrameworkKey, "netcoreapp1.0-preview"}
+                    {ReplacementsKeys.PackagesPathKey, @"..\packages\"}
                 };
         }
 
@@ -196,7 +192,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
                 _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
                 string templatePath = templateBasePath +
-                    string.Format(TargetTemplateSubPathFormat, DefaultAppType, s_defaultAspNetVersion.Version);
+                    string.Format(TargetTemplateSubPathFormat, DefaultAppType, AspNetVersion.AspNetCore10.Version);
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
                         templatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
@@ -310,8 +306,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedNetFrameworkType()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, FrameworkType.NetFramework, s_defaultAspNetVersion, DefaultAppType);
-            _newCustomParams[ReplacementsKeys.TargetFrameworkKey] = "net461";
+                DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNet4, DefaultAppType);
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
@@ -321,6 +316,33 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
                 _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
                 _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
+                string templatePath = string.Format(TargetTemplatePathFromat, "Mvc", "4");
+                _solutionMock.Verify(
+                    s => s.AddNewProjectFromTemplate(
+                            templatePath, It.Is<Array>(a => TestCustomParams(a)), null,
+                            DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(),
+                            out _newHierarchy),
+                    Times.Once);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(WizardCancelledException))]
+        public void TestRunStartedAspCoreNetFramework()
+        {
+            _promptResult = new TemplateChooserViewModelResult(
+                DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNetCore10, DefaultAppType);
+            try
+            {
+                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+            }
+            catch (WizardCancelledException)
+            {
+                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
+                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
+                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
+                _newCustomParams["netcoreapp1.0"] = "net461";
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
                         s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), null,
@@ -335,7 +357,31 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedInvalidFrameworkType()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, (FrameworkType)(-1), s_defaultAspNetVersion, DefaultAppType);
+                DefaultProjectId, FrameworkType.None, AspNetVersion.AspNetCore10, DefaultAppType);
+            try
+            {
+                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+            }
+            catch (InvalidOperationException)
+            {
+                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
+                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
+                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Once);
+                _solutionMock.Verify(
+                    s => s.AddNewProjectFromTemplate(
+                        It.IsAny<string>(), It.IsAny<Array>(), It.IsAny<string>(),
+                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                    Times.Never);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestRunStartedUnknownFrameworkType()
+        {
+            _promptResult = new TemplateChooserViewModelResult(
+                DefaultProjectId, (FrameworkType)(-1), AspNetVersion.AspNetCore10, DefaultAppType);
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);

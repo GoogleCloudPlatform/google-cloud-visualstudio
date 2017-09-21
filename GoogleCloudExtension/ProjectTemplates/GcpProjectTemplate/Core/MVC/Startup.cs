@@ -1,15 +1,12 @@
 ﻿using Google.Cloud.Diagnostics.AspNetCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace $safeprojectname$
+namespace _safe_project_name_
 {
     public class Startup
     {
@@ -28,9 +25,10 @@ namespace $safeprojectname$
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var projectId = GetProjectId();
+            string projectId = GetProjectId();
             // Add framework services.Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService
             services.AddMvc();
+            
             // Enables Stackdriver Trace.
             services.AddGoogleTrace(options => options.ProjectId = projectId);
             // Sends Exceptions to Stackdriver Error Reporting.
@@ -46,13 +44,9 @@ namespace $safeprojectname$
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            var projectId = GetProjectId();
-
             // Only use Console and Debug logging during development.
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            // Send logs to Stackdriver Logging.
-            loggerFactory.AddGoogle(projectId);
 
             if (env.IsDevelopment())
             {
@@ -63,6 +57,8 @@ namespace $safeprojectname$
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseGoogleExceptionLogging();
+                // Send logs to Stackdriver Logging.
+                loggerFactory.AddGoogle(GetProjectId());
             }
 
             app.UseStaticFiles();
