@@ -6082,15 +6082,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the Google Cloud Platform project that will run this project..
-        /// </summary>
-        public static string WizardPickProjectIdTitle {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Features:.
         /// </summary>
         public static string WizardTemplateChooserFeaturesLabel {
