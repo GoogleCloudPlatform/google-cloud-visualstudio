@@ -50,9 +50,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public static readonly AspNetVersion AspNet4 = new AspNetVersion("4", false);
 
-        private static readonly Version s_sdkVersion10 = new Version(1, 0);
-        private static readonly Version s_sdkVersion11 = new Version(1, 1);
-        private static readonly Version s_sdkVersion20 = new Version(2, 0);
+        private static readonly Version s_sdkVersion1_0 = new Version(1, 0);
+        private static readonly Version s_sdkVersion2_0 = new Version(2, 0);
 
         /// <summary>
         /// The version number of ASP.NET. This corresponds to the version of .NET Core used as well.
@@ -74,34 +73,41 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// ASP.NET Core versions available to VS 2015.
         /// </summary>
-        private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
+        private static IList<AspNetVersion> GetVs2015AspNetCoreVersions() => new List<AspNetVersion>
         {
-            return new List<AspNetVersion> {AspNetCore1Preview};
-        }
+            AspNetCore1Preview
+        };
 
         /// <summary>
         /// ASP.NET Core versions available to VS 2017.
         /// </summary>
         private static IList<AspNetVersion> GetVs2017AspNetCoreVersions()
         {
-            Version result;
-            List<Version> sdkVersions = VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions()
-                .Where(version => System.Version.TryParse(version, out result))
-                .Select(System.Version.Parse).ToList();
+            List<Version> sdkVersions = GetParsedSdkVersions().ToList();
             var aspNetVersions = new List<AspNetVersion>();
-            if (sdkVersions.Any(version => version > s_sdkVersion10))
+            if (sdkVersions.Any(version => version >= s_sdkVersion1_0))
             {
                 aspNetVersions.Add(AspNetCore10);
-            }
-            if (sdkVersions.Any(version => version > s_sdkVersion11))
-            {
                 aspNetVersions.Add(AspNetCore11);
             }
-            if (sdkVersions.Any(version => version > s_sdkVersion20))
+            if (sdkVersions.Any(version => version >= s_sdkVersion2_0))
             {
                 aspNetVersions.Add(AspNetCore20);
             }
             return aspNetVersions;
+        }
+
+        private static IEnumerable<Version> GetParsedSdkVersions()
+        {
+            IEnumerable<string> netCoreSdkVersions = VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
+            foreach (string sdkVersion in netCoreSdkVersions)
+            {
+                Version result;
+                if (System.Version.TryParse(sdkVersion, out result))
+                {
+                    yield return result;
+                }
+            }
         }
 
         /// <summary>

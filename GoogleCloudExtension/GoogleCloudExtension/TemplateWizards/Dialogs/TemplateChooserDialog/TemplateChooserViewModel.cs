@@ -16,9 +16,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.VsVersion;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
@@ -154,13 +152,13 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
             IEnumerable<string> sdkVersions = VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
             switch (GoogleCloudExtensionPackage.VsVersion)
-                {
-                    case VsVersionUtils.VisualStudio2015Version:
-                        return sdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview"));
-                    default:
-                        Version version;
-                        return sdkVersions.Any(sdkVersion => Version.TryParse(sdkVersion, out version));
-                }
+            {
+                case VsVersionUtils.VisualStudio2015Version:
+                    return sdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview"));
+                default:
+                    Version version;
+                    return sdkVersions.Any(sdkVersion => Version.TryParse(sdkVersion, out version));
+            }
         }
 
         /// <param name="closeWindow">The action that will close the dialog.</param>

@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.VsVersion {
             }
             return Directory.EnumerateDirectories(sdkDirectoryPath)
                 .Select(Path.GetFileName)
-                .Where(sdkVersion => !NugetFallbackFolderName.Equals(sdkVersion));
+                .Where(sdkVersion => NugetFallbackFolderName != sdkVersion);
         }
     }
 }
