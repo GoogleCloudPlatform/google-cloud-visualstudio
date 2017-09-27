@@ -23,7 +23,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
     {
         private PickProjectIdViewModel ViewModel { get; }
 
-        private PickProjectIdWindow(string projectName) : base(string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName))
+        private PickProjectIdWindow(string projectName) :
+            base(string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName))
         {
             ViewModel = new PickProjectIdViewModel(this);
             Content = new PickProjectIdWindowContent { DataContext = ViewModel };
@@ -32,7 +33,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// <summary>
         /// Initalizes the Pick Project Window and waits for it to finish.
         /// </summary>
-        /// <param name="projectName"></param>
+        /// <param name="projectName">
+        /// The user readable Visual Studio project name to add as part of the dialog title.
+        /// </param>
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
