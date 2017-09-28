@@ -715,8 +715,8 @@
       <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.29.1.987\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.29.1.998, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.29.1.998\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.29.1.993, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.29.1.993\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -727,16 +727,16 @@
       <HintPath>..\packages\Google.Apis.Compute.v1.1.29.1.981\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Container.v1, Version=1.29.1.988, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Container.v1.1.29.1.988\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Container.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.29.1.981\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.29.1\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.29.1.999, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.29.1.999\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.29.1.991, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.29.1.991\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.PlatformServices, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
