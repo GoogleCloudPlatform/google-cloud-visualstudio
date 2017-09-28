@@ -40,7 +40,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestInitialize]
         public void BeforeEach()
         {
-            _targetSdkVersions = new List<string> {"2.0.0"};
+            _targetSdkVersions = new List<string> { "2.0.0" };
             VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
@@ -68,6 +68,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
+            Assert.IsFalse(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetFramework, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNet4 }, _objectUnderTest.AvailableVersions.ToList());
@@ -82,9 +83,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _targetSdkVersions.Add("1.0.0-preview2-003156");
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+
+            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] {AspNetVersion.AspNetCore1Preview}, _objectUnderTest.AvailableVersions.ToList());
+                new[] { AspNetVersion.AspNetCore1Preview }, _objectUnderTest.AvailableVersions.ToList());
             Assert.AreEqual(AspNetVersion.AspNetCore1Preview, _objectUnderTest.SelectedVersion);
         }
 
@@ -97,6 +100,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
+            Assert.IsFalse(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetFramework, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNet4 },
@@ -113,9 +117,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
+            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] {AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20},
+                new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
                 _objectUnderTest.AvailableVersions.ToList());
             Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
@@ -129,9 +134,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
+            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] {AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11},
+                new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11 },
                 _objectUnderTest.AvailableVersions.ToList());
             Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
@@ -269,7 +275,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
-            _promptPickProjectMock.Setup(f => f()).Returns((string)null);
+            _promptPickProjectMock.Setup(f => f()).Returns((string) null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 

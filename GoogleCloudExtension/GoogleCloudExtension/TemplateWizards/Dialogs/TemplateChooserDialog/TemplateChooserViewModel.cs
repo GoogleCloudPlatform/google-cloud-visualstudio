@@ -17,7 +17,6 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GoogleCloudExtension.VsVersion;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
@@ -148,18 +147,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         public bool NetCoreAvailable { get; } = IsNetCoreAvailable();
 
-        private static bool IsNetCoreAvailable()
-        {
-            IEnumerable<string> sdkVersions = VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
-            switch (GoogleCloudExtensionPackage.VsVersion)
-            {
-                case VsVersionUtils.VisualStudio2015Version:
-                    return sdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview"));
-                default:
-                    Version version;
-                    return sdkVersions.Any(sdkVersion => Version.TryParse(sdkVersion, out version));
-            }
-        }
+        private static bool IsNetCoreAvailable() => AspNetVersion.GetAvailableVersions(FrameworkType.NetCore).Any();
 
         /// <param name="closeWindow">The action that will close the dialog.</param>
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>

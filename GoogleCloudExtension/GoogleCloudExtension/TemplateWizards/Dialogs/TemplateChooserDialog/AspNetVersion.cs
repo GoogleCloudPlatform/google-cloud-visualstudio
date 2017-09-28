@@ -63,6 +63,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private bool IsCore { get; }
 
+        /// <summary>
+        /// Gets the installed .NET Core SDK versions.
+        /// </summary>
+        private static IEnumerable<string> NetCoreSdkVersions =>
+            VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
+
         [JsonConstructor]
         private AspNetVersion(string version, bool isCore = true)
         {
@@ -73,10 +79,20 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// ASP.NET Core versions available to VS 2015.
         /// </summary>
-        private static IList<AspNetVersion> GetVs2015AspNetCoreVersions() => new List<AspNetVersion>
+        private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
-            AspNetCore1Preview
-        };
+            if (NetCoreSdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview")))
+            {
+                return new List<AspNetVersion>
+                {
+                    AspNetCore1Preview
+                };
+            }
+            else
+            {
+                return new List<AspNetVersion>();
+            }
+        }
 
         /// <summary>
         /// ASP.NET Core versions available to VS 2017.
@@ -99,8 +115,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         private static IEnumerable<Version> GetParsedSdkVersions()
         {
-            IEnumerable<string> netCoreSdkVersions = VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
-            foreach (string sdkVersion in netCoreSdkVersions)
+            foreach (string sdkVersion in NetCoreSdkVersions)
             {
                 Version result;
                 if (System.Version.TryParse(sdkVersion, out result))
@@ -130,7 +145,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             switch (framework)
             {
                 case FrameworkType.NetFramework:
-                    return new List<AspNetVersion> {AspNet4};
+                    return new List<AspNetVersion> { AspNet4 };
                 case FrameworkType.NetCore:
                     switch (GoogleCloudExtensionPackage.VsVersion)
                     {
