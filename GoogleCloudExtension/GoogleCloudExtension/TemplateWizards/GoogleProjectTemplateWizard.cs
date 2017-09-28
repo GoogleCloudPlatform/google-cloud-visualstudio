@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
+        internal Func<string, string> PromptPickProjectId = projectName => PickProjectIdWindow.PromptUser(projectName);
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 // Don't show the popup if the key has already been set.
                 if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    string projectId = PromptPickProjectId();
+                    string projectId = PromptPickProjectId(replacements[ReplacementsKeys.ProjectNameKey]);
 
                     if (projectId == null)
                     {

@@ -2452,7 +2452,7 @@
     <comment>Text to diplay if a task was canceled.</comment>
   </data>
   <data name="WizardPickProjectIdDescription" xml:space="preserve">
-    <value>Select a Google Cloud project:</value>
+    <value>Select a Google Cloud Platform project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
   <data name="WizardPickProjectIdHelpText" xml:space="preserve">
@@ -2462,10 +2462,6 @@
   <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
-  </data>
-  <data name="WizardPickProjectIdTitle" xml:space="preserve">
-    <value>Select the Google Cloud Platform project that will run this project.</value>
-    <comment>The title of the PickProjecId window of the template wizards.</comment>
   </data>
   <data name="DataTemplateGcpProjectFormat" xml:space="preserve">
     <value>{0} ({1}:{2})</value>
@@ -2812,7 +2808,7 @@
     <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
   </data>
   <data name="WizardTemplateChooserWebApiLabel" xml:space="preserve">
-    <value>_WebAPI</value>
+    <value>_Web API</value>
     <comment>The label for the WebAPI app type radio button of the Project Template Chooser dialog.</comment>
   </data>
   <data name="WizardTemplateChooserFeaturesLabel" xml:space="preserve">
