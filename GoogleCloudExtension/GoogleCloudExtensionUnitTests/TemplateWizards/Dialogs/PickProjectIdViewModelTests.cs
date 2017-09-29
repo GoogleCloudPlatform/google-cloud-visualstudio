@@ -350,7 +350,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _windowMock.Verify(window => window.Close());
             Assert.AreEqual(TestInputProjectId, _testObject.Result);
-            Assert.AreEqual(DefaultProjectId, CredentialsStore.Default.CurrentProjectId);
+            Assert.AreEqual(null, CredentialsStore.Default.CurrentProjectId);
         }
 
         [TestMethod]
