@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Add repo for the project message
         /// </summary>
-        public string AddRepoForProjectMessage => 
+        public string AddRepoForProjectMessage =>
             String.Format(Resources.CsrAddRepoForProjectMessageFormat, _project.Name);
 
         /// <summary>

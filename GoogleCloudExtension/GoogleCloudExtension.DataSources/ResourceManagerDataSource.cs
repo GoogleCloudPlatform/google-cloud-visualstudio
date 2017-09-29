@@ -56,7 +56,8 @@ namespace GoogleCloudExtension.DataSources
         internal ResourceManagerDataSource(
             GoogleCredential credential,
             Func<BaseClientService.Initializer, CloudResourceManagerService> factory,
-            string appName) : base(credential, factory, appName) { }
+            string appName) : base(credential, factory, appName)
+        { }
 
         /// <summary>
         /// Returns the complete list of projects for the current credentials.

@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// This is to preserve the list when a new user control is created.
         /// Without doing so, user constantly sees the list of repos are loading without reasons.
         /// </summary>
-        private readonly static ObservableCollection<RepoItemViewModel> s_repoList 
+        private readonly static ObservableCollection<RepoItemViewModel> s_repoList
             = new ObservableCollection<RepoItemViewModel>();
         private static RepoItemViewModel s_activeRepo;
 
@@ -270,8 +270,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         private async Task<Repo> TryGetCloudRepoAsync(
-            string url, 
-            string projectId, 
+            string url,
+            string projectId,
             Dictionary<string, IList<Repo>> projectReposMap)
         {
             IList<Repo> cloudRepos;

@@ -184,7 +184,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         #endregion
 
         private async Task CheckGitInstallationAsync()
-        {            
+        {
             if (await _gitSetupViewModel.CheckInstallationAsync())
             {
                 OnGitInstallationCheckSuccess();

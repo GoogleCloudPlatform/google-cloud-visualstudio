@@ -74,7 +74,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestInitialize]
         public void BeforeEach()
         {
-
             _replacements = new Dictionary<string, string>
             {
                 {ReplacementsKeys.ProjectNameKey, DefaultProjectName},

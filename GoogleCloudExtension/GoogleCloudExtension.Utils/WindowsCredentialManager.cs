@@ -72,7 +72,6 @@ namespace GoogleCloudExtension.Utils
                 Marshal.FreeCoTaskMem(credential.CredentialBlob);
                 Marshal.FreeCoTaskMem(credential.UserName);
             }
-
         }
 
         [DllImport("Advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]

@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             switch (framework)
             {
                 case FrameworkType.NetFramework:
-                    return new List<AspNetVersion> {AspNet4};
+                    return new List<AspNetVersion> { AspNet4 };
                 case FrameworkType.NetCore:
                     switch (vsVersion)
                     {
@@ -129,6 +129,5 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     throw new InvalidOperationException($"Unknown Famework type: {framework}");
             }
         }
-
     }
 }

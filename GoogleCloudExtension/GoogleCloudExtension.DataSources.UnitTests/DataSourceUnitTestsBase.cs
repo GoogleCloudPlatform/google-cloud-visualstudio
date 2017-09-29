@@ -102,7 +102,6 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             where TResource : class
             where TRequest : ClientServiceRequest<TResponse>
         {
-
             IClientService clientService = GetMockedClientService<TRequest, TResponse>(responses);
             TRequest request = GetMockedRequest<TRequest, TResponse>(requestExpression, clientService);
 

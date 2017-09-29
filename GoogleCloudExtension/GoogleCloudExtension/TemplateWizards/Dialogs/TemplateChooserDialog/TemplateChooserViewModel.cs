@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class TemplateChooserViewModel : ViewModelBase
     {
-
         private string _gcpProjectId;
         private FrameworkType _selectedFramework;
         private AspNetVersion _selectedVersion;

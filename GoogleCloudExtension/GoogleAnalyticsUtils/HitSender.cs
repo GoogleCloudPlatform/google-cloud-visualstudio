@@ -59,7 +59,7 @@ namespace GoogleAnalyticsUtils
             }
             catch (Exception ex) when (
                 ex is HttpRequestException ||
-                ex is TaskCanceledException )   // timeout
+                ex is TaskCanceledException)   // timeout
             { }
         }
 

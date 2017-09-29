@@ -71,10 +71,10 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         public void ShowError(string message) =>
             NotificationManager?.ShowNotification(
-                message, 
-                NotificationType.Error, 
-                NotificationFlags.RequiresConfirmation, 
-                null, 
+                message,
+                NotificationType.Error,
+                NotificationFlags.RequiresConfirmation,
+                null,
                 default(Guid));
 
         #endregion

@@ -28,7 +28,7 @@ namespace GoogleCloudExtensionUnitTests
         [SolutionSettingKey("google_string_1")]
         public string StringOption { get; set; } = "string option 1";
 
-        [SolutionSettingKey("google_string_2")] 
+        [SolutionSettingKey("google_string_2")]
         public string StringOption2 { get; set; } = "string option 2";
 
         public string NonOption { get; set; }

@@ -186,7 +186,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             public TestTopicViewModelBase(
                 IPubsubSourceRootViewModel owner,
                 ITopicItem item,
-                IEnumerable<Subscription> subscriptions) : base(owner, item, subscriptions) { }
+                IEnumerable<Subscription> subscriptions) : base(owner, item, subscriptions)
+            { }
 
             public void AssetOwnerEquals(IPubsubSourceRootViewModel ownerMockObject)
             {
@@ -194,5 +195,4 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             }
         }
     }
-
 }

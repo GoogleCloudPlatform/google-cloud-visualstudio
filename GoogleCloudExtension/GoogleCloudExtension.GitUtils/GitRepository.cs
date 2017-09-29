@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the git repository contains the git SHA revision.
         /// </summary>
         /// <param name="sha">The Git SHA.</param>
-        public async Task<bool> ContainsCommitAsync(string sha) => 
+        public async Task<bool> ContainsCommitAsync(string sha) =>
             (await ExecCommandAsync($"cat-file -t {sha}"))?.FirstOrDefault() == "commit";
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.GitUtils
         /// </returns>
         public static async Task<bool> IsGitCredentialManagerInstalledAsync() =>
             (await GitRepository.RunGitCommandAsync(
-                "credential-manager version", 
+                "credential-manager version",
                 Directory.GetCurrentDirectory(),
                 throwOnError: false)) != null;
 

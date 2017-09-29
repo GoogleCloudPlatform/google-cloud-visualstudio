@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     {
         private const string Guid = "2625FA1D-22DD-440E-87C0-1EB42DB7C5A4";
 
-        private ISectionViewModel _viewModel;
+        private readonly ISectionViewModel _viewModel;
         private IServiceProvider _serviceProvider;
         private TeamExplorerUtils _teamExploerServices;
         private bool _isBusy;

@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Repos,
                 x => x.NextPageToken);
-        }           
+        }
 
         /// <summary>
         /// Creates a cloud source repository.

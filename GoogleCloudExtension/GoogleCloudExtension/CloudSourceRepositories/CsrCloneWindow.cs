@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrCloneWindow : CommonDialogWindowBase
     {
-        private  CsrCloneWindowViewModel ViewModel { get; }
+        private CsrCloneWindowViewModel ViewModel { get; }
 
         private CsrCloneWindow(IList<Project> projects) : base(StringResources.CsrCloneWindowTitle)
         {

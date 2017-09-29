@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             // To be safe and in case the constructor/initiailzation code could be modified in the future.
             if (_attachDebuggerCommand != null)
             {
-                _attachDebuggerCommand.CanExecuteCommand = 
+                _attachDebuggerCommand.CanExecuteCommand =
                     Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
             }
             base.OnMenuItemOpen();

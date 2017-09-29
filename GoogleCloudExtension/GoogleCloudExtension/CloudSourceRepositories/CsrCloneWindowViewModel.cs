@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Responds to create repo button click event
         /// </summary>
         public ProtectedCommand CreateRepoCommand { get; }
-        
+
         /// <summary>
         /// Gets a result of type <seealso cref="CloneDialogResult"/>.
         /// null inidcates no result is created, user cancelled the operation.
@@ -169,7 +169,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                             .FirstOrDefault(x => x.Name == _latestCreatedRepo.Name);
                         if (SelectedRepository != null)
                         {
-                            break;  
+                            break;
                         }
                         // else if it is null, user may have changed project, continue to select first repo.
                     }

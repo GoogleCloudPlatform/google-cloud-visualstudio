@@ -108,7 +108,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         }
 
         public PickProjectIdViewModel(IPickProjectIdWindow owner)
-            : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser) { }
+            : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
+        { }
 
         /// <summary>
         /// For Testing.
