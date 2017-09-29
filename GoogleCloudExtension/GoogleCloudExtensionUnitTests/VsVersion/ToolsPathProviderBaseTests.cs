@@ -12,19 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using GoogleCloudExtension.VsVersion;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace GoogleCloudExtensionUnitTests.VsVersion
 {
     [TestClass]
     public class ToolsPathProviderBaseTests
     {
+        private const string SdkVersion = "2.0.0";
         private ToolsPathProviderBase _objectUnderTest;
         private string _dotnetPath;
         private string _sdkPath;
@@ -93,13 +94,12 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         {
             Directory.CreateDirectory(_dotnetPath);
             Directory.CreateDirectory(_sdkPath);
-            const string sdkVersionName = "SdkVersion";
-            Directory.CreateDirectory(Path.Combine(_sdkPath, sdkVersionName));
+            Directory.CreateDirectory(Path.Combine(_sdkPath, SdkVersion));
             Thread.Sleep(100);
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
-            Assert.AreEqual(sdkVersionName, versions.Single());
+            Assert.AreEqual(SdkVersion, versions.Single());
         }
 
         [TestMethod]
@@ -107,14 +107,13 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         {
             Directory.CreateDirectory(_dotnetPath);
             Directory.CreateDirectory(_sdkPath);
-            const string sdkVersionName = "SdkVersion";
-            Directory.CreateDirectory(Path.Combine(_sdkPath, sdkVersionName));
+            Directory.CreateDirectory(Path.Combine(_sdkPath, SdkVersion));
             Directory.CreateDirectory(Path.Combine(_sdkPath, ToolsPathProviderBase.NugetFallbackFolderName));
             Thread.Sleep(100);
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
-            Assert.AreEqual(sdkVersionName, versions.Single());
+            Assert.AreEqual(SdkVersion, versions.Single());
         }
     }
 }

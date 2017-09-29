@@ -40,7 +40,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestInitialize]
         public void BeforeEach()
         {
-            _targetSdkVersions = new List<string> { "2.0.0" };
+            _targetSdkVersions = new List<string>();
             VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
@@ -94,7 +94,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithNoNetCoreSdk()
         {
-            _targetSdkVersions.Clear();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
 
@@ -109,28 +108,28 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void TestInitialConditionsVs2017WithNetCore20Sdk()
+        public void TestInitialConditionsVs2017WithNetCoreSdk20()
         {
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
-            _targetSdkVersions[0] = "2.0.0";
+            _targetSdkVersions.Add("2.0.0");
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
             Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
+                new[] { AspNetVersion.AspNetCore20 },
                 _objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
+            Assert.AreEqual(AspNetVersion.AspNetCore20, _objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
-        public void TestInitialConditionsVs2017WithNetCore10Sdk()
+        public void TestInitialConditionsVs2017WithNetCoreSdk10()
         {
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
-            _targetSdkVersions[0] = "1.0.0";
+            _targetSdkVersions.Add("1.0.0");
 
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
@@ -138,6 +137,24 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11 },
+                _objectUnderTest.AvailableVersions.ToList());
+            Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
+        }
+
+        [TestMethod]
+        public void TestInitialConditionsVs2017WithBothNetCoreSdk10And20()
+        {
+            GoogleCloudExtensionPackageTests.InitPackageMock(
+                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            _targetSdkVersions.Add("2.0.0");
+            _targetSdkVersions.Add("1.0.0");
+
+            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+
+            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
+            Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
+            CollectionAssert.AreEqual(
+                new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
                 _objectUnderTest.AvailableVersions.ToList());
             Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
@@ -229,6 +246,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetSelectedFrameworkKeepSelectedVersion()
         {
+            _targetSdkVersions.Add("2.0.0");
+            _targetSdkVersions.Add("1.0.0");
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
             _objectUnderTest.SelectedVersion = AspNetVersion.AspNetCore11;
@@ -246,6 +265,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetSelectedFrameworkInvalidateSelectedVersion()
         {
+            _targetSdkVersions.Add("2.0.0");
+            _targetSdkVersions.Add("1.0.0");
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
 
             _objectUnderTest.SelectedFramework = FrameworkType.NetFramework;

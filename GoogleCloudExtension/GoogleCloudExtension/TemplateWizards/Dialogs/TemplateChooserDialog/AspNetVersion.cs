@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
             List<Version> sdkVersions = GetParsedSdkVersions().ToList();
             var aspNetVersions = new List<AspNetVersion>();
-            if (sdkVersions.Any(version => version >= s_sdkVersion1_0))
+            if (sdkVersions.Any(version => version >= s_sdkVersion1_0 && version < s_sdkVersion2_0))
             {
                 aspNetVersions.Add(AspNetCore10);
                 aspNetVersions.Add(AspNetCore11);

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using GoogleCloudExtension.Deployment;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GoogleCloudExtension.Deployment;
 
-namespace GoogleCloudExtension.VsVersion {
+namespace GoogleCloudExtension.VsVersion
+{
     internal abstract class ToolsPathProviderBase : IToolsPathProvider
     {
         internal const string SdkDirectoryName = "sdk";
@@ -37,9 +39,12 @@ namespace GoogleCloudExtension.VsVersion {
             {
                 return Enumerable.Empty<string>();
             }
+            Version dummy;
             return Directory.EnumerateDirectories(sdkDirectoryPath)
                 .Select(Path.GetFileName)
-                .Where(sdkVersion => NugetFallbackFolderName != sdkVersion);
+                .Where(
+                    sdkVersion =>
+                        sdkVersion.StartsWith("1.0.0-preview") || Version.TryParse(sdkVersion, out dummy));
         }
     }
 }
