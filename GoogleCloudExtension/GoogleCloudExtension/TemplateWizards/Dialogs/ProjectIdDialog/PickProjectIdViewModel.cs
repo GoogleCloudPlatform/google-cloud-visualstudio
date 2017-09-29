@@ -168,6 +168,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 
         private void OnOk()
         {
+            CredentialsStore.Default.UpdateCurrentProject(SelectedProject);
             Result = ProjectId;
             _owner.Close();
         }
