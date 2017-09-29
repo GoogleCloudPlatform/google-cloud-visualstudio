@@ -47,7 +47,9 @@
                         
                         <ComboBoxItem
                             Tag="{x:Static local:FrameworkType.NetCore}"
-                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"/>
+                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"
+                            Visibility="{Binding NetCoreAvailable, Converter={utils:VisibilityConverter}}"
+                            />
                         <ComboBoxItem
                             Tag="{x:Static local:FrameworkType.NetFramework}"
                             Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}"/>

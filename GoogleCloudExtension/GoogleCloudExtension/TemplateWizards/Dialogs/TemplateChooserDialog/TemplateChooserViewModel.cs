@@ -50,8 +50,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             set
             {
                 SetValueAndRaise(ref _selectedFramework, value);
-                AvailableVersions = AspNetVersion.GetAvailableVersions(
-                    GoogleCloudExtensionPackage.VsVersion, SelectedFramework);
+                AvailableVersions = AspNetVersion.GetAvailableVersions(SelectedFramework);
             }
         }
 
@@ -146,6 +145,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public TemplateChooserViewModelResult Result { get; private set; }
 
+        public bool NetCoreAvailable { get; } = IsNetCoreAvailable();
+
+        private static bool IsNetCoreAvailable() => AspNetVersion.GetAvailableVersions(FrameworkType.NetCore).Any();
+
         /// <param name="closeWindow">The action that will close the dialog.</param>
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
         public TemplateChooserViewModel(Action closeWindow, Func<string> promptPickProject)
@@ -159,7 +162,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 },
                 false);
             SelectProjectCommand = new ProtectedCommand(() => GcpProjectId = promptPickProject() ?? GcpProjectId);
-            SelectedFramework = FrameworkType.NetCore;
+            SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
         }
     }
 }

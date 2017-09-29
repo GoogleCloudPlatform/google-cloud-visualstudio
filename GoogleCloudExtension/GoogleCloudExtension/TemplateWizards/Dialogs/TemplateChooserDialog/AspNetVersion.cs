@@ -16,6 +16,7 @@ using GoogleCloudExtension.VsVersion;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
@@ -49,6 +50,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public static readonly AspNetVersion AspNet4 = new AspNetVersion("4", false);
 
+        private static readonly Version s_sdkVersion1_0 = new Version(1, 0);
+        private static readonly Version s_sdkVersion2_0 = new Version(2, 0);
+
         /// <summary>
         /// The version number of ASP.NET. This corresponds to the version of .NET Core used as well.
         /// </summary>
@@ -58,6 +62,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// Whether this is ASP.NET or ASP.NET Core
         /// </summary>
         public bool IsCore { get; }
+
+        /// <summary>
+        /// Gets the installed .NET Core SDK versions.
+        /// </summary>
+        private static IEnumerable<string> NetCoreSdkVersions =>
+            VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
 
         [JsonConstructor]
         private AspNetVersion(string version, bool isCore = true)
@@ -71,10 +81,17 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
-            return new List<AspNetVersion>
+            if (NetCoreSdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview")))
             {
-                AspNetCore1Preview
-            };
+                return new List<AspNetVersion>
+                {
+                    AspNetCore1Preview
+                };
+            }
+            else
+            {
+                return new List<AspNetVersion>();
+            }
         }
 
         /// <summary>
@@ -82,12 +99,30 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private static IList<AspNetVersion> GetVs2017AspNetCoreVersions()
         {
-            return new List<AspNetVersion>
+            List<Version> sdkVersions = GetParsedSdkVersions().ToList();
+            var aspNetVersions = new List<AspNetVersion>();
+            if (sdkVersions.Any(version => version >= s_sdkVersion1_0 && version < s_sdkVersion2_0))
             {
-                AspNetCore10,
-                AspNetCore11,
-                AspNetCore20
-            };
+                aspNetVersions.Add(AspNetCore10);
+                aspNetVersions.Add(AspNetCore11);
+            }
+            if (sdkVersions.Any(version => version >= s_sdkVersion2_0))
+            {
+                aspNetVersions.Add(AspNetCore20);
+            }
+            return aspNetVersions;
+        }
+
+        private static IEnumerable<Version> GetParsedSdkVersions()
+        {
+            foreach (string sdkVersion in NetCoreSdkVersions)
+            {
+                Version result;
+                if (System.Version.TryParse(sdkVersion, out result))
+                {
+                    yield return result;
+                }
+            }
         }
 
         /// <summary>
@@ -103,24 +138,21 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// Gets the versions available for specified version of Visual Studio and Framework type.
         /// </summary>
-        /// <param name="vsVersion">The string visual studio version.</param>
         /// <param name="framework">The <see cref="FrameworkType"/> that will run this template.</param>
         /// <returns>A new list of AspNetVersions from which are compatible with the vsVersion and framework.</returns>
-        public static IList<AspNetVersion> GetAvailableVersions(string vsVersion, FrameworkType framework)
+        public static IList<AspNetVersion> GetAvailableVersions(FrameworkType framework)
         {
             switch (framework)
             {
                 case FrameworkType.NetFramework:
-                    return new List<AspNetVersion> {AspNet4};
+                    return new List<AspNetVersion> { AspNet4 };
                 case FrameworkType.NetCore:
-                    switch (vsVersion)
+                    switch (GoogleCloudExtensionPackage.VsVersion)
                     {
                         case VsVersionUtils.VisualStudio2015Version:
                             return GetVs2015AspNetCoreVersions();
-                        // ReSharper disable once RedundantCaseLabel
-                        case VsVersionUtils.VisualStudio2017Version:
-                        // For forward compatibility, give future versions of VS the same options as VS2017.
                         default:
+                            // For forward compatibility, give future versions of VS the same options as VS2017.
                             return GetVs2017AspNetCoreVersions();
                     }
                 case FrameworkType.None:
