@@ -41,6 +41,7 @@ namespace GoogleCloudExtension.GCloud
         // Minimum version of Cloud SDK that is acceptable.
         private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
 
+        // Mapping between the enum and the actual gcloud component.
         private static readonly Dictionary<GCloudComponent, string> s_componentNames = new Dictionary<GCloudComponent, string>
         {
             [ GCloudComponent.Beta ] = "beta",
