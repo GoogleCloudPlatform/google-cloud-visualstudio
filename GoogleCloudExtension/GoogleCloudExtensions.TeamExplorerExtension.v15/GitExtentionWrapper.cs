@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Linq;
-using static System.Diagnostics.Debug;
 
 namespace GoogleCloudExtension.TeamExplorerExtension
 {

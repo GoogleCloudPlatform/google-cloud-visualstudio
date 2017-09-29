@@ -22,6 +22,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {

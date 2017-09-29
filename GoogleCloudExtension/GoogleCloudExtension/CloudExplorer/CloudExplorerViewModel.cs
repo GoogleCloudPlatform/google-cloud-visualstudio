@@ -22,6 +22,7 @@ using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +31,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.CloudExplorer
 {

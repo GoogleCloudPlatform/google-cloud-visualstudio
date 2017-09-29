@@ -15,8 +15,8 @@
 using GoogleCloudExtension.Utils;
 using Microsoft.TeamFoundation.Controls;
 using System;
-using System.Diagnostics;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.TeamExplorerExtension
 {

@@ -14,12 +14,12 @@
 
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Microsoft.Win32;
 using Process = System.Diagnostics.Process;
 using Thread = System.Threading.Thread;
 

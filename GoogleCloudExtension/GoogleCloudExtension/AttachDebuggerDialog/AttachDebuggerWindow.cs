@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Utils;
-using StringResources = GoogleCloudExtension.Resources;
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 using System;
+using StringResources = GoogleCloudExtension.Resources;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
