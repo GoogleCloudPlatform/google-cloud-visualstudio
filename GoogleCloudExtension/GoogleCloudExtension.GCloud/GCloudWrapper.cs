@@ -41,6 +41,12 @@ namespace GoogleCloudExtension.GCloud
         // Minimum version of Cloud SDK that is acceptable.
         private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
 
+        private static readonly Dictionary<GCloudComponent, string> s_componentNames = new Dictionary<GCloudComponent, string>
+        {
+            [ GCloudComponent.Beta ] = "beta",
+            [ GCloudComponent.Kubectl ] = "kubectl",
+        };
+
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
@@ -79,7 +85,7 @@ namespace GoogleCloudExtension.GCloud
             var promoteParameter = promote ? "--promote" : "--no-promote";
 
             return RunCommandAsync(
-                $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
+                $"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
                 outputAction,
                 context);
         }
@@ -152,7 +158,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="component">the component to check, optional. If no component is provided only gcloud is checked.</param>
         /// <returns></returns>
-        public static async Task<GCloudValidationResult> ValidateGCloudAsync(string component = null)
+        public static async Task<GCloudValidationResult> ValidateGCloudAsync(GCloudComponent component = GCloudComponent.None)
         {
             if (!IsGCloudCliInstalled())
             {
@@ -165,7 +171,7 @@ namespace GoogleCloudExtension.GCloud
                 return new GCloudValidationResult(isCloudSdkInstalled: true, isCloudSdkUpdated: false, cloudSdkVersion: cloudSdkVersion);
             }
 
-            if (component != null && !await IsComponentInstalledAsync(component))
+            if (component != GCloudComponent.None && !await IsComponentInstalledAsync(component))
             {
                 return new GCloudValidationResult(
                     isCloudSdkInstalled: true,
@@ -218,14 +224,14 @@ namespace GoogleCloudExtension.GCloud
             return gcloudPath != null;
         }
 
-        private static async Task<bool> IsComponentInstalledAsync(string component)
+        private static async Task<bool> IsComponentInstalledAsync(GCloudComponent component)
         {
             if (!IsGCloudCliInstalled())
             {
                 return false;
             }
             var installedComponents = await GetInstalledComponentsAsync();
-            return installedComponents.Contains(component);
+            return installedComponents.Contains(s_componentNames[component]);
         }
 
         private static async Task<Version> GetInstalledCloudSdkVersionAsync()

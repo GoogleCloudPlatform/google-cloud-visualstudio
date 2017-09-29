@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
-                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
+                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
                 _publishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
                 {
