@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonEnvironmentVariables.cs" />
+    <Compile Include="GCloudComponent.cs" />
     <Compile Include="GCloudValidationResult.cs" />
     <Compile Include="Models\CloudSdkVersions.cs" />
     <Compile Include="Models\GkeDeployment.cs" />

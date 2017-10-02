@@ -517,6 +517,7 @@
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\ToolsPathProviderBase.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
     <Compile Include="VsVersion\VsVersionUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
