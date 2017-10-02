@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.Utils.Async
             Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
             return new AsyncProperty<T>(
-                valueSource.ContinueWith(t => func(GetTaskResultSafe(t))), 
+                valueSource.ContinueWith(t => func(GetTaskResultSafe(t))),
                 defaultValue);
         }
 

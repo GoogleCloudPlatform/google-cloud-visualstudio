@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.SolutionUtils;
 using System;
 using System.Diagnostics;
-using GoogleCloudExtension.SolutionUtils;
 
 namespace GoogleCloudExtension.Accounts
 {

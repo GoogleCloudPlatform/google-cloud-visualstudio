@@ -116,7 +116,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                             Resources.PubSubDeleteSubscriptionErrorMessage,
                             Resources.PubSubDeleteSubscriptionErrorHeader,
                             e.Message);
-
                     }
                     await _owner.Refresh();
                 }

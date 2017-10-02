@@ -161,6 +161,5 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     throw new InvalidOperationException($"Unknown Famework type: {framework}");
             }
         }
-
     }
 }

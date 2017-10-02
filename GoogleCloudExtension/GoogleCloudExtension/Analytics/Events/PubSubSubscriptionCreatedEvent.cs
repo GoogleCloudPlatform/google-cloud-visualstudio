@@ -24,6 +24,5 @@ namespace GoogleCloudExtension.Analytics.Events
                 PubSubSubscriptionCreatedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
-
     }
 }

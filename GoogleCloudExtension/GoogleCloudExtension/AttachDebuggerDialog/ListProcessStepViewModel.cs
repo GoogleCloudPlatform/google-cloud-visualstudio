@@ -17,7 +17,6 @@ using EnvDTE80;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
-using Shell = Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +24,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Shell = Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {

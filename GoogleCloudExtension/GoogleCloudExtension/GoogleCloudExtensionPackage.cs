@@ -150,11 +150,11 @@ namespace GoogleCloudExtension
             if (_closingEvent != null)
             {
                 var tasks = new List<SystemTasks.Task>();
-                foreach(var handler in _closingEvent.GetInvocationList().OfType<EventHandler>())
+                foreach (var handler in _closingEvent.GetInvocationList().OfType<EventHandler>())
                 {
                     tasks.Add(SystemTasks.Task.Run(() => handler(this, EventArgs.Empty)));
                 };
- 
+
                 SystemTasks.Task.WaitAll(tasks.ToArray(), TimeSpan.FromMilliseconds(1000));
             }
             return base.QueryClose(out canClose);

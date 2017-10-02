@@ -15,8 +15,8 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GitUtils
@@ -72,8 +72,8 @@ namespace GoogleCloudExtension.GitUtils
         /// Otherwise false.
         /// </returns>
         public static bool StoreCredential(
-            string url, 
-            string refreshToken, 
+            string url,
+            string refreshToken,
             StoreCredentialPathOption pathOption)
         {
             url.ThrowIfNullOrEmpty(nameof(url));
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.GitUtils
 
             Uri uri = new Uri(url);
             UriPartial uriPartial;
-            switch(pathOption)
+            switch (pathOption)
             {
                 case StoreCredentialPathOption.UrlPath:
                     uriPartial = UriPartial.Path;
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.GitUtils
                     uriPartial = UriPartial.Authority;
                     break;
                 default:
-                    throw new  ArgumentException(nameof(pathOption));
+                    throw new ArgumentException(nameof(pathOption));
             }
             return WindowsCredentialManager.Write(
                 $"git:{uri.GetLeftPart(uriPartial)}",

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
 using GoogleCloudExtension.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private const string SettingsPath = @"googlecloudvsextension\attach_debugger_dialog";
         private const string DefaultUsersSettingFile = @"gceinstace_default_user.cfg";
-        private static readonly string DefaultUsersSettingsFullPath 
+        private static readonly string s_defaultUsersSettingsFullPath
             = Path.Combine(GetStoragePath(), DefaultUsersSettingFile);
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public static List<InstanceDefaultUser> ReadGceInstanceDefaultUsers()
         {
             List<InstanceDefaultUser> results = null;
-            if (File.Exists(DefaultUsersSettingsFullPath))
+            if (File.Exists(s_defaultUsersSettingsFullPath))
             {
-                string jsonText = File.ReadAllText(DefaultUsersSettingsFullPath);
+                string jsonText = File.ReadAllText(s_defaultUsersSettingsFullPath);
                 if (!string.IsNullOrWhiteSpace(jsonText))
                 {
                     try
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 Directory.CreateDirectory(GetStoragePath());
             }
-            File.WriteAllText(DefaultUsersSettingsFullPath, JsonConvert.SerializeObject(defaultUsers));
+            File.WriteAllText(s_defaultUsersSettingsFullPath, JsonConvert.SerializeObject(defaultUsers));
         }
 
         private static string GetStoragePath()

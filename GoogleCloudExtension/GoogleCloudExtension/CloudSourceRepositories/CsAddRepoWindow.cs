@@ -14,9 +14,9 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
-using StringResources = GoogleCloudExtension.Resources;
 using GoogleCloudExtension.Theming;
 using System.Collections.Generic;
+using StringResources = GoogleCloudExtension.Resources;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
