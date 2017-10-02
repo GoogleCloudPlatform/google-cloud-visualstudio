@@ -138,7 +138,17 @@ namespace GoogleCloudExtension.Deployment
 
             outputAction($"msbuild.exe {arguments}");
             bool result = await ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
-            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
+
+            // We perform this check here because it is not required to have gcloud installed in order to deploy
+            // ASP.NET 4.x apps to GCE VMs. Therefore nothing would have checked for the presence of gcloud before
+            // getting here.
+            var gcloudValidation = await GCloudWrapper.ValidateGCloudAsync();
+            Debug.WriteLineIf(!gcloudValidation.IsValid, "Skipping creating context, gcloud is not installed.");
+            if (gcloudValidation.IsValid)
+            {
+                await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
+            }
+
             return result;
         }
     }
