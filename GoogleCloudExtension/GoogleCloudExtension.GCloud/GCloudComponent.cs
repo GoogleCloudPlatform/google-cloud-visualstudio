@@ -28,7 +28,6 @@ namespace GoogleCloudExtension.GCloud
         /// The beta component, contains the beta features for gcloud, only depend on this if
         /// absolutely necessary as things change rapidly.
         /// </summary>
-
         Beta,
 
         /// <summary>
