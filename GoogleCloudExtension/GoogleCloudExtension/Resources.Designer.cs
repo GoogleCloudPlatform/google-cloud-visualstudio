@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -5074,11 +5074,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Project ID:.
+        /// </summary>
+        public static string PublishDialogFlexGcpProjectIdLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexGcpProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P_romote version.
         /// </summary>
         public static string PublishDialogFlexPromoteVersionCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select _Project....
+        /// </summary>
+        public static string PublishDialogFlexSelectGcpProjectButtonLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexSelectGcpProjectButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Google Cloud Project to publish to - {0}.
+        /// </summary>
+        public static string PublishDialogFlexSelectGcpProjectTitle {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexSelectGcpProjectTitle", resourceCulture);
             }
         }
         

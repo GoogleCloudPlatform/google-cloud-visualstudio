@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private void OnAppEngineChoiceCommand()
         {
-            var nextStep = FlexStepViewModel.CreateStep();
+            var nextStep = FlexStepViewModel.CreateStep(_dialog.Project.Name);
             _dialog.NavigateToStep(nextStep);
         }
 
