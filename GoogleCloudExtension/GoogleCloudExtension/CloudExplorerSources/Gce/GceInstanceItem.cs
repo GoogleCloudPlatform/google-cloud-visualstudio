@@ -59,6 +59,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public string PublicIpAddress => Instance.GetPublicIpAddress();
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceFQDNDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGceInstanceFQDNDisplayName))]
+        public string PublicFQDN => Instance.GetFullyQualifiedDomainName();
+
+
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceTagsDescription))]
         public string Tags => Instance.GetTags();
     }

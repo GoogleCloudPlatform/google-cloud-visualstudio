@@ -2815,4 +2815,12 @@
     <value>Features:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
+  <data name="CloudExplorerGceInstanceFQDNDescription" xml:space="preserve">
+    <value>The fully qualified domain name for the instance.</value>
+    <comment>The description for the FQDN property.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceFQDNDisplayName" xml:space="preserve">
+    <value>Fully Qualified Domain Name</value>
+    <comment>The display name for the FQDN property.</comment>
+  </data>
 </root>

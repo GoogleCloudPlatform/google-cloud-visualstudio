@@ -147,8 +147,12 @@ namespace GoogleCloudExtension.DataSources
         public static string GetFullyQualifiedDomainName(this Instance instance)
         {
             var ipAddress = instance.GetPublicIpAddress();
-            var reverseIp = string.Join(".", ipAddress.Split('.').Reverse());
+            if (ipAddress == null)
+            {
+                return "";
+            }
 
+            var reverseIp = string.Join(".", ipAddress.Split('.').Reverse());
             return $"{reverseIp}.bc.googleusercontent.com";
         }
 
