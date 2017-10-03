@@ -61,6 +61,10 @@
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.29.1.993\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.29.1.981\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.29.1\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
@@ -97,6 +101,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="InstanceExtensionsUnitTests.cs" />
     <Compile Include="ResourceManagerDataSourceUnitTests.cs" />
     <Compile Include="DataSourceUnitTestsBase.cs" />
     <Compile Include="PubSubDataSourceUnitTests.cs" />
