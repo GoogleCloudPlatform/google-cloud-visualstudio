@@ -1177,24 +1177,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The fully qualified domain name for the instance..
-        /// </summary>
-        public static string CloudExplorerGceInstanceFQDNDescription {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceInstanceFQDNDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fully Qualified Domain Name.
-        /// </summary>
-        public static string CloudExplorerGceInstanceFQDNDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceInstanceFQDNDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The internal IP address of the instance.
         /// </summary>
         public static string CloudExplorerGceInstanceInternalIpDescription {
