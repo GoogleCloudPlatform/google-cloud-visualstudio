@@ -25,7 +25,8 @@ namespace GoogleCloudExtension.VsVersion
         public const string VisualStudio2015Version = "14.0";
         public const string VisualStudio2017Version = "15.0";
 
-        private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider = new Lazy<IToolsPathProvider>(GetTooslPathProvider);
+        internal static Lazy<IToolsPathProvider> s_toolsPathProvider =
+            new Lazy<IToolsPathProvider>(GetTooslPathProvider);
         private static readonly Lazy<int> s_remoteDebuggerPort = new Lazy<int>(GetRemoteDebuggerPort);
 
         /// <summary>

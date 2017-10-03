@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 // This is the second time, check connectivity with a longer wait time.
                 await ConnectivityTestUntillTimeout(waitTime) :
                 // This is the first time, we don't check "waitTime", test connectivity anyhow.
-                await port.ConnectivityTest(CancelToken);   
+                await port.ConnectivityTest(CancelToken);
             if (connected)
             {
                 return InstallStartRemoteToolStepViewModel.CreateStep(Context);

@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
 namespace GoogleCloudExtension.Deployment
 {
     /// <summary>
@@ -45,5 +49,10 @@ namespace GoogleCloudExtension.Deployment
         /// Returns the path to Visual Studio Remote Debugger tools.
         /// </summary>
         string GetRemoteDebuggerToolsPath();
+
+        /// <summary>
+        /// Returns the .NET Core Sdk versions installed on this computer.
+        /// </summary>
+        IEnumerable<string> GetNetCoreSdkVersions();
     }
 }

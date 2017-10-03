@@ -16,7 +16,7 @@ using System;
 
 namespace GoogleCloudExtension.Analytics.Events
 {
-    class GcsFileBrowserNewFolderEvent
+    internal class GcsFileBrowserNewFolderEvent
     {
         private const string GcsFileGcsFileBrowserNewFolderEventName = "gcsFileBrowserNewFolder";
         private const string DeploymentDurationProperty = "duration";

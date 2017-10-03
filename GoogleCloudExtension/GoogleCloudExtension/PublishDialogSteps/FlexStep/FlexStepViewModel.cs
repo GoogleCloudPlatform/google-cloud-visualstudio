@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             IParsedProject project = PublishDialog.Project;
             try
             {
-                Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
+                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
                 PublishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
                 {

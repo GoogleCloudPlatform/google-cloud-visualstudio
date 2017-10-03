@@ -60,9 +60,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private const int InstancesDefaultUserMaxLength = 10;
         private static readonly Lazy<AttachDebuggerSettings> s_instance = new Lazy<AttachDebuggerSettings>();
-        private static readonly Lazy<List<InstanceDefaultUser>> _lazyDefaultUsersList = 
+        private static readonly Lazy<List<InstanceDefaultUser>> s_lazyDefaultUsersList =
             new Lazy<List<InstanceDefaultUser>>(AttachDebuggerSettingsStore.ReadGceInstanceDefaultUsers);
-        private static List<InstanceDefaultUser> _defaultUsersList => _lazyDefaultUsersList.Value;
+        private static List<InstanceDefaultUser> _defaultUsersList => s_lazyDefaultUsersList.Value;
 
         /// <summary>
         /// Singleton instance.

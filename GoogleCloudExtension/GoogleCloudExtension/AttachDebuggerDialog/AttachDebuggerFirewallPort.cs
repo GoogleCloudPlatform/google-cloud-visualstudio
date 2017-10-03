@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class AttachDebuggerFirewallPort
     {
-        private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan s_connectivityTestTimeout = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan s_firewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
         private readonly Lazy<GceDataSource> _lazyDataSource;
         private Instance _gceInstance;
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 .SelectMany(x => x.Allowed)
                 // x is now FireWall.AllowedData
                 // Check if the allowed protocol is tcp
-                .Where(x => x?.IPProtocol == "tcp" && x.Ports != null)  
+                .Where(x => x?.IPProtocol == "tcp" && x.Ports != null)
                 .SelectMany(x => x.Ports)
                 // x is now port number in string type
                 // Check if the allowed port number matches
@@ -148,7 +148,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 try
                 {
                     var connectTask = client.ConnectAsync(_gceInstance.GetPublicIpAddress(), PortInfo.Port);
-                    if (connectTask == await Task.WhenAny(connectTask, Task.Delay(ConnectivityTestTimeout, cancelToken)))
+                    if (connectTask == await Task.WhenAny(connectTask, Task.Delay(s_connectivityTestTimeout, cancelToken)))
                     {
                         await connectTask;
                         Debug.WriteLine("ConnectivityTest, Succeeded");

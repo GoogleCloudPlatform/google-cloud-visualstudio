@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(
-                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(),  menuCommandID);
+                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(), menuCommandID);
                 menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
                 commandService.AddCommand(menuItem);
             }

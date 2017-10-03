@@ -21,10 +21,10 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <summary>
         /// This error message indicates it fails to establish connection.
         /// </summary>
-        public const string SessionEmptyErrorMessage = 
+        public const string SessionEmptyErrorMessage =
             @"Cannot validate argument on parameter 'Session'. The argument is null or empty.";
 
-        public PowerShellFailedToConnectException(Exception innerException) : 
+        public PowerShellFailedToConnectException(Exception innerException) :
             base(innerException.Message, innerException)
         { }
     }

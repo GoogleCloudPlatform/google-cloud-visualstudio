@@ -19,8 +19,8 @@ using GoogleCloudExtension.CloudSourceRepositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 {
@@ -85,11 +85,10 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             TestRepoNameValidRange('A', 'Z');
             TestRepoNameValidRange('0', '9');
             TestValidRepoName("_This-is_valid");    // _ and - character
-
         }
 
         public void InvalidRepoNameTest()
-        { 
+        {
             TestRepoNameInvalidRange(Convert.ToChar(0), Convert.ToChar(44));    // 45 is -
             TestRepoNameInvalidRange(Convert.ToChar(46), Convert.ToChar(47));   // 48 is 0
             TestRepoNameInvalidRange(Convert.ToChar(58), Convert.ToChar(64));   // 57 is 9, 66 is A

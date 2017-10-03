@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public bool IsEnabled
         {
             get { return _isEnabled; }
-            private set { SetValueAndRaise(ref _isEnabled, value);  }
+            private set { SetValueAndRaise(ref _isEnabled, value); }
         }
 
         /// <summary>

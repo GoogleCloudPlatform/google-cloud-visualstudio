@@ -230,7 +230,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 ShellUtils.SaveAllFiles();
 
-                var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("kubectl");
+                var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
                 PublishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {

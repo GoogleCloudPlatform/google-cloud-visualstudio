@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
