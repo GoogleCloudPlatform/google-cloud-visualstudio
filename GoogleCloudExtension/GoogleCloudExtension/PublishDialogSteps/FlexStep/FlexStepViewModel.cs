@@ -18,7 +18,6 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -36,12 +35,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     public class FlexStepViewModel : PublishDialogStepBase
     {
         private readonly FlexStepContent _content;
-        private readonly string _projectName;
-        private IPublishDialog _publishDialog;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
-        internal Func<string, string> PickProjectPrompt = PickProjectIdWindow.PromptUser;
 
         /// <summary>
         /// The version to use for the the app in App Engine Flex.
@@ -75,17 +71,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
-        public string GcpProjectId => CredentialsStore.Default.CurrentProjectId;
-
-        public ProtectedCommand SelectProjectCommand { get; }
-
-        private FlexStepViewModel(FlexStepContent content, string projectName)
+        private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
-            _projectName = projectName;
             CanPublish = true;
-
-            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
         }
 
         protected override void HasErrorsChanged()
@@ -97,11 +86,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
-        {
-            _publishDialog = dialog;
-        }
-
         public override async void Publish()
         {
             if (!ValidateInput())
@@ -110,11 +94,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 return;
             }
 
-            IParsedProject project = _publishDialog.Project;
+            IParsedProject project = PublishDialog.Project;
             try
             {
                 Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
-                _publishDialog.TrackTask(verifyGcloudTask);
+                PublishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
                 {
                     Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
@@ -141,7 +125,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.Clear();
                 GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-                _publishDialog.FinishFlow();
+                PublishDialog.FinishFlow();
 
                 TimeSpan deploymentDuration;
                 AppEngineFlexDeploymentResult result;
@@ -198,11 +182,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        /// <param name="projectName">The name of the Visual Studio project being deployed.</param>
-        internal static FlexStepViewModel CreateStep(string projectName)
+        internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();
-            var viewModel = new FlexStepViewModel(content, projectName);
+            var viewModel = new FlexStepViewModel(content);
             content.DataContext = viewModel;
 
             return viewModel;
@@ -224,16 +207,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
 
             return true;
-        }
-
-        private void OnSelectProjectCommand()
-        {
-            string pickProjectDialogTitle = string.Format(
-                Resources.PublishDialogFlexSelectGcpProjectTitle, _projectName);
-            if (PickProjectPrompt(pickProjectDialogTitle) != null)
-            {
-                RaisePropertyChanged(nameof(GcpProjectId));
-            }
         }
     }
 }

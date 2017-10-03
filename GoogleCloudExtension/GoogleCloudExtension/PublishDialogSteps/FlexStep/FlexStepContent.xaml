@@ -21,11 +21,11 @@
         <DockPanel HorizontalAlignment="Left">
             <Label
                 DockPanel.Dock="Top"
-                Content="{x:Static ext:Resources.PublishDialogFlexGcpProjectIdLabel}"
+                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
                 Style="{StaticResource CommonLabelStyle}"/>
             <Button
                 DockPanel.Dock="Right"
-                Content="{x:Static ext:Resources.PublishDialogFlexSelectGcpProjectButtonLabel}"
+                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
                 Style="{StaticResource CommonButtonStyle}"
                 Command="{Binding SelectProjectCommand}"/>
             <TextBox

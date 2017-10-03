@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Windows;
@@ -26,6 +29,8 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private bool _canGoNext;
         private bool _canPublish;
+        internal Func<string, string> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+        public IPublishDialog PublishDialog { get; private set; }
 
         public bool CanGoNext
         {
@@ -54,10 +59,18 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         public abstract FrameworkElement Content { get; }
+        public string GcpProjectId => CredentialsStore.Default.CurrentProjectId;
+        public ProtectedCommand SelectProjectCommand { get; }
 
         public event EventHandler CanGoNextChanged;
 
         public event EventHandler CanPublishChanged;
+
+        /// <inheritdoc />
+        protected PublishDialogStepBase()
+        {
+            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
+        }
 
         public virtual IPublishDialogStep Next()
         {
@@ -70,6 +83,23 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         public virtual void OnPushedToDialog(IPublishDialog dialog)
-        { }
+        {
+            PublishDialog = dialog;
+        }
+
+        private void OnSelectProjectCommand()
+        {
+            string pickProjectDialogTitle = string.Format(
+                Resources.PublishDialogSelectGcpProjectTitle, PublishDialog.Project.Name);
+            if (PickProjectPrompt(pickProjectDialogTitle) != null)
+            {
+                OnGcpProjectIdUpdated();
+                RaisePropertyChanged(nameof(GcpProjectId));
+            }
+        }
+
+        protected virtual void OnGcpProjectIdUpdated()
+        {
+        }
     }
 }

@@ -5074,38 +5074,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud Project ID:.
-        /// </summary>
-        public static string PublishDialogFlexGcpProjectIdLabel {
-            get {
-                return ResourceManager.GetString("PublishDialogFlexGcpProjectIdLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to P_romote version.
         /// </summary>
         public static string PublishDialogFlexPromoteVersionCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select _Project....
-        /// </summary>
-        public static string PublishDialogFlexSelectGcpProjectButtonLabel {
-            get {
-                return ResourceManager.GetString("PublishDialogFlexSelectGcpProjectButtonLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select Google Cloud Project to publish to - {0}.
-        /// </summary>
-        public static string PublishDialogFlexSelectGcpProjectTitle {
-            get {
-                return ResourceManager.GetString("PublishDialogFlexSelectGcpProjectTitle", resourceCulture);
             }
         }
         
@@ -5142,6 +5115,15 @@ namespace GoogleCloudExtension {
         public static string PublishDialogGceStepSelectInstanceMessage {
             get {
                 return ResourceManager.GetString("PublishDialogGceStepSelectInstanceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Project ID:.
+        /// </summary>
+        public static string PublishDialogGcpProjectIdLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogGcpProjectIdLabel", resourceCulture);
             }
         }
         
@@ -5196,6 +5178,24 @@ namespace GoogleCloudExtension {
         public static string PublishDialogPublishButtonCaption {
             get {
                 return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select _Project....
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectButtonLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Google Cloud Project to publish to - {0}.
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectTitle {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectTitle", resourceCulture);
             }
         }
         
