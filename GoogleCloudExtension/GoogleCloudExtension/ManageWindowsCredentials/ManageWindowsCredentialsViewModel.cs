@@ -191,6 +191,11 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 }
 
                 Debug.WriteLine($"Resetting the password for the user {user}");
+                if (!await GCloudWrapperUtils.VerifyGCloudDependencies())
+                {
+                    Debug.WriteLine("Gcloud dependencies not met, aborting change of password.");
+                    return null;
+                }
 
                 var context = new GCloudContext
                 {

@@ -49,13 +49,6 @@ namespace GoogleCloudExtension.GCloud
         };
 
         /// <summary>
-        /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
-        /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
-        /// in the PATH.
-        /// </summary>
-        public static string GetGCloudPath() => PathUtils.GetCommandPathFromPATH("gcloud.cmd");
-
-        /// <summary>
         /// Resets, or creates, the password for the given <paramref name="userName"/> in the given instance.
         /// </summary>
         public static Task<WindowsInstanceCredentials> ResetWindowsCredentialsAsync(
@@ -219,7 +212,7 @@ namespace GoogleCloudExtension.GCloud
         private static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
-            var gcloudPath = GetGCloudPath();
+            var gcloudPath = PathUtils.GetCommandPathFromPATH("gcloud.cmd");
             Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
             Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
             return gcloudPath != null;
