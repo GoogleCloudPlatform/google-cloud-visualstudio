@@ -54,8 +54,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditions()
         {
-            Assert.AreEqual(AppType.None, _objectUnderTest.AppType);
-            Assert.AreEqual(false, _objectUnderTest.OkCommand.CanExecuteCommand);
+            Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
+            Assert.AreEqual(true, _objectUnderTest.OkCommand.CanExecuteCommand);
             Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
             Assert.IsNull(_objectUnderTest.Result);
         }
@@ -296,7 +296,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
-            _promptPickProjectMock.Setup(f => f()).Returns((string) null);
+            _promptPickProjectMock.Setup(f => f()).Returns((string)null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
