@@ -158,8 +158,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 {
                     Result = new TemplateChooserViewModelResult(this);
                     closeWindow();
-                },
-                AppType != AppType.None);
+                });
             SelectProjectCommand = new ProtectedCommand(() => GcpProjectId = promptPickProject() ?? GcpProjectId);
             SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
         }
