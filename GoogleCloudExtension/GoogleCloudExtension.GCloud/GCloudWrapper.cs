@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.GCloud
     {
         // The minimum version of the Google Cloud SDK that the extension can work with. Update this only when
         // a feature appears in the Cloud SDK that is absolutely required for the extension to work.
-        public const string GCloudSdkMinimumVersion = "164.0.0";
+        public const string GCloudSdkMinimumVersion = "174.0.0";
 
         // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
         // are only used with gcloud which is why they're private here.
