@@ -2819,12 +2819,4 @@
     <value>Google Cloud Project ID:</value>
     <comment>The Google Cloud Project ID label of the AppEngine Flex Publish dialog.</comment>
   </data>
-  <data name="PublishDialogSelectGcpProjectButtonLabel" xml:space="preserve">
-    <value>Select _Project...</value>
-    <comment>The label of the Select Project button of the AppEngine Flex Publish dialog.</comment>
-  </data>
-  <data name="PublishDialogSelectGcpProjectTitle" xml:space="preserve">
-    <value>Select Google Cloud Project to publish to - {0}</value>
-    <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
-  </data>
 </root>

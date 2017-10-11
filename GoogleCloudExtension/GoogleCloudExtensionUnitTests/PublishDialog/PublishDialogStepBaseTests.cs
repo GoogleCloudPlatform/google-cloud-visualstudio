@@ -13,15 +13,11 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {
@@ -31,12 +27,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private const string TargetProjectId = "TargetProjectId";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
 
-        private static readonly string s_pickProjectDialogTitle =
-            string.Format(Resources.PublishDialogSelectGcpProjectTitle, VisualStudioProjectName);
-
         private PublishDialogStepBase _objectUnderTest;
-        private Mock<Func<string, string>> _pickProjectPromptMock;
-        private List<string> _changedProperties;
 
         [TestInitialize]
         public void BeforeEach()
@@ -47,32 +38,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             var mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
             var mockedPublishDialog = Mock.Of<IPublishDialog>(d => d.Project == mockedProject);
             _objectUnderTest.OnPushedToDialog(mockedPublishDialog);
-            _pickProjectPromptMock = new Mock<Func<string, string>>();
-            _objectUnderTest.PickProjectPrompt = _pickProjectPromptMock.Object;
-            _changedProperties = new List<string>();
-            _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-        }
-
-        [TestMethod]
-        public void TestSelectProjectCommandCanceled()
-        {
-            _pickProjectPromptMock.Setup(f => f(It.IsAny<string>())).Returns((string)null);
-
-            _objectUnderTest.SelectProjectCommand.Execute(null);
-
-            CollectionAssert.DoesNotContain(_changedProperties, nameof(FlexStepViewModel.GcpProjectId));
-            _pickProjectPromptMock.Verify(f => f(s_pickProjectDialogTitle), Times.Once);
-        }
-
-        [TestMethod]
-        public void TestSelectProjectCommand()
-        {
-            _pickProjectPromptMock.Setup(f => f(It.IsAny<string>())).Returns(TargetProjectId);
-
-            _objectUnderTest.SelectProjectCommand.Execute(null);
-
-            CollectionAssert.Contains(_changedProperties, nameof(FlexStepViewModel.GcpProjectId));
-            _pickProjectPromptMock.Verify(f => f(s_pickProjectDialogTitle), Times.Once);
         }
 
         [TestMethod]
@@ -89,16 +54,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             CredentialsStore.Default.UpdateCurrentProject(null);
 
             Assert.IsNull(_objectUnderTest.GcpProjectId);
-        }
-
-        [TestMethod]
-        public void TestOnPushedToDialog()
-        {
-            var dialogMock = new Mock<IPublishDialog>();
-
-            _objectUnderTest.OnPushedToDialog(dialogMock.Object);
-
-            Assert.AreEqual(dialogMock.Object, _objectUnderTest.PublishDialog);
         }
     }
 }

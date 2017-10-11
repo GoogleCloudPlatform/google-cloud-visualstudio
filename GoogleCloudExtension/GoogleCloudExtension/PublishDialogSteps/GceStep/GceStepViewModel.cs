@@ -39,22 +39,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     public class GceStepViewModel : PublishDialogStepBase
     {
         private readonly GceStepContent _content;
+        private IPublishDialog _publishDialog;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
-        private AsyncProperty<IEnumerable<Instance>> _instances;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
         /// the available target for the publish process.
         /// </summary>
-        public AsyncProperty<IEnumerable<Instance>> Instances
-        {
-            get { return _instances; }
-            private set { SetValueAndRaise(ref _instances, value); }
-        }
+        public AsyncProperty<IEnumerable<Instance>> Instances { get; }
 
         /// <summary>
         /// The selected GCE VM that will be the target of the publish process.
@@ -125,7 +121,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             _content = content;
 
-            Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstancesAsync());
+            Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstances());
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -136,13 +132,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             UpdateCredentials();
         }
 
-        private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
+        private async Task<IEnumerable<Instance>> GetAllWindowsInstances()
         {
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
-            IList<Instance> instances = await dataSource.GetInstanceListAsync();
+            var instances = await dataSource.GetInstanceListAsync();
             return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
         }
 
@@ -152,7 +148,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public override async void Publish()
         {
-            IParsedProject project = PublishDialog.Project;
+            var project = _publishDialog.Project;
 
             try
             {
@@ -160,19 +156,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-                PublishDialog.FinishFlow();
+                _publishDialog.FinishFlow();
 
-                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name);
                 TimeSpan deploymentDuration;
                 bool result;
-                using (StatusbarHelper.Freeze())
-                using (StatusbarHelper.ShowDeployAnimation())
-                using (ShellUtils.SetShellUIBusy())
-                using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(progressBarTitle))
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
-                    DateTime startDeploymentTime = DateTime.Now;
+                    var startDeploymentTime = DateTime.Now;
                     result = await WindowsVmDeployment.PublishProjectAsync(
                         project,
                         SelectedInstance,
@@ -185,11 +180,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 if (result)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
                     StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                    string url = SelectedInstance.GetDestinationAppUri();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    var url = SelectedInstance.GetDestinationAppUri();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
                         Process.Start(url);
@@ -204,7 +199,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 }
                 else
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
@@ -212,7 +207,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
@@ -221,9 +216,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
-            base.OnPushedToDialog(dialog);
+            _publishDialog = dialog;
 
-            PublishDialog.TrackTask(Instances.ValueTask);
+            _publishDialog.TrackTask(Instances.ValueTask);
         }
 
         #endregion
@@ -248,12 +243,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(SelectedInstance);
             }
             SelectedCredentials = Credentials.FirstOrDefault();
-        }
-
-        /// <inheritdoc />
-        protected override void OnGcpProjectIdUpdated()
-        {
-            Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstancesAsync());
         }
     }
 }
