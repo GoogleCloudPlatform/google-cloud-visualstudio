@@ -24,11 +24,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
     [TestClass]
     public class FlexStepViewModelTests
     {
-
         private FlexStepViewModel _objectUnderTest;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserFunctionMock;
-
-
 
         [TestInitialize]
         public void BeforeEach()
