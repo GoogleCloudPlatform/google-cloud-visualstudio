@@ -1712,11 +1712,11 @@
     <comment>Stackdriver Error Reporting window caption.</comment>
   </data>
   <data name="TitleBarAccountLabel" xml:space="preserve">
-    <value>Account</value>
+    <value>Account:</value>
     <comment>Label for account name label.</comment>
   </data>
   <data name="TitleBarProjectIdLabel" xml:space="preserve">
-    <value>Project</value>
+    <value>Project:</value>
     <comment>Label for project id label.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">

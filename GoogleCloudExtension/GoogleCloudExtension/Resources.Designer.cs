@@ -5650,7 +5650,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account.
+        ///   Looks up a localized string similar to Account:.
         /// </summary>
         public static string TitleBarAccountLabel {
             get {
@@ -5659,7 +5659,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project.
+        ///   Looks up a localized string similar to Project:.
         /// </summary>
         public static string TitleBarProjectIdLabel {
             get {

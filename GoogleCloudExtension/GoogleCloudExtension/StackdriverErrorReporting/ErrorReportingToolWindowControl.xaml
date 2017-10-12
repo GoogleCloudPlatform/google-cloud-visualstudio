@@ -122,7 +122,8 @@
                 <DataGrid.Columns>
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" 
-                        CellTemplate="{StaticResource OccurancesTemplate}" />
+                        CellTemplate="{StaticResource OccurancesTemplate}" 
+                        SortMemberPath="ErrorCount"/>
 
                     <DataGridTextColumn 
                         Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
@@ -131,7 +132,8 @@
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 
                         Width="460"
-                        CellTemplate="{StaticResource MessageStackTemplate}" />
+                        CellTemplate="{StaticResource MessageStackTemplate}" 
+                        SortMemberPath="ErrorMessage" />
 
                     <DataGridTextColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorAppHeader}"

@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private FrameworkType _selectedFramework;
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
-        private AppType _appType = AppType.None;
+        private AppType _appType = AppType.Mvc;
 
         /// <summary>
         /// The id of a google cloud project.
@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             private set
             {
                 SetValueAndRaise(ref _appType, value);
-                OkCommand.CanExecuteCommand = _appType != AppType.None;
+                OkCommand.CanExecuteCommand = AppType != AppType.None;
             }
         }
 
@@ -159,8 +159,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 {
                     Result = new TemplateChooserViewModelResult(this);
                     closeWindow();
-                },
-                false);
+                });
             SelectProjectCommand =
                 new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
             SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
