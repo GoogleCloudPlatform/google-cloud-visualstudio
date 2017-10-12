@@ -22,6 +22,11 @@
                 DockPanel.Dock="Top"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
                 Style="{StaticResource CommonLabelStyle}" />
+            <Button
+                DockPanel.Dock="Right"
+                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
+                Style="{StaticResource CommonButtonDynamicStyle}"
+                Command="{Binding SelectProjectCommand}" />
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"

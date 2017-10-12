@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
@@ -36,7 +37,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
-        public static string PromptUser(string dialogTitle)
+        public static Project PromptUser(string dialogTitle)
         {
             var dialog = new PickProjectIdWindow(dialogTitle);
             dialog.ShowModal();

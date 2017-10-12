@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
+using VsProject = EnvDTE.Project;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -30,7 +32,7 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Func<string, string> PromptPickProjectId = projectName =>
+        internal Func<string, GcpProject> PromptPickProjectId = projectName =>
             PickProjectIdWindow.PromptUser(string.Format(Resources.WizardTemplateChooserTitle, projectName));
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
@@ -46,14 +48,14 @@ namespace GoogleCloudExtension.TemplateWizards
                 // Don't show the popup if the key has already been set.
                 if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    string projectId = PromptPickProjectId(replacements[ReplacementsKeys.ProjectNameKey]);
+                    GcpProject project = PromptPickProjectId(replacements[ReplacementsKeys.ProjectNameKey]);
 
-                    if (projectId == null)
+                    if (project == null)
                     {
                         // Null indicates a canceled operation.
                         throw new WizardBackoutException();
                     }
-                    replacements.Add(ReplacementsKeys.GcpProjectIdKey, projectId);
+                    replacements.Add(ReplacementsKeys.GcpProjectIdKey, project.ProjectId ?? "");
                 }
                 if (!replacements.ContainsKey(ReplacementsKeys.PackagesPathKey))
                 {
@@ -95,7 +97,7 @@ namespace GoogleCloudExtension.TemplateWizards
         }
 
         ///<inheritdoc />
-        public void ProjectFinishedGenerating(Project project)
+        public void ProjectFinishedGenerating(VsProject project)
         {
         }
     }

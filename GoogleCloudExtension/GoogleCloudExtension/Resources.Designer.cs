@@ -5182,6 +5182,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change Current _Project....
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectButtonLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Google Cloud Project to Publish to - {0}.
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectTitle {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deployment failed.
         /// </summary>
         public static string PublishFailureStatusMessage {

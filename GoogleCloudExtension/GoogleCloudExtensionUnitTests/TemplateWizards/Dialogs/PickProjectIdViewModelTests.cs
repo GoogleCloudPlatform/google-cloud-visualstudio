@@ -30,15 +30,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     [TestClass]
     public class PickProjectIdViewModelTests
     {
-        private const string TestExceptionMessage = "Test Exception";
+        private const string DefaultProjectId = "default-project-id";
         private const string TestProjectId = "loaded-project-id";
-        private const string TestInputProjectId = "input-project-id";
-        private const string ReloadedProjectId = "reloaded-project-id";
         private const string MockUserName = "UserName";
+        private const string TestExceptionMessage = "Test Exception";
 
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
-        private static readonly Project s_reloadedProject = new Project { ProjectId = ReloadedProjectId };
+        private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
         private TaskCompletionSource<IList<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
@@ -46,10 +45,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private List<string> _properiesChanged;
         private PropertyChangedEventHandler _addPropertiesChanged;
         private Mock<Action> _manageAccoutMock;
-        private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
-
-        private const string DefaultProjectId = "default-project-id";
-
 
         [TestInitialize]
         public void BeforeEach()
@@ -87,42 +82,23 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void TestInitialConditionsNoUserOrProject()
+        public void TestInitialConditionsWithoutDefaultUser()
         {
             CredentialsStore.Default.CurrentAccount = null;
-            CredentialsStore.Default.UpdateCurrentProject(null);
 
             _testObject = BuildTestObject();
 
             Assert.IsNull(_testObject.LoadTask);
-            Assert.IsNull(_testObject.ProjectId);
-            Assert.IsNull(_testObject.SelectedProject);
             Assert.IsNull(_testObject.Projects);
-            Assert.IsNull(_testObject.Result);
+            Assert.IsNull(_testObject.SelectedProject);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestInitialConditionsDefaultProjectNoUser()
-        {
-            CredentialsStore.Default.CurrentAccount = null;
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-
-            _testObject = BuildTestObject();
-
-            Assert.IsNull(_testObject.LoadTask);
-            Assert.IsNull(_testObject.Projects);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
             Assert.IsNull(_testObject.Result);
         }
 
         [TestMethod]
-        public void TestInitialConditionsDefaultUserNoProject()
+        public void TestInitialConditionsWithDefaultUser()
         {
             CredentialsStore.Default.CurrentAccount = s_defaultAccount;
-            CredentialsStore.Default.UpdateCurrentProject(null);
 
             _testObject = BuildTestObject();
 
@@ -132,36 +108,17 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
             Assert.IsNull(_testObject.Projects);
             Assert.IsNull(_testObject.SelectedProject);
-            Assert.IsNull(_testObject.ProjectId);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void TestInitialConditionsDefaultUserAndProject()
-        {
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-
-            _testObject = BuildTestObject();
-
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsNull(_testObject.Projects, "Projects should be null while loading.");
-            Assert.IsNull(_testObject.SelectedProject, "Selected project should be null while loading.");
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
             Assert.IsNull(_testObject.Result);
         }
 
         [TestMethod]
         public void TestChangeUserCommandNoUser()
         {
+            CredentialsStore.Default.CurrentAccount = null;
             _testObject = BuildTestObject();
 
-            CredentialsStore.Default.CurrentAccount = null;
+            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.CurrentAccount = null);
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
@@ -174,7 +131,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             CredentialsStore.Default.CurrentAccount = null;
             _testObject = BuildTestObject();
 
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
+            _manageAccoutMock.Setup(f => f())
+                .Callback(() => CredentialsStore.Default.CurrentAccount = s_defaultAccount);
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
@@ -182,38 +140,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-        }
-
-        [TestMethod]
-        public void TestSetProjectIdInputWhileLoading()
-        {
-            _testObject = BuildTestObject();
-
-            _testObject.ProjectId = TestInputProjectId;
-
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsNull(_testObject.SelectedProject, "Selected project should be null while loading.");
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Projects, "Projects should be null while loading.");
-            CollectionAssert.AreEqual(new[] { nameof(PickProjectIdViewModel.ProjectId) }, _properiesChanged);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void TestSkipCommand()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-
-            _testObject.SkipCommand.Execute(null);
-
-            _windowMock.Verify(window => window.Close());
-            Assert.AreEqual("", _testObject.Result);
-            Assert.AreEqual(DefaultProjectId, CredentialsStore.Default.CurrentProjectId);
         }
 
         [TestMethod]
@@ -261,15 +187,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 new[]
                 {
                     nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId)
+                    nameof(PickProjectIdViewModel.SelectedProject)
                 },
                 _properiesChanged);
             CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
-            Assert.AreEqual(s_testProject, _testObject.SelectedProject);
-            Assert.AreEqual(TestProjectId, _testObject.ProjectId);
+            Assert.IsNull(_testObject.SelectedProject);
             Assert.IsNull(_testObject.Result);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
@@ -293,9 +217,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 _properiesChanged, string.Join(", ", _properiesChanged));
             CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
             Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
@@ -314,13 +237,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 new[]
                 {
                     nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId)
+                    nameof(PickProjectIdViewModel.SelectedProject)
                 },
                 _properiesChanged, string.Join(", ", _properiesChanged));
             CollectionAssert.AreEqual(new[] { s_testProject, s_defaultProject }, _testObject.Projects.ToList());
             Assert.AreEqual(s_defaultProject, _testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
             Assert.IsNull(_testObject.Result);
             Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
         }
@@ -328,52 +249,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestOkCommand()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
             _testObject = BuildTestObject();
-            _projectTaskSource.SetResult(new[] { s_testProject });
+            _testObject.SelectedProject = s_defaultProject;
 
             _testObject.OkCommand.Execute(null);
 
             _windowMock.Verify(window => window.Close());
-            Assert.AreEqual(TestProjectId, _testObject.Result);
-            Assert.AreEqual(TestProjectId, CredentialsStore.Default.CurrentProjectId);
-        }
-
-        [TestMethod]
-        public void TestOkCommandOnProjectInput()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-
-            _testObject.ProjectId = TestInputProjectId;
-            _testObject.OkCommand.Execute(null);
-
-            _windowMock.Verify(window => window.Close());
-            Assert.AreEqual(TestInputProjectId, _testObject.Result);
-            Assert.AreEqual(null, CredentialsStore.Default.CurrentProjectId);
-        }
-
-        [TestMethod]
-        public void TestLoadCompleteAfterInput()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(null);
-            _testObject = BuildTestObject();
-
-            _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(new[] { s_testProject });
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.ProjectId),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
+            Assert.AreEqual(s_defaultProject, _testObject.Result);
         }
 
         [TestMethod]
@@ -396,165 +278,49 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void TestReloadProjectsWithEmptyInput()
+        public void TestLoadProjectsWithMissingSelectedProject()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _testObject = BuildTestObject();
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _properiesChanged.Clear();
 
-            _testObject.ProjectId = "";
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
+            _testObject.SelectedProject = s_defaultProject;
+            _projectTaskSource.SetResult(new[] { s_testProject });
 
             CollectionAssert.AreEqual(
                 new[]
                 {
-                    nameof(PickProjectIdViewModel.ProjectId),
-                    nameof(PickProjectIdViewModel.LoadTask),
-                    nameof(PickProjectIdViewModel.Projects),
                     nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId)
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
                 },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            Assert.AreEqual(s_reloadedProject, _testObject.SelectedProject);
-            Assert.AreEqual(ReloadedProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
+                _properiesChanged);
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
+            Assert.IsNull(_testObject.SelectedProject);
         }
 
         [TestMethod]
-        public void TestReloadProjectsWithNoDefault()
+        public void TestLoadProjectsWithIncludedSelectedProject()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _testObject = BuildTestObject();
 
+            _testObject.SelectedProject = s_testProject;
             _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
             CollectionAssert.AreEqual(
                 new[]
                 {
-                    nameof(PickProjectIdViewModel.Projects),
                     nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId),
-                    nameof(PickProjectIdViewModel.LoadTask),
                     nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId)
+                    nameof(PickProjectIdViewModel.SelectedProject)
                 },
                 _properiesChanged);
-            CollectionAssert.AreEqual(new[] { s_reloadedProject }, _testObject.Projects.ToList());
-            Assert.AreEqual(s_reloadedProject, _testObject.SelectedProject);
-            Assert.AreEqual(ReloadedProjectId, _testObject.ProjectId);
-        }
-
-
-        [TestMethod]
-        public void TestReloadProjectsWithAlwaysMissingDefault()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _properiesChanged.Clear();
-
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.LoadTask),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_reloadedProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-        }
-
-
-        [TestMethod]
-        public void TestReloadProjectsWithNewlyMissingDefault()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-            _projectTaskSource.SetResult(new[] { s_testProject, s_defaultProject });
-            _properiesChanged.Clear();
-
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.LoadTask),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.ProjectId)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_reloadedProject }, _testObject.Projects.ToList());
-            Assert.AreEqual(s_reloadedProject, _testObject.SelectedProject);
-            Assert.AreEqual(ReloadedProjectId, _testObject.ProjectId);
-        }
-
-        [TestMethod]
-        public void TestReloadProjectsWithInputProject()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _properiesChanged.Clear();
-
-            _testObject.ChangeUserCommand.Execute(null);
-            _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.LoadTask),
-                    nameof(PickProjectIdViewModel.ProjectId),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_reloadedProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-        }
-
-        [TestMethod]
-        public void TestReloadProjectsResultWithEarlyInput()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-
-            _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.ProjectId),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject),
-                    nameof(PickProjectIdViewModel.LoadTask),
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_reloadedProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
+            Assert.AreEqual(s_testProject, _testObject.SelectedProject);
         }
     }
 }

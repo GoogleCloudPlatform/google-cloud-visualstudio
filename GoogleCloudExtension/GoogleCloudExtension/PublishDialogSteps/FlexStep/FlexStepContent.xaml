@@ -22,13 +22,18 @@
             <Label
                 DockPanel.Dock="Top"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-                Style="{StaticResource CommonLabelStyle}" />
+                Style="{StaticResource CommonLabelStyle}"/>
+            <Button
+                DockPanel.Dock="Right"
+                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
+                Style="{StaticResource CommonButtonDynamicStyle}"
+                Command="{Binding SelectProjectCommand}"/>
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"
                 Margin="0,0,5,0"
                 IsReadOnly="True"
-                Style="{StaticResource CommonTextBoxStyle}" />
+                Style="{StaticResource CommonTextBoxStyle}"/>
         </DockPanel>
         <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
                Target="{Binding ElementName=_version}"
