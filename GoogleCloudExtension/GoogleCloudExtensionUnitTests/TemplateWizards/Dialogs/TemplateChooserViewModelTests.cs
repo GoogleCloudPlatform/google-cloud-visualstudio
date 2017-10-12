@@ -52,6 +52,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
+        public void Fail()
+        {
+            Assert.Fail("Test that failing a test fails the build.");
+        }
+
+        [TestMethod]
         public void TestInitialConditions()
         {
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
@@ -296,7 +302,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
-            _promptPickProjectMock.Setup(f => f()).Returns((string)null);
+            _promptPickProjectMock.Setup(f => f()).Returns((string) null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
