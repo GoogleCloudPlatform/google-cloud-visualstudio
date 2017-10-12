@@ -94,10 +94,15 @@ namespace GoogleCloudExtension.PublishDialog
             };
         }
 
-        public virtual IPublishDialogStep Next() => throw new NotImplementedException();
+        public virtual IPublishDialogStep Next()
+        {
+            throw new NotImplementedException();
+        }
 
-        public virtual void Publish() => throw new NotImplementedException();
-
+        public virtual void Publish()
+        {
+            throw new NotImplementedException();
+        }
         public virtual void OnPushedToDialog(IPublishDialog dialog)
         {
             PublishDialog = dialog;
