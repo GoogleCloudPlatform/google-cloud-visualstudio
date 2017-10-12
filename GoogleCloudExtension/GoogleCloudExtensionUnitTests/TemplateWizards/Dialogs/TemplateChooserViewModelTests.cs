@@ -52,12 +52,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void Fail()
-        {
-            Assert.Fail("Test that failing a test fails the build.");
-        }
-
-        [TestMethod]
         public void TestInitialConditions()
         {
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
