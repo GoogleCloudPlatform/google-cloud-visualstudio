@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
-        public async Task<IList<ManagedService>> GetProjectServicesAsync()
+        public async Task<IList<ManagedService>> GetProjectEnabledServicesAsync()
         {
             var request = Service.Services.List();
             request.ConsumerId = $"project:{ProjectId}";
@@ -43,6 +43,13 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Services,
                 x => x.NextPageToken);
+        }
+
+        public async Task<bool> IsServiceEnabledAsync(string serviceName)
+        {
+            // TODO: Determine if catching the list of services enabled for a project is worth while.
+            var enabledServices = await GetProjectEnabledServicesAsync();
+            return enabledServices.Select(x => x.ServiceName).Contains(serviceName);
         }
 
         public async Task EnableServiceAsync(string serviceName)
