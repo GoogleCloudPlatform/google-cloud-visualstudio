@@ -32,7 +32,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
     {
         private IList<Project> _projects;
         private Project _selectedProject;
-        private string _projectId;
         private AsyncProperty _loadTask;
 
         private readonly IPickProjectIdWindow _owner;
@@ -43,7 +42,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// Result of the view model after the dialog window is closed. Remains
         /// null until an action buttion is clicked.
         /// </summary>
-        public string Result { get; private set; }
+        public Project Result { get; private set; }
 
         /// <summary>
         /// Command to open the manage users dialog.
@@ -54,11 +53,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// Command to confirm the selection of a project id.
         /// </summary>
         public ProtectedCommand OkCommand { get; }
-
-        /// <summary>
-        /// Command to skip project input.
-        /// </summary>
-        public ProtectedCommand SkipCommand { get; }
 
         /// <summary>
         /// The list of projects available to the current user.
@@ -78,23 +72,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             set
             {
                 SetValueAndRaise(ref _selectedProject, value);
-                if (SelectedProject != null)
-                {
-                    ProjectId = SelectedProject.ProjectId;
-                }
-            }
-        }
-
-        /// <summary>
-        /// The project id that will be selected on an OkCommand.
-        /// </summary>
-        public string ProjectId
-        {
-            get { return _projectId; }
-            set
-            {
-                SetValueAndRaise(ref _projectId, value);
-                OkCommand.CanExecuteCommand = !string.IsNullOrEmpty(ProjectId);
+                OkCommand.CanExecuteCommand = !string.IsNullOrEmpty(SelectedProject?.ProjectId);
             }
         }
 
@@ -128,8 +106,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUser);
             OkCommand = new ProtectedCommand(OnOk, false);
-            SkipCommand = new ProtectedCommand(OnSkip);
-            ProjectId = CredentialsStore.Default.CurrentProjectId;
             StartLoadProjects();
         }
 
@@ -148,16 +124,14 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         private async Task LoadProjectsAsync()
         {
             Projects = await _resourceManagerDataSourceFactory().GetSortedActiveProjectsAsync();
-            if (string.IsNullOrEmpty(ProjectId) || ProjectId == SelectedProject?.ProjectId)
+            if (SelectedProject == null)
             {
-                // Updates ProjectId within the property.
                 SelectedProject =
-                    Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId) ??
-                    Projects.FirstOrDefault();
+                    Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);
             }
             else
             {
-                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == ProjectId);
+                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == SelectedProject.ProjectId);
             }
         }
 
@@ -169,13 +143,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 
         private void OnOk()
         {
-            Result = ProjectId;
-            _owner.Close();
-        }
-
-        private void OnSkip()
-        {
-            Result = "";
+            Result = SelectedProject;
             _owner.Close();
         }
     }

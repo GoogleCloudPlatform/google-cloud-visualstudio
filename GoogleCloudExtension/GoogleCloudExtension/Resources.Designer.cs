@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -5119,6 +5119,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Project ID:.
+        /// </summary>
+        public static string PublishDialogGcpProjectIdLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogGcpProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish project to Google Cloud....
         /// </summary>
         public static string PublishDialogGenericMenuHeader {
@@ -5169,6 +5178,24 @@ namespace GoogleCloudExtension {
         public static string PublishDialogPublishButtonCaption {
             get {
                 return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Current _Project....
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectButtonLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectButtonLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Google Cloud Project to Publish to - {0}.
+        /// </summary>
+        public static string PublishDialogSelectGcpProjectTitle {
+            get {
+                return ResourceManager.GetString("PublishDialogSelectGcpProjectTitle", resourceCulture);
             }
         }
         

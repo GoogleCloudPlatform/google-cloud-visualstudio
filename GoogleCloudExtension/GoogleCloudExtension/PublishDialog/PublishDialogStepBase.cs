@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Windows;
@@ -26,7 +30,12 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private bool _canGoNext;
         private bool _canPublish;
+        internal Func<string, Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+        protected internal IPublishDialog PublishDialog { get; private set; }
 
+        /// <summary>
+        /// Indicates whether the next button is active.
+        /// </summary>
         public bool CanGoNext
         {
             get { return _canGoNext; }
@@ -40,6 +49,9 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        /// <summary>
+        /// Indicates whether the publish button is active.
+        /// </summary>
         public bool CanPublish
         {
             get { return _canPublish; }
@@ -53,11 +65,34 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        /// <summary>
+        /// The content of the step.
+        /// </summary>
         public abstract FrameworkElement Content { get; }
+
+        /// <summary>
+        /// The ID of the current Google Cloud Project.
+        /// </summary>
+        public string GcpProjectId => CredentialsStore.Default.CurrentProjectId;
+
+        /// <summary>
+        /// The command used to select the Google Cloud Project.
+        /// </summary>
+        public ProtectedCommand SelectProjectCommand { get; }
 
         public event EventHandler CanGoNextChanged;
 
         public event EventHandler CanPublishChanged;
+
+        /// <inheritdoc />
+        protected PublishDialogStepBase()
+        {
+            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, args) =>
+            {
+                RaisePropertyChanged(nameof(GcpProjectId));
+            };
+        }
 
         public virtual IPublishDialogStep Next()
         {
@@ -68,8 +103,20 @@ namespace GoogleCloudExtension.PublishDialog
         {
             throw new NotImplementedException();
         }
-
         public virtual void OnPushedToDialog(IPublishDialog dialog)
-        { }
+        {
+            PublishDialog = dialog;
+        }
+
+        private void OnSelectProjectCommand()
+        {
+            string pickProjectDialogTitle = string.Format(
+                Resources.PublishDialogSelectGcpProjectTitle, PublishDialog.Project.Name);
+            Project selectedProject = PickProjectPrompt(pickProjectDialogTitle);
+            if (selectedProject?.ProjectId != null)
+            {
+                CredentialsStore.Default.UpdateCurrentProject(selectedProject);
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System;
@@ -150,7 +151,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         /// <param name="closeWindow">The action that will close the dialog.</param>
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
-        public TemplateChooserViewModel(Action closeWindow, Func<string> promptPickProject)
+        public TemplateChooserViewModel(Action closeWindow, Func<Project> promptPickProject)
         {
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
@@ -159,7 +160,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     Result = new TemplateChooserViewModelResult(this);
                     closeWindow();
                 });
-            SelectProjectCommand = new ProtectedCommand(() => GcpProjectId = promptPickProject() ?? GcpProjectId);
+            SelectProjectCommand =
+                new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
             SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
         }
     }

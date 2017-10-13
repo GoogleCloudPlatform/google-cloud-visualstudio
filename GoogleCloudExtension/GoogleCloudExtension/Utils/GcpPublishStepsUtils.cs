@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="name">The name to check.</param>
         /// <returns>True if the name is valid, false otherwise.</returns>
-        public static bool IsValidName(string name) => !String.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+        public static bool IsValidName(string name) => !string.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {

@@ -2815,4 +2815,16 @@
     <value>Features:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
+  <data name="PublishDialogGcpProjectIdLabel" xml:space="preserve">
+    <value>Google Cloud Project ID:</value>
+    <comment>The Google Cloud Project ID label of the AppEngine Flex Publish dialog.</comment>
+  </data>
+  <data name="PublishDialogSelectGcpProjectButtonLabel" xml:space="preserve">
+    <value>Change Current _Project...</value>
+    <comment>The label of the Change Current Project button of the AppEngine Flex Publish dialog.</comment>
+  </data>
+  <data name="PublishDialogSelectGcpProjectTitle" xml:space="preserve">
+    <value>Select Google Cloud Project to Publish to - {0}</value>
+    <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
+  </data>
 </root>

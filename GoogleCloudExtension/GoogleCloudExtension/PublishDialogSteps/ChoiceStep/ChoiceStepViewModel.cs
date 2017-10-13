@@ -41,7 +41,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private static readonly Lazy<ImageSource> s_gkeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GkeIconPath));
 
         private readonly ChoiceStepContent _content;
-        private IPublishDialog _dialog;
         private IEnumerable<Choice> _choices;
 
         /// <summary>
@@ -60,7 +59,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
         {
-            var projectType = _dialog.Project.ProjectType;
+            KnownProjectTypes projectType = PublishDialog.Project.ProjectType;
 
             return new List<Choice>
             {
@@ -69,7 +68,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Command = new ProtectedCommand(
                         OnAppEngineChoiceCommand,
-                        canExecuteCommand: _dialog.Project.IsAspNetCoreProject()),
+                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
                     Icon = s_appEngineIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
                 },
@@ -78,7 +77,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepGkeName,
                     Command = new ProtectedCommand(
                         OnGkeChoiceCommand,
-                        canExecuteCommand:_dialog.Project.IsAspNetCoreProject()),
+                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
                     Icon = s_gkeIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepGkeToolTip
                 },
@@ -97,19 +96,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private void OnGkeChoiceCommand()
         {
             var nextStep = GkeStepViewModel.CreateStep();
-            _dialog.NavigateToStep(nextStep);
+            PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnAppEngineChoiceCommand()
         {
             var nextStep = FlexStepViewModel.CreateStep();
-            _dialog.NavigateToStep(nextStep);
+            PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnGceChoiceCommand()
         {
             var nextStep = GceStepViewModel.CreateStep();
-            _dialog.NavigateToStep(nextStep);
+            PublishDialog.NavigateToStep(nextStep);
         }
 
         #region IPublishDialogStep
@@ -118,7 +117,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
-            _dialog = dialog;
+            base.OnPushedToDialog(dialog);
 
             Choices = GetChoicesForCurrentProject();
         }
