@@ -24,10 +24,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     {
         private TemplateChooserViewModel ViewModel { get; }
 
-        private TemplateChooserWindow(string projectName)
-            : base(string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName))
+        private TemplateChooserWindow(string dialogTitle) : base(dialogTitle)
         {
-            ViewModel = new TemplateChooserViewModel(Close, () => PickProjectIdWindow.PromptUser(projectName));
+            ViewModel = new TemplateChooserViewModel(Close, () => PickProjectIdWindow.PromptUser(dialogTitle));
             Content = new TemplateChooserWindowContent { DataContext = ViewModel };
         }
 
@@ -38,7 +37,8 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <returns>The result of the dialog. Will return null when the dialog is canceled.</returns>
         public static TemplateChooserViewModelResult PromptUser(string projectName)
         {
-            var dialog = new TemplateChooserWindow(projectName);
+            var dialog = new TemplateChooserWindow(
+                string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName));
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

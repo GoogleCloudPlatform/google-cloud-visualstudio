@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
@@ -23,8 +24,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
     {
         private PickProjectIdViewModel ViewModel { get; }
 
-        private PickProjectIdWindow(string projectName) :
-            base(string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName))
+        private PickProjectIdWindow(string title) : base(title)
         {
             ViewModel = new PickProjectIdViewModel(this);
             Content = new PickProjectIdWindowContent { DataContext = ViewModel };
@@ -33,15 +33,13 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// <summary>
         /// Initalizes the Pick Project Window and waits for it to finish.
         /// </summary>
-        /// <param name="projectName">
-        /// The user readable Visual Studio project name to add as part of the dialog title.
-        /// </param>
+        /// <param name="dialogTitle">The title of the pick project id dialog.</param>
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
-        public static string PromptUser(string projectName)
+        public static Project PromptUser(string dialogTitle)
         {
-            var dialog = new PickProjectIdWindow(projectName);
+            var dialog = new PickProjectIdWindow(dialogTitle);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

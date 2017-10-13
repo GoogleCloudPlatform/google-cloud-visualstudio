@@ -26,51 +26,38 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
-    public abstract class PickProjectIdViewModelTests
-    {
-        private const string TestExceptionMessage = "Test Exception";
-        private const string TestProjectId = "loaded-project-id";
-        private const string TestInputProjectId = "input-project-id";
-        private const string ReloadedProjectId = "reloaded-project-id";
-        private const string MockUserName = "UserName";
 
+    [TestClass]
+    public class PickProjectIdViewModelTests
+    {
+        private const string DefaultProjectId = "default-project-id";
+        private const string TestProjectId = "loaded-project-id";
+        private const string MockUserName = "UserName";
+        private const string TestExceptionMessage = "Test Exception";
+
+        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
-        private static readonly Project s_reloadedProject = new Project { ProjectId = ReloadedProjectId };
+        private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
         private TaskCompletionSource<IList<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
-        private IList<string> _properiesChanged;
-        private IList<string> _loadTaskPropertiesChanged;
-        private PropertyChangedEventHandler _addLoadTaskPropertyChanged;
+        private List<string> _properiesChanged;
         private PropertyChangedEventHandler _addPropertiesChanged;
-        private PropertyChangedEventHandler _updateLoadTaskEvents;
-
-        protected abstract Project DefaultProject { get; }
-        protected abstract string DefaultProjectId { get; }
+        private Mock<Action> _manageAccoutMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(DefaultProject);
-            CredentialsStore.Default.CurrentAccount = new UserAccount { AccountName = MockUserName };
+            _testObject = null;
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
             _projectTaskSource = new TaskCompletionSource<IList<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
             _properiesChanged = new List<string>();
-            _loadTaskPropertiesChanged = new List<string>();
-            _addLoadTaskPropertyChanged = (sender, args) => _loadTaskPropertiesChanged.Add(args.PropertyName);
             _addPropertiesChanged = (sender, args) => _properiesChanged.Add(args.PropertyName);
-            _updateLoadTaskEvents = (sender, args) =>
-            {
-                var model = sender as PickProjectIdViewModel;
-                if (model?.LoadTask != null &&
-                    (nameof(PickProjectIdViewModel.LoadTask).Equals(args.PropertyName) || args.PropertyName == null))
-                {
-                    model.LoadTask.PropertyChanged += _addLoadTaskPropertyChanged;
-                }
-            };
-            _testObject = BuildTestObject();
+            _manageAccoutMock = new Mock<Action>();
         }
 
         private PickProjectIdViewModel BuildTestObject()
@@ -89,324 +76,251 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Func<IResourceManagerDataSource> dataSourceFactory =
                 () => Mock.Of<IResourceManagerDataSource>(
                     ds => ds.GetSortedActiveProjectsAsync() == projectsListAsyncCallBack());
-            var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, () => { });
+            var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, _manageAccoutMock.Object);
             testObject.PropertyChanged += _addPropertiesChanged;
-            if (testObject.LoadTask != null)
-            {
-                testObject.LoadTask.PropertyChanged += _addLoadTaskPropertyChanged;
-            }
-            testObject.PropertyChanged += _updateLoadTaskEvents;
             return testObject;
         }
 
         [TestMethod]
-        public void TestNoUser()
+        public void TestInitialConditionsWithoutDefaultUser()
+        {
+            CredentialsStore.Default.CurrentAccount = null;
+
+            _testObject = BuildTestObject();
+
+            Assert.IsNull(_testObject.LoadTask);
+            Assert.IsNull(_testObject.Projects);
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
+            Assert.IsNull(_testObject.Result);
+        }
+
+        [TestMethod]
+        public void TestInitialConditionsWithDefaultUser()
+        {
+            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
+
+            _testObject = BuildTestObject();
+
+            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
+            Assert.IsFalse(_testObject.LoadTask.IsError);
+            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
+            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
+            Assert.IsNull(_testObject.Projects);
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
+            Assert.IsNull(_testObject.Result);
+        }
+
+        [TestMethod]
+        public void TestChangeUserCommandNoUser()
         {
             CredentialsStore.Default.CurrentAccount = null;
             _testObject = BuildTestObject();
 
-            Assert.IsNull(_testObject.LoadTask);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.IsNull(_testObject.Projects);
-            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestNoUserOnReload()
-        {
-            CredentialsStore.Default.CurrentAccount = null;
+            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.CurrentAccount = null);
             _testObject.ChangeUserCommand.Execute(null);
 
+            _manageAccoutMock.Verify(f => f(), Times.Once);
             Assert.IsNull(_testObject.LoadTask);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.IsNull(_testObject.Projects);
-            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_LoadingState()
+        public void TestChangeUserCommandWithUser()
         {
+            CredentialsStore.Default.CurrentAccount = null;
+            _testObject = BuildTestObject();
+
+            _manageAccoutMock.Setup(f => f())
+                .Callback(() => CredentialsStore.Default.CurrentAccount = s_defaultAccount);
+            _testObject.ChangeUserCommand.Execute(null);
+
+            _manageAccoutMock.Verify(f => f(), Times.Once);
             Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_loadTaskPropertiesChanged.Any());
-            Assert.IsNull(_testObject.SelectedProject, "Selected project should be null while loading.");
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Projects, "Projects should be null while loading.");
-            Assert.IsNull(_testObject.Result, "Result should be null.");
-            Assert.IsFalse(_properiesChanged.Any());
-            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_LoadingWithProjectInput()
+        public void TestErrorWhileLoading()
         {
-            _testObject.ProjectId = TestInputProjectId;
+            _testObject = BuildTestObject();
 
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_loadTaskPropertiesChanged.Any());
-            Assert.IsNull(_testObject.SelectedProject, "Selected project should be null while loading.");
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Projects, "Projects should be null while loading.");
-            Assert.IsNull(_testObject.Result, "Result should be null.");
-            Assert.AreEqual(1, _properiesChanged.Count);
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void Test_Skip()
-        {
-            _testObject.SkipCommand.Execute(null);
-
-            _windowMock.Verify(window => window.Close());
-            Assert.AreEqual("", _testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_LoadingError()
-        {
             _projectTaskSource.SetException(new Exception(TestExceptionMessage));
 
             Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
             Assert.IsTrue(_testObject.LoadTask.IsError, "Task should be falulted.");
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_properiesChanged.Any(nameof(PickProjectIdViewModel.LoadTask).Equals));
-            Assert.AreEqual(1, _loadTaskPropertiesChanged.Count, "Should have one property changed event.");
-            Assert.IsNull(_loadTaskPropertiesChanged.Single(), "Should have set all properties changed.");
             Assert.AreEqual(TestExceptionMessage, _testObject.LoadTask.ErrorMessage);
             Assert.IsNull(_testObject.Projects);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-            Assert.IsFalse(_properiesChanged.Any());
-            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_LoadingCanceled()
+        public void TestCanceledLoading()
         {
+            _testObject = BuildTestObject();
+
             _projectTaskSource.SetCanceled();
 
             Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
             Assert.IsTrue(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_properiesChanged.Any(nameof(PickProjectIdViewModel.LoadTask).Equals));
-            Assert.AreEqual(1, _loadTaskPropertiesChanged.Count, "Should have one property changed event.");
-            Assert.IsNull(_loadTaskPropertiesChanged.Single(), "Should have set all properties changed.");
             Assert.IsNull(_testObject.Projects);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(DefaultProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-            Assert.IsFalse(_properiesChanged.Any());
-            Assert.AreEqual(DefaultProjectId != null, _testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_LoadCompleted()
+        public void TestCompleteLoadingNoDefaultProject()
         {
+            CredentialsStore.Default.UpdateCurrentProject(null);
+            _testObject = BuildTestObject();
+
             _projectTaskSource.SetResult(new[] { s_testProject });
 
             Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
             Assert.IsTrue(_testObject.LoadTask.IsSuccess);
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_properiesChanged.Any(nameof(PickProjectIdViewModel.LoadTask).Equals));
-            Assert.AreEqual(1, _loadTaskPropertiesChanged.Count, "Should have one property changed event.");
-            Assert.IsNull(_loadTaskPropertiesChanged.Single(), "Should have set all properties changed.");
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            if (DefaultProjectId == null)
-            {
-                Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.AreEqual(s_testProject, _testObject.SelectedProject);
-            }
-            else
-            {
-                Assert.AreEqual(0, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.IsNull(_testObject.SelectedProject);
-            }
-            Assert.AreEqual(1, _testObject.Projects.Count);
-            Assert.AreEqual(s_testProject, _testObject.Projects[0]);
-            Assert.AreEqual(DefaultProjectId ?? TestProjectId, _testObject.ProjectId);
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
+                },
+                _properiesChanged);
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsNull(_testObject.Result);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestCompleteLoadingMissingDefaultProject()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            _testObject = BuildTestObject();
+
+            _projectTaskSource.SetResult(new[] { s_testProject });
+
+            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
+            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
+            Assert.IsFalse(_testObject.LoadTask.IsError);
+            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
+                },
+                _properiesChanged, string.Join(", ", _properiesChanged));
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
+            Assert.IsNull(_testObject.SelectedProject);
+            Assert.IsNull(_testObject.Result);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestCompleteLoadingIncludedDefaultProject()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            _testObject = BuildTestObject();
+
+            _projectTaskSource.SetResult(new[] { s_testProject, s_defaultProject });
+
+            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
+            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
+            Assert.IsFalse(_testObject.LoadTask.IsError);
+            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
+                },
+                _properiesChanged, string.Join(", ", _properiesChanged));
+            CollectionAssert.AreEqual(new[] { s_testProject, s_defaultProject }, _testObject.Projects.ToList());
+            Assert.AreEqual(s_defaultProject, _testObject.SelectedProject);
             Assert.IsNull(_testObject.Result);
             Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_SelectCommandOnTask()
+        public void TestOkCommand()
         {
-            _projectTaskSource.SetResult(new[] { s_testProject });
+            _testObject = BuildTestObject();
+            _testObject.SelectedProject = s_defaultProject;
+
             _testObject.OkCommand.Execute(null);
 
             _windowMock.Verify(window => window.Close());
-            Assert.AreEqual(DefaultProjectId ?? TestProjectId, _testObject.Result);
+            Assert.AreEqual(s_defaultProject, _testObject.Result);
         }
 
         [TestMethod]
-        public void Test_SelectCommandOnProjectInput()
+        public void TestReloadProjects()
         {
-            _testObject.ProjectId = TestInputProjectId;
-            _testObject.OkCommand.Execute(null);
-
-            _windowMock.Verify(window => window.Close());
-            Assert.AreEqual(TestInputProjectId, _testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_InputBeforeLoad()
-        {
-            _testObject.ProjectId = TestInputProjectId;
+            _testObject = BuildTestObject();
             _projectTaskSource.SetResult(new[] { s_testProject });
+            _properiesChanged.Clear();
 
-            Assert.IsFalse(_properiesChanged.Any(nameof(PickProjectIdViewModel.LoadTask).Equals));
-            Assert.AreEqual(1, _loadTaskPropertiesChanged.Count);
-            Assert.IsNull(_loadTaskPropertiesChanged.Single());
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            Assert.AreEqual(1, _testObject.Projects.Count);
-            Assert.AreEqual(s_testProject, _testObject.Projects[0]);
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_SelectCommandOnProjectInputBeforeLoad()
-        {
-            _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.OkCommand.Execute(null);
-
-            _windowMock.Verify(window => window.Close());
-            Assert.AreEqual(TestInputProjectId, _testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_ReloadProjects()
-        {
-            _projectTaskSource.SetResult(new[] { s_testProject });
             _testObject.ChangeUserCommand.Execute(null);
 
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.LoadTask).Equals));
-            Assert.AreEqual(1, _loadTaskPropertiesChanged.Count);
-            Assert.IsNull(_loadTaskPropertiesChanged.Single());
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.LoadTask)
+                },
+                _properiesChanged,
+                string.Join(", ", _properiesChanged));
             Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.AreEqual(DefaultProjectId ?? TestProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_ReloadProjectsWithEmptyInput()
-        {
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ProjectId = "";
-            _testObject.ChangeUserCommand.Execute(null);
-            _properiesChanged.Clear();
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(ReloadedProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_ReloadProjectsResult()
-        {
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-
-            Assert.AreEqual(2, _loadTaskPropertiesChanged.Count);
-            Assert.IsTrue(_loadTaskPropertiesChanged.All(name => name == null));
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            if (DefaultProjectId == null)
-            {
-                Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.AreEqual(s_reloadedProject, _testObject.SelectedProject);
-            }
-            else
-            {
-                Assert.AreEqual(0, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-                Assert.IsNull(_testObject.SelectedProject);
-            }
-            Assert.AreEqual(1, _testObject.Projects.Count);
-            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
-            Assert.AreEqual(DefaultProjectId ?? ReloadedProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
-        }
-
-        [TestMethod]
-        public void Test_ReloadProjectsResultWithInput()
-        {
-            _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ChangeUserCommand.Execute(null);
-            _testObject.ProjectId = TestInputProjectId;
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
-
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            if (DefaultProjectId == null)
-            {
-                Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            }
-            else
-            {
-                Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            }
-            Assert.AreEqual(1, _testObject.Projects.Count);
-            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
             Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
+            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void Test_ReloadProjectsResultWithEarlyInput()
+        public void TestLoadProjectsWithMissingSelectedProject()
         {
-            _testObject.ProjectId = TestInputProjectId;
+            _testObject = BuildTestObject();
+
+            _testObject.SelectedProject = s_defaultProject;
             _projectTaskSource.SetResult(new[] { s_testProject });
-            _testObject.ChangeUserCommand.Execute(null);
-            _projectTaskSource.SetResult(new[] { s_reloadedProject });
 
-            Assert.AreEqual(1, _properiesChanged.Count(nameof(PickProjectIdViewModel.ProjectId).Equals));
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.Projects).Equals));
-            Assert.AreEqual(2, _properiesChanged.Count(nameof(PickProjectIdViewModel.SelectedProject).Equals));
-            Assert.AreEqual(1, _testObject.Projects.Count);
-            Assert.AreEqual(s_reloadedProject, _testObject.Projects[0]);
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.SelectedProject),
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
+                },
+                _properiesChanged);
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
             Assert.IsNull(_testObject.SelectedProject);
-            Assert.AreEqual(TestInputProjectId, _testObject.ProjectId);
-            Assert.IsNull(_testObject.Result);
         }
-    }
 
-    [TestClass]
-    public class PickProjectIdVeiwModelTestsNoDefault : PickProjectIdViewModelTests
-    {
-        protected override string DefaultProjectId { get; } = null;
-        protected override Project DefaultProject { get; } = null;
-    }
+        [TestMethod]
+        public void TestLoadProjectsWithIncludedSelectedProject()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(null);
+            _testObject = BuildTestObject();
 
-    [TestClass]
-    public class PickProjectIdViewModleTestsWithDefault : PickProjectIdViewModelTests
-    {
-        protected override string DefaultProjectId { get; } = "default-project-id";
-        protected override Project DefaultProject => new Project { ProjectId = DefaultProjectId };
+            _testObject.SelectedProject = s_testProject;
+            _projectTaskSource.SetResult(new[] { s_testProject });
+
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    nameof(PickProjectIdViewModel.SelectedProject),
+                    nameof(PickProjectIdViewModel.Projects),
+                    nameof(PickProjectIdViewModel.SelectedProject)
+                },
+                _properiesChanged);
+            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
+            Assert.AreEqual(s_testProject, _testObject.SelectedProject);
+        }
     }
 }
