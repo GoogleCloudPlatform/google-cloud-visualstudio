@@ -23,15 +23,18 @@ namespace GoogleCloudExtension.DataSources
             {
                 while (true)
                 {
+                    Debug.WriteLine("Polling for operation to finish.");
                     var newOperation = await refreshOperation(operation);
 
                     if (isFinished(newOperation))
                     {
+                        Debug.WriteLine("Operation finished.");
                         string errorData = getErrorData(newOperation);
                         if (errorData != null)
                         {
                             throw new DataSourceException($"Operation failed: {errorData}.");
                         }
+                        return;
                     }
 
                     await Task.Delay(delay ?? s_defaultDelay);

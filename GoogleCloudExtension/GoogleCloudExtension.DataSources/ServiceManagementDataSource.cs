@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.DataSources
         public async Task EnableServiceAsync(string serviceName)
         {
             var operation = await Service.Services
-                .Enable(new EnableServiceRequest { ConsumerId = ProjectId }, serviceName)
+                .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, serviceName)
                 .ExecuteAsync();
 
             await Operations.AwaitOperationAsync(

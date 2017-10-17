@@ -16,6 +16,7 @@ using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -48,6 +49,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = Resources.CloudExplorerGaeFailedToLoadServicesCaption,
             IsError = true
         };
+        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
+        {
+            Caption = "The App Engine Admin API is not enabled.",
+            IsError = true
+        };
+
+        // The name of the API to have enabled.
+        private const string AppEngineAdminApiName = "appengine.googleapis.com";
 
         private Lazy<GaeDataSource> _dataSource;
         private Task<Application> _gaeApplication;
@@ -146,6 +155,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Debug.WriteLine("Loading list of services.");
+
+                // Check that the service is enabled before doing anything.
+                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
+                        serviceName: AppEngineAdminApiName,
+                        displayName: "App Engine API"))
+                {
+                    Children.Clear();
+                    Children.Add(s_apiDisabledPlaceholder);
+                    return;
+                }
+
                 _gaeApplication = _dataSource.Value.GetApplicationAsync();
                 IList<ServiceViewModel> services = await LoadServiceList();
 

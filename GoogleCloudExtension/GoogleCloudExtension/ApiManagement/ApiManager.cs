@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.ApiManagement
 {
     public class ApiManager
     {
-        private static readonly Lazy<ApiManager> s_defaultManager = new Lazy<ApiManager>();
+        private static readonly Lazy<ApiManager> s_defaultManager = new Lazy<ApiManager>(CreateApiManager);
 
         public static ApiManager Default => s_defaultManager.Value;
 
@@ -24,7 +24,9 @@ namespace GoogleCloudExtension.ApiManagement
             CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
         }
 
-        public async Task<bool> EnsureServiceEnabledAsync(string serviceName)
+        public async Task<bool> EnsureServiceEnabledAsync(
+            string serviceName,
+            string displayName)
         {
             var dataSource = _dataSource.Value;
             if (dataSource == null)
@@ -41,9 +43,8 @@ namespace GoogleCloudExtension.ApiManagement
 
             // Need to enable the service.
             Debug.WriteLine($"Need to enable the service {serviceName}.");
-            var service = await dataSource.GetServiceAsync(serviceName);
             if (!UserPromptUtils.ActionPrompt(
-                    prompt: $"Do you want to enable the API {service.Title}?",
+                    prompt: $"Do you want to enable the API {displayName}?",
                     title: "Enable needed API",
                     actionCaption: "Enable"))
             {
@@ -58,6 +59,8 @@ namespace GoogleCloudExtension.ApiManagement
         {
             _dataSource = new Lazy<ServiceManagementDataSource>(CreateDataSource);
         }
+
+        private static ApiManager CreateApiManager() => new ApiManager();
 
         private static ServiceManagementDataSource CreateDataSource()
         {
