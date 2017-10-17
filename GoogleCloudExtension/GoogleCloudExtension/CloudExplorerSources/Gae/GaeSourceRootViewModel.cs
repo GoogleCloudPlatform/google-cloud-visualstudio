@@ -55,9 +55,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsError = true
         };
 
-        // The name of the API to have enabled.
-        private const string AppEngineAdminApiName = "appengine.googleapis.com";
-
         private Lazy<GaeDataSource> _dataSource;
         private Task<Application> _gaeApplication;
 
@@ -158,7 +155,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
                 // Check that the service is enabled before doing anything.
                 if (!await ApiManager.Default.EnsureServiceEnabledAsync(
-                        serviceName: AppEngineAdminApiName,
+                        serviceName: KnownApis.AppEngineAdminApiName,
                         displayName: "App Engine API"))
                 {
                     Children.Clear();
