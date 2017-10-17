@@ -16,6 +16,7 @@ using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -47,6 +48,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             Caption = Resources.CloudExplorerGceSourceNoInstancesCaption,
             IsWarning = true
+        };
+        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
+        {
+            Caption = "The Compute Engine API is not enabled.",
+            IsError = true
         };
 
         private bool _showOnlyWindowsInstances = false;
@@ -209,6 +215,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 _instancesPerZone = null;
+
+                // Ensure that the GCE API is enabled before continuing.
+                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
+                        serviceName: KnownApis.ComputeEngineApiName,
+                        displayName: "Compute Engine API"))
+                {
+                    Debug.WriteLine("The user refused to enable the GCE API.");
+                    Children.Clear();
+                    Children.Add(s_apiDisabledPlaceholder);
+                    return;
+                }
+
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
 

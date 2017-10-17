@@ -17,6 +17,7 @@ using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -46,6 +47,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGcsFailedToListBucketsCaption,
+            IsError = true
+        };
+        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
+        {
+            Caption = "The Cloud Storage API is not enabled.",
             IsError = true
         };
 
@@ -139,6 +145,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             try
             {
                 Debug.WriteLine("Loading list of buckets.");
+
+                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
+                        serviceName: KnownApis.CloudStorageApiName,
+                        displayName: "Google Cloud Storage"))
+                {
+                    Debug.WriteLine("The user refused to enable the GCS API.");
+                    Children.Clear();
+                    Children.Add(s_apiDisabledPlaceholder);
+                    return;
+                }
+
                 _buckets = await LoadBucketList();
                 PresentViewModels();
 
