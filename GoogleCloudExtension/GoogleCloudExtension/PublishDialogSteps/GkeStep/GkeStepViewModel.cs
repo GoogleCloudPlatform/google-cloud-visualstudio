@@ -16,6 +16,7 @@ using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -40,7 +41,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     public class GkeStepViewModel : PublishDialogStepBase
     {
         private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+        private static readonly Cluster s_noApiPlaceholderCluster = new Cluster { Name = "Need to enable GKE API." };
+
         private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+        private static readonly IList<Cluster> s_noApiPlaceholderList = new List<Cluster> { s_noApiPlaceholderCluster };
+        
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Need the GKE API to be able to list clusters.
+            KnownApis.ContainerEngineApiName,
+
+            // Need the Cloud Builder API to actually deploy.
+            KnownApis.CloudBuildApiName
+        };
 
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
@@ -180,7 +193,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void UpdateCanPublish()
         {
-            CanPublish = SelectedCluster != null && SelectedCluster != s_placeholderCluster && !HasErrors;
+            CanPublish = SelectedCluster != null 
+                && SelectedCluster != s_placeholderCluster 
+                && SelectedCluster != s_noApiPlaceholderCluster
+                && !HasErrors;
         }
 
         protected override void HasErrorsChanged()
@@ -432,6 +448,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async Task<IList<Cluster>> GetAllClustersAsync()
         {
+            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
+                    s_requiredApis,
+                    "Your project needs to be setup to be able to deploy apps to Container Engine, do you want to enable the necessary services now?"))
+            {
+                return s_noApiPlaceholderList;
+            }
+
             var dataSource = new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,

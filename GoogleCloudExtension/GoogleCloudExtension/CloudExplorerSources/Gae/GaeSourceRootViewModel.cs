@@ -156,7 +156,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 // Check that the service is enabled before doing anything.
                 if (!await ApiManager.Default.EnsureServiceEnabledAsync(
                         serviceName: KnownApis.AppEngineAdminApiName,
-                        displayName: "App Engine API"))
+                        prompt: "App Engine API"))
                 {
                     Children.Clear();
                     Children.Add(s_apiDisabledPlaceholder);

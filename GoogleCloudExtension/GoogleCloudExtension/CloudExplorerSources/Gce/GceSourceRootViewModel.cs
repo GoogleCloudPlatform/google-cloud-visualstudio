@@ -219,7 +219,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 // Ensure that the GCE API is enabled before continuing.
                 if (!await ApiManager.Default.EnsureServiceEnabledAsync(
                         serviceName: KnownApis.ComputeEngineApiName,
-                        displayName: "Compute Engine API"))
+                        prompt: "Compute Engine API"))
                 {
                     Debug.WriteLine("The user refused to enable the GCE API.");
                     Children.Clear();

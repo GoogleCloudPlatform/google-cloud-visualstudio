@@ -148,7 +148,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
                 if (!await ApiManager.Default.EnsureServiceEnabledAsync(
                         serviceName: KnownApis.CloudStorageApiName,
-                        displayName: "Google Cloud Storage"))
+                        prompt: "Google Cloud Storage"))
                 {
                     Debug.WriteLine("The user refused to enable the GCS API.");
                     Children.Clear();
