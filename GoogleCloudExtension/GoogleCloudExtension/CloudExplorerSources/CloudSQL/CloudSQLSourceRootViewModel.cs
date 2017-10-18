@@ -49,18 +49,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             Caption = Resources.CloudExplorerSqlFailedToLoadInstancesCaption,
             IsError = true
         };
-        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
-        {
-            Caption = "The Cloud Storage API is not enabled.",
-            IsError = true,
-            ContextMenu = new ContextMenu
-            {
-                ItemsSource = new List<FrameworkElement>
-                {
-                    new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableCloudSQLApi) }
-                }
-            }
-        };
 
         public static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
@@ -123,8 +111,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
+                    var placeholder = new TreeLeaf
+                    {
+                        Caption = "The Cloud Storage API is not enabled.",
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<FrameworkElement>
+                            {
+                                new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableCloudSQLApi) }
+                            }
+                        }
+                    };
+
                     Children.Clear();
-                    Children.Add(s_apiDisabledPlaceholder);
+                    Children.Add(placeholder);
                     return;
                 }
 
@@ -166,9 +167,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             return instances?.Select(x => new InstanceViewModel(this, x)).ToList();
         }
 
-        private static async void OnEnableCloudSQLApi()
+        private async void OnEnableCloudSQLApi()
         {
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
     }
 }

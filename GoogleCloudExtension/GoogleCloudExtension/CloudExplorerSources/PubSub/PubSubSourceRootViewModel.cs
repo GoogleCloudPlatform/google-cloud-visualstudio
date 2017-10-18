@@ -16,6 +16,7 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -54,6 +55,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             Caption = Resources.CloudExplorerPubSubListTopicsErrorCaption,
             IsError = true
+        };
+
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Require the Pub/Sub API.
+            KnownApis.PubSubApiName
         };
 
         private static readonly string[] s_blacklistedTopics =
@@ -134,6 +141,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                {
+                    var placeholder = new TreeLeaf
+                    {
+                        Caption = "The Pub/Sub API is not enabled.",
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = "Enable the Pub/Sub API", Command = new ProtectedCommand(OnEnablePubSubApi) }
+                            }
+                        }
+                    };
+
+                    Children.Clear();
+                    Children.Add(placeholder);
+                    return;
+                }
+
                 Task<IList<Subscription>> subscriptionsTask = DataSource.GetSubscriptionListAsync();
                 IEnumerable<Topic> topics = await DataSource.GetTopicListAsync();
                 IList<Subscription> subscriptions = await subscriptionsTask;
@@ -240,5 +267,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
         }
+
+        private async void OnEnablePubSubApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
+        }
+
     }
 }

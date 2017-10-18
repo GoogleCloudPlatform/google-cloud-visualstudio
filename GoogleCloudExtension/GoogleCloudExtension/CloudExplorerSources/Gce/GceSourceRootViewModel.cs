@@ -49,18 +49,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Caption = Resources.CloudExplorerGceSourceNoInstancesCaption,
             IsWarning = true
         };
-        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
-        {
-            Caption = "The Compute Engine API is not enabled.",
-            IsError = true,
-            ContextMenu = new ContextMenu
-            {
-                ItemsSource = new List<FrameworkElement>
-                {
-                    new MenuItem { Header = "Enable Compute Engine API", Command = new ProtectedCommand(OnEnableGceApi) }
-                }
-            }
-        };
 
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
@@ -202,9 +190,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start("https://status.cloud.google.com/");
         }
 
-        private static async void OnEnableGceApi()
+        private async void OnEnableGceApi()
         {
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
 
         public override void InvalidateProjectOrAccount()
@@ -234,13 +223,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             {
                 _instancesPerZone = null;
 
-                if (! await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
+                    var placeholder = new TreeLeaf
+                    {
+                        Caption = "The Compute Engine API is not enabled.",
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<FrameworkElement>
+                            {
+                                new MenuItem { Header = "Enable Compute Engine API", Command = new ProtectedCommand(OnEnableGceApi) }
+                            }
+                        }
+                    };
+
                     Children.Clear();
-                    Children.Add(s_apiDisabledPlaceholder);
+                    Children.Add(placeholder);
                     return;
                 }
-                
+
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
 

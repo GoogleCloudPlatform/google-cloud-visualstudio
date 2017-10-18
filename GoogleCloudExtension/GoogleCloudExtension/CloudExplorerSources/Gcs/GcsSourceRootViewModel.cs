@@ -50,18 +50,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             Caption = Resources.CloudExplorerGcsFailedToListBucketsCaption,
             IsError = true
         };
-        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
-        {
-            Caption = "The Cloud Storage API is not enabled.",
-            IsError = true,
-            ContextMenu = new ContextMenu
-            {
-                ItemsSource = new List<FrameworkElement>
-                {
-                    new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableGcsApi) } 
-                }
-            }
-        };
 
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
@@ -133,9 +121,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             ShowLocations = false;
         }
 
-        private static async void OnEnableGcsApi()
+        private async void OnEnableGcsApi()
         {
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
 
         public override void InvalidateProjectOrAccount()
@@ -167,9 +156,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
                 if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
+                    var placeholder = new TreeLeaf
+                    {
+                        Caption = "The Cloud Storage API is not enabled.",
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<FrameworkElement>
+                            {
+                                new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableGcsApi) }
+                            }
+                        }
+                    };
+
                     Debug.WriteLine("The user refused to enable the GCS API.");
                     Children.Clear();
-                    Children.Add(s_apiDisabledPlaceholder);
+                    Children.Add(placeholder);
                     return;
                 }
 
