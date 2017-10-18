@@ -25,6 +25,18 @@ namespace GoogleCloudExtension.ApiManagement
             CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
         }
 
+        public async Task<bool> AreServicesEnabledAsync(IEnumerable<string> serviceNames)
+        {
+            var dataSource = _dataSource.Value;
+            if (dataSource == null)
+            {
+                return false;
+            }
+
+            var serviceStatus = await dataSource.CheckServicesStatusAsync(serviceNames);
+            return serviceStatus.All(x => x.Item2);
+        }
+
         public Task<bool> EnsureServiceEnabledAsync(
             string serviceName,
             string prompt)
@@ -82,6 +94,34 @@ namespace GoogleCloudExtension.ApiManagement
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
                 return false;
+            }
+        }
+
+        public async Task EnableServicesAsync(IEnumerable<string> serviceNames)
+        {
+            var dataSource = _dataSource.Value;
+            if (dataSource == null)
+            {
+                return;
+            }
+
+            try
+            {
+                await ProgressDialogWindow.PromptUser(
+                    dataSource.EnableAllServicesAsync(serviceNames),
+                    new ProgressDialogWindow.Options
+                    {
+                        Title = "Enabling Services",
+                        Message = "Enabling the necessary services.",
+                        IsCancellable = false
+                    });
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: "Failed to enable the necessary services.",
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
             }
         }
 

@@ -52,7 +52,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
         {
             Caption = "The Compute Engine API is not enabled.",
-            IsError = true
+            IsError = true,
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<FrameworkElement>
+                {
+                    new MenuItem { Header = "Enable Compute Engine API", Command = new ProtectedCommand(OnEnableGceApi) }
+                }
+            }
+        };
+
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // The GCE API is required.
+            KnownApis.ComputeEngineApiName
         };
 
         private bool _showOnlyWindowsInstances = false;
@@ -189,6 +202,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start("https://status.cloud.google.com/");
         }
 
+        private static async void OnEnableGceApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+        }
+
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating data source for GCE");
@@ -216,17 +234,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             {
                 _instancesPerZone = null;
 
-                // Ensure that the GCE API is enabled before continuing.
-                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
-                        serviceName: KnownApis.ComputeEngineApiName,
-                        prompt: "Compute Engine API"))
+                if (! await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
-                    Debug.WriteLine("The user refused to enable the GCE API.");
                     Children.Clear();
                     Children.Add(s_apiDisabledPlaceholder);
                     return;
                 }
-
+                
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
 
