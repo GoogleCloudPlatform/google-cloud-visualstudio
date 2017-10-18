@@ -15,6 +15,8 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
@@ -23,6 +25,7 @@ using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -33,7 +36,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // We require the App Engine Admin API in order to deploy to app engine.
+            KnownApis.AppEngineAdminApiName,
+        };
+
         private readonly FlexStepContent _content;
+        private readonly Task<bool> _projectStateValidation;
         private IPublishDialog _publishDialog;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
@@ -74,6 +84,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
+            _projectStateValidation = ValidatGcpeProjectState();
             CanPublish = true;
         }
 
@@ -86,9 +97,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        public override async void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+
+            _publishDialog.TrackTask(_projectStateValidation);
+
+            if (!await _projectStateValidation)
+            {
+                // Close the dialog if the project cannot be deployed.
+                _publishDialog.FinishFlow();
+            }
         }
 
         public override async void Publish()
@@ -102,6 +121,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
                 _publishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
@@ -109,8 +130,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                     Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
                     return;
                 }
-
-                ShellUtils.SaveAllFiles();
 
                 var context = new GCloudContext
                 {
@@ -211,6 +230,44 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             content.DataContext = viewModel;
 
             return viewModel;
+        }
+
+        private async Task<bool> ValidatGcpeProjectState()
+        {
+            // Ensure the necessary APIs are enabled.
+            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
+                    s_requiredApis,
+                    "Your project needs to setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?"))
+            {
+                Debug.WriteLine($"The user refused to enable the APIs for GAE.");
+                return false;
+            }
+
+            try
+            {
+                // Using the GAE API, check if there's an app for the project.
+                var appEngineDataSource = new GaeDataSource(
+                    CredentialsStore.Default.CurrentProjectId,
+                    CredentialsStore.Default.CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.ApplicationName);
+                var app = await appEngineDataSource.GetApplicationAsync();
+                if (app == null)
+                {
+                    Debug.WriteLine("There's no App Engine app for the project.");
+                    UserPromptUtils.ErrorPrompt(
+                        message: "Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.",
+                        title: Resources.UiErrorCaption);
+                    return false;
+                }
+
+                // The project is ready to go.
+                return true;
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ExceptionPrompt(ex);
+                return false;
+            }
         }
     }
 }

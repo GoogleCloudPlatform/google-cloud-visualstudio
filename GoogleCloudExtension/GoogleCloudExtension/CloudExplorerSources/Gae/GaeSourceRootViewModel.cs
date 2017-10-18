@@ -54,13 +54,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = "The App Engine Admin API is not enabled.",
             IsError = true
         };
+        private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
+        {
+            Caption = "No App Engine app found.",
+            IsError = true
+        };
 
         private Lazy<GaeDataSource> _dataSource;
-        private Task<Application> _gaeApplication;
 
         public GaeDataSource DataSource => _dataSource.Value;
 
-        public Task<Application> GaeApplication => _gaeApplication;
+        public Application GaeApplication { get; private set; }
 
         public override string RootCaption => Resources.CloudExplorerGaeRootNodeCaption;
 
@@ -163,7 +167,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     return;
                 }
 
-                _gaeApplication = _dataSource.Value.GetApplicationAsync();
+                GaeApplication = await _dataSource.Value.GetApplicationAsync();
+                if (GaeApplication == null)
+                {
+                    Children.Clear();
+                    Children.Add(s_noAppEngineAppPlaceholder);
+                    return;
+                }
+
                 IList<ServiceViewModel> services = await LoadServiceList();
 
                 Children.Clear();

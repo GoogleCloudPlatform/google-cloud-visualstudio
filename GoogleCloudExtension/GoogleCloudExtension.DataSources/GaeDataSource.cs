@@ -54,6 +54,12 @@ namespace GoogleCloudExtension.DataSources
             }
             catch (GoogleApiException ex)
             {
+                if (ex.Error.Code == 404)
+                {
+                    Debug.WriteLine("Failed to find application, not an error.");
+                    return null;
+                }
+
                 Debug.WriteLine($"Failed to get application: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
