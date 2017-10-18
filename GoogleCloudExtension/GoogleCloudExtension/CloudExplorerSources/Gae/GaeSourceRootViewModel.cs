@@ -49,15 +49,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = Resources.CloudExplorerGaeFailedToLoadServicesCaption,
             IsError = true
         };
-        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
-        {
-            Caption = "The App Engine Admin API is not enabled.",
-            IsError = true
-        };
         private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
         {
             Caption = "No App Engine app found.",
             IsError = true
+        };
+
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Require the GAE API.
+            KnownApis.AppEngineAdminApiName
         };
 
         private Lazy<GaeDataSource> _dataSource;
@@ -158,12 +159,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 Debug.WriteLine("Loading list of services.");
 
                 // Check that the service is enabled before doing anything.
-                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
-                        serviceName: KnownApis.AppEngineAdminApiName,
-                        prompt: "App Engine API"))
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
+                    var placeholder = new TreeLeaf
+                    {
+                        Caption = "The App Engine Admin API is not enabled.",
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = "Enable App Engine Admin API", Command = new ProtectedCommand(OnEnableGaeApi) }
+                            }
+                        }
+                    };
+
                     Children.Clear();
-                    Children.Add(s_apiDisabledPlaceholder);
+                    Children.Add(placeholder);
                     return;
                 }
 
@@ -197,6 +209,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
+        }
+
+        private async void OnEnableGaeApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
 
         private async Task<IList<ServiceViewModel>> LoadServiceList()
