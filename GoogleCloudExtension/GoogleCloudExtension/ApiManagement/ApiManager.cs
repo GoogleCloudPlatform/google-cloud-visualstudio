@@ -42,38 +42,47 @@ namespace GoogleCloudExtension.ApiManagement
                 return false;
             }
 
-            // Check all services in parallel.
-            var isServiceEnabledTasks = serviceNames.Select(async x => new { Name = x, IsEnabled = await dataSource.IsServiceEnabledAsync(x) });
-            var servicesToEnable = (await Task.WhenAll(isServiceEnabledTasks))
-                .Where(x => !x.IsEnabled)
-                .Select(x => x.Name);
-            if (servicesToEnable.Count() == 0)
+            try
             {
-                Debug.WriteLine("All the services are already enabled.");
+                // Check all services in parallel.
+                var servicesToEnable = (await dataSource.CheckServicesStatusAsync(serviceNames))
+                    .Where(x => !x.Item2)
+                    .Select(x => x.Item1);
+                if (servicesToEnable.Count() == 0)
+                {
+                    Debug.WriteLine("All the services are already enabled.");
+                    return true;
+                }
+
+                // Need to enable the services, prompt the user.
+                Debug.WriteLine($"Need to enable the services: {string.Join(",", servicesToEnable)}.");
+                if (!UserPromptUtils.ActionPrompt(
+                        prompt: prompt,
+                        title: "Enable Required Services",
+                        actionCaption: "Enable"))
+                {
+                    return false;
+                }
+
+                // Enable all services in parallel.
+                await ProgressDialogWindow.PromptUser(
+                    dataSource.EnableAllServicesAsync(servicesToEnable),
+                    new ProgressDialogWindow.Options
+                    {
+                        Title = "Enabling Services",
+                        Message = "Enabling the necessary services.",
+                        IsCancellable = false
+                    });
                 return true;
             }
-
-            // Need to enable the services, prompt the user.
-            Debug.WriteLine($"Need to enable the services: {string.Join(",", servicesToEnable)}.");
-            if (!UserPromptUtils.ActionPrompt(
-                    prompt: prompt,
-                    title: "Enable Required Services",
-                    actionCaption: "Enable"))
+            catch (DataSourceException ex)
             {
+                UserPromptUtils.ErrorPrompt(
+                    message: "Failed to enable the necessary services.",
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
                 return false;
             }
-
-            // Enable all services in parallel.
-            var enableTasks = servicesToEnable.Select(x => dataSource.EnableServiceAsync(x));
-            await ProgressDialogWindow.PromptUser(
-                Task.WhenAll(enableTasks),
-                new ProgressDialogWindow.Options
-                {
-                    Title = "Enabling Services",
-                    Message = "Enabling the necessary services.",
-                    IsCancellable = false
-                });
-            return true;
         }
 
         private void OnCurrentCredentialsChanged(object sender, EventArgs e)

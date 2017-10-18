@@ -48,9 +48,13 @@ namespace GoogleCloudExtension.DataSources
 
         public async Task<bool> IsServiceEnabledAsync(string serviceName)
         {
-            // TODO: Determine if catching the list of services enabled for a project is worth while.
-            var enabledServices = await GetProjectEnabledServicesAsync();
-            return enabledServices.Select(x => x.ServiceName).Contains(serviceName);
+            return (await CheckServicesStatusAsync(new List<string> { serviceName })).First().Item2;
+        }
+
+        public async Task<IEnumerable<Tuple<string, bool>>> CheckServicesStatusAsync(IEnumerable<string> serviceNames)
+        {
+            var enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
+            return serviceNames.Select(x => new Tuple<string, bool>(x, enabledServices.Contains(x)));
         }
 
         public async Task<Service> GetServiceAsync(string serviceName)
@@ -77,6 +81,14 @@ namespace GoogleCloudExtension.DataSources
                 refreshOperation: x => Service.Operations.Get(x.Name).ExecuteAsync(),
                 isFinished: x => x.Done ?? false,
                 getErrorData: x => x.Error?.Message);
+        }
+
+        public async Task EnableAllServicesAsync(IEnumerable<string> serviceNames)
+        {
+            foreach (var service in serviceNames)
+            {
+                await EnableServiceAsync(service);
+            }
         }
 
         public async Task<IList<Service>> GetServiceConfigurationsAsync(string serviceName)

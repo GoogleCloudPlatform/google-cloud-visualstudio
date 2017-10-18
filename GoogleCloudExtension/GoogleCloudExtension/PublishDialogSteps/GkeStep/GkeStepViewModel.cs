@@ -452,6 +452,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     s_requiredApis,
                     "Your project needs to be setup to be able to deploy apps to Container Engine, do you want to enable the necessary services now?"))
             {
+                _publishDialog.FinishFlow();
                 return s_noApiPlaceholderList;
             }
 
