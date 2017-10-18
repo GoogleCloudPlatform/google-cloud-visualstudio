@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -23,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
@@ -46,6 +48,24 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             Caption = Resources.CloudExplorerSqlFailedToLoadInstancesCaption,
             IsError = true
+        };
+        private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
+        {
+            Caption = "The Cloud Storage API is not enabled.",
+            IsError = true,
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<FrameworkElement>
+                {
+                    new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableCloudSQLApi) }
+                }
+            }
+        };
+
+        public static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Need the Cloud SQL API.
+            KnownApis.CloudSQLApiName
         };
 
         public Lazy<CloudSqlDataSource> DataSource;
@@ -101,6 +121,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             try
             {
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                {
+                    Children.Clear();
+                    Children.Add(s_apiDisabledPlaceholder);
+                    return;
+                }
+
                 Debug.WriteLine("Loading list of instances.");
                 var instances = await LoadInstanceList();
                 Children.Clear();
@@ -137,6 +164,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             var instances = await DataSource.Value.GetInstanceListAsync();
             return instances?.Select(x => new InstanceViewModel(this, x)).ToList();
+        }
+
+        private static async void OnEnableCloudSQLApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
         }
     }
 }

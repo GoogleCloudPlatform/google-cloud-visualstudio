@@ -22,5 +22,8 @@ namespace GoogleCloudExtension.ApiManagement
 
         // The API necessary to use the Cloud Builder.
         public const string CloudBuildApiName = "cloudbuild.googleapis.com";
+
+        // The API necessary to manage Cloud SQL instances.
+        public const string CloudSQLApiName = "sqladmin.googleapis.com";
     }
 }
