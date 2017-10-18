@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
@@ -52,7 +53,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private static readonly TreeLeaf s_apiDisabledPlaceholder = new TreeLeaf
         {
             Caption = "The Cloud Storage API is not enabled.",
-            IsError = true
+            IsError = true,
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<FrameworkElement>
+                {
+                    new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableGcsApi) } 
+                }
+            }
+        };
+
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // The GCS API is required.
+            KnownApis.CloudStorageApiName
         };
 
         private Lazy<GcsDataSource> _dataSource;
@@ -119,6 +133,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             ShowLocations = false;
         }
 
+        private static async void OnEnableGcsApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+        }
+
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the GCS source.");
@@ -146,9 +165,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             {
                 Debug.WriteLine("Loading list of buckets.");
 
-                if (!await ApiManager.Default.EnsureServiceEnabledAsync(
-                        serviceName: KnownApis.CloudStorageApiName,
-                        prompt: "Google Cloud Storage"))
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
                     Debug.WriteLine("The user refused to enable the GCS API.");
                     Children.Clear();
