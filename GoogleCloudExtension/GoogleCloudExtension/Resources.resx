@@ -2815,4 +2815,20 @@
     <value>Features:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
+  <data name="ApiManagerEnableServicesErrorMessage" xml:space="preserve">
+    <value>Failed to enable the necessary services.</value>
+    <comment>The message shown when there's a failure enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesProgressMessage" xml:space="preserve">
+    <value>Enabling the required services.</value>
+    <comment>The message for the progress dialog shown while enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesTitle" xml:space="preserve">
+    <value>Enable Required Services</value>
+    <comment>The title for the enable services dialogs.</comment>
+  </data>
+  <data name="UiEnableButtonCaption" xml:space="preserve">
+    <value>Enable</value>
+    <comment>Caption for enable buttons.</comment>
+  </data>
 </root>

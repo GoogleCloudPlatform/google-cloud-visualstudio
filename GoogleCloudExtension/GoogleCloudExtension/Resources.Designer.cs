@@ -241,6 +241,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to enable the necessary services..
+        /// </summary>
+        public static string ApiManagerEnableServicesErrorMessage {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabling the required services..
+        /// </summary>
+        public static string ApiManagerEnableServicesProgressMessage {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Required Services.
+        /// </summary>
+        public static string ApiManagerEnableServicesTitle {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASP.NET Core {0}.
         /// </summary>
         public static string AspNetCoreVersionedName {
@@ -5727,6 +5754,15 @@ namespace GoogleCloudExtension {
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable.
+        /// </summary>
+        public static string UiEnableButtonCaption {
+            get {
+                return ResourceManager.GetString("UiEnableButtonCaption", resourceCulture);
             }
         }
         

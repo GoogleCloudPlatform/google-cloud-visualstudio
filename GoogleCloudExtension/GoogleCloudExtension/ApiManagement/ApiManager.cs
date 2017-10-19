@@ -70,8 +70,8 @@ namespace GoogleCloudExtension.ApiManagement
                 Debug.WriteLine($"Need to enable the services: {string.Join(",", servicesToEnable)}.");
                 if (!UserPromptUtils.ActionPrompt(
                         prompt: prompt,
-                        title: "Enable Required Services",
-                        actionCaption: "Enable"))
+                        title: Resources.ApiManagerEnableServicesTitle,
+                        actionCaption: Resources.UiEnableButtonCaption))
                 {
                     return false;
                 }
@@ -81,8 +81,8 @@ namespace GoogleCloudExtension.ApiManagement
                     dataSource.EnableAllServicesAsync(servicesToEnable),
                     new ProgressDialogWindow.Options
                     {
-                        Title = "Enabling Services",
-                        Message = "Enabling the necessary services.",
+                        Title = Resources.ApiManagerEnableServicesTitle,
+                        Message = Resources.ApiManagerEnableServicesProgressMessage,
                         IsCancellable = false
                     });
                 return true;
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.ApiManagement
             catch (DataSourceException ex)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: "Failed to enable the necessary services.",
+                    message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
                 return false;
@@ -111,15 +111,15 @@ namespace GoogleCloudExtension.ApiManagement
                     dataSource.EnableAllServicesAsync(serviceNames),
                     new ProgressDialogWindow.Options
                     {
-                        Title = "Enabling Services",
-                        Message = "Enabling the necessary services.",
+                        Title = Resources.ApiManagerEnableServicesTitle,
+                        Message = Resources.ApiManagerEnableServicesProgressMessage,
                         IsCancellable = false
                     });
             }
             catch (DataSourceException ex)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: "Failed to enable the necessary services.",
+                    message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
             }
