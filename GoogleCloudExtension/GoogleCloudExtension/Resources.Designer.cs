@@ -3013,6 +3013,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string FlexPublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
@@ -3027,6 +3036,15 @@ namespace GoogleCloudExtension {
         public static string FlexPublishInvalidVersionMessage {
             get {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud..
+        /// </summary>
+        public static string FlexPublishNoAppFoundMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishNoAppFoundMessage", resourceCulture);
             }
         }
         

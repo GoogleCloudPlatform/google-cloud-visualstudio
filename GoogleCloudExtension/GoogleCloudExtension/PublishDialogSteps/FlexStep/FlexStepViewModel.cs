@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             // Ensure the necessary APIs are enabled.
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
                     s_requiredApis,
-                    "Your project needs to setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?"))
+                    Resources.FlexPublishEnableApiMessage))
             {
                 Debug.WriteLine($"The user refused to enable the APIs for GAE.");
                 return false;
@@ -255,7 +255,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 {
                     Debug.WriteLine("There's no App Engine app for the project.");
                     UserPromptUtils.ErrorPrompt(
-                        message: "Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.",
+                        message: Resources.FlexPublishNoAppFoundMessage,
                         title: Resources.UiErrorCaption);
                     return false;
                 }
