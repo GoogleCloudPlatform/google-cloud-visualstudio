@@ -36,6 +36,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
+        // The list of APIs that are required for a successful deployment to App Engine Flex.
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
             // We require the App Engine Admin API in order to deploy to app engine.

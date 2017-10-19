@@ -39,6 +39,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     /// </summary>
     public class GceStepViewModel : PublishDialogStepBase
     {
+        // The list of APIs that are required for a succesful deployment to GCE.
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
             // Need the GCE API to perform all work.
@@ -143,7 +144,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
                     s_requiredApis,
-                    "Your project needs to be setup to be able to deploy to Compute Engine VMs, do you want to enable the necessary services now?"))
+                    Resources.GcePublishEnableApiMessage))
             {
                 _publishDialog.FinishFlow();
                 return Enumerable.Empty<Instance>();

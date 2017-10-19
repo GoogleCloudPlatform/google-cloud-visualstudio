@@ -3094,6 +3094,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GcePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GcePublishEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to publish project {0}..
         /// </summary>
         public static string GcePublishFailedMessage {
@@ -4035,6 +4044,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishEmptyDeploymentVersionMessage {
             get {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Container Engine. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GkePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEnableApiMessage", resourceCulture);
             }
         }
         

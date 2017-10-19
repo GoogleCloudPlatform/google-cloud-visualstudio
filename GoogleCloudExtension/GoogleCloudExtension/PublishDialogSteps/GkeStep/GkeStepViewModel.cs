@@ -43,6 +43,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
         private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
         
+        // The APIs required for a succesful deployment to GKE.
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
             // Need the GKE API to be able to list clusters.
@@ -446,7 +447,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
                     s_requiredApis,
-                    "Your project needs to be setup to be able to deploy apps to Container Engine, do you want to enable the necessary services now?"))
+                    Resources.GkePublishEnableApiMessage))
             {
                 _publishDialog.FinishFlow();
                 return Enumerable.Empty<Cluster>();
