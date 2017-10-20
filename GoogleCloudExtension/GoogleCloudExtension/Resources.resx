@@ -2827,6 +2827,46 @@
     <value>Enable Required Services</value>
     <comment>The title for the enable services dialogs.</comment>
   </data>
+  <data name="CloudExplorerGaeApiNotEnabledCaption" xml:space="preserve">
+    <value>The App Engine Admin API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the App Engine API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGaeEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the App Engine Admin API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
+    <value>The Compute Engine API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCE API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGceEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Compute Engine API</value>
+    <comment>Header for the menu item to enable the GCE API.</comment>
+  </data>
+  <data name="CloudExplorerGcsApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud Storage API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCS API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGcsEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud Storage API</value>
+    <comment>Header for the menu item to enable the GCS API.</comment>
+  </data>
+  <data name="CloudExplorerPubSubApiNotEnabledCaption" xml:space="preserve">
+    <value>The Pub/Sub API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Pub/Sub API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerPubSubEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Pub/Sub API</value>
+    <comment>Header for the menu item to enable the Pub/Sub API.</comment>
+  </data>
+  <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud Storage API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud SQL API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
   <data name="FlexPublishEnableApiMessage" xml:space="preserve">
     <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
     <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>

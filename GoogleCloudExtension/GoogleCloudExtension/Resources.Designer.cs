@@ -664,6 +664,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The App Engine Admin API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGaeApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Service.
         /// </summary>
         public static string CloudExplorerGaeDeleteService {
@@ -714,6 +723,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeDeleteVersionErrorMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteVersionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the App Engine Admin API.
+        /// </summary>
+        public static string CloudExplorerGaeEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -1123,11 +1141,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Compute Engine API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGceApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attach debugger.
         /// </summary>
         public static string CloudExplorerGceAttachDebuggerMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Compute Engine API.
+        /// </summary>
+        public static string CloudExplorerGceEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -1699,6 +1735,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Cloud Storage API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGcsApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bucket Properties.
         /// </summary>
         public static string CloudExplorerGcsBucketCategory {
@@ -1794,6 +1839,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsBucketVersioningEnabledDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsBucketVersioningEnabledDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Cloud Storage API.
+        /// </summary>
+        public static string CloudExplorerGcsEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -1933,6 +1987,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Pub/Sub API is not enabled..
+        /// </summary>
+        public static string CloudExplorerPubSubApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
         public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
@@ -1947,6 +2010,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubDeleteTopicMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubDeleteTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Pub/Sub API.
+        /// </summary>
+        public static string CloudExplorerPubSubEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -2149,6 +2221,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Cloud Storage API is not enabled..
+        /// </summary>
+        public static string CloudExplorerSqlApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Backend Type.
         /// </summary>
         public static string CloudExplorerSqlBackendTypeDisplayName {
@@ -2163,6 +2244,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSqlDatabaseVersionDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerSqlDatabaseVersionDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Cloud SQL API.
+        /// </summary>
+        public static string CloudExplorerSqlEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlEnableApiMenuHeader", resourceCulture);
             }
         }
         

@@ -113,13 +113,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 {
                     var placeholder = new TreeLeaf
                     {
-                        Caption = "The Cloud Storage API is not enabled.",
+                        Caption = Resources.CloudExplorerSqlApiNotEnabledCaption,
                         IsError = true,
                         ContextMenu = new ContextMenu
                         {
                             ItemsSource = new List<FrameworkElement>
                             {
-                                new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableCloudSQLApi) }
+                                new MenuItem { Header = Resources.CloudExplorerSqlEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableCloudSQLApi) }
                             }
                         }
                     };

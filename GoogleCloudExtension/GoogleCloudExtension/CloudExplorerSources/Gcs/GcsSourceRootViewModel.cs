@@ -158,13 +158,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 {
                     var placeholder = new TreeLeaf
                     {
-                        Caption = "The Cloud Storage API is not enabled.",
+                        Caption = Resources.CloudExplorerGcsApiNotEnabledCaption,
                         IsError = true,
                         ContextMenu = new ContextMenu
                         {
                             ItemsSource = new List<FrameworkElement>
                             {
-                                new MenuItem { Header = "Enable the Cloud Storage API", Command = new ProtectedCommand(OnEnableGcsApi) }
+                                new MenuItem { Header = Resources.CloudExplorerGcsEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGcsApi) }
                             }
                         }
                     };

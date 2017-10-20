@@ -163,13 +163,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     var placeholder = new TreeLeaf
                     {
-                        Caption = "The App Engine Admin API is not enabled.",
+                        Caption = Resources.CloudExplorerGaeApiNotEnabledCaption,
                         IsError = true,
                         ContextMenu = new ContextMenu
                         {
                             ItemsSource = new List<MenuItem>
                             {
-                                new MenuItem { Header = "Enable App Engine Admin API", Command = new ProtectedCommand(OnEnableGaeApi) }
+                                new MenuItem { Header = Resources.CloudExplorerGaeEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGaeApi) }
                             }
                         }
                     };

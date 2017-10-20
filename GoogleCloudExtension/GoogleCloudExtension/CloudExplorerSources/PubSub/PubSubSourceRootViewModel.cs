@@ -145,13 +145,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     var placeholder = new TreeLeaf
                     {
-                        Caption = "The Pub/Sub API is not enabled.",
+                        Caption = Resources.CloudExplorerPubSubApiNotEnabledCaption,
                         IsError = true,
                         ContextMenu = new ContextMenu
                         {
                             ItemsSource = new List<MenuItem>
                             {
-                                new MenuItem { Header = "Enable the Pub/Sub API", Command = new ProtectedCommand(OnEnablePubSubApi) }
+                                new MenuItem { Header = Resources.CloudExplorerPubSubEnableApiMenuHeader, Command = new ProtectedCommand(OnEnablePubSubApi) }
                             }
                         }
                     };

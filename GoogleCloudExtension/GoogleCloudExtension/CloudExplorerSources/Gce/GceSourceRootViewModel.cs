@@ -227,13 +227,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     var placeholder = new TreeLeaf
                     {
-                        Caption = "The Compute Engine API is not enabled.",
+                        Caption = Resources.CloudExplorerGceApiNotEnabledCaption,
                         IsError = true,
                         ContextMenu = new ContextMenu
                         {
                             ItemsSource = new List<FrameworkElement>
                             {
-                                new MenuItem { Header = "Enable Compute Engine API", Command = new ProtectedCommand(OnEnableGceApi) }
+                                new MenuItem { Header = Resources.CloudExplorerGceEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGceApi) }
                             }
                         }
                     };
