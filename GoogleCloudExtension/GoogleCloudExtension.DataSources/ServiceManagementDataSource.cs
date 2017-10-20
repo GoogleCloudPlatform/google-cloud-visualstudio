@@ -32,6 +32,11 @@ namespace GoogleCloudExtension.DataSources
             : base(projectId, credential, init => new ServiceManagementService(init), appName)
         { }
 
+        // For testing.
+        internal ServiceManagementDataSource(ServiceManagementService mockedService, string projectId)
+            : base(projectId, null, init => mockedService, null)
+        { }
+
         /// <summary>
         /// Returns the <seealso cref="ServiceStatus"/> for each service in the given collection.
         /// </summary>
