@@ -69,6 +69,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGceApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<FrameworkElement>
+                            {
+                                new MenuItem { Header = Resources.CloudExplorerGceEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGceApi) }
+                            }
+                }
+            };
+
+        public override IEnumerable<string> RequiredApis => s_requiredApis;
+
         public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 
         /// <summary>
@@ -222,27 +238,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 _instancesPerZone = null;
-
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    var placeholder = new TreeLeaf
-                    {
-                        Caption = Resources.CloudExplorerGceApiNotEnabledCaption,
-                        IsError = true,
-                        ContextMenu = new ContextMenu
-                        {
-                            ItemsSource = new List<FrameworkElement>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerGceEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGceApi) }
-                            }
-                        }
-                    };
-
-                    Children.Clear();
-                    Children.Add(placeholder);
-                    return;
-                }
-
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
 

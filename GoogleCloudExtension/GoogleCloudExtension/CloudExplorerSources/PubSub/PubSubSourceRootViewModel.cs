@@ -86,6 +86,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerPubSubApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = Resources.CloudExplorerPubSubEnableApiMenuHeader, Command = new ProtectedCommand(OnEnablePubSubApi) }
+                            }
+                }
+            };
+
+        public override IEnumerable<string> RequiredApis => s_requiredApis;
+
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
 
         /// <summary>
@@ -141,26 +157,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    var placeholder = new TreeLeaf
-                    {
-                        Caption = Resources.CloudExplorerPubSubApiNotEnabledCaption,
-                        IsError = true,
-                        ContextMenu = new ContextMenu
-                        {
-                            ItemsSource = new List<MenuItem>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerPubSubEnableApiMenuHeader, Command = new ProtectedCommand(OnEnablePubSubApi) }
-                            }
-                        }
-                    };
-
-                    Children.Clear();
-                    Children.Add(placeholder);
-                    return;
-                }
-
                 Task<IList<Subscription>> subscriptionsTask = DataSource.GetSubscriptionListAsync();
                 IEnumerable<Topic> topics = await DataSource.GetTopicListAsync();
                 IList<Subscription> subscriptions = await subscriptionsTask;

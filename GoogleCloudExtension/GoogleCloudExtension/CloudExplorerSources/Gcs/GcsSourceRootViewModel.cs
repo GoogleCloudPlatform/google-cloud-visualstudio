@@ -69,6 +69,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGcsApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<FrameworkElement>
+                            {
+                                new MenuItem { Header = Resources.CloudExplorerGcsEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGcsApi) }
+                            }
+                }
+            };
+
+        public override IEnumerable<string> RequiredApis => s_requiredApis;
+
         public bool ShowLocations
         {
             get { return _showLocations; }
@@ -153,27 +169,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             try
             {
                 Debug.WriteLine("Loading list of buckets.");
-
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    var placeholder = new TreeLeaf
-                    {
-                        Caption = Resources.CloudExplorerGcsApiNotEnabledCaption,
-                        IsError = true,
-                        ContextMenu = new ContextMenu
-                        {
-                            ItemsSource = new List<FrameworkElement>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerGcsEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGcsApi) }
-                            }
-                        }
-                    };
-
-                    Debug.WriteLine("The user refused to enable the GCS API.");
-                    Children.Clear();
-                    Children.Add(placeholder);
-                    return;
-                }
 
                 _buckets = await LoadBucketList();
                 PresentViewModels();

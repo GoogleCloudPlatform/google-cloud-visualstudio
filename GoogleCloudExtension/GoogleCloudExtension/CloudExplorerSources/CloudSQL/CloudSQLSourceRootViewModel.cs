@@ -66,6 +66,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerSqlApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<FrameworkElement>
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerSqlEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableCloudSQLApi)
+                        }
+                    }
+                }
+            };
+
+        public override IEnumerable<string> RequiredApis => s_requiredApis;
+
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
@@ -109,26 +129,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             try
             {
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    var placeholder = new TreeLeaf
-                    {
-                        Caption = Resources.CloudExplorerSqlApiNotEnabledCaption,
-                        IsError = true,
-                        ContextMenu = new ContextMenu
-                        {
-                            ItemsSource = new List<FrameworkElement>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerSqlEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableCloudSQLApi) }
-                            }
-                        }
-                    };
-
-                    Children.Clear();
-                    Children.Add(placeholder);
-                    return;
-                }
-
                 Debug.WriteLine("Loading list of instances.");
                 var instances = await LoadInstanceList();
                 Children.Clear();

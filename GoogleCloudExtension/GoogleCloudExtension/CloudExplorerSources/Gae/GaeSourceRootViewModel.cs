@@ -75,6 +75,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGaeApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = Resources.CloudExplorerGaeEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGaeApi) }
+                            }
+                }
+            };
+
+        public override IEnumerable<string> RequiredApis => s_requiredApis;
+
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
@@ -157,27 +173,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Debug.WriteLine("Loading list of services.");
-
-                // Check that the service is enabled before doing anything.
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    var placeholder = new TreeLeaf
-                    {
-                        Caption = Resources.CloudExplorerGaeApiNotEnabledCaption,
-                        IsError = true,
-                        ContextMenu = new ContextMenu
-                        {
-                            ItemsSource = new List<MenuItem>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerGaeEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGaeApi) }
-                            }
-                        }
-                    };
-
-                    Children.Clear();
-                    Children.Add(placeholder);
-                    return;
-                }
 
                 GaeApplication = await _dataSource.Value.GetApplicationAsync();
                 if (GaeApplication == null)
