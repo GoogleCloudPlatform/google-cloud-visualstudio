@@ -19,6 +19,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
+using VsProject = EnvDTE.Project;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards
 {
@@ -54,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         private GoogleProjectTemplateWizard _objectUnderTest;
         private Mock<Action<Dictionary<string, string>>> _cleanupDirectoriesMock;
-        private Mock<Func<string, string>> _pickProjectMock;
+        private Mock<Func<string, GcpProject>> _pickProjectMock;
         private Dictionary<string, string> _replacementsDictionary;
         private DTE _mockedDte;
 
@@ -62,7 +64,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void BeforeEachTest()
         {
             _mockedDte = Mock.Of<DTE>(dte => dte.CommandLineArguments == "");
-            _pickProjectMock = new Mock<Func<string, string>>();
+            _pickProjectMock = new Mock<Func<string, GcpProject>>();
             _cleanupDirectoriesMock = new Mock<Action<Dictionary<string, string>>>();
             _objectUnderTest =
                 new GoogleProjectTemplateWizard
@@ -104,7 +106,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedPickProjectSkipped()
         {
-            _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => string.Empty);
+            _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => new GcpProject());
             foreach (string projectDir in s_projectDirectoriesToTest)
             {
                 foreach (string solutionDir in s_solutionDirectoriesToTest)
@@ -138,7 +140,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedSuccess()
         {
-            _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => MockProjectId);
+            _pickProjectMock.Setup(x => x(It.IsAny<string>()))
+                .Returns(() => new GcpProject { ProjectId = MockProjectId });
             _replacementsDictionary.Add(ReplacementsKeys.SafeProjectNameKey, ProjectName);
 
             _objectUnderTest.RunStarted(
@@ -183,7 +186,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestProjectFinishedGenerating()
         {
-            _objectUnderTest.ProjectFinishedGenerating(new Mock<Project>(MockBehavior.Strict).Object);
+            _objectUnderTest.ProjectFinishedGenerating(new Mock<VsProject>(MockBehavior.Strict).Object);
         }
     }
 }

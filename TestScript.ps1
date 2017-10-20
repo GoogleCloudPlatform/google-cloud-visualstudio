@@ -32,6 +32,9 @@ $filter = $testFilters,
     "-[*]XamlGeneratedNamespace*",
     "-[*]GoogleCloudExtension*.Resources" -join " "
 
-OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$testArgs -output:codecoverage.xml -filter:$filter
-
+OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$testArgs -output:codecoverage.xml `
+    -filter:$filter -returntargetcode
+if ($LASTEXITCODE) {
+    throw "Test failed"
+}
 Write-Host "Finished code coverage."

@@ -33,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     {
         private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
-        private Mock<Func<string>> _promptPickProjectMock;
+        private Mock<Func<Project>> _promptPickProjectMock;
         private TemplateChooserViewModel _objectUnderTest;
         private List<string> _targetSdkVersions;
 
@@ -45,7 +45,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            _promptPickProjectMock = new Mock<Func<string>>();
+            _promptPickProjectMock = new Mock<Func<Project>>();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
             _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
@@ -286,7 +286,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void TestSelectProject()
         {
             const string mockProjectID = "mock-project-id";
-            _promptPickProjectMock.Setup(f => f()).Returns(mockProjectID);
+            _promptPickProjectMock.Setup(f => f()).Returns(new Project { ProjectId = mockProjectID });
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
@@ -296,7 +296,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
-            _promptPickProjectMock.Setup(f => f()).Returns((string)null);
+            _promptPickProjectMock.Setup(f => f()).Returns((Project) null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 

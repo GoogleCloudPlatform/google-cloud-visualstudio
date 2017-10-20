@@ -186,7 +186,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
-            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
+            RefreshClustersListCommand = new ProtectedCommand(RefreshClustersList);
+
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, args) =>
+            {
+                RefreshClustersList();
+            };
         }
 
         private void UpdateCanPublish()
@@ -201,7 +206,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             UpdateCanPublish();
         }
 
-        private void OnRefreshClustersListCommand()
+        private void RefreshClustersList()
         {
             var refreshTask = GetAllClustersAsync();
             Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
@@ -219,13 +224,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
-            _publishDialog = dialog;
+            base.OnPushedToDialog(dialog);
 
-            DeploymentName = _publishDialog.Project.Name.ToLower();
+            DeploymentName = PublishDialog.Project.Name.ToLower();
             DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
 
             // Mark that the dialog is going to be busy until we have loaded the data.
-            _publishDialog.TrackTask(Clusters.ValueTask);
+            PublishDialog.TrackTask(Clusters.ValueTask);
         }
 
         /// <summary>
@@ -239,13 +244,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 return;
             }
 
-            var project = _publishDialog.Project;
+            var project = PublishDialog.Project;
             try
             {
                 ShellUtils.SaveAllFiles();
 
                 var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
-                _publishDialog.TrackTask(verifyGCloudTask);
+                PublishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {
                     Debug.WriteLine("Aborting deployment, no kubectl was found.");
@@ -264,12 +269,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     cluster: SelectedCluster.Name,
                     zone: SelectedCluster.Zone,
                     context: gcloudContext);
-                _publishDialog.TrackTask(kubectlContextTask);
+                PublishDialog.TrackTask(kubectlContextTask);
 
                 using (var kubectlContext = await kubectlContextTask)
                 {
                     var deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
-                    _publishDialog.TrackTask(deploymentExistsTask);
+                    PublishDialog.TrackTask(deploymentExistsTask);
                     if (await deploymentExistsTask)
                     {
                         if (!UserPromptUtils.ActionPrompt(
@@ -299,7 +304,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     GcpOutputWindow.Clear();
                     GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
 
-                    _publishDialog.FinishFlow();
+                    PublishDialog.FinishFlow();
 
                     TimeSpan deploymentDuration;
                     GkeDeploymentResult result;
@@ -344,7 +349,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
-                _publishDialog.FinishFlow();
+                PublishDialog.FinishFlow();
 
                 EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }
@@ -352,7 +357,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options)
         {
-            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, _publishDialog.Project.Name));
+            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, PublishDialog.Project.Name));
             if (result.DeploymentUpdated)
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
