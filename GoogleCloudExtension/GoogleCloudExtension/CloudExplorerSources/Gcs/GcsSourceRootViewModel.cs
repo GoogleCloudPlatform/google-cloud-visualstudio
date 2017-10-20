@@ -77,9 +77,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 ContextMenu = new ContextMenu
                 {
                     ItemsSource = new List<FrameworkElement>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerGcsEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGcsApi) }
-                            }
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGcsEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableGcsApi)
+                        }
+                    }
                 }
             };
 

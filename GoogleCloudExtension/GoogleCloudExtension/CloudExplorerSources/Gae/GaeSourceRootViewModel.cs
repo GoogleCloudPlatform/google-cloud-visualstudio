@@ -83,9 +83,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 ContextMenu = new ContextMenu
                 {
                     ItemsSource = new List<MenuItem>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerGaeEnableApiMenuHeader, Command = new ProtectedCommand(OnEnableGaeApi) }
-                            }
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGaeEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableGaeApi)
+                        }
+                    }
                 }
             };
 

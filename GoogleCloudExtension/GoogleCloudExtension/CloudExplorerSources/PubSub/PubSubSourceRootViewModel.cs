@@ -94,9 +94,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 ContextMenu = new ContextMenu
                 {
                     ItemsSource = new List<MenuItem>
-                            {
-                                new MenuItem { Header = Resources.CloudExplorerPubSubEnableApiMenuHeader, Command = new ProtectedCommand(OnEnablePubSubApi) }
-                            }
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerPubSubEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnablePubSubApi)
+                        }
+                    }
                 }
             };
 
