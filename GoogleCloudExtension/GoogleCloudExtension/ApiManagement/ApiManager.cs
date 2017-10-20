@@ -24,10 +24,18 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ApiManagement
 {
+    /// <summary>
+    /// This class helps manage the APIs required by the various features in the extension. This class is defined as a singleton
+    /// that manages its own <seealso cref="ServiceManagementDataSource"/> instance. This class will update itself when the user
+    /// changes the current project/user.
+    /// </summary>
     public class ApiManager
     {
         private static readonly Lazy<ApiManager> s_defaultManager = new Lazy<ApiManager>(CreateApiManager);
 
+        /// <summary>
+        /// The singleton instance for this class.
+        /// </summary>
         public static ApiManager Default => s_defaultManager.Value;
 
         private Lazy<ServiceManagementDataSource> _dataSource = new Lazy<ServiceManagementDataSource>(CreateDataSource);
@@ -38,6 +46,11 @@ namespace GoogleCloudExtension.ApiManagement
             CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
         }
 
+        /// <summary>
+        /// This method will check that all of the given service names are enabled.
+        /// </summary>
+        /// <param name="serviceNames">The list of services to check.</param>
+        /// <returns>A task that will be true if all services are enabled, false otherwise.</returns>
         public async Task<bool> AreServicesEnabledAsync(IEnumerable<string> serviceNames)
         {
             var dataSource = _dataSource.Value;
@@ -50,13 +63,14 @@ namespace GoogleCloudExtension.ApiManagement
             return serviceStatus.All(x => x.Enabled);
         }
 
-        public Task<bool> EnsureServiceEnabledAsync(
-            string serviceName,
-            string prompt)
-        {
-            return EnsureAllServicesEnabledAsync(new List<string> { serviceName }, prompt);
-        }
 
+        /// <summary>
+        /// This method will check that all given services are enabled and if not will prompt the user to enable the
+        /// necessary services.
+        /// </summary>
+        /// <param name="serviceNames">The services to check.</param>
+        /// <param name="prompt">The prompt to use in the prompt dialog to ask the user for permission to enable the services.</param>
+        /// <returns>A task that will be true if all services where enabled, false if the user cancelled or if the operation failed.</returns>
         public async Task<bool> EnsureAllServicesEnabledAsync(
             IEnumerable<string> serviceNames,
             string prompt)
@@ -110,6 +124,11 @@ namespace GoogleCloudExtension.ApiManagement
             }
         }
 
+        /// <summary>
+        /// This method will enable the list of services given.
+        /// </summary>
+        /// <param name="serviceNames">The list of services to enable.</param>
+        /// <returns>A task that will be completed once the operation finishes.</returns>
         public async Task EnableServicesAsync(IEnumerable<string> serviceNames)
         {
             var dataSource = _dataSource.Value;
