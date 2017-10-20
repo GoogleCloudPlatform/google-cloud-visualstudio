@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     {
         private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
         private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
-        
+
         // The APIs required for a succesful deployment to GKE.
         private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
@@ -191,8 +191,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void UpdateCanPublish()
         {
-            CanPublish = SelectedCluster != null 
-                && SelectedCluster != s_placeholderCluster 
+            CanPublish = SelectedCluster != null
+                && SelectedCluster != s_placeholderCluster
                 && !HasErrors;
         }
 

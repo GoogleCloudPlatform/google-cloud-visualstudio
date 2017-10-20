@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private string _progressMessage;
         private bool _askingToConfirm;
         private bool _askingToTestConnectivityLater;
-        private AttachDebuggerFirewallPort _port;
+        private readonly AttachDebuggerFirewallPort _port;
 
         /// <summary>
         /// Show the message if the port is not enabled.

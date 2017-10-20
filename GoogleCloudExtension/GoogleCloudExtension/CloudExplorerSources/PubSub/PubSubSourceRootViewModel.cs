@@ -273,6 +273,5 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
             Refresh();
         }
-
     }
 }
