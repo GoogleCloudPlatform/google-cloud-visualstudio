@@ -45,7 +45,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private readonly FlexStepContent _content;
         private readonly Task<bool> _projectStateValidation;
-        private IPublishDialog _publishDialog;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
@@ -100,14 +99,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void OnPushedToDialog(IPublishDialog dialog)
         {
-            _publishDialog = dialog;
+            base.OnPushedToDialog(dialog);
 
-            _publishDialog.TrackTask(_projectStateValidation);
+            PublishDialog.TrackTask(_projectStateValidation);
 
             if (!await _projectStateValidation)
             {
                 // Close the dialog if the project cannot be deployed.
-                _publishDialog.FinishFlow();
+                PublishDialog.FinishFlow();
             }
         }
 
@@ -252,7 +251,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 UserPromptUtils.ExceptionPrompt(ex);
                 return false;
             }
-	}
+    }
 
         internal bool ValidateInput()
         {

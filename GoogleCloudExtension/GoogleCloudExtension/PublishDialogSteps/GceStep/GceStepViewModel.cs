@@ -155,7 +155,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     s_requiredApis,
                     Resources.GcePublishEnableApiMessage))
             {
-                _publishDialog.FinishFlow();
+                PublishDialog.FinishFlow();
                 return Enumerable.Empty<Instance>();
             }
 

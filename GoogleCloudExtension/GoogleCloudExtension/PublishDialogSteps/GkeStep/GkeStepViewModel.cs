@@ -54,7 +54,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         };
 
         private readonly GkeStepContent _content;
-        private IPublishDialog _publishDialog;
         private AsyncProperty<IEnumerable<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
@@ -210,7 +209,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             var refreshTask = GetAllClustersAsync();
             Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
-            _publishDialog.TrackTask(refreshTask);
+            PublishDialog.TrackTask(refreshTask);
         }
 
         private void OnCreateClusterCommand()
@@ -454,7 +453,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     s_requiredApis,
                     Resources.GkePublishEnableApiMessage))
             {
-                _publishDialog.FinishFlow();
+                PublishDialog.FinishFlow();
                 return Enumerable.Empty<Cluster>();
             }
 
