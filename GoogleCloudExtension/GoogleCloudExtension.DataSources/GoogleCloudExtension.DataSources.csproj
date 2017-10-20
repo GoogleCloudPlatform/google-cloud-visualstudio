@@ -142,6 +142,7 @@
     <Compile Include="OperationUtils.cs" />
     <Compile Include="PubSubDataSource.cs" />
     <Compile Include="ServiceManagementDataSource.cs" />
+    <Compile Include="ServiceStatus.cs" />
     <Compile Include="StackdriverErrorReportingDataSource.cs" />
     <Compile Include="FirewallPort.cs" />
     <Compile Include="GaeDataSource.cs" />

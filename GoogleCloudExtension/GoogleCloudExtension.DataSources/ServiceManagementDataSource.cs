@@ -12,38 +12,59 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.ServiceManagement.v1;
 using Google.Apis.ServiceManagement.v1.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// This class provides access to the ServiceManagement API, which allows the caller to list the
+    /// APIs and services enabled for a particular GCP project. This data source will also allow the caller
+    /// to enable and disable APIs for the given GCP project.
+    /// </summary>
     public class ServiceManagementDataSource : DataSourceBase<ServiceManagementService>
     {
         public ServiceManagementDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new ServiceManagementService(init), appName)
         { }
 
-        public async Task<IList<ManagedService>> GetServicesAvailableAsync()
+        /// <summary>
+        /// Returns the <seealso cref="ServiceStatus"/> for each service in the given collection.
+        /// </summary>
+        /// <param name="serviceNames">The collection of names to check.</param>
+        /// <returns>A task that will contain the collection of <seealso cref="ServiceStatus"/> with the status of each service.</returns>
+        public async Task<IEnumerable<ServiceStatus>> CheckServicesStatusAsync(IEnumerable<string> serviceNames)
         {
-            var request = Service.Services.List();
-
-            return await LoadPagedListAsync(
-                (token) =>
-                {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                x => x.Services,
-                x => x.NextPageToken);
+            var enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
+            return serviceNames.Select(x => new ServiceStatus(x, enabledServices.Contains(x)));
         }
 
-        public async Task<IList<ManagedService>> GetProjectEnabledServicesAsync()
+        /// <summary>
+        /// Enables all of the services in the given collection.
+        /// </summary>
+        /// <param name="serviceNames">The collection of service names to enable.</param>
+        /// <returns>A task that will be completed once all servides are enabled.</returns>
+        public async Task EnableAllServicesAsync(IEnumerable<string> serviceNames)
+        {
+            foreach (var service in serviceNames)
+            {
+                var operation = await Service.Services
+                    .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, service)
+                    .ExecuteAsync();
+
+                await OperationUtils.AwaitOperationAsync(
+                    operation,
+                    refreshOperation: x => Service.Operations.Get(x.Name).ExecuteAsync(),
+                    isFinished: x => x.Done ?? false,
+                    getErrorData: x => x.Error?.Message);
+            }
+        }
+
+        private async Task<IList<ManagedService>> GetProjectEnabledServicesAsync()
         {
             var request = Service.Services.List();
             request.ConsumerId = $"project:{ProjectId}";
@@ -58,63 +79,5 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
-        public async Task<bool> IsServiceEnabledAsync(string serviceName)
-        {
-            return (await CheckServicesStatusAsync(new List<string> { serviceName })).First().Item2;
-        }
-
-        public async Task<IEnumerable<Tuple<string, bool>>> CheckServicesStatusAsync(IEnumerable<string> serviceNames)
-        {
-            var enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
-            return serviceNames.Select(x => new Tuple<string, bool>(x, enabledServices.Contains(x)));
-        }
-
-        public async Task<Service> GetServiceAsync(string serviceName)
-        {
-            try
-            {
-                var configs = await GetServiceConfigurationsAsync(serviceName);
-                return configs.FirstOrDefault();
-            }
-            catch (GoogleApiException ex)
-            {
-                throw new DataSourceException($"Failed to read service {serviceName}", ex);
-            }
-        }
-
-        public async Task EnableServiceAsync(string serviceName)
-        {
-            var operation = await Service.Services
-                .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, serviceName)
-                .ExecuteAsync();
-
-            await OperationUtils.AwaitOperationAsync(
-                operation,
-                refreshOperation: x => Service.Operations.Get(x.Name).ExecuteAsync(),
-                isFinished: x => x.Done ?? false,
-                getErrorData: x => x.Error?.Message);
-        }
-
-        public async Task EnableAllServicesAsync(IEnumerable<string> serviceNames)
-        {
-            foreach (var service in serviceNames)
-            {
-                await EnableServiceAsync(service);
-            }
-        }
-
-        public async Task<IList<Service>> GetServiceConfigurationsAsync(string serviceName)
-        {
-            var request = Service.Services.Configs.List(serviceName);
-
-            return await LoadPagedListAsync(
-                (token) =>
-                {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                x => x.ServiceConfigs,
-                x => x.NextPageToken);
-        }
     }
 }
