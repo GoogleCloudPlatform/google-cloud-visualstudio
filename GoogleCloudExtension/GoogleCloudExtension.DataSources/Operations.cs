@@ -8,10 +8,23 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-    internal static class Operations
+    /// <summary>
+    /// This class contains utility methods to apply to Operations created from data sources.
+    /// </summary>
+    public static class Operations
     {
         private static readonly TimeSpan s_defaultDelay = TimeSpan.FromMilliseconds(2000);
 
+        /// <summary>
+        /// This method will poll the state of an operation, effectively transforming an operation into a <seealso cref="Task"/>.
+        /// </summary>
+        /// <typeparam name="TOperation">The type of the operation to poll.</typeparam>
+        /// <param name="operation">The operation to poll.</param>
+        /// <param name="refreshOperation">An function that will refresh the operation, returning an updated instance.</param>
+        /// <param name="isFinished">A function thgat determines if the operation is done.</param>
+        /// <param name="getErrorData">A function that will extract the error message from the operation, if in error.</param>
+        /// <param name="delay">The delay to use in between refreshes.</param>
+        /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
         public static async Task AwaitOperationAsync<TOperation>(
             TOperation operation,
             Func<TOperation, Task<TOperation>> refreshOperation,
