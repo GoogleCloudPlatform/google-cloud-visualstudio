@@ -11,8 +11,9 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// This class contains utility methods to apply to Operations created from data sources.
     /// </summary>
-    public static class Operations
+    public static class OperationsUtils
     {
+        // A default delay of 2 seconds in between polls.
         private static readonly TimeSpan s_defaultDelay = TimeSpan.FromMilliseconds(2000);
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.DataSources
                 .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, serviceName)
                 .ExecuteAsync();
 
-            await Operations.AwaitOperationAsync(
+            await OperationsUtils.AwaitOperationAsync(
                 operation,
                 refreshOperation: x => Service.Operations.Get(x.Name).ExecuteAsync(),
                 isFinished: x => x.Done ?? false,
