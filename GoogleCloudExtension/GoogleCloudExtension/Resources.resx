@@ -2864,7 +2864,7 @@
     <comment>Header for the menu item to enable the Pub/Sub API.</comment>
   </data>
   <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
-    <value>The Cloud Storage API is not enabled.</value>
+    <value>The Cloud SQL API is not enabled.</value>
     <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
   </data>
   <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
