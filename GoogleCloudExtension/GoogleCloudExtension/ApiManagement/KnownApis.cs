@@ -14,27 +14,44 @@
 
 namespace GoogleCloudExtension.ApiManagement
 {
+    /// <summary>
+    /// This class contains the well known API names of the APIs used by the extension.
+    /// </summary>
     public static class KnownApis
     {
-        // The API necessary to use App Engine services.
+        /// <summary>
+        /// The API necessary to use App Engine services.
+        /// </summary>
         public const string AppEngineAdminApiName = "appengine.googleapis.com";
 
-        // The API necessary to use GCE.
+        /// <summary>
+        /// The API necessary to use GCE.
+        /// </summary>
         public const string ComputeEngineApiName = "compute.googleapis.com";
 
-        // The API necessary to use GCS.
+        /// <summary>
+        /// The API necessary to use GCS.
+        /// </summary>
         public const string CloudStorageApiName = "storage-api.googleapis.com";
 
-        // The API necessary to use GKS.
+        /// <summary>
+        /// The API necessary to use GKS.
+        /// </summary>
         public const string ContainerEngineApiName = "container.googleapis.com";
 
-        // The API necessary to use the Cloud Builder.
+        /// <summary>
+        /// The API necessary to use the Cloud Builder.
+        /// </summary>
         public const string CloudBuildApiName = "cloudbuild.googleapis.com";
 
-        // The API necessary to manage Cloud SQL instances.
+        /// <summary>
+        /// The API necessary to manage Cloud SQL instances.
+        /// </summary>
         public const string CloudSQLApiName = "sqladmin.googleapis.com";
 
-        // The API necessary to manage Pub/Sub subscriptions.
+        /// <summary>
+        /// The API necessary to manage Pub/Sub subscriptions.
+        /// </summary>
         public const string PubSubApiName = "pubsub.googleapis.com";
     }
 }
