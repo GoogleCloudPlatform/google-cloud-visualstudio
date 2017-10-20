@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         };
         private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
         {
-            Caption = "No App Engine app found.",
+            Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
             IsError = true
         };
 

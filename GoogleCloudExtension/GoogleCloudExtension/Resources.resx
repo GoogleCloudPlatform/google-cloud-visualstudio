@@ -2835,6 +2835,10 @@
     <value>Enable the App Engine Admin API</value>
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
+  <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
+    <value>No App Engine app found.</value>
+    <comment>Caption shown in the placheolder when no App Engine app was found.</comment>
+  </data>
   <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
     <value>The Compute Engine API is not enabled.</value>
     <comment>Caption shown in the placeholder displayed when the GCE API is not enabled.</comment>
