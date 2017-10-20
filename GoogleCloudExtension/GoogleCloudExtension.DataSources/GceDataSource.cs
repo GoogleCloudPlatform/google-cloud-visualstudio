@@ -434,7 +434,7 @@ namespace GoogleCloudExtension.DataSources
                 zoneName = new Uri(operation.Zone).Segments.Last();
             }
 
-            return OperationsUtils.AwaitOperationAsync(
+            return OperationUtils.AwaitOperationAsync(
                 operation,
                 refreshOperation: (op) =>
                 {
