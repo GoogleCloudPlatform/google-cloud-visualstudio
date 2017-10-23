@@ -311,5 +311,50 @@ namespace GoogleCloudExtension.DataSources
                 throw new DataSourceException(ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Returns the list of available locations for the current project.
+        /// </summary>
+        public Task<IList<Location>> GetAvailableLocationsAsync()
+        {
+            var request = Service.Apps.Locations.List(ProjectId);
+
+            return LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.Locations,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Creates an application in the given location.
+        /// </summary>
+        /// <param name="location">The location where to create the app.</param>
+        /// <returns>A task that will be completed once the operation finishes.</returns>
+        public async Task CreateApplicationAsync(string location)
+        {
+            var request = Service.Apps.Create(new Application
+            {
+                Id = ProjectId,
+                LocationId = location
+            });
+
+            try
+            {
+                var operation = await request.ExecuteAsync();
+                await OperationUtils.AwaitOperationAsync(
+                    operation,
+                    op => Service.Apps.Operations.Get(ProjectId, op.Name).ExecuteAsync(),
+                    op => op.Done ?? false,
+                    op => op.Error.ToString());
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
     }
 }
