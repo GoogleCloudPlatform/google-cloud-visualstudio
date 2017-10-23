@@ -137,6 +137,7 @@
     <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
+    <Compile Include="GaeLocationExtensions.cs" />
     <Compile Include="IPubsubDataSource.cs" />
     <Compile Include="IResourceManagerDataSource.cs" />
     <Compile Include="OperationUtils.cs" />
