@@ -128,6 +128,11 @@
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="ApiManagement\ApiManager.cs" />
     <Compile Include="ApiManagement\KnownApis.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModel.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindow.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindowContent.xaml.cs">
+      <DependentUpon>AppEngineManagementWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
@@ -918,6 +923,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppEngineManagement\AppEngineManagementWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
