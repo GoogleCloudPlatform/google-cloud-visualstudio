@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>A task that will contain the collection of <seealso cref="ServiceStatus"/> with the status of each service.</returns>
         public async Task<IEnumerable<ServiceStatus>> CheckServicesStatusAsync(IEnumerable<string> serviceNames)
         {
-            var enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
+            IEnumerable<string> enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
             return serviceNames.Select(x => new ServiceStatus(x, enabledServices.Contains(x)));
         }
 
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.DataSources
         {
             foreach (var service in serviceNames)
             {
-                var operation = await Service.Services
+                Operation operation = await Service.Services
                     .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, service)
                     .ExecuteAsync();
 

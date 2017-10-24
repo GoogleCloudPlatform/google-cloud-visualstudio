@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             IsError = true
         };
 
-        public static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
         {
             // Need the Cloud SQL API.
             KnownApis.CloudSQLApiName

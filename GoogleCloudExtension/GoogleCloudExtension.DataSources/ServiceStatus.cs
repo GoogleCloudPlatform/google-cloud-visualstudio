@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
@@ -31,8 +33,43 @@ namespace GoogleCloudExtension.DataSources
 
         public ServiceStatus(string name, bool enabled)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
             Name = name;
             Enabled = enabled;
+        }
+
+        /// <summary>
+        /// Checks if this object is equal to the one provided.
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            var other = obj as ServiceStatus;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Name == other.Name && Enabled == other.Enabled;
+        }
+
+        /// <summary>
+        /// Returns the hashcode for the object, required when implementing equality.
+        /// Implementation adapted from:
+        ///   https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
+        /// </summary>
+        public override int GetHashCode()
+        {
+            unchecked 
+            {
+                int hash = 17;
+                hash = hash * 23 + Name.GetHashCode();
+                hash = hash * 23 + Enabled.GetHashCode();
+                return hash;
+            }
         }
     }
 }

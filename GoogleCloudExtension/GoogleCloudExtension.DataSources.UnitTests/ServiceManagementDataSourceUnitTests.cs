@@ -53,16 +53,16 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 responses);
 
             var dataSource = new ServiceManagementDataSource(service, ProjectName);
-            var serviceStatus = await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 });
+            var actualResults = (await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 })).ToList();
 
-            var expectedResult = new[]
+            var expectedResults = new[]
             {
                 new ServiceStatus(Service1, true),
                 new ServiceStatus(Service2, false),
                 new ServiceStatus(Service3, true)
             };
-            Assert.AreEqual(expectedResult.Length, serviceStatus.Count());
-            Assert.IsTrue(expectedResult.Zip(serviceStatus, (x, y) => x.Name == y.Name && x.Enabled == y.Enabled).All(x => x));
+            Assert.AreEqual(expectedResults.Length, actualResults.Count);
+            CollectionAssert.AreEqual(expectedResults, actualResults);
         }
 
         [TestMethod]
@@ -93,16 +93,16 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 responses);
 
             var dataSource = new ServiceManagementDataSource(service, ProjectName);
-            var serviceStatus = await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 });
+            var actualResults = (await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 })).ToList();
 
-            var expectedResult = new[]
+            var expectedResults = new[]
             {
                 new ServiceStatus(Service1, true),
                 new ServiceStatus(Service2, true),
                 new ServiceStatus(Service3, true)
             };
-            Assert.AreEqual(expectedResult.Length, serviceStatus.Count());
-            Assert.IsTrue(expectedResult.Zip(serviceStatus, (x, y) => x.Name == y.Name && x.Enabled == y.Enabled).All(x => x));
+            Assert.AreEqual(expectedResults.Length, actualResults.Count);
+            CollectionAssert.AreEqual(expectedResults, actualResults);
         }
     }
 }

@@ -317,9 +317,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnOpenService()
         {
-            var app = _owner.GaeApplication;
-            var url = GaeUtils.GetAppUrl(app.DefaultHostname, Service.Id);
-            Process.Start(url);
+            Process.Start(GaeUtils.GetAppUrl(_owner.GaeApplication.DefaultHostname, Service.Id));
         }
 
         /// <summary>
