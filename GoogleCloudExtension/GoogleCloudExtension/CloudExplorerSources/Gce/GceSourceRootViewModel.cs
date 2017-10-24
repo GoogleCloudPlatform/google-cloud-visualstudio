@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             IsWarning = true
         };
 
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // The GCE API is required.
             KnownApis.ComputeEngineApiName
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
             };
 
-        public override IEnumerable<string> RequiredApis => s_requiredApis;
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 

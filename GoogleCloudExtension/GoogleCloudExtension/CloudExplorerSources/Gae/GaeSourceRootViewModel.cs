@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsError = true
         };
 
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Require the GAE API.
             KnownApis.AppEngineAdminApiName
@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
             };
 
-        public override IEnumerable<string> RequiredApis => s_requiredApis;
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public override void Initialize(ICloudSourceContext context)
         {

@@ -207,7 +207,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void RefreshClustersList()
         {
-            var refreshTask = GetAllClustersAsync();
+            Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
             Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
             PublishDialog.TrackTask(refreshTask);
         }

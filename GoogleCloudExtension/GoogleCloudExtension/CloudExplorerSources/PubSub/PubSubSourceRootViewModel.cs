@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsError = true
         };
 
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Require the Pub/Sub API.
             KnownApis.PubSubApiName
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 }
             };
 
-        public override IEnumerable<string> RequiredApis => s_requiredApis;
+        public override IList<string> RequiredApis => s_requiredApis;
 
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
 

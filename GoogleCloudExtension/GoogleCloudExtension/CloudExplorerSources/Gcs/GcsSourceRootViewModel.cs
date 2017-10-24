@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             IsError = true
         };
 
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // The GCS API is required.
             KnownApis.CloudStorageApiName
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 }
             };
 
-        public override IEnumerable<string> RequiredApis => s_requiredApis;
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public bool ShowLocations
         {

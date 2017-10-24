@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             IsError = true
         };
 
-        public static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Need the Cloud SQL API.
             KnownApis.CloudSQLApiName
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 }
             };
 
-        public override IEnumerable<string> RequiredApis => s_requiredApis;
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public override void Initialize(ICloudSourceContext context)
         {

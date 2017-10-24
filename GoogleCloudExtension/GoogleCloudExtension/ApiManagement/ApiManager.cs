@@ -51,15 +51,20 @@ namespace GoogleCloudExtension.ApiManagement
         /// </summary>
         /// <param name="serviceNames">The list of services to check.</param>
         /// <returns>A task that will be true if all services are enabled, false otherwise.</returns>
-        public async Task<bool> AreServicesEnabledAsync(IEnumerable<string> serviceNames)
+        public async Task<bool> AreServicesEnabledAsync(IList<string> serviceNames)
         {
-            var dataSource = _dataSource.Value;
+            if (serviceNames == null || serviceNames.Count == 0)
+            {
+                return true;
+            }
+
+            ServiceManagementDataSource dataSource = _dataSource.Value;
             if (dataSource == null)
             {
                 return false;
             }
 
-            var serviceStatus = await dataSource.CheckServicesStatusAsync(serviceNames);
+            IEnumerable<ServiceStatus> serviceStatus = await dataSource.CheckServicesStatusAsync(serviceNames);
             return serviceStatus.All(x => x.Enabled);
         }
 
@@ -75,7 +80,7 @@ namespace GoogleCloudExtension.ApiManagement
             IEnumerable<string> serviceNames,
             string prompt)
         {
-            var dataSource = _dataSource.Value;
+            ServiceManagementDataSource dataSource = _dataSource.Value;
             if (dataSource == null)
             {
                 return false;
@@ -84,10 +89,11 @@ namespace GoogleCloudExtension.ApiManagement
             try
             {
                 // Check all services in parallel.
-                var servicesToEnable = (await dataSource.CheckServicesStatusAsync(serviceNames))
+                IList<string> servicesToEnable = (await dataSource.CheckServicesStatusAsync(serviceNames))
                     .Where(x => !x.Enabled)
-                    .Select(x => x.Name);
-                if (servicesToEnable.Count() == 0)
+                    .Select(x => x.Name)
+                    .ToList();
+                if (servicesToEnable.Count == 0)
                 {
                     Debug.WriteLine("All the services are already enabled.");
                     return true;
@@ -131,7 +137,7 @@ namespace GoogleCloudExtension.ApiManagement
         /// <returns>A task that will be completed once the operation finishes.</returns>
         public async Task EnableServicesAsync(IEnumerable<string> serviceNames)
         {
-            var dataSource = _dataSource.Value;
+            ServiceManagementDataSource dataSource = _dataSource.Value;
             if (dataSource == null)
             {
                 return;

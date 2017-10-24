@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.DataSources
                 while (true)
                 {
                     Debug.WriteLine("Polling for operation to finish.");
-                    var newOperation = await refreshOperation(operation);
+                    TOperation newOperation = await refreshOperation(operation);
 
                     if (isFinished(newOperation))
                     {

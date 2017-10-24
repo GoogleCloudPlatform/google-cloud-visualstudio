@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
-            _projectStateValidation = ValidatGcpeProjectState();
+            _projectStateValidation = ValidatGcpProjectState();
             CanPublish = true;
         }
 
@@ -215,14 +215,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             return viewModel;
         }
 
-        private async Task<bool> ValidatGcpeProjectState()
+        private async Task<bool> ValidatGcpProjectState()
         {
             // Ensure the necessary APIs are enabled.
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
                     s_requiredApis,
                     Resources.FlexPublishEnableApiMessage))
             {
-                Debug.WriteLine($"The user refused to enable the APIs for GAE.");
+                Debug.WriteLine("The user refused to enable the APIs for GAE.");
                 return false;
             }
 
@@ -230,10 +230,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             {
                 // Using the GAE API, check if there's an app for the project.
                 var appEngineDataSource = new GaeDataSource(
-                    CredentialsStore.Default.CurrentProjectId,
-                    CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
-                var app = await appEngineDataSource.GetApplicationAsync();
+                     CredentialsStore.Default.CurrentProjectId,
+                     CredentialsStore.Default.CurrentGoogleCredential,
+                     GoogleCloudExtensionPackage.ApplicationName);
+                Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
                 if (app == null)
                 {
                     Debug.WriteLine("There's no App Engine app for the project.");
@@ -251,7 +251,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 UserPromptUtils.ExceptionPrompt(ex);
                 return false;
             }
-    }
+        }
 
         internal bool ValidateInput()
         {

@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns the names of the required APIs for the source.
         /// </summary>
-        public abstract IEnumerable<string> RequiredApis { get; }
+        public abstract IList<string> RequiredApis { get; }
 
         /// <summary>
         /// Returns the context in which this source root view model is working.
