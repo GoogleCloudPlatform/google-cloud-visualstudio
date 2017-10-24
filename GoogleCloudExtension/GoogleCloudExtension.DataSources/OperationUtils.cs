@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="delay">The delay to use in between refreshes.</param>
         /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
         public static async Task AwaitOperationAsync<TOperation>(
-            TOperation operation,
+            this TOperation operation,
             Func<TOperation, Task<TOperation>> refreshOperation,
             Func<TOperation, bool> isFinished,
             Func<TOperation, string> getErrorData,

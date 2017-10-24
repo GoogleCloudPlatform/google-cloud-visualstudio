@@ -355,9 +355,8 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 var operation = await request.ExecuteAsync();
-                await OperationUtils.AwaitOperationAsync(
-                    operation,
-                    op => Service.Apps.Operations.Get(ProjectId, op.Name).ExecuteAsync(),
+                await operation.AwaitOperationAsync(
+                    op => Service.Apps.Operations.Get(ProjectId, op.GetOperationId()).ExecuteAsync(),
                     op => op.Done ?? false,
                     op => op.Error.ToString());
             }
