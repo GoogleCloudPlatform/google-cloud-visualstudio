@@ -18,12 +18,12 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent HasBanner="False" IsEnabled="{Binding Locations.IsCompleted}">
+    <theming:CommonDialogWindowBaseContent HasBanner="True" IsEnabled="{Binding Locations.IsCompleted}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{Binding ActionButtonCaption}"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       IsDefault="True"
                                       Command="{Binding ActionCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
@@ -31,10 +31,12 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel>
-            <Label Target="{Binding ElementName=_locations}"
-                   Content="Available Locations"
-                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBlock Style="{StaticResource CommonTextStyle}"
+                       Text="{x:Static ext:Resources.AppEngineManagementAppCreationMessage}" Margin="0,0,0,15" />
 
+            <Label Target="{Binding ElementName=_locations}"
+                   Content="Available _regions:"
+                   Style="{StaticResource CommonLabelStyle}" />
             <ComboBox x:Name="_locations"
                       ItemsSource="{Binding Locations.Value}"
                       SelectedItem="{Binding SelectedLocation, Mode=OneWayToSource}"

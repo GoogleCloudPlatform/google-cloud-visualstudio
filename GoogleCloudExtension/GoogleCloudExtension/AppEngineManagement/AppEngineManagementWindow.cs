@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         private AppEngineManagementViewModel ViewModel { get; }
 
         private AppEngineManagementWindow()
-            : base("App Engine App")
+            : base("Create New App Engine App")
         {
             ViewModel = new AppEngineManagementViewModel(this);
             Content = new AppEngineManagementWindowContent { DataContext = ViewModel };

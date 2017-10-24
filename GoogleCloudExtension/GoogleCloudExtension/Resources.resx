@@ -2903,4 +2903,8 @@
     <value>Select Google Cloud Project to Publish to - {0}</value>
     <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
   </data>
+  <data name="AppEngineManagementAppCreationMessage" xml:space="preserve">
+    <value>Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can't change the region for this project later.</value>
+    <comment>Message shown when creating a new app.</comment>
+  </data>
 </root>
