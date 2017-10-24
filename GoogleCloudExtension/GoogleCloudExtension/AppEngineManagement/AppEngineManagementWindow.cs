@@ -11,16 +11,16 @@ namespace GoogleCloudExtension.AppEngineManagement
     {
         private AppEngineManagementViewModel ViewModel { get; }
 
-        private AppEngineManagementWindow()
-            : base("Create New App Engine App")
+        private AppEngineManagementWindow(string projectId)
+            : base("Select App Engine Region")
         {
-            ViewModel = new AppEngineManagementViewModel(this);
+            ViewModel = new AppEngineManagementViewModel(this, projectId);
             Content = new AppEngineManagementWindowContent { DataContext = ViewModel };
         }
 
-        public static string PromptUser()
+        public static string PromptUser(string projectId)
         {
-            var dialog = new AppEngineManagementWindow();
+            var dialog = new AppEngineManagementWindow(projectId);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

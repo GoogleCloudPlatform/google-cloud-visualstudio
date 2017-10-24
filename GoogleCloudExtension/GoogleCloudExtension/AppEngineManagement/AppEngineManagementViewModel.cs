@@ -24,21 +24,24 @@ namespace GoogleCloudExtension.AppEngineManagement
 
         public string Result { get; private set; }
 
+        public string Message { get; }
+
         public ICommand ActionCommand { get; }
 
         public AsyncProperty<IEnumerable<LocationName>> Locations { get; }
 
-        public AppEngineManagementViewModel(AppEngineManagementWindow owner)
+        public AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId)
         {
             _owner = owner;
 
             Locations = new AsyncProperty<IEnumerable<LocationName>>(ListAllLocationsAsync());
             ActionCommand = new ProtectedCommand(OnActionCommand);
+            Message = string.Format(Resources.AppEngineManagementAppCreationMessage, projectId);
         }
 
         private void OnActionCommand()
         {
-            Result = SelectedLocation.Location;
+            Result = SelectedLocation.DisplayName;
             _owner.Close();
         }
 
@@ -48,7 +51,9 @@ namespace GoogleCloudExtension.AppEngineManagement
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.VersionedApplicationName);
-            return await source.GetFlexLocationsAsync();
+            IEnumerable<LocationName> result = (await source.GetFlexLocationsAsync()).OrderBy(x => x.DisplayName);
+            SelectedLocation = result.FirstOrDefault(x => x.DisplayName == "us-central");
+            return result;
         }
     }
 }

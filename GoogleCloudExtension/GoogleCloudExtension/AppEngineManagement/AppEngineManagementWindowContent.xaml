@@ -32,14 +32,15 @@
 
         <StackPanel>
             <TextBlock Style="{StaticResource CommonTextStyle}"
-                       Text="{x:Static ext:Resources.AppEngineManagementAppCreationMessage}" Margin="0,0,0,15" />
+                       Text="{Binding Message, Mode=OneTime}"
+                       Margin="0,0,0,15" />
 
             <Label Target="{Binding ElementName=_locations}"
                    Content="Available _regions:"
                    Style="{StaticResource CommonLabelStyle}" />
             <ComboBox x:Name="_locations"
                       ItemsSource="{Binding Locations.Value}"
-                      SelectedItem="{Binding SelectedLocation, Mode=OneWayToSource}"
+                      SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
                       IsSynchronizedWithCurrentItem="True"
                       DisplayMemberPath="DisplayName"
                       Style="{StaticResource CommonComboBoxStyle}" />

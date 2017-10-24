@@ -268,7 +268,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can&apos;t change the region for this project later..
+        ///   Looks up a localized string similar to Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can&apos;t change the region for project {0} later..
         /// </summary>
         public static string AppEngineManagementAppCreationMessage {
             get {
