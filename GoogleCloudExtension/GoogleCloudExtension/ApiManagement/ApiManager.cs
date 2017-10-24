@@ -51,8 +51,13 @@ namespace GoogleCloudExtension.ApiManagement
         /// </summary>
         /// <param name="serviceNames">The list of services to check.</param>
         /// <returns>A task that will be true if all services are enabled, false otherwise.</returns>
-        public async Task<bool> AreServicesEnabledAsync(IEnumerable<string> serviceNames)
+        public async Task<bool> AreServicesEnabledAsync(IList<string> serviceNames)
         {
+            if (serviceNames == null || serviceNames.Count == 0)
+            {
+                return true;
+            }
+
             ServiceManagementDataSource dataSource = _dataSource.Value;
             if (dataSource == null)
             {
