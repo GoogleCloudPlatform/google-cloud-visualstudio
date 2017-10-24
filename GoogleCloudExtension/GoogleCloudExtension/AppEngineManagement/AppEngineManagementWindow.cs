@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         {
             var dialog = new AppEngineManagementWindow();
             dialog.ShowModal();
-            return dialog.ViewModel.SelectedLocation;
+            return dialog.ViewModel.Result;
         }
     }
 }

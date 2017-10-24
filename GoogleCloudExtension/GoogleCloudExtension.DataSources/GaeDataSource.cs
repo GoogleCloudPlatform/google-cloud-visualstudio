@@ -19,6 +19,7 @@ using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -310,6 +311,15 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to get operation: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+        }
+
+        public async Task<IList<LocationName>> GetFlexLocationsAsync()
+        {
+            IList<Location> availableLocations = await GetAvailableLocationsAsync();
+            return availableLocations
+                .Where(x => x.IsFlexEnabled())
+                .Select(x => new LocationName(x.GetDisplayName(), x.Name))
+                .ToList();
         }
 
         /// <summary>

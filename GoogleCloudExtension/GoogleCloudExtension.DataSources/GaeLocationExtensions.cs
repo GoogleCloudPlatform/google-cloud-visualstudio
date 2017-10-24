@@ -23,15 +23,10 @@ namespace GoogleCloudExtension.DataSources
             return (bool)value;
         }
 
-        public static bool IsStandardEnabled(this Location self)
+        public static string GetDisplayName(this Location self)
         {
-            object value;
-            if (!self.Metadata.TryGetValue("flexibleEnvironmentAvailable", out value))
-            {
-                return false;
-            }
-
-            return (bool)value;
+            string[] parts = self.Name.Split('/');
+            return parts.Last();
         }
     }
 }

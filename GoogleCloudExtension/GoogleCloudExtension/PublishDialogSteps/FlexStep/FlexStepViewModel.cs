@@ -16,9 +16,11 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.AppEngineManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
@@ -236,11 +238,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
                 if (app == null)
                 {
-                    Debug.WriteLine("There's no App Engine app for the project.");
-                    UserPromptUtils.ErrorPrompt(
-                        message: Resources.FlexPublishNoAppFoundMessage,
-                        title: Resources.UiErrorCaption);
-                    return false;
+                    string selectedLocation = AppEngineManagementWindow.PromptUser();
+                    if (selectedLocation == null)
+                    {
+                        Debug.WriteLine("The user cancelled creating a new app");
+                        return false;
+                    }
+                    await ProgressDialogWindow.PromptUser(
+                        appEngineDataSource.CreateApplicationAsync(selectedLocation),
+                        new ProgressDialogWindow.Options
+                        {
+                            Title = "App Engine",
+                            Message = "Creating App Engine app.",
+                            IsCancellable = false
+                        });
                 }
 
                 // The project is ready to go.

@@ -37,6 +37,9 @@
 
             <ComboBox x:Name="_locations"
                       ItemsSource="{Binding Locations.Value}"
+                      SelectedItem="{Binding SelectedLocation, Mode=OneWayToSource}"
+                      IsSynchronizedWithCurrentItem="True"
+                      DisplayMemberPath="DisplayName"
                       Style="{StaticResource CommonComboBoxStyle}" />
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

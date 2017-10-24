@@ -7,38 +7,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
     public class AppEngineManagementViewModel : ViewModelBase
     {
         private readonly AppEngineManagementWindow _owner;
-        private string _selectedLocation;
+        private LocationName _selectedLocation;
 
-        public string SelectedLocation
+        public LocationName SelectedLocation
         {
             get { return _selectedLocation; }
             set { SetValueAndRaise(ref _selectedLocation, value); }
         }
 
-        public AsyncProperty<IEnumerable<string>> Locations { get; }
+        public string Result { get; private set; }
+
+        public ICommand ActionCommand { get; }
+
+        public AsyncProperty<IEnumerable<LocationName>> Locations { get; }
 
         public AppEngineManagementViewModel(AppEngineManagementWindow owner)
         {
             _owner = owner;
 
-            Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync());
+            Locations = new AsyncProperty<IEnumerable<LocationName>>(ListAllLocationsAsync());
+            ActionCommand = new ProtectedCommand(OnActionCommand);
         }
 
-        private async Task<IEnumerable<string>> ListAllLocationsAsync()
+        private void OnActionCommand()
+        {
+            Result = SelectedLocation.Location;
+            _owner.Close();
+        }
+
+        private async Task<IEnumerable<LocationName>> ListAllLocationsAsync()
         {
             var source = new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.VersionedApplicationName);
-            var possibleLocations = await source.GetAvailableLocationsAsync();
-
-            return possibleLocations.Where(x => x.IsFlexEnabled()).Select(x => x.LocationId);
+            return await source.GetFlexLocationsAsync();
         }
     }
 }
