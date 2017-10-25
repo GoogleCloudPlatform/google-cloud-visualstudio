@@ -75,8 +75,6 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to read operation: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-
         }
-
     }
 }

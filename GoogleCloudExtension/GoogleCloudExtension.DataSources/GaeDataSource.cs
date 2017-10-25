@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -31,6 +32,9 @@ namespace GoogleCloudExtension.DataSources
     {
         private static readonly string s_servingStatusUpdateMask = "servingStatus";
         private static readonly string s_trafficSplitUpdateMask = "split";
+
+        // Timeout for polling for operations.
+        private static readonly TimeSpan s_operationDefaultTimeout = new TimeSpan(0, 10, 0);
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -128,6 +132,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to delete service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"Timeout while deleting service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -154,6 +163,11 @@ namespace GoogleCloudExtension.DataSources
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"Timeout while updating service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -223,6 +237,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to delete version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"Timeout while deleting version: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -250,6 +269,11 @@ namespace GoogleCloudExtension.DataSources
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update serving status to '{status}': {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"Timeout while updating version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -323,13 +347,15 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 var operation = await request.ExecuteAsync();
-                await operation.AwaitOperationAsync(
-                    op => Service.Apps.Operations.Get(ProjectId, op.GetOperationId()).ExecuteAsync(),
-                    op => op.Done ?? false,
-                    op => op.Error.ToString());
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine($"Timeout while creating app: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -341,29 +367,15 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The task that will be done once the operation is succesful.</returns>
         private Task AwaitOperationAsync(Operation operation)
         {
+            CancellationTokenSource tokenSource = new CancellationTokenSource(s_operationDefaultTimeout);
+
             return operation.AwaitOperationAsync(
-                op => GetOperationAsync(op.GetOperationId()),
+                op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
                 op => op.Done ?? false,
-                op => op.Error.Message);
+                op => op.Error.Message,
+                token: tokenSource.Token);
         }
 
-        /// <summary>
-        /// Gets a GAE operation.
-        /// </summary>
-        /// <param name="id">The unique operation id.</param>
-        /// <returns>The GAE operation.</returns>
-        private async Task<Operation> GetOperationAsync(string id)
-        {
-            try
-            {
-                var request = Service.Apps.Operations.Get(ProjectId, id);
-                return await request.ExecuteAsync();
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to get operation: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-        }
+        private static string GetOperationId(Operation operation) => operation.Name.Split('/').Last();
     }
 }

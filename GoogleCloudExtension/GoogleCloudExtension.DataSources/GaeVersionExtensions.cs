@@ -39,14 +39,6 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         public const string FlexibleEnvironment = "flexible";
 
-        /// <summary>
-        /// Gets an operation id.
-        /// </summary>
-        public static string GetOperationId(this Operation operation)
-        {
-            return operation.Name.Split('/').Last();
-        }
-
         /// <returns>True if the version is serving.</returns>
         public static bool IsServing(this Version version)
         {
