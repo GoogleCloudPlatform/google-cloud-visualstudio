@@ -25,10 +25,15 @@ namespace GoogleCloudExtension.AppEngineManagement
 {
     public class AppEngineManagementViewModel : ViewModelBase
     {
-        private readonly AppEngineManagementWindow _owner;
-        private LocationName _selectedLocation;
+        /// <summary>
+        /// The region to select by default for the user.
+        /// </summary>
+        private const string DefaultRegionName = "us-central";
 
-        public LocationName SelectedLocation
+        private readonly AppEngineManagementWindow _owner;
+        private string _selectedLocation;
+
+        public string SelectedLocation
         {
             get { return _selectedLocation; }
             set { SetValueAndRaise(ref _selectedLocation, value); }
@@ -40,31 +45,31 @@ namespace GoogleCloudExtension.AppEngineManagement
 
         public ICommand ActionCommand { get; }
 
-        public AsyncProperty<IEnumerable<LocationName>> Locations { get; }
+        public AsyncProperty<IEnumerable<string>> Locations { get; }
 
         public AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId)
         {
             _owner = owner;
 
-            Locations = new AsyncProperty<IEnumerable<LocationName>>(ListAllLocationsAsync());
+            Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync());
             ActionCommand = new ProtectedCommand(OnActionCommand);
             Message = string.Format(Resources.AppEngineManagementAppCreationMessage, projectId);
         }
 
         private void OnActionCommand()
         {
-            Result = SelectedLocation.DisplayName;
+            Result = SelectedLocation;
             _owner.Close();
         }
 
-        private async Task<IEnumerable<LocationName>> ListAllLocationsAsync()
+        private async Task<IEnumerable<string>> ListAllLocationsAsync()
         {
             var source = new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.VersionedApplicationName);
-            IEnumerable<LocationName> result = (await source.GetFlexLocationsAsync()).OrderBy(x => x.DisplayName);
-            SelectedLocation = result.FirstOrDefault(x => x.DisplayName == "us-central");
+            IEnumerable<string> result = (await source.GetFlexLocationsAsync()).OrderBy(x => x);
+            SelectedLocation = result.FirstOrDefault(x => x == DefaultRegionName);
             return result;
         }
     }

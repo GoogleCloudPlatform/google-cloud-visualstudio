@@ -26,6 +26,9 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public static class GaeLocationExtensions
     {
+        /// <summary>
+        /// Returns whether the given <seealso cref="Location"/> is enabled for App Engine flexible environment.
+        /// </summary>
         public static bool IsFlexEnabled(this Location self)
         {
             object value;
@@ -37,7 +40,11 @@ namespace GoogleCloudExtension.DataSources
             return (bool)value;
         }
 
-        public static string GetDisplayName(this Location self)
+        /// <summary>
+        /// Returns the region name from the full name. This name can be used to display to the user and to
+        /// specify a region in the GAE API.
+        /// </summary>
+        public static string GetRegionName(this Location self)
         {
             string[] parts = self.Name.Split('/');
             return parts.Last();

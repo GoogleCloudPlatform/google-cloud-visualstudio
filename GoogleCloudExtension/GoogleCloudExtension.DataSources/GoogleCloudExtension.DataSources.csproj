@@ -140,7 +140,6 @@
     <Compile Include="GaeLocationExtensions.cs" />
     <Compile Include="IPubsubDataSource.cs" />
     <Compile Include="IResourceManagerDataSource.cs" />
-    <Compile Include="LocationName.cs" />
     <Compile Include="OperationUtils.cs" />
     <Compile Include="PubSubDataSource.cs" />
     <Compile Include="ServiceManagementDataSource.cs" />

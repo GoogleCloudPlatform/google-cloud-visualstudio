@@ -42,7 +42,6 @@
                       ItemsSource="{Binding Locations.Value}"
                       SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
                       IsSynchronizedWithCurrentItem="True"
-                      DisplayMemberPath="DisplayName"
                       Style="{StaticResource CommonComboBoxStyle}" />
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>
