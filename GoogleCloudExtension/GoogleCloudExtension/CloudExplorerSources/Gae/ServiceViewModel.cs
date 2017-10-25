@@ -315,11 +315,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _owner.Context.ShowPropertiesWindow(GetItem());
         }
 
-        private async void OnOpenService()
+        private void OnOpenService()
         {
-            var app = await _owner.GaeApplication;
-            var url = GaeUtils.GetAppUrl(app.DefaultHostname, Service.Id);
-            Process.Start(url);
+            Process.Start(GaeUtils.GetAppUrl(_owner.GaeApplication.DefaultHostname, Service.Id));
         }
 
         /// <summary>

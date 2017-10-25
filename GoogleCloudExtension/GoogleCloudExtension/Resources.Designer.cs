@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -237,6 +237,33 @@ namespace GoogleCloudExtension {
         public static string AnalyticsPromptTitle {
             get {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to enable the necessary services..
+        /// </summary>
+        public static string ApiManagerEnableServicesErrorMessage {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabling the required services..
+        /// </summary>
+        public static string ApiManagerEnableServicesProgressMessage {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Required Services.
+        /// </summary>
+        public static string ApiManagerEnableServicesTitle {
+            get {
+                return ResourceManager.GetString("ApiManagerEnableServicesTitle", resourceCulture);
             }
         }
         
@@ -637,6 +664,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The App Engine Admin API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGaeApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Service.
         /// </summary>
         public static string CloudExplorerGaeDeleteService {
@@ -691,6 +727,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable the App Engine Admin API.
+        /// </summary>
+        public static string CloudExplorerGaeEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeEnableApiMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine services.
         /// </summary>
         public static string CloudExplorerGaeFailedServicesMessage {
@@ -741,6 +786,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeMigratingAllTrafficCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeMigratingAllTrafficCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No App Engine app found..
+        /// </summary>
+        public static string CloudExplorerGaeNoAppFoundCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeNoAppFoundCaption", resourceCulture);
             }
         }
         
@@ -1096,11 +1150,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Compute Engine API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGceApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attach debugger.
         /// </summary>
         public static string CloudExplorerGceAttachDebuggerMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Compute Engine API.
+        /// </summary>
+        public static string CloudExplorerGceEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -1672,6 +1744,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Cloud Storage API is not enabled..
+        /// </summary>
+        public static string CloudExplorerGcsApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bucket Properties.
         /// </summary>
         public static string CloudExplorerGcsBucketCategory {
@@ -1767,6 +1848,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsBucketVersioningEnabledDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsBucketVersioningEnabledDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Cloud Storage API.
+        /// </summary>
+        public static string CloudExplorerGcsEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -1906,6 +1996,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Pub/Sub API is not enabled..
+        /// </summary>
+        public static string CloudExplorerPubSubApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
         public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
@@ -1920,6 +2019,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubDeleteTopicMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubDeleteTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Pub/Sub API.
+        /// </summary>
+        public static string CloudExplorerPubSubEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -2122,6 +2230,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Cloud SQL API is not enabled..
+        /// </summary>
+        public static string CloudExplorerSqlApiNotEnabledCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Backend Type.
         /// </summary>
         public static string CloudExplorerSqlBackendTypeDisplayName {
@@ -2136,6 +2253,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSqlDatabaseVersionDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerSqlDatabaseVersionDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the Cloud SQL API.
+        /// </summary>
+        public static string CloudExplorerSqlEnableApiMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlEnableApiMenuHeader", resourceCulture);
             }
         }
         
@@ -2986,6 +3112,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string FlexPublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
@@ -3000,6 +3135,15 @@ namespace GoogleCloudExtension {
         public static string FlexPublishInvalidVersionMessage {
             get {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud..
+        /// </summary>
+        public static string FlexPublishNoAppFoundMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishNoAppFoundMessage", resourceCulture);
             }
         }
         
@@ -3045,6 +3189,15 @@ namespace GoogleCloudExtension {
         public static string GcePublishAttachDebuggerCaption {
             get {
                 return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GcePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GcePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -3990,6 +4143,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishEmptyDeploymentVersionMessage {
             get {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Container Engine. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GkePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -5754,6 +5916,15 @@ namespace GoogleCloudExtension {
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable.
+        /// </summary>
+        public static string UiEnableButtonCaption {
+            get {
+                return ResourceManager.GetString("UiEnableButtonCaption", resourceCulture);
             }
         }
         

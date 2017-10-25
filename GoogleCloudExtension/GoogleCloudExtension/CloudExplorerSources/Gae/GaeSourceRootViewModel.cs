@@ -16,6 +16,7 @@ using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -48,13 +49,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = Resources.CloudExplorerGaeFailedToLoadServicesCaption,
             IsError = true
         };
+        private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
+        {
+            Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
+            IsError = true
+        };
+
+        private static readonly IList<string> s_requiredApis = new List<string>
+        {
+            // Require the GAE API.
+            KnownApis.AppEngineAdminApiName
+        };
 
         private Lazy<GaeDataSource> _dataSource;
-        private Task<Application> _gaeApplication;
 
         public GaeDataSource DataSource => _dataSource.Value;
 
-        public Task<Application> GaeApplication => _gaeApplication;
+        public Application GaeApplication { get; private set; }
 
         public override string RootCaption => Resources.CloudExplorerGaeRootNodeCaption;
 
@@ -63,6 +74,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGaeApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<MenuItem>
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGaeEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableGaeApi)
+                        }
+                    }
+                }
+            };
+
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public override void Initialize(ICloudSourceContext context)
         {
@@ -146,7 +177,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Debug.WriteLine("Loading list of services.");
-                _gaeApplication = _dataSource.Value.GetApplicationAsync();
+
+                GaeApplication = await _dataSource.Value.GetApplicationAsync();
+                if (GaeApplication == null)
+                {
+                    Children.Clear();
+                    Children.Add(s_noAppEngineAppPlaceholder);
+                    return;
+                }
+
                 IList<ServiceViewModel> services = await LoadServiceList();
 
                 Children.Clear();
@@ -169,6 +208,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
+        }
+
+        private async void OnEnableGaeApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
 
         private async Task<IList<ServiceViewModel>> LoadServiceList()

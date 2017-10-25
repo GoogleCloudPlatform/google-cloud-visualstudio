@@ -17,6 +17,7 @@ using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -25,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
@@ -49,6 +51,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             IsError = true
         };
 
+        private static readonly IList<string> s_requiredApis = new List<string>
+        {
+            // The GCS API is required.
+            KnownApis.CloudStorageApiName
+        };
+
         private Lazy<GcsDataSource> _dataSource;
         private bool _showLocations = false;
         private IList<Bucket> _buckets;
@@ -60,6 +68,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGcsApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<FrameworkElement>
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGcsEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableGcsApi)
+                        }
+                    }
+                }
+            };
+
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public bool ShowLocations
         {
@@ -113,6 +141,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             ShowLocations = false;
         }
 
+        private async void OnEnableGcsApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
+        }
+
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the GCS source.");
@@ -139,6 +173,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             try
             {
                 Debug.WriteLine("Loading list of buckets.");
+
                 _buckets = await LoadBucketList();
                 PresentViewModels();
 

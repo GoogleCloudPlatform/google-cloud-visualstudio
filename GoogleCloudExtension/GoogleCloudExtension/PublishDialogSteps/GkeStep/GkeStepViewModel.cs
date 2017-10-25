@@ -16,6 +16,7 @@ using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -42,8 +43,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
         private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
 
+        // The APIs required for a succesful deployment to GKE.
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Need the GKE API to be able to list clusters.
+            KnownApis.ContainerEngineApiName,
+
+            // Need the Cloud Builder API to actually deploy.
+            KnownApis.CloudBuildApiName
+        };
+
         private readonly GkeStepContent _content;
-        private AsyncProperty<IList<Cluster>> _clusters;
+        private AsyncProperty<IEnumerable<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
@@ -56,7 +67,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
-        public AsyncProperty<IList<Cluster>> Clusters
+        public AsyncProperty<IEnumerable<Cluster>> Clusters
         {
             get { return _clusters; }
             private set { SetValueAndRaise(ref _clusters, value); }
@@ -172,7 +183,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             _content = content;
 
-            Clusters = new AsyncProperty<IList<Cluster>>(GetAllClustersAsync());
+            Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
             RefreshClustersListCommand = new ProtectedCommand(RefreshClustersList);
 
@@ -184,7 +195,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void UpdateCanPublish()
         {
-            CanPublish = SelectedCluster != null && SelectedCluster != s_placeholderCluster && !HasErrors;
+            CanPublish = SelectedCluster != null
+                && SelectedCluster != s_placeholderCluster
+                && !HasErrors;
         }
 
         protected override void HasErrorsChanged()
@@ -194,8 +207,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void RefreshClustersList()
         {
-            Task<IList<Cluster>> refreshTask = GetAllClustersAsync();
-            Clusters = new AsyncProperty<IList<Cluster>>(refreshTask);
+            Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
+            Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
             PublishDialog.TrackTask(refreshTask);
         }
 
@@ -434,8 +447,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             return true;
         }
 
-        private async Task<IList<Cluster>> GetAllClustersAsync()
+        private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
         {
+            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
+                    s_requiredApis,
+                    Resources.GkePublishEnableApiMessage))
+            {
+                PublishDialog.FinishFlow();
+                return Enumerable.Empty<Cluster>();
+            }
+
             var dataSource = new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,

@@ -16,6 +16,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -38,6 +39,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     /// </summary>
     public class GceStepViewModel : PublishDialogStepBase
     {
+        // The list of APIs that are required for a succesful deployment to GCE.
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // Need the GCE API to perform all work.
+            KnownApis.ComputeEngineApiName,
+        };
+
         private readonly GceStepContent _content;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
@@ -143,6 +151,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
         {
+            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
+                    s_requiredApis,
+                    Resources.GcePublishEnableApiMessage))
+            {
+                PublishDialog.FinishFlow();
+                return Enumerable.Empty<Instance>();
+            }
+
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,

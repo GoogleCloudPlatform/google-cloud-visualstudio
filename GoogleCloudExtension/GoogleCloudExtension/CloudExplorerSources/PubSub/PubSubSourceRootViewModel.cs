@@ -16,6 +16,7 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -56,6 +57,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsError = true
         };
 
+        private static readonly IList<string> s_requiredApis = new List<string>
+        {
+            // Require the Pub/Sub API.
+            KnownApis.PubSubApiName
+        };
+
         private static readonly string[] s_blacklistedTopics =
         {
             "asia\\.gcr\\.io%2F{0}$",
@@ -78,6 +85,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerPubSubApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<MenuItem>
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerPubSubEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnablePubSubApi)
+                        }
+                    }
+                }
+            };
+
+        public override IList<string> RequiredApis => s_requiredApis;
 
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
 
@@ -239,6 +266,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
                 EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
+        }
+
+        private async void OnEnablePubSubApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
     }
 }

@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Theming;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -76,6 +78,16 @@ namespace GoogleCloudExtension.CloudExplorer
         /// Returns the tree node to use while loading data.
         /// </summary>
         public abstract TreeLeaf LoadingPlaceholder { get; }
+
+        /// <summary>
+        /// Returns the tree node to use when we detect that the necessary APIs are not enabled.
+        /// </summary>
+        public abstract TreeLeaf ApiNotEnabledPlaceholder { get; }
+
+        /// <summary>
+        /// Returns the names of the required APIs for the source.
+        /// </summary>
+        public abstract IList<string> RequiredApis { get; }
 
         /// <summary>
         /// Returns the context in which this source root view model is working.
@@ -148,6 +160,13 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
 
                 Children.Add(LoadingPlaceholder);
+
+                if (!await ApiManager.Default.AreServicesEnabledAsync(RequiredApis))
+                {
+                    Children.Clear();
+                    Children.Add(ApiNotEnabledPlaceholder);
+                    return;
+                }
 
                 await LoadDataOverride();
                 if (Children.Count == 0)

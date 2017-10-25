@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace GoogleCloudExtension.VsVersion.VS15
 {
     /// <summary>
-    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
+    /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
     /// </summary>
     internal class ToolsPathProvider : ToolsPathProviderBase
     {

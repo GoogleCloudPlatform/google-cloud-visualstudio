@@ -15,6 +15,8 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
@@ -34,7 +36,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
+        // The list of APIs that are required for a successful deployment to App Engine Flex.
+        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        {
+            // We require the App Engine Admin API in order to deploy to app engine.
+            KnownApis.AppEngineAdminApiName,
+        };
+
         private readonly FlexStepContent _content;
+        private readonly Task<bool> _projectStateValidation;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
@@ -74,6 +84,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
+            _projectStateValidation = ValidatGcpProjectState();
             CanPublish = true;
         }
 
@@ -86,6 +97,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override FrameworkElement Content => _content;
 
+        public override async void OnPushedToDialog(IPublishDialog dialog)
+        {
+            base.OnPushedToDialog(dialog);
+
+            PublishDialog.TrackTask(_projectStateValidation);
+
+            if (!await _projectStateValidation)
+            {
+                // Close the dialog if the project cannot be deployed.
+                PublishDialog.FinishFlow();
+            }
+        }
+
         public override async void Publish()
         {
             if (!ValidateInput())
@@ -97,6 +121,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             IParsedProject project = PublishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
                 PublishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
@@ -104,8 +130,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                     Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
                     return;
                 }
-
-                ShellUtils.SaveAllFiles();
 
                 var context = new GCloudContext
                 {
@@ -189,6 +213,44 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             content.DataContext = viewModel;
 
             return viewModel;
+        }
+
+        private async Task<bool> ValidatGcpProjectState()
+        {
+            // Ensure the necessary APIs are enabled.
+            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
+                    s_requiredApis,
+                    Resources.FlexPublishEnableApiMessage))
+            {
+                Debug.WriteLine("The user refused to enable the APIs for GAE.");
+                return false;
+            }
+
+            try
+            {
+                // Using the GAE API, check if there's an app for the project.
+                var appEngineDataSource = new GaeDataSource(
+                     CredentialsStore.Default.CurrentProjectId,
+                     CredentialsStore.Default.CurrentGoogleCredential,
+                     GoogleCloudExtensionPackage.ApplicationName);
+                Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
+                if (app == null)
+                {
+                    Debug.WriteLine("There's no App Engine app for the project.");
+                    UserPromptUtils.ErrorPrompt(
+                        message: Resources.FlexPublishNoAppFoundMessage,
+                        title: Resources.UiErrorCaption);
+                    return false;
+                }
+
+                // The project is ready to go.
+                return true;
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ExceptionPrompt(ex);
+                return false;
+            }
         }
 
         internal bool ValidateInput()

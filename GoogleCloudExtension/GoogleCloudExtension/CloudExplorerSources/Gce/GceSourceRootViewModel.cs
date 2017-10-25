@@ -16,6 +16,7 @@ using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -49,6 +50,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             IsWarning = true
         };
 
+        private static readonly IList<string> s_requiredApis = new List<string>
+        {
+            // The GCE API is required.
+            KnownApis.ComputeEngineApiName
+        };
+
         private bool _showOnlyWindowsInstances = false;
         private bool _showZones = false;
         private IList<InstancesPerZone> _instancesPerZone;
@@ -61,6 +68,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        public override TreeLeaf ApiNotEnabledPlaceholder
+            => new TreeLeaf
+            {
+                Caption = Resources.CloudExplorerGceApiNotEnabledCaption,
+                IsError = true,
+                ContextMenu = new ContextMenu
+                {
+                    ItemsSource = new List<FrameworkElement>
+                    {
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGceEnableApiMenuHeader,
+                            Command = new ProtectedCommand(OnEnableGceApi)
+                        }
+                    }
+                }
+            };
+
+        public override IList<string> RequiredApis => s_requiredApis;
 
         public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 
@@ -181,6 +208,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private void OnStatusCommand()
         {
             Process.Start("https://status.cloud.google.com/");
+        }
+
+        private async void OnEnableGceApi()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            Refresh();
         }
 
         public override void InvalidateProjectOrAccount()

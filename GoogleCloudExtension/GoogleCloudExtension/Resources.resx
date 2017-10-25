@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2814,6 +2814,82 @@
   <data name="WizardTemplateChooserFeaturesLabel" xml:space="preserve">
     <value>Features:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesErrorMessage" xml:space="preserve">
+    <value>Failed to enable the necessary services.</value>
+    <comment>The message shown when there's a failure enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesProgressMessage" xml:space="preserve">
+    <value>Enabling the required services.</value>
+    <comment>The message for the progress dialog shown while enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesTitle" xml:space="preserve">
+    <value>Enable Required Services</value>
+    <comment>The title for the enable services dialogs.</comment>
+  </data>
+  <data name="CloudExplorerGaeApiNotEnabledCaption" xml:space="preserve">
+    <value>The App Engine Admin API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the App Engine API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGaeEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the App Engine Admin API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
+    <value>No App Engine app found.</value>
+    <comment>Caption shown in the placheolder when no App Engine app was found.</comment>
+  </data>
+  <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
+    <value>The Compute Engine API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCE API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGceEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Compute Engine API</value>
+    <comment>Header for the menu item to enable the GCE API.</comment>
+  </data>
+  <data name="CloudExplorerGcsApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud Storage API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCS API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGcsEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud Storage API</value>
+    <comment>Header for the menu item to enable the GCS API.</comment>
+  </data>
+  <data name="CloudExplorerPubSubApiNotEnabledCaption" xml:space="preserve">
+    <value>The Pub/Sub API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Pub/Sub API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerPubSubEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Pub/Sub API</value>
+    <comment>Header for the menu item to enable the Pub/Sub API.</comment>
+  </data>
+  <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud SQL API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud SQL API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="FlexPublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>
+  </data>
+  <data name="FlexPublishNoAppFoundMessage" xml:space="preserve">
+    <value>Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.</value>
+    <comment>Message shwon when there's no App Engine app defined for the project.</comment>
+  </data>
+  <data name="GcePublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to a GCE VM.</comment>
+  </data>
+  <data name="GkePublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to Container Engine. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to GKE.</comment>
+  </data>
+  <data name="UiEnableButtonCaption" xml:space="preserve">
+    <value>Enable</value>
+    <comment>Caption for enable buttons.</comment>
   </data>
   <data name="PublishDialogGcpProjectIdLabel" xml:space="preserve">
     <value>Google Cloud Project ID:</value>
