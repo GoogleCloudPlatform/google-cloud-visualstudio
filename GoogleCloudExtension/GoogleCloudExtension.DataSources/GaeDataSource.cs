@@ -305,6 +305,9 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
+        /// <summary>
+        /// Returns the list of locations that have Flex enabled.
+        /// </summary>
         public async Task<IList<LocationName>> GetFlexLocationsAsync()
         {
             IList<Location> availableLocations = await GetAvailableLocationsAsync();
