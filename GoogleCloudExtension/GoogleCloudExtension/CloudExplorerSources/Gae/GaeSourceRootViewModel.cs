@@ -186,7 +186,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         {
                             ItemsSource = new List<MenuItem>
                             {
-                                new MenuItem { Header = "Set app region", Command = new ProtectedCommand(OnSetAppRegion) }
+                                new MenuItem { Header = Resources.CloudExplorerGaeSetAppRegionMenuHeader, Command = new ProtectedCommand(OnSetAppRegion) }
                             }
                         }
                     };

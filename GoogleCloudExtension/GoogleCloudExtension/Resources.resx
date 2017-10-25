@@ -2836,7 +2836,7 @@
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
   <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
-    <value>No App Engine app found.</value>
+    <value>No app engine app found.</value>
     <comment>Caption shown in the placheolder when no App Engine app was found.</comment>
   </data>
   <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
@@ -2875,10 +2875,6 @@
     <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
     <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>
   </data>
-  <data name="FlexPublishNoAppFoundMessage" xml:space="preserve">
-    <value>Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.</value>
-    <comment>Message shwon when there's no App Engine app defined for the project.</comment>
-  </data>
   <data name="GcePublishEnableApiMessage" xml:space="preserve">
     <value>Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?</value>
     <comment>Message shown when we need to enable APIs to deploy to a GCE VM.</comment>
@@ -2914,6 +2910,10 @@
   <data name="AppEngineManagementWindowCaption" xml:space="preserve">
     <value>Select App Engine Region</value>
     <comment>Caption for the select region dialog.</comment>
+  </data>
+  <data name="CloudExplorerGaeSetAppRegionMenuHeader" xml:space="preserve">
+    <value>Set app region</value>
+    <comment>Menu header for the menu shown to the user to set the app's region.</comment>
   </data>
   <data name="GaeUtilsSetAppEngineRegionProgressCaption" xml:space="preserve">
     <value>App Engine Region</value>

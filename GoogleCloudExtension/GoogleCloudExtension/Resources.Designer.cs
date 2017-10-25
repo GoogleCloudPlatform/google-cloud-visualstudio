@@ -817,7 +817,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No App Engine app found..
+        ///   Looks up a localized string similar to No app engine app found..
         /// </summary>
         public static string CloudExplorerGaeNoAppFoundCaption {
             get {
@@ -894,6 +894,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeServiceOpen {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeServiceOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set app region.
+        /// </summary>
+        public static string CloudExplorerGaeSetAppRegionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeSetAppRegionMenuHeader", resourceCulture);
             }
         }
         
@@ -3162,15 +3171,6 @@ namespace GoogleCloudExtension {
         public static string FlexPublishInvalidVersionMessage {
             get {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud..
-        /// </summary>
-        public static string FlexPublishNoAppFoundMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishNoAppFoundMessage", resourceCulture);
             }
         }
         
