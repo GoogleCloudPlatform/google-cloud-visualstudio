@@ -2907,4 +2907,12 @@
     <value>Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can't change the region for project {0} later.</value>
     <comment>Message shown when creating a new app. {0} is the project id.</comment>
   </data>
+  <data name="AppEngineManagementRegionsLabel" xml:space="preserve">
+    <value>Available _regions:</value>
+    <comment>Label to be used for the regions drop box.</comment>
+  </data>
+  <data name="AppEngineManagementWindowCaption" xml:space="preserve">
+    <value>Select App Engine Region</value>
+    <comment>Caption for the select region dialog.</comment>
+  </data>
 </root>

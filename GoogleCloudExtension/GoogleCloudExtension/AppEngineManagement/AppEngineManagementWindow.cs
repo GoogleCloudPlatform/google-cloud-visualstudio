@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         private AppEngineManagementViewModel ViewModel { get; }
 
         private AppEngineManagementWindow(string projectId)
-            : base("Select App Engine Region")
+            : base(GoogleCloudExtension.Resources.AppEngineManagementWindowCaption)
         {
             ViewModel = new AppEngineManagementViewModel(this, projectId);
             Content = new AppEngineManagementWindowContent { DataContext = ViewModel };

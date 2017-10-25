@@ -277,6 +277,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available _regions:.
+        /// </summary>
+        public static string AppEngineManagementRegionsLabel {
+            get {
+                return ResourceManager.GetString("AppEngineManagementRegionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select App Engine Region.
+        /// </summary>
+        public static string AppEngineManagementWindowCaption {
+            get {
+                return ResourceManager.GetString("AppEngineManagementWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASP.NET Core {0}.
         /// </summary>
         public static string AspNetCoreVersionedName {
