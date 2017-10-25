@@ -434,8 +434,7 @@ namespace GoogleCloudExtension.DataSources
                 zoneName = new Uri(operation.Zone).Segments.Last();
             }
 
-            return OperationUtils.AwaitOperationAsync(
-                operation,
+            return operation.AwaitOperationAsync(
                 refreshOperation: (op) =>
                 {
                     if (zoneName != null)
@@ -448,7 +447,8 @@ namespace GoogleCloudExtension.DataSources
                     }
                 },
                 isFinished: op => op.Status == "DONE",
-                getErrorData: op => op.Error.ToString());
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Errors.FirstOrDefault()?.Message);
         }
     }
 }

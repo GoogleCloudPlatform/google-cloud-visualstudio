@@ -129,9 +129,10 @@ namespace GoogleCloudExtension.DataSources
         private Task AwaitOperationAsync(Operation operation)
         {
             return operation.AwaitOperationAsync(
-                op => GetOperationAsync(op.Name),
-                op => op.Status == OperationStateDone,
-                op => op.Error.Errors.FirstOrDefault()?.Message);
+                refreshOperation: op => GetOperationAsync(op.Name),
+                isFinished: op => op.Status == OperationStateDone,
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Errors.FirstOrDefault()?.Message);
         }
     }
 }

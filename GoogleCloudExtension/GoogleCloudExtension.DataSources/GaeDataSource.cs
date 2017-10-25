@@ -368,9 +368,10 @@ namespace GoogleCloudExtension.DataSources
         private Task AwaitOperationAsync(Operation operation)
         {
             return operation.AwaitOperationAsync(
-                op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
-                op => op.Done ?? false,
-                op => op.Error.Message,
+                refreshOperation: op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
+                isFinished: op => op.Done ?? false,
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Message,
                 timeout: s_operationDefaultTimeout);
         }
 

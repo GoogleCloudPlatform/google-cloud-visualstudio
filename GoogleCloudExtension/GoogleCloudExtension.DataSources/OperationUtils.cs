@@ -40,11 +40,12 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="delay">The delay to use in between refreshes.</param>
         /// <param name="timeout">The timeout for the operation. If null there's no timeout.</param>
         /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
-        public static async Task AwaitOperationAsync<TOperation>(
+        public static async Task AwaitOperationAsync<TOperation, TErrorData>(
             this TOperation operation,
             Func<TOperation, Task<TOperation>> refreshOperation,
             Func<TOperation, bool> isFinished,
-            Func<TOperation, string> getErrorData,
+            Func<TOperation, TErrorData> getErrorData,
+            Func<TErrorData, string> getErrorMessage,
             CancellationToken token = default(CancellationToken),
             TimeSpan? delay = null,
             TimeSpan? timeout = null)
@@ -77,10 +78,10 @@ namespace GoogleCloudExtension.DataSources
                     if (isFinished(newOperation))
                     {
                         Debug.WriteLine("Operation finished.");
-                        string errorData = getErrorData(newOperation);
+                        TErrorData errorData = getErrorData(newOperation);
                         if (errorData != null)
                         {
-                            throw new DataSourceException($"Operation failed: {errorData}.");
+                            throw new DataSourceException($"Operation failed: {getErrorMessage(errorData)}.");
                         }
                         return;
                     }
