@@ -15,6 +15,7 @@
 using Google;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -35,6 +36,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="refreshOperation">An function that will refresh the operation, returning an updated instance.</param>
         /// <param name="isFinished">A function thgat determines if the operation is done.</param>
         /// <param name="getErrorData">A function that will extract the error message from the operation, if in error.</param>
+        /// <param name="token">The cancellation token to stop polling for the state of the operation. This does not cancel the operation.</param>
         /// <param name="delay">The delay to use in between refreshes.</param>
         /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
         public static async Task AwaitOperationAsync<TOperation>(
@@ -42,12 +44,15 @@ namespace GoogleCloudExtension.DataSources
             Func<TOperation, Task<TOperation>> refreshOperation,
             Func<TOperation, bool> isFinished,
             Func<TOperation, string> getErrorData,
+            CancellationToken token = default(CancellationToken),
             TimeSpan? delay = null)
         {
             try
             {
                 while (true)
                 {
+                    token.ThrowIfCancellationRequested();
+
                     Debug.WriteLine("Polling for operation to finish.");
                     TOperation newOperation = await refreshOperation(operation);
 

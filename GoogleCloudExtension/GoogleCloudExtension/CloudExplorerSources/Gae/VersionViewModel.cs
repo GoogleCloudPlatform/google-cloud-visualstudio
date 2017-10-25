@@ -148,8 +148,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
 
                 var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
-                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
-                await _owner.DataSource.AwaitOperationAsync(operation);
+                await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
                 _owner.InvalidateService(_service.Id);
             }
             catch (DataSourceException ex)
@@ -213,8 +212,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
-                await dataSource.AwaitOperationAsync(operation);
+                await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
@@ -255,8 +253,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
-                await dataSource.AwaitOperationAsync(operation);
+                await dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
 
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));

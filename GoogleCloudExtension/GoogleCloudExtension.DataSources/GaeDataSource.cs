@@ -114,13 +114,14 @@ namespace GoogleCloudExtension.DataSources
         /// Deletes a GAE service for the given project and service id.
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
-        /// <returns>The GAE operation for the deletion.</returns>
-        public async Task<Operation> DeleteServiceAsync(string serviceId)
+        /// <returns>A taks that will be completed once the operation finishes.</returns>
+        public async Task DeleteServiceAsync(string serviceId)
         {
             try
             {
                 var request = Service.Apps.Services.Delete(ProjectId, serviceId);
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
@@ -134,8 +135,8 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="split">The traffic split to set.</param>
         /// <param name="serviceId">The id of the service</param>
-        /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
+        /// <returns>A task that will be comleted once the operation is finished.</returns>
+        public async Task UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
         {
             try
             {
@@ -147,29 +148,13 @@ namespace GoogleCloudExtension.DataSources
                 var request = Service.Apps.Services.Patch(service, ProjectId, serviceId);
                 // Only update the traffic split.
                 request.UpdateMask = s_trafficSplitUpdateMask;
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
-            }
-        }
-
-        /// <summary>
-        /// Awaits for the operation to complete succesfully.
-        /// </summary>
-        /// <param name="operation">The operation to await.</param>
-        /// <returns>The task that will be done once the operation is succesful.</returns>
-        public async Task AwaitOperationAsync(Operation operation)
-        {
-            var completedOperation = await Polling<Operation>.Poll(
-                operation,
-                o => GetOperationAsync(o.GetOperationId()),
-                o => o.Done ?? false);
-            if (completedOperation.Error != null)
-            {
-                throw new DataSourceException(completedOperation.Error.Message);
             }
         }
 
@@ -224,13 +209,14 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
-        /// <returns>The GAE operation for the deletion.</returns>
-        public async Task<Operation> DeleteVersionAsync(string serviceId, string versionId)
+        /// <returns>A task that will be completed once the oepration is finished.</returns>
+        public async Task DeleteVersionAsync(string serviceId, string versionId)
         {
             try
             {
                 var request = Service.Apps.Services.Versions.Delete(ProjectId, serviceId, versionId);
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
@@ -245,8 +231,8 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="status">The serving status to set.  Either 'SERVING' or 'STOPPED'</param>
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
-        /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateVersionServingStatus(string status, string serviceId, string versionId)
+        /// <returns>A task that will be completed once the operation is finished.</returns>
+        public async Task UpdateVersionServingStatus(string status, string serviceId, string versionId)
         {
             try
             {
@@ -258,7 +244,8 @@ namespace GoogleCloudExtension.DataSources
                 var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
                 // Only update the service status.
                 request.UpdateMask = s_servingStatusUpdateMask;
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
@@ -292,25 +279,6 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Instances,
                 x => x.NextPageToken);
-        }
-
-        /// <summary>
-        /// Gets a GAE operation.
-        /// </summary>
-        /// <param name="id">The unique operation id.</param>
-        /// <returns>The GAE operation.</returns>
-        public async Task<Operation> GetOperationAsync(string id)
-        {
-            try
-            {
-                var request = Service.Apps.Operations.Get(ProjectId, id);
-                return await request.ExecuteAsync();
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to get operation: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
         }
 
         public async Task<IList<LocationName>> GetFlexLocationsAsync()
@@ -362,6 +330,38 @@ namespace GoogleCloudExtension.DataSources
             }
             catch (GoogleApiException ex)
             {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        private Task AwaitOperationAsync(Operation operation)
+        {
+            return operation.AwaitOperationAsync(
+                op => GetOperationAsync(op.GetOperationId()),
+                op => op.Done ?? false,
+                op => op.Error.Message);
+        }
+
+        /// <summary>
+        /// Gets a GAE operation.
+        /// </summary>
+        /// <param name="id">The unique operation id.</param>
+        /// <returns>The GAE operation.</returns>
+        private async Task<Operation> GetOperationAsync(string id)
+        {
+            try
+            {
+                var request = Service.Apps.Operations.Get(ProjectId, id);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get operation: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
