@@ -132,7 +132,7 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to delete service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-            catch (OperationCanceledException ex)
+            catch (TimeoutException ex)
             {
                 Debug.WriteLine($"Timeout while deleting service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
@@ -165,7 +165,7 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-            catch (OperationCanceledException ex)
+            catch (TimeoutException ex)
             {
                 Debug.WriteLine($"Timeout while updating service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to delete version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-            catch (OperationCanceledException ex)
+            catch (TimeoutException ex)
             {
                 Debug.WriteLine($"Timeout while deleting version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
@@ -271,7 +271,7 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to update serving status to '{status}': {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-            catch (OperationCanceledException ex)
+            catch (TimeoutException ex)
             {
                 Debug.WriteLine($"Timeout while updating version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
@@ -353,7 +353,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 throw new DataSourceException(ex.Message, ex);
             }
-            catch (OperationCanceledException ex)
+            catch (TimeoutException ex)
             {
                 Debug.WriteLine($"Timeout while creating app: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
