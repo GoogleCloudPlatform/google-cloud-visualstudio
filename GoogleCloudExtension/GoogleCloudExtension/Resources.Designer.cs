@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -3207,6 +3207,24 @@ namespace GoogleCloudExtension
         public static string FrameworkTypeDisplayNameNetFramework {
             get {
                 return ResourceManager.GetString("FrameworkTypeDisplayNameNetFramework", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Engine Region.
+        /// </summary>
+        public static string GaeUtilsSetAppEngineRegionProgressCaption {
+            get {
+                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting App Engine region..
+        /// </summary>
+        public static string GaeUtilsSetAppEngineRegionProgressMessage {
+            get {
+                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressMessage", resourceCulture);
             }
         }
         

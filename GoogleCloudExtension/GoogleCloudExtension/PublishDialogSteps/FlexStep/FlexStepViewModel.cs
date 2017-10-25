@@ -238,20 +238,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
                 if (app == null)
                 {
-                    string selectedLocation = AppEngineManagementWindow.PromptUser(CredentialsStore.Default.CurrentProjectId);
-                    if (selectedLocation == null)
+                    if (!await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, appEngineDataSource))
                     {
-                        Debug.WriteLine("The user cancelled creating a new app");
                         return false;
                     }
-                    await ProgressDialogWindow.PromptUser(
-                        appEngineDataSource.CreateApplicationAsync(selectedLocation),
-                        new ProgressDialogWindow.Options
-                        {
-                            Title = "App Engine Region",
-                            Message = "Setting App Engine region.",
-                            IsCancellable = false
-                        });
                 }
 
                 // The project is ready to go.

@@ -17,8 +17,10 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.AppEngineManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -47,11 +49,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeFailedToLoadServicesCaption,
-            IsError = true
-        };
-        private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
             IsError = true
         };
 
@@ -181,8 +178,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GaeApplication = await _dataSource.Value.GetApplicationAsync();
                 if (GaeApplication == null)
                 {
+                    TreeLeaf noAppEngineAppPlaceholder = new TreeLeaf
+                    {
+                        Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = "Set app region", Command = new ProtectedCommand(OnSetAppRegion) }
+                            }
+                        }
+                    };
+
                     Children.Clear();
-                    Children.Add(s_noAppEngineAppPlaceholder);
+                    Children.Add(noAppEngineAppPlaceholder);
                     return;
                 }
 
@@ -231,6 +241,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id))
                 .ToList();
             return new ServiceViewModel(this, service, versionModels);
+        }
+
+        private async void OnSetAppRegion()
+        {
+            if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, _dataSource.Value))
+            {
+                Refresh();
+            }
         }
     }
 }

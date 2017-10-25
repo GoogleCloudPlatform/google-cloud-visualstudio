@@ -2915,4 +2915,12 @@
     <value>Select App Engine Region</value>
     <comment>Caption for the select region dialog.</comment>
   </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressCaption" xml:space="preserve">
+    <value>App Engine Region</value>
+    <comment>The caption for the progress dialog shown while setting the app engine region.</comment>
+  </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressMessage" xml:space="preserve">
+    <value>Setting App Engine region.</value>
+    <comment>The message for the progress dialog shwon while setting the app engine region.</comment>
+  </data>
 </root>
