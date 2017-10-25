@@ -367,13 +367,11 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The task that will be done once the operation is succesful.</returns>
         private Task AwaitOperationAsync(Operation operation)
         {
-            CancellationTokenSource tokenSource = new CancellationTokenSource(s_operationDefaultTimeout);
-
             return operation.AwaitOperationAsync(
                 op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
                 op => op.Done ?? false,
                 op => op.Error.Message,
-                token: tokenSource.Token);
+                timeout: s_operationDefaultTimeout);
         }
 
         private static string GetOperationId(Operation operation) => operation.Name.Split('/').Last();

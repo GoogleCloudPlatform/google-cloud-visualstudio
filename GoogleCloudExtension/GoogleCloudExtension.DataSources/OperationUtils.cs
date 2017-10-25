@@ -38,6 +38,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="getErrorData">A function that will extract the error message from the operation, if in error.</param>
         /// <param name="token">The cancellation token to stop polling for the state of the operation. This does not cancel the operation.</param>
         /// <param name="delay">The delay to use in between refreshes.</param>
+        /// <param name="timeout">The timeout for the operation. If null there's no timeout.</param>
         /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
         public static async Task AwaitOperationAsync<TOperation>(
             this TOperation operation,
@@ -45,13 +46,30 @@ namespace GoogleCloudExtension.DataSources
             Func<TOperation, bool> isFinished,
             Func<TOperation, string> getErrorData,
             CancellationToken token = default(CancellationToken),
-            TimeSpan? delay = null)
+            TimeSpan? delay = null,
+            TimeSpan? timeout = null)
         {
+            Stopwatch watch = null;
+            if (timeout != null)
+            {
+                watch = Stopwatch.StartNew();
+            }
+
             try
             {
                 while (true)
                 {
+                    // Check the cancellation.
                     token.ThrowIfCancellationRequested();
+
+                    // Check the timeout.
+                    if (watch != null)
+                    {
+                        if (watch.Elapsed >= timeout)
+                        {
+                            throw new TimeoutException("Operationed timed out.");
+                        }
+                    }
 
                     Debug.WriteLine("Polling for operation to finish.");
                     TOperation newOperation = await refreshOperation(operation);
