@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     /// Test class for <seealso cref="OperationUtils"/>.
     /// </summary>
     [TestClass]
-    public class OperationUtilsTests
+    public class OperationUtilsUnitTests
     {
         [TestMethod]
         public async Task TestCompletedOperation()

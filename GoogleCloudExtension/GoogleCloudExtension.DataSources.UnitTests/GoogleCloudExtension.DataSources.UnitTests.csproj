@@ -106,7 +106,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="InstanceExtensionsUnitTests.cs" />
-    <Compile Include="OperationUtilsTests.cs" />
+    <Compile Include="OperationUtilsUnitTests.cs" />
     <Compile Include="ResourceManagerDataSourceUnitTests.cs" />
     <Compile Include="DataSourceUnitTestsBase.cs" />
     <Compile Include="PubSubDataSourceUnitTests.cs" />
