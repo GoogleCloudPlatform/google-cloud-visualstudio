@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using System.Linq;
 
 namespace GoogleCloudExtension.DataSources
 {
