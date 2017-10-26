@@ -41,17 +41,30 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DataSourceException))]
         public async Task TestFailedOperation()
         {
             object operationPlaceholder = new object();
+            bool getErrorDataCalled = false;
+            bool getErrorMessageCalled = false;
 
-            await OperationUtils.AwaitOperationAsync(
-                operationPlaceholder,
-                refreshOperation: x => Task.FromResult(x),
-                isFinished: _ => true,
-                getErrorData: x => x,
-                getErrorMessage: x => "Error message");
+            try
+            {
+                await OperationUtils.AwaitOperationAsync(
+                    operationPlaceholder,
+                    refreshOperation: x => Task.FromResult(x),
+                    isFinished: _ => true,
+                    getErrorData: x => { getErrorDataCalled = true; return x; },
+                    getErrorMessage: x => { getErrorMessageCalled = true; return "Error message"; });
+
+                // Should not reach here, an exception should be thrown.
+                Assert.Fail();
+            }
+            catch (DataSourceException)
+            {
+                // We should throw DataSourceException, and the method to get the error data
+                // should have been called.
+                Assert.IsTrue(getErrorDataCalled && getErrorMessageCalled);
+            }
         }
 
         [TestMethod]
