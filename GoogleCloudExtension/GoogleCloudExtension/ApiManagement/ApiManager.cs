@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.ApiManagement
         /// </summary>
         public static ApiManager Default => s_defaultManager.Value;
 
-        private readonly Lazy<ServiceManagementDataSource> _dataSource;
+        private Lazy<ServiceManagementDataSource> _dataSource;
 
         private ApiManager()
         {
