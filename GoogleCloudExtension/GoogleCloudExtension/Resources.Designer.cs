@@ -2581,6 +2581,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To proceed, you need to enable Cloud Source Repositories API for the chosen project {0}. Otherwise, Click Cancel button and choose a different project. Do you want to enable the necessary services for the project {0} now?.
+        /// </summary>
+        public static string CsrEnableApiMessageFormat {
+            get {
+                return ResourceManager.GetString("CsrEnableApiMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to get repositories for Google Cloud project(s) {0}..
         /// </summary>
         public static string CsrFetchReposErrorMessage {

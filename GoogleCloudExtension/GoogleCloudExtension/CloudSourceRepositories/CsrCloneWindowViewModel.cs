@@ -17,6 +17,7 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
@@ -65,10 +66,29 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var oldValue = _selectedProject;
                 SetValueAndRaise(ref _selectedProject, value);
-                if (_selectedProject != null && IsReady && oldValue != _selectedProject)
+                if (_selectedProject == null)
                 {
+                    IsReady = false;
                     ErrorHandlerUtils.HandleAsyncExceptions(() =>
-                        RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
+                        ExecuteAsync(() => RepositoriesAsync.StartListRepoTaskAsync(null)));
+                    return;
+                }
+                if (oldValue != _selectedProject)
+                {
+                    IsReady = false;
+                    List<string> requiredApis = new List<string>() { KnownApis.CloudSourceRepositoryApiName };
+                    ErrorHandlerUtils.HandleAsyncExceptions(() =>
+                        ExecuteAsync(async () => {
+                        ApiManager apiManager = ApiManager.GetApiManager(_selectedProject.ProjectId);
+                        if (!await apiManager.EnsureAllServicesEnabledAsync(
+                                requiredApis, 
+                                String.Format(Resources.CsrEnableApiMessageFormat, _selectedProject.ProjectId)))
+                        {
+                            SelectedProject = null;
+                            return;
+                        }
+                        await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
+                    }));
                 }
             }
         }

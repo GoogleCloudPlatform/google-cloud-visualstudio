@@ -62,9 +62,16 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public async Task StartListRepoTaskAsync(string projectId)
         {
             Debug.WriteLine(nameof(StartListRepoTaskAsync));
-            _latestTask = GetCloudReposAsync(projectId);
-            RaiseAllPropertyChanged();
-            await _latestTask;
+            if (String.IsNullOrWhiteSpace(projectId))
+            {
+                _latestTask = null;
+            }
+            else
+            {
+                _latestTask = GetCloudReposAsync(projectId);
+                RaiseAllPropertyChanged();
+                await _latestTask;
+            }
             RaiseAllPropertyChanged();
         }
 
