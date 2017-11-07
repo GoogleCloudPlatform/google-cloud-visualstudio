@@ -68,17 +68,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 SetValueAndRaise(ref _selectedProject, value);
                 if (_selectedProject == null)
                 {
-                    IsReady = false;
-                    ErrorHandlerUtils.HandleAsyncExceptions(() =>
-                        ExecuteAsync(() => RepositoriesAsync.StartListRepoTaskAsync(null)));
-                    return;
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(
+                        () => RepositoriesAsync.StartListRepoTaskAsync(null)));
                 }
-                if (oldValue != _selectedProject)
+                else if (oldValue != _selectedProject)
                 {
-                    IsReady = false;
                     List<string> requiredApis = new List<string>() { KnownApis.CloudSourceRepositoryApiName };
-                    ErrorHandlerUtils.HandleAsyncExceptions(() =>
-                        ExecuteAsync(async () => {
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(async () => 
+                    {
                         ApiManager apiManager = ApiManager.GetApiManager(_selectedProject.ProjectId);
                         if (!await apiManager.EnsureAllServicesEnabledAsync(
                                 requiredApis, 
