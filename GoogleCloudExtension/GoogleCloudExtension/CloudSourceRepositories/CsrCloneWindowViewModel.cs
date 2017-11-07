@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                         ApiManager apiManager = ApiManager.GetApiManager(_selectedProject.ProjectId);
                         if (!await apiManager.EnsureAllServicesEnabledAsync(
                                 requiredApis, 
-                                String.Format(Resources.CsrEnableApiMessageFormat, _selectedProject.ProjectId)))
+                                String.Format(Resources.CsrEnableApiMessageFormat, _selectedProject.Name)))
                         {
                             SelectedProject = null;
                             return;
