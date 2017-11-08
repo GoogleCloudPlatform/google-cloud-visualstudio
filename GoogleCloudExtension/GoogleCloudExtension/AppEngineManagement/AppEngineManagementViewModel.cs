@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.AppEngineManagement
 
         public string Result { get; private set; }
 
-        public string Message { get; }
+        public string ProjectId { get; }
 
         public ICommand ActionCommand { get; }
 
@@ -53,7 +53,8 @@ namespace GoogleCloudExtension.AppEngineManagement
 
             Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync());
             ActionCommand = new ProtectedCommand(OnActionCommand);
-            Message = string.Format(Resources.AppEngineManagementAppCreationMessage, projectId);
+            ProjectId = projectId;
+                // string.Format(Resources.AppEngineManagementAppCreationMessage, projectId);
         }
 
         private void OnActionCommand()
