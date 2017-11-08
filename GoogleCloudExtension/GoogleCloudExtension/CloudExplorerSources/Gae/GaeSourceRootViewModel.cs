@@ -176,7 +176,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GaeApplication = await _dataSource.Value.GetApplicationAsync();
                 if (GaeApplication == null)
                 {
-                    TreeLeaf noAppEngineAppPlaceholder = new TreeLeaf
+                    var noAppEngineAppPlaceholder = new TreeLeaf
                     {
                         Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
                         IsError = true,

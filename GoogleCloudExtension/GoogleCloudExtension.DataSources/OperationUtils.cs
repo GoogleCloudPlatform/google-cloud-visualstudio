@@ -32,6 +32,7 @@ namespace GoogleCloudExtension.DataSources
         /// This method will poll the state of an operation, effectively transforming an operation into a <seealso cref="Task"/>.
         /// </summary>
         /// <typeparam name="TOperation">The type of the operation to poll.</typeparam>
+        /// <typeparam name="TErrorData">The type of the error data for the operation.</typeparam>
         /// <param name="operation">The operation to poll.</param>
         /// <param name="refreshOperation">An function that will refresh the operation, returning an updated instance.</param>
         /// <param name="isFinished">A function thgat determines if the operation is done.</param>
