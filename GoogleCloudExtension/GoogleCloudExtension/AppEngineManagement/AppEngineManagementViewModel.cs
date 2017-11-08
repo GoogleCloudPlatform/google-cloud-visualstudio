@@ -29,6 +29,11 @@ namespace GoogleCloudExtension.AppEngineManagement
     public class AppEngineManagementViewModel : ViewModelBase
     {
         /// <summary>
+        /// The placeholder for the list of regions being loaded.
+        /// </summary>
+        static readonly IEnumerable<string> s_loadingPlaceholder = new string[] { Resources.AppEngineManagementLoadingRegionsPlaceholder };
+
+        /// <summary>
         /// The region to select by default for the user.
         /// </summary>
         private const string DefaultRegionName = "us-central";
@@ -69,10 +74,10 @@ namespace GoogleCloudExtension.AppEngineManagement
         {
             _owner = owner;
 
-            Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync());
+            Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync(), s_loadingPlaceholder);
+            SelectedLocation = s_loadingPlaceholder.First();
             ActionCommand = new ProtectedCommand(OnActionCommand);
             ProjectId = projectId;
-                // string.Format(Resources.AppEngineManagementAppCreationMessage, projectId);
         }
 
         private void OnActionCommand()
@@ -88,7 +93,7 @@ namespace GoogleCloudExtension.AppEngineManagement
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.VersionedApplicationName);
             IEnumerable<string> result = (await source.GetFlexLocationsAsync()).OrderBy(x => x);
-            SelectedLocation = result.FirstOrDefault(x => x == DefaultRegionName);
+            SelectedLocation = DefaultRegionName;
             return result;
         }
     }

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -273,6 +273,15 @@ namespace GoogleCloudExtension
         public static string AppEngineManagementAppCreationMessage {
             get {
                 return ResourceManager.GetString("AppEngineManagementAppCreationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading regions....
+        /// </summary>
+        public static string AppEngineManagementLoadingRegionsPlaceholder {
+            get {
+                return ResourceManager.GetString("AppEngineManagementLoadingRegionsPlaceholder", resourceCulture);
             }
         }
         

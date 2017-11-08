@@ -2923,4 +2923,8 @@
     <value>Setting App Engine region.</value>
     <comment>The message for the progress dialog shwon while setting the app engine region.</comment>
   </data>
+  <data name="AppEngineManagementLoadingRegionsPlaceholder" xml:space="preserve">
+    <value>Loading regions...</value>
+    <comment>String used as a placeholder while loading the list of regions in the dialog.</comment>
+  </data>
 </root>

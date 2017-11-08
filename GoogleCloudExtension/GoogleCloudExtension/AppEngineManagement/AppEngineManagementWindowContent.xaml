@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.AppEngineManagement"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:AppEngineManagementViewModel}}">
     
@@ -38,11 +39,18 @@
             <Label Target="{Binding ElementName=_locations}"
                    Content="{x:Static ext:Resources.AppEngineManagementRegionsLabel}"
                    Style="{StaticResource CommonLabelStyle}" />
-            <ComboBox x:Name="_locations"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="_locations"
                       ItemsSource="{Binding Locations.Value}"
                       SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
                       IsSynchronizedWithCurrentItem="True"
                       Style="{StaticResource CommonComboBoxStyle}" />
+            </Grid>
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>
 
