@@ -16,6 +16,9 @@ using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
+    /// <summary>
+    /// This class is the Window for the dialog.
+    /// </summary>
     public class AppEngineManagementWindow : CommonDialogWindowBase
     {
         private AppEngineManagementViewModel ViewModel { get; }

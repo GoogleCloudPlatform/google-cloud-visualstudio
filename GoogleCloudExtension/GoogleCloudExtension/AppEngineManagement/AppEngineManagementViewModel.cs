@@ -23,6 +23,9 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
+    /// <summary>
+    /// This class is the view model for the dialog.
+    /// </summary>
     public class AppEngineManagementViewModel : ViewModelBase
     {
         /// <summary>
@@ -33,18 +36,33 @@ namespace GoogleCloudExtension.AppEngineManagement
         private readonly AppEngineManagementWindow _owner;
         private string _selectedLocation;
 
+        /// <summary>
+        /// The currently selected location.
+        /// </summary>
         public string SelectedLocation
         {
             get { return _selectedLocation; }
             set { SetValueAndRaise(ref _selectedLocation, value); }
         }
 
+        /// <summary>
+        /// The result of the dialog, which will be a location string.
+        /// </summary>
         public string Result { get; private set; }
 
+        /// <summary>
+        /// The project id for which the dialog is being shown.
+        /// </summary>
         public string ProjectId { get; }
 
+        /// <summary>
+        /// The command to execute with the action button, the OK button.
+        /// </summary>
         public ICommand ActionCommand { get; }
 
+        /// <summary>
+        /// The list of locations.
+        /// </summary>
         public AsyncProperty<IEnumerable<string>> Locations { get; }
 
         public AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId)
