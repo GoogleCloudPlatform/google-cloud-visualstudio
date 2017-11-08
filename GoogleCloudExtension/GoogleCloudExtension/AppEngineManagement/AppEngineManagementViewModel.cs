@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
@@ -40,6 +41,7 @@ namespace GoogleCloudExtension.AppEngineManagement
 
         private readonly AppEngineManagementWindow _owner;
         private string _selectedLocation;
+        private readonly IGaeDataSource _dataSource;
 
         /// <summary>
         /// The currently selected location.
@@ -71,8 +73,17 @@ namespace GoogleCloudExtension.AppEngineManagement
         public AsyncProperty<IEnumerable<string>> Locations { get; }
 
         public AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId)
+            : this(owner, projectId, CreateDataSource())
+        { }
+
+        internal AppEngineManagementViewModel(string projectId, IGaeDataSource dataSource)
+            : this(null, projectId, dataSource)
+        { }
+
+        private AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId, IGaeDataSource dataSource)
         {
             _owner = owner;
+            _dataSource = dataSource;
 
             Locations = new AsyncProperty<IEnumerable<string>>(ListAllLocationsAsync(), s_loadingPlaceholder);
             SelectedLocation = s_loadingPlaceholder.First();
@@ -83,18 +94,20 @@ namespace GoogleCloudExtension.AppEngineManagement
         private void OnActionCommand()
         {
             Result = SelectedLocation;
-            _owner.Close();
+            _owner?.Close();
         }
 
         private async Task<IEnumerable<string>> ListAllLocationsAsync()
         {
-            var source = new GaeDataSource(
-                CredentialsStore.Default.CurrentProjectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
-            IEnumerable<string> result = (await source.GetFlexLocationsAsync()).OrderBy(x => x);
+            IEnumerable<string> result = (await _dataSource.GetFlexLocationsAsync()).OrderBy(x => x);
             SelectedLocation = DefaultRegionName;
             return result;
         }
+
+        private static IGaeDataSource CreateDataSource()
+            => new GaeDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.VersionedApplicationName);
     }
 }

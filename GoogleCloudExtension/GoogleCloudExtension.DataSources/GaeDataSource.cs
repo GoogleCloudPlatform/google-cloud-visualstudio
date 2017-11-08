@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns information about GAE apps and keeps track of operations in flight.
     /// </summary>
-    public class GaeDataSource : DataSourceBase<AppengineService>
+    public class GaeDataSource : DataSourceBase<AppengineService>, IGaeDataSource
     {
         private static readonly string s_servingStatusUpdateMask = "servingStatus";
         private static readonly string s_trafficSplitUpdateMask = "split";

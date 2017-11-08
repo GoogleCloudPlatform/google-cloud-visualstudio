@@ -215,6 +215,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
