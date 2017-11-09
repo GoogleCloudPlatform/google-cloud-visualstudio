@@ -55,6 +55,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         /// <summary>
+        /// Clear the list of Repositories.
+        /// </summary>
+        public void ClearList()
+        {
+            _latestTask = null;
+            RaiseAllPropertyChanged();
+        }
+
+        /// <summary>
         /// Start an async task to get the list of repos.
         /// Note: In the case of reentrancy, _latestTask is reset. Prior task values are abandoned.
         /// </summary>
@@ -62,16 +71,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public async Task StartListRepoTaskAsync(string projectId)
         {
             Debug.WriteLine(nameof(StartListRepoTaskAsync));
-            if (String.IsNullOrWhiteSpace(projectId))
-            {
-                _latestTask = null;
-            }
-            else
-            {
-                _latestTask = GetCloudReposAsync(projectId);
-                RaiseAllPropertyChanged();
-                await _latestTask;
-            }
+            _latestTask = GetCloudReposAsync(projectId);
+            RaiseAllPropertyChanged();
+            await _latestTask;
             RaiseAllPropertyChanged();
         }
 

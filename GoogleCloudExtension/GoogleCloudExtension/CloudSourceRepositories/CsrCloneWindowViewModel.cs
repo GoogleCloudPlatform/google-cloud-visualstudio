@@ -38,6 +38,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
+        internal static Func<string, IApiManager> s_getApiManagerFunc = ApiManager.GetApiManager;
+        private static readonly List<string> s_requiredApis =
+            new List<string> { KnownApis.CloudSourceRepositoryApiName };
+
         private readonly CsrCloneWindow _owner;
         private readonly HashSet<string> _newReposList = new HashSet<string>();
         private string _localPath;
@@ -68,23 +72,24 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 SetValueAndRaise(ref _selectedProject, value);
                 if (_selectedProject == null)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(
-                        () => RepositoriesAsync.StartListRepoTaskAsync(null)));
+                    RepositoriesAsync.ClearList();
                 }
                 else if (oldValue != _selectedProject)
                 {
-                    List<string> requiredApis = new List<string>() { KnownApis.CloudSourceRepositoryApiName };
-                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(async () => 
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(async () =>
                     {
-                        ApiManager apiManager = ApiManager.GetApiManager(_selectedProject.ProjectId);
-                        if (!await apiManager.EnsureAllServicesEnabledAsync(
-                                requiredApis, 
-                                String.Format(Resources.CsrEnableApiMessageFormat, _selectedProject.Name)))
+                        IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
+                        if (await apiManager.EnsureAllServicesEnabledAsync(
+                            s_requiredApis,
+                            string.Format(Resources.CsrEnableApiMessageFormat, _selectedProject.Name)))
+                        {
+                            await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
+                        }
+                        else
                         {
                             SelectedProject = null;
                             return;
                         }
-                        await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
                     }));
                 }
             }

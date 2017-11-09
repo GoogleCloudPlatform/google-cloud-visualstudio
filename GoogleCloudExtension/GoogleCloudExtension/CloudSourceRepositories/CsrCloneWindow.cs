@@ -49,6 +49,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         /// <summary>
+        /// Only for unit test, don't call it in production code.
+        /// </summary>
+        internal CsrCloneWindow() : base(StringResources.CsrCloneWindowTitle) { }
+
+        /// <summary>
         /// Clone a repository from Google Cloud Source Repository.
         /// </summary>
         /// <param name="projects">A list of GCP <seealso cref="Project"/>.</param>

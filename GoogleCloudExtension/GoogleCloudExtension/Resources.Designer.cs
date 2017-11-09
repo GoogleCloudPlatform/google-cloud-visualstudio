@@ -2581,7 +2581,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To proceed, you need to enable Cloud Source Repositories API for the chosen project &lt;{0}&gt;. Otherwise, Click Cancel button and choose a different project. Do you want to enable the necessary services for project &lt;{0}&gt; now?.
+        ///   Looks up a localized string similar to The selected project &quot;{0}&quot; needs to be setup to use Cloud Source Repositories. Do you want to enable the necessary services now?.
         /// </summary>
         public static string CsrEnableApiMessageFormat {
             get {

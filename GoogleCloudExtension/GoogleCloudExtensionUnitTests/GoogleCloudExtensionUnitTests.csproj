@@ -222,7 +222,9 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
+    <Compile Include="CloudSourceRepository\AsyncRepositoreisTests.cs" />
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
+    <Compile Include="CloudSourceRepository\CsrCloneWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
