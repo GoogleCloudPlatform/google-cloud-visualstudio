@@ -32,7 +32,10 @@ namespace GoogleCloudExtension.AppEngineManagement
         /// <summary>
         /// The placeholder for the list of regions being loaded.
         /// </summary>
-        static readonly IEnumerable<string> s_loadingPlaceholder = new string[] { Resources.AppEngineManagementLoadingRegionsPlaceholder };
+        internal static readonly IEnumerable<string> s_loadingPlaceholder = new string[] 
+        {
+            Resources.AppEngineManagementLoadingRegionsPlaceholder
+        };
 
         /// <summary>
         /// The region to select by default for the user.
@@ -76,6 +79,9 @@ namespace GoogleCloudExtension.AppEngineManagement
             : this(owner, projectId, CreateDataSource())
         { }
 
+        /// <summary>
+        /// Constructor used for testing.
+        /// </summary>
         internal AppEngineManagementViewModel(string projectId, IGaeDataSource dataSource)
             : this(null, projectId, dataSource)
         { }
