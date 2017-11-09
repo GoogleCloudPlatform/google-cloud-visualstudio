@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         /// <summary>
         /// The region to select by default for the user.
         /// </summary>
-        private const string DefaultRegionName = "us-central";
+        internal const string DefaultRegionName = "us-central";
 
         private readonly AppEngineManagementWindow _owner;
         private string _selectedLocation;

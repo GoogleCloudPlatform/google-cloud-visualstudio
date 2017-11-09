@@ -23,6 +23,7 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
             "us-something",
             "mars-other",
             "antartica-west-1d",
+            AppEngineManagementViewModel.DefaultRegionName
         };
         private static readonly List<string> s_sortedMockFlexLocations = s_mockFlexLocations.OrderBy(x => x).ToList();
 
@@ -50,11 +51,12 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
         }
 
         [TestMethod]
-        public async Task LocationsSortedTest()
+        public async Task LocationsLoadedTest()
         {
             _flexLocationsSource.SetResult(s_mockFlexLocations);
             await _testedViewModel.Locations.ValueTask;
 
+            Assert.AreEqual(AppEngineManagementViewModel.DefaultRegionName, _testedViewModel.SelectedLocation);
             CollectionAssert.AreEqual(s_sortedMockFlexLocations, _testedViewModel.Locations.Value.ToList());
         }
 
