@@ -14,14 +14,13 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System;
-using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
