@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
@@ -42,7 +43,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         /// </summary>
         internal const string DefaultRegionName = "us-central";
 
-        private readonly AppEngineManagementWindow _owner;
+        private readonly ICloseable _owner;
         private string _selectedLocation;
         private readonly IGaeDataSource _dataSource;
 
@@ -75,18 +76,14 @@ namespace GoogleCloudExtension.AppEngineManagement
         /// </summary>
         public AsyncProperty<IEnumerable<string>> Locations { get; }
 
-        public AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId)
+        public AppEngineManagementViewModel(ICloseable owner, string projectId)
             : this(owner, projectId, CreateDataSource())
         { }
 
         /// <summary>
         /// Constructor used for testing.
         /// </summary>
-        internal AppEngineManagementViewModel(string projectId, IGaeDataSource dataSource)
-            : this(null, projectId, dataSource)
-        { }
-
-        private AppEngineManagementViewModel(AppEngineManagementWindow owner, string projectId, IGaeDataSource dataSource)
+        internal AppEngineManagementViewModel(ICloseable owner, string projectId, IGaeDataSource dataSource)
         {
             _owner = owner;
             _dataSource = dataSource;

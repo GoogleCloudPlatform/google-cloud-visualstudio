@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="$(VisualStudioVersion) != '15.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -226,6 +226,7 @@
     <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
     <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
+    <Compile Include="Theming\ICloseable.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />

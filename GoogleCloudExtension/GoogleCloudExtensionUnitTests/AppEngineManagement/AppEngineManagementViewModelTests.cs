@@ -1,5 +1,6 @@
 ﻿using GoogleCloudExtension.AppEngineManagement;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Theming;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -29,16 +30,20 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
 
         private TaskCompletionSource<IList<string>> _flexLocationsSource;
         private Mock<IGaeDataSource> _mockedGaeDataSource;
+        private Mock<ICloseable> _mockedWindow;
         private AppEngineManagementViewModel _testedViewModel;
 
         [TestInitialize]
         public void Initialize()
         {
             _flexLocationsSource = new TaskCompletionSource<IList<string>>();
+
             _mockedGaeDataSource = new Mock<IGaeDataSource>();
             _mockedGaeDataSource.Setup(ds => ds.GetFlexLocationsAsync()).Returns(() => _flexLocationsSource.Task);
 
-            _testedViewModel = new AppEngineManagementViewModel(TestProjectId, _mockedGaeDataSource.Object);
+            _mockedWindow = new Mock<ICloseable>();
+
+            _testedViewModel = new AppEngineManagementViewModel(_mockedWindow.Object, TestProjectId, _mockedGaeDataSource.Object);
         }
 
         [TestMethod]
@@ -72,6 +77,8 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
             _testedViewModel.ActionCommand.Execute(null);
 
             Assert.AreEqual(s_mockFlexLocations.First(), _testedViewModel.Result);
+
+            _mockedWindow.Verify(x => x.Close(), Times.Exactly(1), "Failed to close the window on action.");
         }
     }
 }
