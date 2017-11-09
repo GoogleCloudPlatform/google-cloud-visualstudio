@@ -447,6 +447,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             return true;
         }
 
+        protected override async void OnProjectChanged()
+        {
+            Task<bool> ensureServicesEnabledTask = ApiManager.Default.EnsureAllServicesEnabledAsync(
+                s_requiredApis,
+                Resources.GkePublishEnableApiMessage);
+
+            PublishDialog.TrackTask(ensureServicesEnabledTask);
+
+            if (!await ensureServicesEnabledTask)
+            {
+                PublishDialog.FinishFlow();
+            }
+        }
+
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
         {
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(

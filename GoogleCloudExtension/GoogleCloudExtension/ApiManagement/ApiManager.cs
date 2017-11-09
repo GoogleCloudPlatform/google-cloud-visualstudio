@@ -43,6 +43,7 @@ namespace GoogleCloudExtension.ApiManagement
         private ApiManager()
         {
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentCredentialsChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentCredentialsChanged;
             CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
         }
 
