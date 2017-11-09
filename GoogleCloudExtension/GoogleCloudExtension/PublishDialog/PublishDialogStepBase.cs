@@ -108,14 +108,18 @@ namespace GoogleCloudExtension.PublishDialog
             PublishDialog = dialog;
         }
 
+        protected virtual void OnProjectChanged()
+        { }
+
         private void OnSelectProjectCommand()
         {
             string pickProjectDialogTitle = string.Format(
                 Resources.PublishDialogSelectGcpProjectTitle, PublishDialog.Project.Name);
             Project selectedProject = PickProjectPrompt(pickProjectDialogTitle);
-            if (selectedProject?.ProjectId != null)
+            if (selectedProject?.ProjectId != null && selectedProject?.ProjectId != CredentialsStore.Default.CurrentProjectId)
             {
                 CredentialsStore.Default.UpdateCurrentProject(selectedProject);
+                OnProjectChanged();
             }
         }
     }

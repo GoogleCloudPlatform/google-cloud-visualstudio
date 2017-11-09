@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
-            _projectStateValidation = ValidatGcpProjectState();
+            _projectStateValidation = ValidateGcpProjectState();
             CanPublish = true;
         }
 
@@ -215,7 +215,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             return viewModel;
         }
 
-        private async Task<bool> ValidatGcpProjectState()
+        /// <summary>
+        /// If the user changes the current project we need to re-run the validation to make sure that the
+        /// selected project has the right APIs enabled.
+        /// </summary>
+        protected override async void OnProjectChanged()
+        {
+            Task<bool> validationTask = ValidateGcpProjectState();
+
+            PublishDialog.TrackTask(validationTask);
+
+            if (!await validationTask)
+            {
+                PublishDialog.FinishFlow();
+            }
+        }
+
+        private async Task<bool> ValidateGcpProjectState()
         {
             // Ensure the necessary APIs are enabled.
             if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
