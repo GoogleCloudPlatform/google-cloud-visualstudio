@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.FlexStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance local:FlexStepViewModel}">
@@ -50,5 +51,30 @@
                   Margin="0,5,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   Style="{StaticResource CommonTextStyleBase}"/>
+
+        <!-- Message shown when the API needs to be enabled. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}">
+            <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap"/>
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Enable the necessary services" /></Hyperlink>
+        </TextBlock>
+        
+        <!-- Message shown when the app needs to be created. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}">
+            <TextBlock Text="The selected GCP project needs the app region to be selected before you can deploy." TextWrapping="Wrap" />
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Select app region" /></Hyperlink>
+        </TextBlock>
+        
+        <!-- Message shwon when there is a general error. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Text="Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again."
+                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}" />
     </StackPanel>
 </UserControl>

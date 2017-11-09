@@ -37,17 +37,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     public class FlexStepViewModel : PublishDialogStepBase
     {
         // The list of APIs that are required for a successful deployment to App Engine Flex.
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // We require the App Engine Admin API in order to deploy to app engine.
             KnownApis.AppEngineAdminApiName,
         };
 
         private readonly FlexStepContent _content;
-        private readonly Task<bool> _projectStateValidation;
+        private readonly Task _projectStateValidation;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
+        private bool _needsApiEnabled = false;
+        private bool _needsAppCreated = false;
+        private bool _generalError = false;
 
         /// <summary>
         /// The version to use for the the app in App Engine Flex.
@@ -81,6 +84,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        public bool NeedsApiEnabled
+        {
+            get { return _needsApiEnabled; }
+            set { SetValueAndRaise(ref _needsApiEnabled, value); }
+        }
+
+        public bool NeedsAppCreated
+        {
+            get { return _needsAppCreated; }
+            set { SetValueAndRaise(ref _needsAppCreated, value); }
+        }
+
+        public bool GeneralError
+        {
+            get { return _generalError; }
+            set { SetValueAndRaise(ref _generalError, value); }
+        }
+
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
@@ -97,17 +118,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override FrameworkElement Content => _content;
 
-        public override async void OnPushedToDialog(IPublishDialog dialog)
+        public override void OnPushedToDialog(IPublishDialog dialog)
         {
             base.OnPushedToDialog(dialog);
 
             PublishDialog.TrackTask(_projectStateValidation);
-
-            if (!await _projectStateValidation)
-            {
-                // Close the dialog if the project cannot be deployed.
-                PublishDialog.FinishFlow();
-            }
         }
 
         public override async void Publish()
@@ -219,27 +234,26 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// If the user changes the current project we need to re-run the validation to make sure that the
         /// selected project has the right APIs enabled.
         /// </summary>
-        protected override async void OnProjectChanged()
+        protected override void OnProjectChanged()
         {
-            Task<bool> validationTask = ValidateGcpProjectState();
-
+            Task validationTask = ValidateGcpProjectState();
             PublishDialog.TrackTask(validationTask);
-
-            if (!await validationTask)
-            {
-                PublishDialog.FinishFlow();
-            }
         }
 
-        private async Task<bool> ValidateGcpProjectState()
+        private async Task ValidateGcpProjectState()
         {
+            // Clean slate for the messages.
+            NeedsApiEnabled = false;
+            NeedsAppCreated = false;
+            GeneralError = false;
+
             // Ensure the necessary APIs are enabled.
-            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
-                    s_requiredApis,
-                    Resources.FlexPublishEnableApiMessage))
+            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
             {
                 Debug.WriteLine("The user refused to enable the APIs for GAE.");
-                return false;
+                CanPublish = false;
+                NeedsApiEnabled = true;
+                return;
             }
 
             try
@@ -252,19 +266,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
                 if (app == null)
                 {
-                    if (!await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, appEngineDataSource))
-                    {
-                        return false;
-                    }
+                    CanPublish = false;
+                    NeedsAppCreated = true;
+                    return;
                 }
-
-                // The project is ready to go.
-                return true;
             }
             catch (DataSourceException ex)
             {
                 UserPromptUtils.ExceptionPrompt(ex);
-                return false;
+                CanPublish = false;
+                GeneralError = true;
             }
         }
 
