@@ -63,6 +63,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
         private string _replicas = "3";
+        private bool _validatingProject = false;
         private bool _needsApiEnabled = false;
 
         /// <summary>
@@ -180,6 +181,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
+        public bool ValidatingProject
+        {
+            get { return _validatingProject; }
+            set
+            {
+                SetValueAndRaise(ref _validatingProject, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
         public bool NeedsApiEnabled
         {
             get { return _needsApiEnabled; }
@@ -190,7 +201,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        public bool ShowInputControls => !NeedsApiEnabled;
+        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled;
 
         private GkeStepViewModel(GkeStepContent content)
         {
@@ -479,20 +490,31 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async Task<bool> ValidateGcpProjectState()
         {
-            CanPublish = true;
-            NeedsApiEnabled = false;
-            RefreshClustersListCommand.CanExecuteCommand = true;
-            CreateClusterCommand.CanExecuteCommand = true;
-
-            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+            try
             {
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                RefreshClustersListCommand.CanExecuteCommand = false;
-                CreateClusterCommand.CanExecuteCommand = false;
-                return false;
+                // Mark that we're validating the project.
+                ValidatingProject = true;
+
+                // Reset UI state.
+                CanPublish = true;
+                NeedsApiEnabled = false;
+                RefreshClustersListCommand.CanExecuteCommand = true;
+                CreateClusterCommand.CanExecuteCommand = true;
+
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                {
+                    CanPublish = false;
+                    NeedsApiEnabled = true;
+                    RefreshClustersListCommand.CanExecuteCommand = false;
+                    CreateClusterCommand.CanExecuteCommand = false;
+                    return false;
+                }
+                return true;
             }
-            return true;
+            finally
+            {
+                ValidatingProject = false;
+            }
         }
 
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
