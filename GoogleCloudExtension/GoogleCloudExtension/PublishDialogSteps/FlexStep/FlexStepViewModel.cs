@@ -44,7 +44,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         };
 
         private readonly FlexStepContent _content;
-        private readonly Task _projectStateValidation;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
@@ -87,26 +86,38 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public bool NeedsApiEnabled
         {
             get { return _needsApiEnabled; }
-            set { SetValueAndRaise(ref _needsApiEnabled, value); }
+            set
+            {
+                SetValueAndRaise(ref _needsApiEnabled, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
         }
 
         public bool NeedsAppCreated
         {
             get { return _needsAppCreated; }
-            set { SetValueAndRaise(ref _needsAppCreated, value); }
+            set
+            {
+                SetValueAndRaise(ref _needsAppCreated, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
         }
 
         public bool GeneralError
         {
             get { return _generalError; }
-            set { SetValueAndRaise(ref _generalError, value); }
+            set
+            {
+                SetValueAndRaise(ref _generalError, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
         }
+
+        public bool ShowInputControls => !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
 
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
-            _projectStateValidation = ValidateGcpProjectState();
-            CanPublish = true;
         }
 
         protected override void HasErrorsChanged()
@@ -122,7 +133,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         {
             base.OnPushedToDialog(dialog);
 
-            PublishDialog.TrackTask(_projectStateValidation);
+            PublishDialog.TrackTask(ValidateGcpProjectState());
         }
 
         public override async void Publish()
@@ -236,13 +247,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         protected override void OnProjectChanged()
         {
-            Task validationTask = ValidateGcpProjectState();
-            PublishDialog.TrackTask(validationTask);
+            PublishDialog.TrackTask(ValidateGcpProjectState());
         }
 
         private async Task ValidateGcpProjectState()
         {
             // Clean slate for the messages.
+            CanPublish = true;
             NeedsApiEnabled = false;
             NeedsAppCreated = false;
             GeneralError = false;
