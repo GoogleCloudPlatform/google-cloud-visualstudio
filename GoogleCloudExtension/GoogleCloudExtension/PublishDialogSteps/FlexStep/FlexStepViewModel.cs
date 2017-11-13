@@ -47,6 +47,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
+        private bool _validatingProject = false;
         private bool _needsApiEnabled = false;
         private bool _needsAppCreated = false;
         private bool _generalError = false;
@@ -83,6 +84,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        public bool ValidatingProject
+        {
+            get { return _validatingProject; }
+            set
+            {
+                SetValueAndRaise(ref _validatingProject, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
         public bool NeedsApiEnabled
         {
             get { return _needsApiEnabled; }
@@ -113,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
-        public bool ShowInputControls => !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
+        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
 
         private FlexStepViewModel(FlexStepContent content)
         {
@@ -252,41 +263,51 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private async Task ValidateGcpProjectState()
         {
-            // Clean slate for the messages.
-            CanPublish = true;
-            NeedsApiEnabled = false;
-            NeedsAppCreated = false;
-            GeneralError = false;
-
-            // Ensure the necessary APIs are enabled.
-            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-            {
-                Debug.WriteLine("The user refused to enable the APIs for GAE.");
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                return;
-            }
-
             try
             {
-                // Using the GAE API, check if there's an app for the project.
-                var appEngineDataSource = new GaeDataSource(
-                     CredentialsStore.Default.CurrentProjectId,
-                     CredentialsStore.Default.CurrentGoogleCredential,
-                     GoogleCloudExtensionPackage.ApplicationName);
-                Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
-                if (app == null)
+                // Go into validating mode.
+                ValidatingProject = true;
+
+                // Clean slate for the messages.
+                CanPublish = true;
+                NeedsApiEnabled = false;
+                NeedsAppCreated = false;
+                GeneralError = false;
+
+                // Ensure the necessary APIs are enabled.
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
                 {
+                    Debug.WriteLine("The user refused to enable the APIs for GAE.");
                     CanPublish = false;
-                    NeedsAppCreated = true;
+                    NeedsApiEnabled = true;
                     return;
                 }
+
+                try
+                {
+                    // Using the GAE API, check if there's an app for the project.
+                    var appEngineDataSource = new GaeDataSource(
+                         CredentialsStore.Default.CurrentProjectId,
+                         CredentialsStore.Default.CurrentGoogleCredential,
+                         GoogleCloudExtensionPackage.ApplicationName);
+                    Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
+                    if (app == null)
+                    {
+                        CanPublish = false;
+                        NeedsAppCreated = true;
+                        return;
+                    }
+                }
+                catch (DataSourceException ex)
+                {
+                    UserPromptUtils.ExceptionPrompt(ex);
+                    CanPublish = false;
+                    GeneralError = true;
+                }
             }
-            catch (DataSourceException ex)
+            finally
             {
-                UserPromptUtils.ExceptionPrompt(ex);
-                CanPublish = false;
-                GeneralError = true;
+                ValidatingProject = false;
             }
         }
 

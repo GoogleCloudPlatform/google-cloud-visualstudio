@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.FlexStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance local:FlexStepViewModel}">
@@ -56,6 +57,14 @@
                       Style="{StaticResource CommonTextStyleBase}"/>
         </StackPanel>
 
+        <!-- The message that the project is being validated. -->
+        <StackPanel Margin="0,5,0,0"
+                    Orientation="Horizontal"
+                    Visibility="{Binding ValidatingProject, Converter={utils:VisibilityConverter}}">
+            <controls:ProgressIndicator  />
+            <TextBlock Text="Validating project state..." Style="{StaticResource CommonTextStyle}" />
+        </StackPanel>
+
         <!-- Message shown when the API needs to be enabled. -->
         <TextBlock Margin="0,5,0,0"
                    TextWrapping="Wrap"
@@ -64,7 +73,7 @@
             <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap"/>
             <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Enable the necessary services" /></Hyperlink>
         </TextBlock>
-        
+
         <!-- Message shown when the app needs to be created. -->
         <TextBlock Margin="0,5,0,0"
                    TextWrapping="Wrap"
@@ -73,7 +82,7 @@
             <TextBlock Text="The selected GCP project needs the app region to be selected before you can deploy." TextWrapping="Wrap" />
             <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Select app region" /></Hyperlink>
         </TextBlock>
-        
+
         <!-- Message shwon when there is a general error. -->
         <TextBlock Margin="0,5,0,0"
                    TextWrapping="Wrap"
