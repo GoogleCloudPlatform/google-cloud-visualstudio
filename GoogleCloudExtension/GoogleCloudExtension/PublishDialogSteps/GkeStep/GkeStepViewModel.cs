@@ -183,8 +183,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool NeedsApiEnabled
         {
             get { return _needsApiEnabled; }
-            set { SetValueAndRaise(ref _needsApiEnabled, value); }
+            set
+            {
+                SetValueAndRaise(ref _needsApiEnabled, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
         }
+
+        public bool ShowInputControls => !NeedsApiEnabled;
 
         private GkeStepViewModel(GkeStepContent content)
         {
