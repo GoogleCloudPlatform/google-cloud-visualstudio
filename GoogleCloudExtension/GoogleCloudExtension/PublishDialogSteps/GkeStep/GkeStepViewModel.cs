@@ -245,29 +245,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             InitializeDialogState();
         }
 
-        private async void InitializeDialogState()
-        {
-            if (string.IsNullOrEmpty(DeploymentName))
-            {
-                DeploymentName = PublishDialog.Project.Name.ToLower();
-            }
-            if (string.IsNullOrEmpty(DeploymentVersion))
-            {
-                DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
-            }
-
-            Task<bool> validateTask = ValidateGcpProjectState();
-            PublishDialog.TrackTask(validateTask);
-
-            if (await validateTask)
-            {
-                Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
-
-                // Mark that the dialog is going to be busy until we have loaded the data.
-                PublishDialog.TrackTask(Clusters.ValueTask);
-            }
-        }
-
         /// <summary>
         /// Start the publish operation.
         /// </summary>
@@ -390,6 +367,31 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
+        #endregion
+
+        private async void InitializeDialogState()
+        {
+            if (string.IsNullOrEmpty(DeploymentName))
+            {
+                DeploymentName = PublishDialog.Project.Name.ToLower();
+            }
+            if (string.IsNullOrEmpty(DeploymentVersion))
+            {
+                DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
+            }
+
+            Task<bool> validateTask = ValidateGcpProjectState();
+            PublishDialog.TrackTask(validateTask);
+
+            if (await validateTask)
+            {
+                Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
+
+                // Mark that the dialog is going to be busy until we have loaded the data.
+                PublishDialog.TrackTask(Clusters.ValueTask);
+            }
+        }
+
         private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options)
         {
             GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, PublishDialog.Project.Name));
@@ -433,8 +435,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
             }
         }
-
-        #endregion
 
         private void InvalidateExposeService()
         {

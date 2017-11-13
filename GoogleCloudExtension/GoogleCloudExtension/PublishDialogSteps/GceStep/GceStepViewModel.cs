@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     public class GceStepViewModel : PublishDialogStepBase
     {
         // The list of APIs that are required for a succesful deployment to GCE.
-        private static readonly IEnumerable<string> s_requiredApis = new List<string>
+        private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Need the GCE API to perform all work.
             KnownApis.ComputeEngineApiName,
@@ -53,6 +53,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
         private AsyncProperty<IEnumerable<Instance>> _instances;
+        private bool _validatingProject = false;
+        private bool _needsApiEnabled = false;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -129,16 +131,31 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
+        public bool ValidatingProject
+        {
+            get { return _validatingProject; }
+            set
+            {
+                SetValueAndRaise(ref _validatingProject, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
+        public bool NeedsApiEnabled
+        {
+            get { return _needsApiEnabled; }
+            set
+            {
+                SetValueAndRaise(ref _needsApiEnabled, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
+        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled;
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
-
-            Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstancesAsync());
-
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, args) =>
-            {
-                Instances = AsyncPropertyUtils.CreateAsyncProperty(GetAllWindowsInstancesAsync());
-            };
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -151,20 +168,37 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
         {
-            if (!await ApiManager.Default.EnsureAllServicesEnabledAsync(
-                    s_requiredApis,
-                    Resources.GcePublishEnableApiMessage))
-            {
-                PublishDialog.FinishFlow();
-                return Enumerable.Empty<Instance>();
-            }
-
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             IList<Instance> instances = await dataSource.GetInstanceListAsync();
             return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
+        }
+
+        private async Task<bool> ValidateGcpProject()
+        {
+            try
+            {
+                // Mark the UI as validating the project.
+                ValidatingProject = true;
+
+                // Reset UI state.
+                CanPublish = true;
+                NeedsApiEnabled = false;
+
+                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                {
+                    CanPublish = false;
+                    NeedsApiEnabled = true;
+                    return false;
+                }
+                return true;
+            }
+            finally
+            {
+                ValidatingProject = false;
+            }
         }
 
         #region IPublishDialogStep
@@ -243,11 +277,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             base.OnPushedToDialog(dialog);
-
-            PublishDialog.TrackTask(Instances.ValueTask);
+            InitializeDialogState();
         }
 
         #endregion
+
+        private async void InitializeDialogState()
+        {
+            Task<bool> validateTask = ValidateGcpProject();
+            PublishDialog.TrackTask(validateTask);
+
+            if (await validateTask)
+            {
+                Instances = new AsyncProperty<IEnumerable<Instance>>(GetAllWindowsInstancesAsync());
+                PublishDialog.TrackTask(Instances.ValueTask);
+            }
+        }
+
+        protected override void OnProjectChanged()
+        {
+            InitializeDialogState();
+        }
 
         internal static GceStepViewModel CreateStep()
         {
