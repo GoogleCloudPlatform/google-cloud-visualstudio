@@ -2927,4 +2927,28 @@
     <value>Loading regions...</value>
     <comment>String used as a placeholder while loading the list of regions in the dialog.</comment>
   </data>
+  <data name="PublishDialogEnableApiCaption" xml:space="preserve">
+    <value>Enable the services</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
+  <data name="PublishDialogFlexApiCheckErrorMessage" xml:space="preserve">
+    <value>Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again.</value>
+    <comment>The message shown when there's an error checking the API state.</comment>
+  </data>
+  <data name="PublishDialogFlexNeedToSetRegionMessage" xml:space="preserve">
+    <value>The selected GCP project needs the app region to be selected before you can deploy.</value>
+    <comment>The message shown when need to set the region for an app.</comment>
+  </data>
+  <data name="PublishDialogFlexSetAppRegionCaption" xml:space="preserve">
+    <value>Select app region</value>
+    <comment>The caption for the set app region command.</comment>
+  </data>
+  <data name="PublishDialogLoadingProjectMessage" xml:space="preserve">
+    <value>Loading project data.</value>
+    <comment>The message shown in the steps while the project is being loaded.</comment>
+  </data>
+  <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
+    <value>The selected GCP project needs services to be enabled before you can deploy.</value>
+    <comment>The message shown when a project needs an API enabled.</comment>
+  </data>
 </root>

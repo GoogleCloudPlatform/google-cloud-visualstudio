@@ -42,7 +42,7 @@
                     Orientation="Horizontal"
                     Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
             <controls:ProgressIndicator  />
-            <TextBlock Text="Validating project state..." Style="{StaticResource CommonTextStyle}" />
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
         </StackPanel>
 
         <!-- The input controls for the information to deploy to GKE. -->
@@ -160,10 +160,10 @@
                    TextWrapping="Wrap"
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap" />
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
             <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
                        Command="{Binding EnableApiCommand}">
-                <TextBlock Text="Enable the necessarty services" />
+                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
             </Hyperlink>
         </TextBlock>
 

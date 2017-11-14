@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -5290,11 +5290,47 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable the services.
+        /// </summary>
+        public static string PublishDialogEnableApiCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogEnableApiCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again..
+        /// </summary>
+        public static string PublishDialogFlexApiCheckErrorMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexApiCheckErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected GCP project needs the app region to be selected before you can deploy..
+        /// </summary>
+        public static string PublishDialogFlexNeedToSetRegionMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexNeedToSetRegionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P_romote version.
         /// </summary>
         public static string PublishDialogFlexPromoteVersionCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select app region.
+        /// </summary>
+        public static string PublishDialogFlexSetAppRegionCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexSetAppRegionCaption", resourceCulture);
             }
         }
         
@@ -5353,6 +5389,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading project data..
+        /// </summary>
+        public static string PublishDialogLoadingProjectMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogLoadingProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Next.
         /// </summary>
         public static string PublishDialogNextButtonCaption {
@@ -5385,6 +5430,15 @@ namespace GoogleCloudExtension
         public static string PublishDialogProjectMenuHeader {
             get {
                 return ResourceManager.GetString("PublishDialogProjectMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected GCP project needs services to be enabled before you can deploy..
+        /// </summary>
+        public static string PublishDialogProjectNeedsApiMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectNeedsApiMessage", resourceCulture);
             }
         }
         

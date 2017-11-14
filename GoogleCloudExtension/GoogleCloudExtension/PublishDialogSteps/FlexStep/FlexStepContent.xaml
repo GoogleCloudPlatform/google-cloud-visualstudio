@@ -62,7 +62,7 @@
                     Orientation="Horizontal"
                     Visibility="{Binding ValidatingProject, Converter={utils:VisibilityConverter}}">
             <controls:ProgressIndicator  />
-            <TextBlock Text="Validating project state..." Style="{StaticResource CommonTextStyle}" />
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
         </StackPanel>
 
         <!-- Message shown when the API needs to be enabled. -->
@@ -70,10 +70,10 @@
                    TextWrapping="Wrap"
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap"/>
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap"/>
             <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
                        Command="{Binding EnableApiCommand}">
-                <TextBlock Text="Enable the necessary services" />
+                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
             </Hyperlink>
         </TextBlock>
 
@@ -82,17 +82,17 @@
                    TextWrapping="Wrap"
                    Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="The selected GCP project needs the app region to be selected before you can deploy." TextWrapping="Wrap" />
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexNeedToSetRegionMessage}" TextWrapping="Wrap" />
             <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
                        Command="{Binding SetAppRegionCommand}">
-                <TextBlock Text="Select app region" />
+                <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexSetAppRegionCaption}" />
             </Hyperlink>
         </TextBlock>
 
         <!-- Message shwon when there is a general error. -->
         <TextBlock Margin="0,5,0,0"
                    TextWrapping="Wrap"
-                   Text="Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again."
+                   Text="{x:Static ext:Resources.PublishDialogFlexApiCheckErrorMessage}"
                    Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}" />
     </StackPanel>
