@@ -71,7 +71,10 @@
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap"/>
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Enable the necessary services" /></Hyperlink>
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                       Command="{Binding EnableApiCommand}">
+                <TextBlock Text="Enable the necessary services" />
+            </Hyperlink>
         </TextBlock>
 
         <!-- Message shown when the app needs to be created. -->
@@ -80,7 +83,10 @@
                    Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="The selected GCP project needs the app region to be selected before you can deploy." TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Select app region" /></Hyperlink>
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                       Command="{Binding SetAppRegionCommand}">
+                <TextBlock Text="Select app region" />
+            </Hyperlink>
         </TextBlock>
 
         <!-- Message shwon when there is a general error. -->

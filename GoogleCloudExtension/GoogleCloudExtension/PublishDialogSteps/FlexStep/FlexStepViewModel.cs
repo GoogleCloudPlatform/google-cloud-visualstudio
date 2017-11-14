@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 {
@@ -126,9 +127,34 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
 
+        public ICommand EnableApiCommand { get; }
+
+        public ICommand SetAppRegionCommand { get; }
+
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
+
+            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
+            SetAppRegionCommand = new ProtectedCommand(OnSetAppRegionCommand);
+        }
+
+        private async void OnSetAppRegionCommand()
+        {
+            var appEngineDataSource = new GaeDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+            if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, appEngineDataSource))
+            {
+                PublishDialog.TrackTask(ValidateGcpProjectState());
+            }
+        }
+
+        private async void OnEnableApiCommand()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            PublishDialog.TrackTask(ValidateGcpProjectState());
         }
 
         protected override void HasErrorsChanged()
