@@ -203,12 +203,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
+        public ICommand EnableApiCommand { get; }
+
         private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
-            RefreshClustersListCommand = new ProtectedCommand(RefreshClustersList, canExecuteCommand: false);
+            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
+            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
         }
 
         private void UpdateCanPublish()
@@ -223,7 +226,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             UpdateCanPublish();
         }
 
-        private void RefreshClustersList()
+        private void OnRefreshClustersListCommand()
         {
             Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
             Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
@@ -233,6 +236,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private void OnCreateClusterCommand()
         {
             Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
+        }
+
+        private async void OnEnableApiCommand()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            InitializeDialogState();
         }
 
         #region IPublishDialogStep overrides

@@ -161,7 +161,10 @@
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="The selected GCP project needs services to be enabled before you can deploy." TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"><TextBlock Text="Enable the necessarty services" /></Hyperlink>
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                       Command="{Binding EnableApiCommand}">
+                <TextBlock Text="Enable the necessarty services" />
+            </Hyperlink>
         </TextBlock>
 
     </StackPanel>
