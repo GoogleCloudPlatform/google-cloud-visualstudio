@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
         private string _replicas = "3";
-        private bool _validatingProject = false;
+        private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
 
         /// <summary>
@@ -181,12 +181,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
-        public bool ValidatingProject
+        public bool LoadingProject
         {
-            get { return _validatingProject; }
+            get { return _loadingProject; }
             set
             {
-                SetValueAndRaise(ref _validatingProject, value);
+                SetValueAndRaise(ref _loadingProject, value);
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -201,7 +201,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled;
+        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
         private GkeStepViewModel(GkeStepContent content)
         {
@@ -371,24 +371,37 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async void InitializeDialogState()
         {
-            if (string.IsNullOrEmpty(DeploymentName))
+            try
             {
-                DeploymentName = PublishDialog.Project.Name.ToLower();
+                // Mark that the project is being loaded and verified.
+                LoadingProject = true;
+
+                if (string.IsNullOrEmpty(DeploymentName))
+                {
+                    DeploymentName = PublishDialog.Project.Name.ToLower();
+                }
+                if (string.IsNullOrEmpty(DeploymentVersion))
+                {
+                    DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
+                }
+
+                Task<bool> validateTask = ValidateGcpProjectState();
+                PublishDialog.TrackTask(validateTask);
+
+                if (await validateTask)
+                {
+                    Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
+
+                    // Mark that the dialog is going to be busy until we have loaded the data.
+                    PublishDialog.TrackTask(Clusters.ValueTask);
+
+                    // Wait for the clustesr to be loaded before showing the data.
+                    await Clusters.ValueTask;
+                }
             }
-            if (string.IsNullOrEmpty(DeploymentVersion))
+            finally
             {
-                DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
-            }
-
-            Task<bool> validateTask = ValidateGcpProjectState();
-            PublishDialog.TrackTask(validateTask);
-
-            if (await validateTask)
-            {
-                Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
-
-                // Mark that the dialog is going to be busy until we have loaded the data.
-                PublishDialog.TrackTask(Clusters.ValueTask);
+                LoadingProject = false;
             }
         }
 
@@ -490,31 +503,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async Task<bool> ValidateGcpProjectState()
         {
-            try
-            {
-                // Mark that we're validating the project.
-                ValidatingProject = true;
+            // Reset UI state.
+            CanPublish = true;
+            NeedsApiEnabled = false;
+            RefreshClustersListCommand.CanExecuteCommand = true;
+            CreateClusterCommand.CanExecuteCommand = true;
 
-                // Reset UI state.
-                CanPublish = true;
-                NeedsApiEnabled = false;
-                RefreshClustersListCommand.CanExecuteCommand = true;
-                CreateClusterCommand.CanExecuteCommand = true;
-
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    CanPublish = false;
-                    NeedsApiEnabled = true;
-                    RefreshClustersListCommand.CanExecuteCommand = false;
-                    CreateClusterCommand.CanExecuteCommand = false;
-                    return false;
-                }
-                return true;
-            }
-            finally
+            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
             {
-                ValidatingProject = false;
+                CanPublish = false;
+                NeedsApiEnabled = true;
+                RefreshClustersListCommand.CanExecuteCommand = false;
+                CreateClusterCommand.CanExecuteCommand = false;
+                return false;
             }
+            return true;
         }
 
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()

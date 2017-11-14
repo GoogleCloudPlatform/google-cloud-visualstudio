@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
         private AsyncProperty<IEnumerable<Instance>> _instances;
-        private bool _validatingProject = false;
+        private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
 
         /// <summary>
@@ -131,12 +131,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
-        public bool ValidatingProject
+        public bool LoadingProject
         {
-            get { return _validatingProject; }
+            get { return _loadingProject; }
             set
             {
-                SetValueAndRaise(ref _validatingProject, value);
+                SetValueAndRaise(ref _loadingProject, value);
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
-        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled;
+        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
         private GceStepViewModel(GceStepContent content)
         {
@@ -178,27 +178,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async Task<bool> ValidateGcpProject()
         {
-            try
-            {
-                // Mark the UI as validating the project.
-                ValidatingProject = true;
+            // Reset UI state.
+            CanPublish = true;
+            NeedsApiEnabled = false;
 
-                // Reset UI state.
-                CanPublish = true;
-                NeedsApiEnabled = false;
-
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    CanPublish = false;
-                    NeedsApiEnabled = true;
-                    return false;
-                }
-                return true;
-            }
-            finally
+            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
             {
-                ValidatingProject = false;
+                CanPublish = false;
+                NeedsApiEnabled = true;
+                return false;
             }
+            return true;
         }
 
         #region IPublishDialogStep
@@ -284,13 +274,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async void InitializeDialogState()
         {
-            Task<bool> validateTask = ValidateGcpProject();
-            PublishDialog.TrackTask(validateTask);
-
-            if (await validateTask)
+            try
             {
-                Instances = new AsyncProperty<IEnumerable<Instance>>(GetAllWindowsInstancesAsync());
-                PublishDialog.TrackTask(Instances.ValueTask);
+                // Show the loading message while the project is being validated and the
+                // data being loaded.
+                LoadingProject = true;
+
+                Task<bool> validateTask = ValidateGcpProject();
+                PublishDialog.TrackTask(validateTask);
+
+                if (await validateTask)
+                {
+                    Instances = new AsyncProperty<IEnumerable<Instance>>(GetAllWindowsInstancesAsync());
+                    PublishDialog.TrackTask(Instances.ValueTask);
+
+                    // Wait for the data to be loaded before hiding the loading message.
+                    await Instances.ValueTask;
+                }
+            }
+            finally
+            {
+                LoadingProject = false;
             }
         }
 

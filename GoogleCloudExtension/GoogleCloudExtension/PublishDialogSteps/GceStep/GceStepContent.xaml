@@ -40,7 +40,7 @@
         <!-- The message that the project is being validated. -->
         <StackPanel Margin="0,5,0,0"
                     Orientation="Horizontal"
-                    Visibility="{Binding ValidatingProject, Converter={utils:VisibilityConverter}}">
+                    Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
             <controls:ProgressIndicator  />
             <TextBlock Text="Validating project state..." Style="{StaticResource CommonTextStyle}" />
         </StackPanel>
