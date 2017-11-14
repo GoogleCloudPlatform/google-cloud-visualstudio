@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
-        private bool _validatingProject = false;
+        private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
         private bool _needsAppCreated = false;
         private bool _generalError = false;
@@ -85,12 +85,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
-        public bool ValidatingProject
+        public bool LoadingProject
         {
-            get { return _validatingProject; }
+            get { return _loadingProject; }
             set
             {
-                SetValueAndRaise(ref _validatingProject, value);
+                SetValueAndRaise(ref _loadingProject, value);
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
-        public bool ShowInputControls => !ValidatingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
+        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
 
         public ICommand EnableApiCommand { get; }
 
@@ -292,7 +292,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             try
             {
                 // Go into validating mode.
-                ValidatingProject = true;
+                LoadingProject = true;
 
                 // Clean slate for the messages.
                 CanPublish = true;
@@ -333,7 +333,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
             finally
             {
-                ValidatingProject = false;
+                LoadingProject = false;
             }
         }
 

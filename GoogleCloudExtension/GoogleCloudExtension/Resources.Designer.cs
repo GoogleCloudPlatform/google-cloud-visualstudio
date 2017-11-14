@@ -3157,15 +3157,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string FlexPublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishEnableApiMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
@@ -3243,15 +3234,6 @@ namespace GoogleCloudExtension {
         public static string GcePublishAttachDebuggerCaption {
             get {
                 return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string GcePublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("GcePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -4197,15 +4179,6 @@ namespace GoogleCloudExtension {
         public static string GkePublishEmptyDeploymentVersionMessage {
             get {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Container Engine. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string GkePublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEnableApiMessage", resourceCulture);
             }
         }
         
