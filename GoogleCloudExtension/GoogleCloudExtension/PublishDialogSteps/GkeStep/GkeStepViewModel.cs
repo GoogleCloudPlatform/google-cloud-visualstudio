@@ -181,6 +181,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
+        /// <summary>
+        /// Whether the project is loaded, which include validating that the project is correctly
+        /// setup for deployment and loading the necessary data to display to the user.
+        /// </summary>
         public bool LoadingProject
         {
             get { return _loadingProject; }
@@ -191,6 +195,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
+        /// <summary>
+        /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
+        /// </summary>
         public bool NeedsApiEnabled
         {
             get { return _needsApiEnabled; }
@@ -201,8 +208,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
+        /// <summary>
+        /// Whether to display the input controls to the user.
+        /// </summary>
         public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
+        /// <summary>
+        /// The command to execute to enable the necessary APIs for the project.
+        /// </summary>
         public ICommand EnableApiCommand { get; }
 
         private GkeStepViewModel(GkeStepContent content)
