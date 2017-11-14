@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
@@ -153,11 +154,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
+        public ICommand EnableApiCommand { get; }
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
+            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
+        }
+
+        private async void OnEnableApiCommand()
+        {
+            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            InitializeDialogState();
         }
 
         private void OnManageCredentialsCommand()
