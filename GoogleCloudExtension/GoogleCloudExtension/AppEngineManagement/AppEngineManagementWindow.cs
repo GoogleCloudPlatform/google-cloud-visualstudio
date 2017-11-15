@@ -30,6 +30,11 @@ namespace GoogleCloudExtension.AppEngineManagement
             Content = new AppEngineManagementWindowContent { DataContext = ViewModel };
         }
 
+        /// <summary>
+        /// Prompts the user to choose a region for the App Engine app.
+        /// </summary>
+        /// <param name="projectId">The project ID to use.</param>
+        /// <returns>The region chosen by the user.</returns>
         public static string PromptUser(string projectId)
         {
             var dialog = new AppEngineManagementWindow(projectId);
