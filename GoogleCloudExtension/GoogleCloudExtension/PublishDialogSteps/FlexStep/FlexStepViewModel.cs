@@ -45,6 +45,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         };
 
         private readonly FlexStepContent _content;
+        private readonly IGaeDataSource _dataSource = null;
+        private readonly IApiManager _apiManager = null;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
@@ -154,9 +156,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         public ICommand SetAppRegionCommand { get; }
 
-        private FlexStepViewModel(FlexStepContent content)
+        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource = null, IApiManager apiManager = null)
         {
             _content = content;
+            _dataSource = dataSource;
+            _apiManager = apiManager;
 
             EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
             SetAppRegionCommand = new ProtectedCommand(OnSetAppRegionCommand);
@@ -164,19 +168,34 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private async void OnSetAppRegionCommand()
         {
-            var appEngineDataSource = new GaeDataSource(
-                CredentialsStore.Default.CurrentProjectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
+            IGaeDataSource appEngineDataSource = GetGaeDataSource();
             if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, appEngineDataSource))
             {
                 PublishDialog.TrackTask(ValidateGcpProjectState());
             }
         }
 
+        /// <summary>
+        /// This method will return the <seealso cref="GaeDataSource"/> to use, either the mocked one passed
+        /// in by the tests or a new one.
+        /// </summary>
+        /// <returns></returns>
+        private IGaeDataSource GetGaeDataSource()
+        {
+            return _dataSource ?? new GaeDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+        }
+
+        private IApiManager GetApiManager()
+        {
+            return _apiManager ?? ApiManager.Default;
+        }
+
         private async void OnEnableApiCommand()
         {
-            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
+            await GetApiManager().EnableServicesAsync(s_requiredApis);
             PublishDialog.TrackTask(ValidateGcpProjectState());
         }
 
@@ -292,10 +311,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        internal static FlexStepViewModel CreateStep()
+        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null)
         {
             var content = new FlexStepContent();
-            var viewModel = new FlexStepViewModel(content);
+            var viewModel = new FlexStepViewModel(content, dataSource: dataSource, apiManager: apiManager);
             content.DataContext = viewModel;
 
             return viewModel;
@@ -324,7 +343,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GeneralError = false;
 
                 // Ensure the necessary APIs are enabled.
-                if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+                if (!await GetApiManager().AreServicesEnabledAsync(s_requiredApis))
                 {
                     Debug.WriteLine("The user refused to enable the APIs for GAE.");
                     CanPublish = false;
@@ -335,10 +354,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 try
                 {
                     // Using the GAE API, check if there's an app for the project.
-                    var appEngineDataSource = new GaeDataSource(
-                         CredentialsStore.Default.CurrentProjectId,
-                         CredentialsStore.Default.CurrentGoogleCredential,
-                         GoogleCloudExtensionPackage.ApplicationName);
+                    IGaeDataSource appEngineDataSource = GetGaeDataSource();
                     Google.Apis.Appengine.v1.Data.Application app = await appEngineDataSource.GetApplicationAsync();
                     if (app == null)
                     {

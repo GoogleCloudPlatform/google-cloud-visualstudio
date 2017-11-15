@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Sets the app engine to the given project Id.
         /// </summary>
-        public static async Task<bool> SetAppRegionAsync(string projectId, GaeDataSource dataSource)
+        public static async Task<bool> SetAppRegionAsync(string projectId, IGaeDataSource dataSource)
         {
             string selectedLocation = AppEngineManagementWindow.PromptUser(projectId);
             if (selectedLocation == null)

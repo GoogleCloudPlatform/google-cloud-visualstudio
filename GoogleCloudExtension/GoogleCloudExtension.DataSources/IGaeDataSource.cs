@@ -106,5 +106,12 @@ namespace GoogleCloudExtension.DataSources
         /// Returns the list of available locations for the current project.
         /// </summary>
         Task<IList<Location>> GetAvailableLocationsAsync();
+
+        /// <summary>
+        /// Creates an application in the given location.
+        /// </summary>
+        /// <param name="location">The location where to create the app.</param>
+        /// <returns>A task that will be completed once the operation finishes.</returns>
+        Task CreateApplicationAsync(string location);
     }
 }

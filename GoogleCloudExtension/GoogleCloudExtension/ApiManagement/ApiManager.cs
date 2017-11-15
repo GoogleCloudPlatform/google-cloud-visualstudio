@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.ApiManagement
     /// that manages its own <seealso cref="ServiceManagementDataSource"/> instance. This class will update itself when the user
     /// changes the current project/user.
     /// </summary>
-    public class ApiManager
+    public class ApiManager : IApiManager
     {
         private static readonly Lazy<ApiManager> s_defaultManager = new Lazy<ApiManager>(CreateApiManager);
 

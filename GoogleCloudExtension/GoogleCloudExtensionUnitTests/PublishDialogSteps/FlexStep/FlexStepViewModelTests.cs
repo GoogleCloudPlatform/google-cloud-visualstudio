@@ -13,11 +13,16 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
+using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 {
@@ -26,13 +31,67 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
     {
         private FlexStepViewModel _objectUnderTest;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserFunctionMock;
+        private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
+        private TaskCompletionSource<Google.Apis.Appengine.v1.Data.Application> _appTaskSource;
+        private Mock<IApiManager> _mockedApiManager;
+        private Mock<IGaeDataSource> _mockedGaeDataSource;
+        private Mock<IPublishDialog> _mockedPublishDialog;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _promptUserFunctionMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             UserPromptWindow.PromptUserFunction = _promptUserFunctionMock.Object;
-            _objectUnderTest = FlexStepViewModel.CreateStep();
+
+            _mockedApiManager = new Mock<IApiManager>();
+            _mockedGaeDataSource = new Mock<IGaeDataSource>();
+            _mockedPublishDialog = new Mock<IPublishDialog>();
+
+            _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
+            _appTaskSource = new TaskCompletionSource<Google.Apis.Appengine.v1.Data.Application>();
+            
+            _mockedApiManager.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
+            _mockedGaeDataSource.Setup(x => x.GetApplicationAsync()).Returns(() => _appTaskSource.Task);
+            _mockedPublishDialog.Setup(x => x.TrackTask(It.IsAny<Task>()));
+
+            _objectUnderTest = FlexStepViewModel.CreateStep(dataSource: _mockedGaeDataSource.Object, apiManager: _mockedApiManager.Object);
+        }
+
+        [TestMethod]
+        public void TestInitialState()
+        {
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+        }
+
+        [TestMethod]
+        public async Task TestPositiveProjectValidation()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+
+            // Check state before validation.
+            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
+
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+
+            // Mock a positive validation.
+            _areServicesEnabledTaskSource.SetResult(true);
+            await Task.Delay(1);
+
+            // Check state after validation.
+            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
+
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+
+            // Check that the TrackTask method was called.
+            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce());
         }
 
         [TestMethod]

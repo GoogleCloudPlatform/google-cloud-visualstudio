@@ -127,6 +127,7 @@
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="ApiManagement\ApiManager.cs" />
+    <Compile Include="ApiManagement\IApiManager.cs" />
     <Compile Include="ApiManagement\KnownApis.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModel.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementWindow.cs" />
