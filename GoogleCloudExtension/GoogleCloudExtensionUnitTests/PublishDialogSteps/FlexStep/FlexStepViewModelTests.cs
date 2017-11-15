@@ -68,7 +68,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestPositiveProjectValidation()
         {
+            // Moc the dialog being entered.
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
 
             // Check state before validation.
             Assert.IsTrue(_objectUnderTest.LoadingProject);
@@ -80,10 +82,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
             // Mock a positive validation.
             _areServicesEnabledTaskSource.SetResult(true);
-            await Task.Delay(1);
+            _appTaskSource.SetResult(new Google.Apis.Appengine.v1.Data.Application());
+
+            // Wait for the operation to finish.
+            await _objectUnderTest.LoadingProjectTask;
 
             // Check state after validation.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsTrue(_objectUnderTest.CanPublish);
 
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
@@ -92,6 +97,38 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
             // Check that the TrackTask method was called.
             _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce());
+        }
+
+        [TestMethod]
+        public async Task TestNeedsApiState()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
+
+            // Mock that the API needs to be enabled.
+            _areServicesEnabledTaskSource.SetResult(false);
+            _appTaskSource.SetResult(null);
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
+        public async Task TestNeedsAppState()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
+
+            // Mock that the app needs to be created.
+            _areServicesEnabledTaskSource.SetResult(true);
+            _appTaskSource.SetResult(null);
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
         }
 
         [TestMethod]

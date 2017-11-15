@@ -156,6 +156,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         public ICommand SetAppRegionCommand { get; }
 
+        /// <summary>
+        /// The task that tracks the process of loading the project. Used for testing.
+        /// </summary>
+        internal Task LoadingProjectTask { get; set; }
+
         private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource = null, IApiManager apiManager = null)
         {
             _content = content;
@@ -212,7 +217,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         {
             base.OnPushedToDialog(dialog);
 
-            PublishDialog.TrackTask(ValidateGcpProjectState());
+            InitializeDialogState();
         }
 
         public override async void Publish()
@@ -326,7 +331,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         protected override void OnProjectChanged()
         {
-            PublishDialog.TrackTask(ValidateGcpProjectState());
+            InitializeDialogState();
+        }
+
+        private void InitializeDialogState()
+        {
+            LoadingProjectTask = ValidateGcpProjectState();
+            PublishDialog.TrackTask(LoadingProjectTask);
         }
 
         private async Task ValidateGcpProjectState()
