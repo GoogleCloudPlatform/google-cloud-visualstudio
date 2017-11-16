@@ -46,12 +46,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private readonly FlexStepContent _content;
         private readonly IGaeDataSource _dataSource = null;
-        private readonly IApiManager _apiManager = null;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
-        private bool _loadingProject = false;
-        private bool _needsApiEnabled = false;
         private bool _needsAppCreated = false;
         private bool _generalError = false;
 
@@ -88,33 +85,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         }
 
         /// <summary>
-        /// Whether the project is loaded, which include validating that the project is correctly
-        /// setup for deployment and loading the necessary data to display to the user.
-        /// </summary>
-        public bool LoadingProject
-        {
-            get { return _loadingProject; }
-            set
-            {
-                SetValueAndRaise(ref _loadingProject, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
-        /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
-        /// </summary>
-        public bool NeedsApiEnabled
-        {
-            get { return _needsApiEnabled; }
-            set
-            {
-                SetValueAndRaise(ref _needsApiEnabled, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
         /// Whether the GCP project selected needs the App Engine app created, and the region set, before
         /// a deployment can be made.
         /// </summary>
@@ -144,7 +114,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// <summary>
         /// Whether to display the input controls to the user.
         /// </summary>
-        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
+        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
@@ -156,23 +126,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         public ICommand SetAppRegionCommand { get; }
 
-        /// <summary>
-        /// The task that tracks the process of loading the project. Used for testing.
-        /// </summary>
-        internal Task LoadingProjectTask { get; private set; }
-
-        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
-
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
         private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource = null, IApiManager apiManager = null)
+            : base(apiManager)
         {
             _content = content;
             _dataSource = dataSource;
-            _apiManager = apiManager;
 
             EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
             SetAppRegionCommand = new ProtectedCommand(OnSetAppRegionCommand);

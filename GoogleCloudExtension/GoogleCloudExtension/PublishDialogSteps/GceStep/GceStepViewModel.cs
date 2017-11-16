@@ -56,8 +56,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
         private AsyncProperty<IEnumerable<Instance>> _instances;
-        private bool _loadingProject = false;
-        private bool _needsApiEnabled = false;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -135,45 +133,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         }
 
         /// <summary>
-        /// Whether the project is loaded, which include validating that the project is correctly
-        /// setup for deployment and loading the necessary data to display to the user.
-        /// </summary>
-        public bool LoadingProject
-        {
-            get { return _loadingProject; }
-            set
-            {
-                SetValueAndRaise(ref _loadingProject, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
-        /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
-        /// </summary>
-        public bool NeedsApiEnabled
-        {
-            get { return _needsApiEnabled; }
-            set
-            {
-                SetValueAndRaise(ref _needsApiEnabled, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
         /// Whether to display the input controls to the user.
         /// </summary>
-        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
+        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
         /// </summary>
         public ICommand EnableApiCommand { get; }
-
-        internal Task LoadingProjectTask { get; private set; }
-
-        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
 
         private IGceDataSource CurrentDataSource => _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -181,6 +148,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 GoogleCloudExtensionPackage.ApplicationName);
 
         private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager)
+            : base(apiManager)
         {
             _content = content;
             _dataSource = dataSource;

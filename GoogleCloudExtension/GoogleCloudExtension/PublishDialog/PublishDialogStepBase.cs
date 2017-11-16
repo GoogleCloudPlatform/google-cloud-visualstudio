@@ -14,10 +14,12 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -30,7 +32,12 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private bool _canGoNext;
         private bool _canPublish;
+        private readonly IApiManager _apiManager;
+        private bool _loadingProject = false;
+        private bool _needsApiEnabled = false;
+
         internal Func<string, Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+
         protected internal IPublishDialog PublishDialog { get; private set; }
 
         /// <summary>
@@ -80,13 +87,62 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         public ProtectedCommand SelectProjectCommand { get; }
 
+        /// <summary>
+        /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
+        /// </summary>
+        public bool NeedsApiEnabled
+        {
+            get { return _needsApiEnabled; }
+            protected set
+            {
+                SetValueAndRaise(ref _needsApiEnabled, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
+        /// <summary>
+        /// Whether the project is loaded, which include validating that the project is correctly
+        /// setup for deployment and loading the necessary data to display to the user.
+        /// </summary>
+        public bool LoadingProject
+        {
+            get { return _loadingProject; }
+            protected set
+            {
+                SetValueAndRaise(ref _loadingProject, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
+        /// <summary>
+        /// Whether the input controls should be visible at this point.
+        /// </summary>
+        public virtual bool ShowInputControls { get; }
+
+        /// <summary>
+        /// Returns the <seealso cref="IApiManager"/> instance to use.
+        /// </summary>
+        protected IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
+
+
+        /// <summary>
+        /// The task that tracks the project loading process.
+        /// </summary>
+        internal Task LoadingProjectTask { get; set; }
+
         public event EventHandler CanGoNextChanged;
 
         public event EventHandler CanPublishChanged;
 
-        /// <inheritdoc />
         protected PublishDialogStepBase()
+            : this(null)
+        { }
+
+        /// <inheritdoc />
+        protected PublishDialogStepBase(IApiManager apiManager)
         {
+            _apiManager = apiManager;
+
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, args) =>
             {

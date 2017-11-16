@@ -55,7 +55,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
-        private readonly IApiManager _apiManager;
         private AsyncProperty<IEnumerable<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
@@ -65,8 +64,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
         private string _replicas = "3";
-        private bool _loadingProject = false;
-        private bool _needsApiEnabled = false;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -184,48 +181,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public ProtectedCommand RefreshClustersListCommand { get; }
 
         /// <summary>
-        /// Whether the project is loaded, which include validating that the project is correctly
-        /// setup for deployment and loading the necessary data to display to the user.
-        /// </summary>
-        public bool LoadingProject
-        {
-            get { return _loadingProject; }
-            set
-            {
-                SetValueAndRaise(ref _loadingProject, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
-        /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
-        /// </summary>
-        public bool NeedsApiEnabled
-        {
-            get { return _needsApiEnabled; }
-            set
-            {
-                SetValueAndRaise(ref _needsApiEnabled, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
         /// Whether to display the input controls to the user.
         /// </summary>
-        public bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
+        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
         /// </summary>
         public ICommand EnableApiCommand { get; }
-
-        /// <summary>
-        /// The task that tracks the project loading process.
-        /// </summary>
-        internal Task LoadingProjectTask { get; set; }
-
-        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
 
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -233,9 +196,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GoogleCloudExtensionPackage.ApplicationName);
 
         private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager)
+            : base(apiManager)
         {
             _content = content;
-            _apiManager = apiManager;
             _dataSource = dataSource;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
