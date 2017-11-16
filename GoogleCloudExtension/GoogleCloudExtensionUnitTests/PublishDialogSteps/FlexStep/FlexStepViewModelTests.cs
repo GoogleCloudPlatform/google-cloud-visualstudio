@@ -26,6 +26,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 {
+    /// <summary>
+    /// Unit tests for <seealso cref="FlexStepViewModel"/>.
+    /// </summary>
     [TestClass]
     public class FlexStepViewModelTests
     {

@@ -1,9 +1,8 @@
-﻿using Google.Apis.Container.v1.Data;
+﻿using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.GkeStep;
+using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -12,51 +11,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
+namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
 {
     /// <summary>
-    /// Unit tests for <seealso cref="GkeStepViewModel"/>.
+    /// Unit tests for <seealso cref="GceStepViewModel"/>
     /// </summary>
     [TestClass]
-    public class GkeStepViewModelTests
+    public class GceStepViewModelTests
     {
-        private const string ProjectId = "ProjectId";
+        private const string WindowsLicenseUrl = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc";
 
-        private static readonly List<Cluster> s_mockedClusters = new List<Cluster>
+        private static readonly AttachedDisk s_windowsDisk = new AttachedDisk
         {
-            new Cluster { Name = "Bcluster" },
-            new Cluster { Name = "Acluster" },
-            new Cluster { Name = "Ccluster" },
+            Licenses = new string[] { WindowsLicenseUrl },
+            Boot = true
         };
 
-        private GkeStepViewModel _objectUnderTest;
+        private static readonly IList<Instance> s_mockedInstances = new List<Instance>
+        {
+            new Instance { Name="Ainstance", Disks = new AttachedDisk[] { s_windowsDisk }, Status = "RUNNING" }
+        };
+
+        private GceStepViewModel _objectUnderTest;
         private Mock<IApiManager> _mockedApiManager;
-        private Mock<IGkeDataSource> _mockedDataSource;
+        private Mock<IGceDataSource> _mockedDataSource;
         private Mock<IPublishDialog> _mockedPublishDialog;
-        private Mock<IParsedProject> _mockedProject;
         private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
-        private TaskCompletionSource<IList<Cluster>> _clusterListTaskSource;
+        private TaskCompletionSource<IList<Instance>> _getInstanceListTaskSource;
 
         [TestInitialize]
-        public void Initialize()
+        public void InitializeTest()
         {
             _mockedApiManager = new Mock<IApiManager>();
-            _mockedDataSource = new Mock<IGkeDataSource>();
+            _mockedDataSource = new Mock<IGceDataSource>();
             _mockedPublishDialog = new Mock<IPublishDialog>();
-            _mockedProject = new Mock<IParsedProject>();
 
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
-            _clusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
+            _getInstanceListTaskSource = new TaskCompletionSource<IList<Instance>>();
 
-            _mockedApiManager.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
-            _mockedDataSource.Setup(x => x.GetClusterListAsync()).Returns(() => _clusterListTaskSource.Task);
+            _mockedApiManager.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(_areServicesEnabledTaskSource.Task);
+            _mockedDataSource.Setup(x => x.GetInstanceListAsync()).Returns(_getInstanceListTaskSource.Task);
 
-            _mockedProject.Setup(x => x.Name).Returns(ProjectId);
-
-            _mockedPublishDialog.Setup(x => x.TrackTask(It.IsAny<Task>()));
-            _mockedPublishDialog.Setup(x => x.Project).Returns(_mockedProject.Object);
-
-            _objectUnderTest = GkeStepViewModel.CreateStep(_mockedDataSource.Object, _mockedApiManager.Object);
+            _objectUnderTest = GceStepViewModel.CreateStep(_mockedDataSource.Object, _mockedApiManager.Object);
         }
 
         [TestMethod]
@@ -77,23 +73,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
 
             _areServicesEnabledTaskSource.SetResult(true);
-            _clusterListTaskSource.SetResult(s_mockedClusters);
+            _getInstanceListTaskSource.SetResult(s_mockedInstances);
 
             // Wait for project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Check the result after validation.
+            // Validate the state after the load.
             Assert.IsTrue(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-            Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
-            Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
-            Assert.AreEqual(ProjectId.ToLower(), _objectUnderTest.DeploymentName);
-            Assert.IsTrue(_objectUnderTest.Clusters.IsCompleted);
-            Assert.AreEqual(s_mockedClusters.Count, _objectUnderTest.Clusters.Value.Count());
+            Assert.IsTrue(_objectUnderTest.Instances.IsCompleted);
+            Assert.AreEqual(s_mockedInstances.Count, _objectUnderTest.Instances.Value.Count());
 
-            // Verify the expected calls.
+            // Verify the expected methods were called.
             _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.AtLeastOnce);
+            _mockedDataSource.Verify(x => x.GetInstanceListAsync(), Times.AtLeastOnce);
             _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
         }
 
@@ -108,18 +101,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
 
             _areServicesEnabledTaskSource.SetResult(false);
-            _clusterListTaskSource.SetResult(null);
+            _getInstanceListTaskSource.SetResult(null);
 
             // Wait for the project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Check the result after validation.
+            // Validate the state after the load.
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
 
-            // Verify the expected method were called.
+            // Verify that the expected methods were called.
             _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.Never);
+            _mockedDataSource.Verify(x => x.GetInstanceListAsync(), Times.Never);
             _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
         }
     }

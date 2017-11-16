@@ -159,7 +159,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// <summary>
         /// The task that tracks the process of loading the project. Used for testing.
         /// </summary>
-        internal Task LoadingProjectTask { get; set; }
+        internal Task LoadingProjectTask { get; private set; }
 
         private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
 

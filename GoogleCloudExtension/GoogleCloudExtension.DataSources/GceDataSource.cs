@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns information about GCE instances and keeps track of operations in flight.
     /// </summary>
-    public class GceDataSource : DataSourceBase<ComputeService>
+    public class GceDataSource : DataSourceBase<ComputeService>, IGceDataSource
     {
         /// <summary>
         /// This list is a global list of all of the operations pending created by instances of this class.

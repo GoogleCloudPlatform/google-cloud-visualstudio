@@ -48,6 +48,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         };
 
         private readonly GceStepContent _content;
+        private readonly IGceDataSource _dataSource;
+        private readonly IApiManager _apiManager;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
@@ -169,9 +171,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// </summary>
         public ICommand EnableApiCommand { get; }
 
-        private GceStepViewModel(GceStepContent content)
+        internal Task LoadingProjectTask { get; private set; }
+
+        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
+
+        private IGceDataSource CurrentDataSource => _dataSource ?? new GceDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+
+        private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager)
         {
             _content = content;
+            _dataSource = dataSource;
+            _apiManager = apiManager;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
             EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
@@ -179,8 +192,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async void OnEnableApiCommand()
         {
-            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
-            InitializeDialogState();
+            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
+            LoadingProjectTask = InitializeDialogState();
         }
 
         private void OnManageCredentialsCommand()
@@ -191,11 +204,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
         {
-            var dataSource = new GceDataSource(
-                CredentialsStore.Default.CurrentProjectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
-            IList<Instance> instances = await dataSource.GetInstanceListAsync();
+            IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
             return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
         }
 
@@ -205,7 +214,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             CanPublish = true;
             NeedsApiEnabled = false;
 
-            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
             {
                 CanPublish = false;
                 NeedsApiEnabled = true;
@@ -290,12 +299,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             base.OnPushedToDialog(dialog);
-            InitializeDialogState();
+            LoadingProjectTask = InitializeDialogState();
         }
 
         #endregion
 
-        private async void InitializeDialogState()
+        private async Task InitializeDialogState()
         {
             try
             {
@@ -323,13 +332,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         protected override void OnProjectChanged()
         {
-            InitializeDialogState();
+            LoadingProjectTask = InitializeDialogState();
         }
 
-        internal static GceStepViewModel CreateStep()
+        internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null)
         {
             var content = new GceStepContent();
-            var viewModel = new GceStepViewModel(content);
+            var viewModel = new GceStepViewModel(content, dataSource, apiManager);
             content.DataContext = viewModel;
 
             return viewModel;
