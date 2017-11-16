@@ -54,6 +54,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         };
 
         private readonly GkeStepContent _content;
+        private readonly IGkeDataSource _dataSource;
+        private readonly IApiManager _apiManager;
         private AsyncProperty<IEnumerable<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
@@ -218,9 +220,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ICommand EnableApiCommand { get; }
 
-        private GkeStepViewModel(GkeStepContent content)
+        /// <summary>
+        /// The task that tracks the project loading process.
+        /// </summary>
+        internal Task LoadingProjectTask { get; set; }
+
+        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
+
+        private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+
+        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager)
         {
             _content = content;
+            _apiManager = apiManager;
+            _dataSource = dataSource;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
@@ -253,8 +269,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async void OnEnableApiCommand()
         {
-            await ApiManager.Default.EnableServicesAsync(s_requiredApis);
-            InitializeDialogState();
+            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
+            LoadingProjectTask = InitializeDialogState();
         }
 
         #region IPublishDialogStep overrides
@@ -264,7 +280,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             base.OnPushedToDialog(dialog);
-            InitializeDialogState();
+            LoadingProjectTask = InitializeDialogState();
         }
 
         /// <summary>
@@ -391,7 +407,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         #endregion
 
-        private async void InitializeDialogState()
+        private async Task InitializeDialogState()
         {
             try
             {
@@ -520,7 +536,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override void OnProjectChanged()
         {
-            InitializeDialogState();
+            LoadingProjectTask = InitializeDialogState();
         }
 
         private async Task<bool> ValidateGcpProjectState()
@@ -531,7 +547,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             RefreshClustersListCommand.CanExecuteCommand = true;
             CreateClusterCommand.CanExecuteCommand = true;
 
-            if (!await ApiManager.Default.AreServicesEnabledAsync(s_requiredApis))
+            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
             {
                 CanPublish = false;
                 NeedsApiEnabled = true;
@@ -544,11 +560,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
         {
-            var dataSource = new GkeDataSource(
-                CredentialsStore.Default.CurrentProjectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
-            var clusters = await dataSource.GetClusterListAsync();
+            var clusters = await CurrentDataSource.GetClusterListAsync();
 
             var result = clusters?.OrderBy(x => x.Name).ToList();
             if (result == null || result.Count == 0)
@@ -561,10 +573,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.
         /// </summary>
-        internal static GkeStepViewModel CreateStep()
+        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null)
         {
             var content = new GkeStepContent();
-            var viewModel = new GkeStepViewModel(content);
+            var viewModel = new GkeStepViewModel(content, dataSource, apiManager);
             content.DataContext = viewModel;
 
             return viewModel;

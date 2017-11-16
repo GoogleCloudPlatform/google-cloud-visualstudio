@@ -139,6 +139,7 @@
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GaeLocationExtensions.cs" />
     <Compile Include="IGaeDataSource.cs" />
+    <Compile Include="IGkeDataSource.cs" />
     <Compile Include="IPubsubDataSource.cs" />
     <Compile Include="IResourceManagerDataSource.cs" />
     <Compile Include="OperationUtils.cs" />
