@@ -85,6 +85,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
             Assert.AreEqual(ProjectId.ToLower(), _objectUnderTest.DeploymentName);
+
+            // Verify the expected calls.
+            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
+            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.AtLeastOnce);
+            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
         }
 
         [TestMethod]
@@ -106,6 +111,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             // Check the result after validation.
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+
+            // Verify the expected method were called.
+            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
+            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.Never);
+            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
         }
     }
 }

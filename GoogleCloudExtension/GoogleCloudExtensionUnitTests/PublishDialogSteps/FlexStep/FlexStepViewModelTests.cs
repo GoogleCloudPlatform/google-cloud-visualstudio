@@ -95,7 +95,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.GeneralError);
 
-            // Check that the TrackTask method was called.
+            // Check that the expected methods were called.
+            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.AtLeastOnce);
+            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
             _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce());
         }
 
@@ -113,6 +115,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+
+            // Check that the expected methods were called.
+            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
+            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.Never);
+            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
         }
 
         [TestMethod]
@@ -129,6 +136,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
+
+            // Check that the expected methods were called.
+            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
+            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.AtLeastOnce);
+            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+
         }
 
         [TestMethod]
