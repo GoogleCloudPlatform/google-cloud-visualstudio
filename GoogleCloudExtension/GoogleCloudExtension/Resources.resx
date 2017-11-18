@@ -2903,8 +2903,12 @@
     <value>Select Google Cloud Project to Publish to - {0}</value>
     <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
   </data>
-  <data name="CsrEnableApiMessageFormat" xml:space="preserve">
-    <value>The selected project "{0}" needs to be setup to use Cloud Source Repositories. Do you want to enable the necessary services now?</value>
-    <comment>The message to ask user to enable Cloud Source Repositories API for the project.  {0} is the chosen project id.</comment>
+  <data name="CsrEnableApiMessage" xml:space="preserve">
+    <value>The selected project needs to be setup to use Cloud Source Repositories. </value>
+    <comment>The message to ask user to enable Cloud Source Repositories API for the project.  </comment>
+  </data>
+  <data name="CsrEnableApiLinkCaption" xml:space="preserve">
+    <value>Enable the service</value>
+    <comment>The caption for the enable API command.</comment>
   </data>
 </root>

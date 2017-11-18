@@ -2581,11 +2581,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected project &quot;{0}&quot; needs to be setup to use Cloud Source Repositories. Do you want to enable the necessary services now?.
+        ///   Looks up a localized string similar to Enable the service.
         /// </summary>
-        public static string CsrEnableApiMessageFormat {
+        public static string CsrEnableApiLinkCaption {
             get {
-                return ResourceManager.GetString("CsrEnableApiMessageFormat", resourceCulture);
+                return ResourceManager.GetString("CsrEnableApiLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected project needs to be setup to use Cloud Source Repositories. .
+        /// </summary>
+        public static string CsrEnableApiMessage {
+            get {
+                return ResourceManager.GetString("CsrEnableApiMessage", resourceCulture);
             }
         }
         
