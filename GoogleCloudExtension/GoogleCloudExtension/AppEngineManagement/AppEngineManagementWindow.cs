@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         private AppEngineManagementViewModel ViewModel { get; }
 
         private AppEngineManagementWindow(string projectId)
-            : base(GoogleCloudExtension.Resources.AppEngineManagementWindowCaption)
+            : base(GoogleCloudExtension.Resources.AppEngineManagementWindowTitle)
         {
             ViewModel = new AppEngineManagementViewModel(this, projectId);
             Content = new AppEngineManagementWindowContent { DataContext = ViewModel };

@@ -181,11 +181,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public ProtectedCommand RefreshClustersListCommand { get; }
 
         /// <summary>
-        /// Whether to display the input controls to the user.
-        /// </summary>
-        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
-
-        /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
         /// </summary>
         public ICommand EnableApiCommand { get; }
@@ -203,7 +198,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
+            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
         }
 
         private void UpdateCanPublish()
@@ -230,7 +225,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
         }
 
-        private async void OnEnableApiCommand()
+        private async Task OnEnableApiCommandAsync()
         {
             await CurrentApiManager.EnableServicesAsync(s_requiredApis);
             LoadingProjectTask = InitializeDialogState();

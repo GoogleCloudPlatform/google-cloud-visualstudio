@@ -37,9 +37,9 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="refreshOperation">An function that will refresh the operation, returning an updated instance.</param>
         /// <param name="isFinished">A function thgat determines if the operation is done.</param>
         /// <param name="getErrorData">A function that will extract the error message from the operation, if in error.</param>
+        /// <param name="getErrorMessage">A function that will return the error message from the error data.</param>
         /// <param name="token">The cancellation token to stop polling for the state of the operation. This does not cancel the operation.</param>
         /// <param name="delay">The delay to use in between refreshes.</param>
-        /// <param name="timeout">The timeout for the operation. If null there's no timeout.</param>
         /// <returns>A <seealso cref="Task"/> that will be completed once the operation is done.</returns>
         public static async Task AwaitOperationAsync<TOperation, TErrorData>(
             this TOperation operation,
@@ -48,30 +48,14 @@ namespace GoogleCloudExtension.DataSources
             Func<TOperation, TErrorData> getErrorData,
             Func<TErrorData, string> getErrorMessage,
             CancellationToken token = default(CancellationToken),
-            TimeSpan? delay = null,
-            TimeSpan? timeout = null)
+            TimeSpan? delay = null)
         {
-            Stopwatch watch = null;
-            if (timeout != null)
-            {
-                watch = Stopwatch.StartNew();
-            }
-
             try
             {
                 while (true)
                 {
                     // Check the cancellation.
                     token.ThrowIfCancellationRequested();
-
-                    // Check the timeout.
-                    if (watch != null)
-                    {
-                        if (watch.Elapsed >= timeout)
-                        {
-                            throw new TimeoutException("Operationed timed out.");
-                        }
-                    }
 
                     Debug.WriteLine("Polling for operation to finish.");
                     TOperation newOperation = await refreshOperation(operation);

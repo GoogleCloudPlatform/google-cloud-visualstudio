@@ -68,36 +68,31 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TimeoutException))]
-        public async Task TestTimeoutOperation()
-        {
-            object operationPlaceholder = new object();
-            await OperationUtils.AwaitOperationAsync<object, object>(
-                operationPlaceholder,
-                refreshOperation: x => Task.FromResult(x),
-                isFinished: _ => false,
-                getErrorData: _ => null,
-                getErrorMessage: _ => null,
-                timeout: new TimeSpan(0, 0, 1));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(OperationCanceledException))]
         public async Task TestCancelledOperation()
         {
-            object operationPlaceholder = new object();
-            CancellationTokenSource source = new CancellationTokenSource();
+            bool exceptionThrown = false;
+            try
+            {
+                object operationPlaceholder = new object();
+                CancellationTokenSource source = new CancellationTokenSource();
 
-            Task operationTask = OperationUtils.AwaitOperationAsync<object, object>(
-                operationPlaceholder,
-                refreshOperation: x => Task.FromResult(x),
-                isFinished: x => false,
-                getErrorData: x => null,
-                getErrorMessage: x => null,
-                token: source.Token);
+                Task operationTask = OperationUtils.AwaitOperationAsync<object, object>(
+                    operationPlaceholder,
+                    refreshOperation: x => Task.FromResult(x),
+                    isFinished: x => false,
+                    getErrorData: x => null,
+                    getErrorMessage: x => null,
+                    token: source.Token);
 
-            source.Cancel();
-            await operationTask;
+                source.Cancel();
+                await operationTask;
+            }
+            catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+            {
+                exceptionThrown = true;
+            }
+
+            Assert.IsTrue(exceptionThrown);
         }
     }
 }

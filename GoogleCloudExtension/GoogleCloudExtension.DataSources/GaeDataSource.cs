@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -369,12 +370,14 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The task that will be done once the operation is succesful.</returns>
         private Task AwaitOperationAsync(Operation operation)
         {
+            var tokenSource = new CancellationTokenSource(s_operationDefaultTimeout);
+
             return operation.AwaitOperationAsync(
                 refreshOperation: op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
                 isFinished: op => op.Done ?? false,
                 getErrorData: op => op.Error,
                 getErrorMessage: err => err.Message,
-                timeout: s_operationDefaultTimeout);
+                token: tokenSource.Token);
         }
 
         private static string GetOperationId(Operation operation) => operation.Name.Split('/').Last();

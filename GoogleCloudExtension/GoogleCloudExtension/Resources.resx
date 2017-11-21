@@ -2836,7 +2836,7 @@
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
   <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
-    <value>No app engine app found.</value>
+    <value>No App Engine app found.</value>
     <comment>Caption shown in the placheolder when no App Engine app was found.</comment>
   </data>
   <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
@@ -2895,21 +2895,21 @@
     <value>Available _regions:</value>
     <comment>Label to be used for the regions drop box.</comment>
   </data>
-  <data name="AppEngineManagementWindowCaption" xml:space="preserve">
+  <data name="AppEngineManagementWindowTitle" xml:space="preserve">
     <value>Select App Engine Region</value>
     <comment>Caption for the select region dialog.</comment>
   </data>
   <data name="CloudExplorerGaeSetAppRegionMenuHeader" xml:space="preserve">
-    <value>Set app region</value>
+    <value>Set App Region...</value>
     <comment>Menu header for the menu shown to the user to set the app's region.</comment>
   </data>
-  <data name="GaeUtilsSetAppEngineRegionProgressCaption" xml:space="preserve">
+  <data name="GaeUtilsSetAppEngineRegionProgressTitle" xml:space="preserve">
     <value>App Engine Region</value>
     <comment>The caption for the progress dialog shown while setting the app engine region.</comment>
   </data>
   <data name="GaeUtilsSetAppEngineRegionProgressMessage" xml:space="preserve">
     <value>Setting App Engine region.</value>
-    <comment>The message for the progress dialog shwon while setting the app engine region.</comment>
+    <comment>The message for the progress dialog shown while setting the app engine region.</comment>
   </data>
   <data name="AppEngineManagementLoadingRegionsPlaceholder" xml:space="preserve">
     <value>Loading regions...</value>

@@ -60,22 +60,21 @@
                   Style="{StaticResource CommonComboBoxStyle}"/>
 
             <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
-
                 <TextBlock Margin="0,0,5,0"
-                       Style="{StaticResource CommonTextStyle}">
-                <Hyperlink Command="{Binding CreateClusterCommand}"
-                           Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
-                </Hyperlink>
-            </TextBlock>
+                           Style="{StaticResource CommonTextStyle}">
+                    <Hyperlink Command="{Binding CreateClusterCommand}"
+                               Style="{StaticResource CommonHyperlinkStyle}">
+                        <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
+                    </Hyperlink>
+                </TextBlock>
 
                 <TextBlock Margin="5,0,0,0"
-                       Style="{StaticResource CommonTextStyle}">
-                <Hyperlink Command="{Binding RefreshClustersListCommand}"
-                           Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
-                </Hyperlink>
-            </TextBlock>
+                           Style="{StaticResource CommonTextStyle}">
+                    <Hyperlink Command="{Binding RefreshClustersListCommand}"
+                               Style="{StaticResource CommonHyperlinkStyle}">
+                        <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
 
             <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
@@ -154,7 +153,7 @@
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        
+
         <!-- Message shown when the API needs to be enabled. -->
         <TextBlock Margin="0,5,0,0"
                    TextWrapping="Wrap"

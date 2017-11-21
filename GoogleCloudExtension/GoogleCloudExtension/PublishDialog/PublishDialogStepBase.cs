@@ -117,13 +117,12 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Whether the input controls should be visible at this point.
         /// </summary>
-        public virtual bool ShowInputControls { get; }
+        public virtual bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
 
         /// <summary>
         /// Returns the <seealso cref="IApiManager"/> instance to use.
         /// </summary>
         protected IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
-
 
         /// <summary>
         /// The task that tracks the project loading process.

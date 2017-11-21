@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.Utils
             string selectedLocation = AppEngineManagementWindow.PromptUser(projectId);
             if (selectedLocation == null)
             {
-                Debug.WriteLine("The user cancelled creating a new app");
+                Debug.WriteLine("The user cancelled creating a new app.");
                 return false;
             }
 
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.Utils
                     dataSource.CreateApplicationAsync(selectedLocation),
                     new ProgressDialogWindow.Options
                     {
-                        Title = Resources.GaeUtilsSetAppEngineRegionProgressCaption,
+                        Title = Resources.GaeUtilsSetAppEngineRegionProgressTitle,
                         Message = Resources.GaeUtilsSetAppEngineRegionProgressMessage,
                         IsCancellable = false
                     });

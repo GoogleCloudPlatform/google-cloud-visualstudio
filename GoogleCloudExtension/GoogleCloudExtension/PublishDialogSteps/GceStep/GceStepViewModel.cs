@@ -49,7 +49,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private readonly GceStepContent _content;
         private readonly IGceDataSource _dataSource;
-        private readonly IApiManager _apiManager;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
@@ -133,11 +132,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         }
 
         /// <summary>
-        /// Whether to display the input controls to the user.
-        /// </summary>
-        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
-
-        /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
         /// </summary>
         public ICommand EnableApiCommand { get; }
@@ -152,13 +146,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             _content = content;
             _dataSource = dataSource;
-            _apiManager = apiManager;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
+            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
         }
 
-        private async void OnEnableApiCommand()
+        private async Task OnEnableApiCommandAsync()
         {
             await CurrentApiManager.EnableServicesAsync(s_requiredApis);
             LoadingProjectTask = InitializeDialogState();

@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// <summary>
         /// Whether to display the input controls to the user.
         /// </summary>
-        public override bool ShowInputControls => !LoadingProject && !NeedsApiEnabled && !NeedsAppCreated && !GeneralError;
+        public override bool ShowInputControls => base.ShowInputControls && !NeedsAppCreated && !GeneralError;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
@@ -137,11 +137,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             _content = content;
             _dataSource = dataSource;
 
-            EnableApiCommand = new ProtectedCommand(OnEnableApiCommand);
-            SetAppRegionCommand = new ProtectedCommand(OnSetAppRegionCommand);
+            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
+            SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync);
         }
 
-        private async void OnSetAppRegionCommand()
+        private async Task OnSetAppRegionCommandAsync()
         {
             if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource))
             {
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
-        private async void OnEnableApiCommand()
+        private async Task OnEnableApiCommandAsync()
         {
             await CurrentApiManager.EnableServicesAsync(s_requiredApis);
             PublishDialog.TrackTask(ValidateGcpProjectState());

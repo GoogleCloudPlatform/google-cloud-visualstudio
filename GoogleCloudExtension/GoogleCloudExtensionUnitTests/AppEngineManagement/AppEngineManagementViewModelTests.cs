@@ -90,7 +90,7 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
 
             Assert.AreEqual(s_mockFlexLocations.First(), _testedViewModel.Result);
 
-            _mockedWindow.Verify(x => x.Close(), Times.Exactly(1), "Failed to close the window on action.");
+            _mockedWindow.Verify(x => x.Close(), Times.Once, "Failed to close the window on action.");
         }
     }
 }

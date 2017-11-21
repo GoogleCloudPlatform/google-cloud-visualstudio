@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
         /// <returns>The list of GAE versions.</returns>
-        Task<IList<Google.Apis.Appengine.v1.Data.Version>> GetVersionListAsync(string serviceId);
+        Task<IList<Version>> GetVersionListAsync(string serviceId);
 
         /// <summary>
         /// Gets a GAE version for the given project, service and version id.
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
         /// <returns>The GAE version.</returns>
-        Task<Google.Apis.Appengine.v1.Data.Version> GetVersionAsync(string serviceId, string versionId);
+        Task<Version> GetVersionAsync(string serviceId, string versionId);
 
         /// <summary>
         /// Deletes a GAE version for the given project, service and version id.

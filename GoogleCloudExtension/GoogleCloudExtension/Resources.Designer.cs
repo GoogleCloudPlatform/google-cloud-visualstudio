@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -297,9 +297,9 @@ namespace GoogleCloudExtension
         /// <summary>
         ///   Looks up a localized string similar to Select App Engine Region.
         /// </summary>
-        public static string AppEngineManagementWindowCaption {
+        public static string AppEngineManagementWindowTitle {
             get {
-                return ResourceManager.GetString("AppEngineManagementWindowCaption", resourceCulture);
+                return ResourceManager.GetString("AppEngineManagementWindowTitle", resourceCulture);
             }
         }
         
@@ -826,7 +826,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No app engine app found..
+        ///   Looks up a localized string similar to No App Engine app found..
         /// </summary>
         public static string CloudExplorerGaeNoAppFoundCaption {
             get {
@@ -907,7 +907,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set app region.
+        ///   Looks up a localized string similar to Set App Region....
         /// </summary>
         public static string CloudExplorerGaeSetAppRegionMenuHeader {
             get {
@@ -3211,20 +3211,20 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App Engine Region.
-        /// </summary>
-        public static string GaeUtilsSetAppEngineRegionProgressCaption {
-            get {
-                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Setting App Engine region..
         /// </summary>
         public static string GaeUtilsSetAppEngineRegionProgressMessage {
             get {
                 return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Engine Region.
+        /// </summary>
+        public static string GaeUtilsSetAppEngineRegionProgressTitle {
+            get {
+                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressTitle", resourceCulture);
             }
         }
         

@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.AppEngineManagement"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:AppEngineManagementViewModel}}">
     

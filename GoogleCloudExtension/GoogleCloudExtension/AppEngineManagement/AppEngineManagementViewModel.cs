@@ -30,17 +30,18 @@ namespace GoogleCloudExtension.AppEngineManagement
     public class AppEngineManagementViewModel : ViewModelBase
     {
         /// <summary>
-        /// The placeholder for the list of regions being loaded.
-        /// </summary>
-        internal static readonly IEnumerable<string> s_loadingPlaceholder = new string[] 
-        {
-            Resources.AppEngineManagementLoadingRegionsPlaceholder
-        };
-
-        /// <summary>
         /// The region to select by default for the user.
         /// </summary>
         internal const string DefaultRegionName = "us-central";
+
+        /// <summary>
+        /// The placeholder for the list of regions being loaded.
+        /// Note: This variable is internal so it can be accessed by tests.
+        /// </summary>
+        internal static readonly IEnumerable<string> s_loadingPlaceholder = new string[]
+        {
+            Resources.AppEngineManagementLoadingRegionsPlaceholder
+        };
 
         private readonly ICloseable _owner;
         private string _selectedLocation;
@@ -101,9 +102,18 @@ namespace GoogleCloudExtension.AppEngineManagement
 
         private async Task<IEnumerable<string>> ListAllLocationsAsync()
         {
-            IEnumerable<string> result = (await _dataSource.GetFlexLocationsAsync()).OrderBy(x => x);
-            SelectedLocation = DefaultRegionName;
-            return result;
+            try
+            {
+                IEnumerable<string> result = (await _dataSource.GetFlexLocationsAsync()).OrderBy(x => x);
+                SelectedLocation = DefaultRegionName;
+                return result;
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ExceptionPrompt(ex);
+                _owner.Close();
+                return Enumerable.Empty<string>();
+            }
         }
 
         private static IGaeDataSource CreateDataSource()
