@@ -44,14 +44,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private CsrCloneWindow(IList<Project> projects) : base(StringResources.CsrCloneWindowTitle)
         {
-            ViewModel = new CsrCloneWindowViewModel(this, projects);
+            ViewModel = new CsrCloneWindowViewModel(Close, projects);
             Content = new CsrCloneWindowContent { DataContext = ViewModel };
         }
-
-        /// <summary>
-        /// Only for unit test, don't call it in production code.
-        /// </summary>
-        internal CsrCloneWindow() : base(StringResources.CsrCloneWindowTitle) { }
 
         /// <summary>
         /// Clone a repository from Google Cloud Source Repository.

@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private static readonly List<string> s_requiredApis =
             new List<string> { KnownApis.CloudSourceRepositoryApiName };
 
-        private readonly CsrCloneWindow _owner;
+        private readonly Action _closeOwnerFunc;
         private readonly HashSet<string> _newReposList = new HashSet<string>();
         private string _localPath;
         private Repo _latestCreatedRepo;
@@ -163,9 +163,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public CloneDialogResult Result { get; private set; }
 
-        public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
+        public CsrCloneWindowViewModel(Action closeOwnerFunc, IList<Project> projects)
         {
-            _owner = owner.ThrowIfNull(nameof(owner));
+            _closeOwnerFunc = closeOwnerFunc.ThrowIfNull(nameof(closeOwnerFunc));
             Projects = projects.ThrowIfNull(nameof(projects));
             if (!Projects.Any())
             {
@@ -236,7 +236,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     RepoItem = new RepoItemViewModel(SelectedRepository, localRepo.Root),
                     JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)
                 };
-                _owner.Close();
+                _closeOwnerFunc();
                 EventsReporterWrapper.ReportEvent(
                     CsrClonedEvent.Create(CommandStatus.Success, watch.Elapsed));
             }

@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public void ClearList()
         {
             _latestTask = null;
-            RaiseAllPropertyChanged();
+            UpdateValueAndDisplayState();
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             Debug.WriteLine(nameof(StartListRepoTaskAsync));
             _latestTask = GetCloudReposAsync(projectId);
-            RaiseAllPropertyChanged();
+            UpdateValueAndDisplayState();
             await _latestTask;
-            RaiseAllPropertyChanged();
+            UpdateValueAndDisplayState();
         }
 
         /// <summary>
@@ -96,6 +96,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             /// Show the list
             /// </summary>
             HasItems
+        }
+
+        private void UpdateValueAndDisplayState()
+        {
+            RaisePropertyChanged(nameof(Value));
+            RaisePropertyChanged(nameof(DisplayState));
         }
     }
 }

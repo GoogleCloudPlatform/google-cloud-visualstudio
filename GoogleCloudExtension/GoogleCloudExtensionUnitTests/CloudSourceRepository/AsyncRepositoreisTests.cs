@@ -61,7 +61,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             _testTaskCompletionSource.SetException(new TestException());
             var task = ExecuteAndHandleException(() => _testObject.StartListRepoTaskAsync("projectid"));
-            Assert.IsNotNull(task.Result);
             throw task.Result;
 
         }
@@ -92,9 +91,9 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             _testTaskCompletionSource.SetResult(_testRepos);
             _testObject.StartListRepoTaskAsync("projectid").Wait();
-            Assert.AreEqual(AsyncRepositories.DisplayOptions.HasItems, _testObject.DisplayState);
             _testObject.ClearList();
             Assert.IsNull(_testObject.Value);
+            Assert.AreEqual(AsyncRepositories.DisplayOptions.Pending, _testObject.DisplayState);
         }
 
         private async Task<Exception> ExecuteAndHandleException(Func<Task> task)
