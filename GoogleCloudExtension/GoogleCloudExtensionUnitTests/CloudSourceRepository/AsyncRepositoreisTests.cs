@@ -69,7 +69,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         public void TestPendingAndCompletion()
         {            
             Assert.AreEqual(AsyncRepositories.DisplayOptions.Pending, _testObject.DisplayState);
-            Assert.IsNull(_testObject.Value);
             _testTaskCompletionSource.SetResult(_testRepos);
             _testObject.StartListRepoTaskAsync("projectid").Wait();
             Assert.AreEqual(AsyncRepositories.DisplayOptions.HasItems, _testObject.DisplayState);
