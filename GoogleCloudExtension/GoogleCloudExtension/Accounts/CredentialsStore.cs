@@ -51,8 +51,7 @@ namespace GoogleCloudExtension.Accounts
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
-        private string _currentProjectId;
-        private string _currentProjectNumericId;
+        private Project _currentProject;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
@@ -91,35 +90,17 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The currently selected project ID.
         /// </summary>
-        public string CurrentProjectId
-        {
-            get { return _currentProjectId; }
-            private set
-            {
-                if (_currentProjectId != value)
-                {
-                    _currentProjectId = value;
-                    UpdateDefaultCredentials();
-                    CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string CurrentProjectId => _currentProject?.ProjectId;
 
         /// <summary>
         /// The currently selected project numeric ID, might be null if no project is loaded.
         /// </summary>
-        public string CurrentProjectNumericId
-        {
-            get { return _currentProjectNumericId; }
-            set
-            {
-                if (_currentProjectNumericId != value)
-                {
-                    _currentProjectNumericId = value;
-                    CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string CurrentProjectNumericId => _currentProject?.ProjectNumber?.ToString();
+
+        /// <summary>
+        /// The currently selected GCP project.
+        /// </summary>
+        public Project CurrentProject => _currentProject;
 
         /// <summary>
         /// The list of accounts known to the store.
@@ -142,8 +123,14 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         public void UpdateCurrentProject(Project project)
         {
-            CurrentProjectId = project?.ProjectId;
-            CurrentProjectNumericId = project?.ProjectNumber?.ToString();
+            if (project?.ProjectId != _currentProject?.ProjectId)
+            {
+                _currentProject = project;
+
+                UpdateDefaultCredentials();
+                CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
+                CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -217,13 +204,13 @@ namespace GoogleCloudExtension.Accounts
             if (newCurrentAccount != null)
             {
                 _currentAccount = newCurrentAccount;
-                _currentProjectId = projectId;
+                _currentProject = new Project { ProjectId = projectId };  // TODO: See if we can load the project.
             }
             else
             {
                 Debug.WriteLine($"Unknown account: {accountName}");
                 _currentAccount = null;
-                _currentProjectId = null;
+                _currentProject = null;
             }
             Reset?.Invoke(this, EventArgs.Empty);
         }

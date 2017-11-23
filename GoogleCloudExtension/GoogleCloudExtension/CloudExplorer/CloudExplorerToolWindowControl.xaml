@@ -332,6 +332,7 @@
                      Style="{StaticResource CommonTextBoxStyle}" />
             <Button Content="..."
                     Grid.Column="1"
+                    Command="{Binding SelectProjectCommand}"
                     Style="{StaticResource CommonButtonDynamicStyle}" Margin="5" />
         </Grid>
         

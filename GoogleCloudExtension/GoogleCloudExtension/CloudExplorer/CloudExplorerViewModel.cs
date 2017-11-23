@@ -21,6 +21,7 @@ using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System;
@@ -111,11 +112,6 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
-        /// The command to show the manage accounts dialog.
-        /// </summary>
-        public ICommand ManageAccountsCommand { get; }
-
-        /// <summary>
         /// The list of buttons to add to the toolbar, a concatenation of all sources buttons.
         /// </summary>
         public IEnumerable<ButtonDefinition> Buttons { get; }
@@ -157,10 +153,20 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
+        /// The command to show the manage accounts dialog.
+        /// </summary>
+        public ICommand ManageAccountsCommand { get; }
+
+        /// <summary>
         /// The command to execute when a user double clicks on an item.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
 
+        /// <summary>
+        /// The command to execute to select a new GCP project.
+        /// </summary>
+        public ICommand SelectProjectCommand { get; }
+        
         #region ICloudSourceContext implementation.
 
         Project ICloudSourceContext.CurrentProject => _currentProject as Project;
@@ -214,6 +220,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
             DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
+            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
@@ -258,16 +265,23 @@ namespace GoogleCloudExtension.CloudExplorer
             ManageAccountsWindow.PromptUser();
         }
 
+        private void OnSelectProjectCommand()
+        {
+            Project selectedProject = PickProjectIdWindow.PromptUser(Resources.PublishDialogSelectGcpProjectTitle);
+            if (selectedProject == null)
+            {
+                return;
+            }
+
+            CredentialsStore.Default.UpdateCurrentProject(selectedProject);
+        }
+
         private void OnCurrentProjectIdChanged(object sender, EventArgs e)
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                if (IsBusy)
-                {
-                    return;
-                }
+                CurrentProject = CredentialsStore.Default.CurrentProject;
 
-                Debug.WriteLine("Changing project.");
                 NotifySourcesOfUpdatedAccountOrProject();
                 RefreshSources();
             });

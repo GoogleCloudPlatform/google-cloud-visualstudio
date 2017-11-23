@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -5470,7 +5470,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Google Cloud Project to Publish to - {0}.
+        ///   Looks up a localized string similar to Select Google Cloud Project.
         /// </summary>
         public static string PublishDialogSelectGcpProjectTitle {
             get {
