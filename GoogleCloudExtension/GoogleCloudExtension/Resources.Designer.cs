@@ -3157,6 +3157,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string FlexPublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
@@ -3171,6 +3180,15 @@ namespace GoogleCloudExtension {
         public static string FlexPublishInvalidVersionMessage {
             get {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud..
+        /// </summary>
+        public static string FlexPublishNoAppFoundMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishNoAppFoundMessage", resourceCulture);
             }
         }
         
@@ -3234,6 +3252,15 @@ namespace GoogleCloudExtension {
         public static string GcePublishAttachDebuggerCaption {
             get {
                 return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GcePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GcePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -4048,7 +4075,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploying {0} to Container Engine.
+        ///   Looks up a localized string similar to Deploying {0} to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeployingToGkeMessage {
             get {
@@ -4075,7 +4102,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
+        ///   Looks up a localized string similar to Failed to deploy {0} to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentFailureMessage {
             get {
@@ -4111,7 +4138,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploying to Container Engine.
+        ///   Looks up a localized string similar to Deploying to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentStatusMessage {
             get {
@@ -4120,7 +4147,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project {0} deployed to Container Engine.
+        ///   Looks up a localized string similar to Project {0} deployed to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentSuccessMessage {
             get {
@@ -4179,6 +4206,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishEmptyDeploymentVersionMessage {
             get {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?.
+        /// </summary>
+        public static string GkePublishEnableApiMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -5236,7 +5272,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C_ontainer Engine.
+        ///   Looks up a localized string similar to _Kubernetes Engine.
         /// </summary>
         public static string PublishDialogChoiceStepGkeName {
             get {
@@ -5245,7 +5281,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy as a service to Container Engine.
+        ///   Looks up a localized string similar to Deploy as a service to Kubernetes Engine.
         /// </summary>
         public static string PublishDialogChoiceStepGkeToolTip {
             get {

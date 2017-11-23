@@ -1544,11 +1544,11 @@
     <comment>The message shown in the UI to choose cluster.</comment>
   </data>
   <data name="GkePublishDeployingToGkeMessage" xml:space="preserve">
-    <value>Deploying {0} to Container Engine</value>
+    <value>Deploying {0} to Kubernetes Engine</value>
     <comment>Message printed to the output window when deploying to GKE. {0} is the name of the project.</comment>
   </data>
   <data name="GkePublishDeploymentFailureMessage" xml:space="preserve">
-    <value>Failed to deploy {0} to Container Engine</value>
+    <value>Failed to deploy {0} to Kubernetes Engine</value>
     <comment>Message printed in the output window when the deployment fails. {0} is the project name.</comment>
   </data>
   <data name="GkePublishDeploymentNameMessage" xml:space="preserve">
@@ -1556,11 +1556,11 @@
     <comment>The message shown in the UI for deployment name textbox.</comment>
   </data>
   <data name="GkePublishDeploymentStatusMessage" xml:space="preserve">
-    <value>Deploying to Container Engine</value>
+    <value>Deploying to Kubernetes Engine</value>
     <comment>Message shown in the status bar while deploying.</comment>
   </data>
   <data name="GkePublishDeploymentSuccessMessage" xml:space="preserve">
-    <value>Project {0} deployed to Container Engine</value>
+    <value>Project {0} deployed to Kubernetes Engine</value>
     <comment>Message printed in the output window once the deployment finished succesfully. {0} is the project name.</comment>
   </data>
   <data name="GkePublishDeploymentVersionMessage" xml:space="preserve">
@@ -1584,11 +1584,11 @@
     <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
-    <value>C_ontainer Engine</value>
+    <value>_Kubernetes Engine</value>
     <comment>The name of the GKE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
-    <value>Deploy as a service to Container Engine</value>
+    <value>Deploy as a service to Kubernetes Engine</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
   <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
@@ -2870,6 +2870,22 @@
   <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
     <value>Enable the Cloud SQL API</value>
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="FlexPublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>
+  </data>
+  <data name="FlexPublishNoAppFoundMessage" xml:space="preserve">
+    <value>Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.</value>
+    <comment>Message shwon when there's no App Engine app defined for the project.</comment>
+  </data>
+  <data name="GcePublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to a GCE VM.</comment>
+  </data>
+  <data name="GkePublishEnableApiMessage" xml:space="preserve">
+    <value>Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?</value>
+    <comment>Message shown when we need to enable APIs to deploy to GKE.</comment>
   </data>
   <data name="UiEnableButtonCaption" xml:space="preserve">
     <value>Enable</value>
