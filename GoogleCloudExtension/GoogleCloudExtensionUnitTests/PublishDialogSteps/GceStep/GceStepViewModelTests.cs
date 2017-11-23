@@ -75,57 +75,73 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
+        public void TestStateAfterOnPushedToDialog()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
+            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
         public async Task TestPositiveProjectValidation()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Check the state before the validation.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-
             _areServicesEnabledTaskSource.SetResult(true);
             _getInstanceListTaskSource.SetResult(s_mockedInstances);
 
-            // Wait for project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Validate the state after the load.
             Assert.IsTrue(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-            Assert.IsTrue(_objectUnderTest.Instances.IsCompleted);
-            Assert.AreEqual(s_mockedInstances.Count, _objectUnderTest.Instances.Value.Count());
-
-            // Verify the expected methods were called.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetInstanceListAsync(), Times.AtLeastOnce);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsNotNull(_objectUnderTest.Instances);
+            Assert.AreEqual(s_mockedInstances.Count, _objectUnderTest.Instances.Count());
         }
 
         [TestMethod]
         public async Task TestNeedsApiValidation()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Check the state before the validation.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-
             _areServicesEnabledTaskSource.SetResult(false);
-            _getInstanceListTaskSource.SetResult(null);
 
-            // Wait for the project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Validate the state after the load.
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+        }
 
-            // Verify that the expected methods were called.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetInstanceListAsync(), Times.Never);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+        [TestMethod]
+        public async Task TestErrorCheckingServices()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
+        public async Task TestErrorLoadingInstances()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetResult(true);
+            _getInstanceListTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
     }
 }

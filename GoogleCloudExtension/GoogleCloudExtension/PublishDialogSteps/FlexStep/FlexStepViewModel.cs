@@ -310,7 +310,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                UserPromptUtils.ExceptionPrompt(ex);
                 CanPublish = false;
                 GeneralError = true;
             }

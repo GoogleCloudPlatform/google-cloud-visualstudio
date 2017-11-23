@@ -52,7 +52,7 @@
                    Target="{Binding ElementName=_instances}"
                    Style="{StaticResource CommonLabelStyle}"/>
             <ComboBox x:Name="_instances"
-                      ItemsSource="{Binding Instances.Value}"
+                      ItemsSource="{Binding Instances}"
                       DisplayMemberPath="Name"
                       IsSynchronizedWithCurrentItem="True"
                       Margin="0,0,0,15"
@@ -94,6 +94,13 @@
                 <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
             </Hyperlink>
         </TextBlock>
+
+        <!-- Message shwon when there is a general error. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
+                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}" />
 
     </StackPanel>
 </UserControl>

@@ -79,60 +79,76 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
+        public void TestStateAfterOnPushedToDialog()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
+            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
         public async Task TestPositiveProjectValidation()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Check the state before the validation.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-
             _areServicesEnabledTaskSource.SetResult(true);
             _clusterListTaskSource.SetResult(s_mockedClusters);
 
-            // Wait for project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Check the result after validation.
             Assert.IsTrue(_objectUnderTest.CanPublish);
-            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsNotNull(_objectUnderTest.Clusters);
             Assert.AreEqual(ProjectId.ToLower(), _objectUnderTest.DeploymentName);
-            Assert.IsTrue(_objectUnderTest.Clusters.IsCompleted);
-            Assert.AreEqual(s_mockedClusters.Count, _objectUnderTest.Clusters.Value.Count());
-
-            // Verify the expected calls.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.AtLeastOnce);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+            Assert.AreEqual(s_mockedClusters.Count, _objectUnderTest.Clusters.Count());
         }
 
         [TestMethod]
         public async Task TestNeedsApiValidation()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Check the state before the validation.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
-
             _areServicesEnabledTaskSource.SetResult(false);
-            _clusterListTaskSource.SetResult(null);
 
-            // Wait for the project load to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Check the result after validation.
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+        }
 
-            // Verify the expected method were called.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedDataSource.Verify(x => x.GetClusterListAsync(), Times.Never);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+        [TestMethod]
+        public async Task TestErrorDuringApiValidation()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
+        public async Task TestErrorDuringClustersLoad()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetResult(true);
+            _clusterListTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
     }
 }

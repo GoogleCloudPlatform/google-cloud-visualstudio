@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
-        private AsyncProperty<IEnumerable<Cluster>> _clusters;
+        private IEnumerable<Cluster> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
-        public AsyncProperty<IEnumerable<Cluster>> Clusters
+        public IEnumerable<Cluster> Clusters
         {
             get { return _clusters; }
             private set { SetValueAndRaise(ref _clusters, value); }
@@ -216,7 +216,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private void OnRefreshClustersListCommand()
         {
             Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
-            Clusters = new AsyncProperty<IEnumerable<Cluster>>(refreshTask);
             PublishDialog.TrackTask(refreshTask);
         }
 
@@ -386,14 +385,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                 if (await validateTask)
                 {
-                    Clusters = new AsyncProperty<IEnumerable<Cluster>>(GetAllClustersAsync());
-
-                    // Mark that the dialog is going to be busy until we have loaded the data.
-                    PublishDialog.TrackTask(Clusters.ValueTask);
-
-                    // Wait for the clustesr to be loaded before showing the data.
-                    await Clusters.ValueTask;
+                    Task<IEnumerable<Cluster>> clustersTask = GetAllClustersAsync();
+                    PublishDialog.TrackTask(clustersTask);
+                    Clusters = await clustersTask;
                 }
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                CanPublish = false;
+                GeneralError = true;
             }
             finally
             {

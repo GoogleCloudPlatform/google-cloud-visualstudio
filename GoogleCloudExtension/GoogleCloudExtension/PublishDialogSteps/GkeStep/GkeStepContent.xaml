@@ -52,7 +52,7 @@
                Style="{StaticResource CommonLabelStyle}"/>
 
             <ComboBox x:Name="_clusters"
-                  ItemsSource="{Binding Clusters.Value}"
+                  ItemsSource="{Binding Clusters}"
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
@@ -165,6 +165,13 @@
                 <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
             </Hyperlink>
         </TextBlock>
+
+        <!-- Message shwon when there is a general error. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
+                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}" />
 
     </StackPanel>
 </UserControl>

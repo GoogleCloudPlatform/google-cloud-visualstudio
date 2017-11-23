@@ -69,14 +69,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestPushedState()
+        public void TestStateAfterOnPushedToDialog()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
 
+            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
             Assert.IsTrue(_objectUnderTest.LoadingProject);
             Assert.IsTrue(_objectUnderTest.CanPublish);
-
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.GeneralError);
@@ -138,6 +137,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             await _objectUnderTest.LoadingProjectTask;
 
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
@@ -153,6 +153,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             await _objectUnderTest.LoadingProjectTask;
 
             Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);

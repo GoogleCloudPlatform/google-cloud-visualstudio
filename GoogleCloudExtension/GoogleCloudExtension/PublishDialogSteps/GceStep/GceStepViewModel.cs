@@ -54,13 +54,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
-        private AsyncProperty<IEnumerable<Instance>> _instances;
+        private IEnumerable<Instance> _instances;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
         /// the available target for the publish process.
         /// </summary>
-        public AsyncProperty<IEnumerable<Instance>> Instances
+        public IEnumerable<Instance> Instances
         {
             get { return _instances; }
             private set { SetValueAndRaise(ref _instances, value); }
@@ -278,12 +278,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 if (await validateTask)
                 {
-                    Instances = new AsyncProperty<IEnumerable<Instance>>(GetAllWindowsInstancesAsync());
-                    PublishDialog.TrackTask(Instances.ValueTask);
-
-                    // Wait for the data to be loaded before hiding the loading message.
-                    await Instances.ValueTask;
+                    Task<IEnumerable<Instance>> instancesTask = GetAllWindowsInstancesAsync();
+                    PublishDialog.TrackTask(instancesTask);
+                    Instances = await instancesTask;
                 }
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                CanPublish = false;
+                GeneralError = true;
             }
             finally
             {
