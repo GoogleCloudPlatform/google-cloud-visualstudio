@@ -321,13 +321,20 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <ComboBox ItemsSource="{Binding EffectiveProjects}"
-                  IsEnabled="{Binding IsNotEmptyState}"
-                  SelectedItem="{Binding CurrentProject}"
-                  SelectedIndex="0"
-                  Grid.Row="1"
-                  Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}" />
-
+        <Grid  Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBox Text="{Binding CurrentProject.ProjectId}"
+                     IsReadOnly="True"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+            <Button Content="..."
+                    Grid.Column="1"
+                    Style="{StaticResource CommonButtonDynamicStyle}" Margin="5" />
+        </Grid>
+        
         <!-- Message for the empty state -->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"

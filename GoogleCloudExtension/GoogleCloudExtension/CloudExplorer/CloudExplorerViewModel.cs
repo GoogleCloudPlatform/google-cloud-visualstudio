@@ -50,8 +50,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private bool _isBusy;
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
-        private object _currentProject;
-        private IList<Project> _projects;
+        private Project _currentProject;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<GPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
@@ -75,7 +74,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Stores whether the cloud explorer is in zero state.
         /// </summary>
-        public bool IsEmptyState => IsReady && (CredentialsStore.Default.CurrentAccount == null || (_projects?.Count ?? 0) == 0);
+        public bool IsEmptyState => IsReady && (CredentialsStore.Default.CurrentAccount == null || CurrentProject == null);
 
         /// <summary>
         /// The negation of IsEmptyState.
@@ -124,36 +123,10 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The currently selected project.
         /// </summary>
-        public object CurrentProject
+        public Project CurrentProject
         {
             get { return _currentProject; }
-            set
-            {
-                SetValueAndRaise(ref _currentProject, value);
-                if (value == null || value is Project)
-                {
-                    var project = (Project)value;
-                    CredentialsStore.Default.UpdateCurrentProject(project);
-                }
-            }
-        }
-
-        /// <summary>
-        /// The list of projects for the current account.
-        /// </summary>
-        public IEnumerable EffectiveProjects
-        {
-            get
-            {
-                if (_projects == null || _projects.Count == 0)
-                {
-                    return s_projectsWithPlaceholder;
-                }
-                else
-                {
-                    return _projects;
-                }
-            }
+            private set { SetValueAndRaise(ref _currentProject, value); }
         }
 
         /// <summary>
@@ -191,8 +164,6 @@ namespace GoogleCloudExtension.CloudExplorer
         #region ICloudSourceContext implementation.
 
         Project ICloudSourceContext.CurrentProject => _currentProject as Project;
-
-        IEnumerable<Project> ICloudSourceContext.Projects => _projects;
 
         void ICloudSourceContext.ShowPropertiesWindow(object item)
         {
@@ -346,28 +317,9 @@ namespace GoogleCloudExtension.CloudExplorer
                 InvalidateAccountDependentDataSources();
                 UpdateUserProfile();
 
-                // Load the projects and select the new current project. Preference is given to the current project
-                // as known by CredentialsStore. If it is not a valid project then the first project in the list will
-                // be used. If no project is found then null will be the value.
-                var projects = await LoadProjectListAsync();
-
-                if (projects.Count == 0)
-                {
-                    UpdateProjects(null);
-                    CurrentProject = s_projectPlaceholder;
-                }
-                else
-                {
-                    var newCurrentProject =
-                        projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId) ??
-                        projects.FirstOrDefault();
-
-                    // Set the properties in the right order. This is needed because this in turn will
-                    // set the properties in the list control in the right order to preserve the current
-                    // project.
-                    UpdateProjects(projects);
-                    CurrentProject = newCurrentProject;
-                }
+                // Load the current project if one is found, otherwise ask the user to choose a project.
+                Project newCurrentProject = await _resourceManagerDataSource.Value.GetProjectAsync(CredentialsStore.Default.CurrentProjectId);
+                CurrentProject = newCurrentProject;
 
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();
@@ -405,19 +357,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 EmptyStateButtonCaption = Resources.CloudExplorerNoAccountButtonCaption;
                 EmptyStateCommand = ManageAccountsCommand;
             }
-            else if (_projects == null || _projects.Count == 0)
+            else if (CurrentProject == null)
             {
                 EmptyStateMessage = Resources.CloudExploreNoProjectMessage;
                 EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
                 EmptyStateCommand = new ProtectedCommand(OnNavigateToCloudConsoleCommand);
             }
-        }
-
-        private void UpdateProjects(IList<Project> projects)
-        {
-            _projects = projects;
-            RaisePropertyChanged(nameof(EffectiveProjects));
-            InvalidateEmptyState();
         }
 
         private void InvalidateAccountDependentDataSources()

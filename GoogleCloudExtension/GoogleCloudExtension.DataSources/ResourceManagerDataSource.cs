@@ -95,9 +95,15 @@ namespace GoogleCloudExtension.DataSources
             {
                 return await Service.Projects.Get(projectId).ExecuteAsync();
             }
-            catch (GoogleApiException e)
+            catch (GoogleApiException ex)
             {
-                throw new DataSourceException(e.Message, e);
+                if (ex.Error.Code == 404)
+                {
+                    Debug.WriteLine($"Could not find project: {projectId}");
+                    return null;
+                }
+
+                throw new DataSourceException(ex.Message, ex);
             }
         }
 
