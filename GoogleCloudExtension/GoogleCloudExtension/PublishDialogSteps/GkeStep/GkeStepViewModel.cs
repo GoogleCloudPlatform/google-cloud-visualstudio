@@ -22,7 +22,6 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
