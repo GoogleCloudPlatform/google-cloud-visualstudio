@@ -78,18 +78,25 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
         }
 
         [TestMethod]
+        public async Task CanExecuteTest()
+        {
+            _flexLocationsSource.SetResult(s_mockFlexLocations);
+            await _testedViewModel.Locations.ValueTask;
+            _testedViewModel.SelectedLocation = s_mockFlexLocations.First();
+
+            Assert.IsTrue(_testedViewModel.ActionCommand.CanExecute(null));
+        }
+
+        [TestMethod]
         public async Task ResultTest()
         {
             _flexLocationsSource.SetResult(s_mockFlexLocations);
             await _testedViewModel.Locations.ValueTask;
-
             _testedViewModel.SelectedLocation = s_mockFlexLocations.First();
 
-            Assert.IsTrue(_testedViewModel.ActionCommand.CanExecute(null));
             _testedViewModel.ActionCommand.Execute(null);
 
             Assert.AreEqual(s_mockFlexLocations.First(), _testedViewModel.Result);
-
             _mockedWindow.Verify(x => x.Close(), Times.Once, "Failed to close the window on action.");
         }
     }

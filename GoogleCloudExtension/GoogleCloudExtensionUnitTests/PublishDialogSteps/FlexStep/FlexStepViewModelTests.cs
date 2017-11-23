@@ -41,7 +41,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         private Mock<IPublishDialog> _mockedPublishDialog;
 
         [TestInitialize]
-        public void BeforeEach()
+        public void Initialize()
         {
             _promptUserFunctionMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             UserPromptWindow.PromptUserFunction = _promptUserFunctionMock.Object;
@@ -69,82 +69,93 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestPositiveProjectValidation()
+        public void TestPushedState()
         {
-            // Moc the dialog being entered.
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
             Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
 
-            // Check state before validation.
             Assert.IsTrue(_objectUnderTest.LoadingProject);
             Assert.IsTrue(_objectUnderTest.CanPublish);
 
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.GeneralError);
+        }
 
-            // Mock a positive validation.
+        [TestMethod]
+        public async Task TestPositiveProjectValidation()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _appTaskSource.SetResult(new Google.Apis.Appengine.v1.Data.Application());
 
-            // Wait for the operation to finish.
             await _objectUnderTest.LoadingProjectTask;
 
-            // Check state after validation.
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsTrue(_objectUnderTest.CanPublish);
-
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.GeneralError);
+        }
 
-            // Check that the expected methods were called.
-            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.AtLeastOnce);
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce());
+        [TestMethod]
+        public async Task TestErrorCheckingServices()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+        }
+
+        [TestMethod]
+        public async Task TestErrorObtainingApp()
+        {
+            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _areServicesEnabledTaskSource.SetResult(true);
+            _appTaskSource.SetException(new DataSourceException());
+
+            await _objectUnderTest.LoadingProjectTask;
+
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
 
         [TestMethod]
         public async Task TestNeedsApiState()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Mock that the API needs to be enabled.
             _areServicesEnabledTaskSource.SetResult(false);
-            _appTaskSource.SetResult(null);
 
             await _objectUnderTest.LoadingProjectTask;
 
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
-
-            // Check that the expected methods were called.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.Never);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
         }
 
         [TestMethod]
         public async Task TestNeedsAppState()
         {
             _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
-
-            // Mock that the app needs to be created.
             _areServicesEnabledTaskSource.SetResult(true);
             _appTaskSource.SetResult(null);
 
             await _objectUnderTest.LoadingProjectTask;
 
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
-
-            // Check that the expected methods were called.
-            _mockedApiManager.Verify(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()), Times.AtLeastOnce);
-            _mockedGaeDataSource.Verify(x => x.GetApplicationAsync(), Times.AtLeastOnce);
-            _mockedPublishDialog.Verify(x => x.TrackTask(It.IsAny<Task>()), Times.AtLeastOnce);
-
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
 
         [TestMethod]

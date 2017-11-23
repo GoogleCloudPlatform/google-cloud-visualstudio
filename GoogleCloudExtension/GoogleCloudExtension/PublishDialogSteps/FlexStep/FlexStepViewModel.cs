@@ -50,7 +50,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private bool _promote = true;
         private bool _openWebsite = true;
         private bool _needsAppCreated = false;
-        private bool _generalError = false;
 
         /// <summary>
         /// The version to use for the the app in App Engine Flex.
@@ -99,22 +98,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         }
 
         /// <summary>
-        /// Whether there was an error validating the project.
-        /// </summary>
-        public bool GeneralError
-        {
-            get { return _generalError; }
-            set
-            {
-                SetValueAndRaise(ref _generalError, value);
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
         /// Whether to display the input controls to the user.
         /// </summary>
-        public override bool ShowInputControls => base.ShowInputControls && !NeedsAppCreated && !GeneralError;
+        public override bool ShowInputControls => base.ShowInputControls && !NeedsAppCreated;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
@@ -295,7 +281,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         {
             try
             {
-                // Go into validating mode.
+                // Go into loading mode.
                 LoadingProject = true;
 
                 // Clean slate for the messages.
@@ -313,23 +299,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                     return;
                 }
 
-                try
+                // Using the GAE API, check if there's an app for the project.
+                Google.Apis.Appengine.v1.Data.Application app = await CurrentDataSource.GetApplicationAsync();
+                if (app == null)
                 {
-                    // Using the GAE API, check if there's an app for the project.
-                    Google.Apis.Appengine.v1.Data.Application app = await CurrentDataSource.GetApplicationAsync();
-                    if (app == null)
-                    {
-                        CanPublish = false;
-                        NeedsAppCreated = true;
-                        return;
-                    }
-                }
-                catch (DataSourceException ex)
-                {
-                    UserPromptUtils.ExceptionPrompt(ex);
                     CanPublish = false;
-                    GeneralError = true;
+                    NeedsAppCreated = true;
+                    return;
                 }
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                UserPromptUtils.ExceptionPrompt(ex);
+                CanPublish = false;
+                GeneralError = true;
             }
             finally
             {

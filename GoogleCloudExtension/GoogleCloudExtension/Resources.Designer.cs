@@ -5308,15 +5308,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again..
-        /// </summary>
-        public static string PublishDialogFlexApiCheckErrorMessage {
-            get {
-                return ResourceManager.GetString("PublishDialogFlexApiCheckErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The selected GCP project needs the app region to be selected before you can deploy..
         /// </summary>
         public static string PublishDialogFlexNeedToSetRegionMessage {
@@ -5430,6 +5421,15 @@ namespace GoogleCloudExtension {
         public static string PublishDialogPrevButtonCaption {
             get {
                 return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again..
+        /// </summary>
+        public static string PublishDialogProjectLoadErrorMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectLoadErrorMessage", resourceCulture);
             }
         }
         

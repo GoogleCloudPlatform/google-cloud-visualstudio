@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly IApiManager _apiManager;
         private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
+        private bool _generalError = false;
 
         internal Func<string, Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
 
@@ -115,9 +116,22 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         /// <summary>
+        /// Whether there was an error validating the project.
+        /// </summary>
+        public bool GeneralError
+        {
+            get { return _generalError; }
+            set
+            {
+                SetValueAndRaise(ref _generalError, value);
+                RaisePropertyChanged(nameof(ShowInputControls));
+            }
+        }
+
+        /// <summary>
         /// Whether the input controls should be visible at this point.
         /// </summary>
-        public virtual bool ShowInputControls => !LoadingProject && !NeedsApiEnabled;
+        public virtual bool ShowInputControls => !LoadingProject && !NeedsApiEnabled && !GeneralError;
 
         /// <summary>
         /// Returns the <seealso cref="IApiManager"/> instance to use.

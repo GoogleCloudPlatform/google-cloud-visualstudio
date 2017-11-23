@@ -2935,9 +2935,9 @@
     <value>Enable the services</value>
     <comment>The caption for the enable API command.</comment>
   </data>
-  <data name="PublishDialogFlexApiCheckErrorMessage" xml:space="preserve">
+  <data name="PublishDialogProjectLoadErrorMessage" xml:space="preserve">
     <value>Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again.</value>
-    <comment>The message shown when there's an error checking the API state.</comment>
+    <comment>The message shown when there's an error verifying a GCP project.</comment>
   </data>
   <data name="PublishDialogFlexNeedToSetRegionMessage" xml:space="preserve">
     <value>The selected GCP project needs the app region to be selected before you can deploy.</value>
