@@ -4012,7 +4012,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploying {0} to Container Engine.
+        ///   Looks up a localized string similar to Deploying {0} to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeployingToGkeMessage {
             get {
@@ -4039,7 +4039,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
+        ///   Looks up a localized string similar to Failed to deploy {0} to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentFailureMessage {
             get {
@@ -4075,7 +4075,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploying to Container Engine.
+        ///   Looks up a localized string similar to Deploying to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentStatusMessage {
             get {
@@ -4084,7 +4084,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project {0} deployed to Container Engine.
+        ///   Looks up a localized string similar to Project {0} deployed to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentSuccessMessage {
             get {
@@ -4147,7 +4147,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Container Engine. Do you want to enable the necessary services now?.
+        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?.
         /// </summary>
         public static string GkePublishEnableApiMessage {
             get {
@@ -5209,7 +5209,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C_ontainer Engine.
+        ///   Looks up a localized string similar to _Kubernetes Engine.
         /// </summary>
         public static string PublishDialogChoiceStepGkeName {
             get {
@@ -5218,7 +5218,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy as a service to Container Engine.
+        ///   Looks up a localized string similar to Deploy as a service to Kubernetes Engine.
         /// </summary>
         public static string PublishDialogChoiceStepGkeToolTip {
             get {
