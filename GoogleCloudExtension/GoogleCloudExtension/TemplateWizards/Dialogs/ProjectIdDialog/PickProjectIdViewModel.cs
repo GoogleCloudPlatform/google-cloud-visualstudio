@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
     /// </summary>
     public class PickProjectIdViewModel : ViewModelBase
     {
-        private IList<Project> _projects;
+        private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private AsyncProperty _loadTask;
 
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// <summary>
         /// The list of projects available to the current user.
         /// </summary>
-        public IList<Project> Projects
+        public IEnumerable<Project> Projects
         {
             get { return _projects; }
             set { SetValueAndRaise(ref _projects, value); }
@@ -123,11 +123,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 
         private async Task LoadProjectsAsync()
         {
-            Projects = await _resourceManagerDataSourceFactory().GetSortedActiveProjectsAsync();
+            Projects = await CredentialsStore.Default.CurrentAccountProjects;
             if (SelectedProject == null)
             {
-                SelectedProject =
-                    Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);
+                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);
             }
             else
             {
