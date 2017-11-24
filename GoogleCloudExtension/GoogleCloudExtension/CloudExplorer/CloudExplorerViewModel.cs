@@ -227,11 +227,11 @@ namespace GoogleCloudExtension.CloudExplorer
             DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
 
-            CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
-            CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
-            CredentialsStore.Default.Reset += OnReset;
+            CredentialsStore.Default.CurrentAccountChanged += OnCredentialsChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnCredentialsChanged;
+            CredentialsStore.Default.Reset += OnCredentialsChanged;
 
-            ResetCredentials();
+            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
         }
 
         private static GPlusDataSource CreatePlusDataSource()
@@ -281,17 +281,6 @@ namespace GoogleCloudExtension.CloudExplorer
             CredentialsStore.Default.UpdateCurrentProject(selectedProject);
         }
 
-        private void OnCurrentProjectIdChanged(object sender, EventArgs e)
-        {
-            ErrorHandlerUtils.HandleAsyncExceptions(async () =>
-            {
-                await LoadCurrentProject();
-
-                NotifySourcesOfUpdatedAccountOrProject();
-                RefreshSources();
-            });
-        }
-
         private void OnNavigateToCloudConsoleCommand()
         {
             Process.Start("https://console.cloud.google.com/");
@@ -299,37 +288,28 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefreshCommand()
         {
-            ResetCredentials();
+            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
         }
 
         #endregion
 
         #region Event handlers
 
-        private void OnReset(object sender, EventArgs e)
+        private void OnCredentialsChanged(object sender, EventArgs e)
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
+            ErrorHandlerUtils.HandleAsyncExceptions(async () =>
             {
                 Debug.WriteLine("Resetting the credentials.");
-                ResetCredentials();
-            });
-        }
-
-        private void OnCurrentAccountChanged(object sender, EventArgs e)
-        {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                Debug.WriteLine("Changing account.");
-                ResetCredentials();
+                await ResetCredentialsAsync();
             });
         }
 
         #endregion
 
-        private  Task<Project> GetProjectForId(string projectId)
-            => _resourceManagerDataSource.Value.GetProjectAsync(projectId);
+        private async Task<Project> GetProjectForId(string projectId)
+            => projectId != null ? await _resourceManagerDataSource.Value.GetProjectAsync(projectId) : null;
 
-        private async void ResetCredentials()
+        private async Task ResetCredentialsAsync()
         {
             try
             {
