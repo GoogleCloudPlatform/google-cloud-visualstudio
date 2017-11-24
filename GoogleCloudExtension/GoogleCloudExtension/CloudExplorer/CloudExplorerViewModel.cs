@@ -406,19 +406,6 @@ namespace GoogleCloudExtension.CloudExplorer
             _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
         }
 
-        private async Task<IList<Project>> LoadProjectListAsync()
-        {
-            if (_resourceManagerDataSource.Value != null)
-            {
-                var result = await _resourceManagerDataSource.Value.GetProjectsListAsync();
-                return result.Where(x => x.LifecycleState == "ACTIVE").OrderBy(x => x.Name).ToList();
-            }
-            else
-            {
-                return new List<Project>();
-            }
-        }
-
         private void RefreshSources()
         {
             foreach (var source in _sources)
