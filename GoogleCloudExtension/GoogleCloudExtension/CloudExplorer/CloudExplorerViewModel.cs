@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private bool _isBusy;
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
-        private Project _currentProject;
+        private AsyncProperty<Project> _currentProjectAsync;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<GPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
@@ -119,10 +119,10 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The currently selected project.
         /// </summary>
-        public Project CurrentProject
+        public AsyncProperty<Project> CurrentProject
         {
-            get { return _currentProject; }
-            private set { SetValueAndRaise(ref _currentProject, value); }
+            get { return _currentProjectAsync; }
+            private set { SetValueAndRaise(ref _currentProjectAsync, value); }
         }
 
         /// <summary>
@@ -166,10 +166,10 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The command to execute to select a new GCP project.
         /// </summary>
         public ICommand SelectProjectCommand { get; }
-        
+
         #region ICloudSourceContext implementation.
 
-        Project ICloudSourceContext.CurrentProject => _currentProject as Project;
+        Project ICloudSourceContext.CurrentProject => _currentProjectAsync.Value;
 
         void ICloudSourceContext.ShowPropertiesWindow(object item)
         {
@@ -280,7 +280,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                CurrentProject = CredentialsStore.Default.CurrentProject;
+                CurrentProject = AsyncPropertyUtils.CreateAsyncProperty(GetProjectForId(CredentialsStore.Default.CurrentProjectId));
 
                 NotifySourcesOfUpdatedAccountOrProject();
                 RefreshSources();
@@ -321,7 +321,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         #endregion
 
-        private async void ResetCredentials()
+        private  Task<Project> GetProjectForId(string projectId)
+            => _resourceManagerDataSource.Value.GetProjectAsync(projectId);
+
+        private void ResetCredentials()
         {
             try
             {
@@ -332,8 +335,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 UpdateUserProfile();
 
                 // Load the current project if one is found, otherwise ask the user to choose a project.
-                Project newCurrentProject = await _resourceManagerDataSource.Value.GetProjectAsync(CredentialsStore.Default.CurrentProjectId);
-                CurrentProject = newCurrentProject;
+                CurrentProject = AsyncPropertyUtils.CreateAsyncProperty(GetProjectForId(CredentialsStore.Default.CurrentProjectId));
 
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();

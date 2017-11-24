@@ -51,7 +51,6 @@ namespace GoogleCloudExtension.Accounts
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
-        private Project _currentProject;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
@@ -90,17 +89,12 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The currently selected project ID.
         /// </summary>
-        public string CurrentProjectId => _currentProject?.ProjectId;
+        public string CurrentProjectId { get; private set; }
 
         /// <summary>
         /// The currently selected project numeric ID, might be null if no project is loaded.
         /// </summary>
-        public string CurrentProjectNumericId => _currentProject?.ProjectNumber?.ToString();
-
-        /// <summary>
-        /// The currently selected GCP project.
-        /// </summary>
-        public Project CurrentProject => _currentProject;
+        public string CurrentProjectNumericId { get; private set; }
 
         /// <summary>
         /// The list of accounts known to the store.
@@ -123,9 +117,10 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         public void UpdateCurrentProject(Project project)
         {
-            if (project?.ProjectId != _currentProject?.ProjectId)
+            if (project?.ProjectId != CurrentProjectId)
             {
-                _currentProject = project;
+                CurrentProjectId = project.ProjectId;
+                CurrentProjectNumericId = project.ProjectNumber.ToString();
 
                 UpdateDefaultCredentials();
                 CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
@@ -204,13 +199,14 @@ namespace GoogleCloudExtension.Accounts
             if (newCurrentAccount != null)
             {
                 _currentAccount = newCurrentAccount;
-                _currentProject = new Project { ProjectId = projectId };  // TODO: See if we can load the project.
+                CurrentProjectId = projectId;
+                CurrentProjectNumericId = null;
             }
             else
             {
                 Debug.WriteLine($"Unknown account: {accountName}");
                 _currentAccount = null;
-                _currentProject = null;
+                CurrentProjectId = null;
             }
             Reset?.Invoke(this, EventArgs.Empty);
         }
