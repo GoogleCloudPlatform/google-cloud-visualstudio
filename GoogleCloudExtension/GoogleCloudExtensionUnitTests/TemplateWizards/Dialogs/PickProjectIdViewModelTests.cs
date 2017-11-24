@@ -50,8 +50,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void BeforeEach()
         {
             _testObject = null;
+            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
             _projectTaskSource = new TaskCompletionSource<IList<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
@@ -84,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsWithoutDefaultUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
 
             _testObject = BuildTestObject();
 
@@ -98,7 +98,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsWithDefaultUser()
         {
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
+            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
 
             _testObject = BuildTestObject();
 
@@ -115,10 +115,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeUserCommandNoUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
             _testObject = BuildTestObject();
 
-            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.CurrentAccount = null);
+            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.UpdateCurrentAccount(null));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
@@ -128,11 +128,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeUserCommandWithUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
             _testObject = BuildTestObject();
 
             _manageAccoutMock.Setup(f => f())
-                .Callback(() => CredentialsStore.Default.CurrentAccount = s_defaultAccount);
+                .Callback(() => CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);

@@ -50,7 +50,6 @@ namespace GoogleCloudExtension.Accounts
         private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
-        private UserAccount _currentAccount;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
@@ -62,19 +61,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
         /// </summary>
-        public UserAccount CurrentAccount
-        {
-            get { return _currentAccount; }
-            set
-            {
-                if (_currentAccount?.AccountName != value?.AccountName)
-                {
-                    _currentAccount = value;
-                    UpdateDefaultCredentials();
-                    CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public UserAccount CurrentAccount { get; private set; }
 
         /// <summary>
         /// Returns the path for the current account.
@@ -119,12 +106,30 @@ namespace GoogleCloudExtension.Accounts
         {
             if (project?.ProjectId != CurrentProjectId)
             {
-                CurrentProjectId = project.ProjectId;
-                CurrentProjectNumericId = project.ProjectNumber.ToString();
+                CurrentProjectId = project?.ProjectId;
+                CurrentProjectNumericId = project?.ProjectNumber.ToString();
 
                 UpdateDefaultCredentials();
                 CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
                 CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Updates the current account for the extension. This method will also invalidate the project
+        /// it is up to the caller to select an appropriate one.
+        /// </summary>
+        /// <param name="account"></param>
+        public void UpdateCurrentAccount(UserAccount account)
+        {
+            if (CurrentAccount?.AccountName != account?.AccountName)
+            {
+                CurrentAccount = account;
+                CurrentProjectId = null;
+                CurrentProjectNumericId = null;
+
+                UpdateDefaultCredentials();
+                CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -198,15 +203,16 @@ namespace GoogleCloudExtension.Accounts
             var newCurrentAccount = GetAccount(accountName);
             if (newCurrentAccount != null)
             {
-                _currentAccount = newCurrentAccount;
+                CurrentAccount = newCurrentAccount;
                 CurrentProjectId = projectId;
                 CurrentProjectNumericId = null;
             }
             else
             {
                 Debug.WriteLine($"Unknown account: {accountName}");
-                _currentAccount = null;
+                CurrentAccount = null;
                 CurrentProjectId = null;
+                CurrentProjectNumericId = null;
             }
             Reset?.Invoke(this, EventArgs.Empty);
         }

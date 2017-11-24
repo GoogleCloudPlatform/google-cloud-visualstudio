@@ -321,13 +321,13 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <Grid  Grid.Row="1" IsEnabled="{Binding CurrentProject.IsCompleted}">
+        <Grid  Grid.Row="1" IsEnabled="{Binding LoadingProject, Converter={utils:NotConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
-            <TextBox Text="{Binding CurrentProject.Value.ProjectId}"
+            <TextBox Text="{Binding ProjectDisplayString}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
             <Button Content="..."

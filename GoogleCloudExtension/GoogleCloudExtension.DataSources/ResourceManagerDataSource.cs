@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.DataSources
             }
             catch (GoogleApiException ex)
             {
-                if (ex.Error.Code == 404)
+                if (ex.Error?.Code == 404)
                 {
                     Debug.WriteLine($"Could not find project: {projectId}");
                     return null;

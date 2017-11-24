@@ -27,7 +27,14 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class BooleanConverter : MarkupExtension, IValueConverter
     {
+        /// <summary>
+        /// The value to return when the value to convert is "true".
+        /// </summary>
         public object TrueValue { get; set; }
+
+        /// <summary>
+        /// The value to return when the value to convert is "false".
+        /// </summary>
         public object FalseValue { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.ManageAccounts
                 return;
             }
 
-            CredentialsStore.Default.CurrentAccount = userAccount.UserAccount;
+            CredentialsStore.Default.UpdateCurrentAccount(userAccount.UserAccount);
             _owner.Close();
         }
 
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.ManageAccounts
         private void OnSetAsCurrentAccountCommand()
         {
             Debug.WriteLine($"Setting current account: {CurrentAccountName}");
-            CredentialsStore.Default.CurrentAccount = CurrentUserAccount.UserAccount;
+            CredentialsStore.Default.UpdateCurrentAccount(CurrentUserAccount.UserAccount);
             _owner.Close();
         }
 

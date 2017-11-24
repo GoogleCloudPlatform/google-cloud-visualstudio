@@ -51,12 +51,14 @@ namespace GoogleCloudExtension.CloudExplorer
         private bool _isBusy;
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
-        private AsyncProperty<Project> _currentProjectAsync;
+        private Project _currentProject;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<GPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
         private string _emptyStateButtonCaption;
         private ICommand _emptyStateCommand;
+        private bool _loadingProject;
+        private string _projectDisplayString;
 
         /// <summary>
         /// Returns whether the view model is busy performing an operation.
@@ -75,7 +77,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Stores whether the cloud explorer is in zero state.
         /// </summary>
-        public bool IsEmptyState => IsReady && (CredentialsStore.Default.CurrentAccount == null || CurrentProject == null);
+        public bool IsEmptyState => IsReady && (CredentialsStore.Default.CurrentAccount == null || _currentProject == null);
 
         /// <summary>
         /// The negation of IsEmptyState.
@@ -92,6 +94,18 @@ namespace GoogleCloudExtension.CloudExplorer
         /// from a given source.
         /// </summary>
         public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
+
+        public string ProjectDisplayString
+        {
+            get { return _projectDisplayString; }
+            private set { SetValueAndRaise(ref _projectDisplayString, value); }
+        }
+
+        public bool LoadingProject
+        {
+            get { return _loadingProject; }
+            private set { SetValueAndRaise(ref _loadingProject, value); }
+        }
 
         /// <summary>
         /// Returns the profile image URL.
@@ -115,15 +129,6 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The list of buttons to add to the toolbar, a concatenation of all sources buttons.
         /// </summary>
         public IEnumerable<ButtonDefinition> Buttons { get; }
-
-        /// <summary>
-        /// The currently selected project.
-        /// </summary>
-        public AsyncProperty<Project> CurrentProject
-        {
-            get { return _currentProjectAsync; }
-            private set { SetValueAndRaise(ref _currentProjectAsync, value); }
-        }
 
         /// <summary>
         /// Message to show when there's no data to show in the cloud explorer.
@@ -169,7 +174,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         #region ICloudSourceContext implementation.
 
-        Project ICloudSourceContext.CurrentProject => _currentProjectAsync.Value;
+        Project ICloudSourceContext.CurrentProject => _currentProject;
 
         void ICloudSourceContext.ShowPropertiesWindow(object item)
         {
@@ -278,9 +283,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnCurrentProjectIdChanged(object sender, EventArgs e)
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
+            ErrorHandlerUtils.HandleAsyncExceptions(async () =>
             {
-                CurrentProject = AsyncPropertyUtils.CreateAsyncProperty(GetProjectForId(CredentialsStore.Default.CurrentProjectId));
+                await LoadCurrentProject();
 
                 NotifySourcesOfUpdatedAccountOrProject();
                 RefreshSources();
@@ -324,7 +329,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private  Task<Project> GetProjectForId(string projectId)
             => _resourceManagerDataSource.Value.GetProjectAsync(projectId);
 
-        private void ResetCredentials()
+        private async void ResetCredentials()
         {
             try
             {
@@ -335,7 +340,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 UpdateUserProfile();
 
                 // Load the current project if one is found, otherwise ask the user to choose a project.
-                CurrentProject = AsyncPropertyUtils.CreateAsyncProperty(GetProjectForId(CredentialsStore.Default.CurrentProjectId));
+                await LoadCurrentProject();
 
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();
@@ -361,6 +366,40 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
+        private async Task LoadCurrentProject()
+        {
+            // Avoid reentrancy.
+            if (LoadingProject)
+            {
+                return;
+            }
+
+            try
+            {
+                try
+                {
+                    // Start the loading project process.
+                    LoadingProject = true;
+
+                    // Try to load the project.
+                    _currentProject = await GetProjectForId(CredentialsStore.Default.CurrentProjectId);
+                }
+                catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+                {
+                    Debug.WriteLine($"Failed to load project: {ex.Message}");
+
+                    _currentProject = null;
+                }
+
+                // If we managed to load the project, set the display string for it.
+                ProjectDisplayString = _currentProject?.ProjectId;
+            }
+            finally
+            {
+                LoadingProject = false;
+            }
+        }
+
         private void InvalidateEmptyState()
         {
             RaisePropertyChanged(nameof(IsEmptyState));
@@ -373,7 +412,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 EmptyStateButtonCaption = Resources.CloudExplorerNoAccountButtonCaption;
                 EmptyStateCommand = ManageAccountsCommand;
             }
-            else if (CurrentProject == null)
+            else if (_currentProject == null)
             {
                 EmptyStateMessage = Resources.CloudExploreNoProjectMessage;
                 EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
