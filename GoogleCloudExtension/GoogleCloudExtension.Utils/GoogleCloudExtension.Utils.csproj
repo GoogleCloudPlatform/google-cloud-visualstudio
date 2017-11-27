@@ -68,6 +68,7 @@
     <Compile Include="DataGridColumnCustomSorter.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="IColumnSorter.cs" />
+    <Compile Include="IncrementalLoadingCollection.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="NotConverter.cs" />

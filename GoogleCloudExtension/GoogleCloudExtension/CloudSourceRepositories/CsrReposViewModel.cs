@@ -375,7 +375,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             IsReady = false;
             try
             {
-                var projects = await resourceManager.GetSortedActiveProjectsAsync();
+                var projects = await resourceManager.GetProjectsListAsync();
                 if (!projects.Any())
                 {
                     UserPromptUtils.OkPrompt(

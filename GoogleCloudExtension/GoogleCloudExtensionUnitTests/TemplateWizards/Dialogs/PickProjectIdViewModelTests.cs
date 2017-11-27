@@ -75,7 +75,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             };
             Func<IResourceManagerDataSource> dataSourceFactory =
                 () => Mock.Of<IResourceManagerDataSource>(
-                    ds => ds.GetSortedActiveProjectsAsync() == projectsListAsyncCallBack());
+                    ds => ds.GetProjectsListAsync() == projectsListAsyncCallBack());
             var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, _manageAccoutMock.Object);
             testObject.PropertyChanged += _addPropertiesChanged;
             return testObject;
