@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Projects,
                 x => x.NextPageToken,
-                x => x.LifecycleState == LifecycleState.Active);
+                predicate: x => x.LifecycleState == LifecycleState.Active);
         }
 
         /// <summary>

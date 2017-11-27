@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.DataSources
 
                     result.AddRange(items ?? Enumerable.Empty<TItem>());
                     nextPageToken = nextPageTokenFunc(page);
-                } while (!String.IsNullOrEmpty(nextPageToken));
+                } while (!string.IsNullOrEmpty(nextPageToken));
                 return result;
             }
             catch (GoogleApiException ex)

@@ -306,7 +306,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         #endregion
 
-        private async Task<Project> GetProjectForId(string projectId)
+        private async Task<Project> GetProjectForIdAsync(string projectId)
             => projectId != null ? await _resourceManagerDataSource.Value.GetProjectAsync(projectId) : null;
 
         private async Task ResetCredentialsAsync()
@@ -362,7 +362,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     LoadingProject = true;
 
                     // Try to load the project.
-                    _currentProject = await GetProjectForId(CredentialsStore.Default.CurrentProjectId);
+                    _currentProject = await GetProjectForIdAsync(CredentialsStore.Default.CurrentProjectId);
                 }
                 catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
                 {
