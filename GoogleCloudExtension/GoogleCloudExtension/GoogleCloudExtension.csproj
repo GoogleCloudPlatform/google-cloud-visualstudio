@@ -214,7 +214,7 @@
     <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
@@ -485,9 +485,9 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdViewModel.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindow.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml.cs">
+    <Compile Include="PickProjectDialog\PickProjectIdViewModel.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindow.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindowContent.xaml.cs">
       <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
@@ -1132,7 +1132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml">
+    <Page Include="PickProjectDialog\PickProjectIdWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1247,6 +1247,9 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TemplateWizards\Dialogs\ProjectIdDialog\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
