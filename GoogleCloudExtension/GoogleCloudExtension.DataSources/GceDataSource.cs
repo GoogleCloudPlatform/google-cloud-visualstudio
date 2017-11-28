@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns information about GCE instances and keeps track of operations in flight.
     /// </summary>
-    public class GceDataSource : DataSourceBase<ComputeService>
+    public class GceDataSource : DataSourceBase<ComputeService>, IGceDataSource
     {
         /// <summary>
         /// This list is a global list of all of the operations pending created by instances of this class.
@@ -434,8 +434,7 @@ namespace GoogleCloudExtension.DataSources
                 zoneName = new Uri(operation.Zone).Segments.Last();
             }
 
-            return OperationUtils.AwaitOperationAsync(
-                operation,
+            return operation.AwaitOperationAsync(
                 refreshOperation: (op) =>
                 {
                     if (zoneName != null)
@@ -448,7 +447,8 @@ namespace GoogleCloudExtension.DataSources
                     }
                 },
                 isFinished: op => op.Status == "DONE",
-                getErrorData: op => op.Error.ToString());
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Errors.FirstOrDefault()?.Message);
         }
     }
 }

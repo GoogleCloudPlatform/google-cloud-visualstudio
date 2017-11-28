@@ -268,6 +268,42 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can&apos;t change the region for project {0} later..
+        /// </summary>
+        public static string AppEngineManagementAppCreationMessage {
+            get {
+                return ResourceManager.GetString("AppEngineManagementAppCreationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading regions....
+        /// </summary>
+        public static string AppEngineManagementLoadingRegionsPlaceholder {
+            get {
+                return ResourceManager.GetString("AppEngineManagementLoadingRegionsPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available _regions:.
+        /// </summary>
+        public static string AppEngineManagementRegionsLabel {
+            get {
+                return ResourceManager.GetString("AppEngineManagementRegionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select App Engine Region.
+        /// </summary>
+        public static string AppEngineManagementWindowTitle {
+            get {
+                return ResourceManager.GetString("AppEngineManagementWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASP.NET Core {0}.
         /// </summary>
         public static string AspNetCoreVersionedName {
@@ -867,6 +903,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeServiceOpen {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeServiceOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set App Region....
+        /// </summary>
+        public static string CloudExplorerGaeSetAppRegionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeSetAppRegionMenuHeader", resourceCulture);
             }
         }
         
@@ -3112,15 +3157,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string FlexPublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishEnableApiMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
@@ -3135,15 +3171,6 @@ namespace GoogleCloudExtension {
         public static string FlexPublishInvalidVersionMessage {
             get {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud..
-        /// </summary>
-        public static string FlexPublishNoAppFoundMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishNoAppFoundMessage", resourceCulture);
             }
         }
         
@@ -3184,20 +3211,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setting App Engine region..
+        /// </summary>
+        public static string GaeUtilsSetAppEngineRegionProgressMessage {
+            get {
+                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Engine Region.
+        /// </summary>
+        public static string GaeUtilsSetAppEngineRegionProgressTitle {
+            get {
+                return ResourceManager.GetString("GaeUtilsSetAppEngineRegionProgressTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attach debugger after publishing.
         /// </summary>
         public static string GcePublishAttachDebuggerCaption {
             get {
                 return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string GcePublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("GcePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -4143,15 +4179,6 @@ namespace GoogleCloudExtension {
         public static string GkePublishEmptyDeploymentVersionMessage {
             get {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?.
-        /// </summary>
-        public static string GkePublishEnableApiMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEnableApiMessage", resourceCulture);
             }
         }
         
@@ -5236,11 +5263,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable the services.
+        /// </summary>
+        public static string PublishDialogEnableApiCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogEnableApiCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected GCP project needs the app region to be selected before you can deploy..
+        /// </summary>
+        public static string PublishDialogFlexNeedToSetRegionMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexNeedToSetRegionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to P_romote version.
         /// </summary>
         public static string PublishDialogFlexPromoteVersionCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select app region.
+        /// </summary>
+        public static string PublishDialogFlexSetAppRegionCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexSetAppRegionCaption", resourceCulture);
             }
         }
         
@@ -5299,6 +5353,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading project data..
+        /// </summary>
+        public static string PublishDialogLoadingProjectMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogLoadingProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Next.
         /// </summary>
         public static string PublishDialogNextButtonCaption {
@@ -5326,11 +5389,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again..
+        /// </summary>
+        public static string PublishDialogProjectLoadErrorMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectLoadErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish {0} to Google Cloud....
         /// </summary>
         public static string PublishDialogProjectMenuHeader {
             get {
                 return ResourceManager.GetString("PublishDialogProjectMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected GCP project needs services to be enabled before you can deploy..
+        /// </summary>
+        public static string PublishDialogProjectNeedsApiMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectNeedsApiMessage", resourceCulture);
             }
         }
         

@@ -61,11 +61,11 @@ namespace GoogleCloudExtension.DataSources
                     .Enable(new EnableServiceRequest { ConsumerId = $"project:{ProjectId}" }, service)
                     .ExecuteAsync();
 
-                await OperationUtils.AwaitOperationAsync(
-                    operation,
+                await operation.AwaitOperationAsync(
                     refreshOperation: x => Service.Operations.Get(x.Name).ExecuteAsync(),
                     isFinished: x => x.Done ?? false,
-                    getErrorData: x => x.Error?.Message);
+                    getErrorData: x => x.Error,
+                    getErrorMessage: err => err.Message);
             }
         }
 

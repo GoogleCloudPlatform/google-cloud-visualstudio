@@ -127,7 +127,13 @@
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="ApiManagement\ApiManager.cs" />
+    <Compile Include="ApiManagement\IApiManager.cs" />
     <Compile Include="ApiManagement\KnownApis.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModel.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindow.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindowContent.xaml.cs">
+      <DependentUpon>AppEngineManagementWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
@@ -221,6 +227,7 @@
     <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
     <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
+    <Compile Include="Theming\ICloseable.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
@@ -918,6 +925,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppEngineManagement\AppEngineManagementWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
