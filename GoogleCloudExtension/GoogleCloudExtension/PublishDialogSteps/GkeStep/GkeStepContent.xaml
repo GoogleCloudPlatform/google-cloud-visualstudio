@@ -21,6 +21,7 @@
     <StackPanel>
         <DockPanel HorizontalAlignment="Left">
             <Label
+                Margin="0,0,0,2"
                 DockPanel.Dock="Top"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
                 Style="{StaticResource CommonLabelStyle}" />
@@ -32,7 +33,7 @@
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"
-                Margin="0,0,5,0"
+                Margin="0,0,6,0"
                 IsReadOnly="True"
                 Style="{StaticResource CommonTextBoxStyle}" />
         </DockPanel>
@@ -56,7 +57,7 @@
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,5"
+                  Margin="0,0,0,6"
                   Style="{StaticResource CommonComboBoxStyle}"/>
 
             <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
@@ -82,7 +83,7 @@
                Style="{StaticResource CommonLabelStyle}" />
             <TextBox x:Name="_deploymentName"
                  Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                 Margin="0,0,0,15"
+                 Margin="0,0,0,6"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
             <Grid Margin="0,0,0,15">
@@ -98,12 +99,14 @@
 
                 <Label Grid.Row="0"
                    Grid.Column="0"
+                   Margin="0,0,12,2"
                    Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
                    Target="{Binding ElementName=_deploymentVersion}"
                    Style="{StaticResource CommonLabelStyle}" />
                 <TextBox x:Name="_deploymentVersion"
                      Grid.Row="1"
                      Grid.Column="0"
+                     Margin="0,0,12,0"
                      Style="{StaticResource CommonTextBoxStyle}">
                     <TextBox.Text>
                         <Binding
@@ -116,15 +119,14 @@
                 <!-- TODO: Use an up/down textbox control. -->
                 <Label Grid.Row="0"
                    Grid.Column="1"
+                   Margin="0,0,0,2"
                    Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
                    Target="{Binding ElementName=_replicas}"
-                   Margin="5,0,0,0"
                    Style="{StaticResource CommonLabelStyle}" />
                 <TextBox x:Name="_replicas"
                      Grid.Row="1"
                      Grid.Column="1"
                      Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Margin="5,0,0,0"
                      Style="{StaticResource CommonTextBoxStyle}" />
             </Grid>
 
