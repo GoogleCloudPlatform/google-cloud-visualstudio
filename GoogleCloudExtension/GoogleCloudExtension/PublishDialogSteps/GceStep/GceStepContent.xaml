@@ -105,16 +105,16 @@
                     <!-- Use this setter to change the content visible in the designer -->
                     <Setter Property="Content" Value="{StaticResource InputControls}"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ShowInputControls}">
+                        <DataTrigger Binding="{Binding ShowInputControls}" Value="true">
                             <Setter Property="Content" Value="{StaticResource InputControls}"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding LoadingProject}">
+                        <DataTrigger Binding="{Binding LoadingProject}" Value="true">
                             <Setter Property="Content" Value="{StaticResource LoadingProject}"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding NeedsApiEnabled}">
+                        <DataTrigger Binding="{Binding NeedsApiEnabled}" Value="true">
                             <Setter Property="Content" Value="{StaticResource NeedsApiEnabled}"></Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding GeneralError}">
+                        <DataTrigger Binding="{Binding GeneralError}" Value="true">
                             <Setter Property="Content" Value="{StaticResource Error}" />
                         </DataTrigger>
                     </Style.Triggers>

@@ -99,19 +99,19 @@
                     <!-- Use this setter to change the content visible in the designer -->
                     <Setter Property="Content" Value="{StaticResource InputControls}"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ShowInputControls}">
+                        <DataTrigger Binding="{Binding ShowInputControls}" Value="true">
                             <Setter Property="Content" Value="{StaticResource InputControls}"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding LoadingProject}">
+                        <DataTrigger Binding="{Binding LoadingProject}" Value="true">
                             <Setter Property="Content" Value="{StaticResource LoadingProject}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding NeedsApiEnabled}">
+                        <DataTrigger Binding="{Binding NeedsApiEnabled}" Value="true">
                             <Setter Property="Content" Value="{StaticResource NeedsApiEnabled}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding NeedsAppCreated}">
+                        <DataTrigger Binding="{Binding NeedsAppCreated}" Value="true">
                             <Setter Property="Content" Value="{StaticResource NeedsAppCreated}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding GeneralError}">
+                        <DataTrigger Binding="{Binding GeneralError}" Value="true">
                             <Setter Property="Content" Value="{StaticResource Error}" />
                         </DataTrigger>
                     </Style.Triggers>
