@@ -21,7 +21,7 @@ using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System;

@@ -15,7 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Theming;
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// Window for a user to choose which projet to use.

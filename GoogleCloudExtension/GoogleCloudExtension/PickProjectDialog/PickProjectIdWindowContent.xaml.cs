@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// Interaction logic for PickProjectIdWindowContent.xaml

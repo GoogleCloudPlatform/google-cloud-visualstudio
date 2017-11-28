@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;

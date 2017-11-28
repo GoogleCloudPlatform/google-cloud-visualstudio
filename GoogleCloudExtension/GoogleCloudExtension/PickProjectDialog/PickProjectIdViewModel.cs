@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// View model for picking a project id.
