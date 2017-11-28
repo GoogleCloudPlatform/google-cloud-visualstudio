@@ -136,10 +136,10 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectId = null;
                 CurrentProjectNumericId = null;
 
+                InvalidateProjectList();
+
                 UpdateDefaultCredentials();
                 CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
-
-                InvalidateProjectList();
             }
         }
 
