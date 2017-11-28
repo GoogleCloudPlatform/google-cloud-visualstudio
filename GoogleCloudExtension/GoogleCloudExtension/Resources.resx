@@ -2871,22 +2871,6 @@
     <value>Enable the Cloud SQL API</value>
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
-  <data name="FlexPublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>
-  </data>
-  <data name="FlexPublishNoAppFoundMessage" xml:space="preserve">
-    <value>Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.</value>
-    <comment>Message shwon when there's no App Engine app defined for the project.</comment>
-  </data>
-  <data name="GcePublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to a GCE VM.</comment>
-  </data>
-  <data name="GkePublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to GKE.</comment>
-  </data>
   <data name="UiEnableButtonCaption" xml:space="preserve">
     <value>Enable</value>
     <comment>Caption for enable buttons.</comment>
@@ -2902,5 +2886,57 @@
   <data name="PublishDialogSelectGcpProjectTitle" xml:space="preserve">
     <value>Select Google Cloud Project to Publish to - {0}</value>
     <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
+  </data>
+  <data name="AppEngineManagementAppCreationMessage" xml:space="preserve">
+    <value>Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can't change the region for project {0} later.</value>
+    <comment>Message shown when creating a new app. {0} is the project id.</comment>
+  </data>
+  <data name="AppEngineManagementRegionsLabel" xml:space="preserve">
+    <value>Available _regions:</value>
+    <comment>Label to be used for the regions drop box.</comment>
+  </data>
+  <data name="AppEngineManagementWindowTitle" xml:space="preserve">
+    <value>Select App Engine Region</value>
+    <comment>Caption for the select region dialog.</comment>
+  </data>
+  <data name="CloudExplorerGaeSetAppRegionMenuHeader" xml:space="preserve">
+    <value>Set App Region...</value>
+    <comment>Menu header for the menu shown to the user to set the app's region.</comment>
+  </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressTitle" xml:space="preserve">
+    <value>App Engine Region</value>
+    <comment>The caption for the progress dialog shown while setting the app engine region.</comment>
+  </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressMessage" xml:space="preserve">
+    <value>Setting App Engine region.</value>
+    <comment>The message for the progress dialog shown while setting the app engine region.</comment>
+  </data>
+  <data name="AppEngineManagementLoadingRegionsPlaceholder" xml:space="preserve">
+    <value>Loading regions...</value>
+    <comment>String used as a placeholder while loading the list of regions in the dialog.</comment>
+  </data>
+  <data name="PublishDialogEnableApiCaption" xml:space="preserve">
+    <value>Enable the services</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
+  <data name="PublishDialogProjectLoadErrorMessage" xml:space="preserve">
+    <value>Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again.</value>
+    <comment>The message shown when there's an error verifying a GCP project.</comment>
+  </data>
+  <data name="PublishDialogFlexNeedToSetRegionMessage" xml:space="preserve">
+    <value>The selected GCP project needs the app region to be selected before you can deploy.</value>
+    <comment>The message shown when need to set the region for an app.</comment>
+  </data>
+  <data name="PublishDialogFlexSetAppRegionCaption" xml:space="preserve">
+    <value>Select app region</value>
+    <comment>The caption for the set app region command.</comment>
+  </data>
+  <data name="PublishDialogLoadingProjectMessage" xml:space="preserve">
+    <value>Loading project data.</value>
+    <comment>The message shown in the steps while the project is being loaded.</comment>
+  </data>
+  <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
+    <value>The selected GCP project needs services to be enabled before you can deploy.</value>
+    <comment>The message shown when a project needs an API enabled.</comment>
   </data>
 </root>

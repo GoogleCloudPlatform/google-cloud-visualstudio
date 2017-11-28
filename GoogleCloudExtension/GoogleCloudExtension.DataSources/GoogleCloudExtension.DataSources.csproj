@@ -137,6 +137,10 @@
     <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
+    <Compile Include="GaeLocationExtensions.cs" />
+    <Compile Include="IGaeDataSource.cs" />
+    <Compile Include="IGceDataSource.cs" />
+    <Compile Include="IGkeDataSource.cs" />
     <Compile Include="IPubsubDataSource.cs" />
     <Compile Include="IResourceManagerDataSource.cs" />
     <Compile Include="OperationUtils.cs" />
@@ -160,7 +164,6 @@
     <Compile Include="InstancesPerZone.cs" />
     <Compile Include="IGcsFileOperationCallback.cs" />
     <Compile Include="LoggingDataSource.cs" />
-    <Compile Include="Polling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerDataSource.cs" />
     <Compile Include="WindowsInstanceInfo.cs" />

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using System.Linq;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -38,14 +37,6 @@ namespace GoogleCloudExtension.DataSources
         /// The identifier for the Flex environment.
         /// </summary>
         public const string FlexibleEnvironment = "flexible";
-
-        /// <summary>
-        /// Gets an operation id.
-        /// </summary>
-        public static string GetOperationId(this Operation operation)
-        {
-            return operation.Name.Split('/').Last();
-        }
 
         /// <returns>True if the version is serving.</returns>
         public static bool IsServing(this Version version)

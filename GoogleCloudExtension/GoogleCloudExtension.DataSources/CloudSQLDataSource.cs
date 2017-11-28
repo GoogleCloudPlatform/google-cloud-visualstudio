@@ -87,12 +87,13 @@ namespace GoogleCloudExtension.DataSources
         /// Updates the Cloud SQL instance.
         /// </summary>
         /// <returns>The Cloud SQL operation with the status of the update.</returns>
-        public async Task<Operation> UpdateInstanceAsync(DatabaseInstance instance)
+        public async Task UpdateInstanceAsync(DatabaseInstance instance)
         {
             try
             {
                 InstancesResource.UpdateRequest request = Service.Instances.Update(instance, ProjectId, instance.Name);
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
@@ -102,28 +103,11 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// Awaits for the operation to complete succesfully.
-        /// </summary>
-        /// <param name="operation">The operation to await.</param>
-        /// <returns>The task that will be done once the operation is succesful.</returns>
-        public async Task AwaitOperationAsync(Operation operation)
-        {
-            var completedOperation = await Polling<Operation>.Poll(
-                operation,
-                o => GetOperationAsync(o.Name),
-                o => o.Status == OperationStateDone);
-            if (completedOperation.Error != null)
-            {
-                throw new DataSourceException(completedOperation.Error.Errors.FirstOrDefault()?.Message);
-            }
-        }
-
-        /// <summary>
         /// Gets the Cloud SQL operations.
         /// </summary>
         /// <param name="id">The unique operation id.</param>
         /// <returns>The Cloud SQL operation.</returns>
-        public async Task<Operation> GetOperationAsync(string id)
+        private async Task<Operation> GetOperationAsync(string id)
         {
             try
             {
@@ -135,6 +119,20 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to get the operation: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        private Task AwaitOperationAsync(Operation operation)
+        {
+            return operation.AwaitOperationAsync(
+                refreshOperation: op => GetOperationAsync(op.Name),
+                isFinished: op => op.Status == OperationStateDone,
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Errors.FirstOrDefault()?.Message);
         }
     }
 }

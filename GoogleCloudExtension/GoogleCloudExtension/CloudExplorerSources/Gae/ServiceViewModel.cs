@@ -333,8 +333,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                await _owner.DataSource.AwaitOperationAsync(operation);
+                await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
@@ -379,8 +378,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await datasource.DeleteServiceAsync(Service.Id);
-                await datasource.AwaitOperationAsync(operation);
+                await datasource.DeleteServiceAsync(Service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }

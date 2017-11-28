@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Theming
     /// <summary>
     /// Base calls for all dialogs in the extension, ensures consistent appearence for all dialogs.
     /// </summary>
-    public class CommonDialogWindowBase : DialogWindow
+    public class CommonDialogWindowBase : DialogWindow, ICloseable
     {
         public CommonDialogWindowBase(string title)
         {

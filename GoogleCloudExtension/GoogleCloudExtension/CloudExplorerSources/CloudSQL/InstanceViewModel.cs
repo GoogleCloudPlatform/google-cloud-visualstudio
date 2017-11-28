@@ -109,9 +109,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             try
             {
-                // Poll until the update to completes.
-                var operation = await _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-                await _owner.DataSource.Value.AwaitOperationAsync(operation);
+                await _owner.DataSource.Value.UpdateInstanceAsync(Instance);
 
                 EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Success));
             }

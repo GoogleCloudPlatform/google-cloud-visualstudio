@@ -49,11 +49,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = Resources.CloudExplorerGaeFailedToLoadServicesCaption,
             IsError = true
         };
-        private static readonly TreeLeaf s_noAppEngineAppPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
-            IsError = true
-        };
 
         private static readonly IList<string> s_requiredApis = new List<string>
         {
@@ -181,8 +176,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GaeApplication = await _dataSource.Value.GetApplicationAsync();
                 if (GaeApplication == null)
                 {
+                    var noAppEngineAppPlaceholder = new TreeLeaf
+                    {
+                        Caption = Resources.CloudExplorerGaeNoAppFoundCaption,
+                        IsError = true,
+                        ContextMenu = new ContextMenu
+                        {
+                            ItemsSource = new List<MenuItem>
+                            {
+                                new MenuItem { Header = Resources.CloudExplorerGaeSetAppRegionMenuHeader, Command = new ProtectedCommand(OnSetAppRegion) }
+                            }
+                        }
+                    };
+
                     Children.Clear();
-                    Children.Add(s_noAppEngineAppPlaceholder);
+                    Children.Add(noAppEngineAppPlaceholder);
                     return;
                 }
 
@@ -231,6 +239,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id))
                 .ToList();
             return new ServiceViewModel(this, service, versionModels);
+        }
+
+        private async void OnSetAppRegion()
+        {
+            if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, _dataSource.Value))
+            {
+                Refresh();
+            }
         }
     }
 }

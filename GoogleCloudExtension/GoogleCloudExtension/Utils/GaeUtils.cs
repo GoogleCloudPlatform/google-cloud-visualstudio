@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.AppEngineManagement;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.ProgressDialog;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
 namespace GoogleCloudExtension.Utils
 {
     internal static class GaeUtils
@@ -46,6 +52,37 @@ namespace GoogleCloudExtension.Utils
 
             url += hostname;
             return url;
+        }
+
+        /// <summary>
+        /// Sets the app engine to the given project Id.
+        /// </summary>
+        public static async Task<bool> SetAppRegionAsync(string projectId, IGaeDataSource dataSource)
+        {
+            string selectedLocation = AppEngineManagementWindow.PromptUser(projectId);
+            if (selectedLocation == null)
+            {
+                Debug.WriteLine("The user cancelled creating a new app.");
+                return false;
+            }
+
+            try
+            {
+                await ProgressDialogWindow.PromptUser(
+                    dataSource.CreateApplicationAsync(selectedLocation),
+                    new ProgressDialogWindow.Options
+                    {
+                        Title = Resources.GaeUtilsSetAppEngineRegionProgressTitle,
+                        Message = Resources.GaeUtilsSetAppEngineRegionProgressMessage,
+                        IsCancellable = false
+                    });
+                return true;
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ExceptionPrompt(ex);
+                return false;
+            }
         }
     }
 }

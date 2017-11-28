@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that fecthes information from Google Container Engine.
     /// </summary>
-    public class GkeDataSource : DataSourceBase<ContainerService>
+    public class GkeDataSource : DataSourceBase<ContainerService>, IGkeDataSource
     {
         // This value means to fetch data from all the zones, instead of specifying the
         // specific zones.
