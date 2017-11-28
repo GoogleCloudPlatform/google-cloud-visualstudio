@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
@@ -28,20 +28,20 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
     [TestClass]
     public class CsrCloneWindowViewModelTests
     {
-        private const int BackGroundAsyncTaskWaitSeconds = 5;
         private CsrCloneWindowViewModel _cloneWindowViewModel;
         private Project _mockedTestProject;
         private List<Project> _testProjects;
         private TaskCompletionSource<IList<Repo>> _testTaskCompletionSource;
         private Mock<Func<string, Task<IList<Repo>>>> _getCloudReposMock;
         private Mock<IApiManager> _apiManagerMock;
+        private Mock<Action> _closeWindowActionMock;
 
         [TestInitialize]
         public void Initialize()
         {
             _apiManagerMock = new Mock<IApiManager>();
-            _mockedTestProject = Mock.Of<Project>();
-            _testProjects = new List<Project> { Mock.Of<Project>(), _mockedTestProject };
+            _mockedTestProject = new Mock<Project>().Object;
+            _testProjects = new List<Project> { new Mock<Project>().Object, _mockedTestProject };
             _getCloudReposMock = new Mock<Func<string, Task<IList<Repo>>>>();
             _testTaskCompletionSource = new TaskCompletionSource<IList<Repo>>();
             _getCloudReposMock.Setup(f => f(It.IsAny<string>())).Returns(() =>
@@ -54,29 +54,29 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             AsyncRepositories.GetCloudReposAsync = _getCloudReposMock.Object;
             CsrCloneWindowViewModel.s_getApiManagerFunc = (projectId) => _apiManagerMock.Object;
 
-            Action testAction = () => { };
-            _cloneWindowViewModel = new CsrCloneWindowViewModel(testAction, _testProjects);
+            _closeWindowActionMock = new Mock<Action>();
+            _cloneWindowViewModel = new CsrCloneWindowViewModel(_closeWindowActionMock.Object, _testProjects);
         }
 
         [TestMethod]
-        public void ChangeSelectedProjectTest()
+        public async Task ChangeSelectedProjectTest()
         {
             _mockedTestProject.ProjectId = "test_project_id";
-            Repo repoMock = Mock.Of<Repo>();
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, Mock.Of<Repo>() });
+            Repo repoMock = new Mock<Repo>().Object;
+            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, new Mock<Repo>().Object });
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult<bool>(true))
                 .Verifiable();
             _cloneWindowViewModel.SelectedProject = _mockedTestProject;
-            WaitForBackgroundAsyncTask(_cloneWindowViewModel);
+            await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             Assert.AreEqual(repoMock, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
             _apiManagerMock.Verify();
         }
 
         [TestMethod]
-        public void CsrApiNotEnabledTest()
+        public async Task CsrApiNotEnabledTest()
         {
             _mockedTestProject.ProjectId = "test_project_id";
             _apiManagerMock.Setup(
@@ -84,21 +84,31 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
                 .Returns(Task.FromResult<bool>(false))
                 .Verifiable();
             _cloneWindowViewModel.SelectedProject = _mockedTestProject;
-            WaitForBackgroundAsyncTask(_cloneWindowViewModel);
+            await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             Assert.AreEqual(null, _cloneWindowViewModel.SelectedRepository);
             Assert.IsTrue(_cloneWindowViewModel.NeedsApiEnabled);
             _apiManagerMock.Verify();
+        }
 
-            // Now enable it
+        [TestMethod]
+        public async Task CsrApiEnabledTest()
+        {
+            _mockedTestProject.ProjectId = "enable_api_test_project_id";
+            _apiManagerMock.Setup(
+                x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
+                .Returns(Task.FromResult<bool>(false));
+            _cloneWindowViewModel.SelectedProject = _mockedTestProject;
+            await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
+
             _apiManagerMock.Setup(
                 x => x.EnableServicesAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult(0))
                 .Verifiable();
-            Repo repoMock = Mock.Of<Repo>();
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, Mock.Of<Repo>() });
+            Repo repoMock = new Mock<Repo>().Object;
+            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, new Mock<Repo>().Object });
             Assert.IsTrue(_cloneWindowViewModel.EnableApiCommand.CanExecuteCommand);
             _cloneWindowViewModel.EnableApiCommand.Execute(null);
-            WaitForBackgroundAsyncTask(_cloneWindowViewModel);
+            await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             _apiManagerMock.Verify();
             Assert.AreEqual(repoMock, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
@@ -107,15 +117,12 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         /// <summary>
         /// This method wait for a few seconds till <param name="cloneWindowViewModel"/> IsReady is true;
         /// </summary>
-        private void WaitForBackgroundAsyncTask(CsrCloneWindowViewModel cloneWindowViewModel)
+        private async Task WaitForBackgroundAsyncTask(CsrCloneWindowViewModel cloneWindowViewModel)
         {
-            int waitedSeconds = 0;
-            Thread.Sleep(10); // Wait 10 milliseconds for async task kick off
-            Thread.Yield();
-            while (!cloneWindowViewModel.IsReady && waitedSeconds < BackGroundAsyncTaskWaitSeconds)
+            Stopwatch watch = Stopwatch.StartNew();
+            while (!cloneWindowViewModel.IsReady && watch.Elapsed < TimeSpan.FromSeconds(1))
             {
-                Thread.Sleep(1000);
-                waitedSeconds++;
+                await Task.Delay(10);
             }
             Assert.IsTrue(cloneWindowViewModel.IsReady);
         }

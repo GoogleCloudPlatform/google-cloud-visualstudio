@@ -57,12 +57,10 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 
         [TestMethod]
         [ExpectedException(typeof(TestException))]
-        public void TestCatchException()
+        public async Task TestCatchException()
         {
             _testTaskCompletionSource.SetException(new TestException());
-            var task = ExecuteAndHandleException(() => _testObject.StartListRepoTaskAsync("projectid"));
-            throw task.Result;
-
+            await _testObject.StartListRepoTaskAsync("projectid");
         }
 
         [TestMethod]
@@ -93,19 +91,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             _testObject.ClearList();
             Assert.IsNull(_testObject.Value);
             Assert.AreEqual(AsyncRepositories.DisplayOptions.Pending, _testObject.DisplayState);
-        }
-
-        private async Task<Exception> ExecuteAndHandleException(Func<Task> task)
-        {
-            try
-            {
-                await task();
-            }
-            catch (Exception ex)
-            {
-                return ex;
-            }
-            return null;
         }
 
         private class TestException : Exception { }
