@@ -17,8 +17,9 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <DockPanel HorizontalAlignment="Left">
+        <DockPanel HorizontalAlignment="Left" Margin="0,0,0,6">
             <Label
+                Margin="0,0,0,2"
                 DockPanel.Dock="Top"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
                 Style="{StaticResource CommonLabelStyle}" />
@@ -30,11 +31,12 @@
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"
-                Margin="0,0,5,0"
+                Margin="0,0,6,0"
                 IsReadOnly="True"
                 Style="{StaticResource CommonTextBoxStyle}" />
         </DockPanel>
-        <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
+        <Label Margin="0,0,0,2"
+               Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
 
@@ -43,12 +45,12 @@
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,5"
+                  Margin="0,0,0,6"
                   Style="{StaticResource CommonComboBoxStyle}"/>
 
-        <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+        <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
 
-            <TextBlock Margin="0,0,5,0"
+            <TextBlock Margin="0,0,12,0"
                        Style="{StaticResource CommonTextStyle}">
                 <Hyperlink Command="{Binding CreateClusterCommand}"
                            Style="{StaticResource CommonHyperlinkStyle}">
@@ -56,8 +58,7 @@
                 </Hyperlink>
             </TextBlock>
 
-            <TextBlock Margin="5,0,0,0"
-                       Style="{StaticResource CommonTextStyle}">
+            <TextBlock Style="{StaticResource CommonTextStyle}">
                 <Hyperlink Command="{Binding RefreshClustersListCommand}"
                            Style="{StaticResource CommonHyperlinkStyle}">
                     <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
@@ -65,15 +66,16 @@
             </TextBlock>
         </StackPanel>
 
-        <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
+        <Label Margin="0,0,0,2"
+            Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
                Style="{StaticResource CommonLabelStyle}" />
         <TextBox x:Name="_deploymentName"
                  Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                 Margin="0,0,0,15"
+                 Margin="0,0,0,6"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <Grid Margin="0,0,0,15">
+        <Grid Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
@@ -86,12 +88,14 @@
 
             <Label Grid.Row="0"
                    Grid.Column="0"
+                   Margin="0,0,12,2"
                    Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
                    Target="{Binding ElementName=_deploymentVersion}"
                    Style="{StaticResource CommonLabelStyle}" />
             <TextBox x:Name="_deploymentVersion"
                      Grid.Row="1"
                      Grid.Column="0"
+                     Margin="0,0,12,0"
                      Style="{StaticResource CommonTextBoxStyle}">
                 <TextBox.Text>
                     <Binding
@@ -104,19 +108,18 @@
             <!-- TODO: Use an up/down textbox control. -->
             <Label Grid.Row="0"
                    Grid.Column="1"
+                   Margin="0,0,0,2"
                    Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
                    Target="{Binding ElementName=_replicas}"
-                   Margin="5,0,0,0"
                    Style="{StaticResource CommonLabelStyle}" />
             <TextBox x:Name="_replicas"
                      Grid.Row="1"
                      Grid.Column="1"
                      Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Margin="5,0,0,0"
                      Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>
 
-        <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}">
+        <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}" Padding="8">
             <StackPanel>
                 <RadioButton GroupName="password"
                              Content="{x:Static ext:Resources.GkePublishDontExposeServiceCaption}"
@@ -130,11 +133,11 @@
                              Margin="{StaticResource CommonRadioButtonMargin}" />
 
                 <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
+                          Margin="0,0,0,8"
                           IsEnabled="{Binding ExposeService}"
                           IsChecked="{Binding ExposePublicService}"
                           Style="{StaticResource CommonTextStyleBase}" />
                 <CheckBox IsChecked="{Binding OpenWebsite}"
-                          Margin="0,5,0,0"
                           IsEnabled="{Binding ExposePublicService}"
                           Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                           Style="{StaticResource CommonTextStyleBase}"/>

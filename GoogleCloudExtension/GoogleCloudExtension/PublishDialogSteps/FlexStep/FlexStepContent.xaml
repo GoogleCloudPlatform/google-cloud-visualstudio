@@ -18,9 +18,10 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <DockPanel HorizontalAlignment="Left">
+        <DockPanel HorizontalAlignment="Left" Margin="0,0,0,6">
             <Label
                 DockPanel.Dock="Top"
+                Margin="0,0,0,2"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
                 Style="{StaticResource CommonLabelStyle}"/>
             <Button
@@ -31,23 +32,24 @@
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"
-                Margin="0,0,5,0"
+                Margin="0,0,6,0"
                 IsReadOnly="True"
                 Style="{StaticResource CommonTextBoxStyle}"/>
         </DockPanel>
         <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
+               Margin="0,0,0,2"
                Target="{Binding ElementName=_version}"
                Style="{StaticResource CommonLabelStyle}"/>
         <TextBox x:Name="_version"
+                 Margin="0,0,0,9"
                  Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                  Style="{StaticResource CommonTextBoxStyle}"/>
 
         <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"
-                  Margin="0,5,0,0"
+                  Margin="0,0,0,6"
                   Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}"
                   Style="{StaticResource CommonTextStyleBase}"/>
         <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                  Margin="0,5,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   Style="{StaticResource CommonTextStyleBase}"/>
     </StackPanel>
