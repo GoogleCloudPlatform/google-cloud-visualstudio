@@ -2871,22 +2871,6 @@
     <value>Enable the Cloud SQL API</value>
     <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
-  <data name="FlexPublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to App Engine flexible environment. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to an app to App Engine flex.</comment>
-  </data>
-  <data name="FlexPublishNoAppFoundMessage" xml:space="preserve">
-    <value>Your project does not contain an App Engine app. Please create one using the Cloud Console or in the command line with gcloud.</value>
-    <comment>Message shwon when there's no App Engine app defined for the project.</comment>
-  </data>
-  <data name="GcePublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to Compute Engine VMs. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to a GCE VM.</comment>
-  </data>
-  <data name="GkePublishEnableApiMessage" xml:space="preserve">
-    <value>Your project needs to be setup to deploy to Kubernetes Engine. Do you want to enable the necessary services now?</value>
-    <comment>Message shown when we need to enable APIs to deploy to GKE.</comment>
-  </data>
   <data name="UiEnableButtonCaption" xml:space="preserve">
     <value>Enable</value>
     <comment>Caption for enable buttons.</comment>
