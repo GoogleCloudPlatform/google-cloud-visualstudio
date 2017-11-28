@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Data;
+
 namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
@@ -22,6 +24,19 @@ namespace GoogleCloudExtension.PickProjectDialog
         public PickProjectIdWindowContent()
         {
             InitializeComponent();
+        }
+
+        private void OnFilterItemInCollectionView(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            var viewModel = DataContext as PickProjectIdViewModel;
+            e.Accepted = viewModel?.FilterItem(e.Item) ?? false;
+        }
+
+        private void OnFilterTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            var cvs = Resources["cvs"] as CollectionViewSource;
+            var view = cvs.View;
+            view.Refresh();
         }
     }
 }

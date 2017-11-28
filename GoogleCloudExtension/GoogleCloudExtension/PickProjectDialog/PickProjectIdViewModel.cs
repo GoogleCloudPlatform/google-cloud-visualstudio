@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private AsyncProperty _loadTask;
+        private string _filter;
 
         private readonly IPickProjectIdWindow _owner;
         private readonly Func<IResourceManagerDataSource> _resourceManagerDataSourceFactory;
@@ -60,7 +61,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         public IEnumerable<Project> Projects
         {
             get { return _projects; }
-            set { SetValueAndRaise(ref _projects, value); }
+            private set { SetValueAndRaise(ref _projects, value); }
         }
 
         /// <summary>
@@ -85,6 +86,12 @@ namespace GoogleCloudExtension.PickProjectDialog
             set { SetValueAndRaise(ref _loadTask, value); }
         }
 
+        public string Filter
+        {
+            get { return _filter; }
+            set { SetValueAndRaise(ref _filter, value); }
+        }
+
         public PickProjectIdViewModel(IPickProjectIdWindow owner)
             : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
         { }
@@ -107,6 +114,24 @@ namespace GoogleCloudExtension.PickProjectDialog
             ChangeUserCommand = new ProtectedCommand(OnChangeUser);
             OkCommand = new ProtectedCommand(OnOk, false);
             StartLoadProjects();
+        }
+
+        public bool FilterItem(object item)
+        {
+            var project = item as Project;
+            if (project == null)
+            {
+                return false;
+            }
+
+            // If there is no filter, allow the item.
+            if (string.IsNullOrEmpty(Filter))
+            {
+                return true;
+            }
+
+            // Check name and project id for the filter.
+            return project.ProjectId.Contains(Filter) || project.Name.Contains(Filter);
         }
 
         private void StartLoadProjects()

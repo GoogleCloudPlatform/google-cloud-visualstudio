@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
             <Style
                 x:Key="SelectAccountButtonStyle"
                 BasedOn="{StaticResource CommonButtonDynamicStyle}"
@@ -24,6 +25,11 @@
                 <Setter Property="Content" Value="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
                 <Setter Property="Margin" Value="3"/>
             </Style>
+
+            <!-- The collection view to maniuplate the list of projects. -->
+            <CollectionViewSource x:Key="cvs" Source="{Binding Projects}"
+                                  Filter="OnFilterItemInCollectionView"
+                                  IsLiveFilteringRequested="True" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -41,16 +47,46 @@
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
-        <DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}"/>
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!-- Label and choose account row. -->
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}" />
                 <controls:LabelWithHelp
                     Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
                     HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
+                    Margin="0"
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"/>
             </DockPanel>
-            <ContentControl>
+            
+            <!-- Filter row. -->
+            <Grid Grid.Row="1" Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Filter project:" Margin="0,0,5,0"/>
+
+                <TextBox Grid.Column="1"
+                         Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource CommonTextBoxStyle}"
+                         TextChanged="OnFilterTextChanged" />
+            </Grid>
+            
+            <!-- Projects row. -->
+            <ContentControl Grid.Row="2" Margin="0,5,0,0">
                 <ContentControl.Resources>
                     <Style TargetType="Border">
                         <Setter Property="BorderThickness" Value="1"/>
@@ -90,11 +126,10 @@
                     </Border>
                     <DataGrid
                         x:Key="Loaded"
-                        ItemsSource="{Binding Projects}"
+                        ItemsSource="{Binding Source={StaticResource cvs}}"
                         SelectedItem="{Binding SelectedProject}"
                         SelectionMode="Single"
                         SelectionUnit="FullRow"
-                        HorizontalScrollBarVisibility="Disabled"
                         VerticalScrollBarVisibility="Auto"
                         CanUserSortColumns="True"
                         CanUserResizeColumns="True"
@@ -102,20 +137,19 @@
                         AutoGenerateColumns="False"
                         VerticalGridLinesBrush="LightGray"
                         HorizontalGridLinesBrush="LightGray"
+                        HeadersVisibility="Column"
                         IsReadOnly="True">
 
                         <DataGrid.Columns>
                             <DataGridTextColumn
                                 Header="{x:Static ext:Resources.GcpProjectNameHeader}"
                                 Binding="{Binding Name}"
+                                Width="1.5*"
                                 MinWidth="5"/>
                             <DataGridTextColumn
                                 Header="{x:Static ext:Resources.GcpProjectIdHeader}"
                                 Binding="{Binding ProjectId}"
-                                MinWidth="5"/>
-                            <DataGridTextColumn
-                                Header="{x:Static ext:Resources.GcpProjectNumberHeader}"
-                                Binding="{Binding ProjectNumber}"
+                                Width="*"
                                 MinWidth="5"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -144,6 +178,6 @@
                     </Style>
                 </ContentControl.Style>
             </ContentControl>
-        </DockPanel>
+        </Grid>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
