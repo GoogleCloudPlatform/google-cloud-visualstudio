@@ -148,7 +148,13 @@ namespace GoogleCloudExtension.PickProjectDialog
 
         private async Task LoadProjectsAsync()
         {
-            Projects = await CredentialsStore.Default.CurrentAccountProjects;
+            // The projects list will be empty while we load.
+            Projects = Enumerable.Empty<Project>();
+
+            // Updat the to loaded list of projects.
+            Projects = (await CredentialsStore.Default.CurrentAccountProjects) ?? Enumerable.Empty<Project>();
+
+            // Choose project from the list.
             if (SelectedProject == null)
             {
                 SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);

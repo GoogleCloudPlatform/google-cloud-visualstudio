@@ -16,18 +16,9 @@
                 <ResourceDictionary Source="../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
-            <Style
-                x:Key="SelectAccountButtonStyle"
-                BasedOn="{StaticResource CommonButtonDynamicStyle}"
-                TargetType="Button">
-                
-                <Setter Property="Command" Value="{Binding ChangeUserCommand}"/>
-                <Setter Property="Content" Value="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
-                <Setter Property="Margin" Value="3"/>
-            </Style>
-
             <!-- The collection view to maniuplate the list of projects. -->
-            <CollectionViewSource x:Key="cvs" Source="{Binding Projects}"
+            <CollectionViewSource x:Key="cvs"
+                                  Source="{Binding Projects}"
                                   Filter="OnFilterItemInCollectionView"
                                   IsLiveFilteringRequested="True" />
         </ResourceDictionary>
@@ -50,6 +41,7 @@
         
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -60,18 +52,16 @@
             </Grid.RowDefinitions>
             
             <!-- Label and choose account row. -->
-            <DockPanel>
-                <Button DockPanel.Dock="Right" Style="{StaticResource SelectAccountButtonStyle}" />
-                <controls:LabelWithHelp
-                    Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
-                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
-                    Margin="0"
-                    VerticalAlignment="Center"
-                    VerticalContentAlignment="Center"/>
-            </DockPanel>
-            
+            <controls:LabelWithHelp Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
+                                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"/>
+            <Button Grid.Column="1"
+                    Command="{Binding ChangeUserCommand}"
+                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}" />
+
             <!-- Filter row. -->
-            <Grid Grid.Row="1" Margin="0,5,0,0">
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
@@ -86,7 +76,7 @@
             </Grid>
             
             <!-- Projects row. -->
-            <ContentControl Grid.Row="2" Margin="0,5,0,0">
+            <ContentControl Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0">
                 <ContentControl.Resources>
                     <Style TargetType="Border">
                         <Setter Property="BorderThickness" Value="1"/>
