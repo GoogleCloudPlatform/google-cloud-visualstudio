@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2803,16 +2803,16 @@
     <value>_Select Project...</value>
     <comment>The label of the Select Project button of the Project Template Chooser dialog.</comment>
   </data>
-  <data name="WizardTemplateChooserTargetFrameworkLabel" xml:space="preserve">
-    <value>_Target Framework:</value>
+  <data name="WizardTemplateChooserTargetNetFrameworkLabel" xml:space="preserve">
+    <value>Target ._NET Framework:</value>
     <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
   </data>
   <data name="WizardTemplateChooserWebApiLabel" xml:space="preserve">
     <value>_Web API</value>
     <comment>The label for the WebAPI app type radio button of the Project Template Chooser dialog.</comment>
   </data>
-  <data name="WizardTemplateChooserFeaturesLabel" xml:space="preserve">
-    <value>Features:</value>
+  <data name="WizardTemplateChooserTemplateTypeLabel" xml:space="preserve">
+    <value>Template type:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
   <data name="ApiManagerEnableServicesErrorMessage" xml:space="preserve">
@@ -2938,5 +2938,8 @@
   <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
     <value>The selected GCP project needs services to be enabled before you can deploy.</value>
     <comment>The message shown when a project needs an API enabled.</comment>
+  </data>
+  <data name="WizardTemplateChooserTargetAspFrameworkLabel" xml:space="preserve">
+    <value>Target _ASP.NET Framework:</value>
   </data>
 </root>

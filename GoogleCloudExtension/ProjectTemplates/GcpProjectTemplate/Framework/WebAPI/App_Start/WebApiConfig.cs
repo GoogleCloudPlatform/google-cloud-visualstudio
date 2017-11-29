@@ -22,36 +22,31 @@ namespace _safe_project_name_
             // while running on your local machine edit Web.config and uncomment
             // the <projectId> value under the <log4net> section. Ensure that
             // the <projectId> is set to a valid Google Cloud Project Id.
+            // Otherwise, logging will only occur when deployed to GCP.
 
             // [START logging_and_error_reporting]
-            // Check to ensure that projectId has been changed from placeholder value.
-            var section = (XmlElement)ConfigurationManager.GetSection("log4net");
-            XmlElement projectIdElement =
-                (XmlElement)section.GetElementsByTagName("projectId").Item(0);
             string projectId =
                 Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId ??
-                projectIdElement?.Attributes["value"].Value;
-            if (string.IsNullOrEmpty(projectId))
+                GetProjectIdFromConfig();
+            if (!string.IsNullOrEmpty(projectId))
             {
-                throw new Exception("The logging and error reporting libraries need a project ID. "
-                    + "Update Web.config and add a <projectId> entry in the <log4net> section.");
+                // [START enable_error_reporting]
+                var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
+                var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
+                // Add a catch all to log all uncaught exceptions to Stackdriver Error Reporting.
+                config.Services.Add(typeof(IExceptionLogger),
+                    ErrorReportingExceptionLogger.Create(projectId, serviceName, version));
+                // [END enable_error_reporting]
+                // [START enable_logging]
+                // Retrieve a logger for this context.
+                ILog log = LogManager.GetLogger(typeof(WebApiConfig));
+                // [END enable_logging]
+                // Log confirmation of set-up to Google Stackdriver Logging.
+                log.Info("Stackdriver Logging with Log4net successfully configured for use.");
+                log.Info("Stackdriver Error Reporting enabled: " +
+                    "https://console.cloud.google.com/errors/");
+                // [END logging_and_error_reporting]
             }
-            // [START enable_error_reporting]
-            var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
-            var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
-            // Add a catch all to log all uncaught exceptions to Stackdriver Error Reporting.
-            config.Services.Add(typeof(IExceptionLogger),
-                ErrorReportingExceptionLogger.Create(projectId, serviceName, version));
-            // [END enable_error_reporting]
-            // [START enable_logging]
-            // Retrieve a logger for this context.
-            ILog log = LogManager.GetLogger(typeof(WebApiConfig));
-            // [END enable_logging]
-            // Log confirmation of set-up to Google Stackdriver Logging.
-            log.Info("Stackdriver Logging with Log4net successfully configured for use.");
-            log.Info("Stackdriver Error Reporting enabled: " +
-                "https://console.cloud.google.com/errors/");
-            // [END logging_and_error_reporting]
 
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
@@ -66,6 +61,13 @@ namespace _safe_project_name_
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+        }
+
+        private static string GetProjectIdFromConfig()
+        {
+            var log4NetSection = ConfigurationManager.GetSection("log4net") as XmlElement;
+            var projectIdElement = log4NetSection?.GetElementsByTagName("projectId")?.Item(0) as XmlElement;
+            return projectIdElement?.Attributes["value"]?.Value;
         }
     }
 }

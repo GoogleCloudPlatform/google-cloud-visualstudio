@@ -13,8 +13,15 @@ namespace _safe_project_name_
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
+        private readonly Lazy<string> _projectIdLazy;
+        private string ProjectId => _projectIdLazy.Value;
+        private bool HasProjectId => _projectIdLazy.Value != null;
+
         public Startup(IHostingEnvironment env)
         {
+            _projectIdLazy = new Lazy<string>(GetProjectId);
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -23,43 +30,47 @@ namespace _safe_project_name_
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string projectId = GetProjectId();
             // Add framework services.
             services.AddMvc();
-            // Enables Stackdriver Trace.
-            services.AddGoogleTrace(options => options.ProjectId = projectId);
-            // Sends Exceptions to Stackdriver Error Reporting.
-            services.AddGoogleExceptionLogging(
-                options =>
-                {
-                    options.ProjectId = projectId;
-                    options.ServiceName = GetServiceName();
-                    options.Version = GetVersion();
-                });
-    }
+
+            if (HasProjectId)
+            {
+                // Enables Stackdriver Trace.
+                services.AddGoogleTrace(options => options.ProjectId = ProjectId);
+                // Sends Exceptions to Stackdriver Error Reporting.
+                services.AddGoogleExceptionLogging(
+                    options =>
+                    {
+                        options.ProjectId = ProjectId;
+                        options.ServiceName = GetServiceName();
+                        options.Version = GetVersion();
+                    });
+            }
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            var projectId = GetProjectId();
 
             // Only use Console and Debug logging during development.
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            // Send logs to Stackdriver Logging.
-            loggerFactory.AddGoogle(projectId);
 
-            if (!env.IsDevelopment())
+            if (HasProjectId)
             {
-                app.UseGoogleExceptionLogging();
+                // Send logs to Stackdriver Logging.
+                loggerFactory.AddGoogle(ProjectId);
+
+                if (!env.IsDevelopment())
+                {
+                    app.UseGoogleExceptionLogging();
+                }
+                app.UseGoogleTrace();
             }
 
-            app.UseGoogleTrace();
 
             app.UseMvc();
         }
@@ -70,10 +81,8 @@ namespace _safe_project_name_
             var projectId = instance?.ProjectId ?? Configuration["Google:ProjectId"];
             if (string.IsNullOrEmpty(projectId))
             {
-                throw new Exception(
-                    "The logging, tracing and error reporting libraries need a project ID. " +
-                    "Update appsettings.json by setting the ProjectId property with your " +
-                    "Google Cloud Project ID, then recompile.");
+                // Set Google:ProjectId in appsettings.json to enable stackdriver logging outside of GCP.
+                return null;
             }
             return projectId;
         }

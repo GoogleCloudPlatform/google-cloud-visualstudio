@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -6361,15 +6361,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Features:.
-        /// </summary>
-        public static string WizardTemplateChooserFeaturesLabel {
-            get {
-                return ResourceManager.GetString("WizardTemplateChooserFeaturesLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _MVC.
         /// </summary>
         public static string WizardTemplateChooserMvcLabel {
@@ -6397,11 +6388,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Target Framework:.
+        ///   Looks up a localized string similar to Target _ASP.NET Framework:.
         /// </summary>
-        public static string WizardTemplateChooserTargetFrameworkLabel {
+        public static string WizardTemplateChooserTargetAspFrameworkLabel {
             get {
-                return ResourceManager.GetString("WizardTemplateChooserTargetFrameworkLabel", resourceCulture);
+                return ResourceManager.GetString("WizardTemplateChooserTargetAspFrameworkLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target ._NET Framework:.
+        /// </summary>
+        public static string WizardTemplateChooserTargetNetFrameworkLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserTargetNetFrameworkLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template type:.
+        /// </summary>
+        public static string WizardTemplateChooserTemplateTypeLabel {
+            get {
+                return ResourceManager.GetString("WizardTemplateChooserTemplateTypeLabel", resourceCulture);
             }
         }
         
