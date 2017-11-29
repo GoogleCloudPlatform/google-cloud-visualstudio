@@ -6370,24 +6370,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud _Project ID:.
-        /// </summary>
-        public static string WizardTemplateChooserProjectIdLabel {
-            get {
-                return ResourceManager.GetString("WizardTemplateChooserProjectIdLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Select Project....
-        /// </summary>
-        public static string WizardTemplateChooserSelectProjectButton {
-            get {
-                return ResourceManager.GetString("WizardTemplateChooserSelectProjectButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Target _ASP.NET Framework:.
         /// </summary>
         public static string WizardTemplateChooserTargetAspFrameworkLabel {

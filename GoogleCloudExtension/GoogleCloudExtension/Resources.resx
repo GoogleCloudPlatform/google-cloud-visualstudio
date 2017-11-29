@@ -2795,14 +2795,6 @@
     <value>_MVC</value>
     <comment>The label for the MVC app type radio button of the Project Template Chooser dialog.</comment>
   </data>
-  <data name="WizardTemplateChooserProjectIdLabel" xml:space="preserve">
-    <value>Google Cloud _Project ID:</value>
-    <comment>The label for the Project ID input field of the Project Template Chooser dialog.</comment>
-  </data>
-  <data name="WizardTemplateChooserSelectProjectButton" xml:space="preserve">
-    <value>_Select Project...</value>
-    <comment>The label of the Select Project button of the Project Template Chooser dialog.</comment>
-  </data>
   <data name="WizardTemplateChooserTargetNetFrameworkLabel" xml:space="preserve">
     <value>Target ._NET Framework:</value>
     <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
