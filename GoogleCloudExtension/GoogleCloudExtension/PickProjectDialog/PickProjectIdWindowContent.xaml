@@ -7,6 +7,7 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:local="clr-namespace:GoogleCloudExtension.PickProjectDialog"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:PickProjectIdViewModel}">
     <UserControl.Resources>
@@ -58,6 +59,7 @@
                                     VerticalContentAlignment="Center"/>
             <Button Grid.Column="1"
                     Command="{Binding ChangeUserCommand}"
+                    Visibility="{Binding AllowAccountChange, Converter={utils:VisibilityConverter}}"
                     Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}" />
 
             <!-- Filter row. -->
@@ -67,9 +69,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Filter project:" Margin="0,0,5,0"/>
+                <Label Content="Filter _project:" Margin="0,0,5,0" Target="{Binding ElementName=_filter}"/>
 
-                <TextBox Grid.Column="1"
+                <TextBox x:Name="_filter"
+                         Grid.Column="1"
                          Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource CommonTextBoxStyle}"
                          TextChanged="OnFilterTextChanged" />
@@ -90,7 +93,8 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Text="{x:Static ext:Resources.WizardPickProjectIdNoAccountMessage}"/>
-                            <Button Style="{StaticResource SelectAccountButtonStyle}"/>
+                            <Button Command="{Binding ChangeUserCommand}"
+                                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}" />
                         </StackPanel>
                     </Border>
                     <Border x:Key="Loading">

@@ -34,11 +34,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
         private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
-        private static readonly string s_pickProjectDialogTitle =
-            string.Format(Resources.PublishDialogSelectGcpProjectTitle, VisualStudioProjectName);
 
         private PublishDialogStepBase _objectUnderTest;
-        private Mock<Func<string, Project>> _pickProjectPromptMock;
+        private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
 
         [TestInitialize]
@@ -50,7 +48,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             var mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
             var mockedPublishDialog = Mock.Of<IPublishDialog>(d => d.Project == mockedProject);
             _objectUnderTest.OnPushedToDialog(mockedPublishDialog);
-            _pickProjectPromptMock = new Mock<Func<string, Project>>();
+            _pickProjectPromptMock = new Mock<Func<Project>>();
             _objectUnderTest.PickProjectPrompt = _pickProjectPromptMock.Object;
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
@@ -61,25 +59,25 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _changedProperties.Clear();
-            _pickProjectPromptMock.Setup(f => f(It.IsAny<string>())).Returns((Project) null);
+            _pickProjectPromptMock.Setup(f => f()).Returns((Project) null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
             CollectionAssert.DoesNotContain(_changedProperties, nameof(FlexStepViewModel.GcpProjectId));
             Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
-            _pickProjectPromptMock.Verify(f => f(s_pickProjectDialogTitle), Times.Once);
+            _pickProjectPromptMock.Verify(f => f(), Times.Once);
         }
 
         [TestMethod]
         public void TestSelectProjectCommand()
         {
-            _pickProjectPromptMock.Setup(f => f(It.IsAny<string>())).Returns(s_targetProject);
+            _pickProjectPromptMock.Setup(f => f()).Returns(s_targetProject);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
             CollectionAssert.Contains(_changedProperties, nameof(FlexStepViewModel.GcpProjectId));
             Assert.AreEqual(TargetProjectId, _objectUnderTest.GcpProjectId);
-            _pickProjectPromptMock.Verify(f => f(s_pickProjectDialogTitle), Times.Once);
+            _pickProjectPromptMock.Verify(f => f(), Times.Once);
         }
 
         [TestMethod]

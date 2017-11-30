@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -59,6 +60,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private ICommand _emptyStateCommand;
         private bool _loadingProject;
         private string _projectDisplayString;
+        private IList<TreeHierarchy> _roots;
 
         /// <summary>
         /// Returns whether the view model is busy performing an operation.
@@ -93,7 +95,11 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The list list of roots for the hieratchical view, each root contains all of the data
         /// from a given source.
         /// </summary>
-        public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
+        public IList<TreeHierarchy> Roots
+        {
+            get { return _roots; }
+            private set { SetValueAndRaise(ref _roots, value); }
+        }
 
         public string ProjectDisplayString
         {
@@ -272,7 +278,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectIdWindow.PromptUser(Resources.PublishDialogSelectGcpProjectTitle);
+            Project selectedProject = PickProjectIdWindow.PromptUser(allowAccountChange: false);
             if (selectedProject == null)
             {
                 return;
@@ -406,13 +412,18 @@ namespace GoogleCloudExtension.CloudExplorer
             _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
         }
 
-        private void RefreshSources()
+        private async void RefreshSources()
         {
+            // Clear the roots collection to clean the UI.
+            Roots = null;
             foreach (var source in _sources)
             {
                 source.Refresh();
             }
-            RaisePropertyChanged(nameof(Roots));
+
+            // Wait for a full cycle so the automation server has time to adapt to the chagnes in the UI.
+            await Task.Delay(100);
+            Roots = _sources.Select(x => x.Root).ToList();
         }
 
         /// <summary>

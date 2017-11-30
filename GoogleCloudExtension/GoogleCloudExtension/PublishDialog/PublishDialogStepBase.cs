@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _needsApiEnabled = false;
         private bool _generalError = false;
 
-        internal Func<string, Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+        internal Func<Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
 
         protected internal IPublishDialog PublishDialog { get; private set; }
 
@@ -182,7 +182,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectPrompt(Resources.PublishDialogSelectGcpProjectTitle);
+            Project selectedProject = PickProjectPrompt();
             if (selectedProject?.ProjectId != null && selectedProject?.ProjectId != CredentialsStore.Default.CurrentProjectId)
             {
                 CredentialsStore.Default.UpdateCurrentProject(selectedProject);

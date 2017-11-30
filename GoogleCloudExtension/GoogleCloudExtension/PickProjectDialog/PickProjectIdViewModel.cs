@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private AsyncProperty _loadTask;
+        private bool _allowAccountChange;
         private string _filter;
 
         private readonly IPickProjectIdWindow _owner;
@@ -92,9 +93,17 @@ namespace GoogleCloudExtension.PickProjectDialog
             set { SetValueAndRaise(ref _filter, value); }
         }
 
-        public PickProjectIdViewModel(IPickProjectIdWindow owner)
+        public bool AllowAccountChange
+        {
+            get { return _allowAccountChange; }
+            set { SetValueAndRaise(ref _allowAccountChange, value); }
+        }
+
+        public PickProjectIdViewModel(IPickProjectIdWindow owner, bool allowAccountChange)
             : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
-        { }
+        {
+            AllowAccountChange = allowAccountChange;
+        }
 
         /// <summary>
         /// For Testing.

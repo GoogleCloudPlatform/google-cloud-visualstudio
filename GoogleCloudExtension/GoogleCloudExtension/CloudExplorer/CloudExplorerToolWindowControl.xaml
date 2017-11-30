@@ -370,7 +370,13 @@
             utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
             utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
             Grid.Row="2"
-            Style="{StaticResource CloudExplorerTreeViewStyle}" />
+            Style="{StaticResource CloudExplorerTreeViewStyle}">
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+        </TreeView>
 
     </Grid>
 </UserControl>
