@@ -330,10 +330,13 @@
             <TextBox Text="{Binding ProjectDisplayString}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
-            <Button Content="..."
+            <Button Content="Select _Project..."
                     Grid.Column="1"
                     Command="{Binding SelectProjectCommand}"
-                    Style="{StaticResource CommonButtonDynamicStyle}" Margin="5" />
+                    Style="{StaticResource CommonButtonDynamicStyle}"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center" />
         </Grid>
         
         <!-- Message for the empty state -->
