@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PickProjectDialog
 {
@@ -120,8 +121,8 @@ namespace GoogleCloudExtension.PickProjectDialog
             _resourceManagerDataSourceFactory = dataSourceFactory;
             _promptAccountManagement = promptAccountManagement;
 
-            ChangeUserCommand = new ProtectedCommand(OnChangeUser);
-            OkCommand = new ProtectedCommand(OnOk, false);
+            ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
             StartLoadProjects();
         }
 
@@ -174,13 +175,13 @@ namespace GoogleCloudExtension.PickProjectDialog
             }
         }
 
-        private void OnChangeUser()
+        private void OnChangeUserCommand()
         {
             _promptAccountManagement();
             StartLoadProjects();
         }
 
-        private void OnOk()
+        private void OnOkCommand()
         {
             Result = SelectedProject;
             _owner.Close();

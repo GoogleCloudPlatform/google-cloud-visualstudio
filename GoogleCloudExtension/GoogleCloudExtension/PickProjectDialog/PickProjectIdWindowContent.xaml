@@ -132,8 +132,8 @@
                         VerticalGridLinesBrush="LightGray"
                         HorizontalGridLinesBrush="LightGray"
                         HeadersVisibility="Column"
-                        IsReadOnly="True">
-
+                        IsReadOnly="True"
+                        utils:ControlBehaviors.DoubleClickCommand="{Binding OkCommand}">
                         <DataGrid.Columns>
                             <DataGridTextColumn
                                 Header="{x:Static ext:Resources.GcpProjectNameHeader}"

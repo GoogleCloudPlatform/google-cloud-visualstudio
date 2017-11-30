@@ -378,7 +378,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
 
                 // If we managed to load the project, set the display string for it.
-                ProjectDisplayString = _currentProject?.ProjectId;
+                ProjectDisplayString = _currentProject?.Name;
             }
             finally
             {
