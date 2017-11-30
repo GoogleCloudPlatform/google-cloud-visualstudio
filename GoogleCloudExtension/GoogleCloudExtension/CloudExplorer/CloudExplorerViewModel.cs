@@ -25,12 +25,10 @@ using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 

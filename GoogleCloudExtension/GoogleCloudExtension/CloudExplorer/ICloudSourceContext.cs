@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
