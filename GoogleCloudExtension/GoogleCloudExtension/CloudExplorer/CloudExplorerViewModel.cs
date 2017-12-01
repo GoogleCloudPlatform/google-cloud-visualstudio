@@ -276,7 +276,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectIdWindow.PromptUser(allowAccountChange: false);
+            Project selectedProject = PickProjectIdWindow.PromptUser(
+                Resources.CloudExplorerPickProjectHelpMessage,
+                allowAccountChange: false);
             if (selectedProject == null)
             {
                 return;

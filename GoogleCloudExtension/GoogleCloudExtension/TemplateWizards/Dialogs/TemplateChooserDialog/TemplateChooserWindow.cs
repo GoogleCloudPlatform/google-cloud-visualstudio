@@ -26,7 +26,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         private TemplateChooserWindow(string dialogTitle) : base(dialogTitle)
         {
-            ViewModel = new TemplateChooserViewModel(Close, () => PickProjectIdWindow.PromptUser());
+            ViewModel = new TemplateChooserViewModel(
+                Close,
+                () => PickProjectIdWindow.PromptUser(GoogleCloudExtension.Resources.WizardPickProjectIdHelpText, allowAccountChange: true));
             Content = new TemplateChooserWindowContent { DataContext = ViewModel };
         }
 

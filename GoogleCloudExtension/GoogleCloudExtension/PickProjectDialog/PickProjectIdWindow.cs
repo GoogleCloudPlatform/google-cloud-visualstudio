@@ -24,10 +24,10 @@ namespace GoogleCloudExtension.PickProjectDialog
     {
         private PickProjectIdViewModel ViewModel { get; }
 
-        private PickProjectIdWindow(bool allowAccountChange)
+        private PickProjectIdWindow(string helpContext, bool allowAccountChange)
             : base(GoogleCloudExtension.Resources.PublishDialogSelectGcpProjectTitle)
         {
-            ViewModel = new PickProjectIdViewModel(this, allowAccountChange);
+            ViewModel = new PickProjectIdViewModel(this, helpContext, allowAccountChange);
             Content = new PickProjectIdWindowContent { DataContext = ViewModel };
         }
 
@@ -38,18 +38,11 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
-        public static Project PromptUser(bool allowAccountChange)
+        public static Project PromptUser(string helpContext, bool allowAccountChange)
         {
-            var dialog = new PickProjectIdWindow(allowAccountChange);
+            var dialog = new PickProjectIdWindow(helpContext, allowAccountChange);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
-
-        /// <summary>
-        /// Helper dialog to prompt while showing the account change button.
-        /// </summary>
-        /// <param name="dialogTitle">The title for the dialog.</param>
-        /// <returns></returns>
-        public static Project PromptUser() => PromptUser(allowAccountChange: true);
     }
 }

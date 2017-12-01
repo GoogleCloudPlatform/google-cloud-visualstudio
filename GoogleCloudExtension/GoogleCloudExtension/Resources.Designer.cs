@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2037,6 +2037,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerNoProjectsFoundPlaceholderMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerNoProjectsFoundPlaceholderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the GCP project that owns the resources you want browse in the Cloud Explorer..
+        /// </summary>
+        public static string CloudExplorerPickProjectHelpMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerPickProjectHelpMessage", resourceCulture);
             }
         }
         
@@ -5376,6 +5385,15 @@ namespace GoogleCloudExtension
         public static string PublishDialogOpenWebsiteCaption {
             get {
                 return ResourceManager.GetString("PublishDialogOpenWebsiteCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the GCP project where you want to deploy your app..
+        /// </summary>
+        public static string PublishDialogPickProjectHelpMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogPickProjectHelpMessage", resourceCulture);
             }
         }
         

@@ -54,7 +54,7 @@
             
             <!-- Label and choose account row. -->
             <controls:LabelWithHelp Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
-                                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
+                                    HelpContent="{Binding HelpText}"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"/>
             <Button Grid.Column="1"
@@ -138,7 +138,7 @@
                             <DataGridTextColumn
                                 Header="{x:Static ext:Resources.GcpProjectNameHeader}"
                                 Binding="{Binding Name}"
-                                Width="1.5*"
+                                Width="*"
                                 MinWidth="5"/>
                             <DataGridTextColumn
                                 Header="{x:Static ext:Resources.GcpProjectIdHeader}"

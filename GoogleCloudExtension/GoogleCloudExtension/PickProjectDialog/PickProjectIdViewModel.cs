@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private AsyncProperty _loadTask;
         private bool _allowAccountChange;
         private string _filter;
+        private string _helpText;
 
         private readonly IPickProjectIdWindow _owner;
         private readonly Func<IResourceManagerDataSource> _resourceManagerDataSourceFactory;
@@ -96,13 +97,20 @@ namespace GoogleCloudExtension.PickProjectDialog
         public bool AllowAccountChange
         {
             get { return _allowAccountChange; }
-            set { SetValueAndRaise(ref _allowAccountChange, value); }
+            private set { SetValueAndRaise(ref _allowAccountChange, value); }
         }
 
-        public PickProjectIdViewModel(IPickProjectIdWindow owner, bool allowAccountChange)
+        public string HelpText
+        {
+            get { return _helpText; }
+            private set { SetValueAndRaise(ref _helpText, value); }
+        }
+
+        public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
             : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
         {
             AllowAccountChange = allowAccountChange;
+            HelpText = helpText;
         }
 
         /// <summary>

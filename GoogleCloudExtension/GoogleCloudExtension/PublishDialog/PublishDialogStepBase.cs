@@ -37,7 +37,8 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _needsApiEnabled = false;
         private bool _generalError = false;
 
-        internal Func<Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+        internal Func<Project> PickProjectPrompt =
+            () => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true);
 
         protected internal IPublishDialog PublishDialog { get; private set; }
 

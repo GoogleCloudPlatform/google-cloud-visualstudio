@@ -32,7 +32,8 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Func<GcpProject> PromptPickProjectId = PickProjectIdWindow.PromptUser;
+        internal Func<GcpProject> PromptPickProjectId =
+            () => PickProjectIdWindow.PromptUser(Resources.WizardPickProjectIdHelpText, allowAccountChange: false);
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
