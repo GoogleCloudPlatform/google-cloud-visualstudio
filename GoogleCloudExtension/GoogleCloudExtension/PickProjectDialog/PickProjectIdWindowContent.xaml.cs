@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.PickProjectDialog
         public PickProjectIdWindowContent()
         {
             InitializeComponent();
+
+            // Ensure the focus is in the filter textbox.
+            _filter.Focus();
         }
 
         private void OnFilterItemInCollectionView(object sender, System.Windows.Data.FilterEventArgs e)
