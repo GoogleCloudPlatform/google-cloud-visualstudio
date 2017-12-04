@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.Theming
@@ -57,6 +58,12 @@ namespace GoogleCloudExtension.Theming
         public static VsTheme GetCurrentTheme()
         {
             dynamic themeService = GoogleCloudExtensionPackage.GetGlobalService(typeof(SVsColorThemeService));
+            if (themeService == null)
+            {
+                Debug.WriteLine("Could not determine the theme being used.");
+                return VsTheme.Unknown;
+            }
+
             Guid themeId = themeService.CurrentTheme.ThemeId;
             VsTheme result = VsTheme.Unknown;
 

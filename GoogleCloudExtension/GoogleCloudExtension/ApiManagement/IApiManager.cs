@@ -17,9 +17,6 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ApiManagement
 {
-    /// <summary>
-    /// Define interface for <seealso cref="ApiManager"/>.
-    /// </summary>
     public interface IApiManager
     {
         /// <summary>
@@ -44,5 +41,6 @@ namespace GoogleCloudExtension.ApiManagement
         /// <param name="serviceNames">The list of services to enable.</param>
         /// <returns>A task that will be completed once the operation finishes.</returns>
         Task EnableServicesAsync(IEnumerable<string> serviceNames);
+
     }
 }
