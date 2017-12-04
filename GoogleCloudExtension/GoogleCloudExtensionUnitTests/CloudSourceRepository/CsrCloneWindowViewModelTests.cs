@@ -29,7 +29,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
     public class CsrCloneWindowViewModelTests
     {
         private CsrCloneWindowViewModel _cloneWindowViewModel;
-        private Project _mockedTestProject;
+        private Mock<Project> _testProjectMock;
         private List<Project> _testProjects;
         private TaskCompletionSource<IList<Repo>> _testTaskCompletionSource;
         private Mock<Func<string, Task<IList<Repo>>>> _getCloudReposMock;
@@ -40,8 +40,9 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         public void Initialize()
         {
             _apiManagerMock = new Mock<IApiManager>();
-            _mockedTestProject = new Mock<Project>().Object;
-            _testProjects = new List<Project> { new Mock<Project>().Object, _mockedTestProject };
+            _testProjectMock = new Mock<Project>();
+            _testProjectMock.SetupGet(x => x.ProjectId).Returns("test_project_id");
+            _testProjects = new List<Project> { new Mock<Project>().Object, _testProjectMock.Object };
             _getCloudReposMock = new Mock<Func<string, Task<IList<Repo>>>>();
             _testTaskCompletionSource = new TaskCompletionSource<IList<Repo>>();
             _getCloudReposMock.Setup(f => f(It.IsAny<string>())).Returns(() =>
@@ -61,16 +62,15 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         [TestMethod]
         public async Task ChangeSelectedProjectTest()
         {
-            _mockedTestProject.ProjectId = "test_project_id";
-            Repo repoMock = new Mock<Repo>().Object;
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, new Mock<Repo>().Object });
+            Mock<Repo> repoMock = new Mock<Repo>();
+            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock.Object, new Mock<Repo>().Object });
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult<bool>(true))
                 .Verifiable();
-            _cloneWindowViewModel.SelectedProject = _mockedTestProject;
+            _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
-            Assert.AreEqual(repoMock, _cloneWindowViewModel.SelectedRepository);
+            Assert.AreEqual(repoMock.Object, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
             _apiManagerMock.Verify();
         }
@@ -78,12 +78,11 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         [TestMethod]
         public async Task CsrApiNotEnabledTest()
         {
-            _mockedTestProject.ProjectId = "test_project_id";
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult<bool>(false))
                 .Verifiable();
-            _cloneWindowViewModel.SelectedProject = _mockedTestProject;
+            _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             Assert.AreEqual(null, _cloneWindowViewModel.SelectedRepository);
             Assert.IsTrue(_cloneWindowViewModel.NeedsApiEnabled);
@@ -93,24 +92,23 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         [TestMethod]
         public async Task CsrApiEnabledTest()
         {
-            _mockedTestProject.ProjectId = "enable_api_test_project_id";
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult<bool>(false));
-            _cloneWindowViewModel.SelectedProject = _mockedTestProject;
+            _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
 
             _apiManagerMock.Setup(
                 x => x.EnableServicesAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult(0))
                 .Verifiable();
-            Repo repoMock = new Mock<Repo>().Object;
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock, new Mock<Repo>().Object });
+            Mock<Repo> repoMock = new Mock<Repo>();
+            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock.Object, new Mock<Repo>().Object });
             Assert.IsTrue(_cloneWindowViewModel.EnableApiCommand.CanExecuteCommand);
             _cloneWindowViewModel.EnableApiCommand.Execute(null);
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             _apiManagerMock.Verify();
-            Assert.AreEqual(repoMock, _cloneWindowViewModel.SelectedRepository);
+            Assert.AreEqual(repoMock.Object, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
         }
 
