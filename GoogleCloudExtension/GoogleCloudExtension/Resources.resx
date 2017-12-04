@@ -2939,4 +2939,12 @@
     <value>The selected GCP project needs services to be enabled before you can deploy.</value>
     <comment>The message shown when a project needs an API enabled.</comment>
   </data>
+  <data name="CsrEnableApiMessage" xml:space="preserve">
+    <value>The selected project needs to be setup to use Cloud Source Repositories. </value>
+    <comment>The message to ask user to enable Cloud Source Repositories API for the project.  </comment>
+  </data>
+  <data name="CsrEnableApiLinkCaption" xml:space="preserve">
+    <value>Enable the service</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
 </root>

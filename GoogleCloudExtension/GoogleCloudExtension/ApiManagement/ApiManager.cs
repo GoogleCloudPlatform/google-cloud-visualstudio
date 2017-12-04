@@ -38,13 +38,29 @@ namespace GoogleCloudExtension.ApiManagement
         /// </summary>
         public static ApiManager Default => s_defaultManager.Value;
 
-        private Lazy<ServiceManagementDataSource> _dataSource = new Lazy<ServiceManagementDataSource>(CreateDataSource);
+        private Lazy<ServiceManagementDataSource> _dataSource;
 
         private ApiManager()
         {
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentCredentialsChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentCredentialsChanged;
             CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
+            _dataSource = new Lazy<ServiceManagementDataSource>(CreateDataSource);
+        }
+
+        private ApiManager(string projectId)
+        {
+            _dataSource = new Lazy<ServiceManagementDataSource>(() => CreateDataSource(projectId));
+        }
+
+        /// <summary>
+        /// Create an ApiManager instance for the given project id.
+        /// </summary>
+        /// <param name="projectId">GCP project id.</param>
+        /// <returns>An instance of class ApiManager.</returns>
+        public static IApiManager GetApiManager(string projectId)
+        {
+            return new ApiManager(projectId);
         }
 
         /// <summary>
@@ -184,6 +200,15 @@ namespace GoogleCloudExtension.ApiManagement
             {
                 return null;
             }
+        }
+
+        private static ServiceManagementDataSource CreateDataSource(string projectId)
+        {
+            projectId.ThrowIfNullOrEmpty(nameof(projectId));
+            return new ServiceManagementDataSource(
+                projectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.VersionedApplicationName);
         }
     }
 }
