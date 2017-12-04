@@ -30,14 +30,18 @@ namespace GoogleCloudExtension.Analytics
 
         private const string PropertyId = "UA-36037335-1";
 
-        private static Lazy<IEventsReporter> s_reporter = new Lazy<IEventsReporter>(CreateReporter);
+        // For testing.
+        internal static Lazy<IEventsReporter> ReporterLazy { private get; set; } = new Lazy<IEventsReporter>(CreateReporter);
+
+        private static IEventsReporter Reporter => ReporterLazy.Value;
+
 
         /// <summary>
         /// Used by unit test to prevent analytics from running.
         /// </summary>
         public static void DisableReporting()
         {
-            s_reporter = new Lazy<IEventsReporter>(() => null);
+            ReporterLazy = new Lazy<IEventsReporter>(() => null);
         }
 
         /// <summary>
@@ -64,24 +68,23 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static void AnalyticsOptInStateChanged()
         {
-            s_reporter = new Lazy<IEventsReporter>(CreateReporter);
+            ReporterLazy = new Lazy<IEventsReporter>(CreateReporter);
         }
 
         /// <summary>
         /// Called to report an interesting event to analytics. If there's a queue of events it will be
         /// flushed as well.
         /// </summary>
-        /// <param name="eventData"></param>
-        public static void ReportEvent(AnalyticsEvent eventData)
-        {
-            s_reporter.Value?.ReportEvent(
-                source: ExtensionEventSource,
-                eventType: ExtensionEventType,
-                eventName: eventData.Name,
-                userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
-                projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
-                metadata: eventData.Metadata);
-        }
+        public static Action<AnalyticsEvent> ReportEvent { get; internal set; } = (AnalyticsEvent eventData) =>
+         {
+             Reporter?.ReportEvent(
+                 source: ExtensionEventSource,
+                 eventType: ExtensionEventType,
+                 eventName: eventData.Name,
+                 userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
+                 projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
+                 metadata: eventData.Metadata);
+         };
 
         private static IEventsReporter CreateReporter()
         {

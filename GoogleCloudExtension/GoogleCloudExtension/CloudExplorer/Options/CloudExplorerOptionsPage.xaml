@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="GoogleCloudExtension.CloudExplorer.Options.CloudExplorerOptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:local="clr-namespace:GoogleCloudExtension.CloudExplorer.Options"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:CloudExplorerOptionsPageViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <controls:LabelWithHelp Content="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabel}" HelpContent="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabelHelp}"/>
+        <DataGrid
+            x:Name="_pubSubBlacklist"
+            ItemsSource="{Binding PubSubTopicFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            AutoGenerateColumns="False"
+            CanUserAddRows="True"
+            CanUserDeleteRows="True"
+            IsEnabled="True"
+            IsReadOnly="False"
+            Width="500"
+            Height="400"
+            Margin="0,0,0,24"
+            HorizontalAlignment="Left"
+            
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Header="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsFilterColumHeader}"
+                    IsReadOnly="False"
+                    Binding="{Binding Regex, UpdateSourceTrigger=PropertyChanged}"
+                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Reset to defaults" Command="{Binding ResetToDefaults}" Width="Auto" HorizontalAlignment="Left" Padding="4,3,4,3" Margin="0"/>
+    </StackPanel>
+</UserControl>

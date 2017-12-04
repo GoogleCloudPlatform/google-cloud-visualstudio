@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2938,5 +2938,14 @@
   <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
     <value>The selected GCP project needs services to be enabled before you can deploy.</value>
     <comment>The message shown when a project needs an API enabled.</comment>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
+    <value>Pub Sub Topics to hide:</value>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsLabelHelp" xml:space="preserve">
+    <value>If any of the patterns match a topic's full name (e.g. projects/project-id/topics/topic-name), that topic will not be shown in the Cloud Explorer.</value>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsFilterColumHeader" xml:space="preserve">
+    <value>Regex Patterns</value>
   </data>
 </root>

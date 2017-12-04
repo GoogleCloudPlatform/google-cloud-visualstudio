@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2037,6 +2037,33 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerNoProjectsFoundPlaceholderMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerNoProjectsFoundPlaceholderMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regex Patterns.
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsFilterColumHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsFilterColumHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pub Sub Topics to hide:.
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsLabel {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If any of the patterns match a topic&apos;s full name (e.g. projects/project-id/topics/topic-name), that topic will not be shown in the Cloud Explorer..
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsLabelHelp {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsLabelHelp", resourceCulture);
             }
         }
         

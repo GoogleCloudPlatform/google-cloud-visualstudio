@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
@@ -37,7 +38,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     internal class PubsubSourceRootViewModel : SourceRootViewModelBase, IPubsubSourceRootViewModel
     {
         internal const string PubSubConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub?project={0}";
-        private const string BlackListPrefix = "^projects/{0}/topics/";
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -63,15 +63,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             KnownApis.PubSubApiName
         };
 
-        private static readonly string[] s_blacklistedTopics =
-        {
-            "asia\\.gcr\\.io%2F{0}$",
-            "eu\\.gcr\\.io%2F{0}$",
-            "gcr\\.io%2F{0}$",
-            "us\\.gcr\\.io%2F{0}$",
-            "cloud-builds$",
-            "repository-changes\\..*$"
-        };
+        private static IEnumerable<string> TopicFilters => GoogleCloudExtensionPackage.Instance
+            .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
 
         private Lazy<IPubsubDataSource> _dataSource;
         // Mockable static methods for testing.
@@ -190,29 +183,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <returns>True if the topic is not blacklisted.</returns>
         private bool IsIncludedTopic(Topic topic)
         {
-            return !s_blacklistedTopics.SelectMany(FormatBlacklistedTopics).Any(s => Regex.IsMatch(topic.Name, s));
-        }
-
-        /// <summary>
-        /// Gets a regex to filter the blacklisted topics.
-        /// </summary>
-        /// <param name="blacklistedTopicString">
-        /// A format string of a blacklisted topic. It may take project id as the first format arg.
-        /// <example>
-        /// "us\\.gcr\\.io%2F{0}$" => "^projects/ProjectId/topics/us\\.gcr\\.io%2FProjectId$"
-        /// </example>
-        /// </param>
-        /// <returns>
-        /// A regex string to match a blacklisted topic.
-        /// </returns>
-        private IEnumerable<string> FormatBlacklistedTopics(string blacklistedTopicString)
-        {
-            string escapedProjectId = Regex.Escape(CurrentProjectId);
-            string restUrlPrefix = string.Format(BlackListPrefix, escapedProjectId);
-            yield return restUrlPrefix + string.Format(blacklistedTopicString, escapedProjectId);
-            yield return restUrlPrefix +
-                string.Format(
-                    blacklistedTopicString, Regex.Escape(Uri.EscapeDataString(CurrentProjectId.Replace(":", "/"))));
+            return !TopicFilters.Any(filterPattern => Regex.IsMatch(topic.Name, filterPattern));
         }
 
         /// <summary>
@@ -238,7 +209,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         internal void OnOpenCloudConsoleCommand()
         {
-            var url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
+            string url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
             StartProcess(url);
         }
 
