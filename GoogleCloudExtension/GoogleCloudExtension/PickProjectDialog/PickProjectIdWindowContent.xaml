@@ -101,10 +101,13 @@
                         </StackPanel>
                     </Border>
                     <Border x:Key="Loading">
-                        <TextBlock
-                            Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <controls:ProgressIndicator />
+                            <TextBlock
+                                Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"/>
+                        </StackPanel>
                     </Border>
                     <Border x:Key="Error">
                         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
