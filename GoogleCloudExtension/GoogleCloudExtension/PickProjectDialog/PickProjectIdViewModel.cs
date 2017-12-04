@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PickProjectDialog
 {
@@ -56,6 +57,11 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// Command to confirm the selection of a project id.
         /// </summary>
         public ProtectedCommand OkCommand { get; }
+
+        /// <summary>
+        /// Command to execute when refreshing the list of projects.
+        /// </summary>
+        public ProtectedCommand RefreshCommand { get; }
 
         /// <summary>
         /// The list of projects available to the current user.
@@ -130,6 +136,7 @@ namespace GoogleCloudExtension.PickProjectDialog
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
             OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            RefreshCommand = new ProtectedCommand(OnRefreshCommand, canExecuteCommand: false);
             StartLoadProjects();
         }
 
@@ -167,9 +174,11 @@ namespace GoogleCloudExtension.PickProjectDialog
         {
             // The projects list will be empty while we load.
             Projects = Enumerable.Empty<Project>();
+            RefreshCommand.CanExecuteCommand = false;
 
             // Updat the to loaded list of projects.
             Projects = (await CredentialsStore.Default.CurrentAccountProjects) ?? Enumerable.Empty<Project>();
+            RefreshCommand.CanExecuteCommand = true;
 
             // Choose project from the list.
             if (SelectedProject == null)
@@ -192,6 +201,12 @@ namespace GoogleCloudExtension.PickProjectDialog
         {
             Result = SelectedProject;
             _owner.Close();
+        }
+
+        private void OnRefreshCommand()
+        {
+            CredentialsStore.Default.RefreshProjects();
+            StartLoadProjects();
         }
     }
 }

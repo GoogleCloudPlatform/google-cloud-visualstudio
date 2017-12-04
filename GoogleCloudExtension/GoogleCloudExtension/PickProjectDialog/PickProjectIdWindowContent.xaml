@@ -36,6 +36,9 @@
                 Command="{Binding OkCommand}"
                 IsDefault="True"/>
             <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiRefreshButtonCaption}"
+                Command="{Binding RefreshCommand}" />
+            <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
