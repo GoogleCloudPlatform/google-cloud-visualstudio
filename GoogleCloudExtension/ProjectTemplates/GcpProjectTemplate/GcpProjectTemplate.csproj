@@ -71,7 +71,6 @@
     <None Include="Core\MVC\project.json" />
     <None Include="Core\MVC\Properties\launchSettings.json" />
     <None Include="Core\MVC\web.config" />
-    <None Include="Core\MVC\wwwroot\_references.js" />
     <None Include="Core\MVC\wwwroot\css\site.css" />
     <None Include="Core\MVC\wwwroot\css\site.min.css" />
     <None Include="Core\MVC\wwwroot\favicon.ico" />
