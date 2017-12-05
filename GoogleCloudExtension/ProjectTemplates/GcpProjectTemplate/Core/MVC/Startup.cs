@@ -51,12 +51,13 @@ namespace _safe_project_name_
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            // Only use Console and Debug logging during development.
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
             {
+                // Only use Console and Debug logging during development.
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
+
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
@@ -65,18 +66,34 @@ namespace _safe_project_name_
                 app.UseExceptionHandler("/Home/Error");
                 if (HasProjectId)
                 {
-                    app.UseGoogleExceptionLogging();
                     // Send logs to Stackdriver Logging.
                     loggerFactory.AddGoogle(ProjectId);
+                    // Sends logs to Stackdriver Error Reporting.
+                    app.UseGoogleExceptionLogging();
+                    // Sends logs to Stackdriver Trace.
+                    app.UseGoogleTrace();
+
+                    var startupLogger = loggerFactory.CreateLogger<Startup>();
+                    startupLogger.LogInformation(
+                        "Stackdriver Logging enabled: https://console.cloud.google.com/logs/");
+                    startupLogger.LogInformation(
+                        "Stackdriver Error Reporting enabled: https://console.cloud.google.com/errors/");
+                    startupLogger.LogInformation(
+                        "Stackdriver Trace not enabled: https://console.cloud.google.com/traces/");
+                }
+                else
+                {
+                    var startupLogger = loggerFactory.CreateLogger<Startup>();
+                    startupLogger.LogWarning(
+                        "Stackdriver Logging not enabled. Missing Google:ProjectId in configuration.");
+                    startupLogger.LogWarning(
+                        "Stackdriver Error Reporting not enabled. Missing Google:ProjectId in configuration.");
+                    startupLogger.LogWarning(
+                        "Stackdriver Trace not enabled. Missing Google:ProjectId in configuration.");
                 }
             }
 
             app.UseStaticFiles();
-
-            if (HasProjectId)
-            {
-                app.UseGoogleTrace();
-            }
 
             app.UseMvc(routes =>
             {

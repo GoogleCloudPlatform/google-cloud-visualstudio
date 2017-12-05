@@ -54,23 +54,39 @@ namespace _safe_project_name_
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-
-            // Only use Console and Debug logging during development.
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            if (HasProjectId)
+            if (env.IsDevelopment())
             {
-                // Send logs to Stackdriver Logging.
-                loggerFactory.AddGoogle(ProjectId);
-
-                if (!env.IsDevelopment())
-                {
-                    app.UseGoogleExceptionLogging();
-                }
-                app.UseGoogleTrace();
+                // Only use Console and Debug logging during development.
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
             }
+            else
+            {
+                if (HasProjectId)
+                {
+                    // Send logs to Stackdriver Logging.
+                    loggerFactory.AddGoogle(ProjectId);
+                    // Sends logs to Stackdriver Error Reporting.
+                    app.UseGoogleExceptionLogging();
+                    // Sends logs to Stackdriver Trace.
+                    app.UseGoogleTrace();
 
+                    var startupLogger = loggerFactory.CreateLogger<Startup>();
+                    startupLogger.LogInformation(
+                        "Stackdriver Logging enabled: https://console.cloud.google.com/logs/");
+                    startupLogger.LogInformation(
+                        "Stackdriver Error Reporting enabled: https://console.cloud.google.com/errors/");
+                    startupLogger.LogInformation(
+                        "Stackdriver Trace not enabled: https://console.cloud.google.com/traces/");
+                }
+                else
+                {
+                    var startupLogger = loggerFactory.CreateLogger<Startup>();
+                    startupLogger.LogWarning("Stackdriver Logging not enabled.");
+                    startupLogger.LogWarning("Stackdriver Error Reporting not enabled.");
+                    startupLogger.LogWarning("Stackdriver Trace not enabled.");
+                }
+            }
 
             app.UseMvc();
         }
@@ -81,7 +97,7 @@ namespace _safe_project_name_
             var projectId = instance?.ProjectId ?? Configuration["Google:ProjectId"];
             if (string.IsNullOrEmpty(projectId))
             {
-                // Set Google:ProjectId in appsettings.json to enable stackdriver logging outside of GCP.
+                // Set Google:ProjectId in appsettings.json to enable Stackdriver logging outside of GCP.
                 return null;
             }
             return projectId;

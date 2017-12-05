@@ -23,29 +23,30 @@ namespace _safe_project_name_
             // the <projectId> value under the <log4net> section. Ensure that
             // the <projectId> is set to a valid Google Cloud Project Id.
             // Otherwise, logging will only occur when deployed to GCP.
-
-            // [START logging_and_error_reporting]
+            
             string projectId =
                 Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId ??
                 GetProjectIdFromConfig();
             if (!string.IsNullOrEmpty(projectId))
             {
-                // [START enable_error_reporting]
                 var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
                 var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
                 // Add a catch all to log all uncaught exceptions to Stackdriver Error Reporting.
-                config.Services.Add(typeof(IExceptionLogger),
+                config.Services.Add(
+                    typeof(IExceptionLogger),
                     ErrorReportingExceptionLogger.Create(projectId, serviceName, version));
-                // [END enable_error_reporting]
-                // [START enable_logging]
+
                 // Retrieve a logger for this context.
                 ILog log = LogManager.GetLogger(typeof(WebApiConfig));
-                // [END enable_logging]
-                // Log confirmation of set-up to Google Stackdriver Logging.
-                log.Info("Stackdriver Logging with Log4net successfully configured for use.");
-                log.Info("Stackdriver Error Reporting enabled: " +
-                    "https://console.cloud.google.com/errors/");
-                // [END logging_and_error_reporting]
+                // Log confirmation of set-up to Google Stackdriver Error Reporting.
+                log.Info("Stackdriver Error Reporting enabled: https://console.cloud.google.com/errors/");
+            }
+            else
+            {
+                // Retrieve a logger for this context.
+                ILog log = LogManager.GetLogger(typeof(WebApiConfig));
+                // Log failure of set-up to Google Stackdriver Error Reporting.
+                log.Warn("Stackdriver Error Reporting not enabled. ProjectId missing from configuration.");
             }
 
             // Web API configuration and services
@@ -59,7 +60,7 @@ namespace _safe_project_name_
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new {id = RouteParameter.Optional}
             );
         }
 
