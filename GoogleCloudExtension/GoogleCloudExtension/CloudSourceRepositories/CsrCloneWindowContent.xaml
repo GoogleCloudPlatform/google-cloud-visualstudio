@@ -52,6 +52,20 @@
                 IsTextSearchEnabled="True"
                 Style="{StaticResource CommonComboBoxStyle}"/>
 
+            <!-- Message shown when the API needs to be enabled. -->
+            <TextBlock Margin="0,5,0,0"
+                       Foreground="Red"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+                       Style="{StaticResource CommonTextStyle}">
+                <TextBlock Text="{x:Static ext:Resources.CsrEnableApiMessage}" 
+                           TextWrapping="Wrap"/>
+                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                           Command="{Binding EnableApiCommand}">
+                    <TextBlock Text="{x:Static ext:Resources.CsrEnableApiLinkCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
             <Label 
                 Content="{x:Static ext:Resources.CsrRepositorySelectionLabel}"
                 Target="{Binding ElementName=_repositoryComboBox}"

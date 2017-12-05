@@ -2626,6 +2626,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable the service.
+        /// </summary>
+        public static string CsrEnableApiLinkCaption {
+            get {
+                return ResourceManager.GetString("CsrEnableApiLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected project needs to be setup to use Cloud Source Repositories. .
+        /// </summary>
+        public static string CsrEnableApiMessage {
+            get {
+                return ResourceManager.GetString("CsrEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to get repositories for Google Cloud project(s) {0}..
         /// </summary>
         public static string CsrFetchReposErrorMessage {

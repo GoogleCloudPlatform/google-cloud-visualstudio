@@ -53,5 +53,10 @@ namespace GoogleCloudExtension.ApiManagement
         /// The API necessary to manage Pub/Sub subscriptions.
         /// </summary>
         public const string PubSubApiName = "pubsub.googleapis.com";
+
+        /// <summary>
+        /// The API necessary to clone/create Google Cloud Source Repositories.
+        /// </summary>
+        public const string CloudSourceRepositoryApiName = "sourcerepo.googleapis.com";
     }
 }
