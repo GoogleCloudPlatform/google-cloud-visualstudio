@@ -37,6 +37,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private bool _allowAccountChange;
         private string _filter;
         private string _helpText;
+        private bool _hasAccount;
 
         private readonly IPickProjectIdWindow _owner;
         private readonly Func<IResourceManagerDataSource> _resourceManagerDataSourceFactory;
@@ -92,6 +93,12 @@ namespace GoogleCloudExtension.PickProjectDialog
         {
             get { return _loadTask; }
             set { SetValueAndRaise(ref _loadTask, value); }
+        }
+
+        public bool HasAccount
+        {
+            get { return _hasAccount; }
+            private set { SetValueAndRaise(ref _hasAccount, value); }
         }
 
         public string Filter
@@ -163,10 +170,12 @@ namespace GoogleCloudExtension.PickProjectDialog
             if (CredentialsStore.Default.CurrentAccount != null)
             {
                 LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+                HasAccount = true;
             }
             else
             {
                 LoadTask = null;
+                HasAccount = false;
             }
         }
 
