@@ -25,7 +25,8 @@ namespace GoogleCloudExtension.PickProjectDialog.SampleData
     {
         public IList<Project> Projects { get; } = new List<Project>
         {
-            new Project { Name="Project1", ProjectId="Id1" }
+            new Project { Name="Project1", ProjectId="Id1" },
+            new Project { Name="Project2", ProjectId="Id2" },
         };
 
         public MockAsyncProperty LoadTask { get; } = new MockAsyncProperty { IsCompleted = true };
