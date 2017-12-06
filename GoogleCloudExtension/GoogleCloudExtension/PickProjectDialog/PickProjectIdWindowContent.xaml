@@ -8,8 +8,9 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PickProjectDialog"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:sample="clr-namespace:GoogleCloudExtension.PickProjectDialog.SampleData"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:PickProjectIdViewModel}">
+             d:DataContext="{d:DesignInstance {x:Type sample:LoadingState}, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -78,6 +79,7 @@
                          Grid.Column="1"
                          Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource CommonTextBoxStyle}"
+                         IsEnabled="{Binding LoadTask.IsSuccess}"
                          TextChanged="OnFilterTextChanged" />
             </Grid>
 
@@ -85,7 +87,7 @@
             <StackPanel VerticalAlignment="Center"
                         Grid.Row="2"
                         Grid.ColumnSpan="2"
-                        Visibility="{Binding HasAccount, Converter={utils:VisibilityConverter IsNegated=True}}"
+                        Visibility="{Binding HasAccount, TargetNullValue=false,Converter={utils:VisibilityConverter IsNegated=True}}"
                         HorizontalAlignment="Center"
                         Margin="0,5,0,0">
                 <TextBlock VerticalAlignment="Center"
@@ -100,7 +102,7 @@
                         Grid.Row="2"
                         Grid.ColumnSpan="2"
                         HorizontalAlignment="Center"
-                        Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}}"
+                        Visibility="{Binding LoadTask.IsPending, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
                         Margin="0,5,0,0">
                 <controls:ProgressIndicator />
                 <TextBlock Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}" />
@@ -111,7 +113,7 @@
                         Grid.Row="2"
                         Grid.ColumnSpan="2"
                         HorizontalAlignment="Left"
-                        Visibility="{Binding LoadTask.IsError, Converter={utils:VisibilityConverter}}"
+                        Visibility="{Binding LoadTask.IsError, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
                         Margin="0,5,0,0">
                 <TextBlock Text="{x:Static ext:Resources.WizardPickProjectIdLoadProjectsErrorMessage}"/>
                 <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
@@ -136,7 +138,7 @@
                       HeadersVisibility="Column"
                       IsReadOnly="True"
                       utils:ControlBehaviors.DoubleClickCommand="{Binding OkCommand}"
-                      Visibility="{Binding LoadTask.IsSuccess, Converter={utils:VisibilityConverter}}"
+                      Visibility="{Binding LoadTask.IsSuccess, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
                       Margin="0,5,0,0">
                 <DataGrid.Columns>
                     <DataGridTextColumn
