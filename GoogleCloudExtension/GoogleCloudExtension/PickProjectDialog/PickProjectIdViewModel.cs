@@ -39,7 +39,6 @@ namespace GoogleCloudExtension.PickProjectDialog
         private bool _hasAccount;
 
         private readonly IPickProjectIdWindow _owner;
-        private readonly Func<IResourceManagerDataSource> _resourceManagerDataSourceFactory;
         private readonly Action _promptAccountManagement;
 
         /// <summary>
@@ -119,7 +118,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         }
 
         public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
-            : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
+            : this(owner, ManageAccountsWindow.PromptUser)
         {
             AllowAccountChange = allowAccountChange;
             HelpText = helpText;
@@ -133,11 +132,9 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
             IPickProjectIdWindow owner,
-            Func<IResourceManagerDataSource> dataSourceFactory,
             Action promptAccountManagement)
         {
             _owner = owner;
-            _resourceManagerDataSourceFactory = dataSourceFactory;
             _promptAccountManagement = promptAccountManagement;
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);

@@ -87,9 +87,8 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
-            Assert.AreEqual(2, projects.Count);
+            Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
-            Assert.AreEqual(s_disabledProject, projects[1]);
         }
 
         [TestMethod]
@@ -114,10 +113,9 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
-            Assert.AreEqual(3, projects.Count);
+            Assert.AreEqual(2, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
-            Assert.AreEqual(s_disabledProject, projects[1]);
-            Assert.AreEqual(s_aProject, projects[2]);
+            Assert.AreEqual(s_aProject, projects[1]);
         }
 
         [TestMethod]
