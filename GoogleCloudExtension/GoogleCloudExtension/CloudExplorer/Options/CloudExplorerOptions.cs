@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Windows;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
-    public class CloudExplorerOptions : UIElementDialogPage
+    [DesignerCategory("Code")]
+    public class CloudExplorerOptions : UIElementDialogPage, ICloudExplorerOptions
     {
         private static readonly IReadOnlyList<string> s_defaultPubSubTopicFilters = new[]
         {
@@ -39,12 +41,8 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// </summary>
         public IEnumerable<string> PubSubTopicFilters
         {
-            get { return _child.ViewModel.PubSubTopicFilters.Select(s => s.Regex); }
-            set
-            {
-                _child.ViewModel.PubSubTopicFilters = value
-                    .Select(s => new CloudExplorerOptionsPageViewModel.PubSubTopicRegex(s)).ToList();
-            }
+            get { return _child.ViewModel.PubSubTopicFilters.Values(); }
+            set { _child.ViewModel.PubSubTopicFilters = value.ToEditableModels(); }
         }
 
         /// <inheritdoc />
@@ -53,15 +51,11 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <inheritdoc />
         protected override UIElement Child => _child;
 
-        public event EventHandler SavingSettingToStorage;
+        public event EventHandler SavingSettings;
 
-        public CloudExplorerOptions() : this(null)
+        public CloudExplorerOptions()
         {
-        }
-
-        internal CloudExplorerOptions(CloudExplorerOptionsPage child)
-        {
-            _child = child ?? new CloudExplorerOptionsPage(this);
+            _child = new CloudExplorerOptionsPage(this);
             AutomationObject = new SerializableCloudExplorerOptions(this);
         }
 
@@ -82,7 +76,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <inheritdoc />
         public override void SaveSettingsToStorage()
         {
-            SavingSettingToStorage?.Invoke(this, EventArgs.Empty);
+            SavingSettings?.Invoke(this, EventArgs.Empty);
             base.SaveSettingsToStorage();
         }
     }

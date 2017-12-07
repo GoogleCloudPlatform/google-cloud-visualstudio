@@ -234,6 +234,8 @@
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptionsTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
@@ -251,6 +253,7 @@
     <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
+    <Compile Include="Utils\EditableModelTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />

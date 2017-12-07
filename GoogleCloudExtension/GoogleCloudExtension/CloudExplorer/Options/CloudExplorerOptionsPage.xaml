@@ -16,10 +16,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <controls:LabelWithHelp Content="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabel}" HelpContent="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabelHelp}"/>
+        <controls:LabelWithHelp
+            Content="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabel}"
+            HelpContent="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsLabelHelp}"/>
         <DataGrid
-            x:Name="_pubSubBlacklist"
-            ItemsSource="{Binding PubSubTopicFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            x:Name="_pubSubFilters"
+            ItemsSource="{Binding PubSubTopicFilters}"
             AutoGenerateColumns="False"
             CanUserAddRows="True"
             CanUserDeleteRows="True"
@@ -28,14 +30,13 @@
             Width="500"
             Height="400"
             Margin="0,0,0,24"
-            HorizontalAlignment="Left"
+            HorizontalAlignment="Left">
             
-            >
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Header="{x:Static ext:Resources.CloudExplorerOptionsPubSubTopicsFilterColumHeader}"
                     IsReadOnly="False"
-                    Binding="{Binding Regex, UpdateSourceTrigger=PropertyChanged}"
+                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                     Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

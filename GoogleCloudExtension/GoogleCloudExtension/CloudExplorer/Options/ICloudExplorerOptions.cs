@@ -12,28 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
-    public class CloudExplorerOptionsPageViewModel : ViewModelBase
+    /// <summary>
+    /// The options that affect the Cloud Explorer window.
+    /// </summary>
+    public interface ICloudExplorerOptions
     {
-        private ObservableCollection<EditableModel<string>> _pubSubTopicFilters;
-
-        public IEnumerable<EditableModel<string>> PubSubTopicFilters
-        {
-            get { return _pubSubTopicFilters; }
-            set { SetValueAndRaise(ref _pubSubTopicFilters, new ObservableCollection<EditableModel<string>>(value)); }
-        }
-
-        public ProtectedCommand ResetToDefaults { get; }
-
-        public CloudExplorerOptionsPageViewModel(Action resetSettings)
-        {
-            ResetToDefaults = new ProtectedCommand(resetSettings);
-        }
+        /// <summary>
+        /// The list of regexes used to filter pub sub topics.
+        /// </summary>
+        IEnumerable<string> PubSubTopicFilters { get; set; }
     }
 }

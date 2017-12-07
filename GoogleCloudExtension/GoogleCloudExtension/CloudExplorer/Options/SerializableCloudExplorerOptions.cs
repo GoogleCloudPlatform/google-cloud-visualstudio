@@ -19,11 +19,11 @@ using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
-    internal class SerializableCloudExplorerOptions
+    public class SerializableCloudExplorerOptions
     {
-        private readonly CloudExplorerOptions _parentOptions;
+        private readonly ICloudExplorerOptions _parentOptions;
 
-        public SerializableCloudExplorerOptions(CloudExplorerOptions parentOptions)
+        public SerializableCloudExplorerOptions(ICloudExplorerOptions parentOptions)
         {
             _parentOptions = parentOptions;
         }
@@ -39,14 +39,14 @@ namespace GoogleCloudExtension.CloudExplorer.Options
             get
             {
                 return _parentOptions.PubSubTopicFilters == null ?
-                    null :
-                    JArray.FromObject(_parentOptions.PubSubTopicFilters).ToString(Formatting.None);
+                    JValue.CreateNull().ToString(Formatting.None) :
+                    JToken.FromObject(_parentOptions.PubSubTopicFilters).ToString(Formatting.None);
             }
             set
             {
                 _parentOptions.PubSubTopicFilters = value == null ?
                     null :
-                    JArray.Parse(value).ToObject<List<string>>();
+                    JToken.Parse(value).ToObject<List<string>>();
             }
         }
     }
