@@ -2068,6 +2068,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset to defaults.
+        /// </summary>
+        public static string CloudExplorerOptionsResetToDefaultsButton {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsResetToDefaultsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Pub/Sub API is not enabled..
         /// </summary>
         public static string CloudExplorerPubSubApiNotEnabledCaption {

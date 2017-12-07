@@ -40,6 +40,12 @@
                     Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Reset to defaults" Command="{Binding ResetToDefaults}" Width="Auto" HorizontalAlignment="Left" Padding="4,3,4,3" Margin="0"/>
+        <Button
+            Content="{x:Static ext:Resources.CloudExplorerOptionsResetToDefaultsButton}"
+            Command="{Binding ResetToDefaults}"
+            Width="Auto"
+            HorizontalAlignment="Left"
+            Padding="4,3,4,3"
+            Margin="0" />
     </StackPanel>
 </UserControl>

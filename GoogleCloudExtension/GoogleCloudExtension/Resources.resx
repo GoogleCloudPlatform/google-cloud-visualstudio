@@ -2951,4 +2951,7 @@
   <data name="CloudExplorerOptionsPubSubTopicsFilterColumHeader" xml:space="preserve">
     <value>Regex Patterns</value>
   </data>
+  <data name="CloudExplorerOptionsResetToDefaultsButton" xml:space="preserve">
+    <value>Reset to defaults</value>
+  </data>
 </root>
