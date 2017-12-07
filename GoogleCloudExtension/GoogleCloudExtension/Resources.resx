@@ -2795,24 +2795,16 @@
     <value>_MVC</value>
     <comment>The label for the MVC app type radio button of the Project Template Chooser dialog.</comment>
   </data>
-  <data name="WizardTemplateChooserProjectIdLabel" xml:space="preserve">
-    <value>Google Cloud _Project ID:</value>
-    <comment>The label for the Project ID input field of the Project Template Chooser dialog.</comment>
-  </data>
-  <data name="WizardTemplateChooserSelectProjectButton" xml:space="preserve">
-    <value>_Select Project...</value>
-    <comment>The label of the Select Project button of the Project Template Chooser dialog.</comment>
-  </data>
-  <data name="WizardTemplateChooserTargetFrameworkLabel" xml:space="preserve">
-    <value>_Target Framework:</value>
+  <data name="WizardTemplateChooserTargetNetFrameworkLabel" xml:space="preserve">
+    <value>Target ._NET Framework:</value>
     <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
   </data>
   <data name="WizardTemplateChooserWebApiLabel" xml:space="preserve">
     <value>_Web API</value>
     <comment>The label for the WebAPI app type radio button of the Project Template Chooser dialog.</comment>
   </data>
-  <data name="WizardTemplateChooserFeaturesLabel" xml:space="preserve">
-    <value>Features:</value>
+  <data name="WizardTemplateChooserTemplateTypeLabel" xml:space="preserve">
+    <value>Template type:</value>
     <comment>The label for the features section of the Project Template Chooser dialog.</comment>
   </data>
   <data name="ApiManagerEnableServicesErrorMessage" xml:space="preserve">
@@ -2938,6 +2930,17 @@
   <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
     <value>The selected GCP project needs services to be enabled before you can deploy.</value>
     <comment>The message shown when a project needs an API enabled.</comment>
+  </data>
+  <data name="CsrEnableApiMessage" xml:space="preserve">
+    <value>The selected project needs to be setup to use Cloud Source Repositories. </value>
+    <comment>The message to ask user to enable Cloud Source Repositories API for the project.  </comment>
+  </data>
+  <data name="CsrEnableApiLinkCaption" xml:space="preserve">
+    <value>Enable the service</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
+  <data name="WizardTemplateChooserTargetAspFrameworkLabel" xml:space="preserve">
+    <value>Target _ASP.NET Framework:</value>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
     <value>Pub Sub Topics to hide:</value>

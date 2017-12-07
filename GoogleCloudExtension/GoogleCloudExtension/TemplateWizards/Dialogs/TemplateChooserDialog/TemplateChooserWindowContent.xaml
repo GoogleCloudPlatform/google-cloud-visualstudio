@@ -33,63 +33,59 @@
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
         <StackPanel Orientation="Vertical">
-            <DockPanel Margin="0,0,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Label
-                    DockPanel.Dock ="Top"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserTargetFrameworkLabel}"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Content="{x:Static ext:Resources.WizardTemplateChooserTargetNetFrameworkLabel}"
                     Target="{Binding ElementName=_targetFramework}"
-                    Margin="0,0,0,5"/>
-                <StackPanel Orientation="Horizontal">
-                    <ComboBox
-                        x:Name="_targetFramework"
-                        SelectedValuePath="Tag"
-                        SelectedValue="{Binding SelectedFramework}"
-                        MinWidth="150px"
-                        Margin="0,0,5,0">
-                        
-                        <ComboBoxItem
-                            Tag="{x:Static local:FrameworkType.NetCore}"
-                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"
-                            Visibility="{Binding NetCoreAvailable, Converter={utils:VisibilityConverter}}"
-                            />
-                        <ComboBoxItem
-                            Tag="{x:Static local:FrameworkType.NetFramework}"
-                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}"/>
-                    </ComboBox>
-                    <ComboBox
-                        ItemsSource="{Binding AvailableVersions}"
-                        SelectedItem="{Binding SelectedVersion}"
-                        MinWidth="180px"
-                        Margin="0"/>
-                </StackPanel>
-            </DockPanel>
-            <DockPanel>
+                    Margin="0" />
+                <ComboBox
+                    x:Name="_targetFramework"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    SelectedValuePath="Tag"
+                    SelectedValue="{Binding SelectedFramework}"
+                    MinWidth="150px">
+
+                    <ComboBoxItem
+                        Tag="{x:Static local:FrameworkType.NetCore}"
+                        Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"
+                        Visibility="{Binding NetCoreAvailable, Converter={utils:VisibilityConverter}}" />
+                    <ComboBoxItem
+                        Tag="{x:Static local:FrameworkType.NetFramework}"
+                        Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}" />
+                </ComboBox>
                 <Label
-                    DockPanel.Dock="Top"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserProjectIdLabel}"
-                    Target="{Binding ElementName=_projectIdBox}"
-                    Margin="0,0,0,5"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <TextBox x:Name="_projectIdBox" Text="{Binding GcpProjectId}" Width="200" Margin="0,0,5,0"/>
-                    <Button
-                        Command="{Binding SelectProjectCommand}"
-                        Content="{x:Static ext:Resources.WizardTemplateChooserSelectProjectButton}"
-                        Margin="0" />
-                </StackPanel>
-            </DockPanel>
-            <StackPanel>
-                <TextBlock Text="{x:Static ext:Resources.WizardTemplateChooserFeaturesLabel}" Margin="0,0,0,3"/>
-                <RadioButton
-                    GroupName="AppType"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserMvcLabel}"
-                    IsChecked="{Binding IsMvc}"
-                    Margin="0,0,0,4"/>
-                <RadioButton
-                    GroupName="AppType"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserWebApiLabel}"
-                    IsChecked="{Binding IsWebApi}"
-                    Margin="0"/>
-            </StackPanel>
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
+                    Target="{Binding ElementName=_targetAspNetFramework}" />
+                <ComboBox
+                    x:Name="_targetAspNetFramework"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    ItemsSource="{Binding AvailableVersions}"
+                    SelectedItem="{Binding SelectedVersion}"
+                    MinWidth="180px"/>
+            </Grid>
+            <Label Content="{x:Static ext:Resources.WizardTemplateChooserTemplateTypeLabel}" />
+            <RadioButton
+                GroupName="AppType"
+                Content="{x:Static ext:Resources.WizardTemplateChooserMvcLabel}"
+                IsChecked="{Binding IsMvc}"/>
+            <RadioButton
+                GroupName="AppType"
+                Content="{x:Static ext:Resources.WizardTemplateChooserWebApiLabel}"
+                IsChecked="{Binding IsWebApi}"/>
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

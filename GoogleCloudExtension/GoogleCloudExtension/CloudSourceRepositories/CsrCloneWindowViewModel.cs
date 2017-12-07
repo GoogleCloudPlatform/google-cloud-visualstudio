@@ -17,6 +17,7 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.GitUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
@@ -37,7 +38,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
-        private readonly CsrCloneWindow _owner;
+        internal static Func<string, IApiManager> s_getApiManagerFunc = ApiManager.GetApiManager;
+        private static readonly List<string> s_requiredApis =
+            new List<string> { KnownApis.CloudSourceRepositoryApiName };
+
+        private readonly Action _closeOwnerFunc;
         private readonly HashSet<string> _newReposList = new HashSet<string>();
         private string _localPath;
         private Repo _latestCreatedRepo;
@@ -45,6 +50,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private bool _isReady = true;
+        private bool _needsApiEnabled;
 
         /// <summary>
         /// The projects list
@@ -65,10 +71,19 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var oldValue = _selectedProject;
                 SetValueAndRaise(ref _selectedProject, value);
-                if (_selectedProject != null && IsReady && oldValue != _selectedProject)
+                if (oldValue != _selectedProject)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(() =>
-                        RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
+                    NeedsApiEnabled = false;
+                    RepositoriesAsync.ClearList();
+                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(async () =>
+                    {
+                        IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
+                        NeedsApiEnabled = !(await apiManager.AreServicesEnabledAsync(s_requiredApis));
+                        if (!NeedsApiEnabled)
+                        {
+                            await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
+                        }
+                    }));
                 }
             }
         }
@@ -105,6 +120,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         /// <summary>
+        /// Indicates if the selected project needs to enable the CSR APIs.
+        /// </summary>
+        public bool NeedsApiEnabled
+        {
+            get { return _needsApiEnabled; }
+            set { SetValueAndRaise(ref _needsApiEnabled, value); }
+        }
+
+        /// <summary>
         /// Indicates if there is async task running that UI should be disabled.
         /// </summary>
         public bool IsReady
@@ -129,19 +153,25 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ProtectedCommand CreateRepoCommand { get; }
 
         /// <summary>
+        /// Responds to the enable api link button click event
+        /// </summary>
+        public ProtectedCommand EnableApiCommand { get; }
+
+        /// <summary>
         /// Gets a result of type <seealso cref="CloneDialogResult"/>.
         /// null inidcates no result is created, user cancelled the operation.
         /// </summary>
         public CloneDialogResult Result { get; private set; }
 
-        public CsrCloneWindowViewModel(CsrCloneWindow owner, IList<Project> projects)
+        public CsrCloneWindowViewModel(Action closeOwnerFunc, IList<Project> projects)
         {
-            _owner = owner.ThrowIfNull(nameof(owner));
+            _closeOwnerFunc = closeOwnerFunc.ThrowIfNull(nameof(closeOwnerFunc));
             Projects = projects.ThrowIfNull(nameof(projects));
             if (!Projects.Any())
             {
                 throw new ArgumentException($"{nameof(projects)} must not be empty");
             }
+            EnableApiCommand = new ProtectedAsyncCommand(() => ExecuteAsync(OnEnableApiCommand));
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             CloneRepoCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
             CreateRepoCommand = new ProtectedCommand(OpenCreateRepoDialog, canExecuteCommand: false);
@@ -206,7 +236,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     RepoItem = new RepoItemViewModel(SelectedRepository, localRepo.Root),
                     JustCreatedRepo = _newReposList.Contains(SelectedRepository.Name)
                 };
-                _owner.Close();
+                _closeOwnerFunc();
                 EventsReporterWrapper.ReportEvent(
                     CsrClonedEvent.Create(CommandStatus.Success, watch.Elapsed));
             }
@@ -218,6 +248,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 EventsReporterWrapper.ReportEvent(CsrClonedEvent.Create(CommandStatus.Failure));
                 return;
             }
+        }
+
+        private async Task OnEnableApiCommand()
+        {
+            IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
+            await apiManager.EnableServicesAsync(s_requiredApis);
+            NeedsApiEnabled = false;
+            await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
         }
 
         private void PickFoloder()

@@ -2653,6 +2653,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable the service.
+        /// </summary>
+        public static string CsrEnableApiLinkCaption {
+            get {
+                return ResourceManager.GetString("CsrEnableApiLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected project needs to be setup to use Cloud Source Repositories. .
+        /// </summary>
+        public static string CsrEnableApiMessage {
+            get {
+                return ResourceManager.GetString("CsrEnableApiMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to get repositories for Google Cloud project(s) {0}..
         /// </summary>
         public static string CsrFetchReposErrorMessage {
@@ -6388,15 +6406,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Features:.
-        /// </summary>
-        public static string WizardTemplateChooserFeaturesLabel {
-            get {
-                return ResourceManager.GetString("WizardTemplateChooserFeaturesLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _MVC.
         /// </summary>
         public static string WizardTemplateChooserMvcLabel {
@@ -6406,29 +6415,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud _Project ID:.
+        ///   Looks up a localized string similar to Target _ASP.NET Framework:.
         /// </summary>
-        public static string WizardTemplateChooserProjectIdLabel {
+        public static string WizardTemplateChooserTargetAspFrameworkLabel {
             get {
-                return ResourceManager.GetString("WizardTemplateChooserProjectIdLabel", resourceCulture);
+                return ResourceManager.GetString("WizardTemplateChooserTargetAspFrameworkLabel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Select Project....
+        ///   Looks up a localized string similar to Target ._NET Framework:.
         /// </summary>
-        public static string WizardTemplateChooserSelectProjectButton {
+        public static string WizardTemplateChooserTargetNetFrameworkLabel {
             get {
-                return ResourceManager.GetString("WizardTemplateChooserSelectProjectButton", resourceCulture);
+                return ResourceManager.GetString("WizardTemplateChooserTargetNetFrameworkLabel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Target Framework:.
+        ///   Looks up a localized string similar to Template type:.
         /// </summary>
-        public static string WizardTemplateChooserTargetFrameworkLabel {
+        public static string WizardTemplateChooserTemplateTypeLabel {
             get {
-                return ResourceManager.GetString("WizardTemplateChooserTargetFrameworkLabel", resourceCulture);
+                return ResourceManager.GetString("WizardTemplateChooserTemplateTypeLabel", resourceCulture);
             }
         }
         

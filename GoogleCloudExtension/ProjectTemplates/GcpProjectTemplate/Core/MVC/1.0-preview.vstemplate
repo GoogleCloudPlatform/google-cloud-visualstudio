@@ -36,7 +36,6 @@
           <ProjectItem ReplaceParameters="true" TargetFileName="site.js">site.js</ProjectItem>
           <ProjectItem ReplaceParameters="true" TargetFileName="site.min.js">site.min.js</ProjectItem>
         </Folder>
-        <ProjectItem ReplaceParameters="true" TargetFileName="_references.js">_references.js</ProjectItem>
         <ProjectItem ReplaceParameters="false" TargetFileName="favicon.ico">favicon.ico</ProjectItem>
       </Folder>
       <Folder Name="Controllers" TargetFolderName="Controllers">
