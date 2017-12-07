@@ -26,12 +26,12 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     {
         private static readonly IReadOnlyList<string> s_defaultPubSubTopicFilters = new[]
         {
-            "asia\\.gcr\\.io%2F",
-            "eu\\.gcr\\.io%2F",
-            "gcr\\.io%2F",
-            "us\\.gcr\\.io%2F",
-            "cloud-builds",
-            "repository-changes\\."
+            "/asia\\.gcr\\.io%2F",
+            "/eu\\.gcr\\.io%2F",
+            "/gcr\\.io%2F",
+            "/us\\.gcr\\.io%2F",
+            "/cloud-builds$",
+            "/repository-changes\\."
         };
 
         private readonly CloudExplorerOptionsPage _child;

@@ -76,6 +76,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<IList<Subscription>> _subscriptionSource;
         private TestablePubsubSourceRootViewModel _objectUnderTest;
 
+        [ClassInitialize]
+        public static void BeforeAll(TestContext context)
+        {
+            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
+        }
+
         [TestInitialize]
         public void Initialize()
         {
@@ -125,9 +131,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             var menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
             Assert.AreEqual(2, menuItems.Count);
             Assert.AreEqual(Resources.CloudExplorerPubSubNewTopicMenuHeader, menuItems[0].Header);
-            Assert.IsTrue(((ProtectedCommand)menuItems[0].Command).CanExecuteCommand);
+            Assert.IsTrue(((ProtectedCommand) menuItems[0].Command).CanExecuteCommand);
             Assert.AreEqual(Resources.UiOpenOnCloudConsoleMenuHeader, menuItems[1].Header);
-            Assert.IsTrue(((ProtectedCommand)menuItems[1].Command).CanExecuteCommand);
+            Assert.IsTrue(((ProtectedCommand) menuItems[1].Command).CanExecuteCommand);
         }
 
         [TestMethod]

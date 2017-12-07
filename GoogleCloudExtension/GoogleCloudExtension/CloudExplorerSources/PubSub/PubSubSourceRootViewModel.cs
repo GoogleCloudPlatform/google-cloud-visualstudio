@@ -63,14 +63,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             KnownApis.PubSubApiName
         };
 
-        private static IEnumerable<string> TopicFilters => GoogleCloudExtensionPackage.Instance
-            .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
-
         private Lazy<IPubsubDataSource> _dataSource;
         // Mockable static methods for testing.
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
         internal Func<string, Process> StartProcess = Process.Start;
+
+        private static IEnumerable<string> TopicFilters => GoogleCloudExtensionPackage.Instance
+            .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
 
         public IPubsubDataSource DataSource => _dataSource.Value;
 
