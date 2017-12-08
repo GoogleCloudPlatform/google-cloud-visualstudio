@@ -68,8 +68,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
         internal Func<string, Process> StartProcess = Process.Start;
+        internal static IEnumerable<string> TopicFiltersOverride = null;
 
-        private static IEnumerable<string> TopicFilters => GoogleCloudExtensionPackage.Instance
+        private static IEnumerable<string> TopicFilters => TopicFiltersOverride ?? GoogleCloudExtensionPackage.Instance
             .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
 
         public IPubsubDataSource DataSource => _dataSource.Value;

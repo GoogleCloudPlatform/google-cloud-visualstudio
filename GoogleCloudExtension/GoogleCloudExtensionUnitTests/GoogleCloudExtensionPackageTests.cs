@@ -154,11 +154,11 @@ namespace GoogleCloudExtensionUnitTests
             package.SetSite(serviceProviderMock.Object);
         }
 
-        private static void SetupService<ServiceType, InterfaceType>(
+        private static void SetupService<SVsType, IVsType>(
             Mock<IServiceProvider> serviceProviderMock,
-            IMock<InterfaceType> mockObj) where InterfaceType : class
+            IMock<IVsType> mockObj) where IVsType : class
         {
-            Guid serviceGuid = typeof(ServiceType).GUID;
+            Guid serviceGuid = typeof(SVsType).GUID;
             Guid iUnknownGuid = typeof(IUnknown).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);

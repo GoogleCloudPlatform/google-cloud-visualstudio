@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     [DesignerCategory("Code")]
     public class CloudExplorerOptions : UIElementDialogPage, ICloudExplorerOptions
     {
-        private static readonly IReadOnlyList<string> s_defaultPubSubTopicFilters = new[]
+        internal static readonly IReadOnlyList<string> DefaultPubSubTopicFilters = new[]
         {
             "/asia\\.gcr\\.io%2F",
             "/eu\\.gcr\\.io%2F",
@@ -62,14 +62,14 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <inheritdoc />
         public override void ResetSettings()
         {
-            PubSubTopicFilters = s_defaultPubSubTopicFilters;
+            PubSubTopicFilters = DefaultPubSubTopicFilters;
             base.ResetSettings();
         }
 
         /// <inheritdoc />
         public override void LoadSettingsFromStorage()
         {
-            PubSubTopicFilters = s_defaultPubSubTopicFilters;
+            PubSubTopicFilters = DefaultPubSubTopicFilters;
             base.LoadSettingsFromStorage();
         }
 
