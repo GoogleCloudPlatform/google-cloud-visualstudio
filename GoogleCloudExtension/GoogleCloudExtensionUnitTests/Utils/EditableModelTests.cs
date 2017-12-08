@@ -2,7 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -91,6 +93,101 @@ namespace GoogleCloudExtensionUnitTests.Utils
                     objectUnderTest,
                     It.Is<PropertyChangedEventArgs>(args => args.PropertyName == nameof(objectUnderTest.Value))),
                 Times.Once);
+        }
+
+        [TestMethod]
+        public void TestToString()
+        {
+            const string testString = "test string";
+            var objectUnderTest = new EditableModel<object>(Mock.Of<object>(o => o.ToString() == testString));
+
+            string resultString = objectUnderTest.ToString();
+
+            Assert.AreEqual(testString, resultString);
+        }
+
+        [TestMethod]
+        public void TestToStringNull()
+        {
+            var objectUnderTest = new EditableModel<object>(null);
+
+            string resultString = objectUnderTest.ToString();
+
+            Assert.AreEqual("", resultString);
+        }
+
+        [TestMethod]
+        public void TestStaticOf()
+        {
+            var input = new object();
+            EditableModel<object> result = EditableModel.Of(input);
+
+            Assert.AreEqual(input, result.Value);
+        }
+
+        [TestMethod]
+        public void TestStaticToEditableModelsOnNull()
+        {
+            IEnumerable<object> input = null;
+            // ReSharper disable once ExpressionIsAlwaysNull
+            IEnumerable<EditableModel<object>> result = input.ToEditableModels();
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void TestStaticToEditableModelsOnEmpty()
+        {
+            IEnumerable<object> input = Enumerable.Empty<object>();
+
+            IEnumerable<EditableModel<object>> result = input.ToEditableModels();
+
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [TestMethod]
+        public void TestStaticToEditableModelsOnArray()
+        {
+            var input = new[] { 1, 2, 3 };
+
+            IEnumerable<EditableModel<int>> result = input.ToEditableModels();
+
+            CollectionAssert.AreEqual(input.ToList(), result.Select(em => em.Value).ToList());
+        }
+
+        [TestMethod]
+        public void TestStaticValuesOnNull()
+        {
+            IEnumerable<EditableModel<object>> input = null;
+            // ReSharper disable once ExpressionIsAlwaysNull
+            IEnumerable<object> result = input.Values();
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void TestStaticValuesOnEmpty()
+        {
+            IEnumerable<EditableModel<object>> input = Enumerable.Empty<EditableModel<object>>();
+
+            IEnumerable<object> result = input.Values();
+
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [TestMethod]
+        public void TestStaticValuesOnArray()
+        {
+            var input = new[]
+            {
+                new EditableModel<int>(1),
+                new EditableModel<int>(2),
+                new EditableModel<int>(3)
+            };
+
+            IEnumerable<int> result = input.Values();
+
+            CollectionAssert.AreEqual(result.ToList(), new[] { 1, 2, 3 });
         }
     }
 }

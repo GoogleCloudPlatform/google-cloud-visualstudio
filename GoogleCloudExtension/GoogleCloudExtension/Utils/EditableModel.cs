@@ -99,15 +99,15 @@ namespace GoogleCloudExtension.Utils
         /// <typeparam name="T">The type of the object to wrap.</typeparam>
         /// <param name="input">The object to wrap.</param>
         /// <returns>A new <see cref="EditableModel{T}"/> wrapping the input.</returns>
-        public static EditableModel<T> Of<T>(T input) where T : class => new EditableModel<T>(input);
+        public static EditableModel<T> Of<T>(T input) => new EditableModel<T>(input);
 
         /// <summary>
         /// Wraps the elements of an <see cref="IEnumerable{T}"/> in <see cref="EditableModel{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type to wrap.</typeparam>
         /// <param name="input">The objects to wrap.</param>
-        public static IEnumerable<EditableModel<T>> ToEditableModels<T>(this IEnumerable<T> input) where T : class =>
-            input.Select(Of);
+        public static IEnumerable<EditableModel<T>> ToEditableModels<T>(this IEnumerable<T> input) =>
+            input?.Select(Of);
 
         /// <summary>
         /// Unwraps an
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="input">The <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="EditableModel{T}"/>&gt; to unwrap.</param>
         /// <typeparam name="T">The type unwraped from <see cref="EditableModel{T}"/>.</typeparam>
-        public static IEnumerable<T> Values<T>(this IEnumerable<EditableModel<T>> input) where T : class =>
-            input.Select(model => model.Value);
+        public static IEnumerable<T> Values<T>(this IEnumerable<EditableModel<T>> input) =>
+            input?.Select(model => model.Value);
     }
 }

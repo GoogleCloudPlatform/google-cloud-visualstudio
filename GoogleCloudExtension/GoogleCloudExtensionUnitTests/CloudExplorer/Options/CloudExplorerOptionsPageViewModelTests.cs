@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer.Options
 {
@@ -11,38 +12,55 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer.Options
     public class CloudExplorerOptionsPageViewModelTests
     {
         private Mock<Action> _resetFieldsMock;
+        private CloudExplorerOptionsPageViewModel _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _resetFieldsMock = new Mock<Action>();
+            _objectUnderTest = new CloudExplorerOptionsPageViewModel(_resetFieldsMock.Object);
         }
 
         [TestMethod]
         public void TestNotifyPropertyChanged()
         {
-            var objectUnderTest = new CloudExplorerOptionsPageViewModel(_resetFieldsMock.Object);
             var propertyChangedHandlerMock = new Mock<Action<object, PropertyChangedEventArgs>>();
-            objectUnderTest.PropertyChanged += new PropertyChangedEventHandler(propertyChangedHandlerMock.Object);
+            _objectUnderTest.PropertyChanged += new PropertyChangedEventHandler(propertyChangedHandlerMock.Object);
 
-            objectUnderTest.PubSubTopicFilters = new EditableModel<string>[] { };
+            _objectUnderTest.PubSubTopicFilters = new EditableModel<string>[] { };
 
             propertyChangedHandlerMock.Verify(
                 a => a(
-                    objectUnderTest,
+                    _objectUnderTest,
                     It.Is<PropertyChangedEventArgs>(
-                        args => args.PropertyName == nameof(objectUnderTest.PubSubTopicFilters))),
+                        args => args.PropertyName == nameof(_objectUnderTest.PubSubTopicFilters))),
                 Times.Once);
         }
 
         [TestMethod]
-        public void TestRestFieldsTriggers()
+        public void TestRestFieldsTriggersAction()
         {
-            var objectUnderTest = new CloudExplorerOptionsPageViewModel(_resetFieldsMock.Object);
-
-            objectUnderTest.ResetToDefaults.Execute(null);
+            _objectUnderTest.ResetToDefaults.Execute(null);
 
             _resetFieldsMock.Verify(a => a(), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestSetNullFilters()
+        {
+            _objectUnderTest.PubSubTopicFilters = null;
+
+            Assert.IsNotNull(_objectUnderTest.PubSubTopicFilters);
+            Assert.AreEqual(0, _objectUnderTest.PubSubTopicFilters.Count());
+        }
+
+        [TestMethod]
+        public void TestSetEmptyFilters()
+        {
+            _objectUnderTest.PubSubTopicFilters = Enumerable.Empty<EditableModel<string>>();
+
+            Assert.IsNotNull(_objectUnderTest.PubSubTopicFilters);
+            Assert.AreEqual(0, _objectUnderTest.PubSubTopicFilters.Count());
         }
     }
 }

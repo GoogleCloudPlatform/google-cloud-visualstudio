@@ -16,6 +16,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
@@ -26,7 +27,13 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         public IEnumerable<EditableModel<string>> PubSubTopicFilters
         {
             get { return _pubSubTopicFilters; }
-            set { SetValueAndRaise(ref _pubSubTopicFilters, new ObservableCollection<EditableModel<string>>(value)); }
+            set
+            {
+                SetValueAndRaise(
+                    ref _pubSubTopicFilters,
+                    new ObservableCollection<EditableModel<string>>(
+                        value ?? Enumerable.Empty<EditableModel<string>>()));
+            }
         }
 
         public ProtectedCommand ResetToDefaults { get; }

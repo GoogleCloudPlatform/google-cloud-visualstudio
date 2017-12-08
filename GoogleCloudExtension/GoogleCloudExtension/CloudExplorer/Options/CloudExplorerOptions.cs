@@ -57,6 +57,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         {
             _child = new CloudExplorerOptionsPage(this);
             AutomationObject = new SerializableCloudExplorerOptions(this);
+            PubSubTopicFilters = DefaultPubSubTopicFilters;
         }
 
         /// <inheritdoc />
