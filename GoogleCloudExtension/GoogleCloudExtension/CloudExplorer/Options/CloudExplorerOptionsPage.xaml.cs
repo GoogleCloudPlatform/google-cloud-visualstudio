@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     {
         public CloudExplorerOptionsPageViewModel ViewModel { get; }
 
-        public CloudExplorerOptionsPage(CloudExplorerOptions parentModel)
+        public CloudExplorerOptionsPage(ICloudExplorerOptions parentModel)
         {
             ViewModel = new CloudExplorerOptionsPageViewModel(parentModel.ResetSettings);
             DataContext = ViewModel;

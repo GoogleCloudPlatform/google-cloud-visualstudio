@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
@@ -25,5 +26,9 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// The list of regexes used to filter pub sub topics.
         /// </summary>
         IEnumerable<string> PubSubTopicFilters { get; set; }
+
+        event EventHandler SavingSettings;
+
+        void ResetSettings();
     }
 }

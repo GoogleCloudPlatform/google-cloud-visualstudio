@@ -234,6 +234,7 @@
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageTests.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsTests.cs" />
     <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptionsTests.cs" />
