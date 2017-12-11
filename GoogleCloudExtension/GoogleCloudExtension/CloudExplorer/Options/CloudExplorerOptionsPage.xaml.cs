@@ -25,23 +25,43 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     /// </summary>
     public partial class CloudExplorerOptionsPage
     {
+        /// <summary>
+        /// The <see cref="CloudExplorerOptionsPageViewModel"/> that is the <see cref="FrameworkElement.DataContext"/>.
+        /// </summary>
         public CloudExplorerOptionsPageViewModel ViewModel { get; }
 
+        /// <summary>
+        /// Creates and initializes a new <see cref="CloudExplorerOptionsPage"/>.
+        /// </summary>
+        /// <param name="parentModel"></param>
         public CloudExplorerOptionsPage(ICloudExplorerOptions parentModel)
         {
             ViewModel = new CloudExplorerOptionsPageViewModel(parentModel.ResetSettings);
             DataContext = ViewModel;
-            parentModel.SavingSettings += OnSavingSettings;
+            parentModel.SavingSettings += UpdateBindingSources;
             AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(OnDialogKeyPending));
             InitializeComponent();
         }
 
-        private void OnSavingSettings(object sender, EventArgs args)
+        /// <summary>
+        /// Updates the sources of the data input bindings.
+        /// </summary>
+        /// <param name="sender">Unused.</param>
+        /// <param name="args">Unused.</param>
+        private void UpdateBindingSources(object sender, EventArgs args)
         {
             _pubSubFilters.CommitEdit();
             _pubSubFilters.GetBindingExpression(ItemsControl.ItemsSourceProperty)?.UpdateSource();
         }
 
+        /// <summary>
+        /// Handles the <see cref="UIElementDialogPage.DialogKeyPendingEvent"/>,
+        /// allowing this WPF element to catch enter and escape keys during editing mode.
+        /// </summary>
+        /// <param name="sender">Unused.</param>
+        /// <param name="args">
+        /// Updates the <see cref="RoutedEventArgs.Handled"/> property.
+        /// </param>
         private void OnDialogKeyPending(object sender, RoutedEventArgs args)
         {
             IEditableCollectionView itemCollection = _pubSubFilters.Items;

@@ -2129,7 +2129,7 @@
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
     <value>{0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
-    <comment>Message displayed by validator limiting characters allowed in pub sub names. Takes the display name of the field being validated.</comment>
+    <comment>Message displayed by validator limiting characters allowed in Pub/Sub names. Takes the display name of the field being validated.</comment>
   </data>
   <data name="ValidationStartWithLetterMessage" xml:space="preserve">
     <value>{0} must start with a letter.</value>
@@ -2943,7 +2943,7 @@
     <value>Target _ASP.NET Framework:</value>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
-    <value>Pub Sub Topics to hide:</value>
+    <value>Pub/Sub Topics to hide:</value>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsLabelHelp" xml:space="preserve">
     <value>If any of the patterns match a topic's full name (e.g. projects/project-id/topics/topic-name), that topic will not be shown in the Cloud Explorer.</value>

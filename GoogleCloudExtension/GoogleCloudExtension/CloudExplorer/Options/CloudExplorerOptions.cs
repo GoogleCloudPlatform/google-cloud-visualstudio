@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     [DesignerCategory("Code")]
     public class CloudExplorerOptions : UIElementDialogPage, ICloudExplorerOptions
     {
+        /// <summary>
+        /// The default list of regexes to filter the Pub/Sub topics in the Cloud Explorer.
+        /// </summary>
         internal static readonly IReadOnlyList<string> DefaultPubSubTopicFilters = new[]
         {
             "/asia\\.gcr\\.io%2F",
@@ -37,7 +40,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         private readonly CloudExplorerOptionsPage _child;
 
         /// <summary>
-        /// The list of regexes used to filter pub sub topics.
+        /// The list of regexes used to filter Pub/Sub topics in the Cloud Explorer.
         /// </summary>
         public IEnumerable<string> PubSubTopicFilters
         {
@@ -51,8 +54,14 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <inheritdoc />
         protected override UIElement Child => _child;
 
+        /// <summary>
+        /// Triggered before this page saves its settings to storage.
+        /// </summary>
         public event EventHandler SavingSettings;
 
+        /// <summary>
+        /// Creates a new <see cref="CloudExplorerOptions" />.
+        /// </summary>
         public CloudExplorerOptions()
         {
             _child = new CloudExplorerOptionsPage(this);
@@ -60,21 +69,28 @@ namespace GoogleCloudExtension.CloudExplorer.Options
             PubSubTopicFilters = DefaultPubSubTopicFilters;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Resets all settings on this page to default.
+        /// </summary>
         public override void ResetSettings()
         {
             PubSubTopicFilters = DefaultPubSubTopicFilters;
             base.ResetSettings();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Loads all of the settings on this page from storage.
+        /// If the settings do not exist in storage, set them to default instead.
+        /// </summary>
         public override void LoadSettingsFromStorage()
         {
             PubSubTopicFilters = DefaultPubSubTopicFilters;
             base.LoadSettingsFromStorage();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Saves all of the settings on this page to storage.
+        /// </summary>
         public override void SaveSettingsToStorage()
         {
             SavingSettings?.Invoke(this, EventArgs.Empty);

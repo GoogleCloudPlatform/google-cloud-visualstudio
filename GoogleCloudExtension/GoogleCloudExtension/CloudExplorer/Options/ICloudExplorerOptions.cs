@@ -23,12 +23,18 @@ namespace GoogleCloudExtension.CloudExplorer.Options
     public interface ICloudExplorerOptions
     {
         /// <summary>
-        /// The list of regexes used to filter pub sub topics.
+        /// The list of regexes used to filter Pub/Sub topics in the Cloud Explorer.
         /// </summary>
         IEnumerable<string> PubSubTopicFilters { get; set; }
 
+        /// <summary>
+        /// Triggered before this page saves its settings to storage.
+        /// </summary>
         event EventHandler SavingSettings;
 
+        /// <summary>
+        /// Resets all settings on this page to default.
+        /// </summary>
         void ResetSettings();
     }
 }

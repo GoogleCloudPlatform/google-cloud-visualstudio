@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
 
         /// <summary>
-        /// Creates the pub sub source root view model.
+        /// Creates the Pub/Sub source root view model.
         /// </summary>
         public PubsubSourceRootViewModel() : this(CreateDataSource)
         { }
@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         }
 
         /// <summary>
-        /// Opens the google pub sub cloud console.
+        /// Opens the Google Cloud Pub/Sub cloud console.
         /// </summary>
         internal void OnOpenCloudConsoleCommand()
         {
@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         }
 
         /// <summary>
-        /// Opens the new pub sub topic dialog.
+        /// Opens the new Pub/Sub topic dialog.
         /// </summary>
         internal async void OnNewTopicCommand()
         {

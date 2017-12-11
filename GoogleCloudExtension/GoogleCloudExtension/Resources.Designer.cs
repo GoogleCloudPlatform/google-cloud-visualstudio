@@ -2050,7 +2050,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pub Sub Topics to hide:.
+        ///   Looks up a localized string similar to Pub/Sub Topics to hide:.
         /// </summary>
         public static string CloudExplorerOptionsPubSubTopicsLabel {
             get {
