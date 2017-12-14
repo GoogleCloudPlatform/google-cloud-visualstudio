@@ -92,7 +92,7 @@ namespace GoogleCloudExtensionUnitTests
             // and causes it to use the mocked IServiceProvider.
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
             // This runs the Initialize() method.
-            ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
+            ((IVsPackage) new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
         }
 
         private static void SetupService<ServiceType, InterfaceType>(
@@ -101,7 +101,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             Guid serviceGuid = typeof(ServiceType).GUID;
             Guid iUnknownGuid = typeof(IUnknown).GUID;
-            // ReSharper disable once RedundantAssignment
+            // ReSharper disable once NotAccessedVariable
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
             serviceProviderMock
                 .Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))

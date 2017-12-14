@@ -39,9 +39,10 @@
 
             <!-- Header of the dialog. -->
             <StackPanel Margin="0,0,0,18">
-                <GroupBox Grid.Row="1"
-                          Header="{x:Static ext:Resources.AuthorizedNetworksNetworkHeader}"
-                          Style="{StaticResource CommonGroupBoxStyle}">
+                <GroupBox 
+                    Header="{x:Static ext:Resources.AuthorizedNetworksNetworkHeader}"
+                    Style="{StaticResource CommonGroupBoxStyle}">
+                    
                     <StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>

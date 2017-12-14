@@ -205,7 +205,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whether to report usage statistics to Google.
+        ///   Looks up a localized string similar to When checked, ananomous usage statistics will be reported to Google.
         /// </summary>
         public static string AnalyticsOptionsOptInDescription {
             get {
@@ -214,11 +214,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Usage Statistics Enabled.
+        ///   Looks up a localized string similar to Report _Usage Statistics.
         /// </summary>
-        public static string AnalyticsOptionsOptInDisplayName {
+        public static string AnalyticsOptionsOptInLabel {
             get {
-                return ResourceManager.GetString("AnalyticsOptionsOptInDisplayName", resourceCulture);
+                return ResourceManager.GetString("AnalyticsOptionsOptInLabel", resourceCulture);
             }
         }
         

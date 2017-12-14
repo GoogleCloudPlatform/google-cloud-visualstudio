@@ -13,44 +13,49 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 
-namespace GoogleCloudExtension
+namespace GoogleCloudExtension.Options
 {
     /// <summary>
     /// This class represents the extension's analytics settings.
     /// </summary>
-    public class AnalyticsOptionsPage : DialogPage
+    [DesignerCategory("Code")]
+    public class AnalyticsOptions : UIElementDialogPage
     {
+
         /// <summary>
         /// Whether the user is opt-in or not into report usage statistics. By default is false.
         /// </summary>
-        [LocalizedCategory(nameof(Resources.AnalyticsOptionsCategory))]
-        [LocalizedDisplayName(nameof(Resources.AnalyticsOptionsOptInDisplayName))]
-        [LocalizedDescription(nameof(Resources.AnalyticsOptionsOptInDescription))]
-        public bool OptIn { get; set; }
+        public bool OptIn
+        {
+            get { return AnalyticsOptionsPage.ViewModel.OptIn; }
+            set { AnalyticsOptionsPage.ViewModel.OptIn = value; }
+        }
 
         /// <summary>
         /// Whether the analitics dialog has been shown to the user, as it will only be shown once.
         /// </summary>
-        [Browsable(false)]
         public bool DialogShown { get; set; }
 
         /// <summary>
         /// The client id to use to report usage statistics.
         /// </summary>
-        [Browsable(false)]
         public string ClientId { get; set; }
 
         /// <summary>
         /// The version of the extension already installed in the system.
         /// </summary>
-        [Browsable(false)]
         public string InstalledVersion { get; set; }
+
+        /// <inheritdoc />
+        protected override UIElement Child => AnalyticsOptionsPage;
+
+        private AnalyticsOptionsPage AnalyticsOptionsPage { get; } = new AnalyticsOptionsPage();
 
         /// <summary>
         /// Reset all the settings to their default values.
