@@ -39,12 +39,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         internal static Func<string, IApiManager> s_getApiManagerFunc = ApiManager.GetApiManager;
+        internal static readonly string s_defaultLocalPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "csr");
         private static readonly List<string> s_requiredApis =
             new List<string> { KnownApis.CloudSourceRepositoryApiName };
 
         private readonly Action _closeOwnerFunc;
         private readonly HashSet<string> _newReposList = new HashSet<string>();
-        private string _localPath;
+        private string _localPath = s_defaultLocalPath;
         private Repo _latestCreatedRepo;
         private Repo _selectedRepo;
         private IEnumerable<Project> _projects;
@@ -213,6 +215,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private async Task CloneAsync()
         {
+            if (IsDefaultLocation(LocalPath) && !Directory.Exists(s_defaultLocalPath))
+            {
+                Directory.CreateDirectory(s_defaultLocalPath);
+            }
+
             // If OkCommand is enabled, SelectedRepository and LocalPath is valid
             string destPath = Path.Combine(LocalPath.Trim(), SelectedRepository.GetRepoName());
 
@@ -301,7 +308,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
-            if (!Directory.Exists(localPath))
+            if (!IsDefaultLocation(localPath) && !Directory.Exists(localPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
                 yield break;
@@ -329,5 +336,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
             }
         }
+
+        private bool IsDefaultLocation(string localPath) => 
+            String.Equals(localPath.Trim(), s_defaultLocalPath, StringComparison.OrdinalIgnoreCase);
     }
 }

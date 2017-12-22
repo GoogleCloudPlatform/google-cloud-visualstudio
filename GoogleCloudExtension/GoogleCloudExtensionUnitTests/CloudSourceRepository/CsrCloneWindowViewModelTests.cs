@@ -60,6 +60,12 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         }
 
         [TestMethod]
+        public void CheckDefaultCloneFolder()
+        {
+            Assert.AreEqual(CsrCloneWindowViewModel.s_defaultLocalPath, _cloneWindowViewModel.LocalPath);
+        }
+
+        [TestMethod]
         public async Task ChangeSelectedProjectTest()
         {
             Mock<Repo> repoMock = new Mock<Repo>();
