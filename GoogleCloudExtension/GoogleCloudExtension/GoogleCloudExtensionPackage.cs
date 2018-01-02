@@ -241,7 +241,7 @@ namespace GoogleCloudExtension
             ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
-            _dteInstance = (DTE) Package.GetGlobalService(typeof(DTE));
+            _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
@@ -264,7 +264,7 @@ namespace GoogleCloudExtension
 
         #region User Settings
 
-        public AnalyticsOptions AnalyticsSettings => (AnalyticsOptions) GetDialogPage(typeof(AnalyticsOptions));
+        public AnalyticsOptions AnalyticsSettings => (AnalyticsOptions)GetDialogPage(typeof(AnalyticsOptions));
 
         #endregion
 

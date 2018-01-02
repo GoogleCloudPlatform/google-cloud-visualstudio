@@ -205,7 +205,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When checked, ananomous usage statistics will be reported to Google.
+        ///   Looks up a localized string similar to When checked, anonymous usage statistics will be reported to Google.
         /// </summary>
         public static string AnalyticsOptionsOptInDescription {
             get {

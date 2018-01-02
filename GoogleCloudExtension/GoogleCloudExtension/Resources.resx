@@ -1352,7 +1352,7 @@
     <comment>The category for the analytics options in the options page.</comment>
   </data>
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
-    <value>When checked, ananomous usage statistics will be reported to Google</value>
+    <value>When checked, anonymous usage statistics will be reported to Google</value>
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
