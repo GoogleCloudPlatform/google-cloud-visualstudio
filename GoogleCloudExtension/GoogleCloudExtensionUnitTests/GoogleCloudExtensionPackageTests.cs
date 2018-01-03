@@ -14,6 +14,8 @@
 
 using EnvDTE;
 using GoogleCloudExtension;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -42,14 +44,16 @@ namespace GoogleCloudExtensionUnitTests
         {
             const string mockedVersion = "MockVsVersion";
             const string mockedEdition = "MockedEdition";
-            InitPackageMock(
-                dteMock =>
-                {
-                    dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-                    dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
-                });
-            string expectedAssemblyVersion = GetVsixManifestVersion();
+            var dteMock = new Mock<DTE>();
+            dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+            dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
+            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
+            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
+            var testObject = new GoogleCloudExtensionPackage();
 
+            InitPackageMock(testObject, dteMock);
+
+            string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
             Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.ApplicationName);
@@ -65,6 +69,56 @@ namespace GoogleCloudExtensionUnitTests
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
         }
 
+        [TestMethod]
+        public void TestUpdatePackageVersion()
+        {
+            var testObject = new GoogleCloudExtensionPackage();
+            testObject.AnalyticsSettings.InstalledVersion = "0.1.0.0";
+            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
+            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
+
+            InitPackageMock(testObject, new Mock<DTE>());
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            reportEventMock.Verify(a => a(It.Is<AnalyticsEvent>(ae => ae.Name == UpgradeEvent.UpgradeEventName)));
+        }
+
+        [TestMethod]
+        public void TestNewPackageInstallation()
+        {
+            var testObject = new GoogleCloudExtensionPackage();
+            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
+            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
+
+            InitPackageMock(testObject, new Mock<DTE>());
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            reportEventMock.Verify(a => a(It.Is<AnalyticsEvent>(ae => ae.Name == NewInstallEvent.NewInstallEventName)));
+        }
+
+        [TestMethod]
+        public void TestSamePackageVersion()
+        {
+            var testObject = new GoogleCloudExtensionPackage();
+            testObject.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
+            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
+            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
+
+            InitPackageMock(testObject, new Mock<DTE>());
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            reportEventMock.Verify(
+                a => a(It.Is<AnalyticsEvent>(ae => ae.Name == NewInstallEvent.NewInstallEventName)), Times.Never);
+            reportEventMock.Verify(
+                a => a(It.Is<AnalyticsEvent>(ae => ae.Name == UpgradeEvent.UpgradeEventName)), Times.Never);
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
@@ -77,12 +131,17 @@ namespace GoogleCloudExtensionUnitTests
 
         public static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
         {
-            var serviceProviderMock = new Mock<IServiceProvider>();
             var dteMock = new Mock<DTE>();
+            dteSetupAction(dteMock);
+            InitPackageMock(new GoogleCloudExtensionPackage(), dteMock);
+        }
+
+        private static void InitPackageMock(IVsPackage package, Mock<DTE> dteMock)
+        {
+            Mock<IServiceProvider> serviceProviderMock = dteMock.As<IServiceProvider>();
             var activityLogMock = new Mock<IVsActivityLog>();
             activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(VSConstants.S_OK);
-            dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
             SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
 
@@ -92,14 +151,14 @@ namespace GoogleCloudExtensionUnitTests
             // and causes it to use the mocked IServiceProvider.
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
             // This runs the Initialize() method.
-            ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
+            package.SetSite(serviceProviderMock.Object);
         }
 
-        private static void SetupService<ServiceType, InterfaceType>(
+        private static void SetupService<SVsType, IVsType>(
             Mock<IServiceProvider> serviceProviderMock,
-            IMock<InterfaceType> mockObj) where InterfaceType : class
+            IMock<IVsType> mockObj) where IVsType : class
         {
-            Guid serviceGuid = typeof(ServiceType).GUID;
+            Guid serviceGuid = typeof(SVsType).GUID;
             Guid iUnknownGuid = typeof(IUnknown).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
