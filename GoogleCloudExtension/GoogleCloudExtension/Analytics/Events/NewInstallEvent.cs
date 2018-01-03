@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Analytics.Events
     /// </summary>
     internal static class NewInstallEvent
     {
-        internal const string NewInstallEventName = "newInstall";
+        private const string NewInstallEventName = "newInstall";
 
         public static AnalyticsEvent Create()
         {
