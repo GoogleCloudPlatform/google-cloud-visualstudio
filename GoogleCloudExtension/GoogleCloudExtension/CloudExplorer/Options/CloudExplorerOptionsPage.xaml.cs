@@ -36,11 +36,11 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <param name="parentModel"></param>
         public CloudExplorerOptionsPage(ICloudExplorerOptions parentModel)
         {
+            InitializeComponent();
             ViewModel = new CloudExplorerOptionsPageViewModel(parentModel.ResetSettings);
             DataContext = ViewModel;
             parentModel.SavingSettings += UpdateBindingSources;
             AddHandler(UIElementDialogPage.DialogKeyPendingEvent, new RoutedEventHandler(OnDialogKeyPending));
-            InitializeComponent();
         }
 
         /// <summary>

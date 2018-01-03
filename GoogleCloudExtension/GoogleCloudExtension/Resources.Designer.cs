@@ -2059,7 +2059,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If any of the patterns match a topic&apos;s full name (e.g. projects/project-id/topics/topic-name), that topic will not be shown in the Cloud Explorer..
+        ///   Looks up a localized string similar to Topics with a full name (e.g. projects/project-id/topics/topic-name) that matches one of these regex patters will be hidden in the Cloud Explorer..
         /// </summary>
         public static string CloudExplorerOptionsPubSubTopicsLabelHelp {
             get {

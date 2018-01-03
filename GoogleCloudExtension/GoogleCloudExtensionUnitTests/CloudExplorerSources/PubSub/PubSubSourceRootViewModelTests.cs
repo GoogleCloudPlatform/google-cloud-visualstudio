@@ -138,9 +138,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             var menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
             Assert.AreEqual(2, menuItems.Count);
             Assert.AreEqual(Resources.CloudExplorerPubSubNewTopicMenuHeader, menuItems[0].Header);
-            Assert.IsTrue(((ProtectedCommand) menuItems[0].Command).CanExecuteCommand);
+            Assert.IsTrue(((ProtectedCommand)menuItems[0].Command).CanExecuteCommand);
             Assert.AreEqual(Resources.UiOpenOnCloudConsoleMenuHeader, menuItems[1].Header);
-            Assert.IsTrue(((ProtectedCommand) menuItems[1].Command).CanExecuteCommand);
+            Assert.IsTrue(((ProtectedCommand)menuItems[1].Command).CanExecuteCommand);
         }
 
         [TestMethod]
@@ -322,7 +322,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             string projectIdParam = null;
             string details = null;
             _dataSourceMock.Setup(ds => ds.NewTopicAsync(It.IsAny<string>()))
-                .Throws(new DataSourceException(MockExceptionMessage));
+            .Throws(new DataSourceException(MockExceptionMessage));
             _objectUnderTest.Initialize(_contextMock.Object);
             _objectUnderTest.NewTopicUserPrompt = projectId =>
             {

@@ -16,11 +16,17 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
+    /// <summary>
+    /// The <see cref="DialogPage"/> that contains the options for the Cloud Explorer.
+    /// Delegates to a <see cref="CloudExplorerOptionsPage"/>.
+    /// </summary>
     [DesignerCategory("Code")]
     public class CloudExplorerOptions : UIElementDialogPage, ICloudExplorerOptions
     {
@@ -45,7 +51,11 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         public IEnumerable<string> PubSubTopicFilters
         {
             get { return _child.ViewModel.PubSubTopicFilters.Values(); }
-            set { _child.ViewModel.PubSubTopicFilters = value.ToEditableModels(); }
+            set
+            {
+                _child.ViewModel.PubSubTopicFilters = new ObservableCollection<EditableModel<string>>(
+                    value.ToEditableModels() ?? Enumerable.Empty<EditableModel<string>>());
+            }
         }
 
         /// <inheritdoc />

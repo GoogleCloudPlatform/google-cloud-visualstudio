@@ -13,12 +13,15 @@
 // limitations under the License.
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorer.Options
 {
+    /// <summary>
+    /// This class contains serialized versions of the properties of <see cref="ICloudExplorerOptions"/>.
+    /// <see cref="CloudExplorerOptions"/> delegates saving and loading to an instance this class.
+    /// </summary>
     public class SerializableCloudExplorerOptions
     {
         private readonly ICloudExplorerOptions _parentOptions;
@@ -33,20 +36,15 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// Used for saving and loading to the settings storage.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        // ReSharper disable once UnusedMember.Global
         public string PubSubTopicFiltersJsonString
         {
             get
             {
-                return _parentOptions.PubSubTopicFilters == null ?
-                    JValue.CreateNull().ToString(Formatting.None) :
-                    JToken.FromObject(_parentOptions.PubSubTopicFilters).ToString(Formatting.None);
+                return JsonConvert.SerializeObject(_parentOptions.PubSubTopicFilters);
             }
             set
             {
-                _parentOptions.PubSubTopicFilters = value == null ?
-                    null :
-                    JToken.Parse(value).ToObject<List<string>>();
+                _parentOptions.PubSubTopicFilters = JsonConvert.DeserializeObject<List<string>>(value);
             }
         }
     }

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.Utils
     public class EditableModel<T> : Model, IEditableObject
     {
         private T _value;
-        private T _uneditedRegex;
+        private T _uneditedValue;
         private bool _isEdit;
 
         /// <summary>
@@ -54,18 +53,20 @@ namespace GoogleCloudExtension.Utils
         /// <remarks>
         /// Used by <see cref="System.Windows.Controls.DataGrid"/> when adding new rows.
         /// </remarks>
-        [UsedImplicitly]
         public EditableModel() : this(default(T)) { }
 
         /// <inheritdoc />
-        public override string ToString() => Value?.ToString() ?? "";
+        public override string ToString()
+        {
+            return Value?.ToString() ?? "";
+        }
 
         /// <inheritdoc />
         public void BeginEdit()
         {
             if (!_isEdit)
             {
-                _uneditedRegex = Value;
+                _uneditedValue = Value;
                 _isEdit = true;
             }
         }
@@ -73,7 +74,7 @@ namespace GoogleCloudExtension.Utils
         /// <inheritdoc />
         public void EndEdit()
         {
-            _uneditedRegex = default(T);
+            _uneditedValue = default(T);
             _isEdit = false;
         }
 
@@ -82,7 +83,7 @@ namespace GoogleCloudExtension.Utils
         {
             if (_isEdit)
             {
-                Value = _uneditedRegex;
+                Value = _uneditedValue;
                 _isEdit = false;
             }
         }
@@ -110,11 +111,9 @@ namespace GoogleCloudExtension.Utils
             input?.Select(Of);
 
         /// <summary>
-        /// Unwraps an
-        /// <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="EditableModel{T}">EditableModel</see>&lt;<typeparamref name="T"/>&gt;&gt;
-        /// to a plain <see cref="IEnumerable{T}">IEnumerable</see>&lt;<typeparamref name="T"/>&gt;.
+        /// Unwraps an IEnumerable &lt;EditableModel&lt;<typeparamref name="T"/>&gt;&gt;
+        /// to a plain IEnumerable &lt;<typeparamref name="T"/>&gt;.
         /// </summary>
-        /// <param name="input">The <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="EditableModel{T}"/>&gt; to unwrap.</param>
         /// <typeparam name="T">The type unwraped from <see cref="EditableModel{T}"/>.</typeparam>
         public static IEnumerable<T> Values<T>(this IEnumerable<EditableModel<T>> input) =>
             input?.Select(model => model.Value);

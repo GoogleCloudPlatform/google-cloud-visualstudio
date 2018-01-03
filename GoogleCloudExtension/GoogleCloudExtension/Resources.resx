@@ -2946,7 +2946,7 @@
     <value>Pub/Sub Topics to hide:</value>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsLabelHelp" xml:space="preserve">
-    <value>If any of the patterns match a topic's full name (e.g. projects/project-id/topics/topic-name), that topic will not be shown in the Cloud Explorer.</value>
+    <value>Topics with a full name (e.g. projects/project-id/topics/topic-name) that matches one of these regex patters will be hidden in the Cloud Explorer.</value>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsFilterColumHeader" xml:space="preserve">
     <value>Regex Patterns</value>
