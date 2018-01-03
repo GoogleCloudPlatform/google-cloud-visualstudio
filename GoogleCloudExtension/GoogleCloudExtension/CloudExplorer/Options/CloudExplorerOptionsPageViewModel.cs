@@ -27,8 +27,8 @@ namespace GoogleCloudExtension.CloudExplorer.Options
 
         public ObservableCollection<EditableModel<string>> PubSubTopicFilters
         {
-            get => _pubSubTopicFilters;
-            set => SetValueAndRaise(ref _pubSubTopicFilters, value);
+            get { return _pubSubTopicFilters; }
+            set { SetValueAndRaise(ref _pubSubTopicFilters, value); }
         }
 
         public ProtectedCommand ResetToDefaults { get; }
