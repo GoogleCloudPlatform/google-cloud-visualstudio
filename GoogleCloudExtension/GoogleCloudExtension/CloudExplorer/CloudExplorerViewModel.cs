@@ -60,6 +60,10 @@ namespace GoogleCloudExtension.CloudExplorer
         private string _projectDisplayString;
         private IList<TreeHierarchy> _roots;
 
+        // The UI automation server seems to need to have the roots alive for another cycle as we update
+        // the UI with the new roots when the refresh happens. This field will keep the old roots alive for that cycle.
+        private IList<TreeHierarchy> _oldRoots;
+
         /// <summary>
         /// Returns whether the view model is busy performing an operation.
         /// </summary>
@@ -415,6 +419,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private async void RefreshSources()
         {
             // Clear the roots collection to clean the UI.
+            _oldRoots = Roots;
             Roots = null;
             foreach (var source in _sources)
             {
