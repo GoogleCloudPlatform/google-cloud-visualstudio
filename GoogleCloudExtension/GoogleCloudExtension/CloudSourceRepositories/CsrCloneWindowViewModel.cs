@@ -39,8 +39,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         internal static Func<string, IApiManager> s_getApiManagerFunc = ApiManager.GetApiManager;
-        internal static readonly string s_defaultLocalPath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "csr");
+        internal static string s_defaultLocalPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Cloud Source Repositories");
         private static readonly List<string> s_requiredApis =
             new List<string> { KnownApis.CloudSourceRepositoryApiName };
 
@@ -221,7 +221,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
 
             // If OkCommand is enabled, SelectedRepository and LocalPath is valid
-            string destPath = Path.Combine(LocalPath.Trim(), SelectedRepository.GetRepoName());
+            string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
 
             if (!CsrGitUtils.StoreCredential(
                 SelectedRepository.Url,
@@ -301,21 +301,20 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<ValidationResult> ValidateLocalPath()
         {
             string fieldName = Resources.CsrCloneLocalPathFieldName;
-            string localPath = LocalPath?.Trim();
-            if (String.IsNullOrEmpty(localPath))
+            if (String.IsNullOrEmpty(LocalPath))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
-            if (!IsDefaultLocation(localPath) && !Directory.Exists(localPath))
+            if (!IsDefaultLocation(LocalPath) && !Directory.Exists(LocalPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
                 yield break;
             }
             if (SelectedRepository != null)
             {
-                string destPath = Path.Combine(localPath, SelectedRepository.GetRepoName());
+                string destPath = Path.Combine(LocalPath, SelectedRepository.GetRepoName());
                 if (Directory.Exists(destPath) && !PathUtils.IsDirectoryEmpty(destPath))
                 {
                     yield return StringValidationResult.FromResource(
@@ -337,7 +336,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        private bool IsDefaultLocation(string localPath) => 
-            String.Equals(localPath.Trim(), s_defaultLocalPath, StringComparison.OrdinalIgnoreCase);
+        private bool IsDefaultLocation(string localPath) =>
+            String.Equals(Path.GetFullPath(localPath), s_defaultLocalPath, StringComparison.OrdinalIgnoreCase);
     }
 }
