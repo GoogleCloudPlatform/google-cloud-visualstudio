@@ -160,7 +160,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             Guid serviceGuid = typeof(SVsType).GUID;
             Guid iUnknownGuid = typeof(IUnknown).GUID;
-            // ReSharper disable once RedundantAssignment
+            // ReSharper disable once NotAccessedVariable
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
             serviceProviderMock
                 .Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
