@@ -39,7 +39,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
         private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
-        private TaskCompletionSource<IList<Project>> _projectTaskSource;
+        private TaskCompletionSource<IEnumerable<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
@@ -52,7 +52,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _testObject = null;
             CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
             _properiesChanged = new List<string>();
@@ -62,21 +62,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
         private PickProjectIdViewModel BuildTestObject()
         {
-            Func<Task<IList<Project>>> projectsListAsyncCallBack = async () =>
-            {
-                try
-                {
-                    return await _projectTaskSource.Task;
-                }
-                finally
-                {
-                    _projectTaskSource = new TaskCompletionSource<IList<Project>>();
-                }
-            };
-            Func<IResourceManagerDataSource> dataSourceFactory =
-                () => Mock.Of<IResourceManagerDataSource>(
-                    ds => ds.GetProjectsListAsync() == projectsListAsyncCallBack());
-            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object);
+            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object, _projectTaskSource.Task);
             testObject.PropertyChanged += _addPropertiesChanged;
             return testObject;
         }
@@ -151,7 +137,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
             Assert.AreEqual(TestExceptionMessage, _testObject.LoadTask.ErrorMessage);
-            Assert.IsNull(_testObject.Projects);
+            Assert.IsTrue(_testObject.Projects.Count() == 0);
         }
 
         [TestMethod]
