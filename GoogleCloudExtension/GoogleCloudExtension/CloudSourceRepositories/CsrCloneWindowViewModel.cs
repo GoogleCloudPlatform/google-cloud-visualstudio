@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public class CsrCloneWindowViewModel : ValidatingViewModelBase
     {
         internal static Func<string, IApiManager> s_getApiManagerFunc = ApiManager.GetApiManager;
-        internal static string s_defaultLocalPath = Path.Combine(
+        internal static readonly string s_defaultLocalPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Cloud Source Repositories");
         private static readonly List<string> s_requiredApis =
             new List<string> { KnownApis.CloudSourceRepositoryApiName };
