@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GceStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:GceStepViewModel}">
@@ -37,70 +36,90 @@
                 Style="{StaticResource CommonTextBoxStyle}" />
         </DockPanel>
 
-        <!-- The message that the project is being validated. -->
-        <StackPanel Margin="0,5,0,0"
-                    Orientation="Horizontal"
-                    Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
-            <controls:ProgressIndicator  />
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
-        </StackPanel>
+        <ContentControl Margin="0,5,0,0">
+            <ContentControl.Resources>
+                <!-- The message that the project is being validated. -->
+                <StackPanel x:Key="LoadingProject" Orientation="Horizontal">
+                    <controls:ProgressIndicator />
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}"
+                               Style="{StaticResource CommonTextStyle}" />
+                </StackPanel>
 
-        <!-- The controls to select the VM. -->
-        <StackPanel Margin="0,5,0,0"
-                    Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
-                   Target="{Binding ElementName=_instances}"
-                   Style="{StaticResource CommonLabelStyle}"/>
-            <ComboBox x:Name="_instances"
-                      ItemsSource="{Binding Instances}"
-                      DisplayMemberPath="Name"
-                      IsSynchronizedWithCurrentItem="True"
-                      Margin="0,0,0,15"
-                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
+                <!-- The controls to select the VM. -->
+                <StackPanel x:Key="InputControls">
+                    <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+                           Target="{Binding ElementName=_instances}"
+                           Style="{StaticResource CommonLabelStyle}"/>
+                    <ComboBox x:Name="_instances"
+                              ItemsSource="{Binding Instances}"
+                              DisplayMemberPath="Name"
+                              IsSynchronizedWithCurrentItem="True"
+                              Margin="0,0,0,15"
+                              SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
 
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
-                   Target="{Binding ElementName=_credentials}"
-                   Style="{StaticResource CommonLabelStyle}"/>
-            <ComboBox x:Name="_credentials"
-                      ItemsSource="{Binding Credentials}"
-                      IsSynchronizedWithCurrentItem="True"
-                      DisplayMemberPath="User"
-                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
+                    <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
+                           Target="{Binding ElementName=_credentials}"
+                           Style="{StaticResource CommonLabelStyle}"/>
+                    <ComboBox x:Name="_credentials"
+                              ItemsSource="{Binding Credentials}"
+                              IsSynchronizedWithCurrentItem="True"
+                              DisplayMemberPath="User"
+                              SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
 
-            <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
-                <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
-                </Hyperlink>
-            </TextBlock>
+                    <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
+                        <Hyperlink Command="{Binding ManageCredentialsCommand}"
+                                   Style="{StaticResource CommonHyperlinkStyle}">
+                            <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
+                        </Hyperlink>
+                    </TextBlock>
 
-            <CheckBox Margin="0,8,0,0"
-                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                  Style="{StaticResource CommonTextStyleBase}"/>
+                    <CheckBox Margin="0,8,0,0"
+                              Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                              IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                              Style="{StaticResource CommonTextStyleBase}"/>
 
-            <CheckBox Margin="0,8,0,0"
-                  Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
-                  IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
-                  Style="{StaticResource CommonTextStyleBase}" />
-        </StackPanel>
+                    <CheckBox Margin="0,8,0,0"
+                              Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
+                              IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
+                              Style="{StaticResource CommonTextStyleBase}" />
+                </StackPanel>
 
-        <!-- Message shown when the API needs to be enabled. -->
-        <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
-                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
-                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
-            </Hyperlink>
-        </TextBlock>
+                <!-- Message shown when the API needs to be enabled. -->
+                <TextBlock x:Key="NeedsApiEnabled"
+                           TextWrapping="Wrap"
+                           Style="{StaticResource CommonTextStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
+                    <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                        <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
+                    </Hyperlink>
+                </TextBlock>
 
-        <!-- Message shwon when there is a general error. -->
-        <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
-                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}" />
-
+                <!-- Message shwon when there is a general error. -->
+                <TextBlock x:Key="Error"
+                           TextWrapping="Wrap"
+                           Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
+                           Style="{StaticResource CommonTextStyle}" />
+            </ContentControl.Resources>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <!-- Use this setter to change the content visible in the designer -->
+                    <Setter Property="Content" Value="{StaticResource InputControls}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShowInputControls}" Value="true">
+                            <Setter Property="Content" Value="{StaticResource InputControls}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LoadingProject}" Value="true">
+                            <Setter Property="Content" Value="{StaticResource LoadingProject}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding NeedsApiEnabled}" Value="true">
+                            <Setter Property="Content" Value="{StaticResource NeedsApiEnabled}"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding GeneralError}" Value="true">
+                            <Setter Property="Content" Value="{StaticResource Error}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </StackPanel>
 </UserControl>
