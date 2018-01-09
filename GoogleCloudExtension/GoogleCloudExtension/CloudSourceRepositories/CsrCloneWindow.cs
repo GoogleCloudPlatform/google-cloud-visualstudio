@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private CsrCloneWindow(IList<Project> projects) : base(StringResources.CsrCloneWindowTitle)
         {
-            ViewModel = new CsrCloneWindowViewModel(this, projects);
+            ViewModel = new CsrCloneWindowViewModel(Close, projects);
             Content = new CsrCloneWindowContent { DataContext = ViewModel };
         }
 
