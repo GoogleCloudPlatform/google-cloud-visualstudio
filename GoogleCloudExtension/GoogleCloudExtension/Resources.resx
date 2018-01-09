@@ -2950,4 +2950,12 @@
   <data name="WizardTemplateChooserTargetAspFrameworkLabel" xml:space="preserve">
     <value>Target _ASP.NET Framework:</value>
   </data>
+  <data name="CloudExplorerSelectProjectCaption" xml:space="preserve">
+    <value>Select _Project...</value>
+    <comment>Caption for the select project button in the cloud explorer.</comment>
+  </data>
+  <data name="PickProjectIdFilterProjectCaption" xml:space="preserve">
+    <value>Filter _project:</value>
+    <comment>Caption shown for the filter project textbox.</comment>
+  </data>
 </root>

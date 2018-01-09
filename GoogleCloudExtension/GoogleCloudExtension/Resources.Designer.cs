@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace GoogleCloudExtension
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2280,6 +2280,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerSelectAccountMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerSelectAccountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select _Project....
+        /// </summary>
+        public static string CloudExplorerSelectProjectCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSelectProjectCaption", resourceCulture);
             }
         }
         
@@ -5115,6 +5124,15 @@ namespace GoogleCloudExtension
         public static string OAuthFlowWindowTitle {
             get {
                 return ResourceManager.GetString("OAuthFlowWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter _project:.
+        /// </summary>
+        public static string PickProjectIdFilterProjectCaption {
+            get {
+                return ResourceManager.GetString("PickProjectIdFilterProjectCaption", resourceCulture);
             }
         }
         

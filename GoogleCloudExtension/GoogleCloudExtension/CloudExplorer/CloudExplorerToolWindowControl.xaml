@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns:crm="clr-namespace:Google.Apis.CloudResourceManager.v1.Data;assembly=Google.Apis.CloudResourceManager.v1"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -330,7 +331,7 @@
             <TextBox Text="{Binding ProjectDisplayString}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
-            <Button Content="Select _Project..."
+            <Button Content="{x:Static ext:Resources.CloudExplorerSelectProjectCaption}"
                     Grid.Column="1"
                     Command="{Binding SelectProjectCommand}"
                     Style="{StaticResource CommonButtonDynamicStyle}"
