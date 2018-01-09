@@ -22,13 +22,17 @@ using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -67,7 +71,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         // Mockable static methods for testing.
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
-        internal Func<string, Process> StartProcess = Process.Start;
         internal static IEnumerable<string> TopicFiltersOverride = null;
 
         private static IEnumerable<string> TopicFilters => TopicFiltersOverride ?? GoogleCloudExtensionPackage.Instance
@@ -115,6 +118,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             _dataSourceFactory = dataSourceFactory;
             _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
+            GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().SavingSettings +=
+                    (sender, args) => Refresh();
         }
 
         public override void Initialize(ICloudSourceContext context)
@@ -132,6 +137,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     },
                     new MenuItem
                     {
+                        Header = Resources.CloudExplorerPubSubChangeFiltersMenuHeader,
+                        Command = new ProtectedCommand(OnChangeFiltersCommand)
+                    },
+                    new MenuItem
+                    {
                         Header = Resources.UiOpenOnCloudConsoleMenuHeader,
                         Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
                     }
@@ -146,6 +156,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             Debug.WriteLine("New credentials, invalidating the Pubsub source.");
             _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
+        }
+
+        /// <summary>
+        /// Opens an external browser to the given url.
+        /// </summary>
+        /// <param name="url"></param>
+        public void OpenBrowser(string url)
+        {
+            var webBrowsingService = (IVsWebBrowsingService)Package.GetGlobalService(typeof(IVsWebBrowsingService));
+            const __VSCREATEWEBBROWSER createFlags = __VSCREATEWEBBROWSER.VSCWB_AutoShow;
+            const VSPREVIEWRESOLUTION resolutionFlag = VSPREVIEWRESOLUTION.PR_Default;
+            Marshal.ThrowExceptionForHR(
+                webBrowsingService.CreateExternalWebBrowser((uint)createFlags, resolutionFlag, url));
         }
 
         /// <summary>
@@ -211,7 +234,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         internal void OnOpenCloudConsoleCommand()
         {
             string url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
-            StartProcess(url);
+            OpenBrowser(url);
         }
 
         /// <summary>
@@ -238,6 +261,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
                 EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
+        }
+
+        /// <summary>
+        /// Opens the Topics Filters options page.
+        /// </summary>
+        private static void OnChangeFiltersCommand()
+        {
+            GoogleCloudExtensionPackage.Instance.ShowOptionPage<CloudExplorerOptions>();
         }
 
         private async void OnEnablePubSubApi()

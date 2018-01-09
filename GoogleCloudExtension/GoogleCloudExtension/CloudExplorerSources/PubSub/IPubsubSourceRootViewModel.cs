@@ -19,5 +19,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     internal interface IPubsubSourceRootViewModel : ISourceRootViewModelBase
     {
         IPubsubDataSource DataSource { get; }
+
+        /// <summary>
+        /// Opens an external browser.
+        /// </summary>
+        /// <param name="url">
+        /// The URL to open the browser to.
+        /// </param>
+        void OpenBrowser(string url);
     }
 }

@@ -229,6 +229,7 @@
   <ItemGroup>
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />

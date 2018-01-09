@@ -46,6 +46,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDisplayName))]
+        // ReSharper disable once UnusedMember.Global
         public string Topic => _subscription.Topic;
 
         public SubscriptionItem(Subscription subscription) :

@@ -25,6 +25,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         string DisplayName { get; }
 
         /// <summary>
+        /// The id of the project the topic belongs to.
+        /// </summary>
+        string ProjectId { get; }
+
+        /// <summary>
         /// The name of the topic to match against subscription topic names.
         /// </summary>
         string FullName { get; }

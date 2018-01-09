@@ -113,6 +113,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         }
 
         /// <summary>
+        /// Opens an external browser to the given url.
+        /// </summary>
+        public void OpenBrowser(string url)
+        {
+            Owner.OpenBrowser(url);
+        }
+
+        /// <summary>
         /// Adds the child subscriptions from the enumeration of all subscriptions.
         /// </summary>
         /// <param name="subscriptions">An enumeration of all subscriptions.</param>

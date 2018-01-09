@@ -19,6 +19,7 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
@@ -154,7 +155,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         public static string GetPathLeaf(string path)
         {
-            return path.Substring(1 + path.LastIndexOf("/", StringComparison.Ordinal));
+            return GetPathSections(path).LastOrDefault();
+        }
+
+        public static string GetTopicProject(string path)
+        {
+            return GetPathSections(path).Skip(1).FirstOrDefault();
+        }
+
+        private static string[] GetPathSections(string path)
+        {
+            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>

@@ -33,6 +33,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public string DisplayName => PubsubDataSource.GetPathLeaf(_topic.Name);
 
         /// <summary>
+        /// The id of the project the topic belongs to.
+        /// </summary>
+        [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicProjectDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicProjectDisplayName))]
+        public string ProjectId => PubsubDataSource.GetTopicProject(_topic.Name);
+
+        /// <summary>
         /// The full name of the topic: projects/projectId/topics/topicName
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]

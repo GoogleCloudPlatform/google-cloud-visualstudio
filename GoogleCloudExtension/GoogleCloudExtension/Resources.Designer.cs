@@ -2086,6 +2086,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set Topic Filters....
+        /// </summary>
+        public static string CloudExplorerPubSubChangeFiltersMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubChangeFiltersMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
         public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
@@ -2289,6 +2298,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubTopicNameDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Google Cloud Project Id of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicProjectDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicProjectDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Id.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicProjectDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicProjectDisplayName", resourceCulture);
             }
         }
         

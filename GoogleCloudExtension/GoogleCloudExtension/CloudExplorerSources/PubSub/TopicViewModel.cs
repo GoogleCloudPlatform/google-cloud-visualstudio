@@ -15,6 +15,7 @@
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
@@ -31,6 +32,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// </summary>
     internal class TopicViewModel : TopicViewModelBase
     {
+        internal const string ConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub/topics/{1}?project={0}";
         private const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/topic_icon.png";
 
         private static readonly Lazy<ImageSource> s_topicIcon =
@@ -59,8 +61,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     },
                     new MenuItem
                     {
+                        Header = Resources.CloudExplorerPubSubChangeFiltersMenuHeader,
+                        Command = new ProtectedCommand(OnChangeFiltersCommand)
+                    },
+                    new MenuItem
+                    {
                         Header = Resources.UiPropertiesMenuHeader,
                         Command = new ProtectedCommand(OnPropertiesWindowCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                        Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
                     }
                 }
             };
@@ -144,6 +156,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         internal void OnPropertiesWindowCommand()
         {
             Context.ShowPropertiesWindow(Item);
+        }
+
+        /// <summary>
+        /// Opens the Topics filters options page.
+        /// </summary>
+        private static void OnChangeFiltersCommand()
+        {
+            GoogleCloudExtensionPackage.Instance.ShowOptionPage<CloudExplorerOptions>();
+        }
+
+        /// <summary>
+        /// Opens the topic on the Google Cloud Pub/Sub cloud console.
+        /// </summary>
+        private void OnOpenCloudConsoleCommand()
+        {
+            string url = string.Format(ConsoleUrlFormat, Item.ProjectId, Item.DisplayName);
+            OpenBrowser(url);
         }
     }
 }

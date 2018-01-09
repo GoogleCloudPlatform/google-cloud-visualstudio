@@ -22,6 +22,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class PubSubSourceTests
     {
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
+        }
+
         [TestMethod]
         public void TestPubsubSource()
         {

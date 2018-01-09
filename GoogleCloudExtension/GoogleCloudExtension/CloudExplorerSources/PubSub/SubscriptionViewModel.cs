@@ -31,7 +31,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// </summary>
     internal class SubscriptionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
-        private const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/subscription_icon.png";
+        internal const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/subscription_icon.png";
+        internal const string ConsoleSubscriptionUrlFormat = "https://console.cloud.google.com/cloudpubsub/subscriptions/{0}";
 
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
@@ -84,9 +85,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     {
                         Header = Resources.UiPropertiesMenuHeader,
                         Command = new ProtectedCommand(OnPropertiesWindowCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                        Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
                     }
                 }
             };
+        }
+
+        /// <summary>
+        /// Opens subscriptions on the Google Cloud Pub/Sub cloud console.
+        /// </summary>
+        private void OnOpenCloudConsoleCommand()
+        {
+            _owner.OpenBrowser(string.Format(ConsoleSubscriptionUrlFormat, _subscriptionItem.Name));
         }
 
         /// <summary>

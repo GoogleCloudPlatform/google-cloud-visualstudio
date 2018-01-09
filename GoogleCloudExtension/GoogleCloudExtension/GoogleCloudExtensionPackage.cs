@@ -97,6 +97,7 @@ namespace GoogleCloudExtension
             new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
+        internal Action<Type> ShowOptionPageMethod;
         private DTE _dteInstance;
         private event EventHandler ClosingEvent;
 
@@ -129,6 +130,7 @@ namespace GoogleCloudExtension
         {
             // Register all of the properties.
             RegisterSolutionOptions();
+            ShowOptionPageMethod = ShowOptionPage;
         }
 
         /// <summary>
@@ -233,7 +235,7 @@ namespace GoogleCloudExtension
             ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
-            _dteInstance = (DTE) GetService(typeof(DTE));
+            _dteInstance = (DTE)GetService(typeof(DTE));
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
@@ -258,7 +260,15 @@ namespace GoogleCloudExtension
 
         public AnalyticsOptionsPage AnalyticsSettings => GetDialogPage<AnalyticsOptionsPage>();
 
-        public T GetDialogPage<T>() where T : DialogPage => (T) GetDialogPage(typeof(T));
+        public T GetDialogPage<T>() where T : DialogPage
+        {
+            return (T)GetDialogPage(typeof(T));
+        }
+
+        public void ShowOptionPage<T>()
+        {
+            ShowOptionPageMethod(typeof(T));
+        }
 
         #endregion
 

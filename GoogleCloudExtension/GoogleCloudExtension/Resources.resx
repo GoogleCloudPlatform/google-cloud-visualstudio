@@ -2954,4 +2954,16 @@
   <data name="CloudExplorerOptionsResetToDefaultsButton" xml:space="preserve">
     <value>Reset to defaults</value>
   </data>
+  <data name="CloudExplorerPubSubChangeFiltersMenuHeader" xml:space="preserve">
+    <value>Set Topic Filters...</value>
+    <comment>The label for the menu item to open the topic filters options page.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicProjectDescription" xml:space="preserve">
+    <value>The Google Cloud Project Id of the Topic</value>
+    <comment>The description of the Project property of a PubSub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicProjectDisplayName" xml:space="preserve">
+    <value>Project Id</value>
+    <comment>The display name of the Project property of a PubSub topic.</comment>
+  </data>
 </root>

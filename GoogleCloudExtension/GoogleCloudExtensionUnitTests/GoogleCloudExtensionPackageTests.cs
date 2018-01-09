@@ -34,6 +34,7 @@ namespace GoogleCloudExtensionUnitTests
     [DeploymentItem(VsixManifestFileName)]
     public class GoogleCloudExtensionPackageTests
     {
+        private static Mock<IVsActivityLog> s_activityLogMock;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
@@ -77,14 +78,14 @@ namespace GoogleCloudExtensionUnitTests
 
         public static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
         {
-            var serviceProviderMock = new Mock<IServiceProvider>();
             var dteMock = new Mock<DTE>();
-            var activityLogMock = new Mock<IVsActivityLog>();
-            activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
+            Mock<IServiceProvider> serviceProviderMock = dteMock.As<IServiceProvider>();
+            s_activityLogMock = new Mock<IVsActivityLog>();
+            s_activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(VSConstants.S_OK);
             dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
-            SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
+            SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, s_activityLogMock);
 
             // Remove the old GlobalProvider if it exists.
             ServiceProvider.GlobalProvider?.Dispose();
@@ -95,7 +96,7 @@ namespace GoogleCloudExtensionUnitTests
             ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
         }
 
-        private static void SetupService<ServiceType, InterfaceType>(
+        public static void SetupService<ServiceType, InterfaceType>(
             Mock<IServiceProvider> serviceProviderMock,
             IMock<InterfaceType> mockObj) where InterfaceType : class
         {
