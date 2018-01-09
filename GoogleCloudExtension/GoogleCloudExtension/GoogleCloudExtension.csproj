@@ -197,6 +197,9 @@
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudExplorer\SampleData\EmptyState.cs" />
+    <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
+    <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />

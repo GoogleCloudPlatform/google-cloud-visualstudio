@@ -9,11 +9,12 @@
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns:crm="clr-namespace:Google.Apis.CloudResourceManager.v1.Data;assembly=Google.Apis.CloudResourceManager.v1"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:sample="clr-namespace:GoogleCloudExtension.CloudExplorer.SampleData"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type CloudExplorer:CloudExplorerViewModel}}">
+             d:DataContext="{d:DesignInstance sample:WithDataState, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -328,7 +329,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
-            <TextBox Text="{Binding ProjectDisplayString}"
+            <TextBox Text="{Binding ProjectDisplayString, Mode=OneWay}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
             <Button Content="{x:Static ext:Resources.CloudExplorerSelectProjectCaption}"
