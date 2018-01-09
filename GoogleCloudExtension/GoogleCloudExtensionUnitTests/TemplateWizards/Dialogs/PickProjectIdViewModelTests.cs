@@ -92,7 +92,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsNull(_testObject.Projects);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
             Assert.IsNull(_testObject.Result);
@@ -161,17 +160,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.LoadTask)
-                },
-                _properiesChanged,
-                string.Join(", ", _properiesChanged));
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
+            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }
