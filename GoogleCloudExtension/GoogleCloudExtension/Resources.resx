@@ -1352,11 +1352,11 @@
     <comment>The category for the analytics options in the options page.</comment>
   </data>
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
-    <value>Whether to report usage statistics to Google</value>
+    <value>When checked, anonymous usage statistics will be reported to Google</value>
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
-  <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
-    <value>Report Usage Statistics Enabled</value>
+  <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
+    <value>Report _Usage Statistics</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
   <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">

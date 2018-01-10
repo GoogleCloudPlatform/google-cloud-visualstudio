@@ -21,6 +21,7 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
@@ -67,7 +68,7 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
-    [ProvideOptionPage(typeof(AnalyticsOptionsPage), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
     [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package
@@ -258,7 +259,7 @@ namespace GoogleCloudExtension
 
         #region User Settings
 
-        public AnalyticsOptionsPage AnalyticsSettings => GetDialogPage<AnalyticsOptionsPage>();
+        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
 
         public T GetDialogPage<T>() where T : DialogPage
         {
@@ -279,7 +280,7 @@ namespace GoogleCloudExtension
         /// </summary>
         private void CheckInstallationStatus()
         {
-            AnalyticsOptionsPage settings = AnalyticsSettings;
+            AnalyticsOptions settings = AnalyticsSettings;
             if (settings.InstalledVersion == null)
             {
                 // This is a new installation.

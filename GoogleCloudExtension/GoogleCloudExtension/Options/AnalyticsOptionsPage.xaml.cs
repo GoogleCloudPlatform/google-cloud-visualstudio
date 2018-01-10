@@ -1,30 +1,33 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
-//
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Analytics.Events
+using System.Windows.Controls;
+
+namespace GoogleCloudExtension.Options
 {
     /// <summary>
-    /// This event will be sent when no previous version of the VS extension is detected and thus signifies
-    /// that this is a new install.
+    /// Interaction logic for AnalyticsOptionsPage.xaml
     /// </summary>
-    internal static class NewInstallEvent
+    public partial class AnalyticsOptionsPage : UserControl
     {
-        internal const string NewInstallEventName = "newInstall";
+        internal AnalyticsOptionsPageViewModel ViewModel { get; }
 
-        public static AnalyticsEvent Create()
+        internal AnalyticsOptionsPage()
         {
-            return new AnalyticsEvent(NewInstallEventName);
+            InitializeComponent();
+            ViewModel = new AnalyticsOptionsPageViewModel();
+            DataContext = ViewModel;
         }
     }
 }

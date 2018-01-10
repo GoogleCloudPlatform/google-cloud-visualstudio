@@ -231,7 +231,7 @@
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" />
+                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" Padding="0,0,0,2"/>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
