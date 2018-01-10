@@ -75,16 +75,16 @@ namespace GoogleCloudExtension.Analytics
         /// Called to report an interesting event to analytics. If there's a queue of events it will be
         /// flushed as well.
         /// </summary>
-        public static Action<AnalyticsEvent> ReportEvent { get; internal set; } = (AnalyticsEvent eventData) =>
-         {
-             Reporter?.ReportEvent(
-                 source: ExtensionEventSource,
-                 eventType: ExtensionEventType,
-                 eventName: eventData.Name,
-                 userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
-                 projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
-                 metadata: eventData.Metadata);
-         };
+        public static void ReportEvent(AnalyticsEvent eventData)
+        {
+            Reporter?.ReportEvent(
+                source: ExtensionEventSource,
+                eventType: ExtensionEventType,
+                eventName: eventData.Name,
+                userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
+                projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
+                metadata: eventData.Metadata);
+        }
 
         private static IEventsReporter CreateReporter()
         {

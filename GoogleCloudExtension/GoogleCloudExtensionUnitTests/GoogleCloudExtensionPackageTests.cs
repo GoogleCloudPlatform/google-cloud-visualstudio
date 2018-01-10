@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -23,6 +24,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using stdole;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
@@ -36,8 +38,16 @@ namespace GoogleCloudExtensionUnitTests
     [DeploymentItem(VsixManifestFileName)]
     public class GoogleCloudExtensionPackageTests
     {
+        private Mock<IEventsReporter> _reporterMock;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _reporterMock = new Mock<IEventsReporter>();
+            EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
+        }
 
         [TestMethod]
         public void TestPackageValues()
@@ -47,8 +57,6 @@ namespace GoogleCloudExtensionUnitTests
             var dteMock = new Mock<DTE>();
             dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
             dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
-            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
-            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
             var testObject = new GoogleCloudExtensionPackage();
 
             InitPackageMock(testObject, dteMock);
@@ -74,30 +82,32 @@ namespace GoogleCloudExtensionUnitTests
         {
             var testObject = new GoogleCloudExtensionPackage();
             testObject.AnalyticsSettings.InstalledVersion = "0.1.0.0";
-            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
-            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
 
             InitPackageMock(testObject, new Mock<DTE>());
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
-            reportEventMock.Verify(a => a(It.Is<AnalyticsEvent>(ae => ae.Name == UpgradeEvent.UpgradeEventName)));
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()));
         }
 
         [TestMethod]
         public void TestNewPackageInstallation()
         {
             var testObject = new GoogleCloudExtensionPackage();
-            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
-            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
 
             InitPackageMock(testObject, new Mock<DTE>());
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
-            reportEventMock.Verify(a => a(It.Is<AnalyticsEvent>(ae => ae.Name == NewInstallEvent.NewInstallEventName)));
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()));
         }
 
         [TestMethod]
@@ -105,18 +115,20 @@ namespace GoogleCloudExtensionUnitTests
         {
             var testObject = new GoogleCloudExtensionPackage();
             testObject.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
-            var reportEventMock = new Mock<Action<AnalyticsEvent>>();
-            EventsReporterWrapper.ReportEvent = reportEventMock.Object;
 
             InitPackageMock(testObject, new Mock<DTE>());
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
-            reportEventMock.Verify(
-                a => a(It.Is<AnalyticsEvent>(ae => ae.Name == NewInstallEvent.NewInstallEventName)), Times.Never);
-            reportEventMock.Verify(
-                a => a(It.Is<AnalyticsEvent>(ae => ae.Name == UpgradeEvent.UpgradeEventName)), Times.Never);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
         }
 
         private static string GetVsixManifestVersion()
