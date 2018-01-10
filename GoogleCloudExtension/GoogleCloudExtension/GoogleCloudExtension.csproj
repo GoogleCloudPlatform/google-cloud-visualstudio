@@ -579,6 +579,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\refresh.png" />
     <Resource Include="Theming\Resources\ic_error_red_14px.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />

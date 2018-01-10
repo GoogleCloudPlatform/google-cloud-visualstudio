@@ -99,7 +99,7 @@
                         <ToolTip Content="{x:Static ext:Resources.PickProjectIdRefreshButtonToolTip}"
                                  Style="{StaticResource CommonTooltipStyle}" />
                     </Button.ToolTip>
-                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
+                    <Image Source="{mb:ImageResource Theming/Resources/refresh.png}" />
                 </Button>
             </Grid>
 
