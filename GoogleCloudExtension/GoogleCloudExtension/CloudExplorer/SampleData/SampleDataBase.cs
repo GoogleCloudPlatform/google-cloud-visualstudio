@@ -19,6 +19,9 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer.SampleData
 {
+    /// <summary>
+    /// Common base class for all design time data.
+    /// </summary>
     public abstract class SampleDataBase
     {
         private const string ContainerIconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
