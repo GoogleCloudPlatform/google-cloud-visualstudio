@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Analytics.Events
     /// </summary>
     internal static class UpgradeEvent
     {
-        private const string UpgradeEventName = "upgrade";
+        internal const string UpgradeEventName = "upgrade";
 
         public static AnalyticsEvent Create()
         {
