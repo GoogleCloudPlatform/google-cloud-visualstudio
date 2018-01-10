@@ -5164,6 +5164,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh the projects list..
+        /// </summary>
+        public static string PickProjectIdRefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("PickProjectIdRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1} {2}).
         /// </summary>
         public static string PortManagerDisplayStringFormat {

@@ -2950,4 +2950,8 @@
     <value>Filter _project:</value>
     <comment>Caption shown for the filter project textbox.</comment>
   </data>
+  <data name="PickProjectIdRefreshButtonToolTip" xml:space="preserve">
+    <value>Refresh the projects list.</value>
+    <comment>Text for the refresh button's tooltip.</comment>
+  </data>
 </root>
