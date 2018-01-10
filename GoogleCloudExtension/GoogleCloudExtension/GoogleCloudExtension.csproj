@@ -214,6 +214,10 @@
     <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
+    <Compile Include="Options\AnalyticsOptionsPage.xaml.cs">
+      <DependentUpon>AnalyticsOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\AnalyticsOptionsPageViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
@@ -553,9 +557,7 @@
     <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
       <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AnalyticsOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Options\AnalyticsOptions.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
@@ -1033,6 +1035,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\AnalyticsOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

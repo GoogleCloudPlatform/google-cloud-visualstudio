@@ -128,7 +128,10 @@
                      Style="{StaticResource CommonTextBoxStyle}" />
             </Grid>
 
-            <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}">
+            <GroupBox
+                Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}"
+                Style="{StaticResource CommonGroupBoxStyle}">
+                
                 <StackPanel>
                     <RadioButton GroupName="password"
                              Content="{x:Static ext:Resources.GkePublishDontExposeServiceCaption}"

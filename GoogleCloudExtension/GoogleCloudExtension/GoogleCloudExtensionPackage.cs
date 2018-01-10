@@ -20,6 +20,7 @@ using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
@@ -67,7 +68,7 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
-    [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
+    [ProvideOptionPage(typeof(AnalyticsOptions), "Google Cloud Tools", "Usage Report", 0, 0, false)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
@@ -263,7 +264,7 @@ namespace GoogleCloudExtension
 
         #region User Settings
 
-        public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
+        public AnalyticsOptions AnalyticsSettings => (AnalyticsOptions)GetDialogPage(typeof(AnalyticsOptions));
 
         #endregion
 
