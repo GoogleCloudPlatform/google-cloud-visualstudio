@@ -2447,15 +2447,15 @@
     <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="WizardPickProjectIdDescription" xml:space="preserve">
+  <data name="PickProjectIdDescription" xml:space="preserve">
     <value>Select a Google Cloud Platform project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdHelpText" xml:space="preserve">
+  <data name="TemplateWizardPickProjectIdHelpText" xml:space="preserve">
     <value>This project ID will be added to your configuration files and can be changed later.</value>
     <comment>Help text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
+  <data name="PickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
   </data>
@@ -2467,7 +2467,7 @@
     <value>More Information</value>
     <comment>Title for an expander containing more information.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
+  <data name="PickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
     <value>Error loading Projects</value>
     <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
@@ -2595,7 +2595,7 @@
     <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
   </data>
-  <data name="WizardPickProjectIdNoAccountMessage" xml:space="preserve">
+  <data name="PickProjectIdNoAccountMessage" xml:space="preserve">
     <value>To get a list of projects, select an account.</value>
     <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>

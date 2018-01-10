@@ -34,13 +34,14 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// <summary>
         /// Initalizes the Pick Project Window and waits for it to finish.
         /// </summary>
+        /// <param name="helpMessage">The help message to display.</param>
         /// <param name="allowAccountChange">Whether to show the account change buttons/command.</param>
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
-        public static Project PromptUser(string helpContext, bool allowAccountChange)
+        public static Project PromptUser(string helpMessage, bool allowAccountChange)
         {
-            var dialog = new PickProjectIdWindow(helpContext, allowAccountChange);
+            var dialog = new PickProjectIdWindow(helpMessage, allowAccountChange);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

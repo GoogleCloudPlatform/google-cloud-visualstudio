@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.TemplateWizards
     {
         // Mockable static methods for testing.
         internal Func<GcpProject> PromptPickProjectId =
-            () => PickProjectIdWindow.PromptUser(Resources.WizardPickProjectIdHelpText, allowAccountChange: false);
+            () => PickProjectIdWindow.PromptUser(Resources.TemplateWizardPickProjectIdHelpText, allowAccountChange: false);
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
