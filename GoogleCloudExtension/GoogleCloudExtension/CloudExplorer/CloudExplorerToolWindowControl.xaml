@@ -14,7 +14,7 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance sample:WithDataState, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance sample:LoadingState, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -323,7 +323,7 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <Grid  Grid.Row="1" IsEnabled="{Binding LoadingProject, Converter={utils:NotConverter}}">
+        <Grid  Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />

@@ -103,16 +103,13 @@ namespace GoogleCloudExtension.CloudExplorer
             private set { SetValueAndRaise(ref _roots, value); }
         }
 
+        /// <summary>
+        /// The user ready string for the project.
+        /// </summary>
         public string ProjectDisplayString
         {
             get { return _projectDisplayString; }
             private set { SetValueAndRaise(ref _projectDisplayString, value); }
-        }
-
-        public bool LoadingProject
-        {
-            get { return _loadingProject; }
-            private set { SetValueAndRaise(ref _loadingProject, value); }
         }
 
         /// <summary>
@@ -359,7 +356,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private async Task LoadCurrentProject()
         {
             // Avoid reentrancy.
-            if (LoadingProject)
+            if (_loadingProject)
             {
                 return;
             }
@@ -369,7 +366,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 try
                 {
                     // Start the loading project process.
-                    LoadingProject = true;
+                    _loadingProject = true;
 
                     // Try to load the project.
                     _currentProject = await GetProjectForIdAsync(CredentialsStore.Default.CurrentProjectId);
@@ -386,7 +383,7 @@ namespace GoogleCloudExtension.CloudExplorer
             }
             finally
             {
-                LoadingProject = false;
+                _loadingProject = false;
             }
         }
 
