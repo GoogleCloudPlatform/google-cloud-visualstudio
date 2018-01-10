@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -3391,15 +3391,6 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project Number.
-        /// </summary>
-        public static string GcpProjectNumberHeader {
-            get {
-                return ResourceManager.GetString("GcpProjectNumberHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string GcsFileBrowserContentTypeHeader {
@@ -6357,15 +6348,6 @@ namespace GoogleCloudExtension
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Task Canceled.
-        /// </summary>
-        public static string WizardPickProjectIdCanceledTask {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdCanceledTask", resourceCulture);
             }
         }
         

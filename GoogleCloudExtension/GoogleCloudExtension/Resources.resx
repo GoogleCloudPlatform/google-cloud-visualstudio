@@ -2447,10 +2447,6 @@
     <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
-    <value>Task Canceled</value>
-    <comment>Text to diplay if a task was canceled.</comment>
-  </data>
   <data name="WizardPickProjectIdDescription" xml:space="preserve">
     <value>Select a Google Cloud Platform project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
@@ -2610,10 +2606,6 @@
   <data name="GcpProjectNameHeader" xml:space="preserve">
     <value>Project Name</value>
     <comment>Project Name column header for a GCP Project data grid.</comment>
-  </data>
-  <data name="GcpProjectNumberHeader" xml:space="preserve">
-    <value>Project Number</value>
-    <comment>Project Number column header for a GCP Project data grid.</comment>
   </data>
   <data name="AttachDebuggerConnectionFailedMessage" xml:space="preserve">
     <value>Failed to establish Remote PowerShell connection.</value>
