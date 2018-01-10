@@ -28,12 +28,17 @@ namespace GoogleCloudExtension.Options
     public class AnalyticsOptions : UIElementDialogPage
     {
         /// <summary>
+        /// The WPF page to actually show.
+        /// </summary>
+        private readonly AnalyticsOptionsPage _analyticsOptionsPage = new AnalyticsOptionsPage();
+
+        /// <summary>
         /// Whether the user is opt-in or not into report usage statistics. By default is false.
         /// </summary>
         public bool OptIn
         {
-            get { return AnalyticsOptionsPage.ViewModel.OptIn; }
-            set { AnalyticsOptionsPage.ViewModel.OptIn = value; }
+            get { return _analyticsOptionsPage.ViewModel.OptIn; }
+            set { _analyticsOptionsPage.ViewModel.OptIn = value; }
         }
 
         /// <summary>
@@ -52,9 +57,7 @@ namespace GoogleCloudExtension.Options
         public string InstalledVersion { get; set; }
 
         /// <inheritdoc />
-        protected override UIElement Child => AnalyticsOptionsPage;
-
-        private AnalyticsOptionsPage AnalyticsOptionsPage { get; } = new AnalyticsOptionsPage();
+        protected override UIElement Child => _analyticsOptionsPage;
 
         /// <summary>
         /// Reset all the settings to their default values.

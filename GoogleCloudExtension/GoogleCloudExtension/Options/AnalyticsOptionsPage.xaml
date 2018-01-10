@@ -14,6 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <StackPanel>
         <GroupBox Header="{x:Static ext:Resources.AnalyticsOptionsCategory}">
             <CheckBox

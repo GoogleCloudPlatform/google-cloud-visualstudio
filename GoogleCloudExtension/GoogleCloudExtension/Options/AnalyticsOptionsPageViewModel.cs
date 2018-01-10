@@ -16,10 +16,16 @@ using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Options
 {
+    /// <summary>
+    /// The View Model for the AnalyticsOptionsPage.
+    /// </summary>
     public class AnalyticsOptionsPageViewModel : ViewModelBase
     {
         private bool _optIn;
 
+        /// <summary>
+        /// True if the user has opted-into report usage statistics. False by default.
+        /// </summary>
         public bool OptIn
         {
             get { return _optIn; }
