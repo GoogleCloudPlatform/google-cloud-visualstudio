@@ -261,12 +261,21 @@ namespace GoogleCloudExtension
 
         public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
 
+        /// <summary>
+        /// Gets the options page of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
+        /// <returns>The options page of the given type.</returns>
         public T GetDialogPage<T>() where T : DialogPage
         {
             return (T)GetDialogPage(typeof(T));
         }
 
-        public void ShowOptionPage<T>()
+        /// <summary>
+        /// Displays the options page of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
+        public void ShowOptionPage<T>() where T : DialogPage
         {
             ShowOptionPageMethod(typeof(T));
         }
