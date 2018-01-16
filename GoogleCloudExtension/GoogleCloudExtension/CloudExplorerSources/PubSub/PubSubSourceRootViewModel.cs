@@ -22,13 +22,10 @@ using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -72,6 +69,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
         internal static IEnumerable<string> TopicFiltersOverride = null;
+        internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
         private static IEnumerable<string> TopicFilters => TopicFiltersOverride ?? GoogleCloudExtensionPackage.Instance
             .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
@@ -164,11 +162,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <param name="url"></param>
         public void OpenBrowser(string url)
         {
-            var webBrowsingService = (IVsWebBrowsingService)Package.GetGlobalService(typeof(IVsWebBrowsingService));
-            const __VSCREATEWEBBROWSER createFlags = __VSCREATEWEBBROWSER.VSCWB_AutoShow;
-            const VSPREVIEWRESOLUTION resolutionFlag = VSPREVIEWRESOLUTION.PR_Default;
-            Marshal.ThrowExceptionForHR(
-                webBrowsingService.CreateExternalWebBrowser((uint)createFlags, resolutionFlag, url));
+            StartProcess(url);
         }
 
         /// <summary>

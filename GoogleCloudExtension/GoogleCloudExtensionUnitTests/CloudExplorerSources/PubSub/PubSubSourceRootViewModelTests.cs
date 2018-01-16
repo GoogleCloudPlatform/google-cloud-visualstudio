@@ -20,18 +20,15 @@ using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtensionUnitTests.CloudExplorer;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
@@ -80,7 +77,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<IList<Topic>> _topicSource;
         private TaskCompletionSource<IList<Subscription>> _subscriptionSource;
         private TestablePubsubSourceRootViewModel _objectUnderTest;
-        private Mock<IVsWebBrowsingService> _webBrowsingServiceMock;
+        private Mock<Func<string, Process>> _startProcessMock;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context)
@@ -97,10 +94,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestInitialize]
         public void BeforeEach()
         {
-            _webBrowsingServiceMock = new Mock<IVsWebBrowsingService>();
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dte => GoogleCloudExtensionPackageTests.SetupService<IVsWebBrowsingService, IVsWebBrowsingService>(
-                    dte.As<IServiceProvider>(), _webBrowsingServiceMock));
+            _startProcessMock = new Mock<Func<string, Process>>();
 
             _dataSourceMock = new Mock<IPubsubDataSource>();
             _contextMock = new Mock<ICloudSourceContext>();
@@ -108,6 +102,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _factoryMock = new Mock<Func<IPubsubDataSource>>();
             _factoryMock.Setup(f => f()).Returns(() => _dataSourceMock.Object);
             _objectUnderTest = new TestablePubsubSourceRootViewModel(_factoryMock.Object);
+            _objectUnderTest.StartProcess = _startProcessMock.Object;
 
             _topicSource = new TaskCompletionSource<IList<Topic>>();
             _dataSourceMock.Setup(ds => ds.GetTopicListAsync()).Returns(() => _topicSource.Task);
@@ -392,8 +387,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.OnOpenCloudConsoleCommand();
 
             string expectedUrl = string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, MockProjectId);
-            _webBrowsingServiceMock.Verify(
-                s => s.CreateExternalWebBrowser(It.IsAny<uint>(), It.IsAny<VSPREVIEWRESOLUTION>(), expectedUrl));
+            _startProcessMock.Verify(f => f(expectedUrl));
         }
 
         [TestMethod]
@@ -412,29 +406,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public void TestOpenBrowser()
         {
             const string targetUrl = "http://target/url";
-            _webBrowsingServiceMock.Setup(
-                        s => s.CreateExternalWebBrowser(
-                            It.IsAny<uint>(), It.IsAny<VSPREVIEWRESOLUTION>(), It.IsAny<string>()))
-                    .Returns(VSConstants.S_OK);
 
             _objectUnderTest.OpenBrowser(targetUrl);
 
-            _webBrowsingServiceMock.Verify(
-                s => s.CreateExternalWebBrowser(It.IsAny<uint>(), It.IsAny<VSPREVIEWRESOLUTION>(), targetUrl),
-                Times.Once);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(COMException))]
-        public void TestOpenBrowserError()
-        {
-            const string targetUrl = "http://target/url";
-            _webBrowsingServiceMock.Setup(
-                        s => s.CreateExternalWebBrowser(
-                            It.IsAny<uint>(), It.IsAny<VSPREVIEWRESOLUTION>(), It.IsAny<string>()))
-                    .Returns(VSConstants.E_FAIL);
-
-            _objectUnderTest.OpenBrowser(targetUrl);
+            _startProcessMock.Verify(f => f(targetUrl));
         }
 
         [TestMethod]
