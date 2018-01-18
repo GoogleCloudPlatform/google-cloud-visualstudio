@@ -229,11 +229,16 @@
   <ItemGroup>
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsTests.cs" />
+    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptionsTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="CloudSourceRepository\AsyncRepositoriesTests.cs" />
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
@@ -255,6 +260,7 @@
     <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
+    <Compile Include="Utils\EditableModelTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />

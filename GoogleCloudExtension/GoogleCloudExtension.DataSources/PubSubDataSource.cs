@@ -19,6 +19,7 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
@@ -152,9 +153,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Gets the last part of the full name i.e. the leaf of the path.
         /// </summary>
-        public static string GetPathLeaf(string path)
+        /// <param name="fullTopicName">The full topic name (e.g. <code>"projects/project-id/topics/topic-name"</code>)</param>
+        public static string GetPathLeaf(string fullTopicName)
         {
-            return path.Substring(1 + path.LastIndexOf("/", StringComparison.Ordinal));
+            return GetPathSections(fullTopicName).LastOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the project part of a full topic name.
+        /// </summary>
+        /// <param name="fullTopicName">The full topic name (e.g. <code>"projects/project-id/topics/topic-name"</code>)</param>
+        /// <returns>The project id part of the full topic name. This must be the second section.</returns>
+        public static string GetTopicProject(string fullTopicName)
+        {
+            return GetPathSections(fullTopicName).Skip(1).FirstOrDefault();
+        }
+
+        private static string[] GetPathSections(string path)
+        {
+            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>

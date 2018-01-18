@@ -194,9 +194,17 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptions.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml.cs">
+      <DependentUpon>CloudExplorerOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModel.cs" />
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="Utils\EditableModel.cs" />
+    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptions.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
@@ -959,6 +967,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

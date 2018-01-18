@@ -15,18 +15,20 @@
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
-using GoogleCloudExtension.Utils;
 using GoogleCloudExtensionUnitTests.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
@@ -42,14 +44,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public const string MockSubscriptionFullName = SubscriptionPrefix + MockSubscriptionLeafName;
 
         public const string MockExceptionMessage = SourceRootViewModelBaseTests.MockExceptionMessage;
-        private const string MockProjectId = SourceRootViewModelBaseTests.MockProjectId;
+        public const string MockProjectId = SourceRootViewModelBaseTests.MockProjectId;
         private const string ProjectResourcePrefix = "projects/" + MockProjectId;
         private const string TopicPrefix = ProjectResourcePrefix + "/topics/";
         private const string SubscriptionPrefix = ProjectResourcePrefix + "/subscriptions/";
 
 
         /// <summary>
-        /// Defined by the pub sub api.
+        /// Defined by the Pub/Sub api.
         /// <see href="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics/delete"/>
         /// </summary>
         public const string DeletedTopicName = "_deleted-topic_";
@@ -75,16 +77,32 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<IList<Topic>> _topicSource;
         private TaskCompletionSource<IList<Subscription>> _subscriptionSource;
         private TestablePubsubSourceRootViewModel _objectUnderTest;
+        private Mock<Func<string, Process>> _startProcessMock;
+
+        [ClassInitialize]
+        public static void BeforeAll(TestContext context)
+        {
+            PubsubSourceRootViewModel.TopicFiltersOverride = CloudExplorerOptions.DefaultPubSubTopicFilters;
+        }
+
+        [ClassCleanup]
+        public static void AfterAll()
+        {
+            PubsubSourceRootViewModel.TopicFiltersOverride = null;
+        }
 
         [TestInitialize]
-        public void Initialize()
+        public void BeforeEach()
         {
+            _startProcessMock = new Mock<Func<string, Process>>();
+
             _dataSourceMock = new Mock<IPubsubDataSource>();
             _contextMock = new Mock<ICloudSourceContext>();
             _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(MockProjectId);
             _factoryMock = new Mock<Func<IPubsubDataSource>>();
             _factoryMock.Setup(f => f()).Returns(() => _dataSourceMock.Object);
             _objectUnderTest = new TestablePubsubSourceRootViewModel(_factoryMock.Object);
+            _objectUnderTest.StartProcess = _startProcessMock.Object;
 
             _topicSource = new TaskCompletionSource<IList<Topic>>();
             _dataSourceMock.Setup(ds => ds.GetTopicListAsync()).Returns(() => _topicSource.Task);
@@ -99,17 +117,17 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
             _factoryMock.Verify(x => x(), Times.Never);
 
-            var loadingPlaceholder = _objectUnderTest.LoadingPlaceholder;
+            TreeLeaf loadingPlaceholder = _objectUnderTest.LoadingPlaceholder;
             Assert.AreEqual(Resources.CloudExplorerPubSubLoadingTopicsCaption, loadingPlaceholder.Caption);
             Assert.IsTrue(loadingPlaceholder.IsLoading);
             Assert.IsFalse(loadingPlaceholder.IsWarning);
             Assert.IsFalse(loadingPlaceholder.IsError);
-            var noItemsPlaceholder = _objectUnderTest.NoItemsPlaceholder;
+            TreeLeaf noItemsPlaceholder = _objectUnderTest.NoItemsPlaceholder;
             Assert.AreEqual(Resources.CloudExplorerPubSubNoTopicsFoundCaption, noItemsPlaceholder.Caption);
             Assert.IsFalse(noItemsPlaceholder.IsLoading);
             Assert.IsTrue(noItemsPlaceholder.IsWarning);
             Assert.IsFalse(noItemsPlaceholder.IsError);
-            var errorPlaceholder = _objectUnderTest.ErrorPlaceholder;
+            TreeLeaf errorPlaceholder = _objectUnderTest.ErrorPlaceholder;
             Assert.AreEqual(Resources.CloudExplorerPubSubListTopicsErrorCaption, errorPlaceholder.Caption);
             Assert.IsFalse(errorPlaceholder.IsLoading);
             Assert.IsFalse(errorPlaceholder.IsWarning);
@@ -122,12 +140,15 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         {
             _objectUnderTest.Initialize(_contextMock.Object);
 
-            var menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
-            Assert.AreEqual(2, menuItems.Count);
-            Assert.AreEqual(Resources.CloudExplorerPubSubNewTopicMenuHeader, menuItems[0].Header);
-            Assert.IsTrue(((ProtectedCommand)menuItems[0].Command).CanExecuteCommand);
-            Assert.AreEqual(Resources.UiOpenOnCloudConsoleMenuHeader, menuItems[1].Header);
-            Assert.IsTrue(((ProtectedCommand)menuItems[1].Command).CanExecuteCommand);
+            List<MenuItem> menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    Resources.CloudExplorerPubSubNewTopicMenuHeader,
+                    Resources.CloudExplorerPubSubChangeFiltersMenuHeader,
+                    Resources.UiOpenOnCloudConsoleMenuHeader
+                },
+                menuItems.Select(mi => mi.Header).ToList());
         }
 
         [TestMethod]
@@ -144,7 +165,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public void TestInvalidateProjectOrAccount()
         {
             // Testing side effects of Property.
-            var _ = _objectUnderTest.DataSource;
+            IPubsubDataSource unused = _objectUnderTest.DataSource;
 
             _objectUnderTest.InvalidateProjectOrAccount();
 
@@ -309,7 +330,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             string projectIdParam = null;
             string details = null;
             _dataSourceMock.Setup(ds => ds.NewTopicAsync(It.IsAny<string>()))
-                .Throws(new DataSourceException(MockExceptionMessage));
+            .Throws(new DataSourceException(MockExceptionMessage));
             _objectUnderTest.Initialize(_contextMock.Object);
             _objectUnderTest.NewTopicUserPrompt = projectId =>
             {
@@ -361,17 +382,48 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestOpenCloudConsoleCommand()
         {
-            string target = null;
-            _objectUnderTest.StartProcess = t =>
-            {
-                target = t;
-                return null;
-            };
             _objectUnderTest.Initialize(_contextMock.Object);
 
             _objectUnderTest.OnOpenCloudConsoleCommand();
 
-            Assert.AreEqual(string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, MockProjectId), target);
+            string expectedUrl = string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, MockProjectId);
+            _startProcessMock.Verify(f => f(expectedUrl));
+        }
+
+        [TestMethod]
+        public async Task TestOptionsSaveTriggersRefresh()
+        {
+            _topicSource.SetResult(new List<Topic>());
+            _subscriptionSource.SetResult(new List<Subscription>());
+            await _objectUnderTest.LoadData();
+
+            GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().SaveSettingsToStorage();
+
+            Assert.AreEqual(1, _objectUnderTest.RefreshHitCount);
+        }
+
+        [TestMethod]
+        public void TestOpenBrowser()
+        {
+            const string targetUrl = "http://target/url";
+
+            _objectUnderTest.OpenBrowser(targetUrl);
+
+            _startProcessMock.Verify(f => f(targetUrl));
+        }
+
+        [TestMethod]
+        public void TestChangeFiltersCommand()
+        {
+            var showOptionsPageMethodMock = new Mock<Action<Type>>();
+            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionsPageMethodMock.Object;
+            _objectUnderTest.Initialize(_contextMock.Object);
+            ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.Items.OfType<MenuItem>()
+                    .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
+
+            changeFiltersCommand.Execute(null);
+
+            showOptionsPageMethodMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
         }
 
         private class TestablePubsubSourceRootViewModel : PubsubSourceRootViewModel

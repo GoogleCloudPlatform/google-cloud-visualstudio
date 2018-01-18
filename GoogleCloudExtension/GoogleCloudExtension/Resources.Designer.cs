@@ -2041,11 +2041,56 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regex Patterns.
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsFilterColumHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsFilterColumHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pub/Sub Topics to hide:.
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsLabel {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topics with a full name (e.g. projects/project-id/topics/topic-name) that matches one of these regex patters will be hidden in the Cloud Explorer..
+        /// </summary>
+        public static string CloudExplorerOptionsPubSubTopicsLabelHelp {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsPubSubTopicsLabelHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to defaults.
+        /// </summary>
+        public static string CloudExplorerOptionsResetToDefaultsButton {
+            get {
+                return ResourceManager.GetString("CloudExplorerOptionsResetToDefaultsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Pub/Sub API is not enabled..
         /// </summary>
         public static string CloudExplorerPubSubApiNotEnabledCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubApiNotEnabledCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Topic Filters....
+        /// </summary>
+        public static string CloudExplorerPubSubChangeFiltersMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubChangeFiltersMenuHeader", resourceCulture);
             }
         }
         
@@ -2253,6 +2298,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubTopicNameDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Google Cloud Project Id of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicProjectDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicProjectDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project Id.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicProjectDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicProjectDisplayName", resourceCulture);
             }
         }
         
