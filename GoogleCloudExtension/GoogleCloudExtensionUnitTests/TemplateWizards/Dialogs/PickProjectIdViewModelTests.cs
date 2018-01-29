@@ -15,7 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -39,7 +39,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
         private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
-        private TaskCompletionSource<IList<Project>> _projectTaskSource;
+        private TaskCompletionSource<IEnumerable<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
@@ -50,9 +50,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void BeforeEach()
         {
             _testObject = null;
+            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
-            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
             _properiesChanged = new List<string>();
@@ -62,21 +62,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
         private PickProjectIdViewModel BuildTestObject()
         {
-            Func<Task<IList<Project>>> projectsListAsyncCallBack = async () =>
-            {
-                try
-                {
-                    return await _projectTaskSource.Task;
-                }
-                finally
-                {
-                    _projectTaskSource = new TaskCompletionSource<IList<Project>>();
-                }
-            };
-            Func<IResourceManagerDataSource> dataSourceFactory =
-                () => Mock.Of<IResourceManagerDataSource>(
-                    ds => ds.GetSortedActiveProjectsAsync() == projectsListAsyncCallBack());
-            var testObject = new PickProjectIdViewModel(_windowMock.Object, dataSourceFactory, _manageAccoutMock.Object);
+            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object, _projectTaskSource.Task);
             testObject.PropertyChanged += _addPropertiesChanged;
             return testObject;
         }
@@ -84,7 +70,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsWithoutDefaultUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
 
             _testObject = BuildTestObject();
 
@@ -98,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsWithDefaultUser()
         {
-            CredentialsStore.Default.CurrentAccount = s_defaultAccount;
+            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
 
             _testObject = BuildTestObject();
 
@@ -106,7 +92,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsNull(_testObject.Projects);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
             Assert.IsNull(_testObject.Result);
@@ -115,10 +100,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeUserCommandNoUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
             _testObject = BuildTestObject();
 
-            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.CurrentAccount = null);
+            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.UpdateCurrentAccount(null));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
@@ -128,18 +113,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeUserCommandWithUser()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
             _testObject = BuildTestObject();
 
             _manageAccoutMock.Setup(f => f())
-                .Callback(() => CredentialsStore.Default.CurrentAccount = s_defaultAccount);
+                .Callback(() => CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
+            Assert.IsTrue(_testObject.HasAccount);
         }
 
         [TestMethod]
@@ -154,96 +136,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
             Assert.AreEqual(TestExceptionMessage, _testObject.LoadTask.ErrorMessage);
-            Assert.IsNull(_testObject.Projects);
-        }
-
-        [TestMethod]
-        public void TestCanceledLoading()
-        {
-            _testObject = BuildTestObject();
-
-            _projectTaskSource.SetCanceled();
-
-            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
-            Assert.IsTrue(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
-            Assert.IsNull(_testObject.Projects);
-        }
-
-        [TestMethod]
-        public void TestCompleteLoadingNoDefaultProject()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(null);
-            _testObject = BuildTestObject();
-
-            _projectTaskSource.SetResult(new[] { s_testProject });
-
-            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
-            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged);
-            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.IsNull(_testObject.Result);
-            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestCompleteLoadingMissingDefaultProject()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-
-            _projectTaskSource.SetResult(new[] { s_testProject });
-
-            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
-            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
-            Assert.IsNull(_testObject.SelectedProject);
-            Assert.IsNull(_testObject.Result);
-            Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestCompleteLoadingIncludedDefaultProject()
-        {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _testObject = BuildTestObject();
-
-            _projectTaskSource.SetResult(new[] { s_testProject, s_defaultProject });
-
-            Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
-            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
-            Assert.IsFalse(_testObject.LoadTask.IsError);
-            Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.Projects),
-                    nameof(PickProjectIdViewModel.SelectedProject)
-                },
-                _properiesChanged, string.Join(", ", _properiesChanged));
-            CollectionAssert.AreEqual(new[] { s_testProject, s_defaultProject }, _testObject.Projects.ToList());
-            Assert.AreEqual(s_defaultProject, _testObject.SelectedProject);
-            Assert.IsNull(_testObject.Result);
-            Assert.IsTrue(_testObject.OkCommand.CanExecuteCommand);
+            Assert.IsTrue(_testObject.Projects.Count() == 0);
         }
 
         [TestMethod]
@@ -267,17 +160,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    nameof(PickProjectIdViewModel.LoadTask)
-                },
-                _properiesChanged,
-                string.Join(", ", _properiesChanged));
-            Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
             Assert.IsFalse(_testObject.LoadTask.IsError);
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
-            Assert.IsFalse(_testObject.LoadTask.IsSuccess);
+            Assert.IsTrue(_testObject.LoadTask.IsSuccess);
             Assert.IsNull(_testObject.SelectedProject);
             Assert.IsFalse(_testObject.OkCommand.CanExecuteCommand);
         }

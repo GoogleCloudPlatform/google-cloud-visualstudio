@@ -45,6 +45,17 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
+        public TreeHierarchy()
+        { }
+
+        internal TreeHierarchy(IEnumerable<TreeNode> children)
+        {
+            foreach (var child in children)
+            {
+                Children.Add(child);
+            }
+        }
+
         /// <summary>
         /// This method will be called every time the value of IsExpanded property changes.
         /// </summary>

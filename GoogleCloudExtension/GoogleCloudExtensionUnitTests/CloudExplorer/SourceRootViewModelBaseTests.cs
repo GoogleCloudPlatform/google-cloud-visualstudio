@@ -65,8 +65,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestInitialize]
         public void Initialize()
         {
+            CredentialsStore.Default.UpdateCurrentAccount(s_userAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_project);
-            CredentialsStore.Default.CurrentAccount = s_userAccount;
 
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
@@ -135,7 +135,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoCredentials()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;

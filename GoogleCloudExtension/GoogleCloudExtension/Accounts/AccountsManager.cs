@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.Accounts
                 // Store the new account and set it as the current account. The project is not changed so if the
                 // new account also have access to it, it remains as the current project.
                 CredentialsStore.Default.AddAccount(credentials);
-                CredentialsStore.Default.CurrentAccount = credentials;
+                CredentialsStore.Default.UpdateCurrentAccount(credentials);
                 return true;
             }
             catch (OAuthException ex)

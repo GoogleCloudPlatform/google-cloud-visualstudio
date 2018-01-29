@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+using System.Windows.Data;
+
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// Interaction logic for PickProjectIdWindowContent.xaml
@@ -22,6 +24,22 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         public PickProjectIdWindowContent()
         {
             InitializeComponent();
+
+            // Ensure the focus is in the filter textbox.
+            _filter.Focus();
+        }
+
+        private void OnFilterItemInCollectionView(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            var viewModel = DataContext as PickProjectIdViewModel;
+            e.Accepted = viewModel?.FilterItem(e.Item) ?? false;
+        }
+
+        private void OnFilterTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            var cvs = Resources["cvs"] as CollectionViewSource;
+            var view = cvs.View;
+            view.Refresh();
         }
     }
 }

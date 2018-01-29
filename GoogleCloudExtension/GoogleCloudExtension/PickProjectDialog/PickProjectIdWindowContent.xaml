@@ -1,0 +1,178 @@
+﻿<!--
+    Change the d:DataContext attribute to {d:DesignInstance sample:<sample class>, IsDesignTimeCreatable=true}
+    classes to change the UI state as follows:
+    * Use sample:ErrorState to see the UI in the error state.
+    * Use sample:LoadingState to see the UI in the loading state.
+    * Use sample:LoadedState to see the UI in the loaded state, with projects in the DataGrid.
+    * Use sample:NeedsAccountState to see the UI in the needs account state.
+    Remember to change back to local:PickProjectIdViewModel before checkin.
+-->
+<UserControl x:Class="GoogleCloudExtension.PickProjectDialog.PickProjectIdWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:local="clr-namespace:GoogleCloudExtension.PickProjectDialog"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:sample="clr-namespace:GoogleCloudExtension.PickProjectDialog.SampleData"
+             xmlns:mb="clr-namespace:GoogleCloudExtension.Extensions"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:PickProjectIdViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/DefaultStylesResource.xaml"/>
+                <ResourceDictionary Source="../Theming/CommonDataTemplates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- The collection view to maniuplate the list of projects. -->
+            <CollectionViewSource x:Key="cvs"
+                                  Source="{Binding Projects}"
+                                  Filter="OnFilterItemInCollectionView"
+                                  IsLiveFilteringRequested="True" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                Command="{Binding OkCommand}"
+                IsDefault="True"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                IsCancel="True"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Label and choose account row. -->
+            <controls:LabelWithHelp Content="{x:Static ext:Resources.PickProjectIdDescription}"
+                                    HelpContent="{Binding HelpText}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"/>
+            <Button Grid.Column="1"
+                    Command="{Binding ChangeUserCommand}"
+                    Visibility="{Binding AllowAccountChange, Converter={utils:VisibilityConverter}}"
+                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}" />
+
+            <!-- Filter row. -->
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{x:Static ext:Resources.PickProjectIdFilterProjectCaption}" Margin="0,0,5,0" Target="{Binding ElementName=_filter}"/>
+
+                <TextBox x:Name="_filter"
+                         Grid.Column="1"
+                         Text="{Binding Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource CommonTextBoxStyle}"
+                         IsEnabled="{Binding LoadTask.IsSuccess}"
+                         TextChanged="OnFilterTextChanged" />
+
+                <Button Grid.Column="2"
+                        Margin="5,0,0,0"
+                        IsEnabled="{Binding LoadTask.IsSuccess}"
+                        Command="{Binding RefreshCommand}"
+                        Style="{StaticResource CommonButtonDynamicStyle}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static ext:Resources.PickProjectIdRefreshButtonToolTip}"
+                                 Style="{StaticResource CommonTooltipStyle}" />
+                    </Button.ToolTip>
+                    <Image Source="{mb:ImageResource Theming/Resources/refresh.png}" />
+                </Button>
+            </Grid>
+
+            <!-- Message shown when there's no account selected. -->
+            <StackPanel VerticalAlignment="Center"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        Visibility="{Binding HasAccount, TargetNullValue=false,Converter={utils:VisibilityConverter IsNegated=True}}"
+                        HorizontalAlignment="Center"
+                        Margin="0,5,0,0">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Text="{x:Static ext:Resources.PickProjectIdNoAccountMessage}"/>
+                <Button Command="{Binding ChangeUserCommand}"
+                        Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}" />
+            </StackPanel>
+
+            <!-- Message shown while loading the projects list. -->
+            <StackPanel Orientation="Horizontal"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding LoadTask.IsPending, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
+                        Margin="0,5,0,0">
+                <controls:ProgressIndicator />
+                <TextBlock Text="{x:Static ext:Resources.PickProjectIdLoadingProjects}" />
+            </StackPanel>
+
+            <!-- Error message shown when the projects load fail. -->
+            <StackPanel VerticalAlignment="Top"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Left"
+                        Visibility="{Binding LoadTask.IsError, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
+                        Margin="0,5,0,0">
+                <TextBlock Text="{x:Static ext:Resources.PickProjectIdLoadProjectsErrorMessage}"/>
+                <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
+                    <TextBlock Text="{Binding LoadTask.ErrorMessage}"/>
+                </Expander>
+            </StackPanel>
+
+            <!-- The data row. -->
+            <DataGrid Grid.Row="2"
+                      Grid.ColumnSpan="2"
+                      ItemsSource="{Binding Source={StaticResource cvs}}"
+                      SelectedItem="{Binding SelectedProject}"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      VerticalScrollBarVisibility="Auto"
+                      CanUserSortColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserReorderColumns="True"
+                      AutoGenerateColumns="False"
+                      VerticalGridLinesBrush="LightGray"
+                      HorizontalGridLinesBrush="LightGray"
+                      HeadersVisibility="Column"
+                      IsReadOnly="True"
+                      utils:ControlBehaviors.DoubleClickCommand="{Binding OkCommand}"
+                      Visibility="{Binding LoadTask.IsSuccess, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
+                      Margin="0,5,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Header="{x:Static ext:Resources.GcpProjectNameHeader}"
+                        Binding="{Binding Name}"
+                        Width="*"
+                        MinWidth="5"/>
+                    <DataGridTextColumn
+                        Header="{x:Static ext:Resources.GcpProjectIdHeader}"
+                        Binding="{Binding ProjectId}"
+                        Width="*"
+                        MinWidth="5"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>

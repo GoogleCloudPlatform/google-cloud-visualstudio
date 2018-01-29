@@ -87,9 +87,8 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
-            Assert.AreEqual(2, projects.Count);
+            Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
-            Assert.AreEqual(s_disabledProject, projects[1]);
         }
 
         [TestMethod]
@@ -114,10 +113,9 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
             IList<Project> projects = await dataSource.GetProjectsListAsync();
 
-            Assert.AreEqual(3, projects.Count);
+            Assert.AreEqual(2, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
-            Assert.AreEqual(s_disabledProject, projects[1]);
-            Assert.AreEqual(s_aProject, projects[2]);
+            Assert.AreEqual(s_aProject, projects[1]);
         }
 
         [TestMethod]
@@ -162,34 +160,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
             var dataSource = new ResourceManagerDataSource(null, init => service, null);
 
-            await dataSource.GetSortedActiveProjectsAsync();
-        }
-
-        [TestMethod]
-        public async Task GetSortedActiveProjectsAsyncTestSuccess()
-        {
-            var responses = new[]
-            {
-                new ListProjectsResponse
-                {
-                    Projects = new List<Project> {s_someProject, s_disabledProject},
-                    NextPageToken = "2"
-                },
-                new ListProjectsResponse
-                {
-                    Projects = new List<Project> {s_aProject},
-                    NextPageToken = null
-                }
-            };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
-
-            IList<Project> projects = await dataSource.GetSortedActiveProjectsAsync();
-
-            Assert.AreEqual(2, projects.Count);
-            Assert.AreEqual(s_aProject, projects[0]);
-            Assert.AreEqual(s_someProject, projects[1]);
+            await dataSource.GetProjectsListAsync();
         }
     }
 }

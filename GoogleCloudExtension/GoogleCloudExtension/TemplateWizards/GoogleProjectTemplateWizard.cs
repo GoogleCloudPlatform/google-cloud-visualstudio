@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
@@ -32,8 +32,8 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Func<string, GcpProject> PromptPickProjectId = projectName =>
-            PickProjectIdWindow.PromptUser(string.Format(Resources.WizardTemplateChooserTitle, projectName));
+        internal Func<GcpProject> PromptPickProjectId =
+            () => PickProjectIdWindow.PromptUser(Resources.TemplateWizardPickProjectIdHelpText, allowAccountChange: false);
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 // Don't show the popup if the key has already been set.
                 if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    GcpProject project = PromptPickProjectId(replacements[ReplacementsKeys.ProjectNameKey]);
+                    GcpProject project = PromptPickProjectId();
 
                     if (project == null)
                     {

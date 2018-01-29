@@ -82,7 +82,8 @@ namespace GoogleCloudExtension.DataSources
                     }
                 },
                 x => x.Projects,
-                x => x.NextPageToken);
+                x => x.NextPageToken,
+                predicate: x => x.LifecycleState == LifecycleState.Active);
         }
 
         /// <summary>
@@ -95,27 +96,16 @@ namespace GoogleCloudExtension.DataSources
             {
                 return await Service.Projects.Get(projectId).ExecuteAsync();
             }
-            catch (GoogleApiException e)
+            catch (GoogleApiException ex)
             {
-                throw new DataSourceException(e.Message, e);
-            }
-        }
+                if (ex.Error?.Code == 404)
+                {
+                    Debug.WriteLine($"Could not find project: {projectId}");
+                    return null;
+                }
 
-        /// <summary>
-        /// Retrives the list of "ACTIVE" projects that belongs to current account.
-        /// Sort the resulsts by project name.
-        /// </summary>
-        /// <returns>
-        /// A list of <seealso cref="Project"/>.
-        /// It always return empty list if no item is found, caller can safely assume there is no null return.
-        /// </returns>
-        public async Task<IList<Project>> GetSortedActiveProjectsAsync()
-        {
-            IList<Project> allProjects = await GetProjectsListAsync();
-            return allProjects
-                .Where(x => x.LifecycleState == LifecycleState.Active)
-                .OrderBy(x => x.Name)
-                .ToList();
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }

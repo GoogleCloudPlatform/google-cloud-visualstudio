@@ -8,11 +8,13 @@
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns:crm="clr-namespace:Google.Apis.CloudResourceManager.v1.Data;assembly=Google.Apis.CloudResourceManager.v1"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:sample="clr-namespace:GoogleCloudExtension.CloudExplorer.SampleData"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type CloudExplorer:CloudExplorerViewModel}}">
+             d:DataContext="{d:DesignInstance sample:LoadingState, IsDesignTimeCreatable=True}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -321,13 +323,24 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <ComboBox ItemsSource="{Binding EffectiveProjects}"
-                  IsEnabled="{Binding IsNotEmptyState}"
-                  SelectedItem="{Binding CurrentProject}"
-                  SelectedIndex="0"
-                  Grid.Row="1"
-                  Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}" />
-
+        <Grid  Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBox Text="{Binding ProjectDisplayString, Mode=OneWay}"
+                     IsReadOnly="True"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+            <Button Content="{x:Static ext:Resources.CloudExplorerSelectProjectCaption}"
+                    Grid.Column="1"
+                    Command="{Binding SelectProjectCommand}"
+                    Style="{StaticResource CommonButtonDynamicStyle}"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center" />
+        </Grid>
+        
         <!-- Message for the empty state -->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
@@ -362,7 +375,13 @@
             utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
             utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
             Grid.Row="2"
-            Style="{StaticResource CloudExplorerTreeViewStyle}" />
+            Style="{StaticResource CloudExplorerTreeViewStyle}">
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel />
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+        </TreeView>
 
     </Grid>
 </UserControl>

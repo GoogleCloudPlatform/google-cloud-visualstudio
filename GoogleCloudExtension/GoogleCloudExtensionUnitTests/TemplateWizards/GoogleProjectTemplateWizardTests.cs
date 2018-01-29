@@ -56,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         private GoogleProjectTemplateWizard _objectUnderTest;
         private Mock<Action<Dictionary<string, string>>> _cleanupDirectoriesMock;
-        private Mock<Func<string, GcpProject>> _pickProjectMock;
+        private Mock<Func<GcpProject>> _pickProjectMock;
         private Dictionary<string, string> _replacementsDictionary;
         private DTE _mockedDte;
 
@@ -64,7 +64,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void BeforeEachTest()
         {
             _mockedDte = Mock.Of<DTE>(dte => dte.CommandLineArguments == "");
-            _pickProjectMock = new Mock<Func<string, GcpProject>>();
+            _pickProjectMock = new Mock<Func<GcpProject>>();
             _cleanupDirectoriesMock = new Mock<Action<Dictionary<string, string>>>();
             _objectUnderTest =
                 new GoogleProjectTemplateWizard
@@ -84,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [ExpectedException(typeof(WizardBackoutException))]
         public void TestRunStartedCanceled()
         {
-            _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => null);
+            _pickProjectMock.Setup(x => x()).Returns(() => null);
             _replacementsDictionary.Add(ReplacementsKeys.ExclusiveProjectKey, bool.FalseString);
 
             try
@@ -106,7 +106,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedPickProjectSkipped()
         {
-            _pickProjectMock.Setup(x => x(It.IsAny<string>())).Returns(() => new GcpProject());
+            _pickProjectMock.Setup(x => x()).Returns(() => new GcpProject());
             foreach (string projectDir in s_projectDirectoriesToTest)
             {
                 foreach (string solutionDir in s_solutionDirectoriesToTest)
@@ -140,7 +140,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedSuccess()
         {
-            _pickProjectMock.Setup(x => x(It.IsAny<string>()))
+            _pickProjectMock.Setup(x => x())
                 .Returns(() => new GcpProject { ProjectId = MockProjectId });
             _replacementsDictionary.Add(ReplacementsKeys.SafeProjectNameKey, ProjectName);
 

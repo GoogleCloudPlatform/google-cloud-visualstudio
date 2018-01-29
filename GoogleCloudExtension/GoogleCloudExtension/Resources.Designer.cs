@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2077,6 +2077,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the GCP project that owns the resources you want browse in the Cloud Explorer..
+        /// </summary>
+        public static string CloudExplorerPickProjectHelpMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerPickProjectHelpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Pub/Sub API is not enabled..
         /// </summary>
         public static string CloudExplorerPubSubApiNotEnabledCaption {
@@ -2334,6 +2343,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSelectAccountMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerSelectAccountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select _Project....
+        /// </summary>
+        public static string CloudExplorerSelectProjectCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSelectProjectCaption", resourceCulture);
             }
         }
         
@@ -3432,15 +3450,6 @@ namespace GoogleCloudExtension {
         public static string GcpProjectNameHeader {
             get {
                 return ResourceManager.GetString("GcpProjectNameHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project Number.
-        /// </summary>
-        public static string GcpProjectNumberHeader {
-            get {
-                return ResourceManager.GetString("GcpProjectNumberHeader", resourceCulture);
             }
         }
         
@@ -5173,6 +5182,60 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a Google Cloud Platform project:.
+        /// </summary>
+        public static string PickProjectIdDescription {
+            get {
+                return ResourceManager.GetString("PickProjectIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter _project:.
+        /// </summary>
+        public static string PickProjectIdFilterProjectCaption {
+            get {
+                return ResourceManager.GetString("PickProjectIdFilterProjectCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Projects....
+        /// </summary>
+        public static string PickProjectIdLoadingProjects {
+            get {
+                return ResourceManager.GetString("PickProjectIdLoadingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading Projects.
+        /// </summary>
+        public static string PickProjectIdLoadProjectsErrorMessage {
+            get {
+                return ResourceManager.GetString("PickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To get a list of projects, select an account..
+        /// </summary>
+        public static string PickProjectIdNoAccountMessage {
+            get {
+                return ResourceManager.GetString("PickProjectIdNoAccountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh the projects list..
+        /// </summary>
+        public static string PickProjectIdRefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("PickProjectIdRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1} {2}).
         /// </summary>
         public static string PortManagerDisplayStringFormat {
@@ -5461,6 +5524,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the GCP project where you want to deploy your app..
+        /// </summary>
+        public static string PublishDialogPickProjectHelpMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogPickProjectHelpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Prev.
         /// </summary>
         public static string PublishDialogPrevButtonCaption {
@@ -5515,7 +5587,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Google Cloud Project to Publish to - {0}.
+        ///   Looks up a localized string similar to Select Google Cloud Project.
         /// </summary>
         public static string PublishDialogSelectGcpProjectTitle {
             get {
@@ -5956,6 +6028,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
+        /// </summary>
+        public static string TemplateWizardPickProjectIdHelpText {
+            get {
+                return ResourceManager.GetString("TemplateWizardPickProjectIdHelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose credentials to use:.
         /// </summary>
         public static string TerminalServerManagerWindowMessage {
@@ -6384,60 +6465,6 @@ namespace GoogleCloudExtension {
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Task Canceled.
-        /// </summary>
-        public static string WizardPickProjectIdCanceledTask {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdCanceledTask", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select a Google Cloud Platform project:.
-        /// </summary>
-        public static string WizardPickProjectIdDescription {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
-        /// </summary>
-        public static string WizardPickProjectIdHelpText {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdHelpText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading Projects....
-        /// </summary>
-        public static string WizardPickProjectIdLoadingProjects {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdLoadingProjects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error loading Projects.
-        /// </summary>
-        public static string WizardPickProjectIdLoadProjectsErrorMessage {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To get a list of projects, select an account..
-        /// </summary>
-        public static string WizardPickProjectIdNoAccountMessage {
-            get {
-                return ResourceManager.GetString("WizardPickProjectIdNoAccountMessage", resourceCulture);
             }
         }
         

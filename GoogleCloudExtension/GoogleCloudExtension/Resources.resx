@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2447,19 +2447,15 @@
     <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
-    <value>Task Canceled</value>
-    <comment>Text to diplay if a task was canceled.</comment>
-  </data>
-  <data name="WizardPickProjectIdDescription" xml:space="preserve">
+  <data name="PickProjectIdDescription" xml:space="preserve">
     <value>Select a Google Cloud Platform project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdHelpText" xml:space="preserve">
+  <data name="TemplateWizardPickProjectIdHelpText" xml:space="preserve">
     <value>This project ID will be added to your configuration files and can be changed later.</value>
     <comment>Help text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
+  <data name="PickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
   </data>
@@ -2471,7 +2467,7 @@
     <value>More Information</value>
     <comment>Title for an expander containing more information.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
+  <data name="PickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
     <value>Error loading Projects</value>
     <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
@@ -2599,7 +2595,7 @@
     <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
   </data>
-  <data name="WizardPickProjectIdNoAccountMessage" xml:space="preserve">
+  <data name="PickProjectIdNoAccountMessage" xml:space="preserve">
     <value>To get a list of projects, select an account.</value>
     <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>
@@ -2610,10 +2606,6 @@
   <data name="GcpProjectNameHeader" xml:space="preserve">
     <value>Project Name</value>
     <comment>Project Name column header for a GCP Project data grid.</comment>
-  </data>
-  <data name="GcpProjectNumberHeader" xml:space="preserve">
-    <value>Project Number</value>
-    <comment>Project Number column header for a GCP Project data grid.</comment>
   </data>
   <data name="AttachDebuggerConnectionFailedMessage" xml:space="preserve">
     <value>Failed to establish Remote PowerShell connection.</value>
@@ -2876,8 +2868,8 @@
     <comment>The label of the Change Current Project button of the AppEngine Flex Publish dialog.</comment>
   </data>
   <data name="PublishDialogSelectGcpProjectTitle" xml:space="preserve">
-    <value>Select Google Cloud Project to Publish to - {0}</value>
-    <comment>The title of the Select Google Cloud Project dialog created from the Publish dialogs. The parameter is the name of the Visual Studio project.</comment>
+    <value>Select Google Cloud Project</value>
+    <comment>The title of the generic select GCP project dialog.</comment>
   </data>
   <data name="AppEngineManagementAppCreationMessage" xml:space="preserve">
     <value>Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can't change the region for project {0} later.</value>
@@ -2931,6 +2923,14 @@
     <value>The selected GCP project needs services to be enabled before you can deploy.</value>
     <comment>The message shown when a project needs an API enabled.</comment>
   </data>
+  <data name="CloudExplorerPickProjectHelpMessage" xml:space="preserve">
+    <value>Select the GCP project that owns the resources you want browse in the Cloud Explorer.</value>
+    <comment>The message shown in the label for the pick project dialog when invoked from the Cloud Explorer.</comment>
+  </data>
+  <data name="PublishDialogPickProjectHelpMessage" xml:space="preserve">
+    <value>Select the GCP project where you want to deploy your app.</value>
+    <comment>The message shown in the label for the pick project when invoked from the Publish wizard.</comment>
+  </data>
   <data name="CsrEnableApiMessage" xml:space="preserve">
     <value>The selected project needs to be setup to use Cloud Source Repositories. </value>
     <comment>The message to ask user to enable Cloud Source Repositories API for the project.  </comment>
@@ -2941,6 +2941,18 @@
   </data>
   <data name="WizardTemplateChooserTargetAspFrameworkLabel" xml:space="preserve">
     <value>Target _ASP.NET Framework:</value>
+  </data>
+  <data name="CloudExplorerSelectProjectCaption" xml:space="preserve">
+    <value>Select _Project...</value>
+    <comment>Caption for the select project button in the cloud explorer.</comment>
+  </data>
+  <data name="PickProjectIdFilterProjectCaption" xml:space="preserve">
+    <value>Filter _project:</value>
+    <comment>Caption shown for the filter project textbox.</comment>
+  </data>
+  <data name="PickProjectIdRefreshButtonToolTip" xml:space="preserve">
+    <value>Refresh the projects list.</value>
+    <comment>Text for the refresh button's tooltip.</comment>
   </data>
   <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
     <value>Pub/Sub Topics to hide:</value>

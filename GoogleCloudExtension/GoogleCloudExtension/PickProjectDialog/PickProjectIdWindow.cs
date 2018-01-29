@@ -15,7 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Theming;
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// Window for a user to choose which projet to use.
@@ -24,22 +24,24 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
     {
         private PickProjectIdViewModel ViewModel { get; }
 
-        private PickProjectIdWindow(string title) : base(title)
+        private PickProjectIdWindow(string helpContext, bool allowAccountChange)
+            : base(GoogleCloudExtension.Resources.PublishDialogSelectGcpProjectTitle)
         {
-            ViewModel = new PickProjectIdViewModel(this);
+            ViewModel = new PickProjectIdViewModel(this, helpContext, allowAccountChange);
             Content = new PickProjectIdWindowContent { DataContext = ViewModel };
         }
 
         /// <summary>
         /// Initalizes the Pick Project Window and waits for it to finish.
         /// </summary>
-        /// <param name="dialogTitle">The title of the pick project id dialog.</param>
+        /// <param name="helpMessage">The help message to display.</param>
+        /// <param name="allowAccountChange">Whether to show the account change buttons/command.</param>
         /// <returns>
         /// The project ID selected, or an empty string if skipped, or null if canceled.
         /// </returns>
-        public static Project PromptUser(string dialogTitle)
+        public static Project PromptUser(string helpMessage, bool allowAccountChange)
         {
-            var dialog = new PickProjectIdWindow(dialogTitle);
+            var dialog = new PickProjectIdWindow(helpMessage, allowAccountChange);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

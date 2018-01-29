@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
@@ -26,7 +26,11 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         private TemplateChooserWindow(string dialogTitle) : base(dialogTitle)
         {
-            ViewModel = new TemplateChooserViewModel(Close, () => PickProjectIdWindow.PromptUser(dialogTitle));
+            ViewModel = new TemplateChooserViewModel(
+                Close,
+                () => PickProjectIdWindow.PromptUser(
+                        GoogleCloudExtension.Resources.TemplateWizardPickProjectIdHelpText,
+                        allowAccountChange: true));
             Content = new TemplateChooserWindowContent { DataContext = ViewModel };
         }
 

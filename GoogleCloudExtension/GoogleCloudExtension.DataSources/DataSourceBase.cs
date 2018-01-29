@@ -88,11 +88,13 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="fetchPageFunc">The function to call, with a page token if known, to get a page of items.</param>
         /// <param name="itemsFunc">The function that given a page will return an <c>IEnumerable</c> of items.</param>
         /// <param name="nextPageTokenFunc">The function that given a page will return the token of the next page.</param>
+        /// <param name="predicate">The predicate to apply to the items to decided whether to include in the result.</param>
         /// <returns>A list with all of the items downloaded, the combination of all of the pages.</returns>
         protected static async Task<IList<TItem>> LoadPagedListAsync<TItem, TItemsPage>(
             Func<string, Task<TItemsPage>> fetchPageFunc,
             Func<TItemsPage, IEnumerable<TItem>> itemsFunc,
-            Func<TItemsPage, string> nextPageTokenFunc)
+            Func<TItemsPage, string> nextPageTokenFunc,
+            Func<TItem, bool> predicate = null)
         {
             try
             {
@@ -101,9 +103,15 @@ namespace GoogleCloudExtension.DataSources
                 do
                 {
                     var page = await fetchPageFunc(nextPageToken);
-                    result.AddRange(itemsFunc(page) ?? Enumerable.Empty<TItem>());
+                    var items = itemsFunc(page);
+                    if (predicate != null && items != null)
+                    {
+                        items = items.Where(predicate);
+                    }
+
+                    result.AddRange(items ?? Enumerable.Empty<TItem>());
                     nextPageToken = nextPageTokenFunc(page);
-                } while (!String.IsNullOrEmpty(nextPageToken));
+                } while (!string.IsNullOrEmpty(nextPageToken));
                 return result;
             }
             catch (GoogleApiException ex)

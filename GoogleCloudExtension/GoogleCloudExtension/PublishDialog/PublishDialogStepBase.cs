@@ -15,7 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
@@ -37,7 +37,8 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _needsApiEnabled = false;
         private bool _generalError = false;
 
-        internal Func<string, Project> PickProjectPrompt = PickProjectIdWindow.PromptUser;
+        internal Func<Project> PickProjectPrompt =
+            () => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true);
 
         protected internal IPublishDialog PublishDialog { get; private set; }
 
@@ -182,9 +183,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void OnSelectProjectCommand()
         {
-            string pickProjectDialogTitle = string.Format(
-                Resources.PublishDialogSelectGcpProjectTitle, PublishDialog.Project.Name);
-            Project selectedProject = PickProjectPrompt(pickProjectDialogTitle);
+            Project selectedProject = PickProjectPrompt();
             if (selectedProject?.ProjectId != null && selectedProject?.ProjectId != CredentialsStore.Default.CurrentProjectId)
             {
                 CredentialsStore.Default.UpdateCurrentProject(selectedProject);

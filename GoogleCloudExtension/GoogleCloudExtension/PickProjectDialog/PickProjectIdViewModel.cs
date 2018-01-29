@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
@@ -23,20 +22,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
+namespace GoogleCloudExtension.PickProjectDialog
 {
     /// <summary>
     /// View model for picking a project id.
     /// </summary>
     public class PickProjectIdViewModel : ViewModelBase
     {
-        private IList<Project> _projects;
+        private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private AsyncProperty _loadTask;
+        private bool _allowAccountChange;
+        private string _filter;
+        private string _helpText;
+        private bool _hasAccount;
 
         private readonly IPickProjectIdWindow _owner;
-        private readonly Func<IResourceManagerDataSource> _resourceManagerDataSourceFactory;
         private readonly Action _promptAccountManagement;
+        private readonly Task<IEnumerable<Project>> _mockedProjectList;
 
         /// <summary>
         /// Result of the view model after the dialog window is closed. Remains
@@ -55,12 +58,17 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         public ProtectedCommand OkCommand { get; }
 
         /// <summary>
+        /// Command to execute when refreshing the list of projects.
+        /// </summary>
+        public ProtectedCommand RefreshCommand { get; }
+
+        /// <summary>
         /// The list of projects available to the current user.
         /// </summary>
-        public IList<Project> Projects
+        public IEnumerable<Project> Projects
         {
             get { return _projects; }
-            set { SetValueAndRaise(ref _projects, value); }
+            private set { SetValueAndRaise(ref _projects, value); }
         }
 
         /// <summary>
@@ -85,9 +93,36 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             set { SetValueAndRaise(ref _loadTask, value); }
         }
 
-        public PickProjectIdViewModel(IPickProjectIdWindow owner)
-            : this(owner, DataSourceFactories.CreateResourceManagerDataSource, ManageAccountsWindow.PromptUser)
-        { }
+        public bool HasAccount
+        {
+            get { return _hasAccount; }
+            private set { SetValueAndRaise(ref _hasAccount, value); }
+        }
+
+        public string Filter
+        {
+            get { return _filter; }
+            set { SetValueAndRaise(ref _filter, value); }
+        }
+
+        public bool AllowAccountChange
+        {
+            get { return _allowAccountChange; }
+            private set { SetValueAndRaise(ref _allowAccountChange, value); }
+        }
+
+        public string HelpText
+        {
+            get { return _helpText; }
+            private set { SetValueAndRaise(ref _helpText, value); }
+        }
+
+        public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
+            : this(owner, ManageAccountsWindow.PromptUser, null)
+        {
+            AllowAccountChange = allowAccountChange;
+            HelpText = helpText;
+        }
 
         /// <summary>
         /// For Testing.
@@ -97,16 +132,35 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
             IPickProjectIdWindow owner,
-            Func<IResourceManagerDataSource> dataSourceFactory,
-            Action promptAccountManagement)
+            Action promptAccountManagement,
+            Task<IEnumerable<Project>> mockedProjectList)
         {
             _owner = owner;
-            _resourceManagerDataSourceFactory = dataSourceFactory;
             _promptAccountManagement = promptAccountManagement;
+            _mockedProjectList = mockedProjectList;
 
-            ChangeUserCommand = new ProtectedCommand(OnChangeUser);
-            OkCommand = new ProtectedCommand(OnOk, false);
+            ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            RefreshCommand = new ProtectedCommand(OnRefreshCommand, canExecuteCommand: false);
             StartLoadProjects();
+        }
+
+        public bool FilterItem(object item)
+        {
+            var project = item as Project;
+            if (project == null)
+            {
+                return false;
+            }
+
+            // If there is no filter, allow the item.
+            if (string.IsNullOrEmpty(Filter))
+            {
+                return true;
+            }
+
+            // Check name and project id for the filter.
+            return project.ProjectId.Contains(Filter) || project.Name.Contains(Filter);
         }
 
         private void StartLoadProjects()
@@ -114,20 +168,31 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             if (CredentialsStore.Default.CurrentAccount != null)
             {
                 LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+                HasAccount = true;
             }
             else
             {
                 LoadTask = null;
+                HasAccount = false;
             }
         }
 
+        private Task<IEnumerable<Project>> GetProjectsTask() => _mockedProjectList ?? CredentialsStore.Default.CurrentAccountProjects;
+
         private async Task LoadProjectsAsync()
         {
-            Projects = await _resourceManagerDataSourceFactory().GetSortedActiveProjectsAsync();
+            // The projects list will be empty while we load.
+            Projects = Enumerable.Empty<Project>();
+            RefreshCommand.CanExecuteCommand = false;
+
+            // Updat the to loaded list of projects.
+            Projects = (await GetProjectsTask()) ?? Enumerable.Empty<Project>();
+            RefreshCommand.CanExecuteCommand = true;
+
+            // Choose project from the list.
             if (SelectedProject == null)
             {
-                SelectedProject =
-                    Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);
+                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == CredentialsStore.Default.CurrentProjectId);
             }
             else
             {
@@ -135,16 +200,22 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             }
         }
 
-        private void OnChangeUser()
+        private void OnChangeUserCommand()
         {
             _promptAccountManagement();
             StartLoadProjects();
         }
 
-        private void OnOk()
+        private void OnOkCommand()
         {
             Result = SelectedProject;
             _owner.Close();
+        }
+
+        private void OnRefreshCommand()
+        {
+            CredentialsStore.Default.RefreshProjects();
+            StartLoadProjects();
         }
     }
 }

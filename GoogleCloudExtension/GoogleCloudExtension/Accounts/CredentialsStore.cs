@@ -14,6 +14,8 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -50,9 +53,6 @@ namespace GoogleCloudExtension.Accounts
         private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
-        private UserAccount _currentAccount;
-        private string _currentProjectId;
-        private string _currentProjectNumericId;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
@@ -64,19 +64,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
         /// </summary>
-        public UserAccount CurrentAccount
-        {
-            get { return _currentAccount; }
-            set
-            {
-                if (_currentAccount?.AccountName != value?.AccountName)
-                {
-                    _currentAccount = value;
-                    UpdateDefaultCredentials();
-                    CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public UserAccount CurrentAccount { get; private set; }
 
         /// <summary>
         /// Returns the path for the current account.
@@ -91,35 +79,17 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The currently selected project ID.
         /// </summary>
-        public string CurrentProjectId
-        {
-            get { return _currentProjectId; }
-            private set
-            {
-                if (_currentProjectId != value)
-                {
-                    _currentProjectId = value;
-                    UpdateDefaultCredentials();
-                    CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string CurrentProjectId { get; private set; }
 
         /// <summary>
         /// The currently selected project numeric ID, might be null if no project is loaded.
         /// </summary>
-        public string CurrentProjectNumericId
-        {
-            get { return _currentProjectNumericId; }
-            set
-            {
-                if (_currentProjectNumericId != value)
-                {
-                    _currentProjectNumericId = value;
-                    CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public string CurrentProjectNumericId { get; private set; }
+
+        /// <summary>
+        /// The cached list of GCP projects for the current project.
+        /// </summary>
+        public Task<IEnumerable<Project>> CurrentAccountProjects { get; private set; }
 
         /// <summary>
         /// The list of accounts known to the store.
@@ -142,8 +112,73 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         public void UpdateCurrentProject(Project project)
         {
-            CurrentProjectId = project?.ProjectId;
-            CurrentProjectNumericId = project?.ProjectNumber?.ToString();
+            if (project?.ProjectId != CurrentProjectId)
+            {
+                CurrentProjectId = project?.ProjectId;
+                CurrentProjectNumericId = project?.ProjectNumber.ToString();
+
+                UpdateDefaultCredentials();
+                CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
+                CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Updates the current account for the extension. This method will also invalidate the project
+        /// it is up to the caller to select an appropriate one.
+        /// </summary>
+        /// <param name="account"></param>
+        public void UpdateCurrentAccount(UserAccount account)
+        {
+            if (CurrentAccount?.AccountName != account?.AccountName)
+            {
+                CurrentAccount = account;
+                CurrentProjectId = null;
+                CurrentProjectNumericId = null;
+
+                InvalidateProjectList();
+
+                UpdateDefaultCredentials();
+                CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
+        /// given <paramref name="projectId"/>. The <seealso cref="Reset"/> event will be raised to notify
+        /// listeners on this.
+        /// If <paramref name="accountName"/> cannot be found in the store then the credentials will be reset
+        /// to empty.
+        /// </summary>
+        /// <param name="accountName">The name of the account to make current.</param>
+        /// <param name="projectId">The projectId to make current.</param>
+        public void ResetCredentials(string accountName, string projectId)
+        {
+            var newCurrentAccount = GetAccount(accountName);
+            if (newCurrentAccount != null)
+            {
+                CurrentAccount = newCurrentAccount;
+                CurrentProjectId = projectId;
+                CurrentProjectNumericId = null;
+            }
+            else
+            {
+                Debug.WriteLine($"Unknown account: {accountName}");
+                CurrentAccount = null;
+                CurrentProjectId = null;
+                CurrentProjectNumericId = null;
+            }
+            Reset?.Invoke(this, EventArgs.Empty);
+
+            InvalidateProjectList();
+        }
+
+        /// <summary>
+        /// Refreshes the list of projects for the current account.
+        /// </summary>
+        public void RefreshProjects()
+        {
+            InvalidateProjectList();
         }
 
         /// <summary>
@@ -202,30 +237,25 @@ namespace GoogleCloudExtension.Accounts
             return result?.UserAccount;
         }
 
-        /// <summary>
-        /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
-        /// given <paramref name="projectId"/>. The <seealso cref="Reset"/> event will be raised to notify
-        /// listeners on this.
-        /// If <paramref name="accountName"/> cannot be found in the store then the credentials will be reset
-        /// to empty.
-        /// </summary>
-        /// <param name="accountName">The name of the account to make current.</param>
-        /// <param name="projectId">The projectId to make current.</param>
-        public void ResetCredentials(string accountName, string projectId)
+        private void InvalidateProjectList()
         {
-            var newCurrentAccount = GetAccount(accountName);
-            if (newCurrentAccount != null)
+            Debug.WriteLine("Starting to load projects.");
+            CurrentAccountProjects = LoadCurrentAccountProjectsAsync();
+        }
+
+        private async Task<IEnumerable<Project>> LoadCurrentAccountProjectsAsync()
+        {
+            try
             {
-                _currentAccount = newCurrentAccount;
-                _currentProjectId = projectId;
+                var dataSource = new ResourceManagerDataSource(
+                    CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                return await dataSource.GetProjectsListAsync();
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                Debug.WriteLine($"Unknown account: {accountName}");
-                _currentAccount = null;
-                _currentProjectId = null;
+                return Enumerable.Empty<Project>();
             }
-            Reset?.Invoke(this, EventArgs.Empty);
         }
 
         private string GetUserAccountPath(string accountName)
