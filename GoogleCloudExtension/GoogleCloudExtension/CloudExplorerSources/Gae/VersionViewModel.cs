@@ -147,7 +147,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IsLoading = true;
                 Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
 
-                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
+                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> {[_version.Id] = 1.0 } };
                 await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
                 _owner.InvalidateService(_service.Id);
             }

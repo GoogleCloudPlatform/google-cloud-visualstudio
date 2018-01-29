@@ -18,7 +18,6 @@ using System.Linq;
 
 namespace GoogleCloudExtension.Utils
 {
-
     /// <summary>
     /// An <see cref="IEditableObject"/> for a single object.
     /// </summary>

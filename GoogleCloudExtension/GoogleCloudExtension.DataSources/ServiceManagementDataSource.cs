@@ -83,6 +83,5 @@ namespace GoogleCloudExtension.DataSources
                 x => x.Services,
                 x => x.NextPageToken);
         }
-
     }
 }
