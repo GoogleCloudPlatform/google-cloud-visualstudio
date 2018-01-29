@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.CloudExplorer.SampleData
                 new TreeLeaf { Caption = ("Warning"), IsWarning = true },
                 new TreeLeaf { Caption = ("Error"), IsError = true },
                 new TreeLeaf { Caption = ("Loading"), IsLoading = true }
-})
+            })
             {
                 Caption = ("Variants"),
                 Icon = s_containerIcon.Value,
