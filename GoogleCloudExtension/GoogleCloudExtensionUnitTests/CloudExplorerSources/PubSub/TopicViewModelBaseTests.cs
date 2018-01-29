@@ -83,10 +83,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 new TestTopicViewModelBase(
                     _ownerMock.Object, _itemMock.Object, new List<Subscription> { _childSubscription });
 
-            Assert.AreEqual(1, objectUnderTest.Children.Count);
-            var subscriptions = objectUnderTest.Children.OfType<SubscriptionViewModel>().ToList();
-            Assert.AreEqual(1, subscriptions.Count);
-            Assert.IsTrue(subscriptions.Single().Caption == MockSubscriptionLeafName);
+            List<SubscriptionViewModel> subscriptions = objectUnderTest.Children.Cast<SubscriptionViewModel>().ToList();
+            CollectionAssert.AreEquivalent(
+                new[] { MockSubscriptionLeafName }, subscriptions.Select(s => s.Caption).ToList());
         }
 
         [TestMethod]
@@ -96,7 +95,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 new TestTopicViewModelBase(
                     _ownerMock.Object, _itemMock.Object, new List<Subscription> { _childSubscription });
 
-            var refreshTask = objectUnderTest.Refresh();
+            Task refreshTask = objectUnderTest.Refresh();
 
             Assert.IsFalse(refreshTask.IsCompleted);
             Assert.AreEqual(1, objectUnderTest.Children.Count);
@@ -159,10 +158,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             await objectUnderTest.Refresh();
 
-            Assert.AreEqual(1, objectUnderTest.Children.Count);
-            var subscriptions = objectUnderTest.Children.OfType<SubscriptionViewModel>().ToList();
-            Assert.AreEqual(1, subscriptions.Count);
-            Assert.IsTrue(subscriptions.Single().Caption == MockSubscriptionLeafName);
+            List<string> captions =
+                    objectUnderTest.Children.Cast<SubscriptionViewModel>().Select(s => s.Caption).ToList();
+            CollectionAssert.AreEquivalent(new[] { MockSubscriptionLeafName }, captions);
         }
 
         [TestMethod]
@@ -172,13 +170,25 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 new TestTopicViewModelBase(
                     _ownerMock.Object, _itemMock.Object, new List<Subscription>());
 
-            var firstTask = objectUnderTest.Refresh();
-            var secondTask = objectUnderTest.Refresh();
+            Task firstTask = objectUnderTest.Refresh();
+            Task secondTask = objectUnderTest.Refresh();
             _getSubscriptionListSource.SetResult(new List<Subscription>());
             await firstTask;
             await secondTask;
 
             _ownerMock.Verify(o => o.DataSource.GetSubscriptionListAsync(), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestOpenBrowser()
+        {
+            const string targetUrl = "http://target/url";
+            var objectUnderTest = new TestTopicViewModelBase(
+                _ownerMock.Object, _itemMock.Object, new List<Subscription>());
+
+            objectUnderTest.OpenBrowser(targetUrl);
+
+            _ownerMock.Verify(o => o.OpenBrowser(targetUrl), Times.Once);
         }
 
         private class TestTopicViewModelBase : TopicViewModelBase

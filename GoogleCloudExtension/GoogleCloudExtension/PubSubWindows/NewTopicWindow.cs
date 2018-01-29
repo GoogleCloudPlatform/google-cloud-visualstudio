@@ -17,7 +17,7 @@ using GoogleCloudExtension.Theming;
 namespace GoogleCloudExtension.PubSubWindows
 {
     /// <summary>
-    /// The window for the new pub sub topic dialog.
+    /// The window for the new Pub/Sub topic dialog.
     /// </summary>
     public class NewTopicWindow : CommonDialogWindowBase
     {

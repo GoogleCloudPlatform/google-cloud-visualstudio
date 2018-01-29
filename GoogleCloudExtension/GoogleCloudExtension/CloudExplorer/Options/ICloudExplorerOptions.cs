@@ -12,26 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.CloudExplorerSources.PubSub
+using System;
+using System.Collections.Generic;
+
+namespace GoogleCloudExtension.CloudExplorer.Options
 {
     /// <summary>
-    /// Inteface for topic like items.
+    /// The options that affect the Cloud Explorer window.
     /// </summary>
-    internal interface ITopicItem
+    public interface ICloudExplorerOptions
     {
         /// <summary>
-        /// The display name of the topic.
+        /// The list of regexes used to filter Pub/Sub topics in the Cloud Explorer.
         /// </summary>
-        string DisplayName { get; }
+        IEnumerable<string> PubSubTopicFilters { get; set; }
 
         /// <summary>
-        /// The id of the project the topic belongs to.
+        /// Triggered before this page saves its settings to storage.
         /// </summary>
-        string ProjectId { get; }
+        event EventHandler SavingSettings;
 
         /// <summary>
-        /// The name of the topic to match against subscription topic names.
+        /// Resets all settings on this page to default.
         /// </summary>
-        string FullName { get; }
+        void ResetSettings();
     }
 }

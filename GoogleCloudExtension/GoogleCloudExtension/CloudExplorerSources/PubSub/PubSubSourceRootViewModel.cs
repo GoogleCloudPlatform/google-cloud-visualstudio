@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
@@ -28,6 +29,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -37,7 +39,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     internal class PubsubSourceRootViewModel : SourceRootViewModelBase, IPubsubSourceRootViewModel
     {
         internal const string PubSubConsoleUrlFormat = "https://console.cloud.google.com/cloudpubsub?project={0}";
-        private const string BlackListPrefix = "^projects/{0}/topics/";
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -63,21 +64,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             KnownApis.PubSubApiName
         };
 
-        private static readonly string[] s_blacklistedTopics =
-        {
-            "asia\\.gcr\\.io%2F{0}$",
-            "eu\\.gcr\\.io%2F{0}$",
-            "gcr\\.io%2F{0}$",
-            "us\\.gcr\\.io%2F{0}$",
-            "cloud-builds$",
-            "repository-changes\\..*$"
-        };
-
         private Lazy<IPubsubDataSource> _dataSource;
         // Mockable static methods for testing.
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
-        internal Func<string, Process> StartProcess = Process.Start;
+        internal static IEnumerable<string> TopicFiltersOverride = null;
+        internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
+
+        private static IEnumerable<string> TopicFilters => TopicFiltersOverride ?? GoogleCloudExtensionPackage.Instance
+            .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
 
         public IPubsubDataSource DataSource => _dataSource.Value;
 
@@ -109,7 +104,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private string CurrentProjectId => Context.CurrentProject.ProjectId;
 
         /// <summary>
-        /// Creates the pub sub source root view model.
+        /// Creates the Pub/Sub source root view model.
         /// </summary>
         public PubsubSourceRootViewModel() : this(CreateDataSource)
         { }
@@ -121,6 +116,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             _dataSourceFactory = dataSourceFactory;
             _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
+            GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().SavingSettings +=
+                    (sender, args) => Refresh();
         }
 
         public override void Initialize(ICloudSourceContext context)
@@ -138,6 +135,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     },
                     new MenuItem
                     {
+                        Header = Resources.CloudExplorerPubSubChangeFiltersMenuHeader,
+                        Command = new ProtectedCommand(OnChangeFiltersCommand)
+                    },
+                    new MenuItem
+                    {
                         Header = Resources.UiOpenOnCloudConsoleMenuHeader,
                         Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
                     }
@@ -152,6 +154,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             Debug.WriteLine("New credentials, invalidating the Pubsub source.");
             _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
+        }
+
+        /// <summary>
+        /// Opens an external browser to the given url.
+        /// </summary>
+        /// <param name="url"></param>
+        public void OpenBrowser(string url)
+        {
+            StartProcess(url);
         }
 
         /// <summary>
@@ -190,29 +201,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <returns>True if the topic is not blacklisted.</returns>
         private bool IsIncludedTopic(Topic topic)
         {
-            return !s_blacklistedTopics.SelectMany(FormatBlacklistedTopics).Any(s => Regex.IsMatch(topic.Name, s));
-        }
-
-        /// <summary>
-        /// Gets a regex to filter the blacklisted topics.
-        /// </summary>
-        /// <param name="blacklistedTopicString">
-        /// A format string of a blacklisted topic. It may take project id as the first format arg.
-        /// <example>
-        /// "us\\.gcr\\.io%2F{0}$" => "^projects/ProjectId/topics/us\\.gcr\\.io%2FProjectId$"
-        /// </example>
-        /// </param>
-        /// <returns>
-        /// A regex string to match a blacklisted topic.
-        /// </returns>
-        private IEnumerable<string> FormatBlacklistedTopics(string blacklistedTopicString)
-        {
-            string escapedProjectId = Regex.Escape(CurrentProjectId);
-            string restUrlPrefix = string.Format(BlackListPrefix, escapedProjectId);
-            yield return restUrlPrefix + string.Format(blacklistedTopicString, escapedProjectId);
-            yield return restUrlPrefix +
-                string.Format(
-                    blacklistedTopicString, Regex.Escape(Uri.EscapeDataString(CurrentProjectId.Replace(":", "/"))));
+            return !TopicFilters.Any(filterPattern => Regex.IsMatch(topic.Name, filterPattern));
         }
 
         /// <summary>
@@ -234,16 +223,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         }
 
         /// <summary>
-        /// Opens the google pub sub cloud console.
+        /// Opens the Google Cloud Pub/Sub cloud console.
         /// </summary>
         internal void OnOpenCloudConsoleCommand()
         {
-            var url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
-            StartProcess(url);
+            string url = string.Format(PubSubConsoleUrlFormat, CurrentProjectId);
+            OpenBrowser(url);
         }
 
         /// <summary>
-        /// Opens the new pub sub topic dialog.
+        /// Opens the new Pub/Sub topic dialog.
         /// </summary>
         internal async void OnNewTopicCommand()
         {
@@ -266,6 +255,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
                 EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
+        }
+
+        /// <summary>
+        /// Opens the Topics Filters options page.
+        /// </summary>
+        private static void OnChangeFiltersCommand()
+        {
+            GoogleCloudExtensionPackage.Instance.ShowOptionPage<CloudExplorerOptions>();
         }
 
         private async void OnEnablePubSubApi()

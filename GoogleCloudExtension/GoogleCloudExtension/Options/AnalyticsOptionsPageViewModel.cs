@@ -12,26 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.CloudExplorerSources.PubSub
+using GoogleCloudExtension.Utils;
+
+namespace GoogleCloudExtension.Options
 {
     /// <summary>
-    /// Inteface for topic like items.
+    /// The View Model for the AnalyticsOptionsPage.
     /// </summary>
-    internal interface ITopicItem
+    public class AnalyticsOptionsPageViewModel : ViewModelBase
     {
-        /// <summary>
-        /// The display name of the topic.
-        /// </summary>
-        string DisplayName { get; }
+        private bool _optIn;
 
         /// <summary>
-        /// The id of the project the topic belongs to.
+        /// True if the user has opted-into report usage statistics. False by default.
         /// </summary>
-        string ProjectId { get; }
-
-        /// <summary>
-        /// The name of the topic to match against subscription topic names.
-        /// </summary>
-        string FullName { get; }
+        public bool OptIn
+        {
+            get { return _optIn; }
+            set { SetValueAndRaise(ref _optIn, value); }
+        }
     }
 }

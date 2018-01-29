@@ -18,8 +18,10 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
@@ -36,7 +38,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using SystemTasks = System.Threading.Tasks;
 
 namespace GoogleCloudExtension
 {
@@ -60,14 +61,15 @@ namespace GoogleCloudExtension
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(GoogleCloudExtensionPackage.PackageGuidString)]
+    [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
     [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
-    [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
+    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
@@ -76,7 +78,7 @@ namespace GoogleCloudExtension
         /// <summary>
         /// DeployToGaePackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
+        private const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
 
         /// <summary>
         /// Option keys for the extension options.
@@ -87,15 +89,18 @@ namespace GoogleCloudExtension
         // in the VS process, including the ones used by GCP API services.
         private const int MaximumConcurrentConnections = 10;
 
+        private const string OptionsCategoryName = "Google Cloud Tools";
+
         // The properties that are stored in the .suo file.
-        private static List<SolutionUserOptions> s_userSettings = new List<SolutionUserOptions>()
+        private static readonly List<SolutionUserOptions> s_userSettings = new List<SolutionUserOptions>
         {
             new SolutionUserOptions(CurrentAccountProjectSettings.Current),
-            new SolutionUserOptions(AttachDebuggerSettings.Current),
+            new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
+        internal Action<Type> ShowOptionPageMethod;
         private DTE _dteInstance;
-        private event EventHandler _closingEvent;
+        private event EventHandler ClosingEvent;
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -126,6 +131,7 @@ namespace GoogleCloudExtension
         {
             // Register all of the properties.
             RegisterSolutionOptions();
+            ShowOptionPageMethod = ShowOptionPage;
         }
 
         /// <summary>
@@ -133,7 +139,7 @@ namespace GoogleCloudExtension
         /// </summary>
         public void SubscribeClosingEvent(EventHandler handler)
         {
-            _closingEvent += handler;
+            ClosingEvent += handler;
         }
 
         /// <summary>
@@ -141,22 +147,12 @@ namespace GoogleCloudExtension
         /// </summary>
         public void UnsubscribeClosingEvent(EventHandler handler)
         {
-            _closingEvent -= handler;
+            ClosingEvent -= handler;
         }
 
         protected override int QueryClose(out bool canClose)
         {
-            _closingEvent?.Invoke(this, EventArgs.Empty);
-            if (_closingEvent != null)
-            {
-                var tasks = new List<SystemTasks.Task>();
-                foreach (var handler in _closingEvent.GetInvocationList().OfType<EventHandler>())
-                {
-                    tasks.Add(SystemTasks.Task.Run(() => handler(this, EventArgs.Empty)));
-                };
-
-                SystemTasks.Task.WaitAll(tasks.ToArray(), TimeSpan.FromMilliseconds(1000));
-            }
+            ClosingEvent?.Invoke(this, EventArgs.Empty);
             return base.QueryClose(out canClose);
         }
 
@@ -164,7 +160,7 @@ namespace GoogleCloudExtension
 
         private void RegisterSolutionOptions()
         {
-            foreach (var key in s_userSettings.SelectMany(setting => setting.Keys))
+            foreach (string key in s_userSettings.SelectMany(setting => setting.Keys))
             {
                 AddOptionKey(key);
             }
@@ -191,7 +187,7 @@ namespace GoogleCloudExtension
                 return;
             }
 
-            var value = userSettings.Read(key);
+            string value = userSettings.Read(key);
             WriteOptionStream(stream, value ?? NoneValue);
         }
 
@@ -207,7 +203,7 @@ namespace GoogleCloudExtension
         {
             using (var reader = new StreamReader(stream))
             {
-                var value = reader.ReadLine();
+                string value = reader.ReadLine();
                 return value == NoneValue ? null : value;
             }
         }
@@ -240,7 +236,7 @@ namespace GoogleCloudExtension
             ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
-            _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
+            _dteInstance = (DTE)GetService(typeof(DTE));
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
@@ -263,7 +259,26 @@ namespace GoogleCloudExtension
 
         #region User Settings
 
-        public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
+        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
+
+        /// <summary>
+        /// Gets the options page of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
+        /// <returns>The options page of the given type.</returns>
+        public T GetDialogPage<T>() where T : DialogPage
+        {
+            return (T)GetDialogPage(typeof(T));
+        }
+
+        /// <summary>
+        /// Displays the options page of the given type.
+        /// </summary>
+        /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
+        public void ShowOptionPage<T>() where T : DialogPage
+        {
+            ShowOptionPageMethod(typeof(T));
+        }
 
         #endregion
 
@@ -274,7 +289,7 @@ namespace GoogleCloudExtension
         /// </summary>
         private void CheckInstallationStatus()
         {
-            var settings = AnalyticsSettings;
+            AnalyticsOptions settings = AnalyticsSettings;
             if (settings.InstalledVersion == null)
             {
                 // This is a new installation.

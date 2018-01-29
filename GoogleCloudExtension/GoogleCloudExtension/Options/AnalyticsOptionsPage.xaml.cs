@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.CloudExplorerSources.PubSub
+using System.Windows.Controls;
+
+namespace GoogleCloudExtension.Options
 {
     /// <summary>
-    /// Inteface for topic like items.
+    /// Interaction logic for AnalyticsOptionsPage.xaml
     /// </summary>
-    internal interface ITopicItem
+    public partial class AnalyticsOptionsPage : UserControl
     {
-        /// <summary>
-        /// The display name of the topic.
-        /// </summary>
-        string DisplayName { get; }
+        internal AnalyticsOptionsPageViewModel ViewModel { get; }
 
-        /// <summary>
-        /// The id of the project the topic belongs to.
-        /// </summary>
-        string ProjectId { get; }
-
-        /// <summary>
-        /// The name of the topic to match against subscription topic names.
-        /// </summary>
-        string FullName { get; }
+        internal AnalyticsOptionsPage()
+        {
+            InitializeComponent();
+            ViewModel = new AnalyticsOptionsPageViewModel();
+            DataContext = ViewModel;
+        }
     }
 }

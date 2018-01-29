@@ -14,15 +14,18 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
@@ -31,6 +34,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     public class TopicViewModelTests
     {
         public const string MockTopicFullName = PubSubSourceRootViewModelTests.MockTopicFullName;
+        public const string MockTopicLeafName = PubSubSourceRootViewModelTests.MockTopicLeafName;
+        public const string MockProjectId = PubSubSourceRootViewModelTests.MockProjectId;
         public const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
         public const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
         public const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
@@ -50,8 +55,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<object> _deleteTopicSource;
 
         [TestInitialize]
-        public void BeforeEachTest()
+        public void BeforeEach()
         {
+            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
+
             _newSubscriptionSource = new TaskCompletionSource<Subscription>();
             _getSubscriptionListSource = new TaskCompletionSource<IList<Subscription>>();
             _deleteTopicSource = new TaskCompletionSource<object>();
@@ -91,18 +98,17 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             var icon = (BitmapImage)_objectUnderTest.Icon;
             Assert.IsTrue(icon.UriSource.ToString().Contains("topic_icon.png"));
             Assert.IsNotNull(_objectUnderTest.ContextMenu);
-            var menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
-            Assert.AreEqual(3, menuItems.Count);
-            Assert.AreEqual(3, menuItems.Select(mi => mi.Command).Distinct().Count());
-            Assert.AreEqual(3, menuItems.Select(mi => mi.Header).Distinct().Count());
-            Assert.AreEqual(3,
-                menuItems.Select(mi => mi.Header).Intersect(
-                    new List<string>
-                    {
-                        Resources.CloudExplorerPubSubNewSubscriptionMenuHeader,
-                        Resources.CloudExplorerPubSubDeleteTopicMenuHeader,
-                        Resources.UiPropertiesMenuHeader
-                    }).Count());
+            List<MenuItem> menuItems = _objectUnderTest.ContextMenu.ItemsSource.Cast<MenuItem>().ToList();
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    Resources.CloudExplorerPubSubNewSubscriptionMenuHeader,
+                    Resources.CloudExplorerPubSubDeleteTopicMenuHeader,
+                    Resources.CloudExplorerPubSubChangeFiltersMenuHeader,
+                    Resources.UiPropertiesMenuHeader,
+                    Resources.UiOpenOnCloudConsoleMenuHeader
+                },
+                menuItems.Select(mi => mi.Header).ToList());
             _ownerMock.Verify(o => o.Context.ShowPropertiesWindow(It.IsAny<object>()), Times.Never);
         }
 
@@ -145,7 +151,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.OnNewSubscriptionCommand();
 
             Assert.AreEqual(1, _promptUserOptions.Count);
-            var errorPromptOptions = _promptUserOptions.Single();
+            UserPromptWindow.Options errorPromptOptions = _promptUserOptions.Single();
             Assert.AreEqual(MockExceptionMessage, errorPromptOptions.ErrorDetails);
             Assert.AreEqual(Resources.PubSubNewSubscriptionErrorHeader, errorPromptOptions.Title);
             Assert.AreEqual(Resources.PubSubNewSubscriptionErrorMessage, errorPromptOptions.Prompt);
@@ -215,7 +221,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             Assert.IsFalse(_objectUnderTest.IsLoading);
             Assert.AreEqual(1, _promptUserOptions.Count);
-            var deletePromptOptions = _promptUserOptions.Single();
+            UserPromptWindow.Options deletePromptOptions = _promptUserOptions.Single();
             Assert.AreEqual(Resources.PubSubDeleteTopicWindowHeader, deletePromptOptions.Title);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(It.IsAny<string>()), Times.Never);
             _ownerMock.Verify(o => o.Refresh(), Times.Never);
@@ -228,7 +234,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             Assert.IsTrue(_objectUnderTest.IsLoading);
             Assert.AreEqual(1, _promptUserOptions.Count);
-            var deletePromptOptions = _promptUserOptions.Single();
+            UserPromptWindow.Options deletePromptOptions = _promptUserOptions.Single();
             Assert.AreEqual(Resources.PubSubDeleteTopicWindowHeader, deletePromptOptions.Title);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(MockTopicFullName), Times.Once);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(It.IsNotIn(MockTopicFullName)), Times.Never);
@@ -244,7 +250,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             Assert.IsFalse(_objectUnderTest.IsLoading);
             Assert.AreEqual(2, _promptUserOptions.Count);
-            var errorPromptOptions = _promptUserOptions.Skip(1).Single();
+            UserPromptWindow.Options errorPromptOptions = _promptUserOptions.Skip(1).Single();
             Assert.AreEqual(Resources.PubSubDeleteTopicErrorHeader, errorPromptOptions.Title);
             Assert.AreEqual(MockExceptionMessage, errorPromptOptions.ErrorDetails);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(MockTopicFullName), Times.Once);
@@ -261,7 +267,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             Assert.IsFalse(_objectUnderTest.IsLoading);
             Assert.AreEqual(1, _promptUserOptions.Count);
-            var deletePromptOptions = _promptUserOptions.Single();
+            UserPromptWindow.Options deletePromptOptions = _promptUserOptions.Single();
             Assert.AreEqual(Resources.PubSubDeleteTopicWindowHeader, deletePromptOptions.Title);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(MockTopicFullName), Times.Once);
             _ownerMock.Verify(o => o.DataSource.DeleteTopicAsync(It.IsNotIn(MockTopicFullName)), Times.Never);
@@ -275,6 +281,32 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             _ownerMock.Verify(o => o.Context.ShowPropertiesWindow(_objectUnderTest.Item), Times.Once);
             _ownerMock.Verify(o => o.Context.ShowPropertiesWindow(It.IsNotIn(_objectUnderTest.Item)), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestOpenCloudConsoleCommand()
+        {
+            ICommand openCloudConsoleCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
+                    .Single(mi => mi.Header.Equals(Resources.UiOpenOnCloudConsoleMenuHeader)).Command;
+
+            openCloudConsoleCommand.Execute(null);
+
+            string expectedUrl = string.Format(
+                TopicViewModel.ConsoleUrlFormat, MockProjectId, MockTopicLeafName);
+            _ownerMock.Verify(o => o.OpenBrowser(expectedUrl));
+        }
+
+        [TestMethod]
+        public void TestChangeFiltersCommand()
+        {
+            ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
+                    .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
+            var showOptionPageMock = new Mock<Action<Type>>();
+            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionPageMock.Object;
+
+            changeFiltersCommand.Execute(null);
+
+            showOptionPageMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
         }
     }
 }

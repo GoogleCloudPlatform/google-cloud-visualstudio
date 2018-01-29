@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.PubSubWindows
     public static class PubSubNameValidationRule
     {
         /// <summary>
-        /// From the pub sub api documentation,
+        /// From the Pub/Sub api documentation,
         /// both subscription names and topic names must follow these rules:
         /// It must start with a letter.
         /// It must contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`),

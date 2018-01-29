@@ -229,17 +229,24 @@
   <ItemGroup>
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsTests.cs" />
+    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptionsTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="CloudSourceRepository\AsyncRepositoriesTests.cs" />
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\CsrCloneWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
+    <Compile Include="Options\AnalyticsOptionsTests.cs" />
+    <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelTests.cs" />
@@ -253,6 +260,7 @@
     <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
+    <Compile Include="Utils\EditableModelTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
@@ -260,6 +268,10 @@
     <Compile Include="VsVersion\ToolsPathProviderBaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
+      <Project>{A2D9AC4E-9621-4385-A175-316832F7BFDC}</Project>
+      <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
       <Project>{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}</Project>
       <Name>GoogleCloudExtension.DataSources</Name>
@@ -293,6 +305,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
