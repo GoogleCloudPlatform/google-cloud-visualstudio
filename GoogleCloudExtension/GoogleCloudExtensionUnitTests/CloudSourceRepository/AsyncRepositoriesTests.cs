@@ -27,7 +27,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
     {
         private AsyncRepositories _testObject;
         private IList<Repo> _testRepos;
-        private IList<Repo> _emptyList = new List<Repo>();
+        private readonly IList<Repo> _emptyList = new List<Repo>();
         private TaskCompletionSource<IList<Repo>> _testTaskCompletionSource;
         private Mock<Func<string, Task<IList<Repo>>>> _getCloudReposMock;
 
@@ -65,7 +65,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 
         [TestMethod]
         public void TestPendingAndCompletion()
-        {            
+        {
             Assert.AreEqual(AsyncRepositories.DisplayOptions.Pending, _testObject.DisplayState);
             _testTaskCompletionSource.SetResult(_testRepos);
             _testObject.StartListRepoTaskAsync("projectid").Wait();
@@ -80,7 +80,6 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             _testObject.StartListRepoTaskAsync("projectid").Wait();
             Assert.AreEqual(AsyncRepositories.DisplayOptions.NoItems, _testObject.DisplayState);
             Assert.AreSame(_emptyList, _testObject.Value);
-
         }
 
         [TestMethod]

@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.PickProjectDialog.SampleData
     public class ErrorState
     {
         public bool HasAccount { get; } = true;
-        
+
         public MockAsyncProperty LoadTask { get; } = new MockAsyncProperty { IsError = true, IsCompleted = true };
     }
 }

@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private static readonly TimeSpan s_waitConnectionTimeout = TimeSpan.FromMinutes(3);
 
-        private RemoteToolInstaller _installer;
+        private readonly RemoteToolInstaller _installer;
         private string _progressMessage;
 
         /// <summary>

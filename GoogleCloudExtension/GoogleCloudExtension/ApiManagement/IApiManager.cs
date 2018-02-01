@@ -41,6 +41,5 @@ namespace GoogleCloudExtension.ApiManagement
         /// <param name="serviceNames">The list of services to enable.</param>
         /// <returns>A task that will be completed once the operation finishes.</returns>
         Task EnableServicesAsync(IEnumerable<string> serviceNames);
-
     }
 }

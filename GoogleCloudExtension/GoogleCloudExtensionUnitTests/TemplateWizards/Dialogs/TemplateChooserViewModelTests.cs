@@ -296,7 +296,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
-            _promptPickProjectMock.Setup(f => f()).Returns((Project) null);
+            _promptPickProjectMock.Setup(f => f()).Returns((Project)null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 

@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
-
     [TestClass]
     public class PickProjectIdViewModelTests
     {

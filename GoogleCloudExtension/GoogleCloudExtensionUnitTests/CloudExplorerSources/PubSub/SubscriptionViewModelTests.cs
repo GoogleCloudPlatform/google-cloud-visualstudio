@@ -86,7 +86,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             CollectionAssert.AreEquivalent(
                 new[]
                 {
-
                     Resources.CloudExplorerPubSubDeleteSubscriptionMenuHeader,
                     Resources.UiPropertiesMenuHeader,
                     Resources.UiOpenOnCloudConsoleMenuHeader

@@ -59,7 +59,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _changedProperties.Clear();
-            _pickProjectPromptMock.Setup(f => f()).Returns((Project) null);
+            _pickProjectPromptMock.Setup(f => f()).Returns((Project)null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
 

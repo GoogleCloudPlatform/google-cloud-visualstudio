@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         public override int GetHashCode()
         {
-            unchecked 
+            unchecked
             {
                 int hash = 17;
                 hash = hash * 23 + Name.GetHashCode();

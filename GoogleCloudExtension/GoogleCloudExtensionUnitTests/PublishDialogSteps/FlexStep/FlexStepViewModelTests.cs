@@ -52,7 +52,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _appTaskSource = new TaskCompletionSource<Google.Apis.Appengine.v1.Data.Application>();
-            
+
             _mockedApiManager.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
             _mockedGaeDataSource.Setup(x => x.GetApplicationAsync()).Returns(() => _appTaskSource.Task);
             _mockedPublishDialog.Setup(x => x.TrackTask(It.IsAny<Task>()));
