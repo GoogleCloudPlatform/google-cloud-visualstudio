@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
 
                 PublishDialog.FinishFlow();
 
