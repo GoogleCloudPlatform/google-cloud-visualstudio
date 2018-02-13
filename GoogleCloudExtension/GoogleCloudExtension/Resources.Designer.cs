@@ -4804,7 +4804,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get log.
+        ///   Looks up a localized string similar to Get logs.
         /// </summary>
         public static string LogViewerTimeOrderPickLabelHead {
             get {

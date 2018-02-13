@@ -1520,7 +1520,7 @@
     <comment>The selection item that indicates to list logs before the time stamp.</comment>
   </data>
   <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
-    <value>Get log</value>
+    <value>Get logs</value>
     <comment>Head part of the label for picking the list log time order.</comment>
   </data>
   <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
