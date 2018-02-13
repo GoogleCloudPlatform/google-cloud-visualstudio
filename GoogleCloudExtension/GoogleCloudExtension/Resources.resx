@@ -865,6 +865,10 @@
     <value>Failed to deploy project {0} to App Engine Flex.</value>
     <comment>Message shown in the output window after a failed deployment. {0} is the project name.</comment>
   </data>
+  <data name="FlexPublishStepStartMessage" xml:space="preserve">
+    <value>Publishing {0} to App Engine Flex.</value>
+    <comment>Start message for the Flex publish step, shown on the output window. {0} is the name of the project being published.</comment>
+  </data>
   <data name="FlexPublishProgressMessage" xml:space="preserve">
     <value>Deploying to App Engine Flex...</value>
     <comment>Message shown in the progress area during the deployment to Flex.</comment>

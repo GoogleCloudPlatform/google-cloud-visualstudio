@@ -3283,6 +3283,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publishing {0} to App Engine Flex..
+        /// </summary>
+        public static string FlexPublishStepStartMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishStepStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project {0} deployed to App Engine Flex..
         /// </summary>
         public static string FlexPublishSuccessMessage {
