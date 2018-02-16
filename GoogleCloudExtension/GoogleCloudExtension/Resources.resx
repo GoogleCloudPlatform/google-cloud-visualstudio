@@ -2982,4 +2982,8 @@
     <value>Project Id</value>
     <comment>The display name of the Project property of a PubSub topic.</comment>
   </data>
+  <data name="AnalyticsPromptDescription" xml:space="preserve">
+    <value>This information will be collected anonymously.</value>
+    <comment>Smaller text on the Analytics Opt In Prompt.</comment>
+  </data>
 </root>

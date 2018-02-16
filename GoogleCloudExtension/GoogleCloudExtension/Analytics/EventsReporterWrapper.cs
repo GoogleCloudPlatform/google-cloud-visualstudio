@@ -14,7 +14,7 @@
 
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using System;
 using System.Diagnostics;
 
@@ -49,15 +49,11 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static void EnsureAnalyticsOptIn()
         {
-            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
+            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;            
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = UserPromptUtils.ActionPrompt(
-                    Resources.AnalyticsPromptMessage,
-                    Resources.AnalyticsPromptTitle,
-                    actionCaption: Resources.UiYesButtonCaption,
-                    cancelCaption: Resources.UiNoButtonCaption);
+                settings.OptIn = AnalyticsOptInWindow.PromptUser();
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }
