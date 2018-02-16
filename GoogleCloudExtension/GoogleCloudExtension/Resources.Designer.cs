@@ -232,7 +232,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
+        ///   Looks up a localized string similar to Do you want to help Google by reporting usage statistics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
             get {

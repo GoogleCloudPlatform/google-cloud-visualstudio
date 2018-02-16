@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AnalyticsPromptMessage" xml:space="preserve">
-    <value>Do you want to help Google by reporting usage statics?</value>
+    <value>Do you want to help Google by reporting usage statistics?</value>
     <comment>Message for the analytics prompt.</comment>
   </data>
   <data name="AnalyticsPromptTitle" xml:space="preserve">
