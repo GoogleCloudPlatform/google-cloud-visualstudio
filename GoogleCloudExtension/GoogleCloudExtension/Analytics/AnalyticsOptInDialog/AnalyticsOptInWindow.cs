@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Theming;
 
-
 namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
 {
     /// <summary>

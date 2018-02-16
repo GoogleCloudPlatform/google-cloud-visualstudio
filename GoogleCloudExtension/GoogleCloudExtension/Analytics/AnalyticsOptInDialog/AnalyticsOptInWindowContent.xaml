@@ -6,8 +6,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"             
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"             
              xmlns:local="clr-namespace:GoogleCloudExtension.Analytics.AnalyticsOptInDialog"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             mc:Ignorable="d"             
              d:DataContext="{d:DesignInstance local:AnalyticsOptInWindowViewModel}">
 
     <UserControl.Resources>
@@ -20,10 +19,10 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent HasBanner="True">
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiYesButtonCaption}"
@@ -34,21 +33,11 @@
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <Grid Margin="0,12,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="{x:Static ext:Resources.AnalyticsPromptMessage}" Style="{StaticResource CommonTextStyleLarge}" />
+            <TextBlock Text="{x:Static ext:Resources.AnalyticsPromptDescription}" Style="{StaticResource CommonTextStyle}" Margin="0,10,0,0" />
+        </StackPanel>
 
-            <StackPanel Grid.Column="1">
-                <TextBlock Text="{x:Static ext:Resources.AnalyticsPromptMessage}" Style="{StaticResource CommonTextStyleLarge}" Margin="0,0,0,12" />
-                <TextBlock Text="{x:Static ext:Resources.AnalyticsPromptDescription}" Style="{StaticResource CommonTextStyle}" />
-            </StackPanel>
-        </Grid>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

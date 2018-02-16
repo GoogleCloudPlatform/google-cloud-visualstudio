@@ -223,7 +223,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This information will be collected anonymously..
+        ///   Looks up a localized string similar to This information will help us understand how our product is being used so we can keep improving it. This information will be collected anonymously..
         /// </summary>
         public static string AnalyticsPromptDescription {
             get {

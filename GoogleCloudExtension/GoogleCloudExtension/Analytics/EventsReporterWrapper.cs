@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static void EnsureAnalyticsOptIn()
         {
-            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;            
+            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");

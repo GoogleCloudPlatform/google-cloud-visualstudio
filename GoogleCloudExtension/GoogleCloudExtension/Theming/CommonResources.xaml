@@ -102,7 +102,7 @@
     <Style x:Key="CommonDialogStyleDynamicLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="500px" />
         <Setter Property="MinHeight" Value="350px" />
-    </Style>
+    </Style>    
 
     <!-- Common ListView styles. -->
 
@@ -949,7 +949,7 @@
         <Setter Property="Background" Value="White" />
     </Style>
 
-    <!-- Default tyle for a tooltip. -->
+    <!-- Default style for a tooltip. -->
     <SolidColorBrush x:Key="CommonTooltipColors.Border" Color="#FFBDBDBD" />
     <SolidColorBrush x:Key="CommonTooltipColors.Background" Color="#FFEEEEEE" />
 
