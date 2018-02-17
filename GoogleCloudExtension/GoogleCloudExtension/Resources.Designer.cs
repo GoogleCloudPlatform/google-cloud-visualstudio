@@ -4453,7 +4453,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected either Gcp.AspDotNet or Gcp.AspDotNetCore, but received {0}..
+        ///   Looks up a localized string similar to Expected either Gcp.AspNet or Gcp.AspNetCore, but received {0}..
         /// </summary>
         public static string GoogleProjectTemplateSelectorWizardInvalidTemplateMessage {
             get {

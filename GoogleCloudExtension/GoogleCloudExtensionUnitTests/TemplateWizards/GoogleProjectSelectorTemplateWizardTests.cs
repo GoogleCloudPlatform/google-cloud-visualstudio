@@ -45,10 +45,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
                 @"c:\DefaultSolutionDirectory\DefaultDestinationDirectory";
 
         private const string DefaultAspDotNetTemplatePath =
-                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNet.vstemplate";
 
         private const string DefaultAspDotNetCoreTemplatePath =
-                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNetCore.vstemplate";
+                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNetCore.vstemplate";
 
         private const string DefaultProjectName = "DefaultProjectName";
         private const string DefaultProjectId = "default-project-id";
@@ -240,7 +240,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             const string targetDirectory = @"c:\TargetDirectory";
             const string packagesPath = @"packages\";
             const string thisTemplatePath =
-                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNet.vstemplate";
             var result = new TemplateChooserViewModelResult(
                     "overrideProjectId", FrameworkType.NetCore, AspNetVersion.AspNetCore11, AppType.WebApi);
             const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\WebApi\1033\1.1\1.1.vstemplate";
@@ -295,7 +295,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _promptResult = new TemplateChooserViewModelResult(
                     DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNet4, AppType.Mvc);
             const string sourceTemplatePath =
-                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNet.vstemplate";
             const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\Mvc\1033\4\4.vstemplate";
             try
             {
@@ -320,7 +320,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _promptResult = new TemplateChooserViewModelResult(
                     DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNetCore10, AppType.Mvc);
             const string sourceTemplatePath =
-                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNetCore.vstemplate";
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNetCore.vstemplate";
             const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\Mvc\1033\1.0\1.0.vstemplate";
             try
             {

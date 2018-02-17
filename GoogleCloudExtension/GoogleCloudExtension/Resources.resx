@@ -2983,7 +2983,7 @@
     <comment>The display name of the Project property of a PubSub topic.</comment>
   </data>
   <data name="GoogleProjectTemplateSelectorWizardInvalidTemplateMessage" xml:space="preserve">
-    <value>Expected either Gcp.AspDotNet or Gcp.AspDotNetCore, but received {0}.</value>
+    <value>Expected either Gcp.AspNet or Gcp.AspNetCore, but received {0}.</value>
   </data>
   <data name="TemplateChooserViewModelInvalidTemplateTypeErrorMessage" xml:space="preserve">
     <value>Expected a valid value of TemplateType, but got {0}</value>
