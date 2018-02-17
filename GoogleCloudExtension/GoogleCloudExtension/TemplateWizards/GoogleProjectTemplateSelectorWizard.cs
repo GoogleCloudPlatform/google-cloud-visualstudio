@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.TemplateWizards
             {
                 throw new ArgumentException(
                         string.Format(
-                                Resources.GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage, templateName),
+                                Resources.GoogleProjectTemplateSelectorWizardInvalidTemplateMessage, templateName),
                         nameof(templateName));
             }
         }

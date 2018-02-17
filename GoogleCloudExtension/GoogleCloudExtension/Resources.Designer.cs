@@ -313,29 +313,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASP.NET Framework {0}.
+        /// </summary>
+        public static string AspNetVersionedName {
+            get {
+                return ResourceManager.GetString("AspNetVersionedName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown Famework type: {0}.
         /// </summary>
-        public static string AspNetVersion_UnknownFrameworkTypeErrorMessage {
+        public static string AspNetVersionUnknownFrameworkTypeErrorMessage {
             get {
-                return ResourceManager.GetString("AspNetVersion_UnknownFrameworkTypeErrorMessage", resourceCulture);
+                return ResourceManager.GetString("AspNetVersionUnknownFrameworkTypeErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unknown template type: {0}.
         /// </summary>
-        public static string AspNetVersion_UnknownTemplateTypeErrorMessage {
+        public static string AspNetVersionUnknownTemplateTypeErrorMessage {
             get {
-                return ResourceManager.GetString("AspNetVersion_UnknownTemplateTypeErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ASP.NET Framework {0}.
-        /// </summary>
-        public static string AspNetVersionedName {
-            get {
-                return ResourceManager.GetString("AspNetVersionedName", resourceCulture);
+                return ResourceManager.GetString("AspNetVersionUnknownTemplateTypeErrorMessage", resourceCulture);
             }
         }
         
@@ -4455,9 +4455,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Expected either Gcp.AspDotNet or Gcp.AspDotNetCore, but received {0}..
         /// </summary>
-        public static string GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage {
+        public static string GoogleProjectTemplateSelectorWizardInvalidTemplateMessage {
             get {
-                return ResourceManager.GetString("GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage", resourceCulture);
+                return ResourceManager.GetString("GoogleProjectTemplateSelectorWizardInvalidTemplateMessage", resourceCulture);
             }
         }
         
@@ -6066,9 +6066,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Expected a valid value of TemplateType, but got {0}.
         /// </summary>
-        public static string TemplateChooserViewModel_InvalidTemplateTypeErrorMessage {
+        public static string TemplateChooserViewModelInvalidTemplateTypeErrorMessage {
             get {
-                return ResourceManager.GetString("TemplateChooserViewModel_InvalidTemplateTypeErrorMessage", resourceCulture);
+                return ResourceManager.GetString("TemplateChooserViewModelInvalidTemplateTypeErrorMessage", resourceCulture);
             }
         }
         

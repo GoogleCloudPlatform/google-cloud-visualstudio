@@ -189,7 +189,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 default:
                     throw new ArgumentException(
                             string.Format(
-                                    Resources.TemplateChooserViewModel_InvalidTemplateTypeErrorMessage, templateType),
+                                    Resources.TemplateChooserViewModelInvalidTemplateTypeErrorMessage, templateType),
                             nameof(templateType));
             }
         }

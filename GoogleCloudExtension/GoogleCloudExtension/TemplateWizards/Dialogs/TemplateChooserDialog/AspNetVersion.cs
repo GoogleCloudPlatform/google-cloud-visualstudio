@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     break;
                 default:
                     throw new ArgumentException(
-                            string.Format(Resources.AspNetVersion_UnknownTemplateTypeErrorMessage, templateType),
+                            string.Format(Resources.AspNetVersionUnknownTemplateTypeErrorMessage, templateType),
                             nameof(templateType));
             }
 
@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     return new List<AspNetVersion>();
                 default:
                     throw new ArgumentException(
-                            string.Format(Resources.AspNetVersion_UnknownFrameworkTypeErrorMessage, framework),
+                            string.Format(Resources.AspNetVersionUnknownFrameworkTypeErrorMessage, framework),
                             nameof(framework));
             }
         }

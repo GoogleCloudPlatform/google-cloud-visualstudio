@@ -2982,16 +2982,16 @@
     <value>Project Id</value>
     <comment>The display name of the Project property of a PubSub topic.</comment>
   </data>
-  <data name="GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage" xml:space="preserve">
+  <data name="GoogleProjectTemplateSelectorWizardInvalidTemplateMessage" xml:space="preserve">
     <value>Expected either Gcp.AspDotNet or Gcp.AspDotNetCore, but received {0}.</value>
   </data>
-  <data name="TemplateChooserViewModel_InvalidTemplateTypeErrorMessage" xml:space="preserve">
+  <data name="TemplateChooserViewModelInvalidTemplateTypeErrorMessage" xml:space="preserve">
     <value>Expected a valid value of TemplateType, but got {0}</value>
   </data>
-  <data name="AspNetVersion_UnknownTemplateTypeErrorMessage" xml:space="preserve">
+  <data name="AspNetVersionUnknownTemplateTypeErrorMessage" xml:space="preserve">
     <value>Unknown template type: {0}</value>
   </data>
-  <data name="AspNetVersion_UnknownFrameworkTypeErrorMessage" xml:space="preserve">
+  <data name="AspNetVersionUnknownFrameworkTypeErrorMessage" xml:space="preserve">
     <value>Unknown Famework type: {0}</value>
   </data>
 </root>
