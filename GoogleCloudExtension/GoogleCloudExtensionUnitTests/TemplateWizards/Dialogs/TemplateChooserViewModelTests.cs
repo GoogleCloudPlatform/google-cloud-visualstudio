@@ -15,6 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.TemplateWizards;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -48,15 +49,18 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _promptPickProjectMock = new Mock<Func<Project>>();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
         }
 
         [TestMethod]
-        public void TestInitialConditions()
+        public void TestInitialConditionsForAspNet()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
+
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
             Assert.AreEqual(true, _objectUnderTest.OkCommand.CanExecuteCommand);
             Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.SelectFrameworkVisible);
+            Assert.IsFalse(_objectUnderTest.SelectVersionVisible);
             Assert.IsNull(_objectUnderTest.Result);
         }
 
@@ -66,13 +70,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsFalse(_objectUnderTest.NetCoreAvailable);
+            Assert.IsFalse(_objectUnderTest.SelectFrameworkVisible);
+            Assert.IsTrue(_objectUnderTest.SelectVersionVisible);
             Assert.AreEqual(FrameworkType.NetFramework, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] { AspNetVersion.AspNet4 }, _objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNet4, _objectUnderTest.SelectedVersion);
+                new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 }, _objectUnderTest.AvailableVersions.ToList());
+            Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
@@ -82,9 +87,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
             _targetSdkVersions.Add("1.0.0-preview2-003156");
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
+            Assert.IsTrue(_objectUnderTest.SelectFrameworkVisible);
+            Assert.IsTrue(_objectUnderTest.SelectVersionVisible);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore1Preview }, _objectUnderTest.AvailableVersions.ToList());
@@ -97,14 +103,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsFalse(_objectUnderTest.NetCoreAvailable);
+            Assert.IsFalse(_objectUnderTest.SelectFrameworkVisible);
+            Assert.IsTrue(_objectUnderTest.SelectVersionVisible);
             Assert.AreEqual(FrameworkType.NetFramework, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
-                new[] { AspNetVersion.AspNet4 },
+                    new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
                 _objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNet4, _objectUnderTest.SelectedVersion);
+            Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
@@ -114,9 +121,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
             _targetSdkVersions.Add("2.0.0");
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
+            Assert.IsTrue(_objectUnderTest.SelectFrameworkVisible);
+            Assert.IsTrue(_objectUnderTest.SelectVersionVisible);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore20 },
@@ -131,9 +139,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
             _targetSdkVersions.Add("1.0.0");
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11 },
@@ -149,9 +156,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _targetSdkVersions.Add("2.0.0");
             _targetSdkVersions.Add("1.0.0");
 
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            Assert.IsTrue(_objectUnderTest.NetCoreAvailable);
             Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
@@ -162,6 +168,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetMvc()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
+
             _objectUnderTest.IsMvc = true;
 
             Assert.IsTrue(_objectUnderTest.IsMvc);
@@ -173,6 +181,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeToMvc()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsMvc = true;
@@ -186,6 +195,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestUnsetMvc()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsMvc = false;
@@ -199,6 +209,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetWebApi()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.IsWebApi = true;
 
             Assert.IsFalse(_objectUnderTest.IsMvc);
@@ -210,6 +221,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeToWebApi()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsWebApi = true;
@@ -223,6 +235,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestUnsetWebApi()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsWebApi = false;
@@ -236,7 +249,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetSelectedVersion()
         {
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
             _objectUnderTest.SelectedVersion = AspNetVersion.AspNetCore11;
 
@@ -248,7 +261,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         {
             _targetSdkVersions.Add("2.0.0");
             _targetSdkVersions.Add("1.0.0");
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest.SelectedFramework = FrameworkType.NetFramework;
 
             _objectUnderTest.SelectedVersion = AspNetVersion.AspNetCore11;
             _objectUnderTest.SelectedFramework = FrameworkType.NetCore;
@@ -263,28 +277,20 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void TestSetSelectedFrameworkInvalidateSelectedVersion()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void TestSelectInvalidSelectedVersion()
         {
             _targetSdkVersions.Add("2.0.0");
             _targetSdkVersions.Add("1.0.0");
-            _objectUnderTest = new TemplateChooserViewModel(_closeWindowMock.Object, _promptPickProjectMock.Object);
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNetCore, _closeWindowMock.Object, _promptPickProjectMock.Object);
 
-            _objectUnderTest.SelectedFramework = FrameworkType.NetFramework;
             _objectUnderTest.SelectedVersion = AspNetVersion.AspNet4;
-            _objectUnderTest.SelectedFramework = FrameworkType.NetCore;
-
-            Assert.AreEqual(FrameworkType.NetCore, _objectUnderTest.SelectedFramework);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20
-                }, _objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNetCore10, _objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
         public void TestSelectProject()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             const string mockProjectID = "mock-project-id";
             _promptPickProjectMock.Setup(f => f()).Returns(new Project { ProjectId = mockProjectID });
 
@@ -296,6 +302,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSelectProjectCanceled()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _promptPickProjectMock.Setup(f => f()).Returns((Project)null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
@@ -306,6 +313,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestOkCommand()
         {
+            _objectUnderTest = new TemplateChooserViewModel(TemplateType.AspNet, _closeWindowMock.Object, _promptPickProjectMock.Object);
             _objectUnderTest.OkCommand.Execute(null);
 
             _closeWindowMock.Verify(f => f(), Times.Once);

@@ -179,6 +179,10 @@
     <Content Include="Framework\WebAPI\Scripts\respond.js" />
     <Content Include="Framework\WebAPI\Scripts\respond.min.js" />
     <Content Include="Framework\WebAPI\Scripts\_references.js" />
+    <VSTemplate Include="Gcp.AspNetCore.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>Google Cloud Platform</OutputSubPath>
+    </VSTemplate>
     <Content Include="__TemplateIcon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -269,7 +273,7 @@
     <None Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Gcp.vstemplate">
+    <VSTemplate Include="Gcp.AspNet.vstemplate">
       <SubType>Designer</SubType>
       <OutputSubPath>Google Cloud Platform</OutputSubPath>
     </VSTemplate>

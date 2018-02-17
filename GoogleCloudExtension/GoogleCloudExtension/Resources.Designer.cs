@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -309,6 +309,24 @@ namespace GoogleCloudExtension {
         public static string AspNetCoreVersionedName {
             get {
                 return ResourceManager.GetString("AspNetCoreVersionedName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown Famework type: {0}.
+        /// </summary>
+        public static string AspNetVersion_UnknownFrameworkTypeErrorMessage {
+            get {
+                return ResourceManager.GetString("AspNetVersion_UnknownFrameworkTypeErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown template type: {0}.
+        /// </summary>
+        public static string AspNetVersion_UnknownTemplateTypeErrorMessage {
+            get {
+                return ResourceManager.GetString("AspNetVersion_UnknownTemplateTypeErrorMessage", resourceCulture);
             }
         }
         
@@ -4435,6 +4453,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected either Gcp.AspDotNet or Gcp.AspDotNetCore, but received {0}..
+        /// </summary>
+        public static string GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage {
+            get {
+                return ResourceManager.GetString("GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue to open the project?.
         /// </summary>
         public static string LogsViewerAskToOpenProjectMessage {
@@ -6033,6 +6060,15 @@ namespace GoogleCloudExtension {
         public static string SplitTrafficWindowVersionLabel {
             get {
                 return ResourceManager.GetString("SplitTrafficWindowVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a valid value of TemplateType, but got {0}.
+        /// </summary>
+        public static string TemplateChooserViewModel_InvalidTemplateTypeErrorMessage {
+            get {
+                return ResourceManager.GetString("TemplateChooserViewModel_InvalidTemplateTypeErrorMessage", resourceCulture);
             }
         }
         

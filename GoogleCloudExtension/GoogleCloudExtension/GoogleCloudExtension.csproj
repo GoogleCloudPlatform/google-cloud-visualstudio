@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="$(VisualStudioVersion) != '15.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -207,6 +207,7 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="TemplateWizards\TemplateType.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptions.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />

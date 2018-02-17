@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
         // Mockable static methods for unit testing.
-        internal Func<string, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
+        internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         /// <inheritdoc/>
@@ -50,6 +50,7 @@ namespace GoogleCloudExtension.TemplateWizards
             try
             {
                 string projectName = replacements[ReplacementsKeys.ProjectNameKey];
+                var thisTemplatePath = (string)customParams[0];
 
                 TemplateChooserViewModelResult result;
                 // Enable shortcutting the ui for functional testing.
@@ -60,22 +61,22 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
                 else
                 {
-                    result = PromptUser(projectName);
+                    result = PromptUser(projectName, GetAspFrameworkTypeFromTemplateName(Path.GetFileNameWithoutExtension(thisTemplatePath)));
                 }
                 if (result == null)
                 {
                     throw new WizardBackoutException();
                 }
+
                 string thisTemplateDirectory =
-                    Path.GetDirectoryName(
-                        Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName((string)customParams[0]))));
+                        Path.GetFullPath(Path.Combine(thisTemplatePath, "..", "..", "..", ".."));
 
 
                 var serviceProvider = automationObject as IServiceProvider;
                 object[] newCustomParams = GetNewCustomParams(replacements, customParams.Skip(1), result);
 
                 string version = result.SelectedVersion.Version;
-                string templatePath = Path.Combine(
+                string targetTemplatePath = Path.Combine(
                     thisTemplateDirectory, result.AppType.ToString(), "1033", version, $"{version}.vstemplate");
                 string destinationFolder = replacements[ReplacementsKeys.DestinationDirectoryKey];
 
@@ -83,7 +84,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 IVsHierarchy newProject;
                 Marshal.ThrowExceptionForHR(
                     vsSolution.AddNewProjectFromTemplate(
-                        templatePath, newCustomParams, null,
+                        targetTemplatePath, newCustomParams, null,
                         destinationFolder, projectName, null,
                         out newProject));
             }
@@ -94,6 +95,22 @@ namespace GoogleCloudExtension.TemplateWizards
             }
             // Delegated wizard created the solution. Cancel repeated creation of the solution.
             throw new WizardCancelledException();
+        }
+
+        private TemplateType GetAspFrameworkTypeFromTemplateName(string templateName)
+        {
+            TemplateType result;
+            if (Enum.TryParse(Path.GetExtension(templateName)?.Substring(1), out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException(
+                        string.Format(
+                                Resources.GoogleProjectTemplateSelectorWizard_InvalidTemplateMessage, templateName),
+                        nameof(templateName));
+            }
         }
 
         /// <inheritdoc/>

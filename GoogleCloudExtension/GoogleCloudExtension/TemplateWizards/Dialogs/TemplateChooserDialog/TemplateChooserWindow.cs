@@ -24,9 +24,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     {
         private TemplateChooserViewModel ViewModel { get; }
 
-        private TemplateChooserWindow(string dialogTitle) : base(dialogTitle)
+        private TemplateChooserWindow(string dialogTitle, TemplateType templateType) : base(dialogTitle)
         {
             ViewModel = new TemplateChooserViewModel(
+                    templateType,
                 Close,
                 () => PickProjectIdWindow.PromptUser(
                         GoogleCloudExtension.Resources.TemplateWizardPickProjectIdHelpText,
@@ -38,11 +39,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// Prompts the user to select properties of their template.
         /// </summary>
         /// <param name="projectName">The name of the project being created.</param>
+        /// <param name="templateType">The type of template being created.</param>
         /// <returns>The result of the dialog. Will return null when the dialog is canceled.</returns>
-        public static TemplateChooserViewModelResult PromptUser(string projectName)
+        public static TemplateChooserViewModelResult PromptUser(string projectName, TemplateType templateType)
         {
             var dialog = new TemplateChooserWindow(
-                string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName));
+                string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName), templateType);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

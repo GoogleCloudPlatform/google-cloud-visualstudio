@@ -31,6 +31,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
         private AppType _appType = AppType.Mvc;
+        private readonly TemplateType _templateType;
 
         /// <summary>
         /// The id of a google cloud project.
@@ -50,7 +51,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             set
             {
                 SetValueAndRaise(ref _selectedFramework, value);
-                AvailableVersions = AspNetVersion.GetAvailableVersions(SelectedFramework);
+                AvailableVersions = AspNetVersion.GetAvailableVersions(_templateType, _selectedFramework);
             }
         }
 
@@ -76,7 +77,15 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public AspNetVersion SelectedVersion
         {
             get { return _selectedVersion; }
-            set { SetValueAndRaise(ref _selectedVersion, value); }
+            set
+            {
+                if (!AvailableVersions.Contains(value))
+                {
+                    throw new InvalidOperationException($"{value} is not an Aavailable Version to select.");
+                }
+
+                SetValueAndRaise(ref _selectedVersion, value);
+            }
         }
 
         /// <summary>
@@ -145,14 +154,15 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public TemplateChooserViewModelResult Result { get; private set; }
 
-        public bool NetCoreAvailable { get; } = IsNetCoreAvailable();
+        public bool SelectFrameworkVisible { get; }
+        public bool SelectVersionVisible { get; }
 
-        private static bool IsNetCoreAvailable() => AspNetVersion.GetAvailableVersions(FrameworkType.NetCore).Any();
-
+        /// <param name="templateType"></param>
         /// <param name="closeWindow">The action that will close the dialog.</param>
         /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
-        public TemplateChooserViewModel(Action closeWindow, Func<Project> promptPickProject)
+        public TemplateChooserViewModel(TemplateType templateType, Action closeWindow, Func<Project> promptPickProject)
         {
+            _templateType = templateType;
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
                 () =>
@@ -162,7 +172,26 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 });
             SelectProjectCommand =
                 new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
-            SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
+            switch (_templateType)
+            {
+                case TemplateType.AspNet:
+                    SelectedFramework = FrameworkType.NetFramework;
+                    SelectFrameworkVisible = false;
+                    SelectVersionVisible = false;
+                    break;
+                case TemplateType.AspNetCore:
+                    bool netCoreAvailable =
+                            AspNetVersion.GetAvailableVersions(_templateType, FrameworkType.NetCore).Any();
+                    SelectedFramework = netCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
+                    SelectFrameworkVisible = netCoreAvailable;
+                    SelectVersionVisible = true;
+                    break;
+                default:
+                    throw new ArgumentException(
+                            string.Format(
+                                    Resources.TemplateChooserViewModel_InvalidTemplateTypeErrorMessage, templateType),
+                            nameof(templateType));
+            }
         }
     }
 }

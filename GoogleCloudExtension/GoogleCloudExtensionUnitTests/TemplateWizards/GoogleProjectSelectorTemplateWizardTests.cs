@@ -39,37 +39,31 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     [SuppressMessage("ReSharper", "RedundantAssignment")]
     public class GoogleProjectTemplateSelectorWizardTests
     {
-        private const string DefaultSolutionDirectoryName = @"DefaultSolutionDirectory";
-        private const string DefaultSolutionDirectory = @"root:\" + DefaultSolutionDirectoryName;
-        private const string DefaultDestinationDirectoryName = @"DefaultDestinationDirectory";
-        private const string DefaultDestinationDirectory =
-            DefaultSolutionDirectory + @"\" + DefaultDestinationDirectoryName;
+        private const string DefaultSolutionDirectory = @"c:\DefaultSolutionDirectory";
 
-        private const string SelectorTemplateSubPath = @"CSharp\Google Cloud Platform\1033\Gcp\Gcp.vstemplate";
-        private const string TargetTemplateSubPathFormat = @"CSharp\{0}\1033\{1}\{1}.vstemplate";
-        private const string DefaultTemplatesBasePath = @"c:\ProjectTemplates\";
-        private const string DefaultSelectorTemplatePath = DefaultTemplatesBasePath + SelectorTemplateSubPath;
-        private const string TargetTemplatePathFromat = DefaultTemplatesBasePath + TargetTemplateSubPathFormat;
+        private const string DefaultDestinationDirectory =
+                @"c:\DefaultSolutionDirectory\DefaultDestinationDirectory";
+
+        private const string DefaultAspDotNetTemplatePath =
+                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+
+        private const string DefaultAspDotNetCoreTemplatePath =
+                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNetCore.vstemplate";
 
         private const string DefaultProjectName = "DefaultProjectName";
         private const string DefaultProjectId = "default-project-id";
-        private const AppType DefaultAppType = AppType.Mvc;
         private const FrameworkType DefaultFrameworkType = FrameworkType.NetCore;
-
-        private static readonly string s_defaultTargetTemplatePath =
-            string.Format(TargetTemplatePathFromat, DefaultAppType, AspNetVersion.AspNetCore10.Version);
-
 
         private GoogleProjectTemplateSelectorWizard _objectUnderTest;
         private Dictionary<string, string> _replacements;
         private Mock<DTE> _dteMock;
         private Mock<IVsSolution6> _solutionMock;
         private Mock<Action<Dictionary<string, string>>> _cleanupDirectoriesMock;
-        private Mock<Func<string, TemplateChooserViewModelResult>> _promptUserMock;
+        private Mock<Func<string, TemplateType, TemplateChooserViewModelResult>> _promptUserMock;
         private IVsHierarchy _newHierarchy;
         private TemplateChooserViewModelResult _promptResult;
         private object[] _customParams;
-        private Dictionary<string, string> _newCustomParams;
+        private Dictionary<string, string> _expectedCustomParams;
 
         [TestInitialize]
         public void BeforeEach()
@@ -82,13 +76,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             };
             _customParams = new object[]
             {
-                DefaultSelectorTemplatePath
+                DefaultAspDotNetTemplatePath
             };
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, DefaultFrameworkType, AspNetVersion.AspNetCore10, DefaultAppType);
+                DefaultProjectId, DefaultFrameworkType, AspNetVersion.AspNetCore10, AppType.Mvc);
 
-            _promptUserMock = new Mock<Func<string, TemplateChooserViewModelResult>>();
-            _promptUserMock.Setup(p => p(It.IsAny<string>())).Returns(() => _promptResult);
+            _promptUserMock = new Mock<Func<string, TemplateType, TemplateChooserViewModelResult>>();
+            _promptUserMock.Setup(p => p(It.IsAny<string>(), It.IsAny<TemplateType>()))
+                    .Returns(() => _promptResult);
             _cleanupDirectoriesMock = new Mock<Action<Dictionary<string, string>>>();
 
             _objectUnderTest = new GoogleProjectTemplateSelectorWizard
@@ -111,37 +106,77 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _dteMock.As<IServiceProvider>().Setup(
                 sp => sp.QueryService(ref guidService, ref uuid, out mockedSolutionPtr));
 
-            _newCustomParams =
-                new Dictionary<string, string>
-                {
-                    {ReplacementsKeys.GcpProjectIdKey, DefaultProjectId},
-                    {ReplacementsKeys.SolutionDirectoryKey, DefaultSolutionDirectory},
-                    {ReplacementsKeys.PackagesPathKey, @"..\packages\"}
-                };
+            _expectedCustomParams = new Dictionary<string, string>();
         }
 
-        private bool TestCustomParams(IEnumerable customParams)
+        private bool AreExpectedCustomParams(IEnumerable customParams)
         {
-            return _newCustomParams.All(pair => customParams.OfType<object>().Contains($"{pair.Key}={pair.Value}"));
+            return _expectedCustomParams.All(pair => customParams.OfType<object>().Contains($"{pair.Key}={pair.Value}"));
         }
 
         [TestMethod]
         [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedDefaults()
+        public void TestPromptForAspDotNet()
         {
+            const string newProjectName = "AspNetProjectName";
+            _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
+            try
+            {
+                string templateFilePath = DefaultAspDotNetTemplatePath;
+                _objectUnderTest.RunStarted(
+                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
+                        new object[] { templateFilePath });
+            }
+            catch (WizardCancelledException)
+            {
+                _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNet), Times.Once);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(WizardCancelledException))]
+        public void TestPromptForAspDotNetCore()
+        {
+            const string newProjectName = "AspNetCoreProjectName";
+            _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
+            try
+            {
+                string templateFilePath = DefaultAspDotNetCoreTemplatePath;
+                _objectUnderTest.RunStarted(
+                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
+                        new object[] { templateFilePath });
+            }
+            catch (WizardCancelledException)
+            {
+                _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNetCore), Times.Once);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(WizardCancelledException))]
+        public void TestAddTemplateCallWithSameDestinationDirectory()
+        {
+            const string newProjectName = "SameDirectoryProject";
+            const string targetDirectory = @"c:\TargetDirectory";
+            const string packagesPath = @"packages\";
+
+            _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
+            _replacements[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
+            _replacements[ReplacementsKeys.DestinationDirectoryKey] = targetDirectory;
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
+                _expectedCustomParams[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
+                _expectedCustomParams[ReplacementsKeys.PackagesPathKey] = packagesPath;
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), null,
-                        DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                        It.IsAny<string>(), It.Is<Array>(a => AreExpectedCustomParams(a)), It.IsAny<string>(),
+                        targetDirectory, newProjectName, null, out _newHierarchy),
                     Times.Once);
                 throw;
             }
@@ -149,78 +184,28 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedDifferentSolutionDir()
+        public void TestAddTemplateCallWithDifferentDestinationDirectory()
         {
-            _replacements[ReplacementsKeys.SolutionDirectoryKey] = DefaultDestinationDirectory;
-            _newCustomParams[ReplacementsKeys.SolutionDirectoryKey] = DefaultDestinationDirectory;
-            _newCustomParams[ReplacementsKeys.PackagesPathKey] = @"packages\";
-            try
-            {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
-            }
-            catch (WizardCancelledException)
-            {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
-                _solutionMock.Verify(
-                    s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
-                        DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
-                    Times.Once);
-                throw;
-            }
-        }
+            const string newProjectName = "DifferentDirectoryProject";
+            const string destinationDirectory = @"c:\DestinationDirectory";
+            const string packagesPath = @"..\SolutionDirectory\packages\";
+            const string solutionDirectory = @"c:\SolutionDirectory";
 
-        [TestMethod]
-        [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedDifferentSourceTemplate()
-        {
-            const string templateBasePath = @"root:\NewBasePath\";
-            _customParams = new object[]
-            {
-                templateBasePath + SelectorTemplateSubPath
-            };
-            try
-            {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
-            }
-            catch (WizardCancelledException)
-            {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
-                string templatePath = templateBasePath +
-                    string.Format(TargetTemplateSubPathFormat, DefaultAppType, AspNetVersion.AspNetCore10.Version);
-                _solutionMock.Verify(
-                    s => s.AddNewProjectFromTemplate(
-                        templatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
-                        DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
-                    Times.Once);
-                throw;
-            }
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedDifferentDestinationDir()
-        {
-            const string destinationDirectory = @"root:\Destination";
+            _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
             _replacements[ReplacementsKeys.DestinationDirectoryKey] = destinationDirectory;
-            _newCustomParams[ReplacementsKeys.PackagesPathKey] = $@"..\{DefaultSolutionDirectoryName}\packages\";
+            _replacements[ReplacementsKeys.SolutionDirectoryKey] = solutionDirectory;
+
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
+                _expectedCustomParams[ReplacementsKeys.PackagesPathKey] = packagesPath;
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
-                        destinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                            It.IsAny<string>(), It.Is<Array>(a => AreExpectedCustomParams(a)), It.IsAny<string>(),
+                        destinationDirectory, newProjectName, null, out _newHierarchy),
                     Times.Once);
                 throw;
             }
@@ -228,7 +213,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedDifferentProjectName()
+        public void TestDifferentProjectNameParameter()
         {
             const string newProjectName = "NewProjectName";
             _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
@@ -239,13 +224,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(newProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(newProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
-                        DefaultDestinationDirectory, newProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                        It.IsAny<string>(), It.IsAny<Array>(), It.IsAny<string>(),
+                        It.IsAny<string>(), newProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
                     Times.Once);
                 throw;
             }
@@ -255,21 +237,30 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [ExpectedException(typeof(WizardCancelledException))]
         public void TestRunStartedOverridePrompt()
         {
-            _replacements.Add(
-                ReplacementsKeys.TemplateChooserResultKey,
-                JsonConvert.SerializeObject(_promptResult));
+            const string targetDirectory = @"c:\TargetDirectory";
+            const string packagesPath = @"packages\";
+            const string thisTemplatePath =
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+            var result = new TemplateChooserViewModelResult(
+                    "overrideProjectId", FrameworkType.NetCore, AspNetVersion.AspNetCore11, AppType.WebApi);
+            const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\WebApi\1033\1.1\1.1.vstemplate";
+
+            _replacements[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
+            _replacements[ReplacementsKeys.DestinationDirectoryKey] = targetDirectory;
+            _replacements.Add(ReplacementsKeys.TemplateChooserResultKey, JsonConvert.SerializeObject(result));
             try
             {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+                _objectUnderTest.RunStarted(
+                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject, new object[] { thisTemplatePath });
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(It.IsAny<string>()), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
+                _promptUserMock.Verify(p => p(It.IsAny<string>(), It.IsAny<TemplateType>()), Times.Never);
+                _expectedCustomParams[ReplacementsKeys.PackagesPathKey] = packagesPath;
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
-                        DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
+                       expectedTargetTemplatePath, It.Is<Array>(a => AreExpectedCustomParams(a)), null,
+                       targetDirectory, It.IsAny<string>(), null, out _newHierarchy),
                     Times.Once);
                 throw;
             }
@@ -277,7 +268,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardBackoutException))]
-        public void TestRunStartedBackout()
+        public void TestBackout()
         {
             _promptResult = null;
             try
@@ -287,13 +278,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             }
             catch (WizardBackoutException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
                 _cleanupDirectoriesMock.Verify(d => d(_replacements), Times.Once);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsNotIn(_replacements)), Times.Never);
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
-                        It.IsAny<string>(), It.Is<Array>(a => TestCustomParams(a)), It.IsAny<string>(),
+                        It.IsAny<string>(), It.IsAny<Array>(), It.IsAny<string>(),
                         It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IVsHierarchy>(), out _newHierarchy),
                     Times.Never);
                 throw;
@@ -302,51 +290,50 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedNetFrameworkType()
+        public void TestNetFrameworkTemplatePath()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNet4, DefaultAppType);
+                    DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNet4, AppType.Mvc);
+            const string sourceTemplatePath =
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNet.vstemplate";
+            const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\Mvc\1033\4\4.vstemplate";
             try
             {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+                _objectUnderTest.RunStarted(
+                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
+                        new object[] { sourceTemplatePath });
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
-                string templatePath = string.Format(TargetTemplatePathFromat, "Mvc", "4");
                 _solutionMock.Verify(
-                    s => s.AddNewProjectFromTemplate(
-                            templatePath, It.Is<Array>(a => TestCustomParams(a)), null,
-                            DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(),
-                            out _newHierarchy),
-                    Times.Once);
+                        s => s.AddNewProjectFromTemplate(
+                                expectedTargetTemplatePath, It.IsAny<Array>(), It.IsAny<string>(), It.IsAny<string>(),
+                                It.IsAny<string>(), It.IsAny<IVsHierarchy>(), out _newHierarchy), Times.Once);
                 throw;
             }
         }
 
         [TestMethod]
         [ExpectedException(typeof(WizardCancelledException))]
-        public void TestRunStartedAspCoreNetFramework()
+        public void TestAspCoreNetFrameworkTemplatePath()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNetCore10, DefaultAppType);
+                    DefaultProjectId, FrameworkType.NetFramework, AspNetVersion.AspNetCore10, AppType.Mvc);
+            const string sourceTemplatePath =
+                    @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspDotNetCore.vstemplate";
+            const string expectedTargetTemplatePath = @"c:\ProjectTemplates\CSharp\Mvc\1033\1.0\1.0.vstemplate";
             try
             {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
+                _objectUnderTest.RunStarted(
+                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
+                        new object[] { sourceTemplatePath });
             }
             catch (WizardCancelledException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
-                _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Never);
-                _newCustomParams["netcoreapp1.0"] = "net461";
                 _solutionMock.Verify(
-                    s => s.AddNewProjectFromTemplate(
-                        s_defaultTargetTemplatePath, It.Is<Array>(a => TestCustomParams(a)), null,
-                        DefaultDestinationDirectory, DefaultProjectName, It.IsAny<IVsHierarchy>(), out _newHierarchy),
-                    Times.Once);
+                        s => s.AddNewProjectFromTemplate(
+                                expectedTargetTemplatePath, It.IsAny<Array>(), It.IsAny<string>(), It.IsAny<string>(),
+                                It.IsAny<string>(), It.IsAny<IVsHierarchy>(), out _newHierarchy), Times.Once);
                 throw;
             }
         }
@@ -356,15 +343,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedInvalidFrameworkType()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, FrameworkType.None, AspNetVersion.AspNetCore10, DefaultAppType);
+                DefaultProjectId, FrameworkType.None, AspNetVersion.AspNetCore10, AppType.Mvc);
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
             }
             catch (InvalidOperationException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
                 _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Once);
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(
@@ -380,15 +365,13 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         public void TestRunStartedUnknownFrameworkType()
         {
             _promptResult = new TemplateChooserViewModelResult(
-                DefaultProjectId, (FrameworkType)(-1), AspNetVersion.AspNetCore10, DefaultAppType);
+                DefaultProjectId, (FrameworkType)(-1), AspNetVersion.AspNetCore10, AppType.Mvc);
             try
             {
                 _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
             }
             catch (InvalidOperationException)
             {
-                _promptUserMock.Verify(p => p(DefaultProjectName), Times.Once);
-                _promptUserMock.Verify(p => p(It.IsNotIn(DefaultProjectName)), Times.Never);
                 _cleanupDirectoriesMock.Verify(d => d(It.IsAny<Dictionary<string, string>>()), Times.Once);
                 _solutionMock.Verify(
                     s => s.AddNewProjectFromTemplate(

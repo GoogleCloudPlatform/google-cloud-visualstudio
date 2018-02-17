@@ -32,51 +32,38 @@
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
-        <StackPanel Orientation="Vertical">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Label
-                    Grid.Column="0"
-                    Grid.Row="0"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserTargetNetFrameworkLabel}"
-                    Target="{Binding ElementName=_targetFramework}"
-                    Margin="0" />
-                <ComboBox
-                    x:Name="_targetFramework"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    SelectedValuePath="Tag"
-                    SelectedValue="{Binding SelectedFramework}"
-                    MinWidth="150px">
-
-                    <ComboBoxItem
-                        Tag="{x:Static local:FrameworkType.NetCore}"
-                        Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"
-                        Visibility="{Binding NetCoreAvailable, Converter={utils:VisibilityConverter}}" />
-                    <ComboBoxItem
-                        Tag="{x:Static local:FrameworkType.NetFramework}"
-                        Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}" />
-                </ComboBox>
-                <Label
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
-                    Target="{Binding ElementName=_targetAspNetFramework}" />
-                <ComboBox
-                    x:Name="_targetAspNetFramework"
-                    Grid.Column="1"
-                    Grid.Row="1"
-                    ItemsSource="{Binding AvailableVersions}"
-                    SelectedItem="{Binding SelectedVersion}"
-                    MinWidth="180px"/>
-            </Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Visibility="{Binding SelectFrameworkVisible, Converter={utils:VisibilityConverter}}">
+                    <Label
+                        Content="{x:Static ext:Resources.WizardTemplateChooserTargetNetFrameworkLabel}"
+                        Target="{Binding ElementName=_targetFramework}"
+                        Margin="0" />
+                    <ComboBox
+                        x:Name="_targetFramework"
+                        SelectedValuePath="Tag"
+                        SelectedValue="{Binding SelectedFramework}"
+                        MinWidth="150px">
+                        <ComboBoxItem
+                            Tag="{x:Static local:FrameworkType.NetCore}"
+                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetCore}"
+                            Visibility="{Binding NetCoreAvailable, Converter={utils:VisibilityConverter}}" />
+                        <ComboBoxItem
+                            Tag="{x:Static local:FrameworkType.NetFramework}"
+                            Content="{x:Static ext:Resources.FrameworkTypeDisplayNameNetFramework}" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Visibility="{Binding SelectVersionVisible, Converter={utils:VisibilityConverter}}">
+                    <Label
+                        Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
+                        Target="{Binding ElementName=_targetAspNetFramework}" />
+                    <ComboBox
+                        x:Name="_targetAspNetFramework"
+                        ItemsSource="{Binding AvailableVersions}"
+                        SelectedItem="{Binding SelectedVersion}"
+                        MinWidth="180px" />
+                </StackPanel>
+            </StackPanel>
             <Label Content="{x:Static ext:Resources.WizardTemplateChooserTemplateTypeLabel}" />
             <RadioButton
                 GroupName="AppType"
