@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Options
@@ -19,7 +20,7 @@ namespace GoogleCloudExtension.Options
     /// <summary>
     /// The View Model for the AnalyticsOptionsPage.
     /// </summary>
-    public class AnalyticsOptionsPageViewModel : ViewModelBase
+    public class AnalyticsOptionsPageViewModel : AnalyticsLearnMoreViewModel
     {
         private bool _optIn;
 

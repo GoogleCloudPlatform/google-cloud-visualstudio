@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
     /// <summary>
     /// View model for user control AnalyticsOptInWindowContent.xaml.
     /// </summary>
-    public class AnalyticsOptInWindowViewModel : ViewModelBase
+    public class AnalyticsOptInWindowViewModel : AnalyticsLearnMoreViewModel
     {
         private readonly AnalyticsOptInWindow _owner;
 
@@ -46,5 +46,5 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
             Result = true;
             _owner.Close();
         }
-    }    
+    }
 }

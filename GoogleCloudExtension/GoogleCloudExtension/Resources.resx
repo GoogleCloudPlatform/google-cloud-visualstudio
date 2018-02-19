@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AnalyticsPromptMessage" xml:space="preserve">
-    <value>Do you want to help Google by reporting usage statistics?</value>
+    <value>Do you want to help improve Google Cloud Tools for Visual Studio by reporting usage statistics?</value>
     <comment>Message for the analytics prompt.</comment>
   </data>
   <data name="AnalyticsPromptTitle" xml:space="preserve">
@@ -1360,7 +1360,7 @@
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
-    <value>Report _Usage Statistics</value>
+    <value>Report _Usage Statistics.</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
   <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
@@ -2983,7 +2983,11 @@
     <comment>The display name of the Project property of a PubSub topic.</comment>
   </data>
   <data name="AnalyticsPromptDescription" xml:space="preserve">
-    <value>This information will help us understand how our product is being used so we can keep improving it. This information will be collected anonymously.</value>
+    <value>This information will be collected anonymously.</value>
     <comment>Smaller text on the Analytics Opt In Prompt.</comment>
+  </data>
+  <data name="AnalyticsPromptLinkText" xml:space="preserve">
+    <value>Learn more.</value>
+    <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
   </data>
 </root>
