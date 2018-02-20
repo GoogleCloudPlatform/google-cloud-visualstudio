@@ -17,10 +17,17 @@
     
     <StackPanel>
         <GroupBox Header="{x:Static ext:Resources.AnalyticsOptionsCategory}">
-            <CheckBox
-                Content="{x:Static ext:Resources.AnalyticsOptionsOptInLabel}"
-                ToolTip="{x:Static ext:Resources.AnalyticsOptionsOptInDescription}"
-                IsChecked="{Binding OptIn}"/>
+            <StackPanel>
+                <CheckBox
+                    Content="{x:Static ext:Resources.AnalyticsOptionsOptInLabel}"
+                    ToolTip="{x:Static ext:Resources.AnalyticsOptionsOptInDescription}"
+                    IsChecked="{Binding OptIn}"/>
+                <Button
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource ButtonLikeHyperlinkStyle}"
+                    Command="{Binding AnalyticsLearnMoreLinkCommand}"
+                    Content="{x:Static ext:Resources.AnalyticsPromptLinkText}" />                
+            </StackPanel>
         </GroupBox>
     </StackPanel>
 </UserControl>

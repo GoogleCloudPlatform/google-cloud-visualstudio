@@ -62,6 +62,12 @@
     </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
+    <Compile Include="Analytics\AnalyticsLearnMoreUtils.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindow.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml.cs">
+      <DependentUpon>AnalyticsOptInWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowViewModel.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
     <Compile Include="Analytics\CommandStatusUtils.cs" />
     <Compile Include="Analytics\DebugEventReporter.cs" />
@@ -954,6 +960,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
