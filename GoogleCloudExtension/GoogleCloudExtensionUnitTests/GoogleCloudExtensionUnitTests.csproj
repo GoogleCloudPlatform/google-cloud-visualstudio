@@ -244,6 +244,7 @@
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\CsrCloneWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowTest.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
@@ -279,6 +280,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
       <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
       <Name>GoogleCloudExtension.Deployment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj">
+      <Project>{0C891356-CCD7-4A10-BA27-C4A4359EA825}</Project>
+      <Name>GoogleCloudExtension.GcsUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
       <Project>{856b9f2e-441f-405a-9d5c-af5dc5653902}</Project>

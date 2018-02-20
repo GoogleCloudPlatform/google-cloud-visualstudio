@@ -39,13 +39,13 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label Content="{Binding ProgressMessage, Mode=OneWay}" Style="{StaticResource CommonLabelStyle}" />
+            <Label Content="{Binding ProgressMessage}" Style="{StaticResource CommonLabelStyle}" />
 
             <ProgressBar Grid.Row="1"
                          Margin="0,0,0,10"
                          Minimum="0"
                          Maximum="{Binding Operations.Count}"
-                         Value="{Binding Completed, Mode=OneWay}"
+                         Value="{Binding Completed}"
                          IsIndeterminate="{Binding OperationsPending}"
                          Style="{StaticResource CommonProgressBarStyle}"/>
 
@@ -73,7 +73,7 @@
             <StackPanel Grid.Row="3"
                         Margin="0,10,0,0"
                         Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}">
-                <Label Content="{Binding Message, Mode=OneWay}"
+                <Label Content="{Binding Message}"
                        Style="{StaticResource CommonLabelStyle}" />
                 <DataGrid IsReadOnly="True"
                           AutoGenerateColumns="False"
