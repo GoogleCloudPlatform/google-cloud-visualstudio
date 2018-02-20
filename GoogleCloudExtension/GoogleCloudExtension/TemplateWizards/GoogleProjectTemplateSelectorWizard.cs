@@ -61,7 +61,8 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
                 else
                 {
-                    result = PromptUser(projectName, GetAspFrameworkTypeFromTemplateName(Path.GetFileNameWithoutExtension(thisTemplatePath)));
+                    TemplateType templateType = GetTemplateTypeFromPath(thisTemplatePath);
+                    result = PromptUser(projectName, templateType);
                 }
                 if (result == null)
                 {
@@ -97,19 +98,18 @@ namespace GoogleCloudExtension.TemplateWizards
             throw new WizardCancelledException();
         }
 
-        private TemplateType GetAspFrameworkTypeFromTemplateName(string templateName)
+        private TemplateType GetTemplateTypeFromPath(string thisTemplatePath)
         {
             TemplateType result;
-            if (Enum.TryParse(Path.GetExtension(templateName)?.Substring(1), out result))
+            string templateName = Path.GetFileNameWithoutExtension(thisTemplatePath);
+            string templateTypeName = Path.GetExtension(templateName)?.Substring(1);
+            if (Enum.TryParse(templateTypeName, out result))
             {
                 return result;
             }
             else
             {
-                throw new ArgumentException(
-                        string.Format(
-                                Resources.GoogleProjectTemplateSelectorWizardInvalidTemplateMessage, templateName),
-                        nameof(templateName));
+                return TemplateType.AspNetCore;
             }
         }
 

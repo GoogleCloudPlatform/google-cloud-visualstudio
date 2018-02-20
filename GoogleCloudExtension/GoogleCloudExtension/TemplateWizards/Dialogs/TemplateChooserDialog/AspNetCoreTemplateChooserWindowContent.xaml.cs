@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.TemplateWizards
+using System.Windows.Controls;
+
+namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// Indicates the Template file that called the template wizard.
+    /// Interaction logic for AspNetCoreTemplateChooserWindowContent.xaml
     /// </summary>
-    public enum TemplateType
+    public partial class AspNetCoreTemplateChooserWindowContent : UserControl
     {
-        /// <summary>
-        /// The GCP ASP.NET template.
-        /// </summary>
-        /// Created from (templatePath)\Gcp.AspNet.vstemplate
-        AspNet,
-
-        /// <summary>
-        /// The GCP ASP.NET Core template.
-        /// </summary>
-        /// Created from (templatePath)\Gcp.AspNetCore.vstemplate
-        AspNetCore
+        public AspNetCoreTemplateChooserWindowContent()
+        {
+            InitializeComponent();
+        }
     }
 }

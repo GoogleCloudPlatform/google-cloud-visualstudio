@@ -12,23 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.TemplateWizards
+using System.Windows.Controls;
+
+namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// Indicates the Template file that called the template wizard.
+    /// Interaction logic for AspNetTemplateChooserWindowContent.xaml
     /// </summary>
-    public enum TemplateType
+    public partial class AspNetTemplateChooserWindowContent : UserControl
     {
-        /// <summary>
-        /// The GCP ASP.NET template.
-        /// </summary>
-        /// Created from (templatePath)\Gcp.AspNet.vstemplate
-        AspNet,
-
-        /// <summary>
-        /// The GCP ASP.NET Core template.
-        /// </summary>
-        /// Created from (templatePath)\Gcp.AspNetCore.vstemplate
-        AspNetCore
+        public AspNetTemplateChooserWindowContent()
+        {
+            InitializeComponent();
+        }
     }
 }

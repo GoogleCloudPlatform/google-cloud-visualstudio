@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
+using Google.Apis.CloudResourceManager.v1.Data;
+using System;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// Interaction logic for TemplateChooserWindowContent.xaml
+    /// View model for the ASP.NET template chooser dialog.
     /// </summary>
-    public partial class TemplateChooserWindowContent : UserControl
+    public class AspNetTemplateChooserViewModel : TemplateChooserViewModelBase
     {
-        public TemplateChooserWindowContent()
+        public AspNetTemplateChooserViewModel(Action closeWindow, Func<Project> promptPickProject) : base(
+            closeWindow, promptPickProject)
         {
-            InitializeComponent();
+        }
+
+        protected override TemplateChooserViewModelResult CreateResult()
+        {
+            return new TemplateChooserViewModelResult(this);
         }
     }
 }

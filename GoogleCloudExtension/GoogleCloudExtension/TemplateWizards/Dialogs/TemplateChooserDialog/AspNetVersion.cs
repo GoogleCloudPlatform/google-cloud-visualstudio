@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// Gets the installed .NET Core SDK versions.
         /// </summary>
         private static IEnumerable<string> NetCoreSdkVersions =>
-                VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
+            VsVersionUtils.ToolsPathProvider.GetNetCoreSdkVersions();
 
         [JsonConstructor]
         private AspNetVersion(string version, bool isCore = true)
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             {
                 return new List<AspNetVersion>
                 {
-                        AspNetCore1Preview
+                    AspNetCore1Preview
                 };
             }
             else
@@ -140,23 +140,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// <summary>
         /// Gets the versions available for specified version of Visual Studio and Framework type.
         /// </summary>
-        /// <param name="templateType"></param>
         /// <param name="framework">The <see cref="FrameworkType"/> that will run this template.</param>
         /// <returns>A new list of AspNetVersions from which are compatible with the vsVersion and framework.</returns>
-        public static IList<AspNetVersion> GetAvailableVersions(TemplateType templateType, FrameworkType framework)
+        public static IList<AspNetVersion> GetAvailableAspNetCoreVersions(FrameworkType framework)
         {
-            switch (templateType)
-            {
-                case TemplateType.AspNet:
-                    return new List<AspNetVersion> { AspNet4 };
-                case TemplateType.AspNetCore:
-                    break;
-                default:
-                    throw new ArgumentException(
-                            string.Format(Resources.AspNetVersionUnknownTemplateTypeErrorMessage, templateType),
-                            nameof(templateType));
-            }
-
             switch (framework)
             {
                 case FrameworkType.NetFramework:
@@ -166,16 +153,15 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     {
                         case VsVersionUtils.VisualStudio2015Version:
                             return GetVs2015AspNetCoreVersions();
+
+                        // For forward compatibility, give future versions of VS the same options as VS2017.
+                        case VsVersionUtils.VisualStudio2017Version:
                         default:
-                            // For forward compatibility, give future versions of VS the same options as VS2017.
                             return GetVs2017AspNetCoreVersions();
                     }
                 case FrameworkType.None:
-                    return new List<AspNetVersion>();
                 default:
-                    throw new ArgumentException(
-                            string.Format(Resources.AspNetVersionUnknownFrameworkTypeErrorMessage, framework),
-                            nameof(framework));
+                    return new List<AspNetVersion>();
             }
         }
     }

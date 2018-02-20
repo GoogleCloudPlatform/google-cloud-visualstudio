@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Theming;
 
@@ -22,17 +23,29 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class TemplateChooserWindow : CommonDialogWindowBase
     {
-        private TemplateChooserViewModel ViewModel { get; }
+        private TemplateChooserViewModelBase ViewModel { get; }
 
         private TemplateChooserWindow(string dialogTitle, TemplateType templateType) : base(dialogTitle)
         {
-            ViewModel = new TemplateChooserViewModel(
-                    templateType,
-                Close,
-                () => PickProjectIdWindow.PromptUser(
-                        GoogleCloudExtension.Resources.TemplateWizardPickProjectIdHelpText,
-                        allowAccountChange: true));
-            Content = new TemplateChooserWindowContent { DataContext = ViewModel };
+
+            switch (templateType)
+            {
+                case TemplateType.AspNet:
+                    ViewModel = new AspNetTemplateChooserViewModel(Close, PromptPickProject);
+                    Content = new AspNetTemplateChooserWindowContent { DataContext = ViewModel };
+                    break;
+                case TemplateType.AspNetCore:
+                default:
+                    ViewModel = new AspNetCoreTemplateChooserViewModel(Close, PromptPickProject);
+                    Content = new AspNetCoreTemplateChooserWindowContent { DataContext = ViewModel };
+                    break;
+            }
+        }
+
+        private static Project PromptPickProject()
+        {
+            return PickProjectIdWindow.PromptUser(
+                GoogleCloudExtension.Resources.TemplateWizardPickProjectIdHelpText, allowAccountChange: true);
         }
 
         /// <summary>

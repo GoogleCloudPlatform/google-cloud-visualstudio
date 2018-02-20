@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2981,17 +2981,5 @@
   <data name="CloudExplorerPubSubTopicProjectDisplayName" xml:space="preserve">
     <value>Project Id</value>
     <comment>The display name of the Project property of a PubSub topic.</comment>
-  </data>
-  <data name="GoogleProjectTemplateSelectorWizardInvalidTemplateMessage" xml:space="preserve">
-    <value>Expected either Gcp.AspNet or Gcp.AspNetCore, but received {0}.</value>
-  </data>
-  <data name="TemplateChooserViewModelInvalidTemplateTypeErrorMessage" xml:space="preserve">
-    <value>Expected a valid value of TemplateType, but got {0}</value>
-  </data>
-  <data name="AspNetVersionUnknownTemplateTypeErrorMessage" xml:space="preserve">
-    <value>Unknown template type: {0}</value>
-  </data>
-  <data name="AspNetVersionUnknownFrameworkTypeErrorMessage" xml:space="preserve">
-    <value>Unknown Famework type: {0}</value>
   </data>
 </root>
