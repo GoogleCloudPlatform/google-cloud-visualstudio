@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,11 +83,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         }
 
         /// <param name="closeWindow">The action that will close the dialog.</param>
-        /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
-        public AspNetCoreTemplateChooserViewModel(
-            Action closeWindow,
-            Func<Project> promptPickProject)
-            : base(closeWindow, promptPickProject)
+        public AspNetCoreTemplateChooserViewModel(Action closeWindow) : base(closeWindow)
         {
             bool netCoreAvailable = AspNetVersion.GetAvailableAspNetCoreVersions(FrameworkType.NetCore).Any();
             AvailableFrameworks = netCoreAvailable ?

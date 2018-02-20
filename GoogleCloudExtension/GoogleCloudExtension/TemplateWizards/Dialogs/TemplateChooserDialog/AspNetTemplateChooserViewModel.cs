@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using System;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
@@ -22,8 +21,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class AspNetTemplateChooserViewModel : TemplateChooserViewModelBase
     {
-        public AspNetTemplateChooserViewModel(Action closeWindow, Func<Project> promptPickProject) : base(
-            closeWindow, promptPickProject)
+        public AspNetTemplateChooserViewModel(Action closeWindow) : base(closeWindow)
         {
         }
 

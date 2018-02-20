@@ -14,14 +14,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 
         private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
-        private Mock<Func<Project>> _promptPickProjectMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            _promptPickProjectMock = new Mock<Func<Project>>();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
         }
@@ -31,8 +29,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         {
             const string resultProjectId = "result-project-id";
 
-            var objectUnderTest = new AspNetTemplateChooserViewModel(
-                _closeWindowMock.Object, _promptPickProjectMock.Object);
+            var objectUnderTest = new AspNetTemplateChooserViewModel(_closeWindowMock.Object);
             objectUnderTest.GcpProjectId = resultProjectId;
             objectUnderTest.IsWebApi = true;
 

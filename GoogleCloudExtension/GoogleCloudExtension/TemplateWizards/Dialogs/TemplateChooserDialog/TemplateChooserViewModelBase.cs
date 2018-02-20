@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System;
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private string _gcpProjectId;
         private AppType _appType = AppType.Mvc;
 
-        protected TemplateChooserViewModelBase(Action closeWindow, Func<Project> promptPickProject)
+        protected TemplateChooserViewModelBase(Action closeWindow)
         {
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
@@ -36,8 +35,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                     Result = CreateResult();
                     closeWindow();
                 });
-            SelectProjectCommand =
-                new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
         }
 
         /// <summary>
@@ -110,11 +107,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// The command to complete the dialog.
         /// </summary>
         public ProtectedCommand OkCommand { get; }
-
-        /// <summary>
-        /// The command to select an existing project.
-        /// </summary>
-        public ProtectedCommand SelectProjectCommand { get; }
 
         /// <summary>
         /// The result of the dialog.

@@ -30,14 +30,12 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     {
         private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
-        private Mock<Func<Project>> _promptPickProjectMock;
         private TemplateChooserViewModelBase _objectUnderTest;
 
         private class TestTemplateChooserViewModelBase : TemplateChooserViewModelBase
         {
 
-            public TestTemplateChooserViewModelBase(Mock<Action> closeWindow, Mock<Func<Project>> promptPickProject) : base(
-                closeWindow.Object, promptPickProject.Object)
+            public TestTemplateChooserViewModelBase(Mock<Action> closeWindow) : base(closeWindow.Object)
             {
             }
 
@@ -52,7 +50,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         {
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            _promptPickProjectMock = new Mock<Func<Project>>();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
         }
@@ -60,8 +57,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsForAspNet()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
 
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
             Assert.AreEqual(true, _objectUnderTest.OkCommand.CanExecuteCommand);
@@ -72,8 +68,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
 
             _objectUnderTest.IsMvc = true;
 
@@ -86,8 +81,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeToMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsMvc = true;
@@ -101,8 +95,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestUnsetMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsMvc = false;
@@ -116,8 +109,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             Assert.IsFalse(_objectUnderTest.IsMvc);
@@ -129,8 +121,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestChangeToWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsWebApi = true;
@@ -144,8 +135,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestUnsetWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsWebApi = false;
@@ -157,33 +147,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         }
 
         [TestMethod]
-        public void TestSelectProject()
-        {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock, _promptPickProjectMock);
-            const string mockProjectID = "mock-project-id";
-            _promptPickProjectMock.Setup(f => f()).Returns(new Project { ProjectId = mockProjectID });
-
-            _objectUnderTest.SelectProjectCommand.Execute(null);
-
-            Assert.AreEqual(mockProjectID, _objectUnderTest.GcpProjectId);
-        }
-
-        [TestMethod]
-        public void TestSelectProjectCanceled()
-        {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock, _promptPickProjectMock);
-            _promptPickProjectMock.Setup(f => f()).Returns((Project)null);
-
-            _objectUnderTest.SelectProjectCommand.Execute(null);
-
-            Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
-        }
-
-        [TestMethod]
         public void TestOkCommand()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(
-                _closeWindowMock, _promptPickProjectMock);
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.OkCommand.Execute(null);
 
             _closeWindowMock.Verify(f => f(), Times.Once);
