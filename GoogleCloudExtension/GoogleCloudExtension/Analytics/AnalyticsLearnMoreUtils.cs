@@ -12,28 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 
 namespace GoogleCloudExtension.Analytics
 {
     /// <summary>
-    /// View model for whenever the Usage Statistics Explained is used.
+    /// Class to hold URL Usage Statistics explanation link and the code for opening it.
     /// </summary>
-    public class AnalyticsLearnMoreViewModel : ViewModelBase
+    internal static class AnalyticsLearnMoreUtils
     {
-        protected const string AnalyticsLearnMoreLink = "https://cloud.google.com/sdk/usage-statistics";
         /// <summary>
-        /// The command to open the usage statistics explanation hyperlink.
+        /// Url of the page containing a detailed explanation on how and why we collect Usage Statistics.
         /// </summary>
-        public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
-
-        public AnalyticsLearnMoreViewModel()
-        {
-            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(OnAnalyticsLearnMoreLinkCommand);
-        }
-
-        protected virtual void OnAnalyticsLearnMoreLinkCommand()
+        private const string AnalyticsLearnMoreLink = "https://cloud.google.com/sdk/usage-statistics";
+        
+        /// <summary>
+        /// Method that opens the Usage Statistics explanation link
+        /// </summary>
+        public static void OpenLearnMoreLink()
         {
             Process.Start(AnalyticsLearnMoreLink);
         }

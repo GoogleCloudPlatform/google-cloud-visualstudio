@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
     /// <summary>
     /// View model for user control AnalyticsOptInWindowContent.xaml.
     /// </summary>
-    public class AnalyticsOptInWindowViewModel : AnalyticsLearnMoreViewModel
+    public class AnalyticsOptInWindowViewModel : ViewModelBase
     {
         private readonly AnalyticsOptInWindow _owner;
 
@@ -34,11 +34,17 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
         /// </summary>
         public ProtectedCommand OptInCommand { get; }
 
+        /// <summary>
+        /// The command to open the usage statistics explanation hyperlink.
+        /// </summary>
+        public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
+
         public AnalyticsOptInWindowViewModel(AnalyticsOptInWindow owner)
         {
             _owner = owner.ThrowIfNull(nameof(owner));
 
             OptInCommand = new ProtectedCommand(OnOptInCommand);
+            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(() => AnalyticsLearnMoreUtils.OpenLearnMoreLink());
         }
 
         private void OnOptInCommand()

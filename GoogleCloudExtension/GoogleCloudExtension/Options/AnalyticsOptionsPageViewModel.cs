@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Options
     /// <summary>
     /// The View Model for the AnalyticsOptionsPage.
     /// </summary>
-    public class AnalyticsOptionsPageViewModel : AnalyticsLearnMoreViewModel
+    public class AnalyticsOptionsPageViewModel : ViewModelBase
     {
         private bool _optIn;
 
@@ -31,6 +31,16 @@ namespace GoogleCloudExtension.Options
         {
             get { return _optIn; }
             set { SetValueAndRaise(ref _optIn, value); }
+        }
+
+        /// <summary>
+        /// The command to open the usage statistics explanation hyperlink.
+        /// </summary>
+        public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
+
+        public AnalyticsOptionsPageViewModel()
+        {
+            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(() => AnalyticsLearnMoreUtils.OpenLearnMoreLink());
         }
     }
 }

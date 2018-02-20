@@ -62,7 +62,7 @@
     </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
-    <Compile Include="Analytics\AnalyticsLearnMoreViewModel.cs" />
+    <Compile Include="Analytics\AnalyticsLearnMoreUtils.cs" />
     <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindow.cs" />
     <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml.cs">
       <DependentUpon>AnalyticsOptInWindowContent.xaml</DependentUpon>
