@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Options
@@ -30,6 +31,16 @@ namespace GoogleCloudExtension.Options
         {
             get { return _optIn; }
             set { SetValueAndRaise(ref _optIn, value); }
+        }
+
+        /// <summary>
+        /// The command to open the usage statistics explanation hyperlink.
+        /// </summary>
+        public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
+
+        public AnalyticsOptionsPageViewModel()
+        {
+            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(() => AnalyticsLearnMoreUtils.OpenLearnMoreLink());
         }
     }
 }

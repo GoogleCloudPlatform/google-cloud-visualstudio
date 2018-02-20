@@ -214,7 +214,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report _Usage Statistics.
+        ///   Looks up a localized string similar to Report _Usage Statistics..
         /// </summary>
         public static string AnalyticsOptionsOptInLabel {
             get {
@@ -223,7 +223,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
+        ///   Looks up a localized string similar to This information will be collected anonymously..
+        /// </summary>
+        public static string AnalyticsPromptDescription {
+            get {
+                return ResourceManager.GetString("AnalyticsPromptDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more..
+        /// </summary>
+        public static string AnalyticsPromptLinkText {
+            get {
+                return ResourceManager.GetString("AnalyticsPromptLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to help improve Google Cloud Tools for Visual Studio by reporting usage statistics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
             get {

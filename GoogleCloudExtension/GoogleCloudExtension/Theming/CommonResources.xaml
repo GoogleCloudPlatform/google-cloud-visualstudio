@@ -297,7 +297,7 @@
 
     <!-- Colors for the focused state. -->
     <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
-    
+
     <SolidColorBrush x:Key="Validation.Border.Brush" Color="Red"/>
     <SolidColorBrush x:Key="Validation.Background.Brush" Color="#FFDDEE"/>
 
@@ -909,7 +909,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>    
 
     <!-- Common hyperlink style. -->
 
@@ -934,7 +934,25 @@
         <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
         <Setter Property="TextDecorations" Value="None" />
     </Style>
-    
+
+    <!-- Creating this style just because the Hyperlink does not work properly on the Options page. -->
+    <Style x:Key="ButtonLikeHyperlinkStyle" TargetType="{x:Type Button}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock>
+                    <Hyperlink
+                        Style="{StaticResource CommonHyperlinkStyle}"
+                        Command="{TemplateBinding Command}">
+                        <Run Text="{TemplateBinding Content}" />                        
+                    </Hyperlink>
+                    </TextBlock>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Common ComboBox style -->
     <Style x:Key="CommonComboBoxStyle"
            TargetType="{x:Type ComboBox}">
@@ -949,7 +967,7 @@
         <Setter Property="Background" Value="White" />
     </Style>
 
-    <!-- Default tyle for a tooltip. -->
+    <!-- Default style for a tooltip. -->
     <SolidColorBrush x:Key="CommonTooltipColors.Border" Color="#FFBDBDBD" />
     <SolidColorBrush x:Key="CommonTooltipColors.Background" Color="#FFEEEEEE" />
 
