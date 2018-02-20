@@ -19,6 +19,9 @@ using System;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
+    /// <summary>
+    /// This class contains the common functionality for VS Template chooser dialogs.
+    /// </summary>
     public abstract class TemplateChooserViewModelBase : ViewModelBase
     {
         private string _gcpProjectId;
@@ -37,6 +40,10 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
         }
 
+        /// <summary>
+        /// Creates a <see cref="TemplateChooserViewModelResult"/> to store in <see cref="Result"/> Ok button is hit.
+        /// </summary>
+        /// <returns></returns>
         protected abstract TemplateChooserViewModelResult CreateResult();
 
         /// <summary>
