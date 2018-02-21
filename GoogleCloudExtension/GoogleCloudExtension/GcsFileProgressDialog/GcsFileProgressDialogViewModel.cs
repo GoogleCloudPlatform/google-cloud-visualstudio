@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public int Completed
         {
             get { return _completed; }
-            private set
+            set
             {
                 SetValueAndRaise(ref _completed, value);
                 RaisePropertyChanged(nameof(ProgressMessage));

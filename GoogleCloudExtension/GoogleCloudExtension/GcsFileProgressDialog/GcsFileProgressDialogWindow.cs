@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
     /// </summary>
     public class GcsFileProgressDialogWindow : CommonDialogWindowBase
     {
-        private GcsFileProgressDialogWindow(
+        internal GcsFileProgressDialogWindow(
             string caption,
             string message,
             string progressMessage,
