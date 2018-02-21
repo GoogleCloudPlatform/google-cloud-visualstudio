@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,19 +31,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
         private TemplateChooserViewModelBase _objectUnderTest;
-
-        private class TestTemplateChooserViewModelBase : TemplateChooserViewModelBase
-        {
-
-            public TestTemplateChooserViewModelBase(Mock<Action> closeWindow) : base(closeWindow.Object)
-            {
-            }
-
-            protected override TemplateChooserViewModelResult CreateResult()
-            {
-                return null;
-            }
-        }
 
         [TestInitialize]
         public void BeforeEach()
@@ -153,6 +140,18 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _objectUnderTest.OkCommand.Execute(null);
 
             _closeWindowMock.Verify(f => f(), Times.Once);
+        }
+
+        private class TestTemplateChooserViewModelBase : TemplateChooserViewModelBase
+        {
+            public TestTemplateChooserViewModelBase(Mock<Action> closeWindow) : base(closeWindow.Object)
+            {
+            }
+
+            protected override TemplateChooserViewModelResult CreateResult()
+            {
+                return null;
+            }
         }
     }
 }

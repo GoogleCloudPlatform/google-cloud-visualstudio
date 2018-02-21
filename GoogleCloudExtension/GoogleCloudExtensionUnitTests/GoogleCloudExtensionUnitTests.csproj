@@ -258,7 +258,7 @@
     <Compile Include="StringFormatUtilsTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserViewModelBaseTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\AspNetCoreTemplateChooserViewModelTests.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ApNetTemplateChooserViewModelTests.cs" />
+    <Compile Include="TemplateWizards\Dialogs\AspNetTemplateChooserViewModelTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />

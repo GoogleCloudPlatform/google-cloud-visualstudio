@@ -28,6 +28,14 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private IList<AspNetVersion> _availableVersions;
         private IList<FrameworkType> _availableFrameworks;
 
+        private static readonly FrameworkType[] s_netCoreUnavailableFrameworks = { FrameworkType.NetFramework };
+
+        private static readonly FrameworkType[] s_netCoreAvailabelFrameworks =
+        {
+            FrameworkType.NetCore,
+            FrameworkType.NetFramework
+        };
+
         public IList<FrameworkType> AvailableFrameworks
         {
             get { return _availableFrameworks; }
@@ -76,19 +84,14 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public AspNetVersion SelectedVersion
         {
             get { return _selectedVersion; }
-            set
-            {
-                SetValueAndRaise(ref _selectedVersion, value);
-            }
+            set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
         /// <param name="closeWindow">The action that will close the dialog.</param>
         public AspNetCoreTemplateChooserViewModel(Action closeWindow) : base(closeWindow)
         {
             bool netCoreAvailable = AspNetVersion.GetAvailableAspNetCoreVersions(FrameworkType.NetCore).Any();
-            AvailableFrameworks = netCoreAvailable ?
-                new[] { FrameworkType.NetCore, FrameworkType.NetFramework } :
-                new[] { FrameworkType.NetFramework };
+            AvailableFrameworks = netCoreAvailable ? s_netCoreAvailabelFrameworks : s_netCoreUnavailableFrameworks;
         }
 
         protected override TemplateChooserViewModelResult CreateResult()
