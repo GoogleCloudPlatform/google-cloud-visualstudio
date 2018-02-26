@@ -130,14 +130,18 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">A <seealso cref="Project"/> interface.</param>
         public static bool IsValidSupported(Project project)
         {
-            try
-            {
-                return project != null && project.FullName != null && project.Properties != null;
-            }
-            catch (Exception ex) when (ex is COMException || ex is NotImplementedException)
-            {
-                return false;
-            }
+            return project != null
+                // The project is not the miscellaneous project which is created automatically
+                // by VS to include elements not belonging to any other project.
+                && project.Kind != Constants.vsProjectKindMisc
+                // The project does not represent a folder.
+                && project.Kind != Constants.vsProjectKindSolutionItems
+                // The project is not an unmolded project. Unmolded projects do not support
+                // automation. // Several Project properties that are used acros the extension are not available
+                // for unmodeled projects.
+                // Unloaded projects are unmodeled projects.
+                // Some third party project types and some old database project are also unmodeled.
+                && project.Kind != Constants.vsProjectKindUnmodeled;
         }
 
         private List<ProjectSourceFile> GetSourceFiles()

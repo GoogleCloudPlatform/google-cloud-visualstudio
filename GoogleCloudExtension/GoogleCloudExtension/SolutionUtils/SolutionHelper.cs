@@ -35,9 +35,6 @@ namespace GoogleCloudExtension.SolutionUtils
     {
         private const string ProjectJsonName = "project.json";
 
-        // This is the GUID for solution folder items.
-        private const string SolutionFolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
-
         private readonly Solution _solution;
 
         /// <summary>
@@ -129,11 +126,13 @@ namespace GoogleCloudExtension.SolutionUtils
             var rootProjects = _solution.Projects;
             foreach (Project item in rootProjects)
             {
-                if (item.Kind == SolutionFolderKind)
+                // If it's a folder, search projects under it.
+                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
                 {
                     result.AddRange(GetSolutionFolderProjects(item));
                 }
-                else
+                // Skipping unsupported projects.
+                else if (ProjectHelper.IsValidSupported(item))
                 {
                     result.Add(item);
                 }
@@ -158,12 +157,13 @@ namespace GoogleCloudExtension.SolutionUtils
                 {
                     continue;
                 }
-
-                if (item.Kind == SolutionFolderKind)
+                // If it's a folder, search projects under it.
+                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
                 {
                     result.AddRange(GetSolutionFolderProjects(item));
                 }
-                else
+                // Skipping unsupported projects.
+                else if (ProjectHelper.IsValidSupported(item))
                 {
                     result.Add(item);
                 }
@@ -247,8 +247,8 @@ namespace GoogleCloudExtension.SolutionUtils
                 return null;
             }
 
-            string projectName = Path.GetFileNameWithoutExtension(startupProjectFilePath);
-            foreach (Project p in _solution.Projects)
+            string projectName = Path.GetFileNameWithoutExtension(startupProjectFilePath);            
+            foreach (Project p in Projects)
             {
                 if (p.Name == projectName)
                 {
@@ -264,12 +264,9 @@ namespace GoogleCloudExtension.SolutionUtils
         private List<ProjectHelper> GetProjectList()
         {
             List<ProjectHelper> list = new List<ProjectHelper>();
-            foreach (Project project in _solution.Projects)
+            foreach (Project project in Projects)
             {
-                if (ProjectHelper.IsValidSupported(project))
-                {
-                    list.Add(new ProjectHelper(project));
-                }
+                list.Add(new ProjectHelper(project));                
             }
 
             return list;
