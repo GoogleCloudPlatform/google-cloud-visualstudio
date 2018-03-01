@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 
         private static readonly FrameworkType[] s_netCoreUnavailableFrameworks = { FrameworkType.NetFramework };
 
-        private static readonly FrameworkType[] s_netCoreAvailabelFrameworks =
+        private static readonly FrameworkType[] s_netCoreAvailableFrameworks =
         {
             FrameworkType.NetCore,
             FrameworkType.NetFramework
@@ -91,12 +91,17 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public AspNetCoreTemplateChooserViewModel(Action closeWindow) : base(closeWindow)
         {
             bool netCoreAvailable = AspNetVersion.GetAvailableAspNetCoreVersions(FrameworkType.NetCore).Any();
-            AvailableFrameworks = netCoreAvailable ? s_netCoreAvailabelFrameworks : s_netCoreUnavailableFrameworks;
+            AvailableFrameworks = netCoreAvailable ? s_netCoreAvailableFrameworks : s_netCoreUnavailableFrameworks;
         }
 
-        protected override TemplateChooserViewModelResult CreateResult()
-        {
-            return new TemplateChooserViewModelResult(this);
-        }
+        /// <summary>
+        /// The type of frameowork for the VS project to target, .NET Framework or .NET Core.
+        /// </summary>
+        public override FrameworkType GetSelectedFramework() => SelectedFramework;
+
+        /// <summary>
+        /// The ASP.NET or ASP.NET Core version for the VS project to use.
+        /// </summary>
+        public override AspNetVersion GetSelectedVersion() => SelectedVersion;
     }
 }

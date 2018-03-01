@@ -25,9 +25,14 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
         }
 
-        protected override TemplateChooserViewModelResult CreateResult()
-        {
-            return new TemplateChooserViewModelResult(this);
-        }
+        /// <summary>
+        /// ASP.NET only runs on .NET Framework.
+        /// </summary>
+        public override FrameworkType GetSelectedFramework() => FrameworkType.NetFramework;
+
+        /// <summary>
+        /// ASP.NET only has one supported version.
+        /// </summary>
+        public override AspNetVersion GetSelectedVersion() => AspNetVersion.AspNet4;
     }
 }

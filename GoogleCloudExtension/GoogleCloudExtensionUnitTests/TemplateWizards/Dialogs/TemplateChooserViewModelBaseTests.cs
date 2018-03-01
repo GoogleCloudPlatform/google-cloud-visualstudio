@@ -39,15 +39,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             _closeWindowMock = new Mock<Action>();
             GoogleCloudExtensionPackageTests.InitPackageMock(
                 dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
         }
 
         [TestMethod]
         public void TestInitialConditionsForAspNet()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
-
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
-            Assert.AreEqual(true, _objectUnderTest.OkCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
             Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
             Assert.IsNull(_objectUnderTest.Result);
         }
@@ -55,20 +54,16 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestSetMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
-
             _objectUnderTest.IsMvc = true;
 
             Assert.IsTrue(_objectUnderTest.IsMvc);
             Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
-            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestChangeToMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsMvc = true;
@@ -76,13 +71,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsTrue(_objectUnderTest.IsMvc);
             Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
-            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestUnsetMvc()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsMvc = false;
@@ -90,25 +83,21 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_objectUnderTest.IsMvc);
             Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.None, _objectUnderTest.AppType);
-            Assert.IsFalse(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestSetWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             Assert.IsFalse(_objectUnderTest.IsMvc);
             Assert.IsTrue(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.WebApi, _objectUnderTest.AppType);
-            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestChangeToWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsMvc = true;
 
             _objectUnderTest.IsWebApi = true;
@@ -116,13 +105,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_objectUnderTest.IsMvc);
             Assert.IsTrue(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.WebApi, _objectUnderTest.AppType);
-            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestUnsetWebApi()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.IsWebApi = true;
 
             _objectUnderTest.IsWebApi = false;
@@ -130,27 +117,31 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.IsFalse(_objectUnderTest.IsMvc);
             Assert.IsFalse(_objectUnderTest.IsWebApi);
             Assert.AreEqual(AppType.None, _objectUnderTest.AppType);
-            Assert.IsFalse(_objectUnderTest.OkCommand.CanExecuteCommand);
         }
 
         [TestMethod]
         public void TestOkCommand()
         {
-            _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
             _objectUnderTest.OkCommand.Execute(null);
 
             _closeWindowMock.Verify(f => f(), Times.Once);
+            Assert.IsNotNull(_objectUnderTest.Result);
         }
 
         private class TestTemplateChooserViewModelBase : TemplateChooserViewModelBase
         {
-            public TestTemplateChooserViewModelBase(Mock<Action> closeWindow) : base(closeWindow.Object)
+            public TestTemplateChooserViewModelBase(IMock<Action> closeWindow) : base(closeWindow.Object)
             {
             }
 
-            protected override TemplateChooserViewModelResult CreateResult()
+            public override FrameworkType GetSelectedFramework()
             {
-                return null;
+                return default(FrameworkType);
+            }
+
+            public override AspNetVersion GetSelectedVersion()
+            {
+                return default(AspNetVersion);
             }
         }
     }

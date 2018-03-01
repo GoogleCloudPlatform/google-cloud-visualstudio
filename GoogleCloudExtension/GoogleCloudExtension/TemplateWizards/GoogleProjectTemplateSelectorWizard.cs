@@ -26,6 +26,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards
@@ -36,6 +37,8 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateSelectorWizard))]
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
+        // Find the AspNet part of c:\path\to\template\Gcp.AspNet.vstemplate
+        private static readonly Regex s_templateTypeRegex = new Regex(@"(?<=Gcp\.)[^.]*(?=\.vstemplate$)");
         // Mockable static methods for unit testing.
         internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
@@ -100,9 +103,8 @@ namespace GoogleCloudExtension.TemplateWizards
 
         private TemplateType GetTemplateTypeFromPath(string thisTemplatePath)
         {
+            string templateTypeName = s_templateTypeRegex.Match(thisTemplatePath).Value;
             TemplateType result;
-            string templateName = Path.GetFileNameWithoutExtension(thisTemplatePath);
-            string templateTypeName = Path.GetExtension(templateName)?.Substring(1);
             if (Enum.TryParse(templateTypeName, out result))
             {
                 return result;
@@ -157,7 +159,7 @@ namespace GoogleCloudExtension.TemplateWizards
             {
                 $"{ReplacementsKeys.GcpProjectIdKey}={result.GcpProjectId}",
                 $"{ReplacementsKeys.SolutionDirectoryKey}={solutionDirectory}",
-                $"{ReplacementsKeys.PackagesPathKey}={relativePackagesPath}",
+                $"{ReplacementsKeys.PackagesPathKey}={relativePackagesPath}"
             };
 
             // TODO(jimwp): Find the latest framework version using IVsFrameworkMultiTargeting.
@@ -166,7 +168,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 switch (result.SelectedFramework)
                 {
                     case FrameworkType.NetFramework:
-                        var targetFramework = "net461";
+                        const string targetFramework = "net461";
                         additionalCustomParams.Add($"netcoreapp{result.SelectedVersion.Version}={targetFramework}");
                         break;
                     case FrameworkType.NetCore:

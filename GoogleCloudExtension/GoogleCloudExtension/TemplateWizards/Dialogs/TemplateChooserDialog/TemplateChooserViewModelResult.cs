@@ -43,20 +43,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public AppType AppType { get; }
 
         /// <param name="viewModel">The view model this result object will pull its data from.</param>
-        public TemplateChooserViewModelResult(AspNetCoreTemplateChooserViewModel viewModel) : this(
-            viewModel,
-            viewModel.SelectedFramework, viewModel.SelectedVersion)
-        { }
-
-        // ReSharper disable once SuggestBaseTypeForParameter
-        public TemplateChooserViewModelResult(AspNetTemplateChooserViewModel viewModel) : this(
-            viewModel, FrameworkType.NetFramework, AspNetVersion.AspNet4)
-        { }
-
-        private TemplateChooserViewModelResult(
-            TemplateChooserViewModelBase viewModel,
-            FrameworkType framework,
-            AspNetVersion version) : this(viewModel.GcpProjectId, framework, version, viewModel.AppType)
+        public TemplateChooserViewModelResult(TemplateChooserViewModelBase viewModel)
+            : this(
+                viewModel.GcpProjectId,
+                viewModel.GetSelectedFramework(),
+                viewModel.GetSelectedVersion(),
+                viewModel.AppType)
         {
         }
 

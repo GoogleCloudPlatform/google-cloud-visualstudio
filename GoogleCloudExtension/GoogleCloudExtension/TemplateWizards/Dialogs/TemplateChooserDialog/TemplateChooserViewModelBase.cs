@@ -26,23 +26,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private string _gcpProjectId;
         private AppType _appType = AppType.Mvc;
 
-        protected TemplateChooserViewModelBase(Action closeWindow)
-        {
-            GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
-            OkCommand = new ProtectedCommand(
-                () =>
-                {
-                    Result = CreateResult();
-                    closeWindow();
-                });
-        }
-
-        /// <summary>
-        /// Creates a <see cref="TemplateChooserViewModelResult"/> to store in <see cref="Result"/> Ok button is hit.
-        /// </summary>
-        /// <returns></returns>
-        protected abstract TemplateChooserViewModelResult CreateResult();
-
         /// <summary>
         /// The id of a google cloud project.
         /// </summary>
@@ -112,5 +95,35 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// The result of the dialog.
         /// </summary>
         public TemplateChooserViewModelResult Result { get; private set; }
+
+        /// <param name="closeWindow">The action that closes the related dialog.</param>
+        protected TemplateChooserViewModelBase(Action closeWindow)
+        {
+            GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
+            OkCommand = new ProtectedCommand(
+                () =>
+                {
+                    Result = CreateResult();
+                    closeWindow();
+                });
+        }
+
+        /// <summary>
+        /// Creates a <see cref="TemplateChooserViewModelResult"/> to store in <see cref="Result"/> Ok button is hit.
+        /// </summary>
+        private TemplateChooserViewModelResult CreateResult()
+        {
+            return new TemplateChooserViewModelResult(this);
+        }
+
+        /// <summary>
+        /// The type of frameowork for the VS project to target, .NET Framework or .NET Core.
+        /// </summary>
+        public abstract FrameworkType GetSelectedFramework();
+
+        /// <summary>
+        /// The ASP.NET or ASP.NET Core version for the VS project to use.
+        /// </summary>
+        public abstract AspNetVersion GetSelectedVersion();
     }
 }
