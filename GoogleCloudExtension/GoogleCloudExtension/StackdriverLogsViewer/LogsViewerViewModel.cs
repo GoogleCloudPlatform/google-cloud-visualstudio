@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase, IDisposable
     {
-        private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
+        internal const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
         private const uint LogStreamingIntervalInSeconds = 3;
         private const uint MaxLogEntriesCount = 600;
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private bool _isLoading;
         private bool _isAutoReloadChecked;
-        private Lazy<LoggingDataSource> _dataSource;
+        private Lazy<LoggingDataSource> _dataSourceLazy = new Lazy<LoggingDataSource>(CreateDataSource);
         private string _nextPageToken;
         private LogItem _latestLogItem;
 
@@ -82,6 +82,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// For testing.
+        /// </summary>
+        private readonly ILoggingDataSource _dataSourceOverride = null;
+
+        internal Func<string, Process> StartProcess = Process.Start;
 
         /// <summary>
         /// Gets the LogIdList for log id selector binding source.
@@ -152,7 +159,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the list of Log Level items.
         /// </summary>
-        public IEnumerable<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
+        public IReadOnlyList<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
 
         /// <summary>
         /// Gets the resource type, resource key selector view model.
@@ -171,7 +178,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The time zone selector items.
         /// </summary>
-        public IEnumerable<TimeZoneInfo> SystemTimeZones => TimeZoneInfo.GetSystemTimeZones();
+        public IReadOnlyCollection<TimeZoneInfo> SystemTimeZones => TimeZoneInfo.GetSystemTimeZones();
 
         /// <summary>
         /// Selected time zone.
@@ -301,11 +308,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public uint AutoReloadIntervalSeconds => LogStreamingIntervalInSeconds;
 
         /// <summary>
+        /// The LoggingDataSource to use.
+        /// </summary>
+        private ILoggingDataSource DataSource => _dataSourceOverride ?? _dataSourceLazy.Value;
+
+        /// <summary>
+        /// For testing.
+        /// </summary>
+        /// <param name="dataSource"></param>
+        internal LogsViewerViewModel(ILoggingDataSource dataSource) : this()
+        {
+            _dataSourceOverride = dataSource;
+        }
+
+        /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
         public LogsViewerViewModel()
         {
-            _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
@@ -326,7 +346,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
             PropertyChanged += OnPropertyChanged;
-            ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
+            ResourceTypeSelector = new ResourceTypeMenuViewModel(() => DataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
             OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
             OnAutoReloadCommand = new ProtectedCommand(AutoReload);
@@ -410,7 +430,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Firstly compose a new filter line.
             StringBuilder newFilter = new StringBuilder();
             newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");
-            while ((node = node.Parent).Parent != null)
+            while ((node = node.Parent)?.Parent != null)
             {
                 if (!string.IsNullOrWhiteSpace(node.FilterLabel))
                 {
@@ -592,7 +612,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                     // Here, it does not do pageSize: _defaultPageSize - count, 
                     // Because this is requried to use same page size for getting next page. 
-                    var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
+                    var results = await DataSource.ListLogEntriesAsync(_filter, order,
                         pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                     _nextPageToken = results.NextPageToken;
                     if (results?.LogEntries != null)
@@ -658,7 +678,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Create <seealso cref="LoggingDataSource"/> object with current project id.
         /// </summary>
-        private LoggingDataSource CreateDataSource()
+        private static LoggingDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
@@ -676,7 +696,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void ShowAdvancedFilterHelp()
         {
             EventsReporterWrapper.ReportEvent(LogsViewerShowAdvancedFilterHelpEvent.Create());
-            Process.Start(AdvancedHelpLink);
+            StartProcess(AdvancedHelpLink);
         }
 
         private void SwapFilter()
@@ -760,7 +780,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
             var keys = item == null ? null : new List<string>(new string[] { item.ResourceValue });
-            IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
+            IList<string> logIdRequestResult = await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             await ReloadAsync();
@@ -839,7 +859,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc:O}\"");
             }
 
-            if (LogIdList.SelectedLogIdFullName != null)
+            if (LogIdList?.SelectedLogIdFullName != null)
             {
                 filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
