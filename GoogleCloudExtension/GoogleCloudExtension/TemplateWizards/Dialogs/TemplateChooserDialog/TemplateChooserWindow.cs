@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
@@ -22,27 +21,35 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class TemplateChooserWindow : CommonDialogWindowBase
     {
-        private TemplateChooserViewModel ViewModel { get; }
+        private TemplateChooserViewModelBase ViewModel { get; }
 
-        private TemplateChooserWindow(string dialogTitle) : base(dialogTitle)
+        private TemplateChooserWindow(string dialogTitle, TemplateType templateType) : base(dialogTitle)
         {
-            ViewModel = new TemplateChooserViewModel(
-                Close,
-                () => PickProjectIdWindow.PromptUser(
-                        GoogleCloudExtension.Resources.TemplateWizardPickProjectIdHelpText,
-                        allowAccountChange: true));
-            Content = new TemplateChooserWindowContent { DataContext = ViewModel };
+
+            switch (templateType)
+            {
+                case TemplateType.AspNet:
+                    ViewModel = new AspNetTemplateChooserViewModel(Close);
+                    Content = new AspNetTemplateChooserWindowContent { DataContext = ViewModel };
+                    break;
+                case TemplateType.AspNetCore:
+                default:
+                    ViewModel = new AspNetCoreTemplateChooserViewModel(Close);
+                    Content = new AspNetCoreTemplateChooserWindowContent { DataContext = ViewModel };
+                    break;
+            }
         }
 
         /// <summary>
         /// Prompts the user to select properties of their template.
         /// </summary>
         /// <param name="projectName">The name of the project being created.</param>
+        /// <param name="templateType">The type of template being created.</param>
         /// <returns>The result of the dialog. Will return null when the dialog is canceled.</returns>
-        public static TemplateChooserViewModelResult PromptUser(string projectName)
+        public static TemplateChooserViewModelResult PromptUser(string projectName, TemplateType templateType)
         {
             var dialog = new TemplateChooserWindow(
-                string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName));
+                string.Format(GoogleCloudExtension.Resources.WizardTemplateChooserTitle, projectName), templateType);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
