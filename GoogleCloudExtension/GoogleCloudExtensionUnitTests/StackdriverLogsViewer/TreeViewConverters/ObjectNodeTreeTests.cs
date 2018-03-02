@@ -74,8 +74,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.TreeViewConverters
             const string nodeName = "test name";
             const string expectedNodeName = "test name :";
             const string expectedNodeValue = "12-13-1999 00:00:00.000";
-            const string expectedNodeFilterValue = "1999-12-13T08:00:00.0000000Z";
-            var nodeValue = new DateTime(1999, 12, 13);
+            const string expectedNodeFilterValue = "1999-12-13T00:00:00.0000000Z";
+            var nodeValue = new DateTime(1999, 12, 13, 0, 0, 0, DateTimeKind.Utc);
 
             var objectUnderTest = new ObjectNodeTree(nodeName, nodeValue, null);
 
