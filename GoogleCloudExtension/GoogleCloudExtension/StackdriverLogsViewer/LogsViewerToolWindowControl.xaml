@@ -120,7 +120,8 @@
                                 <Setter Property="ContextMenu">
                                     <Setter.Value>
                                         <ContextMenu d:DataContext="{d:DesignInstance local:ObjectNodeTree}">
-                                            <MenuItem Header="Copy" Command="{Binding CopyCommand}" />
+                                            <MenuItem Header="{x:Static ext:Resources.UiCopyMenuHeader}" 
+                                                      Command="{Binding CopyCommand}" />
                                         </ContextMenu>
                                     </Setter.Value>
                                 </Setter>
