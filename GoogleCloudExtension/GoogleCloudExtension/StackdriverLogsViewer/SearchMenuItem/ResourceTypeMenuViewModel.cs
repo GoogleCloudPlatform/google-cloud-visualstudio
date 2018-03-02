@@ -103,10 +103,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 Enumerable.Empty<MonitoredResourceDescriptor>());
 
             _resourceKeys = await _dataSource().ListResourceKeysAsync();
-            var items = _resourceKeys?.Join(
-                newOrderDescriptors, keys => keys.Type, desc => desc.Type,
-                (keys, desc) => new ResourceTypeItemViewModel(keys, _dataSource, this) { Header = desc.DisplayName });
-            foreach (ResourceTypeItemViewModel item in items ?? Enumerable.Empty<ResourceTypeItemViewModel>())
+            var items =
+                from desc in newOrderDescriptors
+                join keys in _resourceKeys ?? Enumerable.Empty<ResourceKeys>()
+                    on desc.Type equals keys.Type
+                select new ResourceTypeItemViewModel(keys, _dataSource, this) { Header = desc.DisplayName };
+
+            foreach (ResourceTypeItemViewModel item in items)
             {
                 MenuItems.Add(item);
             }
