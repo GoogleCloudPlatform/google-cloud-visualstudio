@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
                 Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
                 PublishDialogWindow.PromptUser(selectedProject);
             });
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.PublishDialog
                 return;
             }
 
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
             if (selectedProject == null || !PublishDialogWindow.CanPublish(selectedProject))
             {
                 menuCommand.Visible = false;

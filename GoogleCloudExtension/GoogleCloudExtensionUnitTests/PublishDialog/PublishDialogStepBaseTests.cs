@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
