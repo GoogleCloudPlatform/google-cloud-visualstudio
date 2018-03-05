@@ -192,7 +192,7 @@ namespace ProjectTemplate.Tests
         private void CreateProjectFromTemplate()
         {
             Directory.CreateDirectory(ProjectPath);
-            string templatePath = Solution.GetProjectTemplate("Gcp", "CSharp");
+            string templatePath = Solution.GetProjectTemplate("Gcp.AspNet.vstemplate", "CSharp");
             var isp = Dte as IServiceProvider;
             var sp = new ServiceProvider(isp);
             var vsSolution = (IVsSolution6)sp.GetService(typeof(SVsSolution));

@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
-    /// View Model for the Template Chooser dialog.
+    /// This class contains the common functionality for VS Template chooser dialogs.
     /// </summary>
-    public class TemplateChooserViewModel : ViewModelBase
+    public abstract class TemplateChooserViewModelBase : ViewModelBase
     {
         private string _gcpProjectId;
-        private FrameworkType _selectedFramework;
-        private AspNetVersion _selectedVersion;
-        private IList<AspNetVersion> _availableVersions;
         private AppType _appType = AppType.Mvc;
 
         /// <summary>
@@ -39,44 +33,6 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         {
             get { return _gcpProjectId; }
             set { SetValueAndRaise(ref _gcpProjectId, value); }
-        }
-
-        /// <summary>
-        /// The selected framework.
-        /// </summary>
-        public FrameworkType SelectedFramework
-        {
-            get { return _selectedFramework; }
-            set
-            {
-                SetValueAndRaise(ref _selectedFramework, value);
-                AvailableVersions = AspNetVersion.GetAvailableVersions(SelectedFramework);
-            }
-        }
-
-        /// <summary>
-        /// The list of available versions.
-        /// </summary>
-        public IList<AspNetVersion> AvailableVersions
-        {
-            get { return _availableVersions; }
-            private set
-            {
-                SetValueAndRaise(ref _availableVersions, value);
-                if (!AvailableVersions.Contains(SelectedVersion))
-                {
-                    SelectedVersion = AvailableVersions.First();
-                }
-            }
-        }
-
-        /// <summary>
-        /// The selected version.
-        /// </summary>
-        public AspNetVersion SelectedVersion
-        {
-            get { return _selectedVersion; }
-            set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
         /// <summary>
@@ -136,33 +92,38 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public ProtectedCommand OkCommand { get; }
 
         /// <summary>
-        /// The command to select an existing project.
-        /// </summary>
-        public ProtectedCommand SelectProjectCommand { get; }
-
-        /// <summary>
         /// The result of the dialog.
         /// </summary>
         public TemplateChooserViewModelResult Result { get; private set; }
 
-        public bool NetCoreAvailable { get; } = IsNetCoreAvailable();
-
-        private static bool IsNetCoreAvailable() => AspNetVersion.GetAvailableVersions(FrameworkType.NetCore).Any();
-
-        /// <param name="closeWindow">The action that will close the dialog.</param>
-        /// <param name="promptPickProject">The function that will prompt the user to pick an existing project.</param>
-        public TemplateChooserViewModel(Action closeWindow, Func<Project> promptPickProject)
+        /// <param name="closeWindow">The action that closes the related dialog.</param>
+        protected TemplateChooserViewModelBase(Action closeWindow)
         {
             GcpProjectId = CredentialsStore.Default.CurrentProjectId ?? "";
             OkCommand = new ProtectedCommand(
                 () =>
                 {
-                    Result = new TemplateChooserViewModelResult(this);
+                    Result = CreateResult();
                     closeWindow();
                 });
-            SelectProjectCommand =
-                new ProtectedCommand(() => GcpProjectId = promptPickProject()?.ProjectId ?? GcpProjectId);
-            SelectedFramework = NetCoreAvailable ? FrameworkType.NetCore : FrameworkType.NetFramework;
         }
+
+        /// <summary>
+        /// Creates a <see cref="TemplateChooserViewModelResult"/> to store in <see cref="Result"/> Ok button is hit.
+        /// </summary>
+        private TemplateChooserViewModelResult CreateResult()
+        {
+            return new TemplateChooserViewModelResult(this);
+        }
+
+        /// <summary>
+        /// The type of frameowork for the VS project to target, .NET Framework or .NET Core.
+        /// </summary>
+        public abstract FrameworkType GetSelectedFramework();
+
+        /// <summary>
+        /// The ASP.NET or ASP.NET Core version for the VS project to use.
+        /// </summary>
+        public abstract AspNetVersion GetSelectedVersion();
     }
 }

@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
     /// <summary>
     /// The results from the Template Chooser dialog.
-    /// This is an immutable subset of data of a <see cref="TemplateChooserViewModel"/>.
+    /// This is an immutable subset of data of a <see cref="AspNetCoreTemplateChooserViewModel"/>.
     /// </summary>
     public class TemplateChooserViewModelResult
     {
@@ -42,13 +42,14 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         public AppType AppType { get; }
 
-        /// <param name="templateChooserViewModel">The view model this result object will pull its data from.</param>
-        public TemplateChooserViewModelResult(TemplateChooserViewModel templateChooserViewModel)
+        /// <param name="viewModel">The view model this result object will pull its data from.</param>
+        public TemplateChooserViewModelResult(TemplateChooserViewModelBase viewModel)
+            : this(
+                viewModel.GcpProjectId,
+                viewModel.GetSelectedFramework(),
+                viewModel.GetSelectedVersion(),
+                viewModel.AppType)
         {
-            GcpProjectId = templateChooserViewModel.GcpProjectId;
-            SelectedFramework = templateChooserViewModel.SelectedFramework;
-            SelectedVersion = templateChooserViewModel.SelectedVersion;
-            AppType = templateChooserViewModel.AppType;
         }
 
         /// <summary>Constructor used for testing and for building from Json data.</summary>

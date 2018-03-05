@@ -26,6 +26,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards
@@ -36,8 +37,10 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateSelectorWizard))]
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
+        // Find the AspNet part of c:\path\to\template\Gcp.AspNet.vstemplate
+        private static readonly Regex s_templateTypeRegex = new Regex(@"(?<=Gcp\.)[^.]*(?=\.vstemplate$)");
         // Mockable static methods for unit testing.
-        internal Func<string, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
+        internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         /// <inheritdoc/>
@@ -50,6 +53,7 @@ namespace GoogleCloudExtension.TemplateWizards
             try
             {
                 string projectName = replacements[ReplacementsKeys.ProjectNameKey];
+                var thisTemplatePath = (string)customParams[0];
 
                 TemplateChooserViewModelResult result;
                 // Enable shortcutting the ui for functional testing.
@@ -60,22 +64,23 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
                 else
                 {
-                    result = PromptUser(projectName);
+                    TemplateType templateType = GetTemplateTypeFromPath(thisTemplatePath);
+                    result = PromptUser(projectName, templateType);
                 }
                 if (result == null)
                 {
                     throw new WizardBackoutException();
                 }
+
                 string thisTemplateDirectory =
-                    Path.GetDirectoryName(
-                        Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName((string)customParams[0]))));
+                        Path.GetFullPath(Path.Combine(thisTemplatePath, "..", "..", "..", ".."));
 
 
                 var serviceProvider = automationObject as IServiceProvider;
                 object[] newCustomParams = GetNewCustomParams(replacements, customParams.Skip(1), result);
 
                 string version = result.SelectedVersion.Version;
-                string templatePath = Path.Combine(
+                string targetTemplatePath = Path.Combine(
                     thisTemplateDirectory, result.AppType.ToString(), "1033", version, $"{version}.vstemplate");
                 string destinationFolder = replacements[ReplacementsKeys.DestinationDirectoryKey];
 
@@ -83,7 +88,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 IVsHierarchy newProject;
                 Marshal.ThrowExceptionForHR(
                     vsSolution.AddNewProjectFromTemplate(
-                        templatePath, newCustomParams, null,
+                        targetTemplatePath, newCustomParams, null,
                         destinationFolder, projectName, null,
                         out newProject));
             }
@@ -94,6 +99,20 @@ namespace GoogleCloudExtension.TemplateWizards
             }
             // Delegated wizard created the solution. Cancel repeated creation of the solution.
             throw new WizardCancelledException();
+        }
+
+        private TemplateType GetTemplateTypeFromPath(string thisTemplatePath)
+        {
+            string templateTypeName = s_templateTypeRegex.Match(thisTemplatePath).Value;
+            TemplateType result;
+            if (Enum.TryParse(templateTypeName, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return TemplateType.AspNetCore;
+            }
         }
 
         /// <inheritdoc/>
@@ -140,7 +159,7 @@ namespace GoogleCloudExtension.TemplateWizards
             {
                 $"{ReplacementsKeys.GcpProjectIdKey}={result.GcpProjectId}",
                 $"{ReplacementsKeys.SolutionDirectoryKey}={solutionDirectory}",
-                $"{ReplacementsKeys.PackagesPathKey}={relativePackagesPath}",
+                $"{ReplacementsKeys.PackagesPathKey}={relativePackagesPath}"
             };
 
             // TODO(jimwp): Find the latest framework version using IVsFrameworkMultiTargeting.
@@ -149,7 +168,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 switch (result.SelectedFramework)
                 {
                     case FrameworkType.NetFramework:
-                        var targetFramework = "net461";
+                        const string targetFramework = "net461";
                         additionalCustomParams.Add($"netcoreapp{result.SelectedVersion.Version}={targetFramework}");
                         break;
                     case FrameworkType.NetCore:
