@@ -17,6 +17,7 @@ using GoogleCloudExtension.SolutionUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.IO;
 
 namespace GoogleCloudExtensionUnitTests.SolutionUtils
 {
@@ -24,9 +25,8 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
     public class ProjectHelperConstructorUnitTests
     {
         private const string WebApplicationProjectKind = "{349C5851-65DF-11DA-9384-00065B846F21}";
-        private const string ProjectFullName = @"c:\Projects\Solution1\Project1\project1.csproj";
+        private static readonly string ProjectFullName = Path.Combine("Projects", "Solution1", "Project1", "project1.csproj");
 
-        private ProjectHelper _objectUnderTest;
         private Mock<Project> _projectMock;
 
         [TestInitialize]
@@ -35,78 +35,46 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             _projectMock = new Mock<Project>();
         }
 
-        private void InitProjectMockForKindValidityTesting()
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorProjectKindMisc() => TestConstructorByProjectKind(Constants.vsProjectKindMisc);
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorProjectKindFolder() => TestConstructorByProjectKind(Constants.vsProjectKindSolutionItems);
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorProjectKindUnmolded() => TestConstructorByProjectKind(Constants.vsProjectKindUnmodeled);
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorNoFullName() => TestConstructorByFullNamePropertiesNull(null, Mock.Of<Properties>());
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorNoProperties() => TestConstructorByFullNamePropertiesNull(ProjectFullName, null);
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorNoPropertiesNoFullName() => TestConstructorByFullNamePropertiesNull(null, null);
+
+        private void TestConstructorByProjectKind(string projectKind)
         {
             _projectMock.Setup(p => p.FullName).Returns(ProjectFullName);
             _projectMock.Setup(p => p.Properties).Returns(Mock.Of<Properties>());
+            _projectMock.Setup(p => p.Kind).Returns(projectKind);
+
+            new ProjectHelper(_projectMock.Object);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorProjectKindMisc()
-        {
-            InitProjectMockForKindValidityTesting();
-            _projectMock.Setup(p => p.Kind).Returns(Constants.vsProjectKindMisc);
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorProjectKindFolder()
-        {
-            InitProjectMockForKindValidityTesting();
-            _projectMock.Setup(p => p.Kind).Returns(Constants.vsProjectKindSolutionItems);
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorProjectKindUnmolded()
-        {
-            InitProjectMockForKindValidityTesting();
-            _projectMock.Setup(p => p.Kind).Returns(Constants.vsProjectKindUnmodeled);
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-        }
-
-        private void InitProjectMockForExtraValidityTesting()
+        private void TestConstructorByFullNamePropertiesNull(string fullName, Properties properties)
         {
             _projectMock.Setup(p => p.Kind).Returns(WebApplicationProjectKind);
-        }
+            _projectMock.Setup(p => p.FullName).Returns(fullName);
+            _projectMock.Setup(p => p.Properties).Returns(properties);
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorNoFullName()
-        {
-            InitProjectMockForExtraValidityTesting();
-            _projectMock.Setup(p => p.FullName).Returns((string)null);
-            _projectMock.Setup(p => p.Properties).Returns(Mock.Of<Properties>());
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorNoProperties()
-        {
-            InitProjectMockForExtraValidityTesting();
-            _projectMock.Setup(p => p.FullName).Returns(ProjectFullName);
-            _projectMock.Setup(p => p.Properties).Returns((Properties)null);
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorNoPropertiesNoFullName()
-        {
-            InitProjectMockForExtraValidityTesting();
-            _projectMock.Setup(p => p.FullName).Returns((string)null);
-            _projectMock.Setup(p => p.Properties).Returns((Properties)null);
-
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
+            new ProjectHelper(_projectMock.Object);
         }
     }
 }

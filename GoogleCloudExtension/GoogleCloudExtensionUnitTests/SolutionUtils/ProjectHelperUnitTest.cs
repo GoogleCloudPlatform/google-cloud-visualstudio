@@ -25,13 +25,12 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
     {
         private const string WebApplicationProjectKind = "{349C5851-65DF-11DA-9384-00065B846F21}";
 
-        private static readonly string ProjectFullName = Path.Combine("Projects", "Solution1", "Project1", "project1.csproj");
-        private static readonly string ProjectRoot = Path.Combine("Projects", "Solution1", "Project1");
-
         private const string UniqueNameNoSeparator = @"project1.csproj";
         private static readonly string UniqueNameSeparator = Path.DirectorySeparatorChar + @"project1.csproj";
         private const string UniqueNameDifferent = @"project2.csproj";
 
+        private static readonly string ProjectRoot = Path.Combine("Projects", "Solution1", "Project1");
+        private static readonly string ProjectFullName = Path.Combine(ProjectRoot, UniqueNameNoSeparator);
 
         private const string AssemblyVersionProperty = "AssemblyVersion";
         private const string AssemblyNameProperty = "AssemblyName";
@@ -48,6 +47,24 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             _projectMock.Setup(p => p.Kind).Returns(WebApplicationProjectKind);
             _projectMock.Setup(p => p.FullName).Returns(ProjectFullName);
         }
+
+        [TestMethod]
+        public void TestInitialStateUniqueNameNoSeparator() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameNoSeparator);
+
+        [TestMethod]
+        public void TestInitialStateUniqueNameSeparator() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameSeparator);
+
+        [TestMethod]
+        public void TestInitialStateUniqueNameDifferent() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameDifferent);
+
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameNoSeparator() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameNoSeparator);
+
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameSeparator() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameSeparator);
+
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameDifferen() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameDifferent);
 
         private void InitAssemblyProperties()
         {
@@ -79,66 +96,41 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             _projectMock.Setup(p => p.Properties).Returns(properties.Object);
         }
 
-        [TestMethod]
-        public void TestInitialStateUniqueNameNoSeparator()
+        private void TestInitialStateAssemblyPropertiesByUniqueName(string uniqueName)
         {
             InitAssemblyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(UniqueNameNoSeparator);
+            _projectMock.Setup(p => p.UniqueName).Returns(uniqueName);
             _objectUnderTest = new ProjectHelper(_projectMock.Object);
 
-            TestStandardInitialState();
-            TestAssemblyPropertiesInitialized();
-            Assert.AreEqual(UniqueNameNoSeparator, _objectUnderTest.UniqueName, true);
+            AssertStandardInitialState();
+            AssertAssemblyPropertiesInitialized();
+            Assert.AreEqual(uniqueName, _objectUnderTest.UniqueName, true);
         }
 
-        [TestMethod]
-        public void TestInitialStateUniqueNameSeparator()
-        {
-            InitAssemblyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(UniqueNameSeparator);
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-
-            TestStandardInitialState();
-            TestAssemblyPropertiesInitialized();
-            Assert.AreEqual(UniqueNameSeparator, _objectUnderTest.UniqueName, true);
-        }
-
-        [TestMethod]
-        public void TestInitialStateUniqueNameDifferent()
-        {
-            InitAssemblyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(UniqueNameDifferent);
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-
-            TestStandardInitialState();
-            TestAssemblyPropertiesInitialized();
-            Assert.AreEqual(UniqueNameDifferent, _objectUnderTest.UniqueName, true);
-        }
-
-        public void TestInitialStateEmptyProperties()
+        private void TestInitialStateNoAssemblyPropertiesByUniqueName(string uniqueName)
         {
             InitEmptyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(UniqueNameNoSeparator);
+            _projectMock.Setup(p => p.UniqueName).Returns(uniqueName);
             _objectUnderTest = new ProjectHelper(_projectMock.Object);
 
-            TestStandardInitialState();
-            TestAssemblyPropertiesNull();
-            Assert.AreEqual(UniqueNameDifferent, _objectUnderTest.UniqueName, true);
+            AssertStandardInitialState();
+            AssertAssemblyPropertiesNull();
+            Assert.AreEqual(uniqueName, _objectUnderTest.UniqueName, true);
         }
 
-        private void TestStandardInitialState()
+        private void AssertStandardInitialState()
         {
             Assert.AreEqual(ProjectFullName, _objectUnderTest.FullName, true);
             Assert.AreEqual(ProjectRoot, _objectUnderTest.ProjectRoot, true);
         }
 
-        private void TestAssemblyPropertiesInitialized()
+        private void AssertAssemblyPropertiesInitialized()
         {
             Assert.AreEqual(AssemblyVersionValue, _objectUnderTest.Version, true);
             Assert.AreEqual(AssemblyNameValue, _objectUnderTest.AssemblyName, true);
         }
 
-        private void TestAssemblyPropertiesNull()
+        private void AssertAssemblyPropertiesNull()
         {
             Assert.IsNull(_objectUnderTest.Version);
             Assert.IsNull(_objectUnderTest.AssemblyName);
