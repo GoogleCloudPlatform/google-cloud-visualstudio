@@ -213,6 +213,15 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
+      <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetTemplateChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
+    <Compile Include="TemplateWizards\TemplateType.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptions.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
@@ -245,11 +254,11 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
-    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelResult.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserWindow.cs" />
-    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserWindowContent.xaml.cs">
-      <DependentUpon>TemplateChooserWindowContent.xaml</DependentUpon>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetCoreTemplateChooserWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
@@ -1174,7 +1183,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserWindowContent.xaml">
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkTypeResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

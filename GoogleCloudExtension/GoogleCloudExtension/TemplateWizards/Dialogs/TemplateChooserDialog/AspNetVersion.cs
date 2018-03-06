@@ -106,10 +106,12 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 aspNetVersions.Add(AspNetCore10);
                 aspNetVersions.Add(AspNetCore11);
             }
+
             if (sdkVersions.Any(version => version >= s_sdkVersion2_0))
             {
                 aspNetVersions.Add(AspNetCore20);
             }
+
             return aspNetVersions;
         }
 
@@ -140,25 +142,26 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         /// <param name="framework">The <see cref="FrameworkType"/> that will run this template.</param>
         /// <returns>A new list of AspNetVersions from which are compatible with the vsVersion and framework.</returns>
-        public static IList<AspNetVersion> GetAvailableVersions(FrameworkType framework)
+        public static IList<AspNetVersion> GetAvailableAspNetCoreVersions(FrameworkType framework)
         {
             switch (framework)
             {
                 case FrameworkType.NetFramework:
-                    return new List<AspNetVersion> { AspNet4 };
+                    return new List<AspNetVersion> { AspNetCore10, AspNetCore11, AspNetCore20 };
                 case FrameworkType.NetCore:
                     switch (GoogleCloudExtensionPackage.VsVersion)
                     {
                         case VsVersionUtils.VisualStudio2015Version:
                             return GetVs2015AspNetCoreVersions();
+
+                        // For forward compatibility, give future versions of VS the same options as VS2017.
+                        case VsVersionUtils.VisualStudio2017Version:
                         default:
-                            // For forward compatibility, give future versions of VS the same options as VS2017.
                             return GetVs2017AspNetCoreVersions();
                     }
                 case FrameworkType.None:
-                    return new List<AspNetVersion>();
                 default:
-                    throw new InvalidOperationException($"Unknown Famework type: {framework}");
+                    return new List<AspNetVersion>();
             }
         }
     }

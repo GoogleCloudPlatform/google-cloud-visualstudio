@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <TemplateID>{01125093-9342-496C-89FA-FBF6BD35CCD0}</TemplateID>
-    <Name>ASP.NET on Google Cloud Platform</Name>
-    <Description>Template for ASP.NET applications that run on Google Cloud Platform.</Description>
+    <TemplateID>{3D2F2D62-35FD-4EEA-93E9-6D9B49E4BC31}</TemplateID>
+    <Name>ASP.NET Core on Google Cloud Platform</Name>
+    <Description>Template for ASP.NET Core applications that run on Google Cloud Platform.</Description>
     <ProjectType>CSharp</ProjectType>
     <ProjectSubType>Web</ProjectSubType>
     <SortOrder>1000</SortOrder>
