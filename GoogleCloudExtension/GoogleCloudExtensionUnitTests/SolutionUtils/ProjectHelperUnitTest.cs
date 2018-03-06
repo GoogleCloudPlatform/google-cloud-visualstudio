@@ -88,7 +88,8 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationProjectKindMisc() => TestConstructorEmptyProperties(Constants.vsProjectKindMisc, ProjectFullName, UniqueNameNoSeparator);
+        public void TestConstructorValidationProjectKindMisc() =>
+            TestConstructorEmptyProperties(Constants.vsProjectKindMisc, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project kind <seealso cref="Constants.vsProjectKindSolutionItems"/>.
@@ -96,7 +97,8 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationProjectKindFolder() => TestConstructorEmptyProperties(Constants.vsProjectKindSolutionItems, ProjectFullName, UniqueNameNoSeparator);
+        public void TestConstructorValidationProjectKindFolder() =>
+            TestConstructorEmptyProperties(Constants.vsProjectKindSolutionItems, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project kind <seealso cref="Constants.vsProjectKindUnmodeled"/>.
@@ -104,71 +106,82 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationProjectKindUnmolded() => TestConstructorEmptyProperties(Constants.vsProjectKindUnmodeled, ProjectFullName, UniqueNameNoSeparator);
+        public void TestConstructorValidationProjectKindUnmolded() =>
+            TestConstructorEmptyProperties(Constants.vsProjectKindUnmodeled, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.FullName"/>.        
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationNoFullName() => TestConstructorEmptyProperties(WebApplicationProjectKind, null, UniqueNameNoSeparator);
+        public void TestConstructorValidationNoFullName() =>
+            TestConstructorEmptyProperties(WebApplicationProjectKind, null, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.UniqueName"/>.        
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationNoUniqueName() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, null);
+        public void TestConstructorValidationNoUniqueName() =>
+            TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, null);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.Properties"/>.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationNoProperties() => TestConstructorNullProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+        public void TestConstructorValidationNoProperties() =>
+            TestConstructorNullProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no properties set at all.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestConstructorValidationAllNull() => TestConstructorNullProperties(null, null, null);
+        public void TestConstructorValidationAllNull() =>
+            TestConstructorNullProperties(null, null, null);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateUniqueNameNoSeparator() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+        public void TestInitialStateUniqueNameNoSeparator() =>
+            TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateUniqueNameSeparator() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
+        public void TestInitialStateUniqueNameSeparator() =>
+            TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateUniqueNameDifferent() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
+        public void TestInitialStateUniqueNameDifferent() =>
+            TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameNoSeparator() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+        public void TestInitialStateEmptyPropertiesUniqueNameNoSeparator() =>
+            TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameSeparator() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
+        public void TestInitialStateEmptyPropertiesUniqueNameSeparator() =>
+            TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
 
         /// <summary>
         /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
         /// </summary>
         [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameDifferen() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
+        public void TestInitialStateEmptyPropertiesUniqueNameDifferen() =>
+            TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
 
         private void TestConstructorNullProperties(string projectKind, string fullName, string uniqueName)
         {
