@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.PublishDialog
 
             menuCommand.Visible = true;
 
-            var startupProject = SolutionHelper.CurrentSolution.StartupProject.ParsedProject;
+            var startupProject = SolutionHelper.CurrentSolution.StartupProject?.ParsedProject;
             if (startupProject == null)
             {
                 menuCommand.Enabled = false;
