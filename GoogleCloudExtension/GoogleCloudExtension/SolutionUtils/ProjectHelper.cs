@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.SolutionUtils
             try
             {
                 FullName = _project.FullName.ToLowerInvariant();
-                UniqueName = _project.UniqueName?.ToLowerInvariant();
+                UniqueName = _project.UniqueName.ToLowerInvariant();
                 if (FullName.EndsWith(UniqueName))
                 {
                     int len = FullName.Length - UniqueName.Length;
@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.SolutionUtils
             // that support automation are given as valid.
             try
             {
-                return project.FullName != null && project.Properties != null;
+                return project.FullName != null && project.UniqueName != null && project.Properties != null;
             }
             catch (Exception ex) when (ex is COMException || ex is NotImplementedException)
             {

@@ -252,7 +252,6 @@
     <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelTests.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBaseTests.cs" />
-    <Compile Include="SolutionUtils\ProjectHelperConstructorUnitTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StackframeParserTests.cs" />

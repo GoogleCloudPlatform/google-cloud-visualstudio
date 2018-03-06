@@ -16,10 +16,14 @@ using EnvDTE;
 using GoogleCloudExtension.SolutionUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.IO;
 
 namespace GoogleCloudExtensionUnitTests.SolutionUtils
 {
+    /// <summary>
+    /// Class defining unit tests for the <seealso cref="ProjectHelper"/> class.
+    /// </summary>
     [TestClass]
     public class ProjectHelperUnitTest
     {
@@ -39,33 +43,27 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
 
         private ProjectHelper _objectUnderTest;
         private Mock<Project> _projectMock;
+        private Mock<Properties> _propertiesMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _projectMock = new Mock<Project>();
-            _projectMock.Setup(p => p.Kind).Returns(WebApplicationProjectKind);
-            _projectMock.Setup(p => p.FullName).Returns(ProjectFullName);
+            _propertiesMock = new Mock<Properties>();
         }
 
-        [TestMethod]
-        public void TestInitialStateUniqueNameNoSeparator() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameNoSeparator);
+        /// <summary>
+        /// Helper method to initialize an empty <seealso cref="Properties"/> mock.
+        /// </summary>
+        private void InitEmptyProperties()
+        {
+            _propertiesMock.Setup(ps => ps.Count).Returns(0);
+            _propertiesMock.Setup(ps => ps.GetEnumerator()).Returns(new Property[] { }.GetEnumerator());
+        }
 
-        [TestMethod]
-        public void TestInitialStateUniqueNameSeparator() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameSeparator);
-
-        [TestMethod]
-        public void TestInitialStateUniqueNameDifferent() => TestInitialStateAssemblyPropertiesByUniqueName(UniqueNameDifferent);
-
-        [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameNoSeparator() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameNoSeparator);
-
-        [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameSeparator() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameSeparator);
-
-        [TestMethod]
-        public void TestInitialStateEmptyPropertiesUniqueNameDifferen() => TestInitialStateNoAssemblyPropertiesByUniqueName(UniqueNameDifferent);
-
+        /// <summary>
+        /// Helper method to initialize a <seealso cref="Properties"/> mock containing the assembly properties.
+        /// </summary>
         private void InitAssemblyProperties()
         {
             Mock<Property> assemblyVersionPropMock = new Mock<Property>();
@@ -76,52 +74,149 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             assemblyNamePropMock.Setup(v => v.Name).Returns(AssemblyNameProperty);
             assemblyNamePropMock.Setup(v => v.Value).Returns(AssemblyNameValue);
 
-            Mock<Properties> properties = new Mock<Properties>();
-            properties.Setup(ps => ps.Count).Returns(2);
-            properties.Setup(ps => ps.GetEnumerator()).Returns(new Property[]
+            _propertiesMock.Setup(ps => ps.Count).Returns(2);
+            _propertiesMock.Setup(ps => ps.GetEnumerator()).Returns(new Property[]
             {
                 assemblyVersionPropMock.Object,
                 assemblyNamePropMock.Object
             }.GetEnumerator());
-
-            _projectMock.Setup(p => p.Properties).Returns(properties.Object);
         }
 
-        private void InitEmptyProperties()
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project kind <seealso cref="Constants.vsProjectKindMisc"/>.
+        /// Some project kinds are not supported.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationProjectKindMisc() => TestConstructorEmptyProperties(Constants.vsProjectKindMisc, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project kind <seealso cref="Constants.vsProjectKindSolutionItems"/>.
+        /// Some project kinds are not supported.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationProjectKindFolder() => TestConstructorEmptyProperties(Constants.vsProjectKindSolutionItems, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project kind <seealso cref="Constants.vsProjectKindUnmodeled"/>.
+        /// Some project kinds are not supported.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationProjectKindUnmolded() => TestConstructorEmptyProperties(Constants.vsProjectKindUnmodeled, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.FullName"/>.        
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationNoFullName() => TestConstructorEmptyProperties(WebApplicationProjectKind, null, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.UniqueName"/>.        
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationNoUniqueName() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, null);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.Properties"/>.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationNoProperties() => TestConstructorNullProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no properties set at all.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
+        public void TestConstructorValidationAllNull() => TestConstructorNullProperties(null, null, null);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateUniqueNameNoSeparator() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateUniqueNameSeparator() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateUniqueNameDifferent() => TestConstructorAssemblyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameNoSeparator() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameNoSeparator);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameSeparator() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameSeparator);
+
+        /// <summary>
+        /// Tests for the correct initial state of the <seealso cref="ProjectHelper"/> instance.
+        /// </summary>
+        [TestMethod]
+        public void TestInitialStateEmptyPropertiesUniqueNameDifferen() => TestConstructorEmptyProperties(WebApplicationProjectKind, ProjectFullName, UniqueNameDifferent);
+
+        private void TestConstructorNullProperties(string projectKind, string fullName, string uniqueName)
         {
-            Mock<Properties> properties = new Mock<Properties>();
-            properties.Setup(ps => ps.Count).Returns(0);
-            properties.Setup(ps => ps.GetEnumerator()).Returns(new Property[] { }.GetEnumerator());
-
-            _projectMock.Setup(p => p.Properties).Returns(properties.Object);
+            // If properties are null, constructor should throw, it should never get to the point of
+            // checking whether properties are initialized or not.
+            TestConstructor(projectKind, fullName, uniqueName, null, Assert.Fail);
         }
 
-        private void TestInitialStateAssemblyPropertiesByUniqueName(string uniqueName)
-        {
-            InitAssemblyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(uniqueName);
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-
-            AssertStandardInitialState();
-            AssertAssemblyPropertiesInitialized();
-            Assert.AreEqual(uniqueName, _objectUnderTest.UniqueName, true);
-        }
-
-        private void TestInitialStateNoAssemblyPropertiesByUniqueName(string uniqueName)
+        private void TestConstructorEmptyProperties(string projectKind, string fullName, string uniqueName)
         {
             InitEmptyProperties();
-            _projectMock.Setup(p => p.UniqueName).Returns(uniqueName);
-            _objectUnderTest = new ProjectHelper(_projectMock.Object);
-
-            AssertStandardInitialState();
-            AssertAssemblyPropertiesNull();
-            Assert.AreEqual(uniqueName, _objectUnderTest.UniqueName, true);
+            TestConstructor(projectKind, fullName, uniqueName, _propertiesMock.Object, AssertAssemblyPropertiesNull);
         }
 
-        private void AssertStandardInitialState()
+        private void TestConstructorAssemblyProperties(string projectKind, string fullName, string uniqueName)
         {
-            Assert.AreEqual(ProjectFullName, _objectUnderTest.FullName, true);
+            InitAssemblyProperties();
+            TestConstructor(projectKind, fullName, uniqueName, _propertiesMock.Object, AssertAssemblyPropertiesInitialized);
+        }
+
+        /// <summary>
+        /// Helper method for testing <seealso cref="ProjectHelper"/> constructor.
+        /// Parameters are not those of the constructor being tested but are used to create a
+        /// <seealso cref="Project"/> mock which is the one passed as parameter to the constructor
+        /// under test.
+        /// </summary>
+        /// <param name="projectKind">String representation of a GUID representing the project kind.
+        /// Some project kinds are not supported by the extension and we need to test for correct validation
+        /// of this value.</param>
+        /// <param name="fullName">Project full name, usually its full path.</param>
+        /// <param name="uniqueName">Project unique name, usually the name of the project definition file.</param>
+        /// <param name="properties">Project properties.</param>
+        /// <param name="assertPropertiesInitialized">Action to use for testing the correct initialization of
+        /// <seealso cref="ProjectHelper"/> based on the value of <paramref name="properties"/> </param>
+        private void TestConstructor(string projectKind, string fullName, string uniqueName, Properties properties, Action assertPropertiesInitialized)
+        {
+            _projectMock.Setup(p => p.Kind).Returns(projectKind);
+            _projectMock.Setup(p => p.FullName).Returns(fullName);
+            _projectMock.Setup(p => p.UniqueName).Returns(uniqueName);
+            _projectMock.Setup(p => p.Properties).Returns(properties);
+
+            _objectUnderTest = new ProjectHelper(_projectMock.Object);
+
+            Assert.AreEqual(fullName, _objectUnderTest.FullName, true);
+            Assert.AreEqual(uniqueName, _objectUnderTest.UniqueName, true);
             Assert.AreEqual(ProjectRoot, _objectUnderTest.ProjectRoot, true);
+
+            assertPropertiesInitialized();
         }
 
         private void AssertAssemblyPropertiesInitialized()
