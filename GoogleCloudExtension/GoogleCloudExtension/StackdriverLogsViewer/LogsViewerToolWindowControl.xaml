@@ -43,31 +43,6 @@
                 </Style.Triggers>
             </Style>
 
-            <DataTemplate x:Key="SeverityLevelColumnTemplate" DataType="local:LogItem">
-                <Image Source="{Binding SeverityLevel}"
-                       Width="12"
-                       Height="12"
-                       Margin="9,1,8,1">
-                    <Image.ToolTip>
-                        <ToolTip Content="{Binding SeverityTip}" Style="{StaticResource CommonTooltipStyle}" />
-                    </Image.ToolTip>
-                </Image>
-            </DataTemplate>
-
-            <DataTemplate x:Key="TimeColumnTemplate" DataType="local:LogItem">
-                <TextBox
-                    IsReadOnly="True"
-                    Text="{Binding Time, Mode=OneWay}"
-                    TextWrapping="NoWrap"
-                    Margin="6,0,6,0"
-                    Style="{StaticResource EllipsisBoxStyle}">
-
-                    <TextBox.ToolTip>
-                        <ToolTip Content="{Binding Date}" Style="{StaticResource CommonTooltipStyle}" />
-                    </TextBox.ToolTip>
-                </TextBox>
-            </DataTemplate>
-
             <DataTemplate x:Key="MessageColumnTemplate" DataType="local:LogItem">
                 <DockPanel LastChildFill="True">
                     <Grid DockPanel.Dock="Left">
@@ -100,35 +75,6 @@
                     <TextBlock DockPanel.Dock="Right"/>
 
                 </DockPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="LogItemDetailsTemplate"  DataType="local:LogItem">
-                <!-- Use a border to make the background right. -->
-                <Border Background="White" Padding="30,0,0,2">
-
-                    <TreeView BorderThickness="0"
-                              ItemsSource="{Binding TreeViewObjects}"
-                              SelectedValuePath="NodeValue"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                        <TreeView.CommandBindings>
-                            <CommandBinding Command="ApplicationCommands.Copy" Executed="DetailsTreeView_OnCopy"/>
-                        </TreeView.CommandBindings>
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded" Value="True" />
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu d:DataContext="{d:DesignInstance local:ObjectNodeTree}">
-                                            <MenuItem Header="{x:Static ext:Resources.UiCopyMenuHeader}" 
-                                                      Command="{Binding CopyCommand}" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                    </TreeView>
-                </Border>
             </DataTemplate>
 
             <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
@@ -337,7 +283,6 @@
                             DataContext="{Binding DateTimePickerModel}" />
 
                         <controls:IconButton
-                            Grid.Column="1" 
                             Margin="6,0,16,0"
                             Width="32" 
                             Height="32"
@@ -450,8 +395,7 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     AlternationCount="2"
                     ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"
-                    RowDetailsVisibilityMode="VisibleWhenSelected"
-                    RowDetailsTemplate="{StaticResource LogItemDetailsTemplate}">
+                    RowDetailsVisibilityMode="VisibleWhenSelected">
 
                     <!-- Override the text highlight color. -->
                     <DataGrid.Resources>
@@ -485,16 +429,78 @@
 
                     <DataGrid.Columns>
                         <DataGridTemplateColumn
-                            IsReadOnly="True"
-                            CellTemplate="{StaticResource SeverityLevelColumnTemplate}"/>
+                            IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="local:LogItem">
+                                    <Image Source="{Binding SeverityLevel}"
+                                           Width="12"
+                                           Height="12"
+                                           Margin="9,1,8,1">
+                                        <Image.ToolTip>
+                                            <ToolTip Content="{Binding SeverityTip}"
+                                                     Style="{StaticResource CommonTooltipStyle}" />
+                                        </Image.ToolTip>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn
                             IsReadOnly="True"
-                            SortMemberPath="TimeStamp"
-                            CellTemplate="{StaticResource TimeColumnTemplate}" />
+                            SortMemberPath="TimeStamp">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="local:LogItem">
+                                    <TextBox
+                                        IsReadOnly="True"
+                                        Text="{Binding Time, Mode=OneWay}"
+                                        TextWrapping="NoWrap"
+                                        Margin="6,0,6,0"
+                                        Style="{StaticResource EllipsisBoxStyle}">
+
+                                        <TextBox.ToolTip>
+                                            <ToolTip Content="{Binding Date}"
+                                                     Style="{StaticResource CommonTooltipStyle}" />
+                                        </TextBox.ToolTip>
+                                    </TextBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn Width="*" CellTemplate="{StaticResource MessageColumnTemplate}" />
                     </DataGrid.Columns>
+
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate DataType="local:LogItem">
+                            <!-- Use a border to make the background right. -->
+                            <Border Background="White" Padding="30,0,0,2">
+
+                                <TreeView BorderThickness="0"
+                                          ItemsSource="{Binding TreeViewObjects}"
+                                          SelectedValuePath="NodeValue"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <TreeView.CommandBindings>
+                                        <CommandBinding Command="ApplicationCommands.Copy"
+                                                        Executed="DetailsTreeView_OnCopy" />
+                                    </TreeView.CommandBindings>
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}">
+                                            <Setter Property="IsExpanded" Value="True" />
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu
+                                                        d:DataContext="{d:DesignInstance local:ObjectNodeTree}">
+                                                        <MenuItem Header="{x:Static ext:Resources.UiCopyMenuHeader}"
+                                                                  Command="{Binding CopyCommand}" />
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                </TreeView>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
                 </DataGrid>
             </Grid>
 
@@ -541,3 +547,4 @@
         </Grid>
     </Grid>
 </UserControl>
+

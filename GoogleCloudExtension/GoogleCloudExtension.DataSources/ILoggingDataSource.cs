@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// Interface for a data source accessing
+    /// <see href="https://cloud.google.com/logging/docs/api/reference/rest">Stackdriver Logging API</see>.
+    /// Implemented by <see cref="LoggingDataSource"/>.
+    /// </summary>
     public interface ILoggingDataSource
     {
-
         /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
         /// The size of entire set of MonitoredResourceDescriptor is small.
