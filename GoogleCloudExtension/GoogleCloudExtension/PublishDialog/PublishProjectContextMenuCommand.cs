@@ -43,19 +43,14 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly Package _package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishProjectMainMenuCommand"/> class.
+        /// Initializes a new instance of the <see cref="PublishProjectContextMenuCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         private PublishProjectContextMenuCommand(Package package)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
-
-            _package = package;
-
+            _package = package.ThrowIfNull(nameof(package));
+            
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
@@ -106,7 +101,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
                 Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
                 PublishDialogWindow.PromptUser(selectedProject);
             });
@@ -120,7 +115,7 @@ namespace GoogleCloudExtension.PublishDialog
                 return;
             }
 
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
             if (selectedProject == null || !PublishDialogWindow.CanPublish(selectedProject))
             {
                 menuCommand.Visible = false;
