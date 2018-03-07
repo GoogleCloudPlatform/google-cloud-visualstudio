@@ -14,9 +14,7 @@ namespace GoogleCloudExtension.DataSources
     public interface ILoggingDataSource
     {
         /// <summary>
-        /// Returns the list of MonitoredResourceDescriptor.
-        /// The size of entire set of MonitoredResourceDescriptor is small.
-        /// Batch all in one request in case it spans multiple pages.
+        /// Returns the list of <see cref="MonitoredResourceDescriptor"/>.
         /// </summary>
         Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync();
 
@@ -24,8 +22,7 @@ namespace GoogleCloudExtension.DataSources
         /// Returns the first page of log entries of the project id.
         /// </summary>
         /// <param name="filter">
-        /// Optional,
-        /// Refert to https://cloud.google.com/logging/docs/view/advanced_filters.
+        /// Optional. Refer to <see href="https://cloud.google.com/logging/docs/view/advanced_filters"/>.
         /// </param>
         /// <param name="orderBy">
         /// Optional, "timestamp desc" or "timestamp asc"
@@ -43,7 +40,7 @@ namespace GoogleCloudExtension.DataSources
         /// </param>
         /// <param name="cancelToken">Optional. A cancellation token.</param>
         /// <returns>
-        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
+        ///     <see ref="LogEntryRequestResult" /> object that contains log entries and next page token.
         /// </returns>
         Task<LogEntryRequestResult> ListLogEntriesAsync(
             string filter = null,
@@ -53,16 +50,13 @@ namespace GoogleCloudExtension.DataSources
             CancellationToken cancelToken = default(CancellationToken));
 
         /// <summary>
-        /// Returns a list of log names of current Google Cloud project.
-        /// Only logs that have entries are listed.
-        /// The size of entire set of log names is small.
-        /// Batch all in one request in unlikely case it spans multiple pages.
+        /// Returns a list of log names of the current Google Cloud project.
         /// </summary>
         /// <param name="resourceType">The resource type, i.e gce_instance.</param>
         /// <param name="resourcePrefixList">
         /// Optional, can be null.
         /// A list of resource prefixes.
-        /// i.e,  for resource type app engine, the prefixe can be the module ids.
+        /// As an example, for resource type app engine, the prefixes can be the module ids.
         /// </param>
         Task<IList<string>> ListProjectLogNamesAsync(
             string resourceType,
@@ -76,7 +70,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// List all resource type values for the given resource type and resource key.
         /// </summary>
-        /// <param name="resourceType">Required, the resource type.</param>
+        /// <param name="resourceType">The resource type.</param>
         /// <param name="resourceKey">Optional, the resource key as prefix.</param>
         /// <returns>
         /// A task with result of a list of resource keys.

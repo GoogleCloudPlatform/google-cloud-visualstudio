@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private readonly ILoggingDataSource _dataSourceOverride = null;
 
-        internal Func<string, Process> StartProcess = Process.Start;
+        internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
         /// <summary>
         /// Gets the LogIdList for log id selector binding source.
@@ -315,7 +315,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// For testing.
         /// </summary>
-        /// <param name="dataSource"></param>
+        /// <param name="dataSource">
+        /// The mocked data source to use instead the value from <see cref="CreateDataSource"/>.
+        /// </param>
         internal LogsViewerViewModel(ILoggingDataSource dataSource) : this()
         {
             _dataSourceOverride = dataSource;

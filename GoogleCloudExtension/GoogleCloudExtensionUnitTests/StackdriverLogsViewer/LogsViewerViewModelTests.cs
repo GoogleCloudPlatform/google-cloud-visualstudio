@@ -19,6 +19,11 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     public class LogsViewerViewModelTests
     {
         private ILoggingDataSource _mockedLoggingDataSource;
+        private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
+        private TaskCompletionSource<IList<MonitoredResourceDescriptor>> _getResourceDescriptorsSource;
+        private TaskCompletionSource<IList<ResourceKeys>> _listResourceKeysSource;
+        private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
+        private LogsViewerViewModel _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
@@ -26,10 +31,24 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
-            _mockedLoggingDataSource = Mock.Of<ILoggingDataSource>();
+            _getResourceDescriptorsSource = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
+            _listResourceKeysSource = new TaskCompletionSource<IList<ResourceKeys>>();
+            _listProjectLogNamesSource = new TaskCompletionSource<IList<string>>();
+            _listLogEntriesSource = new TaskCompletionSource<LogEntryRequestResult>();
+            _mockedLoggingDataSource = Mock.Of<ILoggingDataSource>(
+                ds =>
+                    ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
+                    ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
+                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                    _listProjectLogNamesSource.Task &&
+                    ds.ListLogEntriesAsync(
+                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                        It.IsAny<CancellationToken>()) ==
+                    _listLogEntriesSource.Task);
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
+            _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
         }
 
         [TestMethod]
@@ -41,193 +60,142 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = testAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = testProjectName, ProjectId = testProjectId });
-            var objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
 
-            Assert.IsNull(objectUnderTest.LogIdList);
-            Assert.IsNotNull(objectUnderTest.DateTimePickerModel);
-            Assert.IsTrue(objectUnderTest.AdvancedFilterHelpCommand.CanExecuteCommand);
-            Assert.IsTrue(objectUnderTest.SubmitAdvancedFilterCommand.CanExecuteCommand);
-            Assert.IsTrue(objectUnderTest.SimpleTextSearchCommand.CanExecuteCommand);
-            Assert.IsTrue(objectUnderTest.FilterSwitchCommand.CanExecuteCommand);
-            Assert.IsTrue(objectUnderTest.OnDetailTreeNodeFilterCommand.CanExecuteCommand);
-            Assert.IsNull(objectUnderTest.AdvancedFilterText);
-            Assert.IsFalse(objectUnderTest.ShowAdvancedFilter);
-            Assert.IsNull(objectUnderTest.SimpleSearchText);
-            Assert.AreEqual(7, objectUnderTest.LogSeverityList.Count);
-            Assert.IsNotNull(objectUnderTest.ResourceTypeSelector);
-            Assert.AreEqual(LogSeverity.All, objectUnderTest.SelectedLogSeverity.Severity);
-            Assert.AreEqual(TimeZoneInfo.GetSystemTimeZones(), objectUnderTest.SystemTimeZones);
-            Assert.AreEqual(TimeZoneInfo.Local, objectUnderTest.SelectedTimeZone);
-            Assert.IsTrue(objectUnderTest.RefreshCommand.CanExecuteCommand);
-            Assert.AreEqual(testAccountName, objectUnderTest.Account);
-            Assert.AreEqual(testProjectName, objectUnderTest.Project);
-            Assert.IsFalse(objectUnderTest.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerExpandAllTip, objectUnderTest.ToggleExapandAllToolTip);
-            Assert.IsNotNull(objectUnderTest.LogItemCollection);
-            Assert.IsTrue(objectUnderTest.CancelRequestCommand.CanExecuteCommand);
-            Assert.IsFalse(objectUnderTest.ShowCancelRequestButton);
-            Assert.IsFalse(objectUnderTest.ShowRequestErrorMessage);
-            Assert.IsNull(objectUnderTest.RequestErrorMessage);
-            Assert.IsNull(objectUnderTest.RequestStatusText);
-            Assert.IsFalse(objectUnderTest.ShowRequestStatus);
-            Assert.IsTrue(objectUnderTest.IsControlEnabled);
-            Assert.IsTrue(objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
-            Assert.IsFalse(objectUnderTest.IsAutoReloadChecked);
-            Assert.AreEqual((uint)3, objectUnderTest.AutoReloadIntervalSeconds);
+            Assert.IsNull(_objectUnderTest.LogIdList);
+            Assert.IsNotNull(_objectUnderTest.DateTimePickerModel);
+            Assert.IsTrue(_objectUnderTest.AdvancedFilterHelpCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.SubmitAdvancedFilterCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.SimpleTextSearchCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.FilterSwitchCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.OnDetailTreeNodeFilterCommand.CanExecuteCommand);
+            Assert.IsNull(_objectUnderTest.AdvancedFilterText);
+            Assert.IsFalse(_objectUnderTest.ShowAdvancedFilter);
+            Assert.IsNull(_objectUnderTest.SimpleSearchText);
+            Assert.AreEqual(7, _objectUnderTest.LogSeverityList.Count);
+            Assert.IsNotNull(_objectUnderTest.ResourceTypeSelector);
+            Assert.AreEqual(LogSeverity.All, _objectUnderTest.SelectedLogSeverity.Severity);
+            Assert.AreEqual(TimeZoneInfo.GetSystemTimeZones(), _objectUnderTest.SystemTimeZones);
+            Assert.AreEqual(TimeZoneInfo.Local, _objectUnderTest.SelectedTimeZone);
+            Assert.IsTrue(_objectUnderTest.RefreshCommand.CanExecuteCommand);
+            Assert.AreEqual(testAccountName, _objectUnderTest.Account);
+            Assert.AreEqual(testProjectName, _objectUnderTest.Project);
+            Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
+            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+            Assert.IsNotNull(_objectUnderTest.LogItemCollection);
+            Assert.IsTrue(_objectUnderTest.CancelRequestCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
+            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
+            Assert.IsFalse(_objectUnderTest.ShowRequestStatus);
+            Assert.IsTrue(_objectUnderTest.IsControlEnabled);
+            Assert.IsTrue(_objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
+            Assert.AreEqual((uint)3, _objectUnderTest.AutoReloadIntervalSeconds);
         }
 
         [TestMethod]
         public void TestToggleExpandAll()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
+            _objectUnderTest.ToggleExpandAllExpanded = true;
 
-            objectUnderTests.ToggleExpandAllExpanded = true;
-
-            Assert.IsTrue(objectUnderTests.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerCollapseAllTip, objectUnderTests.ToggleExapandAllToolTip);
+            Assert.IsTrue(_objectUnderTest.ToggleExpandAllExpanded);
+            Assert.AreEqual(Resources.LogViewerCollapseAllTip, _objectUnderTest.ToggleExapandAllToolTip);
         }
 
         [TestMethod]
         public void TestToggleCollapseAll()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-            objectUnderTests.ToggleExpandAllExpanded = true;
+            _objectUnderTest.ToggleExpandAllExpanded = true;
 
-            objectUnderTests.ToggleExpandAllExpanded = false;
+            _objectUnderTest.ToggleExpandAllExpanded = false;
 
-            Assert.IsFalse(objectUnderTests.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerExpandAllTip, objectUnderTests.ToggleExapandAllToolTip);
+            Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
+            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
         }
 
         [TestMethod]
         public void TestSimplePageLoading()
         {
-            Mock<ILoggingDataSource> dataSourceMock = Mock.Get(_mockedLoggingDataSource);
-            dataSourceMock.Setup(ds => ds.GetResourceDescriptorsAsync())
-                .Returns(
-                    Task.FromResult<IList<MonitoredResourceDescriptor>>(
-                        new List<MonitoredResourceDescriptor>
-                        {
-                            new MonitoredResourceDescriptor {Type = ResourceTypeNameConsts.GlobalType}
-                        }));
-            dataSourceMock.Setup(ds => ds.ListResourceKeysAsync())
-                .Returns(
-                    Task.FromResult<IList<ResourceKeys>>(
-                        new List<ResourceKeys> { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } }));
-            dataSourceMock
-                .Setup(
-                    ds => ds.ListProjectLogNamesAsync(
-                        ResourceTypeNameConsts.GlobalType, It.IsAny<IEnumerable<string>>()))
-                .Returns(Task.FromResult<IList<string>>(new[] { "log-id" }));
-            var tcs = new TaskCompletionSource<LogEntryRequestResult>();
-            dataSourceMock.Setup(
-                ds => ds.ListLogEntriesAsync(
-                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(tcs.Task);
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
 
-            objectUnderTests.SimpleTextSearchCommand.Execute(null);
-            objectUnderTests.SimpleTextSearchCommand.Execute(null);
+            // Two calls here are required by the test but not normal use.
+            // This is probably due to all async calls completing syncronously.
+            // TODO(przybjw): Fix issue #898.
+            _objectUnderTest.SimpleTextSearchCommand.Execute(null);
+            _objectUnderTest.SimpleTextSearchCommand.Execute(null);
 
-            Assert.IsFalse(objectUnderTests.IsControlEnabled);
-            Assert.IsNull(objectUnderTests.RequestErrorMessage);
-            Assert.IsFalse(objectUnderTests.ShowRequestErrorMessage);
-            Assert.AreEqual(Resources.LogViewerRequestProgressMessage, objectUnderTests.RequestStatusText);
-            Assert.IsTrue(objectUnderTests.ShowRequestStatus);
-            Assert.IsTrue(objectUnderTests.ShowCancelRequestButton);
+            Assert.IsFalse(_objectUnderTest.IsControlEnabled);
+            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
+            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
+            Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
+            Assert.IsTrue(_objectUnderTest.ShowRequestStatus);
+            Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
         }
 
         [TestMethod]
         public void TestAdvancedPageLoading()
         {
-            Mock<ILoggingDataSource> dataSourceMock = Mock.Get(_mockedLoggingDataSource);
-            dataSourceMock.Setup(ds => ds.GetResourceDescriptorsAsync())
-                .Returns(
-                    Task.FromResult<IList<MonitoredResourceDescriptor>>(
-                        new List<MonitoredResourceDescriptor>
-                        {
-                            new MonitoredResourceDescriptor {Type = ResourceTypeNameConsts.GlobalType}
-                        }));
-            dataSourceMock.Setup(ds => ds.ListResourceKeysAsync())
-                .Returns(
-                    Task.FromResult<IList<ResourceKeys>>(
-                        new List<ResourceKeys> { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } }));
-            dataSourceMock
-                .Setup(
-                    ds => ds.ListProjectLogNamesAsync(
-                        ResourceTypeNameConsts.GlobalType, It.IsAny<IEnumerable<string>>()))
-                .Returns(Task.FromResult<IList<string>>(new[] { "log-id" }));
-            var tcs = new TaskCompletionSource<LogEntryRequestResult>();
-            dataSourceMock.Setup(
-                ds => ds.ListLogEntriesAsync(
-                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(tcs.Task);
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
 
-            objectUnderTests.SubmitAdvancedFilterCommand.Execute(null);
-            objectUnderTests.SubmitAdvancedFilterCommand.Execute(null);
+            // Two calls here are required by the test but not normal use.
+            // This is probably due to all async calls completing syncronously.
+            // TODO(przybjw): Fix issue #898.
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
 
-            Assert.IsFalse(objectUnderTests.IsControlEnabled);
-            Assert.IsNull(objectUnderTests.RequestErrorMessage);
-            Assert.IsFalse(objectUnderTests.ShowRequestErrorMessage);
-            Assert.AreEqual(Resources.LogViewerRequestProgressMessage, objectUnderTests.RequestStatusText);
-            Assert.IsTrue(objectUnderTests.ShowRequestStatus);
-            Assert.IsTrue(objectUnderTests.ShowCancelRequestButton);
+            Assert.IsFalse(_objectUnderTest.IsControlEnabled);
+            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
+            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
+            Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
+            Assert.IsTrue(_objectUnderTest.ShowRequestStatus);
+            Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
         }
 
         [TestMethod]
         public void TestShowAdvancedFilterHelp()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-            objectUnderTests.StartProcess = Mock.Of<Func<string, Process>>();
+            var startProcessMock = new Mock<Func<string, Process>>();
+            _objectUnderTest.StartProcess = startProcessMock.Object;
 
-            objectUnderTests.AdvancedFilterHelpCommand.Execute(null);
+            _objectUnderTest.AdvancedFilterHelpCommand.Execute(null);
 
-            Mock.Get(objectUnderTests.StartProcess).Verify(f => f(LogsViewerViewModel.AdvancedHelpLink));
+            startProcessMock.Verify(f => f(LogsViewerViewModel.AdvancedHelpLink));
         }
 
         [TestMethod]
         public void TestSetAdvancedFilterText()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-
             const string testFilterText = "filter text";
-            objectUnderTests.AdvancedFilterText = testFilterText;
+            _objectUnderTest.AdvancedFilterText = testFilterText;
 
-            Assert.AreEqual(testFilterText, objectUnderTests.AdvancedFilterText);
+            Assert.AreEqual(testFilterText, _objectUnderTest.AdvancedFilterText);
         }
 
         [TestMethod]
         public void TestSwapFilter()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-            var tcs = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
-            Mock<ILoggingDataSource> dataSourceMock = Mock.Get(_mockedLoggingDataSource);
-            dataSourceMock.Setup(ds => ds.GetResourceDescriptorsAsync())
-                .Returns(tcs.Task);
+            _objectUnderTest.FilterSwitchCommand.Execute(null);
 
-            objectUnderTests.FilterSwitchCommand.Execute(null);
-
-            Assert.IsTrue(objectUnderTests.ShowAdvancedFilter);
+            Assert.IsTrue(_objectUnderTest.ShowAdvancedFilter);
         }
 
         [TestMethod]
         public void TestFilterLog()
         {
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-            var tcs = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
-            Mock<ILoggingDataSource> dataSourceMock = Mock.Get(_mockedLoggingDataSource);
-            dataSourceMock.Setup(ds => ds.GetResourceDescriptorsAsync())
-                .Returns(tcs.Task);
-
             const string testFilterText = "test filter";
-            objectUnderTests.FilterLog(testFilterText);
 
-            Assert.IsFalse(objectUnderTests.IsAutoReloadChecked);
-            Assert.IsTrue(objectUnderTests.ShowAdvancedFilter);
-            Assert.IsTrue(objectUnderTests.AdvancedFilterText.StartsWith(testFilterText, StringComparison.Ordinal));
+            _objectUnderTest.FilterLog(testFilterText);
+
+            Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
+            Assert.IsTrue(_objectUnderTest.ShowAdvancedFilter);
+            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.StartsWith(testFilterText, StringComparison.Ordinal));
         }
 
         [TestMethod]
@@ -235,19 +203,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         {
             const string testNodeName = "test-node";
             const string testNodeValue = "test-value";
-            var objectUnderTests = new LogsViewerViewModel(_mockedLoggingDataSource);
-            var tcs = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
-            Mock<ILoggingDataSource> dataSourceMock = Mock.Get(_mockedLoggingDataSource);
-            dataSourceMock.Setup(ds => ds.GetResourceDescriptorsAsync())
-                .Returns(tcs.Task);
 
             var treeNode = new ObjectNodeTree(testNodeName, testNodeValue, null);
-            objectUnderTests.OnDetailTreeNodeFilterCommand.Execute(treeNode);
+            _objectUnderTest.OnDetailTreeNodeFilterCommand.Execute(treeNode);
 
-            Assert.IsFalse(objectUnderTests.IsAutoReloadChecked);
-            Assert.IsTrue(objectUnderTests.ShowAdvancedFilter);
-            Assert.IsTrue(objectUnderTests.AdvancedFilterText.Contains(testNodeName));
-            Assert.IsTrue(objectUnderTests.AdvancedFilterText.Contains(testNodeValue));
+            Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
+            Assert.IsTrue(_objectUnderTest.ShowAdvancedFilter);
+            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeName));
+            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeValue));
         }
     }
 }
