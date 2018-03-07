@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string FirstStackFrameSummary => ParsedException?.FirstFrameSummary;
 
         /// <summary>
-        /// Gets the first stack frame. 
+        /// Gets the first stack frame.
         /// </summary>
         public StackFrame FirstStackFrame => ParsedException?.StackFrames.FirstOrDefault();
 

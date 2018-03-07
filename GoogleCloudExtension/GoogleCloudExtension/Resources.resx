@@ -2990,4 +2990,7 @@
     <value>Learn more.</value>
     <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
   </data>
+  <data name="UiCopyMenuHeader" xml:space="preserve">
+    <value>Copy</value>
+  </data>
 </root>

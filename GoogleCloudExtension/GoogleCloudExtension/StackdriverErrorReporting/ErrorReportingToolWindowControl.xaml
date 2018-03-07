@@ -5,10 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
-             xmlns:ext="clr-namespace:GoogleCloudExtension"             
-             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"    
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"    
-             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              x:Name="_errorReportingWindow"
@@ -27,19 +26,26 @@
             <utils:VisibilityConverter x:Key="visibilityConverter" />
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
 
-            <DataTemplate x:Key="MessageStackTemplate" >
+            <DataTemplate x:Key="MessageStackTemplate" DataType="local:ErrorGroupItem">
                 <StackPanel>
                     <controls:IconButton 
                         Style="{StaticResource MouseOverLinkButtonStyle}" 
                         HorizontalAlignment="Left"
-                        Content="{Binding ErrorMessage}"
                         Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
-                        CommandParameter="{Binding}"/>
+                        CommandParameter="{Binding}">
+                        <controls:IconButton.Content>
+                            <TextBlock
+                                Text="{Binding Path=ErrorMessage}"
+                                TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis"/>
+                        </controls:IconButton.Content>
+                    </controls:IconButton>
+                    <Separator/>
                     <TextBlock Text="{Binding FirstStackFrameSummary}" Style="{StaticResource CommonTextStyle}"/>
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate x:Key="OccurancesTemplate" >
+            <DataTemplate x:Key="OccurancesTemplate" DataType="local:ErrorGroupItem" >
                 <StackPanel Orientation="Horizontal">
                     <local:TimedCountBarChartControl 
                         VerticalAlignment="Center"
@@ -80,7 +86,8 @@
                     AutoReloadCommand="{Binding OnAutoReloadCommand}"/>
             </Border>
             <!-- Time period selection buttons. -->
-            <Grid Grid.Row="1"                
+            <Grid
+                Grid.Row="1"
                 Margin="0,12,0,12" 
                 IsEnabled="{Binding IsLoadingComplete}">
                 <Grid.ColumnDefinitions>
@@ -100,15 +107,15 @@
                     SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" />
             </Grid>
 
-            <DataGrid Grid.Row="2"                
+            <DataGrid
+                Grid.Row="2"
                 Panel.ZIndex="5"
-                x:Name="dataGridEventGroup"
-                IsReadOnly="True" 
+                IsReadOnly="True"
                 BorderThickness="0"
                 GridLinesVisibility="None" 
                 HeadersVisibility="Column"
                 AutoGenerateColumns="False" 
-                ItemsSource="{Binding GroupStatsView}"   
+                ItemsSource="{Binding GroupStatsView}"
                 CellStyle="{StaticResource cellStyle}"
                 RowStyle="{StaticResource rowStyle}" 
                 IsEnabled="{Binding IsLoadingComplete}"
@@ -125,15 +132,17 @@
                         CellTemplate="{StaticResource OccurancesTemplate}" 
                         SortMemberPath="ErrorCount"/>
 
-                    <DataGridTextColumn 
+                    <DataGridTextColumn
                         Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
-                        Binding="{Binding AffectedUsersCount}" />
+                        Binding="{Binding AffectedUsersCount}"
+                        ClipboardContentBinding="{x:Null}"/>
 
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 
                         Width="460"
                         CellTemplate="{StaticResource MessageStackTemplate}" 
-                        SortMemberPath="ErrorMessage" />
+                        SortMemberPath="ErrorMessage"
+                        ClipboardContentBinding="{Binding RawErrorMessage}"/>
 
                     <DataGridTextColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorAppHeader}"
@@ -152,6 +161,14 @@
                         Binding="{Binding Status}" />
 
                 </DataGrid.Columns>
+
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                            Header="{x:Static ext:Resources.UiCopyMenuHeader}"
+                            Command="ApplicationCommands.Copy"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
             </DataGrid>
 
             <!-- Loading first page progress indicator -->

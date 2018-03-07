@@ -213,6 +213,9 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
     </Compile>
@@ -470,9 +473,6 @@
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
-      <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
     <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml.cs">
       <DependentUpon>ErrorFrameTooltipControl.xaml</DependentUpon>
