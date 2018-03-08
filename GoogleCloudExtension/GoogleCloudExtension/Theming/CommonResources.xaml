@@ -3,17 +3,17 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
                     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
-                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
-
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
+    
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
-        <Setter Property="TextElement.FontSize" Value="12px" />
+        <Setter Property="TextElement.FontSize" Value="12px" />        
     </Style>
 
     <!-- Text style. -->
-    <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="TextWrapping" Value="Wrap" />
+    <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">        
+        <Setter Property="TextWrapping" Value="Wrap" />        
     </Style>
 
     <!-- This style is to be used on TextBlocks that are to have dynamic colors. -->
@@ -909,19 +909,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>    
+    </Style>
 
     <!-- Common hyperlink style. -->
 
     <!-- Common hyperlink colors. -->
-    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
     <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
-    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
-
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="{DynamicResource {x:Static vsshell:VsColors.StartPageTextHeadingMouseOverKey}}" />
+    
     <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.MouseOver}" />
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.MouseOver}" />                
                 <Setter Property="TextDecorations" Value="Underline" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
@@ -930,8 +929,7 @@
             <Trigger Property="IsEnabled" Value="true">
                 <Setter Property="Cursor" Value="Hand" />
             </Trigger>
-        </Style.Triggers>
-        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
+        </Style.Triggers>        
         <Setter Property="TextDecorations" Value="None" />
     </Style>
 
