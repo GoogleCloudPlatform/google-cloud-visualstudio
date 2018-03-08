@@ -2992,5 +2992,6 @@
   </data>
   <data name="UiCopyMenuHeader" xml:space="preserve">
     <value>Copy</value>
+    <comment>Header for a standard "Copy" menu item.</comment>
   </data>
 </root>

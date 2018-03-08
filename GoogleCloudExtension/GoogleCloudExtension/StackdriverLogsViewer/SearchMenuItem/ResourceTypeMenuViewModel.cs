@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 ResourceTypeNameConsts.GlobalType
             };
 
-        private readonly Lazy<LoggingDataSource> _dataSource;
+        private readonly Func<ILoggingDataSource> _dataSource;
         private MenuItemViewModel _selectedMenuItem;
         private IList<ResourceKeys> _resourceKeys;
 
@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Initializes an instance of <seealso cref="ResourceTypeMenuViewModel"/> class.
         /// </summary>
         /// <param name="dataSource">Logging data source.</param>
-        public ResourceTypeMenuViewModel(Lazy<LoggingDataSource> dataSource) : base(null)
+        public ResourceTypeMenuViewModel(Func<ILoggingDataSource> dataSource) : base(null)
         {
             IsSubmenuPopulated = false;
             _dataSource = dataSource;
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            var descriptors = await _dataSource().GetResourceDescriptorsAsync();
             var newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
             foreach (var defaultSelection in s_defaultResourceSelections)
@@ -97,15 +97,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     newOrderDescriptors.Add(desc);
                 }
             }
-            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)).OrderBy(x => x.DisplayName));
 
-            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
+            newOrderDescriptors.AddRange(
+                descriptors?.Where(x => !s_defaultResourceSelections.Contains(x.Type)).OrderBy(x => x.DisplayName) ??
+                Enumerable.Empty<MonitoredResourceDescriptor>());
+
+            _resourceKeys = await _dataSource().ListResourceKeysAsync();
             var items =
                 from desc in newOrderDescriptors
-                join keys in _resourceKeys
+                join keys in _resourceKeys ?? Enumerable.Empty<ResourceKeys>()
                     on desc.Type equals keys.Type
                 select new ResourceTypeItemViewModel(keys, _dataSource, this) { Header = desc.DisplayName };
-            items.ToList().ForEach(x => MenuItems.Add(x));
+
+            foreach (ResourceTypeItemViewModel item in items)
+            {
+                MenuItems.Add(item);
+            }
+
             if (MenuItems.Count != 0)
             {
                 CommandBubblingHandler(MenuItems.FirstOrDefault());
