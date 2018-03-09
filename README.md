@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/0s0wo324dmv18uo9/branch/master?svg=true)](https://ci.appveyor.com/project/ivannaranjo/google-cloud-visualstudio-bnnrp/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/yof6v5tlchyqcnhl?svg=true)](https://ci.appveyor.com/project/GoogleCloudPlatform/google-cloud-visualstudio)
 [![Code Coverage](https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio/branch/master/graph/badge.svg)](https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio)
 
 # Visual Studio Extension for Google Cloud Platform
