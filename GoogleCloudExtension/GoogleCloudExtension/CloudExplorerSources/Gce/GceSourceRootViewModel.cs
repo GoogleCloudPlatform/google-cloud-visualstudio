@@ -106,7 +106,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 _showOnlyWindowsInstances = value;
                 PresentViewModels();
                 UpdateContextMenu();
-                ShowOnlyWindowsInstancesChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -128,11 +127,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 UpdateContextMenu();
             }
         }
-
-        /// <summary>
-        /// This event is raised every time the <seealso cref="ShowOnlyWindowsInstances"/> property value changes.
-        /// </summary>
-        public event EventHandler ShowOnlyWindowsInstancesChanged;
 
         public override void Initialize(ICloudSourceContext context)
         {
