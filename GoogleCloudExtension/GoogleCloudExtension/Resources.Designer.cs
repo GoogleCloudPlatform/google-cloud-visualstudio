@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -6132,6 +6132,15 @@ namespace GoogleCloudExtension {
         public static string UiCloseButtonCaption {
             get {
                 return ResourceManager.GetString("UiCloseButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string UiCopyMenuHeader {
+            get {
+                return ResourceManager.GetString("UiCopyMenuHeader", resourceCulture);
             }
         }
         

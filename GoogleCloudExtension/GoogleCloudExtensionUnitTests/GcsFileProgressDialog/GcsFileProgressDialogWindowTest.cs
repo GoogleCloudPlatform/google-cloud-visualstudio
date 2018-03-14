@@ -38,8 +38,10 @@ namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
         {
             _settingManagerMock = new Mock<IVsSettingsManager>();
             _uiShellMock = new Mock<IVsUIShell>();
-            int intValue = 0;
-            IVsSettingsStore store = Mock.Of<IVsSettingsStore>(
+            // ReSharper disable once RedundantAssignment
+            var intValue = 0;
+            // ReSharper disable once RedundantAssignment
+            var store = Mock.Of<IVsSettingsStore>(
                 ss => ss.GetIntOrDefault(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), out intValue) == 0);
             _settingManagerMock.Setup(sm => sm.GetReadOnlySettingsStore(It.IsAny<uint>(), out store)).Returns(0);
             GoogleCloudExtensionPackageTests.InitPackageMock(dte =>

@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.DataSources
     /// Data source that returns data from Stackdriver Logging API.
     /// The API is described at https://cloud.google.com/logging/docs/api/reference/rest
     /// </summary>
-    public class LoggingDataSource : DataSourceBase<LoggingService>
+    public class LoggingDataSource : DataSourceBase<LoggingService>, ILoggingDataSource
     {
         /// <summary>
         /// Google cloud uses format of projects/{project_id} as projects filter.
@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.DataSources
 
         /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
-        /// The size of entire set of MonitoredResourceDescriptor is small. 
+        /// The size of entire set of MonitoredResourceDescriptor is small.
         /// Batch all in one request in case it spans multiple pages.
         /// </summary>
         public Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()

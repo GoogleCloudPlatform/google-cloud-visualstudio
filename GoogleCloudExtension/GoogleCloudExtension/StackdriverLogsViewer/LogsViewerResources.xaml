@@ -13,6 +13,7 @@
     <!-- DataGrid cell style. 
         Note: Add padding to text, padding at row style does not work. -->
     <Style x:Key="cellStyle" TargetType="DataGridCell">
+        <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">

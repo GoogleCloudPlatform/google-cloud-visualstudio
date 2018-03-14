@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class ResourceTypeItemViewModel : MenuItemViewModel
     {
-        private readonly Lazy<LoggingDataSource> _dataSource;
+        private readonly Func<ILoggingDataSource> _dataSource;
 
         /// <summary>
         /// The <seealso cref="ResourceTypeKeys"/> object that this menu item represents.
@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="resourceKeys"><seealso cref="ResourceTypeKeys"/> object.</param>
         /// <param name="dataSource">The logging data source.</param>
         /// <param name="parent">The parent menu item view model object.</param>
-        public ResourceTypeItemViewModel(ResourceKeys resourceKeys, Lazy<LoggingDataSource> dataSource, MenuItemViewModel parent) : base(parent)
+        public ResourceTypeItemViewModel(ResourceKeys resourceKeys, Func<ILoggingDataSource> dataSource, MenuItemViewModel parent) : base(parent)
         {
             _dataSource = dataSource;
             ResourceTypeKeys = resourceKeys;
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         protected override async Task LoadSubMenu()
         {
-            var values = await _dataSource.Value.ListResourceTypeValuesAsync(ResourceTypeKeys.Type);
+            var values = await _dataSource().ListResourceTypeValuesAsync(ResourceTypeKeys.Type);
             var trimedValues = values?.Select(x => x.Trim(new char[] { '/' })).Where(y => !String.IsNullOrWhiteSpace(y));
             if (trimedValues?.FirstOrDefault() == null)
             {

@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
                 Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
                 var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject);
 
@@ -160,7 +160,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             }
 
             // Ensure that the menu entry is only available for ASP.NET Core projects.
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject?.ParsedProject;
             if (selectedProject == null || !selectedProject.IsAspNetCoreProject())
             {
                 menuCommand.Visible = false;
