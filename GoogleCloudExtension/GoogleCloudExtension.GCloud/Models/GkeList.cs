@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace GoogleCloudExtension.GCloud.Models
 {
     /// <summary>
-    /// Common class for all of the lists returned from Kubernetes.
+    /// Common class for all of the lists returned from Kuberentes.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class GkeList<T>
