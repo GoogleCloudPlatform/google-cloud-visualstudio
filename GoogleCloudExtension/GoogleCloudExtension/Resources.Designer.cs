@@ -1519,15 +1519,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show only Windows instances.
-        /// </summary>
-        public static string CloudExplorerGceOnlyWindowsButtonToolTip {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceOnlyWindowsButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open Remote Desktop session....
         /// </summary>
         public static string CloudExplorerGceOpenTerminalSessionMenuHeader {

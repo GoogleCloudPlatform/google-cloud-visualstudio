@@ -257,10 +257,6 @@
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
   </data>
-  <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Show only Windows instances</value>
-    <comment>The tooltip for the filter button.</comment>
-  </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
     <value>Open Remote Desktop session...</value>
     <comment>Header for the open terminal session menu item.</comment>
