@@ -39,7 +39,7 @@ OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$tes
     -filter:$filter -returntargetcode
 
 if ($LASTEXITCODE) {
-    Get-Content diagnostics.txt | foreach {Write-Host $_}
+    Get-Content diagnostics.txt | Write-Host
     throw "Test failed with code $LASTEXITCODE"
 }
 Write-Host "Finished code coverage."
