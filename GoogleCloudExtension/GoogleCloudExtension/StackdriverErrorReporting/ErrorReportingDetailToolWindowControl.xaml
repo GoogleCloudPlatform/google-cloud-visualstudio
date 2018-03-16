@@ -30,6 +30,12 @@
             <utils:VisibilityConverter x:Key="visibilityConverter" />
             <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
 
+
+            <ContextMenu x:Key="CopyContextMenu">
+                <MenuItem
+                    Header="{x:Static ext:Resources.UiCopyMenuHeader}"
+                    Command="ApplicationCommands.Copy" />
+            </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -317,15 +323,8 @@
                                                     IsReadOnly="True"
                                                     TextWrapping="Wrap"
                                                     BorderThickness="0"
-                                                    Margin="12,6,12,8">
-
-                                                    <TextBox.ContextMenu>
-                                                        <ContextMenu>
-                                                            <MenuItem
-                                                                Header="{x:Static ext:Resources.UiCopyMenuHeader}"
-                                                                Command="ApplicationCommands.Copy" />
-                                                        </ContextMenu>
-                                                    </TextBox.ContextMenu>
+                                                    Margin="12,6,12,8"
+                                                    ContextMenu="{StaticResource CopyContextMenu}">
                                                 </TextBox>
                                         </DataTemplate>
                                     </DataGrid.RowDetailsTemplate>
