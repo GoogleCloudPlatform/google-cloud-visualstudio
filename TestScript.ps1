@@ -19,7 +19,7 @@ $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\$Configuration
 $testContainerArgs = $testDlls.FullName -join " "
 
 if ($env:APPVEYOR) {
-    $testArgs = $testArgs = "/logger:Appveyor $testContainerArgs /diag:diagnostics.txt"
+    $testArgs = $testArgs = "$testContainerArgs /logger:Appveyor /inisolation /diag:logs\log.txt"
 } else {
     $testArgs = $testContainerArgs
 }
@@ -39,7 +39,11 @@ OpenCover.Console.exe -register:user -target:vstest.console.exe -targetargs:$tes
     -filter:$filter -returntargetcode
 
 if ($LASTEXITCODE) {
-    Get-Content diagnostics.txt | Write-Host
+    Get-ChildItem logs -Include *.txt -Force -Recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+	Get-ChildItem -Path C:/Users/appveyor/AppData/Local/CrashDumps -Force | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+	# Add the .pdbs and .dlls when it crashes so as to be able to debug the .dmp properly.
+	Get-ChildItem -Path C:/projects/google-cloud-visualstudio/TestResults/Deploy_appveyor*/Out *.dll -Force -Recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+	Get-ChildItem -Path C:/projects/google-cloud-visualstudio/TestResults/Deploy_appveyor*/Out *.pdb -Force -Recurse | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
     throw "Test failed with code $LASTEXITCODE"
 }
 Write-Host "Finished code coverage."
