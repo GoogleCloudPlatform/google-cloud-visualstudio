@@ -149,9 +149,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 // Unloaded projects are unmodeled projects.
                 // Some third party project types and some old database project are also unmodeled.
                 || project.Kind == Constants.vsProjectKindUnmodeled)
-            {
                 return false;
-            }
 
             // Also checking these other two conditions.
             // The above type of projects are the VS known type of projects that we don't support
