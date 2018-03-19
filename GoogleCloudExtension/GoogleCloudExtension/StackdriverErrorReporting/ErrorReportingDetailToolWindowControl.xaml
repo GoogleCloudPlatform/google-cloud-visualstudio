@@ -97,7 +97,7 @@
             <ScrollViewer 
                 Grid.Row="1" 
                 HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Auto" >
+                VerticalScrollBarVisibility="Auto">
 
                 <StackPanel>
                     <!-- Time range buttons -->
@@ -286,7 +286,7 @@
                                 Padding="0,6,0,6"/>
 
                             <Grid>
-                                <DataGrid 
+                                <DataGrid
                                     ItemsSource="{Binding EventItemCollection}"
                                     AutoGenerateColumns="False"
                                     IsReadOnly="True"
@@ -298,10 +298,22 @@
                                     CellStyle="{StaticResource CellStyle}"
                                     AlternatingRowBackground="{DynamicResource {x:Static platformUi:EnvironmentColors.AccentPaleBrushKey}}"
                                     SelectionUnit="FullRow"
-                                    HorizontalGridLinesBrush="{DynamicResource {x:Static shell:VsBrushes.GridLineKey}}">
+                                    HorizontalGridLinesBrush="{DynamicResource {x:Static shell:VsBrushes.GridLineKey}}"
+                                    MouseLeftButtonDown="DeselectSelectedTargetRow">
 
+                                    <!-- Remove the ScrollViewer -->
                                     <DataGrid.Template>
-                                        <ControlTemplate><ItemsPresenter/></ControlTemplate>
+                                        <ControlTemplate TargetType="DataGrid">
+                                            <Border
+                                                BorderThickness="1"
+                                                BorderBrush="{DynamicResource {x:Static shell:VsBrushes.PanelBorderKey}}">
+
+                                                <DockPanel>
+                                                    <DataGridColumnHeadersPresenter DockPanel.Dock="Top"/>
+                                                    <ItemsPresenter/>
+                                                </DockPanel>
+                                            </Border>
+                                        </ControlTemplate>
                                     </DataGrid.Template>
 
                                     <DataGrid.Resources>
@@ -312,10 +324,16 @@
                                             x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                                             Color="Black"/>
                                     </DataGrid.Resources>
+
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding EventTime}" />
-                                        <DataGridTextColumn Binding="{Binding SummaryMessage}" />
+                                        <DataGridTextColumn
+                                            Binding="{Binding EventTime}"
+                                            Header="{x:Static ext:Resources.UiTimeLabel}"/>
+                                        <DataGridTextColumn
+                                            Binding="{Binding SummaryMessage}"
+                                            Header="{x:Static ext:Resources.UiErrorCaption}"/>
                                     </DataGrid.Columns>
+
                                     <DataGrid.RowDetailsTemplate>
                                         <DataTemplate DataType="local:EventItem">
                                                 <TextBox

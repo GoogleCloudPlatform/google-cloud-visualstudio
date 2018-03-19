@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -27,6 +30,30 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorReportingDetailToolWindowControl()
         {
             InitializeComponent();
+        }
+
+        private void DeselectSelectedTargetRow(object sender, MouseButtonEventArgs e)
+        {
+            var cell = DataGridUtils.FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
+            if (cell != null && cell.IsSelected)
+            {
+                var grid = DataGridUtils.FindAncestorControl<DataGrid>(cell);
+                if (grid != null)
+                {
+                    switch (grid.SelectionUnit)
+                    {
+                        case DataGridSelectionUnit.Cell:
+                        case DataGridSelectionUnit.CellOrRowHeader:
+                            cell.IsSelected = false;
+                            break;
+                        case DataGridSelectionUnit.FullRow:
+                            grid.UnselectAllCells();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
     }
 }
