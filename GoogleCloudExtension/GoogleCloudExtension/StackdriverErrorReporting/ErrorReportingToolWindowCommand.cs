@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             _package = package;
 
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            IMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);

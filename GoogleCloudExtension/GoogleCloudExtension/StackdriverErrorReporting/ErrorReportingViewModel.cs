@@ -33,7 +33,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingViewModel : ViewModelBase, IDisposable
     {
-        private Lazy<StackdriverErrorReportingDataSource> _dataSource;
+        private Lazy<IStackdriverErrorReportingDataSource> _dataSourceLazy;
+        private IStackdriverErrorReportingDataSource DataSource => _dataSourceOverride ?? _dataSourceLazy?.Value;
 
         private string _nextPageToken;
         private bool _isLoading;
@@ -44,6 +45,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly ObservableCollection<ErrorGroupItem> _groupStatsCollection;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
+        internal IStackdriverErrorReportingDataSource _dataSourceOverride = null;
 
         /// <summary>
         /// Gets an exception as string.
@@ -140,12 +142,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string CurrentTimeRangeCaption => String.Format(
             Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
+        internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource) : this()
+        {
+            _dataSourceOverride = dataSource;
+        }
+
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
         public ErrorReportingViewModel()
         {
-            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             SelectedTimeRangeItem = TimeRangeItemList.Last();
@@ -183,7 +190,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private void OnProjectIdChanged()
         {
             RaisePropertyChanged(nameof(IsGridVisible));
-            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
             Reload();
         }
 
@@ -204,7 +211,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private async Task LoadAsync()
         {
-            if (_dataSource?.Value == null)
+            if (DataSource == null)
             {
                 return;
             }
@@ -227,7 +234,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     throw new ErrorReportingException(new InvalidOperationException(nameof(SelectedTimeRangeItem)));
                 }
-                results = await _dataSource.Value?.GetPageOfGroupStatusAsync(
+                results = await DataSource?.GetPageOfGroupStatusAsync(
                     SelectedTimeRangeItem.GroupTimeRange,
                     SelectedTimeRangeItem.TimedCountDuration,
                     nextPageToken: _nextPageToken);

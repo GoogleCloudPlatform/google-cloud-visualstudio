@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the error count of the error group.
         /// </summary>
-        public long ErrorCount => ErrorGroup.Count.HasValue ? ErrorGroup.Count.Value : 0;
+        public long ErrorCount => ErrorGroup.Count ?? 0;
 
         /// <summary>
         /// Show service context. 

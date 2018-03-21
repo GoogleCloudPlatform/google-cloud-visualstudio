@@ -68,6 +68,9 @@
       <HintPath>..\packages\Google.Apis.Auth.1.29.1\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.29.1.987, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.29.1.987\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.29.1.993, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.29.1.993\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
@@ -259,6 +262,12 @@
     <Compile Include="PublishDialog\PublishDialogStepBaseTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItemTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModelTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommandTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingViewModelTests.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItemTests.cs" />
+    <Compile Include="StackdriverErrorReporting\EventItemTests.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
     <Compile Include="StackframeParserTests.cs" />
