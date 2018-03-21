@@ -30,7 +30,6 @@
             <utils:VisibilityConverter x:Key="visibilityConverter" />
             <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
 
-
             <ContextMenu x:Key="CopyContextMenu">
                 <MenuItem
                     Header="{x:Static ext:Resources.UiCopyMenuHeader}"
