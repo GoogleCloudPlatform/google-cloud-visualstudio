@@ -53,7 +53,7 @@ namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
             });
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("OFF")]
         public async Task TestBindingsLoadCorrectly()
         {
             var objectUnderTest = new GcsFileProgressDialogWindow(
