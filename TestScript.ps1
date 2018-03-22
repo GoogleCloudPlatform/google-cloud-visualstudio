@@ -18,10 +18,10 @@ $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\$Configuration
 
 $testContainerArgs = $testDlls.FullName -join " "
 
+$testArgs = "$testContainerArgs /inisolation /diag:logs\log.txt /TestCaseFilter:`"TestCategory=OFF`""
+
 if ($env:APPVEYOR) {
-    $testArgs = $testArgs = "$testContainerArgs /logger:Appveyor /inisolation /diag:logs\log.txt"
-} else {
-    $testArgs = $testContainerArgs
+    $testArgs = "$testArgs /logger:Appveyor"
 }
 
 $testFilters = ($testDlls.BaseName | % { "-[$_]*"}) -join " "
