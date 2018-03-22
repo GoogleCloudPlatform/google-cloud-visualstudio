@@ -18,7 +18,7 @@ $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\$Configuration
 
 $testContainerArgs = $testDlls.FullName -join " "
 
-$testArgs = "$testContainerArgs /inisolation /diag:logs\log.txt /TestCaseFilter:`"TestCategory=OFF`""
+$testArgs = "$testContainerArgs /inisolation /diag:logs\log.txt /TestCaseFilter:`"TestCategory!=OFF`""
 
 if ($env:APPVEYOR) {
     $testArgs = "$testArgs /logger:Appveyor"
