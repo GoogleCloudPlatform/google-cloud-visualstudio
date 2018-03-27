@@ -646,7 +646,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />

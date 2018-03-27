@@ -22,6 +22,7 @@ build_script:
 artifacts:
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
+  - path: logs
 
 # Run the analytics tests with code coverage report.
 test_script:
