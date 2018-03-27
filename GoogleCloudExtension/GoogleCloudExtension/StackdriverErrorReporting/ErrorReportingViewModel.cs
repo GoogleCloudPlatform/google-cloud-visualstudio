@@ -45,11 +45,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly ObservableCollection<ErrorGroupItem> _groupStatsCollection;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
-        internal IStackdriverErrorReportingDataSource _dataSourceOverride = null;
+        private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
 
         /// <summary>
         /// Gets an exception as string.
-        /// This is for some known possible errors. 
+        /// This is for some known possible errors.
         /// Mostly is for DataSourceException.
         /// </summary>
         public string ErrorString
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// If the current project id is reset to null or empty, hide the grid. 
+        /// If the current project id is reset to null or empty, hide the grid.
         /// </summary>
         public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
 

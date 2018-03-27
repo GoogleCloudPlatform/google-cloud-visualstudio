@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.GcsUtils;
-using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -52,7 +51,6 @@ namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
                     providerMock, _settingManagerMock);
                 GoogleCloudExtensionPackageTests.SetupService<IVsUIShell, IVsUIShell>(providerMock, _uiShellMock);
             });
-            UserPromptWindow.PromptUserFunction = options => true;
         }
 
         [TestMethod]

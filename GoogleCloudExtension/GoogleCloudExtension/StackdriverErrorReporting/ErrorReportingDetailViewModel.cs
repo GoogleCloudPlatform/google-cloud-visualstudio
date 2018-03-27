@@ -41,12 +41,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
 
-        // Mockable static methods for testing.
+        // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
-        internal Func<ErrorReportingToolWindow> ShowErrorReportingToolWindow = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>;
-        internal IStackdriverErrorReportingDataSource DataSourceOverride = null;
+        internal Func<ErrorReportingToolWindow> ShowErrorReportingToolWindow =
+            ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>;
 
-        private IStackdriverErrorReportingDataSource DataSource => DataSourceOverride ?? _datasource?.Value;
+        private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
+
+        private IStackdriverErrorReportingDataSource DataSource => _dataSourceOverride ?? _datasource?.Value;
 
         /// <summary>
         /// Indicate the Google account is set.
@@ -156,6 +158,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ProtectedCommand OnAutoReloadCommand { get; }
 
+        internal ErrorReportingDetailViewModel(IStackdriverErrorReportingDataSource dataSourceOverride) : this()
+        {
+            _dataSourceOverride = dataSourceOverride;
+        }
+
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
@@ -225,7 +232,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException("GroupItem is null.");
             }
 
-            // In most caes, it is because Project id is null
+            // In most cases, it is because Project id is null
             if (DataSource == null)
             {
                 return;

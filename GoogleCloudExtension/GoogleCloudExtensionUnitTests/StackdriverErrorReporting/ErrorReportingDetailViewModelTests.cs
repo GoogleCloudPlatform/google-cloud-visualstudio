@@ -65,12 +65,11 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                         It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(),
                         It.IsAny<string>())).Returns(() => _getPageOfGroupStatusSource.Task);
 
-            _objectUnderTest = new ErrorReportingDetailViewModel();
+            _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object);
 
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
             _objectUnderTest.ErrorFrameToSourceLine = _errorFrameToSourceLineMock.Object;
             _objectUnderTest.ShowErrorReportingToolWindow = _showErrorReportingToolWindowMock.Object;
-            _objectUnderTest.DataSourceOverride = _dataSourceMock.Object;
 
             _defaultTimeRangeItem = _objectUnderTest.AllTimeRangeItems.First();
             _defaultErrorGroupItem = new ErrorGroupItem(
