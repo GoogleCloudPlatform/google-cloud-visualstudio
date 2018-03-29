@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.PublishDialog
             _stack.Push(step);
             AddStepEvents();
 
-            step.OnPushedToDialog(this);
+            step.OnVisible(this);
             CurrentStepChanged();
         }
 
@@ -134,6 +134,8 @@ namespace GoogleCloudExtension.PublishDialog
         {
             RemoveStepEvents();
             _stack.Pop();
+            var newStep = _stack.Peek();
+            newStep.OnVisible(this);
             AddStepEvents();
 
             CurrentStepChanged();
@@ -164,6 +166,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         #region IPublishDialog
 
+        /// <inheritdoc />
         async void IPublishDialog.TrackTask(Task task)
         {
             try
@@ -187,17 +190,24 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        /// <inheritdoc />
         IParsedProject IPublishDialog.Project => _project;
 
+        /// <inheritdoc />
         void IPublishDialog.NavigateToStep(IPublishDialogStep step)
         {
             PushStep(step);
         }
 
+        /// <inheritdoc />
         void IPublishDialog.FinishFlow()
         {
+            FlowFinished?.Invoke(this, EventArgs.Empty);
             _owner.Close();
         }
+
+        /// <inheritdoc />
+        public event EventHandler FlowFinished;
 
         #endregion
 
@@ -214,7 +224,6 @@ namespace GoogleCloudExtension.PublishDialog
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
         #endregion
     }
 }

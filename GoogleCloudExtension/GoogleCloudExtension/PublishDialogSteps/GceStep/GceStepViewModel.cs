@@ -256,9 +256,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        public override void OnVisible(IPublishDialog dialog)
         {
-            base.OnPushedToDialog(dialog);
+            base.OnVisible(dialog);
             LoadingProjectTask = InitializeDialogState();
         }
 
@@ -296,6 +296,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         protected override void OnProjectChanged()
         {
             LoadingProjectTask = InitializeDialogState();
+            base.OnProjectChanged();
         }
 
         internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null)

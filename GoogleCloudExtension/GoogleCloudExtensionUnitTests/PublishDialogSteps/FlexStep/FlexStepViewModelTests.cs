@@ -60,6 +60,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _objectUnderTest = FlexStepViewModel.CreateStep(dataSource: _mockedGaeDataSource.Object, apiManager: _mockedApiManager.Object);
         }
 
+        [TestCleanup]
+        public void AfterEach()
+        {
+            _objectUnderTest.OnFlowFinished();
+        }
+
         [TestMethod]
         public void TestInitialState()
         {
@@ -71,7 +77,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public void TestStateAfterOnPushedToDialog()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
 
             Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
             Assert.IsTrue(_objectUnderTest.LoadingProject);
@@ -84,7 +90,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestPositiveProjectValidation()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _appTaskSource.SetResult(new Google.Apis.Appengine.v1.Data.Application());
 
@@ -100,7 +106,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestErrorCheckingServices()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetException(new DataSourceException());
 
             await _objectUnderTest.LoadingProjectTask;
@@ -115,7 +121,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestErrorObtainingApp()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _appTaskSource.SetException(new DataSourceException());
 
@@ -131,7 +137,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestNeedsApiState()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(false);
 
             await _objectUnderTest.LoadingProjectTask;
@@ -146,7 +152,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestNeedsAppState()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _appTaskSource.SetResult(null);
 

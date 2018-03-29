@@ -233,9 +233,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        public override void OnVisible(IPublishDialog dialog)
         {
-            base.OnPushedToDialog(dialog);
+            base.OnVisible(dialog);
             LoadingProjectTask = InitializeDialogState();
         }
 
@@ -494,6 +494,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         protected override void OnProjectChanged()
         {
             LoadingProjectTask = InitializeDialogState();
+            base.OnProjectChanged();
         }
 
         private async Task<bool> ValidateGcpProjectState()

@@ -33,9 +33,9 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _canGoNext;
         private bool _canPublish;
         private readonly IApiManager _apiManager;
-        private bool _loadingProject = false;
-        private bool _needsApiEnabled = false;
-        private bool _generalError = false;
+        private bool _loadingProject;
+        private bool _needsApiEnabled;
+        private bool _generalError;
 
         internal Func<Project> PickProjectPrompt =
             () => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true);
@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         /// <summary>
-        /// Whether the project is loaded, which include validating that the project is correctly
+        /// Whether the project is loading, which includes validating that the project is correctly
         /// setup for deployment and loading the necessary data to display to the user.
         /// </summary>
         public bool LoadingProject
@@ -142,44 +142,92 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// The task that tracks the project loading process.
         /// </summary>
-        internal Task LoadingProjectTask { get; set; }
+        protected internal Task LoadingProjectTask { get; set; }
 
+        /// <inheritdoc />
         public event EventHandler CanGoNextChanged;
 
+        /// <inheritdoc />
         public event EventHandler CanPublishChanged;
 
         protected PublishDialogStepBase()
             : this(null)
         { }
 
-        /// <inheritdoc />
         protected PublishDialogStepBase(IApiManager apiManager)
         {
             _apiManager = apiManager;
 
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, args) =>
-            {
-                RaisePropertyChanged(nameof(GcpProjectId));
-            };
         }
 
+        /// <inheritdoc />
         public virtual IPublishDialogStep Next()
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public virtual void Publish()
         {
             throw new NotImplementedException();
         }
-        public virtual void OnPushedToDialog(IPublishDialog dialog)
+
+        /// <inheritdoc />
+        public virtual void OnVisible(IPublishDialog dialog)
         {
+            ///Impossible right now but possible in the future?,
+            ///this is in case this step was being shown in another dialog.
+            ///The class API allows it, so better check it here.
+            RemoveHandlers();
+
             PublishDialog = dialog;
+            PublishDialog.FlowFinished += OnFlowFinished;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnProjectChanged;
+
+            InitializeDialog();
         }
 
+        protected virtual void InitializeDialog()
+        {
+            OnProjectChanged();
+        }
+
+        private void OnFlowFinished(object sender, EventArgs e) => OnFlowFinished();
+
+        /// <inheritdoc />
+        public virtual void OnFlowFinished()
+        {
+            RemoveHandlers();
+            PublishDialog = null;
+            CanGoNext = false;
+            CanPublish = false;
+            LoadingProject = false;
+            GeneralError = false;
+        }
+
+        private void RemoveHandlers()
+        {
+            ///Checking for null in case it was never pushed in a dialog.
+            if (PublishDialog != null)
+            {
+                PublishDialog.FlowFinished -= OnFlowFinished;
+                CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
+            }
+        }
+
+        private void OnProjectChanged(object sender, EventArgs e) => OnProjectChanged();
+
+        /// <summary>
+        /// Called whenever the current GCP Project changes, either from
+        /// within this step or from somewhere else.
+        /// Will be probably overwritten by children to refresh project
+        /// dependent state.
+        /// </summary>
         protected virtual void OnProjectChanged()
-        { }
+        {
+            RaisePropertyChanged(nameof(GcpProjectId));
+        }
 
         private void OnSelectProjectCommand()
         {
@@ -187,7 +235,6 @@ namespace GoogleCloudExtension.PublishDialog
             if (selectedProject?.ProjectId != null && selectedProject?.ProjectId != CredentialsStore.Default.CurrentProjectId)
             {
                 CredentialsStore.Default.UpdateCurrentProject(selectedProject);
-                OnProjectChanged();
             }
         }
     }

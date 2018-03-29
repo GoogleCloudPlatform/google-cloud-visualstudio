@@ -63,6 +63,11 @@ namespace GoogleCloudExtension.PublishDialog
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
         /// <param name="dialog">The dialog that is hosting this step.</param>
-        void OnPushedToDialog(IPublishDialog dialog);
+        void OnVisible(IPublishDialog dialog);
+
+        /// <summary>
+        /// Called when the flow this step was a part of is finished, so this step can clean up.
+        /// </summary>
+        void OnFlowFinished();
     }
 }

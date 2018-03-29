@@ -71,6 +71,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _objectUnderTest = GkeStepViewModel.CreateStep(_mockedDataSource.Object, _mockedApiManager.Object);
         }
 
+        [TestCleanup]
+        public void AfterEach()
+        {
+            _objectUnderTest.OnFlowFinished();
+        }
+
         [TestMethod]
         public void TestInitialState()
         {
@@ -81,7 +87,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public void TestStateAfterOnPushedToDialog()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
 
             Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
             Assert.IsTrue(_objectUnderTest.LoadingProject);
@@ -91,7 +97,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestPositiveProjectValidation()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _clusterListTaskSource.SetResult(s_mockedClusters);
 
@@ -111,7 +117,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNeedsApiValidation()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(false);
 
             await _objectUnderTest.LoadingProjectTask;
@@ -125,7 +131,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestErrorDuringApiValidation()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetException(new DataSourceException());
 
             await _objectUnderTest.LoadingProjectTask;
@@ -139,7 +145,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestErrorDuringClustersLoad()
         {
-            _objectUnderTest.OnPushedToDialog(_mockedPublishDialog.Object);
+            _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(true);
             _clusterListTaskSource.SetException(new DataSourceException());
 

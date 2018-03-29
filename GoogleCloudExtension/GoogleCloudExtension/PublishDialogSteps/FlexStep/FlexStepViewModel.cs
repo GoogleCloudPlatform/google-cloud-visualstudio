@@ -150,9 +150,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        public override void OnVisible(IPublishDialog dialog)
         {
-            base.OnPushedToDialog(dialog);
+            base.OnVisible(dialog);
 
             InitializeDialogState();
         }
@@ -269,6 +269,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         protected override void OnProjectChanged()
         {
             InitializeDialogState();
+            base.OnProjectChanged();
         }
 
         private void InitializeDialogState()
