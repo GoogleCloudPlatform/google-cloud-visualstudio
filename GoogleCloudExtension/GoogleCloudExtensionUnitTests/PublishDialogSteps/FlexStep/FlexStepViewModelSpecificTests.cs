@@ -30,7 +30,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
     /// Unit tests for <seealso cref="FlexStepViewModel"/>.
     /// </summary>
     [TestClass]
-    public class FlexStepViewModelTests
+    public class FlexStepViewModelSpecificTests
     {
         private FlexStepViewModel _objectUnderTest;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserFunctionMock;

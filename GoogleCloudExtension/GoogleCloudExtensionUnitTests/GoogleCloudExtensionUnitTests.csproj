@@ -253,9 +253,14 @@
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelTests.cs" />
-    <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelTests.cs" />
-    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelTests.cs" />
+    <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepViewModelInheritedTests.cs" />
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelSpecificTests.cs" />
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelInheritedTests.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelInheritedTests.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelSpecificTests.cs" />
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelInheritedTests.cs" />
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelSpeceficTests.cs" />
+    <Compile Include="PublishDialog\PublishDialogStepBaseTestsBase.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBaseTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />

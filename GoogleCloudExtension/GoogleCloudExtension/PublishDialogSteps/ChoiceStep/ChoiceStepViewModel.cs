@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         #endregion
 
-        public static IPublishDialogStep CreateStep()
+        public static ChoiceStepViewModel CreateStep()
         {
             var content = new ChoiceStepContent();
             var viewModel = new ChoiceStepViewModel(content);

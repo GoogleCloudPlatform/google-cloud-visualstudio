@@ -12,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
+using GoogleCloudExtensionUnitTests.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialog
+namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
 {
     [TestClass]
-    public class PublishDialogStepBaseTests : PublishDialogStepBaseTestsBase<PublishDialogStepBase>
+    public class ChoiceStepViewModelInheritedTests : PublishDialogStepBaseTestsBase<ChoiceStepViewModel>
     {
-        protected override PublishDialogStepBase CreateStep()
+        protected override ChoiceStepViewModel CreateStep()
         {
-            var objectUnderTestImpl = new Mock<PublishDialogStepBase> { CallBase = true };
-            return objectUnderTestImpl.Object;
+            return ChoiceStepViewModel.CreateStep();
         }
     }
 }

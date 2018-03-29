@@ -30,7 +30,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
     /// Unit tests for <seealso cref="GkeStepViewModel"/>.
     /// </summary>
     [TestClass]
-    public class GkeStepViewModelTests
+    public class GkeStepViewModelSpeceficTests
     {
         private const string ProjectId = "ProjectId";
 

@@ -29,7 +29,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
     /// Unit tests for <seealso cref="GceStepViewModel"/>
     /// </summary>
     [TestClass]
-    public class GceStepViewModelTests
+    public class GceStepViewModelSpecificTests
     {
         private const string WindowsLicenseUrl = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc";
 
