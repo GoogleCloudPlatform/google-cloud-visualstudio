@@ -22,8 +22,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EventTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
-using GroupTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
+using EventTimeRangePeriodEnum =
+    Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using GroupTimeRangePeriodEnum =
+    Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
@@ -190,7 +192,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestOnAutoReloadCommandLoadingGroup()
         {
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -202,8 +209,13 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestOnAutoReloadCommandLoadGroupError()
         {
-            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -218,8 +230,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestOnAutoReloadCommandLoadGroupEmpty()
         {
-            _getPageOfGroupStatusSource.SetResult(new ListGroupStatsResponse());
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+
+            _getPageOfGroupStatusSource.SetResult(new ListGroupStatsResponse());
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -238,7 +256,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _getPageOfGroupStatusSource.SetResult(
                 new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -256,8 +279,13 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _getPageOfGroupStatusSource.SetResult(
                 new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
-            _getPageOfEventsSource.SetException(new DataSourceException());
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetException(new DataSourceException());
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -272,8 +300,13 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _getPageOfGroupStatusSource.SetResult(
                 new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
-            _getPageOfEventsSource.SetResult(new ListEventsResponse());
+            _getPageOfEventsSource.SetResult(new ListEventsResponse { ErrorEvents = new[] { new ErrorEvent() } });
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -289,8 +322,13 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _getPageOfGroupStatusSource.SetResult(
                 new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
-            _getPageOfEventsSource.SetResult(new ListEventsResponse { ErrorEvents = new[] { new ErrorEvent() } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
             _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse { ErrorEvents = new[] { new ErrorEvent() } });
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
