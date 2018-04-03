@@ -4,14 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                                     
+    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
     xmlns:ext="clr-namespace:GoogleCloudExtension"
     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
     xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting" 
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
-    d:DataContext="{x:Type local:ParsedException}" >
+    d:DataContext="{d:DesignInstance {x:Type local:ParsedException}}">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,7 +25,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl>
-        <TabItem 
+        <TabItem
             Header="{x:Static ext:Resources.ErrorReportingParsedStackTabHeader}"
             Visibility="{Binding ShowParsedFrames, Converter={StaticResource visibilityConverter}}">
             <StackPanel>
@@ -57,19 +57,28 @@
 
         <TabItem Header="{x:Static ext:Resources.ErrorReportingRawStackTabHeader}">
             <StackPanel>
-                <controls:ImageToggleButton  
+                <controls:ImageToggleButton
                     x:Name="_traceSampleToggle"
                     Style="{StaticResource StackSampleToggleButtonStyle}" />
-                <TextBox 
-                        BorderThickness="0"
-                        Padding="8,5,8,5"
-                        Text="{Binding RawMessage, Mode=OneWay}" 
-                        IsReadOnly="True"
-                        AcceptsReturn="True"
-                        TextWrapping="NoWrap"
-                        HorizontalScrollBarVisibility="Auto" 
-                        Visibility="{Binding IsChecked, ElementName=_traceSampleToggle, 
-                        Converter={StaticResource visibilityConverter}}" />
+                <TextBox
+                    BorderThickness="0"
+                    Padding="8,5,8,5"
+                    Text="{Binding RawMessage, Mode=OneWay}" 
+                    IsReadOnly="True"
+                    TextWrapping="NoWrap"
+                    HorizontalScrollBarVisibility="Auto" 
+                    Visibility="{Binding IsChecked,
+                        ElementName=_traceSampleToggle,
+                        Converter={StaticResource visibilityConverter}
+                    }">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem
+                                Header="{x:Static ext:Resources.UiCopyMenuHeader}"
+                                Command="ApplicationCommands.Copy"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
             </StackPanel>
         </TabItem>
     </TabControl>

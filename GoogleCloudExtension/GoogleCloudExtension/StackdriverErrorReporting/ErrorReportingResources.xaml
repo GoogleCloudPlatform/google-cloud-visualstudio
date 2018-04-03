@@ -5,24 +5,15 @@
     xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"                                     
     xmlns:sys="clr-namespace:System;assembly=mscorlib"                 
-    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0" >
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0" 
+    xmlns:vsshellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="../Theming/CommonResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="cellStyle" TargetType="DataGridCell">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border  BorderThickness="0">
-                        <Border x:Name="border" Padding="6,4,6,4" >
-                            <ContentPresenter />
-                        </Border>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+    <Style x:Key="CellStyle" TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
     <Style x:Key="rowStyle" TargetType="DataGridRow">
@@ -63,12 +54,15 @@
         <Setter Property="Margin" Value="0,6,0,6" />
     </Style>
 
+
+    <mp:ImageResource x:Key="ShowMoreIcon" Path="StackdriverErrorReporting/Resources/show_more_icon.png" />
+    <mp:ImageResource x:Key="ShowLessIcon" Path="StackdriverErrorReporting/Resources/show_less_icon.png"/>
     <Style x:Key="StackSampleToggleButtonStyle" 
            TargetType="controls:ImageToggleButton"
            BasedOn="{StaticResource ImageToggleButtonStyle}">
         <Setter Property="Padding" Value="6" />
-        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}" />
-        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" />
+        <Setter Property="UncheckedImage" Value="{DynamicResource ShowMoreIcon}"/>
+        <Setter Property="CheckedImage" Value="{DynamicResource ShowLessIcon}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Content" Value="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}" />
         <Setter Property="IsChecked" Value="True" />

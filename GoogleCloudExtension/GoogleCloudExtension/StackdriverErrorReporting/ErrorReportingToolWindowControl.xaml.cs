@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingToolWindowControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

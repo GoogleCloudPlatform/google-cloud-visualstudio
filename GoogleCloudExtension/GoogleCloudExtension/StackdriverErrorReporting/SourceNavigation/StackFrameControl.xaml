@@ -9,7 +9,7 @@
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
-    d:DataContext="{x:Type local:StackFrame}" 
+    d:DataContext="{d:DesignInstance {x:Type local:StackFrame}}" 
     x:Name="_frameControl">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,10 +23,10 @@
     </UserControl.Resources>
     
     <WrapPanel Orientation="Horizontal">
-        <TextBlock                                                 
+        <TextBlock
             Margin="0,0,6,0"
             Text="{Binding SummaryText}"
-            Style="{StaticResource CommonTextStyle}" />
+            Style="{StaticResource CommonTextStyle}"/>
         <controls:IconButton 
             Style="{StaticResource MouseOverLinkButtonStyle}"
             Foreground="Blue" 

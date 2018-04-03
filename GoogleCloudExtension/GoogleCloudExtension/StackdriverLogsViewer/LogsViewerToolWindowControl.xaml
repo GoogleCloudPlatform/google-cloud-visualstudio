@@ -129,6 +129,33 @@
                 </StackPanel>
             </ControlTemplate>
 
+            <DataTemplate x:Key="DateCellTemplate" DataType="local:LogItem">
+                <TextBox
+                    IsReadOnly="True"
+                    Text="{Binding Time, Mode=OneWay}"
+                    TextWrapping="NoWrap"
+                    Margin="6,0,6,0"
+                    Style="{StaticResource EllipsisBoxStyle}">
+
+                    <TextBox.ToolTip>
+                        <ToolTip Content="{Binding Date}"
+                                 Style="{StaticResource CommonTooltipStyle}" />
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DataTemplate>
+
+            <DataTemplate x:Key="SeverityLevelCellTemplate" DataType="local:LogItem">
+                <Image Source="{Binding SeverityLevel}"
+                       Width="12"
+                       Height="12"
+                       Margin="9,1,8,1">
+                    <Image.ToolTip>
+                        <ToolTip Content="{Binding SeverityTip}"
+                                 Style="{StaticResource CommonTooltipStyle}" />
+                    </Image.ToolTip>
+                </Image>
+            </DataTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -429,42 +456,12 @@
 
                     <DataGrid.Columns>
                         <DataGridTemplateColumn
-                            IsReadOnly="True">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="local:LogItem">
-                                    <Image Source="{Binding SeverityLevel}"
-                                           Width="12"
-                                           Height="12"
-                                           Margin="9,1,8,1">
-                                        <Image.ToolTip>
-                                            <ToolTip Content="{Binding SeverityTip}"
-                                                     Style="{StaticResource CommonTooltipStyle}" />
-                                        </Image.ToolTip>
-                                    </Image>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                            IsReadOnly="True"
+                            CellTemplate="{StaticResource SeverityLevelCellTemplate}"/>
 
                         <DataGridTemplateColumn
                             IsReadOnly="True"
-                            SortMemberPath="TimeStamp">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="local:LogItem">
-                                    <TextBox
-                                        IsReadOnly="True"
-                                        Text="{Binding Time, Mode=OneWay}"
-                                        TextWrapping="NoWrap"
-                                        Margin="6,0,6,0"
-                                        Style="{StaticResource EllipsisBoxStyle}">
-
-                                        <TextBox.ToolTip>
-                                            <ToolTip Content="{Binding Date}"
-                                                     Style="{StaticResource CommonTooltipStyle}" />
-                                        </TextBox.ToolTip>
-                                    </TextBox>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                            SortMemberPath="TimeStamp" CellTemplate="{StaticResource DateCellTemplate}"/>
 
                         <DataGridTemplateColumn Width="*" CellTemplate="{StaticResource MessageColumnTemplate}" />
                     </DataGrid.Columns>
