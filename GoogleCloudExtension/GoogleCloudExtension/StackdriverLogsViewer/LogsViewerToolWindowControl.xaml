@@ -154,7 +154,7 @@
                 Padding="12,6,0,6"    
                 BorderThickness="0,0,0,1"    
                 BorderBrush="LightGray"
-                IsEnabled="{Binding IsControlEnabled}" >
+                IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}" >
                 <controls:AutoReloadButton 
                     x:Name="_autoReloadButton"
                     Style="{StaticResource AutoReloadButtonStyle}" 
@@ -168,7 +168,7 @@
             <StackPanel      
                 Grid.Row="1"
                 Margin="12,6,12,6"  
-                IsEnabled="{Binding IsControlEnabled}"
+                IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}"
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Stretch" 
                 Orientation="Vertical"
@@ -373,7 +373,7 @@
 
             <Grid Grid.Row="2" 
                   Margin="12,6,12,12" 
-                  IsEnabled="{Binding IsControlEnabled}">
+                  IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}">
 
                 <!-- DataGrid, displays all log entries. -->
                 <DataGrid
@@ -515,8 +515,8 @@
                     TextWrapping="Wrap"
                     MaxHeight="360" 
                     Foreground="Red" 
-                    Text="{Binding RequestErrorMessage, Mode=OneWay}" 
-                    Visibility="{Binding ShowRequestErrorMessage, Converter={utils:VisibilityConverter}}" 
+                    Text="{Binding AsyncAction.ErrorMessage, Mode=OneWay}" 
+                    Visibility="{Binding AsyncAction.IsError, Converter={utils:VisibilityConverter}}" 
                     IsReadOnly="True"
                     VerticalScrollBarVisibility="Auto" />
 
@@ -524,7 +524,7 @@
                     Margin="0,0,0,12" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center"
-                    Visibility="{Binding ShowRequestStatus, Converter={utils:VisibilityConverter}}">
+                    Visibility="{Binding AsyncAction.IsSuccess, Converter={utils:VisibilityConverter IsNegated=True}}">
 
                     <TextBlock
                         Padding="8,5,3,5" 

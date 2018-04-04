@@ -1,4 +1,19 @@
-﻿using Google.Apis.Logging.v2.Data;
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
@@ -8,10 +23,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Process = System.Diagnostics.Process;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -24,6 +38,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<ResourceKeys>> _listResourceKeysSource;
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
+        private List<string> _propertiesChanged;
 
         [TestInitialize]
         public void BeforeEach()
@@ -49,6 +64,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
+            _propertiesChanged = new List<string>();
+            _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
         }
 
         [TestMethod]
@@ -84,11 +101,11 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             Assert.IsNotNull(_objectUnderTest.LogItemCollection);
             Assert.IsTrue(_objectUnderTest.CancelRequestCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
-            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
-            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
             Assert.IsNull(_objectUnderTest.RequestStatusText);
-            Assert.IsFalse(_objectUnderTest.ShowRequestStatus);
-            Assert.IsTrue(_objectUnderTest.IsControlEnabled);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
             Assert.IsTrue(_objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
             Assert.AreEqual((uint)3, _objectUnderTest.AutoReloadIntervalSeconds);
@@ -122,17 +139,13 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
             _listProjectLogNamesSource.SetResult(new[] { "log-id" });
 
-            // Two calls here are required by the test but not normal use.
-            // This is probably due to all async calls completing syncronously.
-            // TODO(przybjw): Fix issue #898.
-            _objectUnderTest.SimpleTextSearchCommand.Execute(null);
             _objectUnderTest.SimpleTextSearchCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.IsControlEnabled);
-            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
-            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
             Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
-            Assert.IsTrue(_objectUnderTest.ShowRequestStatus);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
         }
 
@@ -144,18 +157,124 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
             _listProjectLogNamesSource.SetResult(new[] { "log-id" });
 
-            // Two calls here are required by the test but not normal use.
-            // This is probably due to all async calls completing syncronously.
-            // TODO(przybjw): Fix issue #898.
-            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.IsControlEnabled);
-            Assert.IsNull(_objectUnderTest.RequestErrorMessage);
-            Assert.IsFalse(_objectUnderTest.ShowRequestErrorMessage);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
             Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
-            Assert.IsTrue(_objectUnderTest.ShowRequestStatus);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
+        }
+
+        [TestMethod]
+        public void TestPageLoadingCanceling()
+        {
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            _propertiesChanged.Clear();
+
+            _objectUnderTest.CancelRequestCommand.Execute(null);
+
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsPending);
+            Assert.AreEqual(Resources.LogViewerRequestCancellingMessage, _objectUnderTest.RequestStatusText);
+            Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+            CollectionAssert.Contains(_propertiesChanged, nameof(_objectUnderTest.ShowCancelRequestButton), string.Join(", ", _propertiesChanged));
+            CollectionAssert.Contains(_propertiesChanged, nameof(_objectUnderTest.RequestStatusText),
+                string.Join(", ", _propertiesChanged));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TaskCanceledException))]
+        public async Task TestPageLoadingCanceled()
+        {
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            _objectUnderTest.CancelRequestCommand.Execute(null);
+
+            _listLogEntriesSource.SetCanceled();
+            try
+            {
+                await _objectUnderTest.AsyncAction.Task;
+            }
+            catch (TaskCanceledException)
+            {
+                Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
+                Assert.IsNull(_objectUnderTest.RequestStatusText);
+                Assert.IsTrue(_objectUnderTest.AsyncAction.IsCanceled);
+                Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestPageLoadError()
+        {
+            const string exceptionMessage = "test exception message";
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            _listLogEntriesSource.SetException(new DataSourceException(exceptionMessage));
+
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsError);
+            Assert.AreEqual(exceptionMessage, _objectUnderTest.AsyncAction.ErrorMessage);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+        }
+
+        [TestMethod]
+        public async Task TestPageLoaded()
+        {
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            _listLogEntriesSource.SetResult(
+                new LogEntryRequestResult(
+                    new[] { new LogEntry { Timestamp = DateTimeOffset.Parse("2001-1-1 11:01") } }, null));
+
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            await _objectUnderTest.AsyncAction.Task;
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+            Assert.AreEqual(1, _objectUnderTest.LogItemCollection.Count);
+        }
+
+        [TestMethod]
+        public async Task TestPageLoadedEmpty()
+        {
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            _listLogEntriesSource.SetResult(new LogEntryRequestResult(new LogEntry[0], null));
+
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            await _objectUnderTest.AsyncAction.Task;
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
+            Assert.AreEqual(0, _objectUnderTest.LogItemCollection.Count);
         }
 
         [TestMethod]

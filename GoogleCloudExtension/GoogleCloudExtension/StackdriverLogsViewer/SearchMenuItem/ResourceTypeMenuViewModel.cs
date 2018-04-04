@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// The class is the view model for Resource Type, resource key value selector.
-    /// It is tightly coupled with <seealso cref="LogsViewerViewModel"/>. 
+    /// It is tightly coupled with <seealso cref="LogsViewerViewModel"/>.
     /// </summary>
     public class ResourceTypeMenuViewModel : MenuItemViewModel
     {
@@ -89,9 +89,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var descriptors = await _dataSource().GetResourceDescriptorsAsync();
             var newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
-            foreach (var defaultSelection in s_defaultResourceSelections)
+            foreach (string defaultSelection in s_defaultResourceSelections)
             {
-                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                MonitoredResourceDescriptor desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
                 if (desc != null)
                 {
                     newOrderDescriptors.Add(desc);

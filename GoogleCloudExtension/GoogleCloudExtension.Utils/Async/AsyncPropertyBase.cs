@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Utils.Async
         /// <summary>
         /// The task to trigger a nodify on completion.
         /// </summary>
-        protected abstract Task Task { get; }
+        public abstract Task Task { get; }
 
         /// <summary>
         /// Returns true if the wrapped task is in error.
