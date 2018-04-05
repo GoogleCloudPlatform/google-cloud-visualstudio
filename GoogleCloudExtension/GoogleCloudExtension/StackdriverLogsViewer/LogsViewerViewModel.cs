@@ -22,7 +22,6 @@ using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -82,7 +81,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private readonly ILoggingDataSource _dataSourceOverride = null;
 
         private AsyncProperty _asyncAction = new AsyncProperty(Task.FromResult(true));
-        private Task _logLoadTask;
         private CancellationTokenSource _cancellationTokenSource;
 
         internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
@@ -169,7 +167,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedLogSeverity, value);
+                AsyncAction = new AsyncProperty(ReloadAsync());
+            }
         }
 
         /// <summary>
@@ -183,7 +185,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set { SetValueAndRaise(ref _selectedTimeZone, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedTimeZone, value);
+                OnTimeZoneChanged();
+            }
         }
 
         /// <summary>
@@ -298,12 +304,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private Task LogLoadTask
-        {
-            get { return _logLoadTask; }
-            set { SetValueAndRaise(ref _logLoadTask, value); }
-        }
-
         /// <summary>
         /// Gets the command that responds to auto reload event.
         /// </summary>
@@ -363,9 +363,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => AsyncAction = new AsyncProperty(ReloadAsync());
-            PropertyChanged += OnPropertyChanged;
             ResourceTypeSelector = new ResourceTypeMenuViewModel(() => DataSource);
-            ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
+            ResourceTypeSelector.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == null ||
+                    args.PropertyName == nameof(ResourceTypeMenuViewModel.SelectedMenuItem))
+                {
+                    LogIdList = null;
+                    AsyncAction = new AsyncProperty(ReloadAsync());
+                }
+            };
+
             OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
             OnAutoReloadCommand = new ProtectedCommand(AutoReload);
         }
@@ -382,7 +390,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            AsyncAction = new AsyncProperty(PopulateResourceTypes());
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         /// <summary>
@@ -391,12 +399,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public void LoadNextPage()
         {
             IsAutoReloadChecked = false;
-            if (string.IsNullOrWhiteSpace(_nextPageToken) || string.IsNullOrWhiteSpace(Project))
+            if (string.IsNullOrWhiteSpace(_nextPageToken) || string.IsNullOrWhiteSpace(Project) ||
+                AsyncAction.IsPending)
             {
                 return;
             }
 
-            AsyncAction = new AsyncProperty(LogLoaddingWrapperAsync());
+            AsyncAction = new AsyncProperty(LoadLogsAsync());
         }
 
         /// <summary>
@@ -523,41 +532,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// A wrapper to LoadLogs.
-        /// This is to make the try/catch statement conscise and easy to read.
-        /// </summary>
-        /// <param name="init">A function to execute.</param>
-        private async Task LogLoaddingWrapperAsync(bool init = false)
-        {
-            if (LogLoadTask?.Status == TaskStatus.Running)
-            {
-                Debug.WriteLine("_isLoading is true. Skip.");
-                return;
-            }
-
-            if (init)
-            {
-                _nextPageToken = null;
-                _logs.Clear();
-                _latestLogItem = null;
-            }
-
-            CancellationTokenSource = new CancellationTokenSource();
-            LogLoadTask = LoadLogsAsync(CancellationTokenSource.Token);
-            await LogLoadTask;
-        }
-
-        /// <summary>
         /// Repeatedly make list log entries request till it gets desired number of logs or it reaches end.
         /// _nextPageToken is used to control if it is getting first page or continuous page.
         /// 
         /// On complex filters, scanning through logs take time. The server returns empty results
         ///   with a next page token. Continue to send request till some logs are found.
         /// </summary>
-        /// <param name="cancellationToken">A cancellation token. The caller can monitor the cancellation event.</param>
         /// <param name="autoReload">Indicate if the request comes from autoReload event.</param>
-        private async Task LoadLogsAsync(CancellationToken cancellationToken, bool autoReload = false)
+        private async Task LoadLogsAsync(bool autoReload = false)
         {
+            var tokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = tokenSource.Token;
+            CancellationTokenSource = tokenSource;
+
             if (_logs.Count >= MaxLogEntriesCount)
             {
                 UserPromptUtils.ErrorPrompt(
@@ -610,6 +597,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task ReloadAsync()
         {
             Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
+            _latestLogItem = null;
 
             if (string.IsNullOrWhiteSpace(Project))
             {
@@ -618,17 +606,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (!ResourceTypeSelector.IsSubmenuPopulated)
             {
-                await PopulateResourceTypes();
+                await PopulateResourceTypesAsync();
             }
 
             if (LogIdList == null)
             {
-                await PopulateLogIds();
+                await PopulateLogIdsAsync();
             }
 
-            _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
+            if (_latestLogItem == null)
+            {
+                _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
+                _nextPageToken = null;
+                _logs.Clear();
 
-            await LogLoaddingWrapperAsync(true);
+                await LoadLogsAsync();
+            }
         }
 
         /// <summary>
@@ -687,7 +680,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Populate resource type selection list.
         /// 
-        /// The control flow is as following.
+        /// The control flow is as follows.
         ///     1. PopulateResourceTypes().
         ///         1.1 Failed. An error message is displayed.
         ///              Goto error handling logic.
@@ -699,17 +692,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private Task PopulateResourceTypes()
+        private async Task PopulateResourceTypesAsync()
         {
             CancellationTokenSource = null;
-            return ResourceTypeSelector.PopulateResourceTypes();
+            await ResourceTypeSelector.PopulateResourceTypesAsync();
         }
 
         /// <summary>
         /// This method uses similar logic as populating resource descriptors.
-        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// Refers to <seealso cref="PopulateResourceTypesAsync"/>.
         /// </summary>
-        private async Task PopulateLogIds()
+        private async Task PopulateLogIdsAsync()
         {
             if (ResourceTypeSelector.SelectedMenuItem == null)
             {
@@ -720,35 +713,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             CancellationTokenSource = null;
             var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
             List<string> keys = item == null ? null : new List<string> { item.ResourceValue };
-            IList<string> logIdRequestResult = await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
+            IList<string> logIdRequestResult =
+                await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
-            LogIdList.PropertyChanged += OnPropertyChanged;
-            await ReloadAsync();
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(SelectedTimeZone):
-                    OnTimeZoneChanged();
-                    break;
-                case nameof(LogIdsList.SelectedLogId):
-                    if (LogIdList != null)
-                    {
-                        AsyncAction = new AsyncProperty(ReloadAsync());
-                    }
-                    break;
-                case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
-                    LogIdList = null;
-                    AsyncAction = new AsyncProperty(PopulateLogIds());
-                    break;
-                case nameof(SelectedLogSeverity):
-                    AsyncAction = new AsyncProperty(ReloadAsync());
-                    break;
-                default:
-                    break;
-            }
+            LogIdList.PropertyChanged += (sender, args) => AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         private void OnTimeZoneChanged()
@@ -817,7 +785,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void AutoReload()
         {
             // Possibly, the last auto reload command have not completed.
-            if (AsyncAction.IsPending || LogLoadTask?.Status == TaskStatus.Running || !IsAutoReloadChecked)
+            if (AsyncAction.IsPending || !IsAutoReloadChecked)
             {
                 return;
             }
@@ -826,17 +794,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (ShowAdvancedFilter)
             {
                 AsyncAction = new AsyncProperty(ReloadAsync());
-                return;
             }
-
-            // TODO: auto scroll to last item in ascending order.
-            AsyncAction = new AsyncProperty(AppendNewerLogsAsync());
+            else
+            {
+                // TODO: auto scroll to last item in ascending order.
+                AsyncAction = new AsyncProperty(AppendNewerLogsAsync());
+            }
         }
 
         private async Task AppendNewerLogsAsync()
         {
             bool createNewQuery = DateTimePickerModel.IsDescendingOrder || _nextPageToken == null;
-            CancellationTokenSource = new CancellationTokenSource();
 
             if (createNewQuery)
             {
@@ -861,8 +829,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             do
             {
-                LogLoadTask = LoadLogsAsync(CancellationTokenSource.Token, true);
-                await LogLoadTask;
+                await LoadLogsAsync(true);
             } while (_nextPageToken != null && !CancellationTokenSource.IsCancellationRequested);
 
             if (CancellationTokenSource.IsCancellationRequested)

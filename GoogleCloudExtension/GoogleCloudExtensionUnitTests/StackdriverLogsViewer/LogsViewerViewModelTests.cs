@@ -24,6 +24,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -101,11 +102,9 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             Assert.IsNotNull(_objectUnderTest.LogItemCollection);
             Assert.IsTrue(_objectUnderTest.CancelRequestCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
-            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
             Assert.IsNull(_objectUnderTest.RequestStatusText);
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
+            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
             Assert.IsTrue(_objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
             Assert.AreEqual((uint)3, _objectUnderTest.AutoReloadIntervalSeconds);
@@ -142,10 +141,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.SimpleTextSearchCommand.Execute(null);
 
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsPending);
-            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
             Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
         }
 
@@ -160,10 +156,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
 
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsPending);
-            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
             Assert.AreEqual(Resources.LogViewerRequestProgressMessage, _objectUnderTest.RequestStatusText);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsTrue(_objectUnderTest.ShowCancelRequestButton);
         }
 
@@ -205,7 +198,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             }
             catch (TaskCanceledException)
             {
-                Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
                 Assert.IsNull(_objectUnderTest.RequestStatusText);
                 Assert.IsTrue(_objectUnderTest.AsyncAction.IsCanceled);
                 Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
@@ -225,11 +217,9 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsError);
             Assert.AreEqual(exceptionMessage, _objectUnderTest.AsyncAction.ErrorMessage);
             Assert.IsNull(_objectUnderTest.RequestStatusText);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
         }
 
@@ -247,11 +237,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
             await _objectUnderTest.AsyncAction.Task;
 
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
-            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
-            Assert.IsNull(_objectUnderTest.RequestStatusText);
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
             Assert.AreEqual(1, _objectUnderTest.LogItemCollection.Count);
         }
@@ -268,13 +255,34 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
             await _objectUnderTest.AsyncAction.Task;
 
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsPending);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
-            Assert.IsNull(_objectUnderTest.AsyncAction.ErrorMessage);
-            Assert.IsNull(_objectUnderTest.RequestStatusText);
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
+            Assert.IsNull(_objectUnderTest.RequestStatusText);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
             Assert.AreEqual(0, _objectUnderTest.LogItemCollection.Count);
+        }
+
+        [TestMethod]
+        public async Task TestUpdateTimeZone()
+        {
+            _getResourceDescriptorsSource.SetResult(
+                new[] { new MonitoredResourceDescriptor { Type = ResourceTypeNameConsts.GlobalType } });
+            _listResourceKeysSource.SetResult(new[] { new ResourceKeys { Type = ResourceTypeNameConsts.GlobalType } });
+            _listProjectLogNamesSource.SetResult(new[] { "log-id" });
+            DateTimeOffset originalTimestamp = DateTimeOffset.Parse("2001-1-1 11:01");
+            _listLogEntriesSource.SetResult(
+                new LogEntryRequestResult(
+                    new[] { new LogEntry { Timestamp = originalTimestamp } }, null));
+            _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
+            await _objectUnderTest.AsyncAction.Task;
+            TimeZoneInfo newTimeZone =
+                _objectUnderTest.SystemTimeZones.First(tz => !tz.Equals(_objectUnderTest.SelectedTimeZone));
+
+            _objectUnderTest.SelectedTimeZone = newTimeZone;
+
+            Assert.AreEqual(newTimeZone, _objectUnderTest.SelectedTimeZone);
+            Assert.AreEqual(
+                TimeZoneInfo.ConvertTime(originalTimestamp.DateTime, newTimeZone),
+                ((LogItem)_objectUnderTest.LogItemCollection.GetItemAt(0)).TimeStamp);
         }
 
         [TestMethod]

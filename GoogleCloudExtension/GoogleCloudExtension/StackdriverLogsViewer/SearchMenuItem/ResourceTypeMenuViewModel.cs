@@ -76,10 +76,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypes"/>
+        /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypesAsync"/>
         /// Exception is handled by the caller.
         /// </summary>
-        public async Task PopulateResourceTypes()
+        public async Task PopulateResourceTypesAsync()
         {
             if (IsSubmenuPopulated)
             {
