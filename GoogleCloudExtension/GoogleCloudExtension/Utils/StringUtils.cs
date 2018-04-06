@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.Utils
         ///         (a) A space inside a double quotes pair.  Add it to currentToken.
         ///         (b) else, it is a separator, add the currentToken to
         /// </summary>
-        public static IEnumerable<string> SplitStringBySpaceOrQuote(string source)
+        public static List<string> SplitStringBySpaceOrQuote(string source)
         {
             if (source == null)
             {
