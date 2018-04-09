@@ -58,6 +58,17 @@ namespace GoogleCloudExtension.Utils.Validation
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         /// <summary>
+        /// Exposing the validation delay task for testing purposes given that the
+        /// validation method is (needs to be) async void.
+        /// </summary>
+        internal Task ValidationDelayTask { get; private set; }
+
+        protected ValidatingViewModelBase()
+        {
+            ValidationDelayTask = Task.Delay(0);
+        }
+
+        /// <summary>
         /// Gets the validation errors for the given property that have passed the delay.
         /// </summary>
         /// <param name="propertyName">The name of the property to get the validation errors for.</param>
@@ -116,7 +127,8 @@ namespace GoogleCloudExtension.Utils.Validation
         {
             if (validationResults.Any(r => !r.IsValid))
             {
-                await Task.Delay(MillisecondsDelay);
+                ValidationDelayTask = Task.Delay(MillisecondsDelay);
+                await ValidationDelayTask;
             }
             if (validationResults.Equals(_pendingResultsMap[property]))
             {

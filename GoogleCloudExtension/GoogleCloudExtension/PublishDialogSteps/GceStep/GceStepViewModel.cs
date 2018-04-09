@@ -30,7 +30,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
@@ -130,31 +129,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
-        /// <summary>
-        /// The command to execute to enable the necessary APIs for the project.
-        /// </summary>
-        public ICommand EnableApiCommand { get; }
-
         private IGceDataSource CurrentDataSource => _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager)
-            : base(apiManager)
+        private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager, Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
 
-            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
-        }
-
-        private async Task OnEnableApiCommandAsync()
-        {
-            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
-            LoadingProjectTask = InitializeDialogState();
-        }
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);            
+        }        
 
         private void OnManageCredentialsCommand()
         {
@@ -166,26 +153,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
             return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
-        }
-
-        private async Task<bool> ValidateGcpProject()
-        {
-            // Reset UI state.
-            CanPublish = true;
-            NeedsApiEnabled = false;
-
-            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
-            {
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                return false;
-            }
-            return true;
-        }
+        }        
 
         #region IPublishDialogStep
 
         public override FrameworkElement Content => _content;
+
+        protected internal override IList<string> RequiredApis => s_requiredApis;
 
         public override async void Publish()
         {
@@ -256,53 +230,30 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
-        public override void OnVisible(IPublishDialog dialog)
+        protected override async Task<bool> ValidateProjectAsync()
         {
-            base.OnVisible(dialog);
-            LoadingProjectTask = InitializeDialogState();
+            CanPublish = true;
+            return await base.ValidateProjectAsync();            
+        }
+
+        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
+        
+        protected override async Task LoadProjectDataIfValidAsync()
+        {
+            Instances = await GetAllWindowsInstancesAsync();
+        }
+
+        public override IPublishDialogStep Next()
+        {
+            throw new InvalidOperationException();
         }
 
         #endregion
 
-        private async Task InitializeDialogState()
-        {
-            try
-            {
-                // Show the loading message while the project is being validated and the
-                // data being loaded.
-                LoadingProject = true;
-
-                Task<bool> validateTask = ValidateGcpProject();
-                PublishDialog.TrackTask(validateTask);
-
-                if (await validateTask)
-                {
-                    Task<IEnumerable<Instance>> instancesTask = GetAllWindowsInstancesAsync();
-                    PublishDialog.TrackTask(instancesTask);
-                    Instances = await instancesTask;
-                }
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                CanPublish = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
-        }
-
-        protected override void OnProjectChanged()
-        {
-            LoadingProjectTask = InitializeDialogState();
-            base.OnProjectChanged();
-        }
-
-        internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null)
+        internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null, Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null)
         {
             var content = new GceStepContent();
-            var viewModel = new GceStepViewModel(content, dataSource, apiManager);
+            var viewModel = new GceStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
             content.DataContext = viewModel;
 
             return viewModel;

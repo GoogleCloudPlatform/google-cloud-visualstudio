@@ -22,6 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Threading.Tasks;
+using GoogleCloudExtension.ApiManagement;
+using Google.Apis.CloudResourceManager.v1.Data;
 
 namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
@@ -52,7 +55,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        private ChoiceStepViewModel(ChoiceStepContent content)
+        private ChoiceStepViewModel(ChoiceStepContent content, IApiManager apiManager, Func<Project> pickProjectPrompt)
+            :base(apiManager, pickProjectPrompt)
         {
             _content = content;
         }
@@ -115,19 +119,32 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnVisible(IPublishDialog dialog)
-        {
-            base.OnVisible(dialog);
+        protected internal override IList<string> RequiredApis => new List<string>();
 
+        protected override Task LoadProjectDataAlwaysAsync()
+        {
             Choices = GetChoicesForCurrentProject();
+            return Task.Delay(0);
+        }
+
+        protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
+
+        public override IPublishDialogStep Next()
+        {
+            throw new InvalidOperationException();
+        }
+
+        public override void Publish()
+        {
+            throw new InvalidOperationException();
         }
 
         #endregion
 
-        public static ChoiceStepViewModel CreateStep()
+        public static ChoiceStepViewModel CreateStep(IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
         {
             var content = new ChoiceStepContent();
-            var viewModel = new ChoiceStepViewModel(content);
+            var viewModel = new ChoiceStepViewModel(content, apiManager, pickProjectPrompt);
             content.DataContext = viewModel;
 
             return viewModel;

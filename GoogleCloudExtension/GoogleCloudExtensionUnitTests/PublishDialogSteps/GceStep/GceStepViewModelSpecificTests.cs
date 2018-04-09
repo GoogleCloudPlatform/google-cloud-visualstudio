@@ -85,7 +85,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
 
-            Assert.IsNotNull(_objectUnderTest.LoadingProjectTask);
+            Assert.IsNotNull(_objectUnderTest.AsyncAction);
             Assert.IsTrue(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
@@ -97,7 +97,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _areServicesEnabledTaskSource.SetResult(true);
             _getInstanceListTaskSource.SetResult(s_mockedInstances);
 
-            await _objectUnderTest.LoadingProjectTask;
+            await _objectUnderTest.AsyncAction;
 
             Assert.IsTrue(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.LoadingProject);
@@ -113,7 +113,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetResult(false);
 
-            await _objectUnderTest.LoadingProjectTask;
+            await _objectUnderTest.AsyncAction;
 
             Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.LoadingProject);
@@ -127,7 +127,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _objectUnderTest.OnVisible(_mockedPublishDialog.Object);
             _areServicesEnabledTaskSource.SetException(new DataSourceException());
 
-            await _objectUnderTest.LoadingProjectTask;
+            await _objectUnderTest.AsyncAction;
 
             Assert.IsTrue(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.LoadingProject);
@@ -142,7 +142,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _areServicesEnabledTaskSource.SetResult(true);
             _getInstanceListTaskSource.SetException(new DataSourceException());
 
-            await _objectUnderTest.LoadingProjectTask;
+            await _objectUnderTest.AsyncAction;
 
             Assert.IsTrue(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.LoadingProject);

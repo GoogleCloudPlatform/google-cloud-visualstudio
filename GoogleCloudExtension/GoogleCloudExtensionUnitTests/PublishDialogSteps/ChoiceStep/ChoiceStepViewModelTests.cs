@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.PublishDialogSteps.FlexStep;
+using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtensionUnitTests.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
+namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
 {
     [TestClass]
-    public class FlexStepViewModelInheritedTests : PublishDialogStepBaseTestsBase<FlexStepViewModel>
+    public class ChoiceStepViewModelTests : PublishDialogStepBaseTestsBase<ChoiceStepViewModel>
     {
-        protected override FlexStepViewModel CreateStep()
+        protected override int RequieredAPIsForStep => 0;
+
+        protected override ChoiceStepViewModel CreateStep()
         {
-            return FlexStepViewModel.CreateStep();
+            return ChoiceStepViewModel.CreateStep(apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object);
         }
     }
 }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -28,7 +29,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 {
@@ -93,6 +93,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set
             {
                 SetValueAndRaise(ref _needsAppCreated, value);
+                SetAppRegionCommand.CanExecuteCommand = value;
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -103,68 +104,67 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public override bool ShowInputControls => base.ShowInputControls && !NeedsAppCreated;
 
         /// <summary>
-        /// The command to execute to enable the necessary APIs for the project.
-        /// </summary>
-        public ICommand EnableApiCommand { get; }
-
-        /// <summary>
         /// The command to execute to create the App Engine app and set the region for it.
         /// </summary>
-        public ICommand SetAppRegionCommand { get; }
+        public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource = null, IApiManager apiManager = null)
-            : base(apiManager)
+        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
 
-            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
-            SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync);
+            SetAppRegionCommand = new ProtectedAsyncCommand(async () =>
+            {
+                StartAndTrack(OnSetAppRegionCommandAsync);
+                await AsyncAction;
+            }, false);
         }
 
         private async Task OnSetAppRegionCommandAsync()
         {
             if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource))
             {
-                PublishDialog.TrackTask(ValidateGcpProjectState());
+                await ReloadProjectAsync();
             }
-        }
-
-        private async Task OnEnableApiCommandAsync()
-        {
-            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
-            PublishDialog.TrackTask(ValidateGcpProjectState());
-        }
-
-        protected override void HasErrorsChanged()
-        {
-            CanPublish = !HasErrors;
         }
 
         #region IPublishDialogStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnVisible(IPublishDialog dialog)
-        {
-            base.OnVisible(dialog);
+        protected internal override IList<string> RequiredApis => s_requiredApis;
 
-            InitializeDialogState();
+        protected override async Task<bool> ValidateProjectAsync()
+        {
+            NeedsAppCreated = false;
+
+            IsValidGCPProject = await base.ValidateProjectAsync();
+
+            if (IsValidGCPProject)
+            {
+                // Using the GAE API, check if there's an app for the project.
+                if (null == await CurrentDataSource.GetApplicationAsync())
+                {
+                    NeedsAppCreated = true;
+                    IsValidGCPProject = false;
+                }
+            }
+
+            return IsValidGCPProject;
         }
+
+        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
+
+        protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
 
         public override async void Publish()
         {
-            if (!ValidateInput())
-            {
-                Debug.WriteLine("Invalid input cancelled the operation.");
-                return;
-            }
-
             IParsedProject project = PublishDialog.Project;
             try
             {
@@ -247,95 +247,30 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
+        public override IPublishDialogStep Next()
+        {
+            throw new InvalidOperationException();
+        }
+
+        protected internal override void OnFlowFinished()
+        {
+            base.OnFlowFinished();
+            _version = GcpPublishStepsUtils.GetDefaultVersion();
+        }
+
         #endregion
 
         /// <summary>
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null)
+        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
         {
             var content = new FlexStepContent();
-            var viewModel = new FlexStepViewModel(content, dataSource: dataSource, apiManager: apiManager);
+            var viewModel = new FlexStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
             content.DataContext = viewModel;
 
             return viewModel;
-        }
-
-        /// <summary>
-        /// If the user changes the current project we need to re-run the validation to make sure that the
-        /// selected project has the right APIs enabled.
-        /// </summary>
-        protected override void OnProjectChanged()
-        {
-            InitializeDialogState();
-            base.OnProjectChanged();
-        }
-
-        private void InitializeDialogState()
-        {
-            LoadingProjectTask = ValidateGcpProjectState();
-            PublishDialog.TrackTask(LoadingProjectTask);
-        }
-
-        private async Task ValidateGcpProjectState()
-        {
-            try
-            {
-                // Go into loading mode.
-                LoadingProject = true;
-
-                // Clean slate for the messages.
-                CanPublish = true;
-                NeedsApiEnabled = false;
-                NeedsAppCreated = false;
-                GeneralError = false;
-
-                // Ensure the necessary APIs are enabled.
-                if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
-                {
-                    Debug.WriteLine("The user refused to enable the APIs for GAE.");
-                    CanPublish = false;
-                    NeedsApiEnabled = true;
-                    return;
-                }
-
-                // Using the GAE API, check if there's an app for the project.
-                Google.Apis.Appengine.v1.Data.Application app = await CurrentDataSource.GetApplicationAsync();
-                if (app == null)
-                {
-                    CanPublish = false;
-                    NeedsAppCreated = true;
-                    return;
-                }
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                CanPublish = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
-        }
-
-        internal bool ValidateInput()
-        {
-            if (string.IsNullOrEmpty(Version))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.FlexPublishEmptyVersionMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
-            if (!GcpPublishStepsUtils.IsValidName(Version))
-            {
-                UserPromptUtils.ErrorPrompt(
-                    string.Format(Resources.FlexPublishInvalidVersionMessage, Version),
-                    Resources.UiInvalidValueTitle);
-                return false;
-            }
-
-            return true;
         }
     }
 }

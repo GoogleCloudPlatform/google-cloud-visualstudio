@@ -15,15 +15,19 @@
 using GoogleCloudExtension.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {
     [TestClass]
     public class PublishDialogStepBaseTests : PublishDialogStepBaseTestsBase<PublishDialogStepBase>
     {
+        protected override int RequieredAPIsForStep => 0;
+
         protected override PublishDialogStepBase CreateStep()
         {
-            var objectUnderTestImpl = new Mock<PublishDialogStepBase> { CallBase = true };
+            var objectUnderTestImpl = new Mock<PublishDialogStepBase>(_apiManagerMock.Object, _pickProjectPromptMock.Object) { CallBase = true };
+            objectUnderTestImpl.Setup(step => step.RequiredApis).Returns(new List<string>());
             return objectUnderTestImpl.Object;
         }
     }

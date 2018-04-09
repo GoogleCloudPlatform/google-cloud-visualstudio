@@ -21,9 +21,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
     [TestClass]
     public class GkeStepViewModelInheritedTests : PublishDialogStepBaseTestsBase<GkeStepViewModel>
     {
+        protected override int RequieredAPIsForStep => 2;
+
         protected override GkeStepViewModel CreateStep()
         {
-            return GkeStepViewModel.CreateStep();
+            return GkeStepViewModel.CreateStep(apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object);
         }
     }
 }

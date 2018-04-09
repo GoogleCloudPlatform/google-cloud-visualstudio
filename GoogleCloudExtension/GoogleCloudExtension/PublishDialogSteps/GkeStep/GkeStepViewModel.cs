@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -30,7 +31,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 {
@@ -179,25 +179,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
-        /// <summary>
-        /// The command to execute to enable the necessary APIs for the project.
-        /// </summary>
-        public ICommand EnableApiCommand { get; }
-
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager)
-            : base(apiManager)
+        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
         }
 
         private void UpdateCanPublish()
@@ -223,20 +217,49 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
         }
 
-        private async Task OnEnableApiCommandAsync()
-        {
-            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
-            LoadingProjectTask = InitializeDialogState();
-        }
-
         #region IPublishDialogStep overrides
 
         public override FrameworkElement Content => _content;
 
-        public override void OnVisible(IPublishDialog dialog)
+        protected internal override IList<string> RequiredApis => s_requiredApis;
+
+        public override IPublishDialogStep Next()
         {
-            base.OnVisible(dialog);
-            LoadingProjectTask = InitializeDialogState();
+            throw new InvalidOperationException();
+        }
+
+        protected override async Task<bool> ValidateProjectAsync()
+        {
+            CanPublish = true;
+            RefreshClustersListCommand.CanExecuteCommand = true;
+            CreateClusterCommand.CanExecuteCommand = true;
+
+            bool isValid = await base.ValidateProjectAsync();
+            if (!isValid)
+            {
+                RefreshClustersListCommand.CanExecuteCommand = false;
+                CreateClusterCommand.CanExecuteCommand = false;
+            }
+
+            return isValid;
+        }
+
+        protected override Task LoadProjectDataAlwaysAsync()
+        {
+            if (string.IsNullOrEmpty(DeploymentName))
+            {
+                DeploymentName = PublishDialog.Project.Name.ToLower();
+            }
+            if (string.IsNullOrEmpty(DeploymentVersion))
+            {
+                DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
+            }
+            return Task.Delay(0);
+        }
+
+        protected override async Task LoadProjectDataIfValidAsync()
+        {
+            Clusters = await GetAllClustersAsync();
         }
 
         /// <summary>
@@ -363,43 +386,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         #endregion
 
-        private async Task InitializeDialogState()
-        {
-            try
-            {
-                // Mark that the project is being loaded and verified.
-                LoadingProject = true;
-
-                if (string.IsNullOrEmpty(DeploymentName))
-                {
-                    DeploymentName = PublishDialog.Project.Name.ToLower();
-                }
-                if (string.IsNullOrEmpty(DeploymentVersion))
-                {
-                    DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
-                }
-
-                Task<bool> validateTask = ValidateGcpProjectState();
-                PublishDialog.TrackTask(validateTask);
-
-                if (await validateTask)
-                {
-                    Task<IEnumerable<Cluster>> clustersTask = GetAllClustersAsync();
-                    PublishDialog.TrackTask(clustersTask);
-                    Clusters = await clustersTask;
-                }
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                CanPublish = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
-        }
-
         private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options)
         {
             GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, PublishDialog.Project.Name));
@@ -491,30 +477,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             return true;
         }
 
-        protected override void OnProjectChanged()
-        {
-            LoadingProjectTask = InitializeDialogState();
-            base.OnProjectChanged();
-        }
 
-        private async Task<bool> ValidateGcpProjectState()
-        {
-            // Reset UI state.
-            CanPublish = true;
-            NeedsApiEnabled = false;
-            RefreshClustersListCommand.CanExecuteCommand = true;
-            CreateClusterCommand.CanExecuteCommand = true;
-
-            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
-            {
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                RefreshClustersListCommand.CanExecuteCommand = false;
-                CreateClusterCommand.CanExecuteCommand = false;
-                return false;
-            }
-            return true;
-        }
 
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
         {
@@ -531,13 +494,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.
         /// </summary>
-        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null)
+        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
         {
             var content = new GkeStepContent();
-            var viewModel = new GkeStepViewModel(content, dataSource, apiManager);
+            var viewModel = new GkeStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
             content.DataContext = viewModel;
 
             return viewModel;
         }
+
     }
 }

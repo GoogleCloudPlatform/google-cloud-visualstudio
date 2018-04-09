@@ -64,10 +64,5 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         /// <param name="dialog">The dialog that is hosting this step.</param>
         void OnVisible(IPublishDialog dialog);
-
-        /// <summary>
-        /// Called when the flow this step was a part of is finished, so this step can clean up.
-        /// </summary>
-        void OnFlowFinished();
     }
 }
