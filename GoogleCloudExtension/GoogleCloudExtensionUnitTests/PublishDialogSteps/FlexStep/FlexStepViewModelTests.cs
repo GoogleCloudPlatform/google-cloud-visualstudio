@@ -16,7 +16,6 @@ using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
-using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtensionUnitTests.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -37,6 +36,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         private Application _mockedApplication;
         private Mock<IGaeDataSource> _gaeDataSourceMock;
 
+        private TaskCompletionSource<bool> _setAppRegionTaskSource;
+        private Mock<Func<Task<bool>>> _setAppRegionAsyncFuncMock;
+
         private bool _expectedNeedsAppCreated;
         private bool _expectedSetAppRegionCommandCanExecute;
 
@@ -44,7 +46,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
         protected override FlexStepViewModel CreateStep()
         {
-            return FlexStepViewModel.CreateStep(dataSource: _gaeDataSourceMock.Object, apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object);
+            return FlexStepViewModel.CreateStep(dataSource: _gaeDataSourceMock.Object, apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object, setAppRegionAsyncFunc: _setAppRegionAsyncFuncMock.Object);
         }
 
         [TestInitialize]
@@ -53,6 +55,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _gaeDataSourceMock = new Mock<IGaeDataSource>();
             _gaeDataSourceMock.Setup(x => x.GetApplicationAsync()).Returns(() => _getApplicationTaskSource.Task);
             _mockedApplication = Mock.Of<Application>();
+
+            _setAppRegionAsyncFuncMock = new Mock<Func<Task<bool>>>();
+            _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             base.BeforeEach();
         }
@@ -237,6 +242,34 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             AssertExpectedVisibleState();
         }
 
+        [TestMethod]
+        public async Task TestSetAppRegionCommandAsyncSuccess()
+        {
+            await GoToNeedsAppCreatedDefaultState();
+            _changedProperties.Clear();
+
+            await RunSetAppRegionCommandSuccess();
+
+            SetValidDefaultStateExpectedValues();
+
+            AssertSelectedProjectUnchanged();
+            AssertExpectedVisibleState();
+        }
+
+        [TestMethod]
+        public async Task TestSetAppRegionCommandAsyncFailure()
+        {
+            await GoToNeedsAppCreatedDefaultState();
+            _changedProperties.Clear();
+
+            await RunSetAppRegionCommandFailure();
+
+            SetNeedsAppCreatedDefaultStateExpectedValues();
+
+            AssertSelectedProjectUnchanged();
+            AssertExpectedVisibleState();
+        }
+
         protected override void InitPositiveValidationMocks()
         {
             base.InitPositiveValidationMocks();
@@ -276,6 +309,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         {
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _getApplicationTaskSource.SetException(new DataSourceException());
+        }
+
+        private void InitSetAppRegionMock(bool result)
+        {
+            _setAppRegionTaskSource = new TaskCompletionSource<bool>();
+            _setAppRegionTaskSource.SetResult(result);
         }
 
         protected override void SetInitialStateExpectedValues()
@@ -417,6 +456,32 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         {
             _objectUnderTest.Version = ValidVersion;
             await _objectUnderTest.ValidationDelayTask;
+        }
+
+        protected override async Task RunEnableApiCommandFailure()
+        {
+            InitGetApplicationMock(_mockedApplication);
+            await base.RunEnableApiCommandFailure();
+        }
+
+        private async Task RunSetAppRegionCommandSuccess()
+        {
+            InitPositiveValidationMocks();
+            await RunSetAppRegionCommand(true);
+        }
+
+        private async Task RunSetAppRegionCommandFailure()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(null);
+            await RunSetAppRegionCommand(false);
+        }
+
+        private async Task RunSetAppRegionCommand(bool success)
+        {
+            InitSetAppRegionMock(success);
+            _objectUnderTest.SetAppRegionCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
         }
 
         protected override void AssertInitialState()

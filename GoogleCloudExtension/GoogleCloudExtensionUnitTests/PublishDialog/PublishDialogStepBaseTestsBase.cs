@@ -490,6 +490,34 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
+        public async Task TestEnableAPIsCommandSuccess()
+        {
+            await GoToInvalidDefaultState();
+            _changedProperties.Clear();
+
+            await RunEnableApiCommandSuccess();
+
+            SetValidDefaultStateExpectedValues();
+
+            AssertSelectedProjectUnchanged();
+            AssertExpectedVisibleState();
+        }
+
+        [TestMethod]
+        public async Task TestEnableAPIsCommandFailure()
+        {
+            await GoToInvalidDefaultState();
+            _changedProperties.Clear();
+
+            await RunEnableApiCommandFailure();
+
+            SetInvalidDefaultStateExpectedValues();
+
+            AssertSelectedProjectUnchanged();
+            AssertExpectedVisibleState();
+        }
+
+        [TestMethod]
         public async Task TestOnFlowFinished()
         {
             await GoToValidDefaultState();
@@ -539,6 +567,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         {
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _areServicesEnabledTaskSource.SetException(new DataSourceException());
+        }
+
+        protected void InitEnableApiMock()
+        {
+            _enableServicesTaskSource = new TaskCompletionSource<object>();
+            _enableServicesTaskSource.SetResult(null);
         }
 
         protected virtual void SetInitialStateExpectedValues()
@@ -777,6 +811,25 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             initMocks();
             _pickProjectPromptMock.Setup(f => f()).Returns(project);
             _objectUnderTest.SelectProjectCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        protected async Task RunEnableApiCommandSuccess()
+        {
+            InitPositiveValidationMocks();
+            await RunEnableApiCommand();
+        }
+
+        protected virtual async Task RunEnableApiCommandFailure()
+        {
+            InitAreServicesEnabledMock(false);
+            await RunEnableApiCommand();
+        }
+
+        protected async Task RunEnableApiCommand()
+        {
+            InitEnableApiMock();
+            _objectUnderTest.EnableApiCommand.Execute(null);
             await _objectUnderTest.AsyncAction;
         }
 

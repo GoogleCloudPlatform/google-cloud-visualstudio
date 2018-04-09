@@ -46,10 +46,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private readonly FlexStepContent _content;
         private readonly IGaeDataSource _dataSource = null;
+        private readonly Func<Task<bool>> _setAppRegionAsyncFunc;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
         private bool _needsAppCreated = false;
+
+        protected Func<Task<bool>> SetAppRegionAsyncFunc => _setAppRegionAsyncFunc ??
+            (() => GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource));
 
         /// <summary>
         /// The version to use for the the app in App Engine Flex.
@@ -113,11 +117,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt)
+        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, Func<Task<bool>> setAppRegionAsyncFunc)
             : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
+            _setAppRegionAsyncFunc = setAppRegionAsyncFunc;
 
             SetAppRegionCommand = new ProtectedAsyncCommand(async () =>
             {
@@ -128,7 +133,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private async Task OnSetAppRegionCommandAsync()
         {
-            if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource))
+            if (await SetAppRegionAsyncFunc())
             {
                 await ReloadProjectAsync();
             }
@@ -264,10 +269,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
+        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null, Func<Task<bool>> setAppRegionAsyncFunc = null)
         {
             var content = new FlexStepContent();
-            var viewModel = new FlexStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
+            var viewModel = new FlexStepViewModel(content, dataSource, apiManager, pickProjectPrompt, setAppRegionAsyncFunc);
             content.DataContext = viewModel;
 
             return viewModel;
