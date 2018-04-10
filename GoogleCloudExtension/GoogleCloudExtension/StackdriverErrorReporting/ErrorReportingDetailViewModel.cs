@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
-        private Func<bool> onScreenCheckFunc;
+        private readonly Func<bool> _onScreenCheckFunc;
 
         // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
@@ -169,7 +169,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingDetailViewModel(Func<bool> onScreenCheckFunc)
         {
-            this.onScreenCheckFunc = onScreenCheckFunc;
+            _onScreenCheckFunc = onScreenCheckFunc;
             OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
             OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
@@ -277,7 +277,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private async Task UpdateGroupAndEventAsync()
         {
-            if (onScreenCheckFunc() == false)
+            if (_onScreenCheckFunc() == false)
             {
                 return;
             }

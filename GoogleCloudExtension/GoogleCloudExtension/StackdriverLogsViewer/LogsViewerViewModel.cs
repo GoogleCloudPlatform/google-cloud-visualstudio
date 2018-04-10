@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private AsyncProperty _asyncAction = new AsyncProperty(Task.FromResult(true));
         private CancellationTokenSource _cancellationTokenSource;
-        private Func<bool> onScreenCheckFunc;
+        private readonly Func<bool> _onScreenCheckFunc;
 
         internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
@@ -346,7 +346,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogsViewerViewModel(Func<bool> onScreenCheckFunc)
         {
-            this.onScreenCheckFunc = onScreenCheckFunc;
+            _onScreenCheckFunc = onScreenCheckFunc;
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
@@ -789,7 +789,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             // Possibly, the last auto reload command have not completed.
             // Or window is off-screen
-            if (AsyncAction.IsPending || !IsAutoReloadChecked || onScreenCheckFunc() == false)
+            if (AsyncAction.IsPending || !IsAutoReloadChecked || _onScreenCheckFunc() == false)
             {
                 return;
             }

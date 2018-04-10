@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
 
-            var frame = this.Frame as IVsWindowFrame;
+            var frame = Frame as IVsWindowFrame;
             ViewModel = new ErrorReportingViewModel(frame.IsVisibleOnScreen);
             (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
         }

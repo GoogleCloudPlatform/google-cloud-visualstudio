@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.Shell.Interop;
+﻿using System;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.Extensions
 {
@@ -14,11 +16,15 @@ namespace GoogleCloudExtension.Extensions
         /// <returns>Whether frame is truely onscreen</returns>
         public static bool IsVisibleOnScreen(this IVsWindowFrame frame)
         {
-            // Noop if we cant get hold of WindowFrame
-            var onScreenFlag = 1;
-            frame?.IsOnScreen(out onScreenFlag);
+            if (frame == null)
+            {
+                return false;
+            }
 
-            var windowOnScreen = onScreenFlag == 1;
+            int onScreenFlag;
+            Marshal.ThrowExceptionForHR(frame.IsOnScreen(out onScreenFlag));
+
+            var windowOnScreen = Convert.ToBoolean(onScreenFlag);
             var windowNotMinimized = GoogleCloudExtensionPackage.Instance.IsWindowActive();
 
             return windowOnScreen && windowNotMinimized;
