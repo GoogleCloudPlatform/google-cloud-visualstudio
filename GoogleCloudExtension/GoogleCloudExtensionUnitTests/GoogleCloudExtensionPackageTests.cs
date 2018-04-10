@@ -149,7 +149,7 @@ namespace GoogleCloudExtensionUnitTests
             InitPackageMock(new GoogleCloudExtensionPackage(), dteMock);
         }
 
-        private static void InitPackageMock(IVsPackage package, Mock<DTE> dteMock)
+        public static void InitPackageMock(IVsPackage package, Mock<DTE> dteMock)
         {
             Mock<IServiceProvider> serviceProviderMock = dteMock.As<IServiceProvider>();
             s_activityLogMock = new Mock<IVsActivityLog>();

@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
+        public ILogsViewerViewModel ViewModel => DataContext as ILogsViewerViewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindowControl"/> class.

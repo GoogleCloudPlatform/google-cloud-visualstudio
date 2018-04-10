@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
@@ -24,11 +25,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Process = System.Diagnostics.Process;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
@@ -78,6 +79,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<IList<Subscription>> _subscriptionSource;
         private TestablePubsubSourceRootViewModel _objectUnderTest;
         private Mock<Func<string, Process>> _startProcessMock;
+        private Mock<GoogleCloudExtensionPackage> _packageMock;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context)
@@ -94,6 +96,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestInitialize]
         public void BeforeEach()
         {
+            _packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
+            GoogleCloudExtensionPackageTests.InitPackageMock(_packageMock.Object, new Mock<DTE>());
+            _packageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(new CloudExplorerOptions());
+            _packageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
+
             _startProcessMock = new Mock<Func<string, Process>>();
 
             _dataSourceMock = new Mock<IPubsubDataSource>();
@@ -415,15 +422,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestChangeFiltersCommand()
         {
-            var showOptionsPageMethodMock = new Mock<Action<Type>>();
-            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionsPageMethodMock.Object;
             _objectUnderTest.Initialize(_contextMock.Object);
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.Items.OfType<MenuItem>()
                     .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
 
             changeFiltersCommand.Execute(null);
 
-            showOptionsPageMethodMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
+            _packageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>());
         }
 
         private class TestablePubsubSourceRootViewModel : PubsubSourceRootViewModel

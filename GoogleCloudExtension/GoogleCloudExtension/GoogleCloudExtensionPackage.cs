@@ -64,14 +64,14 @@ namespace GoogleCloudExtension
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
-    [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
+    [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true, MultiInstances = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
     [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
-    public sealed class GoogleCloudExtensionPackage : Package
+    public class GoogleCloudExtensionPackage : Package
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -98,7 +98,6 @@ namespace GoogleCloudExtension
             new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
-        internal Action<Type> ShowOptionPageMethod;
         private DTE _dteInstance;
         private event EventHandler ClosingEvent;
 
@@ -131,7 +130,6 @@ namespace GoogleCloudExtension
         {
             // Register all of the properties.
             RegisterSolutionOptions();
-            ShowOptionPageMethod = ShowOptionPage;
         }
 
         /// <summary>
@@ -266,7 +264,7 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage
+        public virtual T GetDialogPage<T>() where T : DialogPage
         {
             return (T)GetDialogPage(typeof(T));
         }
@@ -275,9 +273,14 @@ namespace GoogleCloudExtension
         /// Displays the options page of the given type.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
-        public void ShowOptionPage<T>() where T : DialogPage
+        public virtual void ShowOptionPage<T>() where T : DialogPage
         {
-            ShowOptionPageMethod(typeof(T));
+            ShowOptionPage(typeof(T));
+        }
+
+        public virtual TToolWindow FindToolWindow<TToolWindow>(int id, bool create) where TToolWindow : ToolWindowPane
+        {
+            return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
         }
 
         #endregion
@@ -327,6 +330,19 @@ namespace GoogleCloudExtension
             // Update the stored settings with the current version.
             settings.InstalledVersion = ApplicationVersion;
             settings.SaveSettingsToStorage();
+        }
+
+        /// <summary>Releases the resources used by the <see cref="T:Microsoft.VisualStudio.Shell.Package" /> object.</summary>
+        /// <param name="disposing">true if the object is being disposed, false if it is being finalized.</param>
+        protected override void Dispose(bool disposing)
+        {
+            Dispose();
+            base.Dispose(disposing);
+        }
+
+        internal void Dispose()
+        {
+            Instance = null;
         }
     }
 }

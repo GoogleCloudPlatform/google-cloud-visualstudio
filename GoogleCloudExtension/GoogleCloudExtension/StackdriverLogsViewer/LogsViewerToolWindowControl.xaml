@@ -65,6 +65,7 @@
                             Command="{Binding OnNavigateToSourceCommand}"
                             Visibility="{Binding SourceLinkVisible, Converter={utils:VisibilityConverter}}"
                             Content="{Binding SourceLinkCaption}">
+
                             <controls:IconButton.ToolTip>
                                 <ToolTip Content="{Binding SourceFilePath}"
                                          Style="{StaticResource CommonTooltipStyle}" />

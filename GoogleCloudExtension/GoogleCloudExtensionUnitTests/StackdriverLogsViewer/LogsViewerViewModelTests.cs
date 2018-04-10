@@ -12,21 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
+using EnvDTE;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Process = System.Diagnostics.Process;
+using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -328,16 +331,22 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestFilterTreeNode()
         {
+            var logsToolWindow =
+                new LogsViewerToolWindow { Frame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.S_OK) };
+            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
+            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
+            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), false)).Returns(() => null);
+            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), true)).Returns(logsToolWindow);
             const string testNodeName = "test-node";
             const string testNodeValue = "test-value";
 
             var treeNode = new ObjectNodeTree(testNodeName, testNodeValue, null);
             _objectUnderTest.OnDetailTreeNodeFilterCommand.Execute(treeNode);
 
-            Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
-            Assert.IsTrue(_objectUnderTest.ShowAdvancedFilter);
-            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeName));
-            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeValue));
+            Assert.IsFalse(logsToolWindow.ViewModel.IsAutoReloadChecked);
+            Assert.IsTrue(logsToolWindow.ViewModel.ShowAdvancedFilter);
+            Assert.IsTrue(logsToolWindow.ViewModel.AdvancedFilterText.Contains(testNodeName));
+            Assert.IsTrue(logsToolWindow.ViewModel.AdvancedFilterText.Contains(testNodeValue));
         }
     }
 }

@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 Debug.WriteLine($"RefreshInstanceState failed {ex}");
-                IsError = true;     // Set state to error
+                IsError = true; // Set state to error
             }
             finally
             {
@@ -268,8 +268,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnBrowseStackdriverLogCommand()
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
-            window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
+            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            window?.FilterVMInstanceLog(Instance.Id.ToString());
         }
 
         private void OnAttachDebugger()

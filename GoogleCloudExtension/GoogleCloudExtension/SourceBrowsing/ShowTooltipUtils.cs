@@ -16,6 +16,7 @@ using EnvDTE;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;

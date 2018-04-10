@@ -31,6 +31,15 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The tool window object if it is found.</returns>
         public static TToolWindow ShowToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
         {
+            return ShowToolWindow<TToolWindow>(0);
+        }
+
+        /// <summary>
+        /// Shows the tool window
+        /// </summary>
+        /// <returns>The tool window object if it is found.</returns>
+        public static TToolWindow ShowToolWindow<TToolWindow>(int id) where TToolWindow : ToolWindowPane
+        {
             if (GoogleCloudExtensionPackage.Instance == null)
             {
                 Debug.WriteLine("GoogleCloudExtensionPackage.Instance is null, unexpected error");
@@ -40,22 +49,37 @@ namespace GoogleCloudExtension.Utils
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(typeof(TToolWindow), 0, true);
-            ErrorHandlerUtils.HandleExceptions(() =>
+            var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(id, true);
+            var windowFrame = (IVsWindowFrame)window?.Frame;
+            if (windowFrame == null)
             {
-                if (window?.Frame == null)
-                {
-                    throw new NotSupportedException("Failed to create the tool window");
-                }
+                throw new NotSupportedException("Failed to create the tool window");
+            }
 
-                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            });
-            return window as TToolWindow;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            return window;
         }
 
         /// <summary>
-        /// Response to <seealso cref="OleMenuCommand.BeforeQueryStatus"/> 
+        /// Creates a new instance of a multi-instance tool window.
+        /// </summary>
+        /// <returns>The tool window object if it is found.</returns>
+        public static TToolWindow AddToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
+        {
+            // Find the first unused tool window id.
+            for (var id = 0; true; id++)
+            {
+                ToolWindowPane window =
+                    GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(id, false);
+                if (window == null)
+                {
+                    return ShowToolWindow<TToolWindow>(id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Response to <seealso cref="OleMenuCommand.BeforeQueryStatus"/>
         /// to enable menu item if current project id is valid.
         /// </summary>
         /// <param name="sender">The event sender.</param>
@@ -67,7 +91,7 @@ namespace GoogleCloudExtension.Utils
             {
                 return;
             }
-            menuCommand.Enabled = !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
+            menuCommand.Enabled = !string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
         }
     }
 }
