@@ -82,6 +82,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private AsyncProperty _asyncAction = new AsyncProperty(Task.FromResult(true));
         private CancellationTokenSource _cancellationTokenSource;
+        private Func<bool> onScreenCheckFunc;
 
         internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
@@ -334,7 +335,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="dataSource">
         /// The mocked data source to use instead the value from <see cref="CreateDataSource"/>.
         /// </param>
-        internal LogsViewerViewModel(ILoggingDataSource dataSource) : this()
+        /// <param name="onScreenCheckFunc"></param>
+        internal LogsViewerViewModel(ILoggingDataSource dataSource, Func<bool> onScreenCheckFunc) : this(onScreenCheckFunc)
         {
             _dataSourceOverride = dataSource;
         }
@@ -342,8 +344,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
-        public LogsViewerViewModel()
+        public LogsViewerViewModel(Func<bool> onScreenCheckFunc)
         {
+            this.onScreenCheckFunc = onScreenCheckFunc;
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
@@ -785,7 +788,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void AutoReload()
         {
             // Possibly, the last auto reload command have not completed.
-            if (AsyncAction.IsPending || !IsAutoReloadChecked)
+            // Or window is off-screen
+            if (AsyncAction.IsPending || !IsAutoReloadChecked || onScreenCheckFunc() == false)
             {
                 return;
             }

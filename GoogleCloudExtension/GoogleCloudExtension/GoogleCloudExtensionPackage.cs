@@ -71,7 +71,7 @@ namespace GoogleCloudExtension
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
     [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
-    public sealed class GoogleCloudExtensionPackage : Package
+    public class GoogleCloudExtensionPackage : Package
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -148,6 +148,15 @@ namespace GoogleCloudExtension
         public void UnsubscribeClosingEvent(EventHandler handler)
         {
             ClosingEvent -= handler;
+        }
+
+        /// <summary>
+        /// Check whether the main window is not minimized.
+        /// </summary>
+        /// <returns>true/false based on whether window is minimized or not</returns>
+        public virtual bool IsWindowActive()
+        {
+            return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
         }
 
         protected override int QueryClose(out bool canClose)
@@ -237,6 +246,7 @@ namespace GoogleCloudExtension
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             _dteInstance = (DTE)GetService(typeof(DTE));
+
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
@@ -253,7 +263,7 @@ namespace GoogleCloudExtension
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
         }
 
-        public static GoogleCloudExtensionPackage Instance { get; private set; }
+        public static GoogleCloudExtensionPackage Instance { get; internal set; }
 
         #endregion
 

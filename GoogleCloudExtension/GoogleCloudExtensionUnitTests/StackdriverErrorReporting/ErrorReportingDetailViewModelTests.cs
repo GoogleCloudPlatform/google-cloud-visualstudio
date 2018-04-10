@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension;
 using EventTimeRangePeriodEnum =
     Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using GroupTimeRangePeriodEnum =
@@ -44,10 +45,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserMock;
+        private bool _isOnScreen;
+        private Func<bool> _onScreenCheckFunc;
 
         [TestInitialize]
         public void BeforeEach()
         {
+            _isOnScreen = true;
+            _onScreenCheckFunc = () => this._isOnScreen;
             _propertiesChanged = new List<string>();
             _errorFrameToSourceLineMock = new Mock<Action<ErrorGroupItem, StackFrame>>();
             _showErrorReportingToolWindowMock = new Mock<Func<ErrorReportingToolWindow>>();
@@ -67,7 +72,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                         It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(),
                         It.IsAny<string>())).Returns(() => _getPageOfGroupStatusSource.Task);
 
-            _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object);
+            _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object, this._onScreenCheckFunc);
 
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
             _objectUnderTest.ErrorFrameToSourceLine = _errorFrameToSourceLineMock.Object;
@@ -337,6 +342,16 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsNull(_objectUnderTest.ErrorString);
             Assert.AreEqual(1, _objectUnderTest.EventItemCollection.Count);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadCommandWithWindowOffScreen()
+        {
+            _isOnScreen = false;
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.IsEventLoading);
         }
 
         [TestMethod]

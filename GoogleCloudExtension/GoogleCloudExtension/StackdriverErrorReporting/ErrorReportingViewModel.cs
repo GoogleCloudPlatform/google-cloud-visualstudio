@@ -46,6 +46,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
+        private Func<bool> onScreenCheckFunc;
 
         /// <summary>
         /// Gets an exception as string.
@@ -142,7 +143,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string CurrentTimeRangeCaption => String.Format(
             Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
-        internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource) : this()
+        internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource, Func<bool> onScreenCheckFunc) : this(onScreenCheckFunc)
         {
             _dataSourceOverride = dataSource;
         }
@@ -150,7 +151,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
-        public ErrorReportingViewModel()
+        public ErrorReportingViewModel(Func<bool> onScreenCheckFunc)
         {
             _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
@@ -158,6 +159,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             SelectedTimeRangeItem = TimeRangeItemList.Last();
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             OnAutoReloadCommand = new ProtectedCommand(Reload);
+
+            this.onScreenCheckFunc = onScreenCheckFunc;
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
@@ -211,7 +214,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private async Task LoadAsync()
         {
-            if (DataSource == null)
+            if (DataSource == null || onScreenCheckFunc() == false)
             {
                 return;
             }

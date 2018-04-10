@@ -15,6 +15,8 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using GoogleCloudExtension.Extensions;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -49,7 +51,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
 
-            ViewModel = new ErrorReportingViewModel();
+            var frame = this.Frame as IVsWindowFrame;
+            ViewModel = new ErrorReportingViewModel(frame.IsVisibleOnScreen);
             (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
         }
 

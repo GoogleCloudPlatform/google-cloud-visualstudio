@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
@@ -33,10 +34,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private ErrorReportingViewModel _objectUnderTest;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
+        private bool _isOnScreen;
+        private Func<bool> _onScreenCheckFunc;
 
         [TestInitialize]
         public void BeforeEach()
         {
+            _isOnScreen = true;
+            _onScreenCheckFunc = () => this._isOnScreen;
             CredentialsStore.Default.UpdateCurrentProject(new Project());
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
@@ -45,7 +50,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                     ds => ds.GetPageOfGroupStatusAsync(
                         It.IsAny<ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(() => _getPageOfGroupStatusSource.Task);
-            _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object);
+            _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object, _onScreenCheckFunc);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
         }
@@ -151,6 +156,20 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsTrue(_objectUnderTest.IsRefreshing);
             Assert.IsFalse(_objectUnderTest.IsLoadingNextPage);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenOffScreen()
+        {
+            _isOnScreen = false;
+            _objectUnderTest.ShowError = false;
+            _objectUnderTest.ErrorString = null;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
         }
 
         [TestMethod]

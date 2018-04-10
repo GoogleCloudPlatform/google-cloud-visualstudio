@@ -15,6 +15,8 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using GoogleCloudExtension.Extensions;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -48,7 +50,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new ErrorReportingDetailToolWindowControl();
-            ViewModel = new ErrorReportingDetailViewModel();
+            var frame = this.Frame as IVsWindowFrame;
+            ViewModel = new ErrorReportingDetailViewModel(frame.IsVisibleOnScreen);
             (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
 

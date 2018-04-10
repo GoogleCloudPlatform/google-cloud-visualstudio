@@ -40,10 +40,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
+        private bool _isOnScreen;
+        private Func<bool> _onScreenFunc;
 
         [TestInitialize]
         public void BeforeEach()
         {
+            _isOnScreen = true;
+            _onScreenFunc = () => this._isOnScreen;
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
@@ -64,7 +68,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
-            _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
+            _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource, _onScreenFunc);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
         }
@@ -128,6 +132,17 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
             Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
             Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenOffScreen()
+        {
+            _isOnScreen = false;
+            var oldAsyncAction = _objectUnderTest.AsyncAction;
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.AreEqual(oldAsyncAction, _objectUnderTest.AsyncAction);
         }
 
         [TestMethod]

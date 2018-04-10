@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -130,6 +131,23 @@ namespace GoogleCloudExtensionUnitTests
                 r => r.ReportEvent(
                     It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
                     It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMaximized()
+        {
+            var testObject = new GoogleCloudExtensionPackage();
+            var dteMock = new Mock<DTE>();
+            InitPackageMock(testObject, dteMock);
+
+            vsWindowState wstate = vsWindowState.vsWindowStateNormal;
+            dteMock.Setup(d => d.MainWindow).Returns(() => (new Mock<Window>().SetupProperty(win => win.WindowState, wstate)).Object);
+
+            Assert.IsTrue(testObject.IsWindowActive());
+            wstate = vsWindowState.vsWindowStateMaximize;
+            Assert.IsTrue(testObject.IsWindowActive());
+            wstate = vsWindowState.vsWindowStateMinimize;
+            Assert.IsFalse(testObject.IsWindowActive());
         }
 
         private static string GetVsixManifestVersion()

@@ -18,6 +18,8 @@ using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using GoogleCloudExtension.Extensions;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -76,7 +78,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void CreateNewViewModel()
         {
             var control = Content as LogsViewerToolWindowControl;
-            var newModel = new LogsViewerViewModel();
+            var frame = this.Frame as IVsWindowFrame;
+            var newModel = new LogsViewerViewModel(frame.IsVisibleOnScreen);
             control.DataContext = newModel;
             newModel.InvalidateAllProperties();
         }
