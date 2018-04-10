@@ -63,30 +63,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public override void TestOnVisibleLongRunningValidation()
-        {
-            GoToLongRunningValidationDefaultState();
-
-            SetLongRunningValidationDefaultExpectedValues();
-
-            AssertSelectedProjectUnchanged();
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public override async Task TestFromValidToLongRunningValidationSelectCommand()
-        {
-            await GoToValidDefaultState();
-            _changedProperties.Clear();
-            TransitionToLongRunningValidationTargetSelectCommand();
-
-            SetLongRunningValidationTargetExpectedValues();
-
-            AssertSelectedProjectUnchanged();
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
         public async Task TestOnVisibleNeedsApiEnabled()
         {
             await GoToNeedsApiEnabledDefaultState();
@@ -243,7 +219,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetAppRegionCommandAsyncSuccess()
+        public async Task TestSetAppRegionCommandSuccess()
         {
             await GoToNeedsAppCreatedDefaultState();
             _changedProperties.Clear();
@@ -257,7 +233,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetAppRegionCommandAsyncFailure()
+        public async Task TestSetAppRegionCommandFailure()
         {
             await GoToNeedsAppCreatedDefaultState();
             _changedProperties.Clear();
@@ -365,9 +341,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _expectedSetAppRegionCommandCanExecute = true;
         }
 
-        protected override void SetLongRunningValidationExpectedValues()
+        protected override void SetLongRunningValidationServicesExpectedValues()
         {
-            base.SetLongRunningValidationExpectedValues();
+            base.SetLongRunningValidationServicesExpectedValues();
 
             _expectedLoadingProject = true;
             _expectedShowInputControls = false;
@@ -376,9 +352,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _expectedSetAppRegionCommandCanExecute = false;
         }
 
-        protected override void SetErrorInValidationExpectedValues()
+        protected override void SetErrorInValidationServicesExpectedValues()
         {
-            base.SetErrorInValidationExpectedValues();
+            base.SetErrorInValidationServicesExpectedValues();
 
             _expectedShowInputControls = false;
             _expectedGeneralError = true;

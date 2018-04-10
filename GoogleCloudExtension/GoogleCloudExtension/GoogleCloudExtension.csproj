@@ -54,6 +54,7 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="Accounts\IWindowsCredentialsStore.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />

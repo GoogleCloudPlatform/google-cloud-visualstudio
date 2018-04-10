@@ -20,6 +20,7 @@ using GoogleCloudExtension.PublishDialogSteps.GkeStep;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Threading.Tasks;
@@ -59,6 +60,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             :base(apiManager, pickProjectPrompt)
         {
             _content = content;
+
+            _choices = Enumerable.Empty<Choice>();
         }
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
@@ -120,6 +123,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         public override FrameworkElement Content => _content;
 
         protected internal override IList<string> RequiredApis => new List<string>();
+
+        protected override void ClearLoadedProjectData()
+        {
+            Choices = Enumerable.Empty<Choice>();
+        }
 
         protected override Task LoadProjectDataAlwaysAsync()
         {

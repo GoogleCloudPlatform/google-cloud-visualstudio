@@ -47,6 +47,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private readonly GceStepContent _content;
         private readonly IGceDataSource _dataSource;
+        private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
+        private readonly Action<Instance> _manageCredentialsPrompt;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
@@ -61,7 +63,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public IEnumerable<Instance> Instances
         {
             get { return _instances; }
-            private set { SetValueAndRaise(ref _instances, value); }
+            private set
+            {
+                SetValueAndRaise(ref _instances, value);
+                SelectedInstance = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -84,7 +90,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public IEnumerable<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
-            private set { SetValueAndRaise(ref _credentials, value); }
+            private set
+            {
+                SetValueAndRaise(ref _credentials, value);
+                SelectedCredentials = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -96,15 +106,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set
             {
                 SetValueAndRaise(ref _selectedCredentials, value);
-                RaisePropertyChanged(nameof(HasSelectedCredentials));
-                CanPublish = value != null;
+                RefreshCanPublish();
             }
         }
-
-        /// <summary>
-        /// Returns whether there are credentials selected for the publish process.
-        /// </summary>
-        public bool HasSelectedCredentials => SelectedCredentials != null;
 
         /// <summary>
         /// The command to execute when pressing the manage credentials button.
@@ -129,23 +133,41 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
-        private IGceDataSource CurrentDataSource => _dataSource ?? new GceDataSource(
+        private IGceDataSource CurrentDataSource =>
+            _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager, Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt)
+        private IWindowsCredentialsStore CurrentWindowsCredentialsStore =>
+            _currentWindowsCredentialStore ?? WindowsCredentialsStore.Default;
+
+        private Action<Instance> ManageCredentialsPrompt =>
+            _manageCredentialsPrompt ?? ManageWindowsCredentialsWindow.PromptUser;
+
+        private GceStepViewModel(
+            GceStepContent content,
+            IGceDataSource dataSource,
+            IApiManager apiManager,
+            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt,
+            IWindowsCredentialsStore currentWindowsCredentialStore,
+            Action<Instance> manageCredentialsPrompt)
             : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
+            _currentWindowsCredentialStore = currentWindowsCredentialStore;
+            _manageCredentialsPrompt = manageCredentialsPrompt;
 
-            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);            
-        }        
+            _instances = Enumerable.Empty<Instance>();
+            _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
+
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
+        }
 
         private void OnManageCredentialsCommand()
         {
-            ManageWindowsCredentialsWindow.PromptUser(SelectedInstance);
+            ManageCredentialsPrompt(SelectedInstance);
             UpdateCredentials();
         }
 
@@ -153,7 +175,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
             return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
-        }        
+        }
 
         #region IPublishDialogStep
 
@@ -230,17 +252,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
-        protected override async Task<bool> ValidateProjectAsync()
+        protected override void ClearLoadedProjectData()
         {
-            CanPublish = true;
-            return await base.ValidateProjectAsync();            
+            Instances = Enumerable.Empty<Instance>();
         }
 
         protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
-        
+
         protected override async Task LoadProjectDataIfValidAsync()
         {
             Instances = await GetAllWindowsInstancesAsync();
+        }
+
+        protected override void RefreshCanPublish()
+        {
+            CanPublish = IsValidGCPProject && !HasErrors && SelectedCredentials != null;
         }
 
         public override IPublishDialogStep Next()
@@ -250,10 +276,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         #endregion
 
-        internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null, Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null)
+        internal static GceStepViewModel CreateStep(
+            IGceDataSource dataSource = null,
+            IApiManager apiManager = null,
+            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null,
+            IWindowsCredentialsStore currentWindowsCredentialStore = null,
+            Action<Instance> manageCredentialsPrompt = null)
         {
             var content = new GceStepContent();
-            var viewModel = new GceStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
+            var viewModel = new GceStepViewModel(
+                content, dataSource, apiManager, pickProjectPrompt,
+                currentWindowsCredentialStore, manageCredentialsPrompt);
             content.DataContext = viewModel;
 
             return viewModel;
@@ -267,9 +300,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
             else
             {
-                Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(SelectedInstance);
+                Credentials = CurrentWindowsCredentialsStore.GetCredentialsForInstance(SelectedInstance);
             }
-            SelectedCredentials = Credentials.FirstOrDefault();
         }
     }
 }

@@ -143,7 +143,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public virtual void TestOnVisibleLongRunningValidation()
+        public void TestOnVisibleLongRunningValidation()
         {
             GoToLongRunningValidationDefaultState();
 
@@ -477,7 +477,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public virtual async Task TestFromValidToLongRunningValidationSelectCommand()
+        public async Task TestFromValidToLongRunningValidationSelectCommand()
         {
             await GoToValidDefaultState();
             _changedProperties.Clear();
@@ -652,16 +652,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         protected void SetLongRunningValidationDefaultExpectedValues()
         {
             _expectedProjectId = DefaultProjectId;
-            SetLongRunningValidationExpectedValues();
+            SetLongRunningValidationServicesExpectedValues();
         }
 
         protected void SetLongRunningValidationTargetExpectedValues()
         {
             _expectedProjectId = TargetProjectId;
-            SetLongRunningValidationExpectedValues();
+            SetLongRunningValidationServicesExpectedValues();
         }
 
-        protected virtual void SetLongRunningValidationExpectedValues()
+        protected virtual void SetLongRunningValidationServicesExpectedValues()
         {
             _expectedCanPublish = false;
             _expectedLoadingProject = false;
@@ -676,16 +676,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         protected void SetErrorInValidationDefaultExpectedValues()
         {
             _expectedProjectId = DefaultProjectId;
-            SetErrorInValidationExpectedValues();
+            SetErrorInValidationServicesExpectedValues();
         }
 
         protected void SetErrorInValidationTargetExpectedValues()
         {
             _expectedProjectId = TargetProjectId;
-            SetErrorInValidationExpectedValues();
+            SetErrorInValidationServicesExpectedValues();
         }
 
-        protected virtual void SetErrorInValidationExpectedValues()
+        protected virtual void SetErrorInValidationServicesExpectedValues()
         {
             _expectedCanPublish = false;
             _expectedLoadingProject = false;

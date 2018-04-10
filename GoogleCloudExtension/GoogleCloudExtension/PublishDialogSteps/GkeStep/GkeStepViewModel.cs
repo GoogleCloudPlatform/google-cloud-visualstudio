@@ -228,24 +228,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             throw new InvalidOperationException();
         }
 
-        protected override async Task<bool> ValidateProjectAsync()
+        protected override async Task ValidateProjectAsync()
         {
-            CanPublish = true;
             RefreshClustersListCommand.CanExecuteCommand = true;
             CreateClusterCommand.CanExecuteCommand = true;
 
-            bool isValid = await base.ValidateProjectAsync();
-            if (!isValid)
+            await base.ValidateProjectAsync();
+            if (!IsValidGCPProject)
             {
                 RefreshClustersListCommand.CanExecuteCommand = false;
                 CreateClusterCommand.CanExecuteCommand = false;
             }
+        }
 
-            return isValid;
+        protected override void ClearLoadedProjectData()
+        {
+            Clusters = Enumerable.Empty<Cluster>();
         }
 
         protected override Task LoadProjectDataAlwaysAsync()
         {
+            //Remove from here, this is on Visible not on valiate, this is the VSProject
             if (string.IsNullOrEmpty(DeploymentName))
             {
                 DeploymentName = PublishDialog.Project.Name.ToLower();
@@ -260,6 +263,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         protected override async Task LoadProjectDataIfValidAsync()
         {
             Clusters = await GetAllClustersAsync();
+        }
+
+        protected override void RefreshCanPublish()
+        {
+            CanPublish = IsValidGCPProject && !HasErrors;
         }
 
         /// <summary>

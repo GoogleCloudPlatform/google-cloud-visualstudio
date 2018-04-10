@@ -145,28 +145,34 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         protected internal override IList<string> RequiredApis => s_requiredApis;
 
-        protected override async Task<bool> ValidateProjectAsync()
+        protected override async Task ValidateProjectAsync()
         {
             NeedsAppCreated = false;
 
-            IsValidGCPProject = await base.ValidateProjectAsync();
+            await base.ValidateProjectAsync();
 
             if (IsValidGCPProject)
             {
                 // Using the GAE API, check if there's an app for the project.
                 if (null == await CurrentDataSource.GetApplicationAsync())
                 {
+                    Debug.WriteLine("Needs App created.");
                     NeedsAppCreated = true;
                     IsValidGCPProject = false;
                 }
             }
-
-            return IsValidGCPProject;
         }
 
+        protected override void ClearLoadedProjectData() { }
+        
         protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
 
         protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
+
+        protected override void RefreshCanPublish()
+        {
+            CanPublish = IsValidGCPProject && !HasErrors;
+        }
 
         public override async void Publish()
         {

@@ -179,8 +179,11 @@ namespace GoogleCloudExtension.PublishDialog
             get { return _isValidGCPProject; }
             set
             {
-                _isValidGCPProject = value;
-                RefreshCanPublish();
+                if (value != _isValidGCPProject)
+                {
+                    _isValidGCPProject = value;
+                    RefreshCanPublish();
+                }
             }
         }
 
@@ -237,10 +240,12 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         protected virtual async Task OnProjectChangedAsync()
         {
-            await ReloadProjectAsync();
+            Task reloadTask = ReloadProjectAsync();
 
             RaisePropertyChanged(nameof(GcpProjectId));
-        }        
+
+            await reloadTask;
+        }
 
         protected virtual async Task ReloadProjectAsync()
         {
@@ -248,9 +253,13 @@ namespace GoogleCloudExtension.PublishDialog
             {
                 LoadingProject = true;
                 GeneralError = false;
+
+                ClearLoadedProjectData();
                 Task loadDataAlwaysTask = LoadProjectDataAlwaysAsync();
 
-                if (await ValidateProjectAsync())
+                await ValidateProjectAsync();
+
+                if (IsValidGCPProject)
                 {
                     await LoadProjectDataIfValidAsync();
                 }
@@ -269,7 +278,7 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
-        protected virtual async Task<bool> ValidateProjectAsync()
+        protected virtual async Task ValidateProjectAsync()
         {
             // Reset UI State
             IsValidGCPProject = false;
@@ -279,18 +288,20 @@ namespace GoogleCloudExtension.PublishDialog
             if (string.IsNullOrEmpty(GcpProjectId))
             {
                 Debug.WriteLine("No project selected.");
-                return false;
             }
-            if (RequiredApis?.Count > 0
+            else if (RequiredApis?.Count > 0
                 && !await CurrentApiManager.AreServicesEnabledAsync(RequiredApis))
             {
                 Debug.WriteLine("APIs not enabled.");
                 NeedsApiEnabled = true;
-                return false;
             }
-
-            return true;
+            else
+            {
+                IsValidGCPProject = true;
+            }
         }
+
+        protected abstract void ClearLoadedProjectData();
 
         protected abstract Task LoadProjectDataAlwaysAsync();
 
@@ -302,9 +313,9 @@ namespace GoogleCloudExtension.PublishDialog
             RefreshCanPublish();
         }
 
-        private void RefreshCanPublish()
+        protected virtual void RefreshCanPublish()
         {
-            CanPublish = IsValidGCPProject && !HasErrors;
+            CanPublish = false;
         }
 
         protected virtual async Task OnEnableApiCommandAsync()
@@ -324,6 +335,8 @@ namespace GoogleCloudExtension.PublishDialog
             GeneralError = false;
             NeedsApiEnabled = false;
             SelectProjectCommand.CanExecuteCommand = false;
+
+            ClearLoadedProjectData();
         }
 
         private async void OnSelectProjectCommand()
@@ -373,7 +386,7 @@ namespace GoogleCloudExtension.PublishDialog
         protected void StartAndTrack(Func<Task> asyncAction)
         {            
             AsyncAction = asyncAction();
-            PublishDialog.TrackTask(AsyncAction);            
+            PublishDialog.TrackTask(AsyncAction);
         }
     }
 }

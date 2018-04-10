@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.Accounts
     /// 
     /// The password is encrypted/decryped using the <seealso cref="ProtectedData"/> class.
     /// </summary>
-    internal class WindowsCredentialsStore
+    internal class WindowsCredentialsStore : IWindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
         private const string PasswordFileExtension = ".data";
@@ -51,12 +51,7 @@ namespace GoogleCloudExtension.Accounts
 
         public static WindowsCredentialsStore Default => s_defaultStore.Value;
 
-        /// <summary>
-        /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
-        /// </summary>
-        /// <param name="instance">The GCE VM</param>
-        /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with The GCE VM. It might be
-        /// empty if no credentials are found.</returns>
+        /// <inheritdoc />
         public IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
         {
             var instancePath = GetInstancePath(instance);
@@ -84,11 +79,7 @@ namespace GoogleCloudExtension.Accounts
             return result;
         }
 
-        /// <summary>
-        /// Adds a Windows credential to the store for the given <paramref name="instance"/>.
-        /// </summary>
-        /// <param name="instance">The GCE VM.</param>
-        /// <param name="credentials">The credentials to store.</param>
+        /// <inheritdoc />
         public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
@@ -98,11 +89,7 @@ namespace GoogleCloudExtension.Accounts
             _credentialsForInstance.Remove(instancePath);
         }
 
-        /// <summary>
-        /// Deletes the given credentials from the list of associated credenials for <paramref name="instance"/>.
-        /// </summary>
-        /// <param name="instance">The GCE VM.</param>
-        /// <param name="credentials">The credentials.</param>
+        /// <inheritdoc />
         public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
@@ -116,11 +103,7 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        /// <summary>
-        /// Returns the path where to store credential related information for a GCE VM.
-        /// </summary>
-        /// <param name="instance">The GCE VM.</param>
-        /// <returns>The full path where to store information for the instance.</returns>
+        /// <inheritdoc />
         public string GetStoragePathForInstance(Instance instance)
         {
             var instancePath = GetInstancePath(instance);
