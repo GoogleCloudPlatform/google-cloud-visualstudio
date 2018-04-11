@@ -140,13 +140,16 @@ namespace GoogleCloudExtensionUnitTests
             var dteMock = new Mock<DTE>();
             InitPackageMock(testObject, dteMock);
 
-            vsWindowState wstate = vsWindowState.vsWindowStateNormal;
-            dteMock.Setup(d => d.MainWindow).Returns(() => (new Mock<Window>().SetupProperty(win => win.WindowState, wstate)).Object);
+            var windowMock = Mock.Of<Window>();
+            dteMock.Setup(d => d.MainWindow).Returns(windowMock);
+            windowMock.WindowState = vsWindowState.vsWindowStateNormal;
 
             Assert.IsTrue(testObject.IsWindowActive());
-            wstate = vsWindowState.vsWindowStateMaximize;
+
+            windowMock.WindowState = vsWindowState.vsWindowStateMaximize;
             Assert.IsTrue(testObject.IsWindowActive());
-            wstate = vsWindowState.vsWindowStateMinimize;
+
+            windowMock.WindowState = vsWindowState.vsWindowStateMinimize;
             Assert.IsFalse(testObject.IsWindowActive());
         }
 
