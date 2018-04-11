@@ -5371,7 +5371,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to App Engine Flex.
+        ///   Looks up a localized string similar to App Engine is the preferred choice for quickly setting up your .NET Core application..
         /// </summary>
         public static string PublishDialogChoiceStepAppEngineToolTip {
             get {
@@ -5389,7 +5389,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to Compute Engine.
+        ///   Looks up a localized string similar to Deploy your .NET Framework application to a Windows virtual machine in Google Compute Engine..
         /// </summary>
         public static string PublishDialogChoiceStepGceToolTip {
             get {
@@ -5407,7 +5407,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy as a service to Kubernetes Engine.
+        ///   Looks up a localized string similar to Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application..
         /// </summary>
         public static string PublishDialogChoiceStepGkeToolTip {
             get {
