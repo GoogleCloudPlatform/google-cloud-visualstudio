@@ -335,7 +335,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="dataSource">
         /// The mocked data source to use instead the value from <see cref="CreateDataSource"/>.
         /// </param>
-        /// <param name="onScreenCheckFunc"></param>
+        /// <param name="onScreenCheckFunc">
+        /// Performs a check whether the ToolWindow is onscreen
+        /// </param>
         internal LogsViewerViewModel(ILoggingDataSource dataSource, Func<bool> onScreenCheckFunc) : this(onScreenCheckFunc)
         {
             _dataSourceOverride = dataSource;

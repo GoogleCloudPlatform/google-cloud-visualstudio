@@ -167,6 +167,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
+        /// <param name="onScreenCheckFunc">Performs a check to see whether the ToolWindow is onscreen</param>
         public ErrorReportingDetailViewModel(Func<bool> onScreenCheckFunc)
         {
             _onScreenCheckFunc = onScreenCheckFunc;

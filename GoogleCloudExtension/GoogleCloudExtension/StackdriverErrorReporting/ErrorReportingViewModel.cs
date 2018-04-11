@@ -151,6 +151,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
+        /// <param name="onScreenCheckFunc">Performs a check to see if ToolWindow is onscreen</param>
         public ErrorReportingViewModel(Func<bool> onScreenCheckFunc)
         {
             _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
