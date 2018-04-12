@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Controls;
-using EnvDTE;
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio.Shell.Interop;
+using GoogleCloudExtensionUnitTests.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 using Resources = GoogleCloudExtension.Resources;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
@@ -30,25 +29,40 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
     [TestClass]
     public class VersionViewModelTests
     {
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
+        private IGoogleCloudExtensionPackage _packageToRestore;
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _packageToRestore = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+        }
+
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GoogleCloudExtensionPackage.Instance = _packageToRestore;
+        }
+
         [TestMethod]
         public void TestOnBrowseStackdriverLogCommand()
         {
-            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
-            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
-            var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
-            logsToolWindowMock.Object.Frame = Mock.Of<IVsWindowFrame>();
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), false)).Returns(() => null);
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), true))
-                .Returns(logsToolWindowMock.Object);
             string filter = null;
+            var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);
+            logsToolWindowMock.Object.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+                .Returns(logsToolWindowMock.Object);
             var objectUnderTest = new VersionViewModel(
                 new GaeSourceRootViewModel(),
                 Mock.Of<Service>(s => s.Id == "ServiceId" && s.Split.Allocations == new Dictionary<string, double?>()),
                 new Version { Id = "VersionId" }, true);
 
             MenuItem logsMenuItem = objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>().Single(
-                mi => mi.Header as string == Resources.CloudExplorerLaunchLogsViewerMenuHeader);
+                mi => mi.Header.Equals(Resources.CloudExplorerLaunchLogsViewerMenuHeader));
             logsMenuItem.Command.Execute(null);
 
             StringAssert.Contains(filter, "resource.type=\"gae_app\"");

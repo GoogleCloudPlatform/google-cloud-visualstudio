@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -27,15 +26,31 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.SourceNavigation
     [TestClass]
     public class LoggerTooltipViewModelTests
     {
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
+        private IGoogleCloudExtensionPackage _packageToRestore;
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _packageToRestore = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.AnalyticsSettings).Returns(Mock.Of<AnalyticsOptions>(o => o.OptIn == false));
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+        }
+
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GoogleCloudExtensionPackage.Instance = _packageToRestore;
+        }
+
         [TestMethod]
         public void TestBackToLogsViewerCommand()
         {
             const int parentToolWindowId = 2;
-            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
-            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
             var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
-            logsToolWindowMock.Object.Frame = Mock.Of<IVsWindowFrame>();
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(parentToolWindowId, It.IsAny<bool>()))
+            logsToolWindowMock.Object.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<bool>(), parentToolWindowId))
                 .Returns(logsToolWindowMock.Object);
             string filter = null;
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);

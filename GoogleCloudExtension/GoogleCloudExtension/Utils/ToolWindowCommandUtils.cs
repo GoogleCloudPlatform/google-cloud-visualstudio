@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.Utils
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(id, true);
+            var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(true, id);
             var windowFrame = (IVsWindowFrame)window?.Frame;
             if (windowFrame == null)
             {
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.Utils
             for (var id = 0; true; id++)
             {
                 ToolWindowPane window =
-                    GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(id, false);
+                    GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(false, id);
                 if (window == null)
                 {
                     return ShowToolWindow<TToolWindow>(id);

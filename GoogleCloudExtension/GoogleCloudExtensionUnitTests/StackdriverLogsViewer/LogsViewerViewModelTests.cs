@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -43,6 +40,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
+        private IGoogleCloudExtensionPackage _packageToRestore;
 
         [TestInitialize]
         public void BeforeEach()
@@ -70,6 +69,17 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
+
+
+            _packageToRestore = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+        }
+
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GoogleCloudExtensionPackage.Instance = _packageToRestore;
         }
 
         [TestMethod]
@@ -331,12 +341,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestFilterTreeNode()
         {
-            var logsToolWindow =
-                new LogsViewerToolWindow { Frame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.S_OK) };
-            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
-            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), false)).Returns(() => null);
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), true)).Returns(logsToolWindow);
+            var logsToolWindow = new LogsViewerToolWindow { Frame = LogsViewerToolWindowTests.GetMockedWindowFrame() };
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+                .Returns(logsToolWindow);
             const string testNodeName = "test-node";
             const string testNodeValue = "test-value";
 

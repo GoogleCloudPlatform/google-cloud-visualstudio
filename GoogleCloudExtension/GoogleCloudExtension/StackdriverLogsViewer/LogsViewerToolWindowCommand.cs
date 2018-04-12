@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package _package;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         /// <summary>
         /// Command ID.
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private LogsViewerToolWindowCommand(Package package)
+        private LogsViewerToolWindowCommand(IGoogleCloudExtensionPackage package)
         {
             if (package == null)
             {
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        public static void Initialize(IGoogleCloudExtensionPackage package)
         {
             Instance = new LogsViewerToolWindowCommand(package);
         }

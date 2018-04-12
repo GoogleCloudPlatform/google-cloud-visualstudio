@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
 using GoogleCloudExtension;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -27,23 +25,56 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     [TestClass]
     public class LogsViewerToolWindowCommandTests
     {
+        private IGoogleCloudExtensionPackage _packageToRestore;
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
+        private Mock<IMenuCommandService> _menuCommandServiceMock;
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _menuCommandServiceMock = new Mock<IMenuCommandService>();
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.AnalyticsSettings).Returns(Mock.Of<AnalyticsOptions>(o => o.OptIn == false));
+            _packageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
+                .Returns(_menuCommandServiceMock.Object);
+
+            _packageToRestore = GoogleCloudExtensionPackage.Instance;
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+        }
+
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GoogleCloudExtensionPackage.Instance = _packageToRestore;
+        }
+
+        [TestMethod]
+        public void TestRegisterCommand()
+        {
+            LogsViewerToolWindowCommand.Initialize(_packageMock.Object);
+
+            _menuCommandServiceMock.Verify(
+                s => s.AddCommand(
+                    It.Is((MenuCommand c) => c.CommandID.Equals(LogsViewerToolWindowCommand.MenuCommandID))),
+                Times.Once);
+        }
+
         [TestMethod]
         public void TestExecuteCommand()
         {
-            var frameMock = new Mock<IVsWindowFrame>();
-            frameMock.Setup(f => f.Show()).Returns(VSConstants.S_OK).Verifiable();
-            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), false))
+            MenuCommand command = null;
+            _menuCommandServiceMock.Setup(
+                s => s.AddCommand(It.IsAny<MenuCommand>())).Callback((MenuCommand c) => command = c);
+            Mock<IVsWindowFrame> frameMock = LogsViewerToolWindowTests.GetWindowFrameMock();
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
                 .Returns(() => null);
-            packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<int>(), true))
+            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(new LogsViewerToolWindow { Frame = frameMock.Object });
-            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
 
-            var menuCommandService =
-                (IMenuCommandService)GoogleCloudExtensionPackage.Instance.QueryService<IMenuCommandService>();
-            menuCommandService.FindCommand(LogsViewerToolWindowCommand.MenuCommandID).Invoke();
+            LogsViewerToolWindowCommand.Initialize(_packageMock.Object);
+            command.Invoke();
 
-            frameMock.VerifyAll();
+            frameMock.Verify(f => f.Show());
         }
     }
 }

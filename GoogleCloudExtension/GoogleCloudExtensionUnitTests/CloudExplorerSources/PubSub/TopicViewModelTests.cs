@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer.Options;
@@ -299,15 +298,20 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestChangeFiltersCommand()
         {
-            var packageMock = new Mock<GoogleCloudExtensionPackage> { CallBase = true };
-            packageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
-            GoogleCloudExtensionPackageTests.InitPackageMock(packageMock.Object, new Mock<DTE>());
+            var gcePackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
+            gcePackageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
+
+            IGoogleCloudExtensionPackage previousPackage = GoogleCloudExtensionPackage.Instance;
+            GoogleCloudExtensionPackage.Instance = gcePackageMock.Object;
+
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
                     .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
 
             changeFiltersCommand.Execute(null);
 
-            packageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>());
+            gcePackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
+
+            GoogleCloudExtensionPackage.Instance = previousPackage;
         }
     }
 }
