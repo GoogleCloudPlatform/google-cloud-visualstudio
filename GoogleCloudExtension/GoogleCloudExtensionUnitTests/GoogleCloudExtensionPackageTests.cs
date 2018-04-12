@@ -165,6 +165,7 @@ namespace GoogleCloudExtensionUnitTests
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
             // This runs the Initialize() method.
             package.SetSite(serviceProviderMock.Object);
+            EventsReporterWrapper.DisableReporting();
         }
 
         public static void SetupService<SVsType, IVsType>(
