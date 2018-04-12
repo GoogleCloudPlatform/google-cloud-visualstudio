@@ -45,14 +45,17 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserMock;
-        private bool _isOnScreen;
-        private Func<bool> _onScreenCheckFunc;
+        private GoogleCloudExtensionPackage _oldPackage;
+        private Mock<GoogleCloudExtensionPackage> _packageMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _isOnScreen = true;
-            _onScreenCheckFunc = () => this._isOnScreen;
+            _oldPackage = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<GoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+
             _propertiesChanged = new List<string>();
             _errorFrameToSourceLineMock = new Mock<Action<ErrorGroupItem, StackFrame>>();
             _showErrorReportingToolWindowMock = new Mock<Func<ErrorReportingToolWindow>>();
@@ -72,7 +75,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                         It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(),
                         It.IsAny<string>())).Returns(() => _getPageOfGroupStatusSource.Task);
 
-            _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object, this._onScreenCheckFunc);
+            _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object);
 
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
             _objectUnderTest.ErrorFrameToSourceLine = _errorFrameToSourceLineMock.Object;
@@ -86,6 +89,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             _promptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             _promptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             UserPromptWindow.PromptUserFunction = _promptUserMock.Object;
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -347,11 +356,23 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestAutoReloadCommandWithWindowOffScreen()
         {
-            _isOnScreen = false;
+            CreateErrorScenario();
+            _objectUnderTest.IsVisibleUnbound = false;
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.IsEventLoading);
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadCommandWithWindowMinimized()
+        {
+            CreateErrorScenario();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.ShowError);
         }
 
         [TestMethod]
@@ -436,6 +457,20 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.IsEventLoading);
             Assert.AreEqual(1, _objectUnderTest.EventItemCollection.Count);
             Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        private void CreateErrorScenario()
+        {
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
+            _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetException(new DataSourceException());
         }
     }
 }

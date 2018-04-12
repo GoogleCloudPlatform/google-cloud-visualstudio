@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
-        private readonly Func<bool> _onScreenCheckFunc;
+        private readonly GoogleCloudExtensionPackage _package;
 
         // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
@@ -140,6 +140,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
+        /// Indicates whether the view is visible or not
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
+
+        /// <summary>
         /// Gets the list of time range items.
         /// </summary>
         public IEnumerable<TimeRangeItem> AllTimeRangeItems => _timeRangeItemList.Value;
@@ -159,7 +164,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ProtectedCommand OnAutoReloadCommand { get; }
 
-        internal ErrorReportingDetailViewModel(IStackdriverErrorReportingDataSource dataSourceOverride, Func<bool> onScreenCheckFunc) : this(onScreenCheckFunc)
+        internal ErrorReportingDetailViewModel(IStackdriverErrorReportingDataSource dataSourceOverride) : this()
         {
             _dataSourceOverride = dataSourceOverride;
         }
@@ -167,10 +172,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
-        /// <param name="onScreenCheckFunc">Performs a check to see whether the ToolWindow is onscreen</param>
-        public ErrorReportingDetailViewModel(Func<bool> onScreenCheckFunc)
+        public ErrorReportingDetailViewModel()
         {
-            _onScreenCheckFunc = onScreenCheckFunc;
+            _package = GoogleCloudExtensionPackage.Instance;
+            IsVisibleUnbound = true;
             OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
             OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
@@ -278,7 +283,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private async Task UpdateGroupAndEventAsync()
         {
-            if (_onScreenCheckFunc() == false)
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
             {
                 return;
             }

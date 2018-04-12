@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
-        private readonly Func<bool> _onScreenCheckFunc;
+        private readonly GoogleCloudExtensionPackage _package;
 
         /// <summary>
         /// Gets an exception as string.
@@ -96,6 +96,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
+        /// Indicates the visibility of the UserControl
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
+
+        /// <summary>
         /// If the current project id is reset to null or empty, hide the grid.
         /// </summary>
         public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
@@ -143,7 +148,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string CurrentTimeRangeCaption => String.Format(
             Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
-        internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource, Func<bool> onScreenCheckFunc) : this(onScreenCheckFunc)
+        internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource) : this()
         {
             _dataSourceOverride = dataSource;
         }
@@ -151,9 +156,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
-        /// <param name="onScreenCheckFunc">Performs a check to see if ToolWindow is onscreen</param>
-        public ErrorReportingViewModel(Func<bool> onScreenCheckFunc)
+        public ErrorReportingViewModel()
         {
+            IsVisibleUnbound = true;
+            _package = GoogleCloudExtensionPackage.Instance;
             _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
@@ -161,7 +167,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             OnAutoReloadCommand = new ProtectedCommand(Reload);
 
-            _onScreenCheckFunc = onScreenCheckFunc;
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
@@ -203,6 +208,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private void Reload()
         {
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
+            {
+                return;
+            }
+
             _groupStatsCollection.Clear();
             _nextPageToken = null;
             ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
@@ -215,10 +225,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private async Task LoadAsync()
         {
-            if (DataSource == null || _onScreenCheckFunc() == false)
+            if (DataSource == null)
             {
                 return;
             }
+
             if (_isLoading)
             {
                 Debug.WriteLine("_isLoading is true, quit LoadAsync.");

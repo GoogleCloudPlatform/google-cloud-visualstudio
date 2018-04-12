@@ -213,7 +213,6 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
-    <Compile Include="Extensions\WindowFrameExtensions.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
     </Compile>

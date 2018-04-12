@@ -34,14 +34,17 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private ErrorReportingViewModel _objectUnderTest;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
-        private bool _isOnScreen;
-        private Func<bool> _onScreenCheckFunc;
+        private GoogleCloudExtensionPackage _oldPackage;
+        private Mock<GoogleCloudExtensionPackage> _packageMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _isOnScreen = true;
-            _onScreenCheckFunc = () => this._isOnScreen;
+            _oldPackage = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<GoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+
             CredentialsStore.Default.UpdateCurrentProject(new Project());
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
@@ -50,9 +53,15 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                     ds => ds.GetPageOfGroupStatusAsync(
                         It.IsAny<ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(() => _getPageOfGroupStatusSource.Task);
-            _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object, _onScreenCheckFunc);
+            _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -161,10 +170,22 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestAutoReloadWhenOffScreen()
         {
-            _isOnScreen = false;
+            _objectUnderTest.IsVisibleUnbound = false;
             _objectUnderTest.ShowError = false;
-            _objectUnderTest.ErrorString = null;
             _getPageOfGroupStatusSource.SetException(new DataSourceException());
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenMinimized()
+        {
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 

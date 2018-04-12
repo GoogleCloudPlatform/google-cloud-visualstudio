@@ -78,8 +78,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void CreateNewViewModel()
         {
             var control = Content as LogsViewerToolWindowControl;
-            var frame = Frame as IVsWindowFrame;
-            var newModel = new LogsViewerViewModel(frame.IsVisibleOnScreen);
+            var newModel = new LogsViewerViewModel();
             control.DataContext = newModel;
             newModel.InvalidateAllProperties();
         }

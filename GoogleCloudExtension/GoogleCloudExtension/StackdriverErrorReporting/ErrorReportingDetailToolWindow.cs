@@ -50,8 +50,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new ErrorReportingDetailToolWindowControl();
-            var frame = Frame as IVsWindowFrame;
-            ViewModel = new ErrorReportingDetailViewModel(frame.IsVisibleOnScreen);
+            ViewModel = new ErrorReportingDetailViewModel();
             (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
 

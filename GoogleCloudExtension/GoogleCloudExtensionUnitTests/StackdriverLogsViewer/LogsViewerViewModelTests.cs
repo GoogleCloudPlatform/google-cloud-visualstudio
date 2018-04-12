@@ -40,14 +40,17 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
-        private bool _isOnScreen;
-        private Func<bool> _onScreenFunc;
+        private GoogleCloudExtensionPackage _oldPackage;
+        private Mock<GoogleCloudExtensionPackage> _packageMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _isOnScreen = true;
-            _onScreenFunc = () => this._isOnScreen;
+            _oldPackage = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<GoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
@@ -68,9 +71,15 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
-            _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource, _onScreenFunc);
+            _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -137,12 +146,23 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestNoLoadWhenOffScreen()
         {
-            _isOnScreen = false;
-            var oldAsyncAction = _objectUnderTest.AsyncAction;
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            _objectUnderTest.IsVisibleUnbound = false;
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.AreEqual(oldAsyncAction, _objectUnderTest.AsyncAction);
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenMinimized()
+        {
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
         }
 
         [TestMethod]
