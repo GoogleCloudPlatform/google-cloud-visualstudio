@@ -818,7 +818,7 @@
     <comment>The name of the App Engine Flex choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepAppEngineToolTip" xml:space="preserve">
-    <value>Deploy to App Engine Flex</value>
+    <value>App Engine is the preferred choice for quickly setting up your .NET Core application.</value>
     <comment>The tooltip for the App Engine Flex button.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceName" xml:space="preserve">
@@ -826,7 +826,7 @@
     <comment>The name of the GCE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceToolTip" xml:space="preserve">
-    <value>Deploy to Compute Engine</value>
+    <value>Deploy your Classic ASP.NET application to a Windows virtual machine in Google Compute Engine.</value>
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
@@ -1588,7 +1588,7 @@
     <comment>The name of the GKE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
-    <value>Deploy as a service to Kubernetes Engine</value>
+    <value>Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application.</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
   <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
