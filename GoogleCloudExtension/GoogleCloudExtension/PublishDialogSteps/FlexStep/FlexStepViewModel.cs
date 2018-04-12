@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         }
 
         protected override void ClearLoadedProjectData() { }
-        
+
         protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
 
         protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
@@ -267,6 +267,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         {
             base.OnFlowFinished();
             _version = GcpPublishStepsUtils.GetDefaultVersion();
+            NeedsAppCreated = false;
         }
 
         #endregion

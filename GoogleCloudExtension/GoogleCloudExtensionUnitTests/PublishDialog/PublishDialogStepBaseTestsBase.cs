@@ -30,9 +30,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
     public abstract class PublishDialogStepBaseTestsBase<TStep>
         where TStep : PublishDialogStepBase
     {
+        protected const string DefaultProjectId = "DefaultProjectId";
         protected const string TargetProjectId = "TargetProjectId";
         protected const string VisualStudioProjectName = "VisualStudioProjectName";
-        protected const string DefaultProjectId = "DefaultProjectId";
 
         protected static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
         protected static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
@@ -518,9 +518,39 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished()
+        public async Task TestOnFlowFinishedFromValid()
         {
             await GoToValidDefaultState();
+            _changedProperties.Clear();
+            GoToFlowFinishedState();
+
+            SetInitialStateExpectedValues();
+
+            AssertInitialState();
+
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+            AssertSelectedProjectUnchanged();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromInvalid()
+        {
+            await GoToInvalidDefaultState();
+            _changedProperties.Clear();
+            GoToFlowFinishedState();
+
+            SetInitialStateExpectedValues();
+
+            AssertInitialState();
+
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+            AssertSelectedProjectUnchanged();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromError()
+        {
+            await GoToErrorInValidationDefaultState();
             _changedProperties.Clear();
             GoToFlowFinishedState();
 
@@ -583,9 +613,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = false;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = false;
         }
 
         protected virtual void SetNoProjectStateExpectedValues()
@@ -596,9 +626,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = true;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = true;
         }
 
         protected void SetValidDefaultStateExpectedValues()
@@ -620,9 +650,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = true;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = true;
         }
 
         protected void SetInvalidDefaultStateExpectedValues()
@@ -644,9 +674,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = true;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = true;
         }
 
         protected void SetLongRunningValidationDefaultExpectedValues()
@@ -668,9 +698,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = true;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = true;
         }
 
         protected void SetErrorInValidationDefaultExpectedValues()
@@ -692,9 +722,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedNeedsApiEnabled = false;
             _expectedEnableApiCommandCanExecute = false;
             _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedShowInputControls = true;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
+            _expectedShowInputControls = true;
         }
 
         protected async Task GoToNoProjectState()
@@ -872,9 +902,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.AreEqual(_expectedLoadingProject, _objectUnderTest.LoadingProject);
             Assert.AreEqual(_expectedNeedsApiEnabled, _objectUnderTest.NeedsApiEnabled);
             Assert.AreEqual(_expectedEnableApiCommandCanExecute, _objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.AreEqual(_expectedInputHasErrors, _objectUnderTest.HasErrors);
+            Assert.AreEqual(_expectedGeneralError, _objectUnderTest.GeneralError);
             Assert.AreEqual(_expectedShowInputControls, _objectUnderTest.ShowInputControls);
             Assert.AreEqual(_expectedRequiredApisCount, _objectUnderTest.RequiredApis?.Count);
-            Assert.AreEqual(_expectedGeneralError, _objectUnderTest.GeneralError);
         }
     }
 }

@@ -50,11 +50,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
         private readonly Action<Instance> _manageCredentialsPrompt;
         private Instance _selectedInstance;
-        private IEnumerable<WindowsInstanceCredentials> _credentials;
+        private IEnumerable<WindowsInstanceCredentials> _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger;
-        private IEnumerable<Instance> _instances;
+        private IEnumerable<Instance> _instances = Enumerable.Empty<Instance>();
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -158,9 +158,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             _dataSource = dataSource;
             _currentWindowsCredentialStore = currentWindowsCredentialStore;
             _manageCredentialsPrompt = manageCredentialsPrompt;
-
-            _instances = Enumerable.Empty<Instance>();
-            _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }

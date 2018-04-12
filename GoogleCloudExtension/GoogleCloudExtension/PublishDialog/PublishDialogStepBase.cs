@@ -197,7 +197,7 @@ namespace GoogleCloudExtension.PublishDialog
             _pickProjectPrompt = pickProjectPrompt;
 
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand, false);
-            EnableApiCommand = new ProtectedAsyncCommand(async () => 
+            EnableApiCommand = new ProtectedAsyncCommand(async () =>
             {
                 StartAndTrack(OnEnableApiCommandAsync);
                 await AsyncAction;
@@ -347,7 +347,7 @@ namespace GoogleCloudExtension.PublishDialog
             {
                 CredentialsStore.Default.UpdateCurrentProject(selectedProject);
             }
-            else if(!hasChanged)
+            else if (!hasChanged)
             {
                 StartAndTrack(ReloadProjectAsync);
                 await AsyncAction;
@@ -384,7 +384,7 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         protected void StartAndTrack(Func<Task> asyncAction)
-        {            
+        {
             AsyncAction = asyncAction();
             PublishDialog.TrackTask(AsyncAction);
         }

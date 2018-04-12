@@ -20,10 +20,10 @@ using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtensionUnitTests.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
 {
@@ -77,7 +77,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         public override void BeforeEach()
         {
             _dataSourceMock = new Mock<IGceDataSource>();
-            _dataSourceMock.Setup(x => x.GetInstanceListAsync()).Returns(() => _getInstanceListTaskSource.Task);
+            _dataSourceMock.Setup(ds => ds.GetInstanceListAsync()).Returns(() => _getInstanceListTaskSource.Task);
 
             _windowsCredentialStoreMock = new Mock<IWindowsCredentialsStore>();
 
@@ -392,7 +392,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             await _objectUnderTest.AsyncAction;
         }
-        
+
         private async Task TransitionToNoInstancesTargetSelectCommand()
         {
             Action initMocks = () =>

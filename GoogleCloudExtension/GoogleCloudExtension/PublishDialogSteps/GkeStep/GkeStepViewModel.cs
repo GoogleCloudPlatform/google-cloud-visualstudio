@@ -54,10 +54,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
-        private IEnumerable<Cluster> _clusters;
+        private IEnumerable<Cluster> _clusters = Enumerable.Empty<Cluster>();
         private Cluster _selectedCluster;
         private string _deploymentName;
-        private string _deploymentVersion;
+        private string _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _dontExposeService = true;
         private bool _exposeService = false;
         private bool _exposePublicService = false;
@@ -70,7 +70,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public IEnumerable<Cluster> Clusters
         {
             get { return _clusters; }
-            private set { SetValueAndRaise(ref _clusters, value); }
+            private set
+            {
+                SetValueAndRaise(ref _clusters, value);
+                SelectedCluster = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -82,7 +86,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 SetValueAndRaise(ref _selectedCluster, value);
-                UpdateCanPublish();
+                RefreshCanPublish();
             }
         }
 
@@ -194,16 +198,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
         }
 
-        private void UpdateCanPublish()
+        protected override void RefreshCanPublish()
         {
-            CanPublish = SelectedCluster != null
-                && SelectedCluster != s_placeholderCluster
-                && !HasErrors;
-        }
-
-        protected override void HasErrorsChanged()
-        {
-            UpdateCanPublish();
+            CanPublish = IsValidGCPProject
+                && !HasErrors
+                && SelectedCluster != null
+                && SelectedCluster != s_placeholderCluster;
         }
 
         private void OnRefreshClustersListCommand()
@@ -228,16 +228,25 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             throw new InvalidOperationException();
         }
 
+        protected override async Task InitializeDialogAsync()
+        {
+            Task initializeDialogTask = base.InitializeDialogAsync();
+
+            DeploymentName = PublishDialog.Project.Name.ToLower();
+
+            await initializeDialogTask;
+        }
+
         protected override async Task ValidateProjectAsync()
         {
-            RefreshClustersListCommand.CanExecuteCommand = true;
-            CreateClusterCommand.CanExecuteCommand = true;
+            RefreshClustersListCommand.CanExecuteCommand = false;
+            CreateClusterCommand.CanExecuteCommand = false;
 
             await base.ValidateProjectAsync();
-            if (!IsValidGCPProject)
+            if (IsValidGCPProject)
             {
-                RefreshClustersListCommand.CanExecuteCommand = false;
-                CreateClusterCommand.CanExecuteCommand = false;
+                RefreshClustersListCommand.CanExecuteCommand = true;
+                CreateClusterCommand.CanExecuteCommand = true;
             }
         }
 
@@ -246,28 +255,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Clusters = Enumerable.Empty<Cluster>();
         }
 
-        protected override Task LoadProjectDataAlwaysAsync()
-        {
-            //Remove from here, this is on Visible not on valiate, this is the VSProject
-            if (string.IsNullOrEmpty(DeploymentName))
-            {
-                DeploymentName = PublishDialog.Project.Name.ToLower();
-            }
-            if (string.IsNullOrEmpty(DeploymentVersion))
-            {
-                DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
-            }
-            return Task.Delay(0);
-        }
+        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
 
         protected override async Task LoadProjectDataIfValidAsync()
         {
             Clusters = await GetAllClustersAsync();
         }
 
-        protected override void RefreshCanPublish()
+        protected internal override void OnFlowFinished()
         {
-            CanPublish = IsValidGCPProject && !HasErrors;
+            base.OnFlowFinished();
+            _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
+            _deploymentName = null;
+            _replicas = "3";
+            RefreshClustersListCommand.CanExecuteCommand = false;
+            CreateClusterCommand.CanExecuteCommand = false;
         }
 
         /// <summary>
@@ -485,8 +487,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             return true;
         }
 
-
-
         private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
         {
             var clusters = await CurrentDataSource.GetClusterListAsync();
@@ -510,6 +510,5 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             return viewModel;
         }
-
     }
 }
