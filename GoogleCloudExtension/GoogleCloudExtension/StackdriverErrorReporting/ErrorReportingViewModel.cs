@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
-        private readonly GoogleCloudExtensionPackage _package;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         /// <summary>
         /// Gets an exception as string.

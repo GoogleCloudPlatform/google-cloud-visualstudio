@@ -299,14 +299,21 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestChangeFiltersCommand()
         {
+            var gcePackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
+            gcePackageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
+
+            IGoogleCloudExtensionPackage previousPackage = GoogleCloudExtensionPackage.Instance;
+            GoogleCloudExtensionPackage.Instance = gcePackageMock.Object;
+
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
                     .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
             var showOptionPageMock = new Mock<Action<Type>>();
-            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionPageMock.Object;
 
             changeFiltersCommand.Execute(null);
 
-            showOptionPageMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
+            gcePackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
+
+            GoogleCloudExtensionPackage.Instance = previousPackage;
         }
     }
 }

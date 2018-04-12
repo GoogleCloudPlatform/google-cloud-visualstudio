@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Options;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -40,15 +41,18 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
-        private GoogleCloudExtensionPackage _oldPackage;
-        private Mock<GoogleCloudExtensionPackage> _packageMock;
+        private IGoogleCloudExtensionPackage _oldPackage;
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<GoogleCloudExtensionPackage>();
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
             _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            var analyticsOption = Mock.Of<AnalyticsOptions>();
+            analyticsOption.OptIn = false;
+            _packageMock.Setup(p => p.AnalyticsSettings).Returns(analyticsOption);
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
             
             const string defaultAccountName = "default-account";

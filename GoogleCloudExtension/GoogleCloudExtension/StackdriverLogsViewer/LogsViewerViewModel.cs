@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _isAutoReloadChecked;
         private string _nextPageToken;
         private LogItem _latestLogItem;
-        private readonly GoogleCloudExtensionPackage _package;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         private bool _toggleExpandAllExpanded;
 

@@ -71,7 +71,7 @@ namespace GoogleCloudExtension
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
     [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
-    public class GoogleCloudExtensionPackage : Package
+    public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -98,7 +98,6 @@ namespace GoogleCloudExtension
             new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
-        internal Action<Type> ShowOptionPageMethod;
         private DTE _dteInstance;
         private event EventHandler ClosingEvent;
 
@@ -131,7 +130,6 @@ namespace GoogleCloudExtension
         {
             // Register all of the properties.
             RegisterSolutionOptions();
-            ShowOptionPageMethod = ShowOptionPage;
         }
 
         /// <summary>
@@ -154,7 +152,7 @@ namespace GoogleCloudExtension
         /// Check whether the main window is not minimized.
         /// </summary>
         /// <returns>true/false based on whether window is minimized or not</returns>
-        public virtual bool IsWindowActive()
+        public bool IsWindowActive()
         {
             return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
         }
@@ -263,7 +261,15 @@ namespace GoogleCloudExtension
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
         }
 
-        public static GoogleCloudExtensionPackage Instance { get; internal set; }
+        private static IGoogleCloudExtensionPackage _instance;
+        public static IGoogleCloudExtensionPackage Instance
+        {
+            get
+            {
+                return _instance;
+            }
+            internal set { _instance = value; }
+        }
 
         #endregion
 
@@ -287,7 +293,7 @@ namespace GoogleCloudExtension
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
         public void ShowOptionPage<T>() where T : DialogPage
         {
-            ShowOptionPageMethod(typeof(T));
+            ShowOptionPage(typeof(T));
         }
 
         #endregion

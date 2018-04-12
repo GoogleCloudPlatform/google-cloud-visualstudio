@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
-        private readonly GoogleCloudExtensionPackage _package;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;

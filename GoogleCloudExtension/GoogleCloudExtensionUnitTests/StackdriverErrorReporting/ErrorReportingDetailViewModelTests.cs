@@ -45,14 +45,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserMock;
-        private GoogleCloudExtensionPackage _oldPackage;
-        private Mock<GoogleCloudExtensionPackage> _packageMock;
+        private IGoogleCloudExtensionPackage _oldPackage;
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<GoogleCloudExtensionPackage>();
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
             _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
 
