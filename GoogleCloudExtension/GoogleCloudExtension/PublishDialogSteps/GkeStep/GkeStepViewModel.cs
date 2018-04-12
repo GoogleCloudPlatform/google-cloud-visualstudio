@@ -39,8 +39,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
-        private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
-        private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+        internal static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+        internal static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+        internal const string ReplicasDefaultValue = "3";
 
         // The APIs required for a succesful deployment to GKE.
         private static readonly IList<string> s_requiredApis = new List<string>
@@ -62,7 +63,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposeService = false;
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
-        private string _replicas = "3";
+        private string _replicas = ReplicasDefaultValue;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -128,7 +129,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateInteger(value, Resources.GkePublishReplicasFieldName);
+                    GcpPublishStepsUtils.ValidatePositiveNonZeroInteger(value, Resources.GkePublishReplicasFieldName);
                 SetAndRaiseWithValidation(ref _replicas, value, validations);
             }
         }
@@ -195,7 +196,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             _dataSource = dataSource;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
-            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
+            RefreshClustersListCommand = new ProtectedAsyncCommand(async () =>
+            {
+                StartAndTrack(OnRefreshClustersListCommand);
+                await AsyncAction;
+            }, false);
         }
 
         protected override void RefreshCanPublish()
@@ -206,10 +211,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 && SelectedCluster != s_placeholderCluster;
         }
 
-        private void OnRefreshClustersListCommand()
+        private async Task OnRefreshClustersListCommand()
         {
-            Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
-            PublishDialog.TrackTask(refreshTask);
+            await RefreshClustersAsync();
         }
 
         private void OnCreateClusterCommand()
@@ -259,7 +263,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override async Task LoadProjectDataIfValidAsync()
         {
-            Clusters = await GetAllClustersAsync();
+            await RefreshClustersAsync();
         }
 
         protected internal override void OnFlowFinished()
@@ -267,7 +271,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             base.OnFlowFinished();
             _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
             _deploymentName = null;
-            _replicas = "3";
+            _replicas = ReplicasDefaultValue;
             RefreshClustersListCommand.CanExecuteCommand = false;
             CreateClusterCommand.CanExecuteCommand = false;
         }
@@ -277,12 +281,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
-            if (!ValidateInput())
-            {
-                Debug.WriteLine("Invalid input cancelled the operation.");
-                return;
-            }
-
             var project = PublishDialog.Project;
             try
             {
@@ -449,54 +447,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        private bool ValidateInput()
-        {
-            int replicas;
-            if (!int.TryParse(Replicas, out replicas))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishInvalidReplicasMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
-
-            if (String.IsNullOrEmpty(DeploymentName))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentNameMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
-
-            if (!GcpPublishStepsUtils.IsValidName(DeploymentName))
-            {
-                UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.GkePublishInvalidDeploymentNameMessage, DeploymentName),
-                    Resources.UiInvalidValueTitle);
-                return false;
-            }
-            if (String.IsNullOrEmpty(DeploymentVersion))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
-            if (!GcpPublishStepsUtils.IsValidName(DeploymentVersion))
-            {
-                UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.GkePublishInvalidDeploymentVersionMessage, DeploymentVersion),
-                    Resources.UiInvalidValueTitle);
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
+        private async Task RefreshClustersAsync()
         {
             var clusters = await CurrentDataSource.GetClusterListAsync();
 
-            var result = clusters?.OrderBy(x => x.Name).ToList();
-            if (result == null || result.Count == 0)
+            if (clusters == null || clusters.Count == 0)
             {
-                return s_placeholderList;
+                Clusters = s_placeholderList;
             }
-            return result;
+            else
+            {
+                Clusters = clusters.OrderBy(x => x.Name).ToList();
+            }
         }
 
         /// <summary>

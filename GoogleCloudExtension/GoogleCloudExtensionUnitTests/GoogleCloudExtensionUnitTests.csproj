@@ -257,7 +257,6 @@
     <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelTests.cs" />
-    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelSpeceficTests.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBaseTestsBase.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBaseTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />

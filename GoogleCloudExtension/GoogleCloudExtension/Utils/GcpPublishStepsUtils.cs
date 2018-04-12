@@ -85,5 +85,20 @@ namespace GoogleCloudExtension.Utils
                     nameof(Resources.ValidationIntegerMessage), fieldName);
             }
         }
+
+        public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)
+        {
+            int intValue;
+            if (!int.TryParse(value, out intValue))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
+            }
+            else if (intValue <= 0)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
+            }
+        }
     }
 }

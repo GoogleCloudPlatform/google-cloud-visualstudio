@@ -424,16 +424,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         private void RunManageCredentialsCommandSuccess()
         {
             InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
-            RunManageCredentialsCommand(true);
+            RunManageCredentialsCommand();
         }
 
         private void RunManageCredentialsCommandFailure()
         {
             InitGetCredentialsForInstanceMock(new List<WindowsInstanceCredentials>());
-            RunManageCredentialsCommand(false);
+            RunManageCredentialsCommand();
         }
 
-        private void RunManageCredentialsCommand(bool success)
+        private void RunManageCredentialsCommand()
         {
             _manageCredentialsPromptMock.Setup(p => p(It.IsAny<Instance>()));
             _objectUnderTest.ManageCredentialsCommand.Execute(null);

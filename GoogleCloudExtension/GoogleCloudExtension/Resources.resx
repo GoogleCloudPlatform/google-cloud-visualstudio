@@ -2990,4 +2990,8 @@
     <value>Copy</value>
     <comment>Header for a standard "Copy" menu item.</comment>
   </data>
+  <data name="ValidationPositiveNonZeroMessage" xml:space="preserve">
+    <value>{0} must be an integer greater than zero.</value>
+    <comment>{Field} must be an integer greater than zero validation message.</comment>
+  </data>
 </root>

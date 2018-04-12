@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
@@ -21,11 +23,9 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Threading.Tasks;
-using GoogleCloudExtension.ApiManagement;
-using Google.Apis.CloudResourceManager.v1.Data;
 
 namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         }
 
         private ChoiceStepViewModel(ChoiceStepContent content, IApiManager apiManager, Func<Project> pickProjectPrompt)
-            :base(apiManager, pickProjectPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
 
