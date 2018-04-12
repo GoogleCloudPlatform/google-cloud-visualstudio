@@ -134,23 +134,37 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestMethod]
-        public void TestWindowActiveWhenMaximized()
+        public void TestWindowActiveWhenNormalState()
         {
-            var testObject = new GoogleCloudExtensionPackage();
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateNormal);
+            Assert.IsTrue(package.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMaximizedState()
+        {
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMaximize);
+            Assert.IsTrue(package.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMinimizedState()
+        {
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMinimize);
+            Assert.IsFalse(package.IsWindowActive());
+        }
+
+        private GoogleCloudExtensionPackage CreatePackageWithWindowState(vsWindowState wstate)
+        {
+            var package = new GoogleCloudExtensionPackage();
             var dteMock = new Mock<DTE>();
-            InitPackageMock(testObject, dteMock);
+            InitPackageMock(package, dteMock);
 
             var windowMock = Mock.Of<Window>();
             dteMock.Setup(d => d.MainWindow).Returns(windowMock);
-            windowMock.WindowState = vsWindowState.vsWindowStateNormal;
+            windowMock.WindowState = wstate;
 
-            Assert.IsTrue(testObject.IsWindowActive());
-
-            windowMock.WindowState = vsWindowState.vsWindowStateMaximize;
-            Assert.IsTrue(testObject.IsWindowActive());
-
-            windowMock.WindowState = vsWindowState.vsWindowStateMinimize;
-            Assert.IsFalse(testObject.IsWindowActive());
+            return package;
         }
 
         private static string GetVsixManifestVersion()
