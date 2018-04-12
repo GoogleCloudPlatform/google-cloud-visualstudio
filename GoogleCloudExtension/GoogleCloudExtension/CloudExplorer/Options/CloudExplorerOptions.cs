@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <summary>
         /// The list of regexes used to filter Pub/Sub topics in the Cloud Explorer.
         /// </summary>
-        public IEnumerable<string> PubSubTopicFilters
+        public virtual IEnumerable<string> PubSubTopicFilters
         {
             get { return _child.ViewModel.PubSubTopicFilters.Values(); }
             set
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.CloudExplorer.Options
         /// <summary>
         /// Triggered before this page saves its settings to storage.
         /// </summary>
-        public event EventHandler SavingSettings;
+        public virtual event EventHandler SavingSettings;
 
         /// <summary>
         /// Creates a new <see cref="CloudExplorerOptions" />.
