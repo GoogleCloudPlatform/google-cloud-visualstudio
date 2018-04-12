@@ -95,7 +95,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _factoryMock.Setup(f => f()).Returns(() => _dataSourceMock.Object);
 
             _gcePackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
-            _cloudExplorerOptionsMock = new Mock<CloudExplorerOptions>(MockBehavior.Strict) { CallBase = false };
+            _cloudExplorerOptionsMock = new Mock<CloudExplorerOptions>(MockBehavior.Strict);
             _cloudExplorerOptionsMock.SetupSet(o => o.PubSubTopicFilters = It.IsAny<IEnumerable<string>>());
             _gcePackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(_cloudExplorerOptionsMock.Object);
 
