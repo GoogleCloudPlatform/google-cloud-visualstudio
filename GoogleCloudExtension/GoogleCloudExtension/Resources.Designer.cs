@@ -5389,7 +5389,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy your .NET Framework application to a Windows virtual machine in Google Compute Engine..
+        ///   Looks up a localized string similar to Deploy your Classic ASP.NET application to a Windows virtual machine in Google Compute Engine..
         /// </summary>
         public static string PublishDialogChoiceStepGceToolTip {
             get {
