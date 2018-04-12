@@ -15,7 +15,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -23,18 +22,15 @@ using System;
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
     [TestClass]
-    public class AspNetTemplateChooserViewModelTests
+    public class AspNetTemplateChooserViewModelTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
         }
 
         [TestMethod]

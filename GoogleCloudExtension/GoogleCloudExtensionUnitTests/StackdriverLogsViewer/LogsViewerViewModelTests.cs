@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
     [TestClass]
-    public class LogsViewerViewModelTests
+    public class LogsViewerViewModelTests : ExtensionTestBase
     {
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
@@ -41,8 +41,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";

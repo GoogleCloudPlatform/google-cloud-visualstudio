@@ -32,7 +32,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
         private const string MockSubscriptionFullName2 = MockSubscriptionFullName + "2";
         private const string DeletedTopicName = PubSubSourceRootViewModelTests.DeletedTopicName;
-        private const string MockTopicLeafName = PubSubSourceRootViewModelTests.MockTopicLeafName;
+        private const string MockTopicLeafName = "MockTopic";
         private const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
         private const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
         private Mock<IPubsubSourceRootViewModel> _ownerMock;

@@ -27,29 +27,26 @@ using System.Linq;
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
     [TestClass]
-    public class AspNetCoreTemplateChooserViewModelTests
+    public class AspNetCoreTemplateChooserViewModelTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "default-project-id";
         private List<string> _targetSdkVersions;
         private Mock<Action> _closeWindowMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _targetSdkVersions = new List<string>();
             VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
         }
 
         [TestMethod]
         public void TestInitialConditionsMissingNetCoreSdk()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2015Version);
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
 
@@ -64,8 +61,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2015()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2015Version);
             _targetSdkVersions.Add("1.0.0-preview2-003156");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -80,8 +76,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithNetCoreSdk10()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("1.0.0");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -99,8 +94,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithNetCoreSdk20()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("2.0.0");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -118,8 +112,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithBothNetCoreSdk10And20()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("2.0.0");
             _targetSdkVersions.Add("1.0.0");
 

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -24,18 +23,18 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GroupTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
     [TestClass]
-    public class ErrorReportingViewModelTests
+    public class ErrorReportingViewModelTests : ExtensionTestBase
     {
         private ErrorReportingViewModel _objectUnderTest;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(new Project());
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
@@ -43,7 +42,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             dataSourceMock
                 .Setup(
                     ds => ds.GetPageOfGroupStatusAsync(
-                        It.IsAny<ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                        It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(() => _getPageOfGroupStatusSource.Task);
             _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object);
             _propertiesChanged = new List<string>();

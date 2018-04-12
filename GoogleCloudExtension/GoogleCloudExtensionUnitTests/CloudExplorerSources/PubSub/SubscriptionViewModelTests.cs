@@ -30,7 +30,7 @@ using System.Windows.Media.Imaging;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
     [TestClass]
-    public class SubscriptionViewModelTests
+    public class SubscriptionViewModelTests : ExtensionTestBase
     {
         private const string MockSubscriptionLeafName = TopicViewModelTests.MockSubscriptionLeafName;
         private const string MockSubscriptionFullName = TopicViewModelTests.MockSubscriptionFullName;
@@ -45,11 +45,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<object> _deleteSubscriptionSource;
         private TaskCompletionSource<object> _refreshSource;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
-
             _promptOptions = new List<UserPromptWindow.Options>();
             _promptReturnValue = true;
             UserPromptWindow.PromptUserFunction = options =>
