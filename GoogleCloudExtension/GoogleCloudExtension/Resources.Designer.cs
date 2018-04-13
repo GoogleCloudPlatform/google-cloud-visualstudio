@@ -3256,29 +3256,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version name cannot be empty..
-        /// </summary>
-        public static string FlexPublishEmptyVersionMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishEmptyVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
             get {
                 return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid version {0}. The version must only use lowercase letters, digits and the - character..
-        /// </summary>
-        public static string FlexPublishInvalidVersionMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
             }
         }
         
@@ -4273,56 +4255,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The deployment name cannot be empty..
-        /// </summary>
-        public static string GkePublishEmptyDeploymentNameMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEmptyDeploymentNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The deployment version cannot be empty..
-        /// </summary>
-        public static string GkePublishEmptyDeploymentVersionMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character..
-        /// </summary>
-        public static string GkePublishInvalidDeploymentNameMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidDeploymentNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character..
-        /// </summary>
-        public static string GkePublishInvalidDeploymentVersionMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
-        /// </summary>
-        public static string GkePublishInvalidReplicasMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
             }
         }
         
@@ -6213,15 +6150,6 @@ namespace GoogleCloudExtension {
         public static string UiGoButtonCaption {
             get {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value.
-        /// </summary>
-        public static string UiInvalidValueTitle {
-            get {
-                return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
             }
         }
         
