@@ -31,10 +31,10 @@
                     <DataTemplate>
                         <Button Content="{Binding}"
                                 Height="60" Width="200"
-                                Grid.Column="1"
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
                                 ToolTip="{Binding ToolTip}"
+                                ToolTipService.ShowOnDisabled="True"
                                 Command="{Binding Command}"
                                 Margin="0,0,0,20"
                                 Style="{StaticResource CommonButtonDynamicStyle}">

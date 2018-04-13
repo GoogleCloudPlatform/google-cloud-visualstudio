@@ -14,7 +14,8 @@
              mc:Ignorable="d"
              d:DesignHeight="1024" d:DesignWidth="860"
              d:DataContext="{d:DesignInstance local:LogsViewerViewModel}"
-             Name="_logsViewerToolWindow" >
+             Name="_logsViewerToolWindow"
+             IsVisibleChanged="LogsViewerToolWindowControl_OnIsVisibleChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

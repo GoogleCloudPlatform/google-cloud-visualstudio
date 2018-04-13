@@ -29,6 +29,7 @@ namespace GoogleCloudExtension
         AnalyticsOptions AnalyticsSettings { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
+        bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;
         void SubscribeClosingEvent(EventHandler handler);
         void UnsubscribeClosingEvent(EventHandler handler);

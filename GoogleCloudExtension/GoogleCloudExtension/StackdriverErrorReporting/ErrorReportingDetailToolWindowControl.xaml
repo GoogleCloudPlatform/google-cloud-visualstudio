@@ -15,7 +15,8 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingDetailViewModel}" >
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingDetailViewModel}"
+             IsVisibleChanged="ErrorReportingDetailToolWindowControl_OnIsVisibleChanged">
 
     <UserControl.Resources>
         <ResourceDictionary>

@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Options;
 using Process = System.Diagnostics.Process;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
@@ -40,12 +41,20 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
+        private IGoogleCloudExtensionPackage _oldPackage;
         private Mock<IGoogleCloudExtensionPackage> _packageMock;
-        private IGoogleCloudExtensionPackage _packageToRestore;
 
         [TestInitialize]
         public void BeforeEach()
         {
+            _oldPackage = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            var analyticsOption = Mock.Of<AnalyticsOptions>();
+            analyticsOption.OptIn = false;
+            _packageMock.Setup(p => p.AnalyticsSettings).Returns(analyticsOption);
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
@@ -69,17 +78,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
-
-
-            _packageToRestore = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
         }
 
         [TestCleanup]
-        public void AfterEach()
+        public void TestCleanup()
         {
-            GoogleCloudExtensionPackage.Instance = _packageToRestore;
+            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -141,6 +145,28 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
             Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
             Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenOffScreen()
+        {
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            _objectUnderTest.IsVisibleUnbound = false;
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenMinimized()
+        {
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
         }
 
         [TestMethod]
