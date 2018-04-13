@@ -45,12 +45,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         };
 
         private readonly FlexStepContent _content;
-        private readonly IGaeDataSource _dataSource = null;
+        private readonly IGaeDataSource _dataSource;
         private readonly Func<Task<bool>> _setAppRegionAsyncFunc;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
-        private bool _needsAppCreated = false;
+        private bool _needsAppCreated;
 
         protected Func<Task<bool>> SetAppRegionAsyncFunc => _setAppRegionAsyncFunc ??
             (() => GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource));
@@ -141,6 +141,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         #region IPublishDialogStep
 
+        /// <inheritdoc/>
         public override FrameworkElement Content => _content;
 
         protected internal override IList<string> RequiredApis => s_requiredApis;
@@ -163,10 +164,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
+        /// <summary>
+        /// No project dependent data to clear.
+        /// </summary>
         protected override void ClearLoadedProjectData() { }
 
+        /// <summary>
+        /// No project dependent data to load.
+        /// </summary>
+        /// <returns>A cached completed task.</returns>
         protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
 
+        /// <summary>
+        /// No project dependent data to load.
+        /// </summary>
+        /// <returns>A cached completed task.</returns>
         protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
 
         protected override void RefreshCanPublish()
@@ -254,10 +266,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
+                if (PublishDialog != null)
+                {
+                    PublishDialog.FinishFlow();
+                }
+
                 EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
+        /// <summary>
+        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// </summary>
         public override IPublishDialogStep Next()
         {
             throw new InvalidOperationException();

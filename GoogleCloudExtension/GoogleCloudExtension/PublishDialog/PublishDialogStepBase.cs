@@ -35,10 +35,10 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _canGoNext;
         private bool _canPublish;
         private readonly IApiManager _apiManager;
-        private readonly Func<Project> _pickProjectPrompt;
         private bool _loadingProject;
         private bool _needsApiEnabled;
         private bool _generalError;
+        private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGCPProject;
 
         protected Func<Project> PickProjectPrompt => _pickProjectPrompt ??
@@ -147,6 +147,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         public virtual bool ShowInputControls =>
             PublishDialog != null
+            && !string.IsNullOrWhiteSpace(GcpProjectId)
             && !LoadingProject
             && !NeedsApiEnabled
             && !GeneralError;
@@ -213,9 +214,6 @@ namespace GoogleCloudExtension.PublishDialog
         /// <inheritdoc />
         public virtual async void OnVisible(IPublishDialog dialog)
         {
-            ///Impossible right now but possible in the future?,
-            ///this is in case this step was being shown in another dialog.
-            ///The class API allows it, so better do something about it here.
             RemoveHandlers();
             PublishDialog = dialog;
 
@@ -235,8 +233,6 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Called whenever the current GCP Project changes, either from
         /// within this step or from somewhere else.
-        /// Will be probably overwritten by children to refresh project
-        /// dependent state.
         /// </summary>
         protected virtual async Task OnProjectChangedAsync()
         {
@@ -301,10 +297,21 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        /// <summary>
+        /// Called before loading a project to remove any data from a previous one.
+        /// </summary>
         protected abstract void ClearLoadedProjectData();
 
+        /// <summary>
+        /// Called when loading a project. This will load data that needs to be loaded
+        /// even if the project is not valid.
+        /// </summary>
         protected abstract Task LoadProjectDataAlwaysAsync();
 
+        /// <summary>
+        /// Called when loading a project. This will load data that needs to be loaded
+        /// only when the project is valid.
+        /// </summary>
         protected abstract Task LoadProjectDataIfValidAsync();
 
         protected override void HasErrorsChanged()
@@ -313,6 +320,9 @@ namespace GoogleCloudExtension.PublishDialog
             RefreshCanPublish();
         }
 
+        /// <summary>
+        /// This is the base class. By default steps cannot publish.
+        /// </summary>
         protected virtual void RefreshCanPublish()
         {
             CanPublish = false;

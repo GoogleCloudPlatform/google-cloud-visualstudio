@@ -46,7 +46,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         protected List<string> _changedProperties;
 
         /// <summary>
-        /// Expected values for those properties that might depend on descendand features.
+        /// Expected values for those properties that might depend on descendant features.
         /// </summary>
         protected string _expectedProjectId;
         protected bool _expectedCanPublish;
@@ -628,7 +628,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedRequiredApisCount = RequieredAPIsForStep;
             _expectedGeneralError = false;
             _expectedInputHasErrors = false;
-            _expectedShowInputControls = true;
+            _expectedShowInputControls = false;
         }
 
         protected void SetValidDefaultStateExpectedValues()

@@ -120,6 +120,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         #region IPublishDialogStep
 
+        /// <inheritdoc />
         public override FrameworkElement Content => _content;
 
         protected internal override IList<string> RequiredApis => new List<string>();
@@ -137,11 +138,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
 
+        /// <summary>
+        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// </summary>
         public override IPublishDialogStep Next()
         {
             throw new InvalidOperationException();
         }
 
+        /// <summary>
+        /// This step never publishes. <see cref="CanPublish"/> is always <code false />
+        /// </summary>
         public override void Publish()
         {
             throw new InvalidOperationException();

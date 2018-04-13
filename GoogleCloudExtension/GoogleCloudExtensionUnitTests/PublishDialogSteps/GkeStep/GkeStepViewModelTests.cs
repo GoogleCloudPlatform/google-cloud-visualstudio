@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Container.v1.Data;
-using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialogSteps.GkeStep;
@@ -660,7 +659,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         private async Task GoToNoClustersDefaultState()
         {
             InitAreServicesEnabledMock(true);
-            InitGetClusterListMock(new List<Cluster>());            
+            InitGetClusterListMock(new List<Cluster>());
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             await _objectUnderTest.AsyncAction;

@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.Utils.Validation
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         /// <summary>
-        /// Exposing the validation delay task for testing purposes given that the
+        /// Exposes the validation delay task for testing purposes given that the
         /// validation method is (needs to be) async void.
         /// </summary>
         internal Task ValidationDelayTask { get; private set; }

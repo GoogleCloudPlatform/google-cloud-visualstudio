@@ -183,6 +183,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override async void Publish()
         {
             IParsedProject project = PublishDialog.Project;
+            Instance selectedInstance = SelectedInstance;
+            WindowsInstanceCredentials selectedCredentials = SelectedCredentials;
 
             try
             {
@@ -194,7 +196,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 PublishDialog.FinishFlow();
 
-                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name);
+                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, selectedInstance.Name);
                 TimeSpan deploymentDuration;
                 bool result;
                 using (StatusbarHelper.Freeze())
@@ -205,8 +207,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     DateTime startDeploymentTime = DateTime.Now;
                     result = await WindowsVmDeployment.PublishProjectAsync(
                         project,
-                        SelectedInstance,
-                        SelectedCredentials,
+                        selectedInstance,
+                        selectedCredentials,
                         progress,
                         VsVersionUtils.ToolsPathProvider,
                         GcpOutputWindow.OutputLine);
@@ -215,10 +217,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 if (result)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
                     StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                    string url = SelectedInstance.GetDestinationAppUri();
+                    string url = selectedInstance.GetDestinationAppUri();
                     GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
@@ -229,7 +231,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                     if (LaunchRemoteDebugger)
                     {
-                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(SelectedInstance);
+                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(selectedInstance);
                     }
                 }
                 else
@@ -245,17 +247,32 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
+                if (PublishDialog != null)
+                {
+                    PublishDialog.FinishFlow();
+                }
+
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
+        /// <summary>
+        /// Clearing instances from a potential previous project.
+        /// </summary>
         protected override void ClearLoadedProjectData()
         {
             Instances = Enumerable.Empty<Instance>();
         }
 
+        /// <summary>
+        /// No data to load
+        /// </summary>
+        /// <returns>A cached completed task</returns>
         protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
 
+        /// <summary>
+        /// Loads the instances of the project given that it is valid.
+        /// </summary>
         protected override async Task LoadProjectDataIfValidAsync()
         {
             Instances = await GetAllWindowsInstancesAsync();
@@ -266,6 +283,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             CanPublish = IsValidGCPProject && !HasErrors && SelectedCredentials != null;
         }
 
+        /// <summary>
+        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// </summary>
         public override IPublishDialogStep Next()
         {
             throw new InvalidOperationException();

@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.Utils
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
