@@ -272,7 +272,7 @@
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItemTests.cs" />
     <Compile Include="StackdriverErrorReporting\EventItemTests.cs" />
     <Compile Include="StackdriverLogsViewer\LogItemTests.cs" />
-    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommandTests.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowTests.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />

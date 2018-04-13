@@ -26,18 +26,18 @@ namespace GoogleCloudExtension.Utils
     internal static class ToolWindowCommandUtils
     {
         /// <summary>
-        /// Shows the tool window
+        /// Shows the tool window, either existing or new.
         /// </summary>
-        /// <returns>The tool window object if it is found.</returns>
+        /// <returns>The tool window object.</returns>
         public static TToolWindow ShowToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
         {
             return ShowToolWindow<TToolWindow>(0);
         }
 
         /// <summary>
-        /// Shows the tool window
+        /// Shows the tool window for a given id, either existing or new.
         /// </summary>
-        /// <returns>The tool window object if it is found.</returns>
+        /// <returns>The tool window object.</returns>
         public static TToolWindow ShowToolWindow<TToolWindow>(int id) where TToolWindow : ToolWindowPane
         {
             if (GoogleCloudExtensionPackage.Instance == null)
@@ -46,8 +46,6 @@ namespace GoogleCloudExtension.Utils
                 return null;
             }
 
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
             var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(true, id);
             var windowFrame = (IVsWindowFrame)window?.Frame;
@@ -73,6 +71,7 @@ namespace GoogleCloudExtension.Utils
                     GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(false, id);
                 if (window == null)
                 {
+                    // Create a new tool window at the unused id.
                     return ShowToolWindow<TToolWindow>(id);
                 }
             }

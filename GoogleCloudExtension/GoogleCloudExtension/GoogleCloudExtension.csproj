@@ -245,6 +245,7 @@
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
     <Compile Include="PickProjectDialog\SampleData\NeedsAccountState.cs" />

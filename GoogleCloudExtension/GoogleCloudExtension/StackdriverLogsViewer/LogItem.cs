@@ -191,6 +191,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ParentToolWindowId = parentToolWindowId;
             if (logEntry == null)
             {
+                // Todo(jimwp): Change to NullArgumentException. Protect caller from null.
                 return;
             }
 

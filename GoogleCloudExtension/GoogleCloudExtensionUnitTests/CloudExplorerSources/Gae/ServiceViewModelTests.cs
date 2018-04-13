@@ -14,6 +14,7 @@
 
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
@@ -36,6 +37,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
         [TestInitialize]
         public void BeforeEach()
         {
+            EventsReporterWrapper.DisableReporting();
             _packageToRestore = GoogleCloudExtensionPackage.Instance;
             _packageMock = new Mock<IGoogleCloudExtensionPackage>();
             _packageMock.Setup(p => p.AnalyticsSettings).Returns(new AnalyticsOptions { OptIn = false });
