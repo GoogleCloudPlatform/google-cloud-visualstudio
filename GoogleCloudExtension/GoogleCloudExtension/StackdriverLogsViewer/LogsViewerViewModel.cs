@@ -18,10 +18,10 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const uint LogStreamingDelayInSeconds = 3;
 
         private static readonly LogSeverityItem[] s_logSeveritySelections =
-            new LogSeverityItem[] {
+            {
                 new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel),
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
@@ -52,6 +52,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelCriticalLabel),
                 new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelEmergencyLabel)
             };
+
+
+        private readonly ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
+        private readonly Lazy<LoggingDataSource> _dataSourceLazy = new Lazy<LoggingDataSource>(CreateDataSource);
 
         /// <summary>
         /// This is the filters combined by all selectors.
@@ -63,30 +67,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string _advacedFilterText;
         private bool _showAdvancedFilter;
         private LogIdsList _logIdList;
-
-        private bool _isLoading;
         private bool _isAutoReloadChecked;
-        private Lazy<LoggingDataSource> _dataSourceLazy = new Lazy<LoggingDataSource>(CreateDataSource);
         private string _nextPageToken;
         private LogItem _latestLogItem;
 
         private bool _toggleExpandAllExpanded;
-        private bool _isControlEnabled = true;
 
-        private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
-
-        private string _requestStatusText;
-        private string _requestErrorMessage;
-        private bool _showRequestErrorMessage;
-        private bool _showRequestStatus;
-        private bool _showCancelRequestButton;
-        private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
         /// For testing.
         /// </summary>
         private readonly ILoggingDataSource _dataSourceOverride = null;
+
+        private AsyncProperty _asyncAction = new AsyncProperty(Task.FromResult(true));
+        private CancellationTokenSource _cancellationTokenSource;
 
         internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
@@ -172,7 +167,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedLogSeverity, value);
+                AsyncAction = new AsyncProperty(ReloadAsync());
+            }
         }
 
         /// <summary>
@@ -186,7 +185,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set { SetValueAndRaise(ref _selectedTimeZone, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedTimeZone, value);
+                OnTimeZoneChanged();
+            }
         }
 
         /// <summary>
@@ -236,56 +239,69 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the cancel request button visibility
         /// </summary>
-        public bool ShowCancelRequestButton
-        {
-            get { return _showCancelRequestButton; }
-            private set { SetValueAndRaise(ref _showCancelRequestButton, value); }
-        }
-
-        /// <summary>
-        /// Gets the request error message visibility.
-        /// </summary>
-        public bool ShowRequestErrorMessage
-        {
-            get { return _showRequestErrorMessage; }
-            private set { SetValueAndRaise(ref _showRequestErrorMessage, value); }
-        }
-
-        /// <summary>
-        /// Gets the request error message.
-        /// </summary>
-        public string RequestErrorMessage
-        {
-            get { return _requestErrorMessage; }
-            private set { SetValueAndRaise(ref _requestErrorMessage, value); }
-        }
+        public bool ShowCancelRequestButton => AsyncAction.IsPending && CancellationTokenSource != null &&
+            !CancellationTokenSource.IsCancellationRequested;
 
         /// <summary>
         /// Gets the request status text message.
         /// </summary>
         public string RequestStatusText
         {
-            get { return _requestStatusText; }
-            private set { SetValueAndRaise(ref _requestStatusText, value); }
+            get
+            {
+                if (AsyncAction.IsPending)
+                {
+                    if (CancellationTokenSource?.IsCancellationRequested ?? false)
+                    {
+                        return Resources.LogViewerRequestCancellingMessage;
+                    }
+                    else
+                    {
+                        return Resources.LogViewerRequestProgressMessage;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
-        /// <summary>
-        /// Gets the request status block visibility. 
-        /// It includes the request status text block and cancel request button.
-        /// </summary>
-        public bool ShowRequestStatus
+        public AsyncProperty AsyncAction
         {
-            get { return _showRequestStatus; }
-            private set { SetValueAndRaise(ref _showRequestStatus, value); }
+            get { return _asyncAction; }
+            set
+            {
+                SetValueAndRaise(ref _asyncAction, value);
+                RaisePropertyChanged(nameof(RequestStatusText));
+                RaisePropertyChanged(nameof(ShowCancelRequestButton));
+                AsyncAction.PropertyChanged += (sender, args) =>
+                {
+                    if (string.IsNullOrWhiteSpace(args.PropertyName) ||
+                        args.PropertyName == nameof(AsyncProperty.IsPending))
+                    {
+                        RaisePropertyChanged(nameof(RequestStatusText));
+                        RaisePropertyChanged(nameof(ShowCancelRequestButton));
+                    }
+                };
+            }
         }
 
-        /// <summary>
-        /// Gets if it is making request to remote servers or not.
-        /// </summary>
-        public bool IsControlEnabled
+        private CancellationTokenSource CancellationTokenSource
         {
-            get { return _isControlEnabled; }
-            private set { SetValueAndRaise(ref _isControlEnabled, value); }
+            get { return _cancellationTokenSource; }
+            set
+            {
+                SetValueAndRaise(ref _cancellationTokenSource, value);
+                RaisePropertyChanged(nameof(ShowCancelRequestButton));
+                RaisePropertyChanged(nameof(RequestStatusText));
+                CancellationTokenSource?.Token.Register(
+                    () =>
+                    {
+                        RaisePropertyChanged(nameof(ShowCancelRequestButton));
+                        RaisePropertyChanged(nameof(RequestStatusText));
+                    });
+            }
         }
 
         /// <summary>
@@ -335,38 +351,46 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             SimpleTextSearchCommand = new ProtectedCommand(() =>
             {
                 EventsReporterWrapper.ReportEvent(LogsViewerSimpleTextSearchEvent.Create());
-                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+                AsyncAction = new AsyncProperty(ReloadAsync());
             });
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
             SubmitAdvancedFilterCommand = new ProtectedCommand(() =>
             {
                 EventsReporterWrapper.ReportEvent(LogsViewerAdvancedFilterEvent.Create());
-                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+                AsyncAction = new AsyncProperty(ReloadAsync());
             });
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
-            DateTimePickerModel.DateTimeFilterChange += (sender, e) => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
-            PropertyChanged += OnPropertyChanged;
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => AsyncAction = new AsyncProperty(ReloadAsync());
             ResourceTypeSelector = new ResourceTypeMenuViewModel(() => DataSource);
-            ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
+            ResourceTypeSelector.PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == null ||
+                    args.PropertyName == nameof(ResourceTypeMenuViewModel.SelectedMenuItem))
+                {
+                    LogIdList = null;
+                    AsyncAction = new AsyncProperty(ReloadAsync());
+                }
+            };
+
             OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
             OnAutoReloadCommand = new ProtectedCommand(AutoReload);
         }
 
         /// <summary>
-        /// When a new view model is created and attached to Window, 
+        /// When a new view model is created and attached to Window,
         /// invalidate controls and re-load first page of log entries.
         /// </summary>
         public void InvalidateAllProperties()
         {
-            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentAccount?.AccountName) ||
-                String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
+            if (string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentAccount?.AccountName) ||
+                string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
             {
                 return;
             }
 
-            ErrorHandlerUtils.HandleAsyncExceptions(() => RequestLogFiltersWrapperAsync(PopulateResourceTypes));
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         /// <summary>
@@ -375,28 +399,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public void LoadNextPage()
         {
             IsAutoReloadChecked = false;
-            if (String.IsNullOrWhiteSpace(_nextPageToken) || String.IsNullOrWhiteSpace(Project))
+            if (string.IsNullOrWhiteSpace(_nextPageToken) || string.IsNullOrWhiteSpace(Project) ||
+                AsyncAction.IsPending)
             {
                 return;
             }
 
-            ErrorHandlerUtils.HandleAsyncExceptions(() => LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken)));
+            AsyncAction = new AsyncProperty(LoadLogsAsync());
         }
 
         /// <summary>
         /// Send an advanced filter to Logs Viewer and display the results.
         /// </summary>
         /// <param name="advancedSearchText">The advance filter in text format.</param>
-        public async void FilterLog(string advancedSearchText)
+        public void FilterLog(string advancedSearchText)
         {
             IsAutoReloadChecked = false;
-            if (String.IsNullOrWhiteSpace(advancedSearchText))
+            if (string.IsNullOrWhiteSpace(advancedSearchText))
             {
                 return;
             }
 
             ShowAdvancedFilter = true;
-            StringBuilder filter = new StringBuilder();
+            var filter = new StringBuilder();
             filter.AppendLine(advancedSearchText);
             if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
             {
@@ -404,7 +429,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             AdvancedFilterText = filter.ToString();
-            await ReloadAsync();
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         /// <summary>
@@ -416,13 +441,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Detail view is a tree view. 
+        /// Detail view is a tree view.
         /// Each item at tree path is an <seealso cref="ObjectNodeTree"/> object.
         /// The tree view displays the <paramref name="node"/> as name : value pair.
         /// User can click at the "value" to show matching log entries.
         /// 
         /// This method composes a filter on node value, adds it to existing AdvancedFilterText.
-        /// The filter has format of root_node_name.node_name...node_name = "node.value". 
+        /// The filter has format of root_node_name.node_name...node_name = "node.value".
         /// Example: jsonPayload.serviceContext.service="frontend"
         /// </summary>
         private void FilterOnTreeNodeValue(ObjectNodeTree node)
@@ -430,7 +455,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IsAutoReloadChecked = false;
 
             // Firstly compose a new filter line.
-            StringBuilder newFilter = new StringBuilder();
+            var newFilter = new StringBuilder();
             newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");
             while ((node = node.Parent)?.Parent != null)
             {
@@ -455,14 +480,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Show advanced filter.
             AdvancedFilterText = newFilter.ToString();
             ShowAdvancedFilter = true;
-            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
             DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
-            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         /// <summary>
@@ -477,10 +502,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var query = logEntries.Select(x => new LogItem(x, SelectedTimeZone));
+            IEnumerable<LogItem> query = logEntries.Select(x => new LogItem(x, SelectedTimeZone)).ToList();
             if (autoReload && DateTimePickerModel.IsDescendingOrder)
             {
-                foreach (var item in query.Reverse())
+                foreach (LogItem item in query.Reverse())
                 {
                     Debug.WriteLine($"add entry {item.Entry.Timestamp}");
                     _logs.Insert(0, item);
@@ -488,7 +513,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else
             {
-                foreach (var item in query)
+                foreach (LogItem item in query)
                 {
                     _logs.Add(item);
                 }
@@ -502,138 +527,65 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void CancelRequest()
         {
-            Debug.WriteLine("Cancel command is called");
-            RequestStatusText = Resources.LogViewerRequestCancellingMessage;
-            ShowCancelRequestButton = false;
-            _cancellationTokenSource?.Cancel();
-
+            CancellationTokenSource?.Cancel();
             EventsReporterWrapper.ReportEvent(LogsViewerCancelRequestEvent.Create());
-        }
-
-        /// <summary>
-        /// Show request status bar.
-        /// </summary>
-        /// <param name="IsCanceButtonVisible">Indicate if the cancel button should be shown</param>
-        private void SetServerRequestStartStatus(bool IsCanceButtonVisible = true)
-        {
-            IsControlEnabled = false;
-            RequestErrorMessage = null;
-            ShowRequestErrorMessage = false;
-            RequestStatusText = Resources.LogViewerRequestProgressMessage;
-            ShowRequestStatus = true;
-            ShowCancelRequestButton = IsCanceButtonVisible;
-        }
-
-        /// <summary>
-        /// Hide request status bar, enable controls.
-        /// </summary>
-        private void SetServerRequestCompleteStatus()
-        {
-            IsControlEnabled = true;
-            ShowRequestStatus = false;
-        }
-
-        /// <summary>
-        /// A wrapper to LoadLogs.
-        /// This is to make the try/catch statement conscise and easy to read.
-        /// </summary>
-        /// <param name="callback">A function to execute.</param>
-        private async Task LogLoaddingWrapperAsync(Func<CancellationToken, Task> callback)
-        {
-            if (_isLoading)
-            {
-                Debug.WriteLine("_isLoading is true. Skip.");
-                return;
-            }
-
-            Debug.WriteLine("Setting _isLoading to true");
-            _isLoading = true;
-
-            _cancellationTokenSource = new CancellationTokenSource();
-            SetServerRequestStartStatus();
-            try
-            {
-                await callback(_cancellationTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                _nextPageToken = null;
-
-                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
-                {
-                    // Expected cancellation. Log and continue.
-                    Debug.WriteLine("Request was cancelled");
-                }
-                else if (ex is DataSourceException)
-                {
-                    ShowRequestErrorMessage = true;
-                    RequestErrorMessage = ex.Message;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            finally
-            {
-                SetServerRequestCompleteStatus();
-                Debug.WriteLine("Setting _isLoading to false");
-                _isLoading = false;
-            }
         }
 
         /// <summary>
         /// Repeatedly make list log entries request till it gets desired number of logs or it reaches end.
         /// _nextPageToken is used to control if it is getting first page or continuous page.
         /// 
-        /// On complex filters, scanning through logs take time. The server returns empty results 
+        /// On complex filters, scanning through logs take time. The server returns empty results
         ///   with a next page token. Continue to send request till some logs are found.
         /// </summary>
-        /// <param name="cancellationToken">A cancellation token. The caller can monitor the cancellation event.</param>
         /// <param name="autoReload">Indicate if the request comes from autoReload event.</param>
-        private async Task LoadLogsAsync(CancellationToken cancellationToken, bool autoReload = false)
+        private async Task LoadLogsAsync(bool autoReload = false)
         {
+            var tokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = tokenSource.Token;
+            CancellationTokenSource = tokenSource;
+
             if (_logs.Count >= MaxLogEntriesCount)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.LogViewerResultSetTooLargeMessage,
                     title: Resources.UiDefaultPromptTitle);
-                _cancellationTokenSource?.Cancel();
+                CancellationTokenSource?.Cancel();
                 return;
             }
 
             try
             {
-                var startTimestamp = DateTime.Now;
+                DateTime startTimestamp = DateTime.Now;
 
-                var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
+                string order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
                 int count = 0;
-                while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
+                do
                 {
-                    Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
-
-                    // Here, it does not do pageSize: _defaultPageSize - count, 
-                    // Because this is requried to use same page size for getting next page. 
-                    var results = await DataSource.ListLogEntriesAsync(_filter, order,
+                    // Here, it does not do pageSize: _defaultPageSize - count,
+                    // Because this is requried to use same page size for getting next page.
+                    LogEntryRequestResult results = await DataSource.ListLogEntriesAsync(
+                        _filter, order,
                         pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                     _nextPageToken = results.NextPageToken;
-                    if (results?.LogEntries != null)
+                    if (results.LogEntries != null)
                     {
                         count += results.LogEntries.Count;
                         AddLogs(results.LogEntries, autoReload);
                     }
 
-                    if (String.IsNullOrWhiteSpace(_nextPageToken))
+                    if (string.IsNullOrWhiteSpace(_nextPageToken))
                     {
                         _nextPageToken = null;
-                        break;
                     }
-                }
+                } while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested &&
+                    _nextPageToken != null);
 
                 EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
             }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            catch (Exception)
             {
+                _nextPageToken = null;
                 EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Failure));
                 throw;
             }
@@ -645,36 +597,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task ReloadAsync()
         {
             Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
+            _latestLogItem = null;
 
-            if (String.IsNullOrWhiteSpace(Project))
+            if (string.IsNullOrWhiteSpace(Project))
             {
                 Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
-                return;
             }
 
             if (!ResourceTypeSelector.IsSubmenuPopulated)
             {
-                await RequestLogFiltersWrapperAsync(PopulateResourceTypes);
-                Debug.WriteLine("PopulateResourceTypes exit");
-                return;
+                await PopulateResourceTypesAsync();
             }
 
             if (LogIdList == null)
             {
-                await RequestLogFiltersWrapperAsync(PopulateLogIds);
-                Debug.WriteLine("PopulateLogIds exit");
-                return;
+                await PopulateLogIdsAsync();
             }
 
-            _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
-
-            await LogLoaddingWrapperAsync(async (cancelToken) =>
+            if (_latestLogItem == null)
             {
+                _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
                 _nextPageToken = null;
                 _logs.Clear();
-                _latestLogItem = null;
-                await LoadLogsAsync(cancelToken);
-            });
+
+                await LoadLogsAsync();
+            }
         }
 
         /// <summary>
@@ -706,7 +653,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ShowAdvancedFilter = !ShowAdvancedFilter;
             AdvancedFilterText = ShowAdvancedFilter ? ComposeSimpleFilters() : null;
             SimpleSearchText = null;
-            ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         /// <summary>
@@ -718,45 +665,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </returns>
         private string ComposeTextSearchFilter()
         {
-            var splits = StringUtils.SplitStringBySpaceOrQuote(SimpleSearchText);
-            if (splits == null || splits.Count() == 0)
+            List<string> splits = StringUtils.SplitStringBySpaceOrQuote(SimpleSearchText);
+            if (splits?.Count >= 0)
+            {
+                return $"({string.Join(" OR ", splits.Select(x => $"\"{x}\""))})";
+            }
+            else
             {
                 return null;
             }
 
-            return $"({String.Join(" OR ", splits.Select(x => $"\"{x}\""))})";
-        }
-
-        /// <summary>
-        /// A wrapper for common getting filters API calls.
-        /// </summary>
-        /// <param name="apiCall">The api call to get resource descriptors or log names etc.</param>
-        private async Task RequestLogFiltersWrapperAsync(Func<Task> apiCall)
-        {
-            SetServerRequestStartStatus(IsCanceButtonVisible: false);
-            try
-            {
-                await apiCall();
-            }
-            catch (DataSourceException ex)
-            {
-                // If it fails, show a tip, let refresh button retry it.
-                RequestErrorMessage = ex.Message;
-                ShowRequestErrorMessage = true;
-                return;
-            }
-            finally
-            {
-                SetServerRequestCompleteStatus();
-            }
         }
 
         /// <summary>
         /// Populate resource type selection list.
         /// 
-        /// The control flow is as following. 
+        /// The control flow is as follows.
         ///     1. PopulateResourceTypes().
-        ///         1.1 Failed. An error message is displayed. 
+        ///         1.1 Failed. An error message is displayed.
         ///              Goto error handling logic.
         ///     2. Set selected resource type.
         ///     3. When selected resource type is changed, it calls Reload().
@@ -766,13 +692,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async Task PopulateResourceTypes() => await ResourceTypeSelector.PopulateResourceTypes();
+        private async Task PopulateResourceTypesAsync()
+        {
+            CancellationTokenSource = null;
+            await ResourceTypeSelector.PopulateResourceTypesAsync();
+        }
 
         /// <summary>
         /// This method uses similar logic as populating resource descriptors.
-        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// Refers to <seealso cref="PopulateResourceTypesAsync"/>.
         /// </summary>
-        private async Task PopulateLogIds()
+        private async Task PopulateLogIdsAsync()
         {
             if (ResourceTypeSelector.SelectedMenuItem == null)
             {
@@ -780,42 +710,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
+            CancellationTokenSource = null;
             var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
-            var keys = item == null ? null : new List<string>(new string[] { item.ResourceValue });
-            IList<string> logIdRequestResult = await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
+            List<string> keys = item == null ? null : new List<string> { item.ResourceValue };
+            IList<string> logIdRequestResult =
+                await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
-            LogIdList.PropertyChanged += OnPropertyChanged;
-            await ReloadAsync();
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(SelectedTimeZone):
-                    OnTimeZoneChanged();
-                    break;
-                case nameof(LogIdsList.SelectedLogId):
-                    if (LogIdList != null)
-                    {
-                        ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
-                    }
-                    break;
-                case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
-                    LogIdList = null;
-                    ErrorHandlerUtils.HandleAsyncExceptions(() => RequestLogFiltersWrapperAsync(PopulateLogIds));
-                    break;
-                case nameof(SelectedLogSeverity):
-                    ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
-                    break;
-                default:
-                    break;
-            }
+            LogIdList.PropertyChanged += (sender, args) => AsyncAction = new AsyncProperty(ReloadAsync());
         }
 
         private void OnTimeZoneChanged()
         {
-            foreach (var log in _logs)
+            foreach (LogItem log in _logs)
             {
                 log.ChangeTimeZone(SelectedTimeZone);
             }
@@ -831,22 +737,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             Debug.WriteLine("Entering ComposeSimpleFilters()");
 
-            StringBuilder filter = new StringBuilder();
+            var filter = new StringBuilder();
             if (ResourceTypeSelector.SelectedResourceType != null)
             {
                 filter.AppendLine($"resource.type=\"{ResourceTypeSelector.SelectedResourceType.ResourceTypeKeys.Type}\"");
-            }
 
-            var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
-            if (valueItem != null)
-            {
-                // Example: resource.labels.module_id="my_gae_default_service"
-                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeyAt(0)}=\"{valueItem.ResourceValue}\"");
+                var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
+                if (valueItem != null)
+                {
+                    // Example: resource.labels.module_id="my_gae_default_service"
+                    filter.AppendLine(
+                        $"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeyAt(0)}=\"{valueItem.ResourceValue}\"");
+                }
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
-                filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+                filter.AppendLine($"severity>={SelectedLogSeverity.Severity:G}");
             }
 
             if (DateTimePickerModel.IsDescendingOrder)
@@ -866,7 +773,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 
-            var textFilter = ComposeTextSearchFilter();
+            string textFilter = ComposeTextSearchFilter();
             if (textFilter != null)
             {
                 filter.AppendLine(textFilter);
@@ -878,83 +785,54 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void AutoReload()
         {
             // Possibly, the last auto reload command have not completed.
-            if (!IsControlEnabled || _isLoading || !IsAutoReloadChecked)
+            if (AsyncAction.IsPending || !IsAutoReloadChecked)
             {
                 return;
             }
 
-            // If it is in advanced filter, just do reload. 
+            // If it is in advanced filter, just do reload.
             if (ShowAdvancedFilter)
             {
-                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
-                return;
+                AsyncAction = new AsyncProperty(ReloadAsync());
             }
-
-            // TODO: auto scroll to last item in ascending order.
-            ErrorHandlerUtils.HandleAsyncExceptions(AppendNewerLogsAsync);
+            else
+            {
+                // TODO: auto scroll to last item in ascending order.
+                AsyncAction = new AsyncProperty(AppendNewerLogsAsync());
+            }
         }
 
         private async Task AppendNewerLogsAsync()
         {
             bool createNewQuery = DateTimePickerModel.IsDescendingOrder || _nextPageToken == null;
-            _cancellationTokenSource = new CancellationTokenSource();
-            try
-            {
-                SetServerRequestStartStatus();
-                _isLoading = true;
 
-                if (createNewQuery)
-                {
-                    _nextPageToken = null;
-                    Debug.WriteLine($"_latestLogItem is {_latestLogItem?.TimeStamp}, {_latestLogItem?.Message}");
-                    if (DateTimePickerModel.IsDescendingOrder)
-                    {
-                        DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
-                    }
-
-                    StringBuilder filter = new StringBuilder(ComposeSimpleFilters());
-                    filter.AppendLine($"timestamp<\"{DateTime.UtcNow.AddSeconds(-LogStreamingDelayInSeconds):O}\"");
-                    if (_latestLogItem != null)
-                    {
-                        string dateTimeString = _latestLogItem.Entry.Timestamp is string ? _latestLogItem.Entry.Timestamp as string :
-                            _latestLogItem.TimeStamp.ToUniversalTime().ToString("O");
-                        filter.AppendLine($" (timestamp>\"{dateTimeString}\" OR (timestamp=\"{dateTimeString}\"  insertId>\"{_latestLogItem.Entry.InsertId}\") ) ");
-                    }
-                    _filter = filter.ToString();
-                    Debug.WriteLine(_filter);
-                }
-
-                do
-                {
-                    await LoadLogsAsync(_cancellationTokenSource.Token, autoReload: true);
-                } while (_nextPageToken != null && !_cancellationTokenSource.IsCancellationRequested);
-            }
-            catch (Exception ex)
+            if (createNewQuery)
             {
                 _nextPageToken = null;
+                Debug.WriteLine($"_latestLogItem is {_latestLogItem?.TimeStamp}, {_latestLogItem?.Message}");
+                if (DateTimePickerModel.IsDescendingOrder)
+                {
+                    DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
+                }
 
-                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
+                var filter = new StringBuilder(ComposeSimpleFilters());
+                filter.AppendLine($"timestamp<\"{DateTime.UtcNow.AddSeconds(-LogStreamingDelayInSeconds):O}\"");
+                if (_latestLogItem != null)
                 {
-                    // Expected cancellation. Log and continue.
-                    Debug.WriteLine("Request was cancelled");
+                    string dateTimeString = _latestLogItem.Entry.Timestamp as string ??
+                        _latestLogItem.TimeStamp.ToUniversalTime().ToString("O");
+                    filter.AppendLine($" (timestamp>\"{dateTimeString}\" OR (timestamp=\"{dateTimeString}\"  insertId>\"{_latestLogItem.Entry.InsertId}\") ) ");
                 }
-                else if (ex is DataSourceException)
-                {
-                    ShowRequestErrorMessage = true;
-                    RequestErrorMessage = ex.Message;
-                }
-                else
-                {
-                    throw;
-                }
+                _filter = filter.ToString();
+                Debug.WriteLine(_filter);
             }
-            finally
+
+            do
             {
-                SetServerRequestCompleteStatus();
-                _isLoading = false;
-            }
+                await LoadLogsAsync(true);
+            } while (_nextPageToken != null && !CancellationTokenSource.IsCancellationRequested);
 
-            if (_cancellationTokenSource.IsCancellationRequested)
+            if (CancellationTokenSource.IsCancellationRequested)
             {
                 IsAutoReloadChecked = false;
             }

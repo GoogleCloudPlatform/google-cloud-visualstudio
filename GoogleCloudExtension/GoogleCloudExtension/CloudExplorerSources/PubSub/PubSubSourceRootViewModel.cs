@@ -68,11 +68,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         // Mockable static methods for testing.
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
-        internal static IEnumerable<string> TopicFiltersOverride = null;
         internal Func<string, Process> StartProcess { private get; set; } = Process.Start;
 
-        private static IEnumerable<string> TopicFilters => TopicFiltersOverride ?? GoogleCloudExtensionPackage.Instance
-            .GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
+        private static IEnumerable<string> TopicFilters =>
+            GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().PubSubTopicFilters;
 
         public IPubsubDataSource DataSource => _dataSource.Value;
 
@@ -117,7 +116,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             _dataSourceFactory = dataSourceFactory;
             _dataSource = new Lazy<IPubsubDataSource>(_dataSourceFactory);
             GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().SavingSettings +=
-                    (sender, args) => Refresh();
+                (sender, args) => Refresh();
         }
 
         public override void Initialize(ICloudSourceContext context)
@@ -232,9 +231,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         }
 
         /// <summary>
+        /// Wraper on <see cref="OnNewTopicCommandAsync"/> for command execution.
+        /// </summary>
+        private async void OnNewTopicCommand()
+        {
+            await OnNewTopicCommandAsync();
+        }
+
+        /// <summary>
         /// Opens the new Pub/Sub topic dialog.
         /// </summary>
-        internal async void OnNewTopicCommand()
+        internal async Task OnNewTopicCommandAsync()
         {
             try
             {

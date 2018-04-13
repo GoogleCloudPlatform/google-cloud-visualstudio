@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns Google Cloud Stackdriver Error Reporting group status and events.
     /// </summary>
-    public class StackdriverErrorReportingDataSource : DataSourceBase<ClouderrorreportingService>
+    public class StackdriverErrorReportingDataSource : DataSourceBase<ClouderrorreportingService>, IStackdriverErrorReportingDataSource
     {
         /// <summary>
         /// Initializes an instance of <seealso cref="StackdriverErrorReportingDataSource"/> class.
