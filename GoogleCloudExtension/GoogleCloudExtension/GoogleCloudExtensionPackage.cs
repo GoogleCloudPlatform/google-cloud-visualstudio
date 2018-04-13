@@ -244,7 +244,6 @@ namespace GoogleCloudExtension
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             _dteInstance = (DTE)GetService(typeof(DTE));
-
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
@@ -261,15 +260,7 @@ namespace GoogleCloudExtension
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
         }
 
-        private static IGoogleCloudExtensionPackage _instance;
-        public static IGoogleCloudExtensionPackage Instance
-        {
-            get
-            {
-                return _instance;
-            }
-            internal set { _instance = value; }
-        }
+        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
         #endregion
 
