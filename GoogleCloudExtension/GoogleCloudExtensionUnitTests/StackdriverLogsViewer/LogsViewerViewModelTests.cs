@@ -16,7 +16,9 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -25,9 +27,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GoogleCloudExtension.Options;
 using Process = System.Diagnostics.Process;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -47,6 +49,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestInitialize]
         public void BeforeEach()
         {
+            EventsReporterWrapper.DisableReporting();
             _oldPackage = GoogleCloudExtensionPackage.Instance;
             _packageMock = new Mock<IGoogleCloudExtensionPackage>();
             _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
@@ -54,7 +57,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             analyticsOption.OptIn = false;
             _packageMock.Setup(p => p.AnalyticsSettings).Returns(analyticsOption);
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
-            
+
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
@@ -367,7 +370,9 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestFilterTreeNode()
         {
-            var logsToolWindow = new LogsViewerToolWindow { Frame = LogsViewerToolWindowTests.GetMockedWindowFrame() };
+            var logsToolWindow =
+                Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == new LogsViewerViewModel(_mockedLoggingDataSource));
+            logsToolWindow.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindow);

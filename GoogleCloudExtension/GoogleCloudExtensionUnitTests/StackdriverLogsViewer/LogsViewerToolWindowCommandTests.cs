@@ -68,8 +68,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             Mock<IVsWindowFrame> frameMock = LogsViewerToolWindowTests.GetWindowFrameMock();
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
                 .Returns(() => null);
+            var logsViewerToolWindow = Mock.Of<LogsViewerToolWindow>();
+            logsViewerToolWindow.Frame = frameMock.Object;
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
-                .Returns(new LogsViewerToolWindow { Frame = frameMock.Object });
+                .Returns(logsViewerToolWindow);
 
             LogsViewerToolWindowCommand.Initialize(_packageMock.Object);
             command.Invoke();

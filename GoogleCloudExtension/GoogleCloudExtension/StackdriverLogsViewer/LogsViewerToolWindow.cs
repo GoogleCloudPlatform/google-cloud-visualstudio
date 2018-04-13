@@ -63,10 +63,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // the object returned by the Content property.
             _content = new LogsViewerToolWindowControl();
 
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
-            CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
+            CredentialsStore.Default.CurrentProjectIdChanged += OnProjectIdChanged;
+            CredentialsStore.Default.Reset += OnProjectIdChanged;
 
             EventsReporterWrapper.ReportEvent(LogsViewerOpenEvent.Create());
+        }
+
+        private void OnProjectIdChanged(object sender, EventArgs e)
+        {
+            CreateNewViewModel();
         }
 
         /// <summary>
@@ -82,6 +87,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             base.OnClose();
             ViewModel?.Dispose();
+            CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectIdChanged;
+            CredentialsStore.Default.Reset -= OnProjectIdChanged;
         }
 
         private void CreateNewViewModel()
