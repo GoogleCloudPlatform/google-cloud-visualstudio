@@ -70,6 +70,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _isAutoReloadChecked;
         private string _nextPageToken;
         private LogItem _latestLogItem;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         private bool _toggleExpandAllExpanded;
 
@@ -123,6 +124,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the command that filters log entris on a detail tree view field value.
         /// </summary>
         public ProtectedCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
+
+        /// <summary>
+        /// Indicates whether the view is visible or not
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.
@@ -344,6 +350,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogsViewerViewModel()
         {
+            IsVisibleUnbound = true;
+            _package = GoogleCloudExtensionPackage.Instance;
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
@@ -786,6 +794,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             // Possibly, the last auto reload command have not completed.
             if (AsyncAction.IsPending || !IsAutoReloadChecked)
+            {
+                return;
+            }
+
+            // If the view is not visible, don't reload
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
             {
                 return;
             }

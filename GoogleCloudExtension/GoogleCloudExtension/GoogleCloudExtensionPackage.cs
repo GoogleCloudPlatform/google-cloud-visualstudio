@@ -148,6 +148,15 @@ namespace GoogleCloudExtension
             ClosingEvent -= handler;
         }
 
+        /// <summary>
+        /// Check whether the main window is not minimized.
+        /// </summary>
+        /// <returns>true/false based on whether window is minimized or not</returns>
+        public bool IsWindowActive()
+        {
+            return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
+        }
+
         protected override int QueryClose(out bool canClose)
         {
             ClosingEvent?.Invoke(this, EventArgs.Empty);

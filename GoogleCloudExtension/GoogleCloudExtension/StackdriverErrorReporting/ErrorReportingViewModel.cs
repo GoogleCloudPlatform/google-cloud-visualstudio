@@ -46,6 +46,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         /// <summary>
         /// Gets an exception as string.
@@ -93,6 +94,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             get { return _isLoadingNextPage; }
             set { SetValueAndRaise(ref _isLoadingNextPage, value); }
         }
+
+        /// <summary>
+        /// Indicates the visibility of the UserControl
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
 
         /// <summary>
         /// If the current project id is reset to null or empty, hide the grid.
@@ -152,12 +158,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingViewModel()
         {
+            IsVisibleUnbound = true;
+            _package = GoogleCloudExtensionPackage.Instance;
             _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             SelectedTimeRangeItem = TimeRangeItemList.Last();
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             OnAutoReloadCommand = new ProtectedCommand(Reload);
+
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
@@ -199,6 +208,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private void Reload()
         {
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
+            {
+                return;
+            }
+
             _groupStatsCollection.Clear();
             _nextPageToken = null;
             ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
@@ -215,6 +229,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 return;
             }
+
             if (_isLoading)
             {
                 Debug.WriteLine("_isLoading is true, quit LoadAsync.");

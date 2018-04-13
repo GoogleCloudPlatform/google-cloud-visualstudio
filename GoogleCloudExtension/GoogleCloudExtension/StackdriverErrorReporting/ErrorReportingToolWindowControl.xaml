@@ -14,7 +14,8 @@
              x:Name="_errorReportingWindow"
              mc:Ignorable="d"
              d:DesignHeight="640" d:DesignWidth="640"
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingViewModel}" >
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingViewModel}"
+             IsVisibleChanged="ErrorReportingToolWindowControl_OnIsVisibleChanged" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
