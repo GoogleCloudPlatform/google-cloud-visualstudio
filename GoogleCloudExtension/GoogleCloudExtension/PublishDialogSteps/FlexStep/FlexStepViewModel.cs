@@ -23,6 +23,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,9 +51,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
-        private bool _needsAppCreated;
+        private bool _needsAppCreated = false;
 
-        protected Func<Task<bool>> SetAppRegionAsyncFunc => _setAppRegionAsyncFunc ??
+        private Func<Task<bool>> SetAppRegionAsyncFunc => _setAppRegionAsyncFunc ??
             (() => GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource));
 
         /// <summary>
@@ -123,6 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             _content = content;
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;
+            RequiredApis = s_requiredApis;
 
             SetAppRegionCommand = new ProtectedAsyncCommand(async () =>
             {
@@ -144,22 +146,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// <inheritdoc/>
         public override FrameworkElement Content => _content;
 
-        protected internal override IList<string> RequiredApis => s_requiredApis;
-
         protected override async Task ValidateProjectAsync()
         {
             NeedsAppCreated = false;
 
             await base.ValidateProjectAsync();
 
-            if (IsValidGCPProject)
+            if (IsValidGcpProject)
             {
                 // Using the GAE API, check if there's an app for the project.
                 if (null == await CurrentDataSource.GetApplicationAsync())
                 {
                     Debug.WriteLine("Needs App created.");
                     NeedsAppCreated = true;
-                    IsValidGCPProject = false;
+                    IsValidGcpProject = false;
                 }
             }
         }
@@ -173,17 +173,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
+        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
 
         /// <summary>
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
+        protected override Task LoadValidProjectDataAsync() => TplExtensions.CompletedTask;
 
         protected override void RefreshCanPublish()
         {
-            CanPublish = IsValidGCPProject && !HasErrors;
+            CanPublish = IsValidGcpProject && !HasErrors;
         }
 
         public override async void Publish()
@@ -266,17 +266,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
-                if (PublishDialog != null)
-                {
-                    PublishDialog.FinishFlow();
-                }
+                PublishDialog?.FinishFlow();
 
                 EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
         /// <summary>
-        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
         /// </summary>
         public override IPublishDialogStep Next()
         {

@@ -27,7 +27,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         protected override PublishDialogStepBase CreateStep()
         {
             var objectUnderTestImpl = new Mock<PublishDialogStepBase>(_apiManagerMock.Object, _pickProjectPromptMock.Object) { CallBase = true };
-            objectUnderTestImpl.Setup(step => step.RequiredApis).Returns(new List<string>());
             return objectUnderTestImpl.Object;
         }
     }

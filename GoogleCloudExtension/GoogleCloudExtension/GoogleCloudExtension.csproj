@@ -54,7 +54,7 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
-	<Compile Include="Accounts\IWindowsCredentialsStore.cs" />
+    <Compile Include="Accounts\IWindowsCredentialsStore.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
@@ -214,7 +214,7 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
-	<Compile Include="IGoogleCloudExtensionPackage.cs" />
+    <Compile Include="IGoogleCloudExtensionPackage.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
     </Compile>

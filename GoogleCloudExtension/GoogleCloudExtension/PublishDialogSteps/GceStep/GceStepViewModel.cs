@@ -24,6 +24,7 @@ using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -49,11 +50,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private readonly IGceDataSource _dataSource;
         private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
         private readonly Action<Instance> _manageCredentialsPrompt;
-        private Instance _selectedInstance;
+        private Instance _selectedInstance = null;
         private IEnumerable<WindowsInstanceCredentials> _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
-        private WindowsInstanceCredentials _selectedCredentials;
+        private WindowsInstanceCredentials _selectedCredentials = null;
         private bool _openWebsite = true;
-        private bool _launchRemoteDebugger;
+        private bool _launchRemoteDebugger = false;
         private IEnumerable<Instance> _instances = Enumerable.Empty<Instance>();
 
         /// <summary>
@@ -158,6 +159,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             _dataSource = dataSource;
             _currentWindowsCredentialStore = currentWindowsCredentialStore;
             _manageCredentialsPrompt = manageCredentialsPrompt;
+            RequiredApis = s_requiredApis;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -177,8 +179,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         #region IPublishDialogStep
 
         public override FrameworkElement Content => _content;
-
-        protected internal override IList<string> RequiredApis => s_requiredApis;
 
         public override async void Publish()
         {
@@ -247,10 +247,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
-                if (PublishDialog != null)
-                {
-                    PublishDialog.FinishFlow();
-                }
+                PublishDialog?.FinishFlow();
 
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }
@@ -268,23 +265,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// No data to load
         /// </summary>
         /// <returns>A cached completed task</returns>
-        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
+        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
 
         /// <summary>
         /// Loads the instances of the project given that it is valid.
         /// </summary>
-        protected override async Task LoadProjectDataIfValidAsync()
+        protected override async Task LoadValidProjectDataAsync()
         {
             Instances = await GetAllWindowsInstancesAsync();
         }
 
         protected override void RefreshCanPublish()
         {
-            CanPublish = IsValidGCPProject && !HasErrors && SelectedCredentials != null;
+            CanPublish = IsValidGcpProject && !HasErrors && SelectedCredentials != null;
         }
 
         /// <summary>
-        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
         /// </summary>
         public override IPublishDialogStep Next()
         {

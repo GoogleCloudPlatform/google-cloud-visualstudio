@@ -24,6 +24,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -56,8 +57,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
         private IEnumerable<Cluster> _clusters = Enumerable.Empty<Cluster>();
-        private Cluster _selectedCluster;
-        private string _deploymentName;
+        private Cluster _selectedCluster = null;
+        private string _deploymentName = null;
         private string _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _dontExposeService = true;
         private bool _exposeService = false;
@@ -194,6 +195,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             _content = content;
             _dataSource = dataSource;
+            RequiredApis = s_requiredApis;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedAsyncCommand(async () =>
@@ -205,7 +207,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override void RefreshCanPublish()
         {
-            CanPublish = IsValidGCPProject
+            CanPublish = IsValidGcpProject
                 && !HasErrors
                 && SelectedCluster != null
                 && SelectedCluster != s_placeholderCluster;
@@ -225,10 +227,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override FrameworkElement Content => _content;
 
-        protected internal override IList<string> RequiredApis => s_requiredApis;
-
         /// <summary>
-        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
         /// </summary>
         public override IPublishDialogStep Next()
         {
@@ -237,10 +237,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override async Task InitializeDialogAsync()
         {
+            /// Start the task that initializes the dialog, mainly loads the GCP project.
             Task initializeDialogTask = base.InitializeDialogAsync();
 
+            /// In the meantime, set DeploymentName, which launches validations and updates the UI.
             DeploymentName = PublishDialog.Project.Name.ToLower();
 
+            /// Wait for the initialization task to be done.
             await initializeDialogTask;
         }
 
@@ -250,7 +253,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             CreateClusterCommand.CanExecuteCommand = false;
 
             await base.ValidateProjectAsync();
-            if (IsValidGCPProject)
+            if (IsValidGcpProject)
             {
                 RefreshClustersListCommand.CanExecuteCommand = true;
                 CreateClusterCommand.CanExecuteCommand = true;
@@ -269,12 +272,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadProjectDataAlwaysAsync() => Task.Delay(0);
+        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
 
         /// <summary>
         /// Get clusters for the selected project.
         /// </summary>
-        protected override async Task LoadProjectDataIfValidAsync()
+        protected override async Task LoadValidProjectDataAsync()
         {
             await RefreshClustersAsync();
         }
@@ -400,10 +403,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
-                if (PublishDialog != null)
-                {
-                    PublishDialog.FinishFlow();
-                }
+                PublishDialog?.FinishFlow();
 
                 EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }

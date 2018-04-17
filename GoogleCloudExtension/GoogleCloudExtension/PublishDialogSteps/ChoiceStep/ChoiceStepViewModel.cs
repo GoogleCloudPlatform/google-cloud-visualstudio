@@ -20,6 +20,7 @@ using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtension.PublishDialogSteps.GkeStep;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private static readonly Lazy<ImageSource> s_gkeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GkeIconPath));
 
         private readonly ChoiceStepContent _content;
-        private IEnumerable<Choice> _choices;
+        private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
 
         /// <summary>
         /// The choices available for the project being published.
@@ -60,8 +61,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             : base(apiManager, pickProjectPrompt)
         {
             _content = content;
-
-            _choices = Enumerable.Empty<Choice>();
         }
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
@@ -123,23 +122,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         /// <inheritdoc />
         public override FrameworkElement Content => _content;
 
-        protected internal override IList<string> RequiredApis => new List<string>();
-
         protected override void ClearLoadedProjectData()
         {
             Choices = Enumerable.Empty<Choice>();
         }
 
-        protected override Task LoadProjectDataAlwaysAsync()
+        protected override Task LoadAnyProjectDataAsync()
         {
             Choices = GetChoicesForCurrentProject();
-            return Task.Delay(0);
+            return TplExtensions.CompletedTask;
         }
 
-        protected override Task LoadProjectDataIfValidAsync() => Task.Delay(0);
+        protected override Task LoadValidProjectDataAsync() => TplExtensions.CompletedTask;
 
         /// <summary>
-        /// This step never goes next. <see cref="CanGoNext"/> is always <code false />
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
         /// </summary>
         public override IPublishDialogStep Next()
         {
@@ -147,7 +144,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         }
 
         /// <summary>
-        /// This step never publishes. <see cref="CanPublish"/> is always <code false />
+        /// This step never publishes. <see cref="IPublishDialogStep.CanPublish"/> is always <code>false</code>
         /// </summary>
         public override void Publish()
         {

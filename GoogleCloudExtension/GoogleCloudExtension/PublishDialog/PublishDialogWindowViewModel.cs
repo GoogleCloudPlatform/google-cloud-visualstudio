@@ -134,7 +134,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             RemoveStepEvents();
             _stack.Pop();
-            var newStep = _stack.Peek();
+            IPublishDialogStep newStep = _stack.Peek();
             newStep.OnVisible(this);
             AddStepEvents();
 

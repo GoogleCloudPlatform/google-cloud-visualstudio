@@ -76,16 +76,6 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static IEnumerable<ValidationResult> ValidateInteger(string value, string fieldName)
-        {
-            int unused;
-            if (!int.TryParse(value, out unused))
-            {
-                yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationIntegerMessage), fieldName);
-            }
-        }
-
         public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)
         {
             int intValue;
