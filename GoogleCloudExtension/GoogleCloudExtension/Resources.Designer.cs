@@ -6361,15 +6361,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} must be an integer..
-        /// </summary>
-        public static string ValidationIntegerMessage {
-            get {
-                return ResourceManager.GetString("ValidationIntegerMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} must be less than {1} characters long..
         /// </summary>
         public static string ValidationMaxCharactersMessage {

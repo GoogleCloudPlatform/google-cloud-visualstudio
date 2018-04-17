@@ -2355,10 +2355,6 @@
     <value>{0} can only contain letters, numbers, and dashes(-).</value>
     <comment>{Field} can only contain letters, numbers and dashes validation message.</comment>
   </data>
-  <data name="ValidationIntegerMessage" xml:space="preserve">
-    <value>{0} must be an integer.</value>
-    <comment>{Field} must be an integer validation message.</comment>
-  </data>
   <data name="ValidationMaxCharactersMessage" xml:space="preserve">
     <value>{0} must be less than {1} characters long.</value>
     <comment>{Field} must be less than {N} characters long validation message.</comment>
