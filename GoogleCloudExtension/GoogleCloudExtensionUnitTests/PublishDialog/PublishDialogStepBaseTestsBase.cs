@@ -93,7 +93,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         public void TestInitialStateNoProject()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
-            SetInitialStateExpectedValues();
 
             AssertSelectedProjectUnchanged();
             AssertInitialState();
@@ -103,7 +102,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         public void TestInitialStateWithProject()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            SetInitialStateExpectedValues();
 
             AssertSelectedProjectUnchanged();
             AssertInitialState();
@@ -112,9 +110,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestOnVisibleNoProject()
         {
-            await GoToNoProjectState();
-
             SetNoProjectStateExpectedValues();
+
+            await OnVisibleWithProject(null);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -123,9 +121,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestOnVisiblePositiveValidation()
         {
-            await GoToValidDefaultState();
-
+            InitAreServicesEnabledMock(true);
             SetValidDefaultStateExpectedValues();
+
+            await OnVisibleWithProject(s_defaultProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -134,9 +133,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestOnVisibleNegativeValidation()
         {
-            await GoToInvalidDefaultState();
-
+            InitAreServicesEnabledMock(false);
             SetInvalidDefaultStateExpectedValues();
+
+            await OnVisibleWithProject(s_defaultProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -145,7 +145,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public void TestOnVisibleLongRunningValidation()
         {
-            GoToLongRunningValidationDefaultState();
+            InitLongRunningAreServicesEnabledMock();
+
+            Task onVisibleTask = OnVisibleWithProject(s_defaultProject);
 
             SetLongRunningValidationDefaultExpectedValues();
 
@@ -156,7 +158,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestOnVisibleErrorInValidation()
         {
-            await GoToErrorInValidationDefaultState();
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
 
             SetErrorInValidationDefaultExpectedValues();
 
@@ -167,9 +170,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToNoExternal()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToNoProjectExternal();
+            await OnProjectChangedExternally(null);
 
             SetNoProjectStateExpectedValues();
 
@@ -180,9 +183,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToValidExternal()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToValidTargetExternal();
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedExternally(s_targetProject);
 
             SetValidTargetStateExpectedValues();
 
@@ -193,9 +197,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToInvalidExternal()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetExternal();
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedExternally(s_targetProject);
 
             SetInvalidTargetStateExpectedValues();
 
@@ -206,11 +211,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToNoExternal()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoProjectExternal();
-
             SetNoProjectStateExpectedValues();
+
+            await OnProjectChangedExternally(null);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -219,11 +225,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToValidExternal()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidTargetExternal();
-
             SetValidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -232,11 +240,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToInvalidExternal()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetExternal();
-
             SetInvalidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -245,11 +255,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToNoExternal()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoProjectExternal();
-
             SetNoProjectStateExpectedValues();
+            await OnProjectChangedExternally(null);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -258,11 +268,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToValidExternal()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidTargetExternal();
-
             SetValidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -271,11 +283,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToInvalidExternal()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetExternal();
-
             SetInvalidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -284,9 +298,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToNoSelectCommand()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToNoProjectSelectCommand();
+            await OnProjectChangedSelectProjectCommand(null);
 
             SetNoProjectStateExpectedValues();
 
@@ -297,9 +311,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToValidSelectCommand()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToValidTargetSelectCommand();
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             SetValidTargetStateExpectedValues();
 
@@ -310,9 +325,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromNoToInvalidSelectCommand()
         {
-            await GoToNoProjectState();
+            await OnVisibleWithProject(null);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetSelectCommand();
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             SetInvalidTargetStateExpectedValues();
 
@@ -323,11 +339,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToNoSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoProjectSelectCommand();
-
             SetValidDefaultStateExpectedValues();
+
+            await OnProjectChangedSelectProjectCommand(null);
 
             AssertSelectedProjectUnchanged();
             AssertExpectedVisibleState();
@@ -336,11 +353,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToValidSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidTargetSelectCommand();
-
             SetValidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -349,11 +368,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToInvalidSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetSelectCommand();
-
             SetInvalidTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -362,11 +383,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToSameValidSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidDefaultSelectCommand();
-
             SetValidDefaultStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             AssertSelectedProjectUnchanged();
             AssertExpectedVisibleState();
@@ -375,11 +398,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToSameInvalidSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidDefaultSelectCommand();
-
             SetInvalidDefaultStateExpectedValues();
+
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             AssertSelectedProjectUnchanged();
             AssertExpectedVisibleState();
@@ -388,9 +413,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToNoSelectCommand()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoProjectSelectCommand();
+            await OnProjectChangedSelectProjectCommand(null);
 
             SetInvalidDefaultStateExpectedValues();
 
@@ -401,9 +427,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToValidSelectCommand()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidTargetSelectCommand();
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             SetValidTargetStateExpectedValues();
 
@@ -414,9 +442,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToInvalidSelectCommand()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidTargetSelectCommand();
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             SetInvalidTargetStateExpectedValues();
 
@@ -427,9 +457,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToSameValidSelectCommand()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidDefaultSelectCommand();
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             SetValidDefaultStateExpectedValues();
 
@@ -440,9 +472,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromInvalidToSameInvalidSelectCommand()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToInvalidDefaultSelectCommand();
+            InitAreServicesEnabledMock(false);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             SetInvalidDefaultStateExpectedValues();
 
@@ -453,9 +487,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromErrorInValidationToValidSelectCommand()
         {
-            await GoToErrorInValidationDefaultState();
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToValidTargetSelectCommand();
+            InitAreServicesEnabledMock(true);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             SetValidTargetStateExpectedValues();
 
@@ -466,11 +502,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToErrorInValidationSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToErrorInValidationTargetSelectCommand();
-
             SetErrorInValidationTargetExpectedValues();
+
+            InitErrorAreServicesEnabledMock();
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -479,11 +517,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestFromValidToLongRunningValidationSelectCommand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            TransitionToLongRunningValidationTargetSelectCommand();
-
             SetLongRunningValidationTargetExpectedValues();
+
+            InitLongRunningAreServicesEnabledMock();
+            Task onProjectChanged = OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -492,10 +532,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestEnableAPIsCommandSuccess()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
 
-            await RunEnableApiCommandSuccess();
+            InitAreServicesEnabledMock(true);
+            InitEnableApiMock();
+            await RunEnableApiCommand();
 
             SetValidDefaultStateExpectedValues();
 
@@ -506,10 +549,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public async Task TestEnableAPIsCommandFailure()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
 
-            await RunEnableApiCommandFailure();
+            InitAreServicesEnabledMock(false);
+            InitEnableApiMock();
+            await RunEnableApiCommand();
 
             SetInvalidDefaultStateExpectedValues();
 
@@ -518,69 +564,99 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinishedFromValid()
-        {
-            await GoToValidDefaultState();
-            _changedProperties.Clear();
-            GoToFlowFinishedState();
-
-            SetInitialStateExpectedValues();
-
-            AssertInitialState();
-
-            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
-            AssertSelectedProjectUnchanged();
-        }
-
-        [TestMethod]
-        public async Task TestOnFlowFinishedFromInvalid()
-        {
-            await GoToInvalidDefaultState();
-            _changedProperties.Clear();
-            GoToFlowFinishedState();
-
-            SetInitialStateExpectedValues();
-
-            AssertInitialState();
-
-            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
-            AssertSelectedProjectUnchanged();
-        }
-
-        [TestMethod]
-        public async Task TestOnFlowFinishedFromError()
-        {
-            await GoToErrorInValidationDefaultState();
-            _changedProperties.Clear();
-            GoToFlowFinishedState();
-
-            SetInitialStateExpectedValues();
-
-            AssertInitialState();
-
-            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
-            AssertSelectedProjectUnchanged();
-        }
-
-        protected virtual void InitPositiveValidationMocks()
+        public async Task TestOnFlowFinishedFromValidState()
         {
             InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
         }
 
-        protected virtual void InitNegativeValidationMocks()
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromValidEventHandling()
+        {
+            InitAreServicesEnabledMock(true);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromInvalidState()
         {
             InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
         }
 
-        protected virtual void InitLongRunningValidationMocks()
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromInvalidEventHandling()
         {
-            InitLongRunningAreServicesEnabledMock();
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
         }
 
-        protected virtual void InitErrorValidationMocks()
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromErrorState()
         {
             InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
         }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromErrorEventHandling()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
+        }
+
+        //protected virtual void InitPositiveValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(true);
+        //}
+
+        //protected virtual void InitNegativeValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(false);
+        //}
+
+        //protected virtual void InitLongRunningValidationMocks()
+        //{
+        //    InitLongRunningAreServicesEnabledMock();
+        //}
+
+        //protected virtual void InitErrorValidationMocks()
+        //{
+        //    InitErrorAreServicesEnabledMock();
+        //}
 
         protected void InitAreServicesEnabledMock(bool servicesEnabled)
         {
@@ -605,18 +681,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _enableServicesTaskSource.SetResult(null);
         }
 
-        protected virtual void SetInitialStateExpectedValues()
-        {
-            _expectedProjectId = null;
-            _expectedCanPublish = false;
-            _expectedLoadingProject = false;
-            _expectedNeedsApiEnabled = false;
-            _expectedEnableApiCommandCanExecute = false;
-            _expectedRequiredApisCount = RequieredAPIsForStep;
-            _expectedGeneralError = false;
-            _expectedInputHasErrors = false;
-            _expectedShowInputControls = false;
-        }
+        //protected virtual void SetInitialStateExpectedValues()
+        //{
+        //    _expectedProjectId = null;
+        //    _expectedCanPublish = false;
+        //    _expectedLoadingProject = false;
+        //    _expectedNeedsApiEnabled = false;
+        //    _expectedEnableApiCommandCanExecute = false;
+        //    _expectedRequiredApisCount = RequieredAPIsForStep;
+        //    _expectedGeneralError = false;
+        //    _expectedInputHasErrors = false;
+        //    _expectedShowInputControls = false;
+        //}
 
         protected virtual void SetNoProjectStateExpectedValues()
         {
@@ -727,149 +803,51 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _expectedShowInputControls = true;
         }
 
-        protected async Task GoToNoProjectState()
+        protected async Task OnVisibleWithProject(Project project)
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
-        }
-
-        protected async Task GoToValidDefaultState()
-        {
-            InitPositiveValidationMocks();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
-        }
-
-        protected async Task GoToInvalidDefaultState()
-        {
-            InitNegativeValidationMocks();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
-        }
-
-        protected void GoToLongRunningValidationDefaultState()
-        {
-            InitLongRunningValidationMocks();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            // Not awaiting here, this potentially won't finish and we want to check
-            // the loading project state.
-        }
-
-        protected async Task GoToErrorInValidationDefaultState()
-        {
-            InitErrorValidationMocks();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
-
-        }
-
-        protected void GoToFlowFinishedState()
-        {
-            _changedProperties.Clear();
-            Mock<IPublishDialog> publishDialogMock = Mock.Get(_mockedPublishDialog);
-            publishDialogMock.Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-        }
-
-        protected async Task TransitionToNoProjectExternal()
-        {
-            await TransitionToProjectExternal(() => { }, null);
-        }
-
-        protected async Task TransitionToValidTargetExternal()
-        {
-            await TransitionToProjectExternal(InitPositiveValidationMocks, s_targetProject);
-        }
-
-        protected async Task TransitionToInvalidTargetExternal()
-        {
-            await TransitionToProjectExternal(InitNegativeValidationMocks, s_targetProject);
-        }
-
-        protected async Task TransitionToProjectExternal(Action initMocks, Project project)
-        {
-            initMocks();
             CredentialsStore.Default.UpdateCurrentProject(project);
+            _objectUnderTest.OnVisible(_mockedPublishDialog);
             await _objectUnderTest.AsyncAction;
         }
 
-        protected async Task TransitionToNoProjectSelectCommand()
+        protected async Task OnProjectChangedExternally(Project changedTo)
         {
-            await TransitionToProjectSelectCommand(() => { }, null);
-        }
-
-        protected async Task TransitionToValidDefaultSelectCommand()
-        {
-            await TransitionToProjectSelectCommand(InitPositiveValidationMocks, s_defaultProject);
-        }
-
-        protected async Task TransitionToValidTargetSelectCommand()
-        {
-            await TransitionToProjectSelectCommand(InitPositiveValidationMocks, s_targetProject);
-        }
-
-        protected async Task TransitionToInvalidDefaultSelectCommand()
-        {
-            await TransitionToProjectSelectCommand(InitNegativeValidationMocks, s_defaultProject);
-        }
-
-        protected async Task TransitionToInvalidTargetSelectCommand()
-        {
-            await TransitionToProjectSelectCommand(InitNegativeValidationMocks, s_targetProject);
-        }
-
-        protected async Task TransitionToErrorInValidationTargetSelectCommand()
-        {
-            await TransitionToProjectSelectCommand(InitErrorValidationMocks, s_targetProject);
-        }
-
-        protected void TransitionToLongRunningValidationTargetSelectCommand()
-        {
-            InitLongRunningValidationMocks();
-            _pickProjectPromptMock.Setup(f => f()).Returns(s_targetProject);
-            _objectUnderTest.SelectProjectCommand.Execute(null);
-            // Not awaiting here, this potentially won't finish and we want to check
-            // the loading project state.
-        }
-
-        protected async Task TransitionToProjectSelectCommand(Action initMocks, Project project)
-        {
-            initMocks();
-            _pickProjectPromptMock.Setup(f => f()).Returns(project);
-            _objectUnderTest.SelectProjectCommand.Execute(null);
+            CredentialsStore.Default.UpdateCurrentProject(changedTo);
             await _objectUnderTest.AsyncAction;
         }
 
-        protected async Task RunEnableApiCommandSuccess()
+        protected async Task OnProjectChangedSelectProjectCommand(Project changedTo)
         {
-            InitPositiveValidationMocks();
-            await RunEnableApiCommand();
-        }
-
-        protected virtual async Task RunEnableApiCommandFailure()
-        {
-            InitAreServicesEnabledMock(false);
-            await RunEnableApiCommand();
+            _pickProjectPromptMock.Setup(f => f()).Returns(changedTo);
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
         }
 
         protected async Task RunEnableApiCommand()
         {
-            InitEnableApiMock();
             _objectUnderTest.EnableApiCommand.Execute(null);
             await _objectUnderTest.AsyncAction;
+        }
+
+        protected void RaiseFlowFinished()
+        {
+            Mock<IPublishDialog> publishDialogMock = Mock.Get(_mockedPublishDialog);
+            publishDialogMock.Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
         }
 
         protected virtual void AssertInitialState()
         {
             Assert.IsNull(_objectUnderTest.PublishDialog);
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsNull(_objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
-
-            AssertAgainstExpected();
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
         protected void AssertExpectedVisibleState()
@@ -905,7 +883,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.AreEqual(_expectedInputHasErrors, _objectUnderTest.HasErrors);
             Assert.AreEqual(_expectedGeneralError, _objectUnderTest.GeneralError);
             Assert.AreEqual(_expectedShowInputControls, _objectUnderTest.ShowInputControls);
-            Assert.AreEqual(_expectedRequiredApisCount, _objectUnderTest.RequiredApis?.Count);
         }
     }
 }

@@ -133,11 +133,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public async Task TestFromValidToNoInstancesSelectCommmand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetInstanceListMock(s_mockedInstances);
+            InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoInstancesTargetSelectCommand();
-
             SetNoInstancesTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            InitGetInstanceListMock(new List<Instance>());
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -146,11 +151,17 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public async Task TestFromValidToNoCredentialsSelectCommmand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetInstanceListMock(s_mockedInstances);
+            InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoCredentialsTargetSelectCommand();
-
             SetNoCredentialsTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            InitGetInstanceListMock(s_mockedInstances);
+            InitGetCredentialsForInstanceMock(new List<WindowsInstanceCredentials>());
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -184,31 +195,31 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             AssertExpectedVisibleState();
         }
 
-        protected override void InitPositiveValidationMocks()
-        {
-            base.InitPositiveValidationMocks();
-            InitGetInstanceListMock(s_mockedInstances);
-            InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
-        }
+        //protected override void InitPositiveValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(true);
+        //    InitGetInstanceListMock(s_mockedInstances);
+        //    InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
+        //}
 
-        protected override void InitNegativeValidationMocks()
-        {
-            base.InitNegativeValidationMocks();
-            InitGetInstanceListMock(s_mockedInstances);
-            InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
-        }
+        //protected override void InitNegativeValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(false);
+        //    InitGetInstanceListMock(s_mockedInstances);
+        //    InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
+        //}
 
-        protected override void InitLongRunningValidationMocks()
-        {
-            base.InitLongRunningValidationMocks();
-            InitLongRunningGetInstanceListMock();
-        }
+        //protected override void InitLongRunningValidationMocks()
+        //{
+        //    InitLongRunningAreServicesEnabledMock();
+        //    InitLongRunningGetInstanceListMock();
+        //}
 
-        protected override void InitErrorValidationMocks()
-        {
-            base.InitErrorValidationMocks();
-            InitErrorGetInstanceListMock();
-        }
+        //protected override void InitErrorValidationMocks()
+        //{
+        //    InitErrorAreServicesEnabledMock();
+        //    InitErrorGetInstanceListMock();
+        //}
 
         private void InitGetInstanceListMock(IList<Instance> result)
         {
@@ -232,15 +243,24 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(It.IsAny<Instance>())).Returns(result);
         }
 
-        protected override void SetInitialStateExpectedValues()
+        protected void SetInitialStateExpectedValues()
         {
-            base.SetInitialStateExpectedValues();
-
-            _expectedInstances = Enumerable.Empty<Instance>();
-            _expectedSelectedInstance = null;
-            _expectedCredentials = Enumerable.Empty<WindowsInstanceCredentials>();
-            _expectedSelectedCredentials = null;
-            _expectedManageCredentialsCommandCanExecute = false;
+            Assert.IsNull(_objectUnderTest.PublishDialog);
+            Assert.IsNull(_objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            CollectionAssert.AreEquivalent(Enumerable.Empty<Instance>().ToList(), _objectUnderTest.Instances.ToList());
+            Assert.IsNull(_objectUnderTest.SelectedInstance);
+            CollectionAssert.AreEquivalent(Enumerable.Empty<WindowsInstanceCredentials>().ToList(), _objectUnderTest.Credentials.ToList());
+            Assert.IsNull(_objectUnderTest.SelectedCredentials);
+            Assert.IsFalse(_objectUnderTest.ManageCredentialsCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
         protected override void SetNoProjectStateExpectedValues()
@@ -393,33 +413,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             await _objectUnderTest.AsyncAction;
         }
 
-        private async Task TransitionToNoInstancesTargetSelectCommand()
-        {
-            Action initMocks = () =>
-            {
-                InitAreServicesEnabledMock(true);
-                InitGetInstanceListMock(new List<Instance>());
-            };
-            await TransitionToProjectSelectCommand(initMocks, s_targetProject);
-        }
-
-        private async Task TransitionToNoCredentialsTargetSelectCommand()
-        {
-            Action initMocks = () =>
-            {
-                InitAreServicesEnabledMock(true);
-                InitGetInstanceListMock(s_mockedInstances);
-                InitGetCredentialsForInstanceMock(new List<WindowsInstanceCredentials>());
-            };
-            await TransitionToProjectSelectCommand(initMocks, s_targetProject);
-        }
-
-        protected override async Task RunEnableApiCommandFailure()
-        {
-            InitGetInstanceListMock(s_mockedInstances);
-            InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
-            await base.RunEnableApiCommandFailure();
-        }
+        //protected override async Task RunEnableApiCommandFailure()
+        //{
+        //    InitGetInstanceListMock(s_mockedInstances);
+        //    InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
+        //    InitAreServicesEnabledMock(false);
+            
+        //    InitEnableApiMock();
+        //    await RunEnableApiCommand();
+        //    await base.RunEnableApiCommandFailure();
+        //}
 
         private void RunManageCredentialsCommandSuccess()
         {

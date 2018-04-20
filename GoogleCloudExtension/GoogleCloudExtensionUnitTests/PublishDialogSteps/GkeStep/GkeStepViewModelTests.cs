@@ -88,11 +88,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestFromValidToNoClustersSelectCommmand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNoClustersTargetSelectCommand();
-
             SetNoClustersTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(new List<Cluster>());
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -101,12 +105,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(null);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(null);
             AssertExpectedVisibleState();
@@ -115,7 +121,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -129,12 +137,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(string.Empty);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(string.Empty);
             AssertExpectedVisibleState();
@@ -143,7 +153,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -157,12 +169,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestInvalidVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(InvalidVersion);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(InvalidVersion);
             AssertExpectedVisibleState();
@@ -171,7 +185,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestInvalidVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -185,12 +201,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetValidVersionStateExpectedValues();
 
             await GoToVersionState(ValidVersion);
-            SetValidVersionStateExpectedValues();
 
             AssertVersionExpectedState(ValidVersion);
             AssertExpectedVisibleState();
@@ -199,7 +217,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -213,12 +233,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullDeploymentNameValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidDeploymentNameStateExpectedValues(null);
 
             await GoToDeploymentNameState(null);
-            SetInvalidDeploymentNameStateExpectedValues(null);
 
             AssertExpectedVisibleState();
         }
@@ -226,7 +248,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullDeploymentNameInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -239,12 +263,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyDeploymentNameValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidDeploymentNameStateExpectedValues(string.Empty);
 
             await GoToDeploymentNameState(string.Empty);
-            SetInvalidDeploymentNameStateExpectedValues(string.Empty);
 
             AssertExpectedVisibleState();
         }
@@ -252,7 +278,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyDeploymentNameInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -265,12 +293,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestInvalidDeploymentNameValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidDeploymentNameStateExpectedValues(InvalidDeploymentName);
 
             await GoToDeploymentNameState(InvalidDeploymentName);
-            SetInvalidDeploymentNameStateExpectedValues(InvalidDeploymentName);
 
             AssertExpectedVisibleState();
         }
@@ -278,7 +308,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestInvalidDeploymentNameInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -291,12 +323,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidDeploymentNameValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetValidDeploymentNameStateExpectedValues();
 
             await GoToDeploymentNameState(ValidDeploymentName);
-            SetValidDeploymentNameStateExpectedValues();
 
             AssertExpectedVisibleState();
         }
@@ -304,7 +338,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidDeploymentNameInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -317,12 +353,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullReplicasValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidReplicasStateExpectedValues(null);
 
             await GoToReplicasState(null);
-            SetInvalidReplicasStateExpectedValues(null);
 
             AssertExpectedVisibleState();
         }
@@ -330,7 +368,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNullReplicasInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -343,12 +383,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyReplicasValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidReplicasStateExpectedValues(string.Empty);
 
             await GoToReplicasState(string.Empty);
-            SetInvalidReplicasStateExpectedValues(string.Empty);
 
             AssertExpectedVisibleState();
         }
@@ -356,7 +398,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestEmptyReplicasInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -369,12 +413,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestZeroReplicasValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidReplicasStateExpectedValues(ZeroReplicas);
 
             await GoToReplicasState(ZeroReplicas);
-            SetInvalidReplicasStateExpectedValues(ZeroReplicas);
 
             AssertExpectedVisibleState();
         }
@@ -382,7 +428,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestZeroReplicasInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -395,12 +443,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNegativeReplicasValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidReplicasStateExpectedValues(NegativeReplicas);
 
             await GoToReplicasState(NegativeReplicas);
-            SetInvalidReplicasStateExpectedValues(NegativeReplicas);
 
             AssertExpectedVisibleState();
         }
@@ -408,7 +458,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestNegativeReplicasInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -421,12 +473,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidReplicasValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetValidReplicasStateExpectedValues();
 
             await GoToReplicasState(ValidReplicas);
-            SetValidReplicasStateExpectedValues();
 
             AssertExpectedVisibleState();
         }
@@ -434,7 +488,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public async Task TestValidReplicasInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -472,29 +528,29 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             AssertExpectedVisibleState();
         }
 
-        protected override void InitPositiveValidationMocks()
-        {
-            base.InitPositiveValidationMocks();
-            InitGetClusterListMock(s_mockedClusters);
-        }
+        //protected override void InitPositiveValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(true);
+        //    InitGetClusterListMock(s_mockedClusters);
+        //}
 
-        protected override void InitNegativeValidationMocks()
-        {
-            base.InitNegativeValidationMocks();
-            InitGetClusterListMock(s_mockedClusters);
-        }
+        //protected override void InitNegativeValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(false);
+        //    InitGetClusterListMock(s_mockedClusters);
+        //}
 
-        protected override void InitLongRunningValidationMocks()
-        {
-            base.InitLongRunningValidationMocks();
-            InitLongRunningGetClusterMock();
-        }
+        //protected override void InitLongRunningValidationMocks()
+        //{
+        //    InitLongRunningAreServicesEnabledMock();
+        //    InitLongRunningGetClusterMock();
+        //}
 
-        protected override void InitErrorValidationMocks()
-        {
-            base.InitErrorValidationMocks();
-            InitErrorGetClusterMock();
-        }
+        //protected override void InitErrorValidationMocks()
+        //{
+        //    InitErrorAreServicesEnabledMock();
+        //    InitErrorGetClusterMock();
+        //}
 
         private void InitGetClusterListMock(IList<Cluster> result)
         {
@@ -513,9 +569,19 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _clusterListTaskSource.SetException(new DataSourceException());
         }
 
-        protected override void SetInitialStateExpectedValues()
+        protected void SetInitialStateExpectedValues()
         {
-            base.SetInitialStateExpectedValues();
+            Assert.IsNull(_objectUnderTest.PublishDialog);
+            Assert.IsNull(_objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
 
             _expectedDeploymentName = null;
             _expectedClusters = Enumerable.Empty<Cluster>();
@@ -683,21 +749,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             await _objectUnderTest.ValidationDelayTask;
         }
 
-        private async Task TransitionToNoClustersTargetSelectCommand()
-        {
-            Action initMocks = () =>
-            {
-                InitAreServicesEnabledMock(true);
-                InitGetClusterListMock(new List<Cluster>());
-            };
-            await TransitionToProjectSelectCommand(initMocks, s_targetProject);
-        }
-
-        protected override Task RunEnableApiCommandFailure()
-        {
-            InitGetClusterListMock(s_mockedClusters);
-            return base.RunEnableApiCommandFailure();
-        }
+        //protected override Task RunEnableApiCommandFailure()
+        //{
+        //    InitGetClusterListMock(s_mockedClusters);
+        //    InitAreServicesEnabledMock(false);            
+        //    InitEnableApiMock();
+        //    await RunEnableApiCommand();
+        //    return base.RunEnableApiCommandFailure();
+        //}
 
         private void RunRefreshClustersCommandSuccess()
         {

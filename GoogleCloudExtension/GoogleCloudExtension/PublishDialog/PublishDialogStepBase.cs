@@ -18,6 +18,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,6 +42,7 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
         private IList<string> _requiredApis = new List<string>();
+        private Task _asyncAction = TplExtensions.CompletedTask;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
@@ -163,7 +165,18 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// The task that tracks the asycn actions performed from the Dialog.
         /// </summary>
-        protected internal Task AsyncAction { get; private set; }
+        protected internal Task AsyncAction
+        {
+            get { return _asyncAction; }
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException($"{nameof(AsyncAction)} can't be null.");
+                }
+                _asyncAction = value;
+            }
+        }
 
         /// <summary>
         /// Event raised whenever <seealso cref="CanGoNext"/> value changes.
@@ -180,18 +193,12 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         public ProtectedAsyncCommand EnableApiCommand { get; }
 
-        protected internal IList<string> RequiredApis
-        {
-            get { return _requiredApis; }
-            protected set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException($"{nameof(RequiredApis)} can't be null.");
-                }
-                _requiredApis = value;
-            }
-        }
+        /// <summary>
+        /// List of APIs required for publishing to the current project.
+        /// This property is just a wrapper on the abstract method <see cref="ApisRequieredForPublishing"/>
+        /// so as to guarantee a non null result.
+        /// </summary>
+        private IList<string> RequiredApis => ApisRequieredForPublishing() ?? new List<string>();
 
         protected bool IsValidGcpProject
         {
@@ -307,12 +314,14 @@ namespace GoogleCloudExtension.PublishDialog
             CanGoNext = false;
             NeedsApiEnabled = false;
 
+            IList<string> requiredApis = RequiredApis;
+
             if (string.IsNullOrEmpty(GcpProjectId))
             {
                 Debug.WriteLine("No project selected.");
             }
-            else if (RequiredApis.Count > 0
-                && !await CurrentApiManager.AreServicesEnabledAsync(RequiredApis))
+            else if (requiredApis.Count > 0
+                && !await CurrentApiManager.AreServicesEnabledAsync(requiredApis))
             {
                 Debug.WriteLine("APIs not enabled.");
                 NeedsApiEnabled = true;
@@ -322,6 +331,14 @@ namespace GoogleCloudExtension.PublishDialog
                 IsValidGcpProject = true;
             }
         }
+
+        /// <summary>
+        /// Called during project validation.
+        /// A project can only be valid for publishing it the required APIs
+        /// are enabled.
+        /// </summary>
+        /// <returns>The list of required APIs or an empty list.</returns>
+        protected internal abstract IList<string> ApisRequieredForPublishing();
 
         /// <summary>
         /// Called before loading a project to remove any data from a previous one.
@@ -375,6 +392,7 @@ namespace GoogleCloudExtension.PublishDialog
             GeneralError = false;
             NeedsApiEnabled = false;
             SelectProjectCommand.CanExecuteCommand = false;
+            AsyncAction = TplExtensions.CompletedTask;
 
             ClearLoadedProjectData();
         }

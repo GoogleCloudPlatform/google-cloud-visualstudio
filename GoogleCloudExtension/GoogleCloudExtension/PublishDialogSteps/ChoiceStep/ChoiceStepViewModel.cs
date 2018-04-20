@@ -122,6 +122,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         /// <inheritdoc />
         public override FrameworkElement Content => _content;
 
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => new List<string>();
+
         protected override void ClearLoadedProjectData()
         {
             Choices = Enumerable.Empty<Choice>();

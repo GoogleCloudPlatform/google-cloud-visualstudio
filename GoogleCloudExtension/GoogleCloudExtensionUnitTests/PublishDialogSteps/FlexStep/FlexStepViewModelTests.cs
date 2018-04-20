@@ -109,11 +109,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestFromValidToNeedsAppCreatedSelectCommmand()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            await TransitionToNeedsAppCreatedTargetSelectCommand();
-
             SetNeedsAppCreatedTargetStateExpectedValues();
+
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(null);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertExpectedVisibleState();
@@ -122,12 +126,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestNullVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(null);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(null);
             AssertExpectedVisibleState();
@@ -136,7 +142,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestNullVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetApplicationMock(null);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -150,12 +158,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestEmptyVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(string.Empty);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(string.Empty);
             AssertExpectedVisibleState();
@@ -164,7 +174,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestEmptyVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetApplicationMock(null);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -178,12 +190,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestInvalidVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetInvalidVersionStateExpectedValues();
 
             await GoToVersionState(InvalidVersion);
-            SetInvalidVersionStateExpectedValues();
 
             AssertVersionExpectedState(InvalidVersion);
             AssertExpectedVisibleState();
@@ -192,7 +206,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestInvalidVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetApplicationMock(null);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -206,12 +222,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestValidVersionValidProject()
         {
-            await GoToValidDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetValidDefaultStateExpectedValues();
+            SetValidVersionStateExpectedValues();
 
             await GoToVersionState(ValidVersion);
-            SetValidVersionStateExpectedValues();
 
             AssertVersionExpectedState(ValidVersion);
             AssertExpectedVisibleState();
@@ -220,7 +238,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public async Task TestValidVersionInvalidProject()
         {
-            await GoToInvalidDefaultState();
+            InitAreServicesEnabledMock(false);
+            InitGetApplicationMock(null);
+            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
             SetInvalidDefaultStateExpectedValues();
 
@@ -259,29 +279,29 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             AssertExpectedVisibleState();
         }
 
-        protected override void InitPositiveValidationMocks()
-        {
-            base.InitPositiveValidationMocks();
-            InitGetApplicationMock(_mockedApplication);
-        }
+        //protected void InitPositiveValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(true);
+        //    InitGetApplicationMock(_mockedApplication);
+        //}
 
-        protected override void InitNegativeValidationMocks()
-        {
-            base.InitNegativeValidationMocks();
-            InitGetApplicationMock(null);
-        }
+        //protected override void InitNegativeValidationMocks()
+        //{
+        //    InitAreServicesEnabledMock(false);
+        //    InitGetApplicationMock(null);
+        //}
 
-        protected override void InitLongRunningValidationMocks()
-        {
-            base.InitLongRunningValidationMocks();
-            InitLongRunningGetApplicationMock();
-        }
+        //protected override void InitLongRunningValidationMocks()
+        //{
+        //    InitLongRunningAreServicesEnabledMock();
+        //    InitLongRunningGetApplicationMock();
+        //}
 
-        protected override void InitErrorValidationMocks()
-        {
-            base.InitErrorValidationMocks();
-            InitErrorGetApplicationMock();
-        }
+        //protected override void InitErrorValidationMocks()
+        //{
+        //    InitErrorAreServicesEnabledMock();
+        //    InitErrorGetApplicationMock();
+        //}
 
         private void InitGetApplicationMock(Application application)
         {
@@ -304,14 +324,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         {
             _setAppRegionTaskSource = new TaskCompletionSource<bool>();
             _setAppRegionTaskSource.SetResult(result);
-        }
-
-        protected override void SetInitialStateExpectedValues()
-        {
-            base.SetInitialStateExpectedValues();
-
-            _expectedNeedsAppCreated = false;
-            _expectedSetAppRegionCommandCanExecute = false;
         }
 
         protected override void SetNoProjectStateExpectedValues()
@@ -441,25 +453,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             await _objectUnderTest.ValidationDelayTask;
         }
 
-        private async Task TransitionToNeedsAppCreatedTargetSelectCommand()
-        {
-            Action initMocks = () =>
-            {
-                InitAreServicesEnabledMock(true);
-                InitGetApplicationMock(null);
-            };
-            await TransitionToProjectSelectCommand(initMocks, s_targetProject);
-        }
-
-        protected override async Task RunEnableApiCommandFailure()
-        {
-            InitGetApplicationMock(_mockedApplication);
-            await base.RunEnableApiCommandFailure();
-        }
+        //protected override async Task RunEnableApiCommandFailure()
+        //{
+            
+        //    InitAreServicesEnabledMock(false);
+        //    InitGetApplicationMock(_mockedApplication);
+        //    InitEnableApiMock();
+        //    await RunEnableApiCommand();
+        //    await base.RunEnableApiCommandFailure();
+        //}
 
         private async Task RunSetAppRegionCommandSuccess()
         {
-            InitPositiveValidationMocks();
+            InitAreServicesEnabledMock(true);
+            InitGetApplicationMock(_mockedApplication);
             await RunSetAppRegionCommand(true);
         }
 
@@ -479,10 +486,21 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
         protected override void AssertInitialState()
         {
-            base.AssertInitialState();
-
+            Assert.IsNull(_objectUnderTest.PublishDialog);
+            Assert.IsNull(_objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
             Assert.IsNotNull(_objectUnderTest.Version);
             Assert.IsTrue(s_validNamePattern.IsMatch(_objectUnderTest.Version));
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
         private void AssertVersionExpectedState(string expected)

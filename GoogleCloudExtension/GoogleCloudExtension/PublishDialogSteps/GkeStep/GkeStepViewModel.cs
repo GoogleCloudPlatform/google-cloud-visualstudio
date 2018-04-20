@@ -195,7 +195,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             _content = content;
             _dataSource = dataSource;
-            RequiredApis = s_requiredApis;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedAsyncCommand(async () =>
@@ -259,6 +258,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 CreateClusterCommand.CanExecuteCommand = true;
             }
         }
+
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
 
         /// <summary>
         /// Clear Clusters from the previous selected project.

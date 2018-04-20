@@ -159,7 +159,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             _dataSource = dataSource;
             _currentWindowsCredentialStore = currentWindowsCredentialStore;
             _manageCredentialsPrompt = manageCredentialsPrompt;
-            RequiredApis = s_requiredApis;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -260,6 +259,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             Instances = Enumerable.Empty<Instance>();
         }
+
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
 
         /// <summary>
         /// No data to load

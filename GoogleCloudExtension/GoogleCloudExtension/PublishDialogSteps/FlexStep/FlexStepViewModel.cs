@@ -124,7 +124,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             _content = content;
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;
-            RequiredApis = s_requiredApis;
 
             SetAppRegionCommand = new ProtectedAsyncCommand(async () =>
             {
@@ -163,6 +162,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 }
             }
         }
+
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
 
         /// <summary>
         /// No project dependent data to clear.
