@@ -8,7 +8,7 @@ namespace GoogleCloudExtensionUnitTests
     public abstract class ExtensionTestBase
     {
 
-        protected virtual Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
+        protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         [TestInitialize]
         public void IntializeGlobalsForTest()
