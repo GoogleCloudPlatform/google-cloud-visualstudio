@@ -18,7 +18,6 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -51,11 +50,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         {
             EventsReporterWrapper.DisableReporting();
             _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
             _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
-            var analyticsOption = Mock.Of<AnalyticsOptions>();
-            analyticsOption.OptIn = false;
-            _packageMock.Setup(p => p.AnalyticsSettings).Returns(analyticsOption);
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
 
             const string defaultAccountName = "default-account";
@@ -370,8 +366,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestFilterTreeNode()
         {
-            var logsToolWindow =
-                Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == new LogsViewerViewModel(_mockedLoggingDataSource));
+            ILogsViewerViewModel newViewModel = new LogsViewerViewModel(_mockedLoggingDataSource);
+            var logsToolWindow = Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == newViewModel);
             logsToolWindow.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
             _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
@@ -382,10 +378,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             var treeNode = new ObjectNodeTree(testNodeName, testNodeValue, null);
             _objectUnderTest.OnDetailTreeNodeFilterCommand.Execute(treeNode);
 
-            Assert.IsFalse(logsToolWindow.ViewModel.IsAutoReloadChecked);
-            Assert.IsTrue(logsToolWindow.ViewModel.ShowAdvancedFilter);
-            Assert.IsTrue(logsToolWindow.ViewModel.AdvancedFilterText.Contains(testNodeName));
-            Assert.IsTrue(logsToolWindow.ViewModel.AdvancedFilterText.Contains(testNodeValue));
+            Assert.IsFalse(newViewModel.IsAutoReloadChecked);
+            Assert.IsTrue(newViewModel.ShowAdvancedFilter);
+            Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeName));
+            Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeValue));
         }
     }
 }

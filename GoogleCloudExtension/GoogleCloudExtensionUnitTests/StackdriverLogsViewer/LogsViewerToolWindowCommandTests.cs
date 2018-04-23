@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
-using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,13 +33,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         public void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _packageMock.Setup(p => p.AnalyticsSettings).Returns(Mock.Of<AnalyticsOptions>(o => o.OptIn == false));
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
             _packageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
                 .Returns(_menuCommandServiceMock.Object);
 
             _packageToRestore = GoogleCloudExtensionPackage.Instance;
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+
+            EventsReporterWrapper.DisableReporting();
         }
 
         [TestCleanup]
