@@ -287,6 +287,20 @@ namespace GoogleCloudExtension
             ShowOptionPage(typeof(T));
         }
 
+        /// <summary>
+        /// Finds and returns an instance of the given tool window.
+        /// </summary>
+        /// <typeparam name="TToolWindow">The type of tool window to get.</typeparam>
+        /// <param name="create">Whether to create a new tool window if the given one is not found.</param>
+        /// <param name="id">The instance id of the tool window. Defaults to 0.</param>
+        /// <returns>
+        /// The tool window instance, or null if the given id does not already exist and create was false.
+        /// </returns>
+        public TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane
+        {
+            return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
+        }
+
         #endregion
 
         /// <summary>

@@ -20,7 +20,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -307,7 +306,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
                     .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
-            var showOptionPageMock = new Mock<Action<Type>>();
 
             changeFiltersCommand.Execute(null);
 

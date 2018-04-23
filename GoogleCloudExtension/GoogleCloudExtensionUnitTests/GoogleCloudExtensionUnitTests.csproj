@@ -236,6 +236,9 @@
   <ItemGroup>
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
@@ -268,7 +271,11 @@
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModelTests.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItemTests.cs" />
     <Compile Include="StackdriverErrorReporting\EventItemTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogItemTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommandTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowTests.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />
@@ -281,6 +288,7 @@
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
     <Compile Include="Utils\EditableModelTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
+    <Compile Include="Utils\ToolWindowCommandUtilsTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\PickProjectIdViewModelTests.cs" />
@@ -292,7 +300,7 @@
       <Name>GoogleAnalyticsUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
-      <Project>{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}</Project>
+      <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
       <Name>GoogleCloudExtension.DataSources</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">

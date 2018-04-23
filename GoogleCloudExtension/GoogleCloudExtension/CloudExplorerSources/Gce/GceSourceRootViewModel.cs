@@ -60,8 +60,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private bool _showZones = false;
         private IList<InstancesPerZone> _instancesPerZone;
         private Lazy<GceDataSource> _dataSource;
+        private readonly IGceDataSource _dataSourceOverride = null;
 
-        public GceDataSource DataSource => _dataSource.Value;
+        public IGceDataSource DataSource => _dataSourceOverride ?? _dataSource.Value;
 
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
@@ -127,6 +128,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 UpdateContextMenu();
             }
         }
+
+        /// <summary>
+        /// For testing
+        /// </summary>
+        /// <param name="dataSourceOverride">Mockable data source.</param>
+        internal GceSourceRootViewModel(IGceDataSource dataSourceOverride)
+        {
+            _dataSourceOverride = dataSourceOverride;
+        }
+
+        public GceSourceRootViewModel() { }
 
         public override void Initialize(ICloudSourceContext context)
         {

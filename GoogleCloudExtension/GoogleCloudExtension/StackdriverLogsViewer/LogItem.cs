@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : Model
     {
-        private const string JsonPayloadMessageFieldName = "message";
+        internal const string JsonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
         /// This regex extracts the assembly name "Log4NetExample" and version "1.0.0.0".
         /// </summary>
-        private static readonly Regex s_FunctionRegex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.([\w\-. ]+)$");
+        private static readonly Regex s_functionRegex = new Regex(@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.([\w\-. ]+)$");
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ?
+        public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ?
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
 
         /// <summary>
@@ -176,14 +176,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// The id of the parent <see cref="LogsViewerToolWindow"/>.
+        /// </summary>
+        public int ParentToolWindowId { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <seealso cref="LogItem"/> class.
         /// </summary>
         /// <param name="logEntry">A log entry.</param>
         /// <param name="timeZoneInfo">The current selected timezone.</param>
-        public LogItem(LogEntry logEntry, TimeZoneInfo timeZoneInfo)
+        /// <param name="parentToolWindowId">The id of the parent multi-instance tool window.</param>
+        public LogItem(LogEntry logEntry, TimeZoneInfo timeZoneInfo, int parentToolWindowId)
         {
+            ParentToolWindowId = parentToolWindowId;
             if (logEntry == null)
             {
+                // Todo(jimwp): Change to NullArgumentException. Protect caller from null.
                 return;
             }
 
@@ -192,7 +200,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Message = ComposeMessage();
 
             LogSeverity severity;
-            if (String.IsNullOrWhiteSpace(Entry.Severity) ||
+            if (string.IsNullOrWhiteSpace(Entry.Severity) ||
                 !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out severity))
             {
                 severity = LogSeverity.Default;
@@ -207,7 +215,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (Function != null && SourceFilePath != null && SourceLine.HasValue)
             {
                 // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
-                Match match = s_FunctionRegex.Match(Function);
+                Match match = s_functionRegex.Match(Function);
                 if (match.Success)
                 {
                     AssemblyName = match.Groups[2].Value;
@@ -217,7 +225,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 SourceLinkVisible = true;
                 OnNavigateToSourceCommand = new ProtectedCommand(
                     () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
-                SourceLinkCaption = String.Format(
+                SourceLinkCaption = string.Format(
                     Resources.LogsViewerSourceLinkCaptionFormat,
                     System.IO.Path.GetFileName(SourceFilePath),
                     SourceLine);
@@ -232,6 +240,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
+            RaisePropertyChanged(nameof(Date));
         }
 
         private string GetSourceLocationField(string fieldName)
@@ -246,8 +255,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return "";
             }
 
-            StringBuilder text = new StringBuilder();
-            foreach (var kv in dictPayload)
+            var text = new StringBuilder();
+            foreach (KeyValuePair<string, object> kv in dictPayload)
             {
                 text.AppendFormat(Resources.LogViewerDictionaryPayloadFormatString, kv.Key, kv.Value);
             }
@@ -280,11 +289,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else if (Entry?.Labels != null)
             {
-                message = String.Join(";", Entry?.Labels.Values);
+                message = string.Join(";", Entry?.Labels.Values);
             }
             else if (Entry?.Resource?.Labels != null)
             {
-                message = String.Join(";", Entry?.Resource.Labels);
+                message = string.Join(";", Entry?.Resource.Labels);
             }
 
             // http://stackoverflow.com/questions/11654190/ienumerablechar-to-string
