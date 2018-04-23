@@ -287,7 +287,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// </summary>
         public override IPublishDialogStep Next()
         {
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
         }
 
         #endregion

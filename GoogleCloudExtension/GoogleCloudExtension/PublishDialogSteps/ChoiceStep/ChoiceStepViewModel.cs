@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtension.PublishDialogSteps.GkeStep;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Threading;
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -35,7 +32,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
     /// for the publish process. This is always the first step to be shown in the wizard, and it
     /// navigates to the step specified by the user pressing the choice button.
     /// </summary>
-    public class ChoiceStepViewModel : PublishDialogStepBase
+    public class ChoiceStepViewModel : ValidatingViewModelBase, IPublishDialogStep
     {
         private const string AppEngineIconPath = "PublishDialogSteps/ChoiceStep/Resources/AppEngine_128px_Retina.png";
         private const string GceIconPath = "PublishDialogSteps/ChoiceStep/Resources/ComputeEngine_128px_Retina.png";
@@ -48,6 +45,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private readonly ChoiceStepContent _content;
         private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
 
+        public event EventHandler CanGoNextChanged
+        {
+            /// To disable compiler error CS0067.
+            /// We do nothing, since <see cref="CanGoNext"/> will never changed
+            /// we will never fire this event, so it's OK if we don't accept 
+            /// handlers and say nothing about it.
+            /// It would be disruptive if we were to throw an exception here
+            /// since this is inherited from and <see cref="IPublishDialogStep"/>
+            /// and clients of that interface expect the event to behave normally
+            /// which is, let me know when <see cref="CanGoNext"/> changes, which will
+            /// do, except that <see cref="CanGoNext"/> never changed.
+            /// Same applies to <see cref="CanPublishChanged"/>.
+            add { }
+            remove { }
+        }
+        public event EventHandler CanPublishChanged
+        {
+            add { }
+            remove { }
+        }
+
         /// <summary>
         /// The choices available for the project being published.
         /// </summary>
@@ -57,10 +75,43 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        private ChoiceStepViewModel(ChoiceStepContent content, IApiManager apiManager, Func<Project> pickProjectPrompt)
-            : base(apiManager, pickProjectPrompt)
+        protected internal IPublishDialog PublishDialog { get; private set; }
+
+        /// <inheritdoc />
+        public FrameworkElement Content => _content;
+
+        /// <inheritdoc />
+        public bool CanGoNext => false;
+
+        /// <inheritdoc />
+        public bool CanPublish => false;
+
+        private ChoiceStepViewModel(ChoiceStepContent content)
         {
             _content = content;
+        }
+
+        public void OnVisible(IPublishDialog dialog)
+        {
+            PublishDialog = dialog;
+            AddHandlers();
+            Choices = GetChoicesForCurrentProject();
+        }
+
+        /// <summary>
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
+        /// </summary>
+        public IPublishDialogStep Next()
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// This step never publishes. <see cref="IPublishDialogStep.CanPublish"/> is always <code>false</code>
+        /// </summary>
+        public void Publish()
+        {
+            throw new NotSupportedException();
         }
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
@@ -117,49 +168,38 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             PublishDialog.NavigateToStep(nextStep);
         }
 
-        #region IPublishDialogStep
-
-        /// <inheritdoc />
-        public override FrameworkElement Content => _content;
-
-        /// <inheritdoc />
-        protected internal override IList<string> ApisRequieredForPublishing() => new List<string>();
-
-        protected override void ClearLoadedProjectData()
+        protected internal virtual void OnFlowFinished()
         {
+            RemoveHandlers();
+            PublishDialog = null;
             Choices = Enumerable.Empty<Choice>();
         }
 
-        protected override Task LoadAnyProjectDataAsync()
+        private void OnFlowFinished(object sender, EventArgs e)
+            => OnFlowFinished();
+
+        private void AddHandlers()
         {
-            Choices = GetChoicesForCurrentProject();
-            return TplExtensions.CompletedTask;
+            ///Checking for null in case it was never pushed in a dialog.
+            if (PublishDialog != null)
+            {
+                PublishDialog.FlowFinished += OnFlowFinished;
+            }
         }
 
-        protected override Task LoadValidProjectDataAsync() => TplExtensions.CompletedTask;
-
-        /// <summary>
-        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
-        /// </summary>
-        public override IPublishDialogStep Next()
+        private void RemoveHandlers()
         {
-            throw new InvalidOperationException();
+            ///Checking for null in case it was never pushed in a dialog.
+            if (PublishDialog != null)
+            {
+                PublishDialog.FlowFinished -= OnFlowFinished;
+            }
         }
 
-        /// <summary>
-        /// This step never publishes. <see cref="IPublishDialogStep.CanPublish"/> is always <code>false</code>
-        /// </summary>
-        public override void Publish()
-        {
-            throw new InvalidOperationException();
-        }
-
-        #endregion
-
-        public static ChoiceStepViewModel CreateStep(IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
+        public static ChoiceStepViewModel CreateStep()
         {
             var content = new ChoiceStepContent();
-            var viewModel = new ChoiceStepViewModel(content, apiManager, pickProjectPrompt);
+            var viewModel = new ChoiceStepViewModel(content);
             content.DataContext = viewModel;
 
             return viewModel;

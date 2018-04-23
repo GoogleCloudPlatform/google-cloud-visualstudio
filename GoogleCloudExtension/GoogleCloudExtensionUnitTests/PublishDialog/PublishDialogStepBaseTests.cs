@@ -35,7 +35,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
         private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
-        private static readonly List<string> s_mockedRequiredApis = new List<string> { "OneRequieredApi", "AnotherRequiredApi"};
+        private static readonly List<string> s_mockedRequiredApis = new List<string> { "OneRequieredApi", "AnotherRequiredApi" };
 
         private PublishDialogStepBase _objectUnderTest;
         private Mock<PublishDialogStepBase> _objectUnderTestImpl;
@@ -407,7 +407,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             await OnVisibleWithProject(s_defaultProject);
-            
+
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
 

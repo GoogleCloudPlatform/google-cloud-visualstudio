@@ -279,7 +279,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// </summary>
         public override IPublishDialogStep Next()
         {
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
         }
 
         protected internal override void OnFlowFinished()

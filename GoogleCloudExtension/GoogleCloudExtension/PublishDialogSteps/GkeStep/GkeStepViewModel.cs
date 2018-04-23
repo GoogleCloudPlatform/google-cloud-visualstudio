@@ -231,7 +231,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override IPublishDialogStep Next()
         {
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
         }
 
         protected override async Task InitializeDialogAsync()
