@@ -32,12 +32,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class TopicViewModelTests : ExtensionTestBase
     {
-        public const string MockTopicFullName = PubSubSourceRootViewModelTests.MockTopicFullName;
-        private const string MockTopicLeafName = "MockTopic";
+        private const string MockExceptionMessage = "MockException";
         private const string MockProjectId = "parent.com:mock-project";
-        public const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
-        public const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
-        public const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
+
         private Mock<IPubsubSourceRootViewModel> _ownerMock;
         private readonly Topic _topicItem = new Topic { Name = MockTopicFullName };
         private TopicViewModel _objectUnderTest;

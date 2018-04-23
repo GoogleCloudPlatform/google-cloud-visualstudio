@@ -27,7 +27,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
     [TestClass]
     public class SourceRootViewModelBaseTests
     {
-        public const string MockExceptionMessage = "MockException";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockExceptionMessage = "MockException";
         private const string MockAccountName = "MockAccount";
         private const string MockRootCaption = "MockRootCaption";
         private const string MockErrorPlaceholderCaption = "MockErrorPlaceholder";
@@ -52,7 +53,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             Caption = MockErrorPlaceholderCaption,
             IsError = true
         };
-        private static readonly Project s_project = new Project { ProjectId = "parent.com:mock-project" };
+        private static readonly Project s_project = new Project { ProjectId = MockProjectId };
         private static readonly UserAccount s_userAccount = new UserAccount { AccountName = MockAccountName };
         private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
 
@@ -69,7 +70,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
-            _mockedContext = Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == "parent.com:mock-project");
+            _mockedContext = Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == MockProjectId);
             _objectUnderTest = Mock.Of<SourceRootViewModelBase>(
                 o => o.RootCaption == MockRootCaption &&
                 o.ErrorPlaceholder == s_errorPlaceholder &&

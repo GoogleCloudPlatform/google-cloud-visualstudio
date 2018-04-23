@@ -20,7 +20,6 @@ using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.UserPrompt;
-using GoogleCloudExtensionUnitTests.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -39,22 +38,23 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class PubSubSourceRootViewModelTests : ExtensionTestBase
     {
-        public const string MockTopicFullName = TopicPrefix + "MockTopic";
-        public const string MockSubscriptionLeafName = "MockSubscription";
-        public const string MockSubscriptionFullName = SubscriptionPrefix + MockSubscriptionLeafName;
 
-        public const string MockExceptionMessage = SourceRootViewModelBaseTests.MockExceptionMessage;
-        private const string ProjectResourcePrefix = "projects/" + "parent.com:mock-project";
-        private const string TopicPrefix = ProjectResourcePrefix + "/topics/";
-        private const string SubscriptionPrefix = ProjectResourcePrefix + "/subscriptions/";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockExceptionMessage = "MockException";
+        private const string TopicPrefix = "projects/parent.com:mock-project/topics/";
 
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+        private const string MockSubscriptionLeafName = "MockSubscription";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
 
         /// <summary>
         /// Defined by the Pub/Sub api.
         /// <see href="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics/delete"/>
         /// </summary>
-        public const string DeletedTopicName = "_deleted-topic_";
-
+        private const string DeletedTopicName = "_deleted-topic_";
 
         private static readonly Topic s_topic = new Topic { Name = MockTopicFullName };
 
@@ -85,7 +85,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             _dataSourceMock = new Mock<IPubsubDataSource>();
             _contextMock = new Mock<ICloudSourceContext>();
-            _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns("parent.com:mock-project");
+            _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(MockProjectId);
             _factoryMock = new Mock<Func<IPubsubDataSource>>();
             _factoryMock.Setup(f => f()).Returns(() => _dataSourceMock.Object);
 
@@ -231,7 +231,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TopicViewModel;
             Assert.IsNotNull(child);
-            Assert.AreEqual("MockTopic", child.Caption);
+            Assert.AreEqual(MockTopicLeafName, child.Caption);
             Assert.AreEqual(1, child.Children.Count);
             var subChild = child.Children[0] as SubscriptionViewModel;
             Assert.IsNotNull(subChild);
@@ -252,7 +252,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             Assert.AreEqual(2, _objectUnderTest.Children.Count);
             var topicChild = _objectUnderTest.Children[0] as TopicViewModel;
             Assert.IsNotNull(topicChild);
-            Assert.AreEqual("MockTopic", topicChild.Caption);
+            Assert.AreEqual(MockTopicLeafName, topicChild.Caption);
             Assert.AreEqual(0, topicChild.Children.Count);
             var orphanedHolder = _objectUnderTest.Children[1] as OrphanedSubscriptionsViewModel;
             Assert.IsNotNull(orphanedHolder);
@@ -271,7 +271,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             PackageMock.SetupGet(p => p.AnalyticsSettings).Returns(analyticsOptionsMock.Object);
 
             _objectUnderTest.Initialize(_contextMock.Object);
-            const string mockProjectId = "parent.com:mock-project";
+            const string mockProjectId = MockProjectId;
             string gcrProjectId = mockProjectId.Replace(":", "%2F");
             string nonBlacklistTopicName = $"{TopicPrefix}cloud-builds:projects:xxxx-id-xxx:topics";
             _topicSource.SetResult(
@@ -320,7 +320,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             await _objectUnderTest.OnNewTopicCommandAsync();
 
-            Assert.AreEqual("parent.com:mock-project", projectIdParam);
+            Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.IsNull(details);
             Assert.AreEqual(0, _objectUnderTest.RefreshHitCount);
             _dataSourceMock.Verify(ds => ds.NewTopicAsync(It.IsAny<string>()), Times.Never);
@@ -347,7 +347,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             await _objectUnderTest.OnNewTopicCommandAsync();
 
-            Assert.AreEqual("parent.com:mock-project", projectIdParam);
+            Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.AreEqual(MockExceptionMessage, details);
             Assert.AreEqual(0, _objectUnderTest.RefreshHitCount);
             _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicFullName), Times.Once);
@@ -377,7 +377,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             await _objectUnderTest.OnNewTopicCommandAsync();
 
-            Assert.AreEqual("parent.com:mock-project", projectIdParam);
+            Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.IsNull(details);
             Assert.AreEqual(1, _objectUnderTest.RefreshHitCount);
             _dataSourceMock.Verify(ds => ds.NewTopicAsync(MockTopicFullName), Times.Once);
@@ -391,7 +391,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             _objectUnderTest.OnOpenCloudConsoleCommand();
 
-            string expectedUrl = string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, "parent.com:mock-project");
+            string expectedUrl = string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, MockProjectId);
             _startProcessMock.Verify(f => f(expectedUrl));
         }
 

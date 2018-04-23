@@ -32,10 +32,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class SubscriptionViewModelTests : ExtensionTestBase
     {
-        private const string MockSubscriptionLeafName = TopicViewModelTests.MockSubscriptionLeafName;
-        private const string MockSubscriptionFullName = TopicViewModelTests.MockSubscriptionFullName;
-        private const string MockTopicFullName = TopicViewModelTests.MockTopicFullName;
-        private const string MockExceptionMessage = TopicViewModelTests.MockExceptionMessage;
+        private const string MockExceptionMessage = "MockException";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+        private const string MockSubscriptionLeafName = "MockSubscription";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
 
         private SubscriptionViewModel _objectUnderTest;
         private Mock<ITopicViewModelBase> _ownerMock;
