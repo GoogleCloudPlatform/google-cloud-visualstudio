@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.Shell;
-using System;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting

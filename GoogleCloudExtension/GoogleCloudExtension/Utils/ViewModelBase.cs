@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
@@ -20,7 +19,7 @@ namespace GoogleCloudExtension.Utils
     /// Provies useful properties common to almost all view models (such as a loading state) as well
     /// as whether gcloud is installed or not.
     /// </summary>
-    public class ViewModelBase : Model
+    public class ViewModelBase : Model, IViewModelBase
     {
         private bool _loading;
         private string _loadingMessage;

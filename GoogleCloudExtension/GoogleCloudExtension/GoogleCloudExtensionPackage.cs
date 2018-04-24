@@ -114,7 +114,7 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The version of Visual Studio currently running.
         /// </summary>
-        public string VsVersion { get; private set; }
+        public static string VsVersion { get; private set; }
 
         /// <summary>
         /// The edition of Visual Studio currently running.
@@ -146,6 +146,15 @@ namespace GoogleCloudExtension
         public void UnsubscribeClosingEvent(EventHandler handler)
         {
             ClosingEvent -= handler;
+        }
+
+        /// <summary>
+        /// Check whether the main window is not minimized.
+        /// </summary>
+        /// <returns>true/false based on whether window is minimized or not</returns>
+        public bool IsWindowActive()
+        {
+            return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
         }
 
         protected override int QueryClose(out bool canClose)
@@ -276,6 +285,20 @@ namespace GoogleCloudExtension
         public void ShowOptionPage<T>() where T : DialogPage
         {
             ShowOptionPage(typeof(T));
+        }
+
+        /// <summary>
+        /// Finds and returns an instance of the given tool window.
+        /// </summary>
+        /// <typeparam name="TToolWindow">The type of tool window to get.</typeparam>
+        /// <param name="create">Whether to create a new tool window if the given one is not found.</param>
+        /// <param name="id">The instance id of the tool window. Defaults to 0.</param>
+        /// <returns>
+        /// The tool window instance, or null if the given id does not already exist and create was false.
+        /// </returns>
+        public TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane
+        {
+            return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
         }
 
         #endregion

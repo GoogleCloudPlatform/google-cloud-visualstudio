@@ -55,5 +55,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
             }
         }
+
+        private void ErrorReportingDetailToolWindowControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var viewModel = DataContext as ErrorReportingDetailViewModel;
+            if (viewModel != null)
+            {
+                viewModel.IsVisibleUnbound = (bool) e.NewValue;
+            }
+        }
     }
 }

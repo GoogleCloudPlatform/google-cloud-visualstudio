@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension;
 using EventTimeRangePeriodEnum =
     Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using GroupTimeRangePeriodEnum =
@@ -44,9 +45,16 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private Mock<Func<UserPromptWindow.Options, bool>> _promptUserMock;
+        private IGoogleCloudExtensionPackage _oldPackage;
+        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
         protected override void BeforeEach()
         {
+            _oldPackage = GoogleCloudExtensionPackage.Instance;
+            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
+            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+
             _propertiesChanged = new List<string>();
             _errorFrameToSourceLineMock = new Mock<Action<ErrorGroupItem, StackFrame>>();
             _showErrorReportingToolWindowMock = new Mock<Func<ErrorReportingToolWindow>>();
@@ -80,6 +88,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             _promptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             _promptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             UserPromptWindow.PromptUserFunction = _promptUserMock.Object;
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -339,6 +353,28 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         }
 
         [TestMethod]
+        public void TestAutoReloadCommandWithWindowOffScreen()
+        {
+            CreateErrorScenario();
+            _objectUnderTest.IsVisibleUnbound = false;
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadCommandWithWindowMinimized()
+        {
+            CreateErrorScenario();
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ErrorReportingException))]
         public void TestUpdateViewNullGroup()
         {
@@ -420,6 +456,20 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.IsEventLoading);
             Assert.AreEqual(1, _objectUnderTest.EventItemCollection.Count);
             Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        private void CreateErrorScenario()
+        {
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetResult(new ListEventsResponse());
+            _objectUnderTest.UpdateView(_defaultErrorGroupItem, _defaultTimeRangeItem);
+            _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
+            _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
+            _getPageOfGroupStatusSource.SetResult(
+                new ListGroupStatsResponse { ErrorGroupStats = new[] { _defaultErrorGroupItem.ErrorGroup } });
+            _getPageOfEventsSource.SetException(new DataSourceException());
         }
     }
 }

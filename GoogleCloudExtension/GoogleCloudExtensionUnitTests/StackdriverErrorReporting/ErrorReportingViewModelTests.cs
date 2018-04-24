@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -150,6 +152,32 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsTrue(_objectUnderTest.IsRefreshing);
             Assert.IsFalse(_objectUnderTest.IsLoadingNextPage);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenOffScreen()
+        {
+            _objectUnderTest.IsVisibleUnbound = false;
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenMinimized()
+        {
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
         }
 
         [TestMethod]

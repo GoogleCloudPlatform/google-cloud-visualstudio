@@ -23,11 +23,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Process = System.Diagnostics.Process;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {

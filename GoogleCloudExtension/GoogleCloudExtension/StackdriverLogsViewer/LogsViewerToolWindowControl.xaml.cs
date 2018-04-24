@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -24,7 +25,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
+        public ILogsViewerViewModel ViewModel => DataContext as ILogsViewerViewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindowControl"/> class.
@@ -63,6 +64,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var detailsTreeView = sender as TreeView;
             var treeNodeViewModel = detailsTreeView?.SelectedItem as ObjectNodeTree;
             treeNodeViewModel?.CopyCommand.Execute(null);
+        }
+
+        private void LogsViewerToolWindowControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var viewModel = DataContext as LogsViewerViewModel;
+            if (viewModel != null)
+            {
+                viewModel.IsVisibleUnbound = (bool)e.NewValue;
+            }
         }
     }
 }

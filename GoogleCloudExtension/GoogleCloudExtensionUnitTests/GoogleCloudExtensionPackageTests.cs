@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -134,6 +135,40 @@ namespace GoogleCloudExtensionUnitTests
                 r => r.ReportEvent(
                     It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
                     It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenNormalState()
+        {
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateNormal);
+            Assert.IsTrue(package.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMaximizedState()
+        {
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMaximize);
+            Assert.IsTrue(package.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMinimizedState()
+        {
+            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMinimize);
+            Assert.IsFalse(package.IsWindowActive());
+        }
+
+        private GoogleCloudExtensionPackage CreatePackageWithWindowState(vsWindowState wstate)
+        {
+            var package = new GoogleCloudExtensionPackage();
+            var dteMock = new Mock<DTE>();
+            InitPackageMock(package, dteMock);
+
+            var windowMock = Mock.Of<Window>();
+            dteMock.Setup(d => d.MainWindow).Returns(windowMock);
+            windowMock.WindowState = wstate;
+
+            return package;
         }
 
         private static string GetVsixManifestVersion()
