@@ -17,6 +17,7 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -55,9 +56,8 @@ namespace GoogleCloudExtensionUnitTests
         public void AfterEach()
         {
             GoogleCloudExtensionPackage.Instance = null;
+            ServiceProvider.GlobalProvider?.Dispose();
             _serviceProviderMock.Dispose();
-            // Disable events reporting enabled by GoogleCloudExtensionPackage.Initialize.
-            EventsReporterWrapper.DisableReporting();
         }
 
         [TestMethod]
