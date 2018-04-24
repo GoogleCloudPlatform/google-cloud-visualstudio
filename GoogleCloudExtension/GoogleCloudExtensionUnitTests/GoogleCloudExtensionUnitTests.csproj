@@ -283,6 +283,11 @@
     <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
+    <Compile Include="UnitTestResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UnitTestResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\EditableModelTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
     <Compile Include="Utils\ToolWindowCommandUtilsTests.cs" />
@@ -333,7 +338,12 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="UnitTestResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UnitTestResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

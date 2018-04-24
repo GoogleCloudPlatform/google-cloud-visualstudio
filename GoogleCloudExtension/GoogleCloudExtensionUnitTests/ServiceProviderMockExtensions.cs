@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using stdole;
 using System;
@@ -13,7 +14,6 @@ namespace GoogleCloudExtensionUnitTests
     public static class ServiceProviderMockExtensions
     {
         // Use a static field to keep garbage collection from collecting the mocks.
-        // ReSharper disable once CollectionNeverQueried.Local
         private static readonly Dictionary<Mock<IServiceProvider>, Dictionary<Type, object>> s_mocks =
             new Dictionary<Mock<IServiceProvider>, Dictionary<Type, object>>();
 
@@ -86,8 +86,10 @@ namespace GoogleCloudExtensionUnitTests
         /// <param name="serviceProviderMock">The service provider mock to dispose.</param>
         public static void Dispose(this Mock<IServiceProvider> serviceProviderMock)
         {
+            serviceProviderMock.Reset();
             ServiceProvider.GlobalProvider?.Dispose();
             s_mocks.Remove(serviceProviderMock);
+            Assert.AreEqual(s_mocks.Count, 0, UnitTestResources.MultipleServiceProvidersWarning);
         }
     }
 }

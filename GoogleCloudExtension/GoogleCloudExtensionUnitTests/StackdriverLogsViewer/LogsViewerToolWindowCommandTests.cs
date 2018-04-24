@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +23,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     [TestClass]
     public class LogsViewerToolWindowCommandTests : ExtensionTestBase
     {
-        private IGoogleCloudExtensionPackage _packageToRestore;
         private Mock<IMenuCommandService> _menuCommandServiceMock;
 
         protected override void BeforeEach()
@@ -33,11 +30,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
             PackageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
                 .Returns(_menuCommandServiceMock.Object);
-
-            _packageToRestore = GoogleCloudExtensionPackage.Instance;
-            GoogleCloudExtensionPackage.Instance = PackageMock.Object;
-
-            EventsReporterWrapper.DisableReporting();
         }
 
         [TestMethod]
