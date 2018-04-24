@@ -140,35 +140,31 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenNormalState()
         {
-            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateNormal);
-            Assert.IsTrue(package.IsWindowActive());
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
+
+            InitPackageMock();
+
+            Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
 
         [TestMethod]
         public void TestWindowActiveWhenMaximizedState()
         {
-            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMaximize);
-            Assert.IsTrue(package.IsWindowActive());
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
+
+            InitPackageMock();
+
+            Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
 
         [TestMethod]
         public void TestWindowActiveWhenMinimizedState()
         {
-            var package = CreatePackageWithWindowState(vsWindowState.vsWindowStateMinimize);
-            Assert.IsFalse(package.IsWindowActive());
-        }
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
 
-        private GoogleCloudExtensionPackage CreatePackageWithWindowState(vsWindowState wstate)
-        {
-            var package = new GoogleCloudExtensionPackage();
-            var dteMock = new Mock<DTE>();
-            InitPackageMock(package, dteMock);
+            InitPackageMock();
 
-            var windowMock = Mock.Of<Window>();
-            dteMock.Setup(d => d.MainWindow).Returns(windowMock);
-            windowMock.WindowState = wstate;
-
-            return package;
+            Assert.IsFalse(_objectUnderTest.IsWindowActive());
         }
 
         private static string GetVsixManifestVersion()

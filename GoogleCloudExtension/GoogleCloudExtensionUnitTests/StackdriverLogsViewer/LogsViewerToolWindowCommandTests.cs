@@ -23,36 +23,27 @@ using System.ComponentModel.Design;
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
     [TestClass]
-    public class LogsViewerToolWindowCommandTests
+    public class LogsViewerToolWindowCommandTests : ExtensionTestBase
     {
         private IGoogleCloudExtensionPackage _packageToRestore;
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
         private Mock<IMenuCommandService> _menuCommandServiceMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
-            _packageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
+            PackageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
                 .Returns(_menuCommandServiceMock.Object);
 
             _packageToRestore = GoogleCloudExtensionPackage.Instance;
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
             EventsReporterWrapper.DisableReporting();
-        }
-
-        [TestCleanup]
-        public void AfterEach()
-        {
-            GoogleCloudExtensionPackage.Instance = _packageToRestore;
         }
 
         [TestMethod]
         public void TestRegisterCommand()
         {
-            LogsViewerToolWindowCommand.Initialize(_packageMock.Object);
+            LogsViewerToolWindowCommand.Initialize(PackageMock.Object);
 
             _menuCommandServiceMock.Verify(
                 s => s.AddCommand(
@@ -67,14 +58,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _menuCommandServiceMock.Setup(
                 s => s.AddCommand(It.IsAny<MenuCommand>())).Callback((MenuCommand c) => command = c);
             Mock<IVsWindowFrame> frameMock = LogsViewerToolWindowTests.GetWindowFrameMock();
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
                 .Returns(() => null);
             var logsViewerToolWindow = Mock.Of<LogsViewerToolWindow>();
             logsViewerToolWindow.Frame = frameMock.Object;
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsViewerToolWindow);
 
-            LogsViewerToolWindowCommand.Initialize(_packageMock.Object);
+            LogsViewerToolWindowCommand.Initialize(PackageMock.Object);
             command.Invoke();
 
             frameMock.Verify(f => f.Show());

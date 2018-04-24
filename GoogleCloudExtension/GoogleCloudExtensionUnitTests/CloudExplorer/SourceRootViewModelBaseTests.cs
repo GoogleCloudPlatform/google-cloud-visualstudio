@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
     [TestClass]
-    public class SourceRootViewModelBaseTests
+    public class SourceRootViewModelBaseTests : ExtensionTestBase
     {
         private const string MockProjectId = "parent.com:mock-project";
         private const string MockExceptionMessage = "MockException";
@@ -62,8 +62,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private SourceRootViewModelBase _objectUnderTest;
         private Mock<SourceRootViewModelBase> _objectUnderTestMock;
 
-        [TestInitialize]
-        public void Initialize()
+        protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentAccount(s_userAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_project);

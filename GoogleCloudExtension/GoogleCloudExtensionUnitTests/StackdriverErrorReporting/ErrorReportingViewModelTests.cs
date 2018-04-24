@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -39,6 +37,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(new Project());
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
             dataSourceMock
@@ -172,7 +171,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _objectUnderTest.ShowError = false;
             _getPageOfGroupStatusSource.SetException(new DataSourceException());
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
