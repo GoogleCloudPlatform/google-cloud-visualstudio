@@ -22,7 +22,7 @@ namespace GoogleCloudExtensionUnitTests
         /// </summary>
         /// <typeparam name="SVsType">The type used to request the service.</typeparam>
         /// <typeparam name="IVsType">The type the service is used as.</typeparam>
-        /// <param name="serviceProviderMock">The mock of the service.</param>
+        /// <param name="serviceProviderMock">The mock of the service provider.</param>
         /// <returns>The mock of the service.</returns>
         public static Mock<IVsType> SetupService<SVsType, IVsType>(
             this Mock<IServiceProvider> serviceProviderMock) where IVsType : class

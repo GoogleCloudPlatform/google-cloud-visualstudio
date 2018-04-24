@@ -16,7 +16,6 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,9 +44,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
         protected override void BeforeEach()
         {
-            EventsReporterWrapper.DisableReporting();
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
-            GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
@@ -60,12 +57,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 ds =>
                     ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
                     ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
-                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
-                    _listProjectLogNamesSource.Task &&
-                    ds.ListLogEntriesAsync(
-                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                        It.IsAny<CancellationToken>()) ==
-                    _listLogEntriesSource.Task);
+                    (ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                        _listProjectLogNamesSource.Task) &&
+                    (ds.ListLogEntriesAsync(
+                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                            It.IsAny<CancellationToken>()) ==
+                        _listLogEntriesSource.Task));
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
