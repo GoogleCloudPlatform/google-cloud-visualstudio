@@ -37,7 +37,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         protected override void BeforeEach()
         {
             _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _defaultFrame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            _defaultFrame = VsWindowFrameMocks.GetMockedWindowFrame();
             GoogleCloudExtensionPackage.Instance = _packageMock.Object;
         }
 

@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension;
-using GoogleCloudExtension.Options;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,33 +22,15 @@ using System;
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.SourceNavigation
 {
     [TestClass]
-    public class LoggerTooltipViewModelTests
+    public class LoggerTooltipViewModelTests : ExtensionTestBase
     {
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
-        private IGoogleCloudExtensionPackage _packageToRestore;
-
-        [TestInitialize]
-        public void BeforeEach()
-        {
-            _packageToRestore = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _packageMock.Setup(p => p.AnalyticsSettings).Returns(Mock.Of<AnalyticsOptions>(o => o.OptIn == false));
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
-        }
-
-        [TestCleanup]
-        public void AfterEach()
-        {
-            GoogleCloudExtensionPackage.Instance = _packageToRestore;
-        }
-
         [TestMethod]
         public void TestBackToLogsViewerCommand()
         {
             const int parentToolWindowId = 2;
             var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
-            logsToolWindowMock.Object.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<bool>(), parentToolWindowId))
+            logsToolWindowMock.Object.Frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(It.IsAny<bool>(), parentToolWindowId))
                 .Returns(logsToolWindowMock.Object);
             string filter = null;
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);

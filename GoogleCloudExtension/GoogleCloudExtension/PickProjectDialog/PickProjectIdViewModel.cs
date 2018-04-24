@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// For Testing.
         /// </summary>
         /// <param name="owner">The window or mock window that owns this ViewModel.</param>
-        /// <param name="dataSourceFactory">The factory of the source of projects.</param>
+        /// <param name="mockedProjectList">A override of the result of <see cref="CredentialsStore.CurrentAccountProjects"/>.</param>
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
             IPickProjectIdWindow owner,
