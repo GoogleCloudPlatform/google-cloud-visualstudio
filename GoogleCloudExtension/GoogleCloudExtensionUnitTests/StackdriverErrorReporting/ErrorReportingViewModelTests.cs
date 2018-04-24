@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -25,43 +23,31 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GroupTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
     [TestClass]
-    public class ErrorReportingViewModelTests
+    public class ErrorReportingViewModelTests : ExtensionTestBase
     {
         private ErrorReportingViewModel _objectUnderTest;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
-        private IGoogleCloudExtensionPackage _oldPackage;
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
-
             CredentialsStore.Default.UpdateCurrentProject(new Project());
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
             dataSourceMock
                 .Setup(
                     ds => ds.GetPageOfGroupStatusAsync(
-                        It.IsAny<ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                        It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(() => _getPageOfGroupStatusSource.Task);
             _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -185,7 +171,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         {
             _objectUnderTest.ShowError = false;
             _getPageOfGroupStatusSource.SetException(new DataSourceException());
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 

@@ -114,7 +114,7 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The version of Visual Studio currently running.
         /// </summary>
-        public static string VsVersion { get; private set; }
+        public string VsVersion { get; private set; }
 
         /// <summary>
         /// The edition of Visual Studio currently running.

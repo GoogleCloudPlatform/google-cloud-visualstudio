@@ -16,7 +16,6 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +32,7 @@ using Task = System.Threading.Tasks.Task;
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
     [TestClass]
-    public class LogsViewerViewModelTests
+    public class LogsViewerViewModelTests : ExtensionTestBase
     {
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
@@ -42,17 +41,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
-        private IGoogleCloudExtensionPackage _oldPackage;
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            EventsReporterWrapper.DisableReporting();
-            _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
@@ -65,24 +57,18 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 ds =>
                     ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
                     ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
-                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
-                    _listProjectLogNamesSource.Task &&
-                    ds.ListLogEntriesAsync(
-                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                        It.IsAny<CancellationToken>()) ==
-                    _listLogEntriesSource.Task);
+                    (ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                        _listProjectLogNamesSource.Task) &&
+                    (ds.ListLogEntriesAsync(
+                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                            It.IsAny<CancellationToken>()) ==
+                        _listLogEntriesSource.Task));
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -161,7 +147,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         public void TestNoLoadWhenMinimized()
         {
             _listLogEntriesSource.SetException(new DataSourceException(""));
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -369,8 +355,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             ILogsViewerViewModel newViewModel = new LogsViewerViewModel(_mockedLoggingDataSource);
             var logsToolWindow = Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == newViewModel);
             logsToolWindow.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindow);
             const string testNodeName = "test-node";
             const string testNodeValue = "test-value";

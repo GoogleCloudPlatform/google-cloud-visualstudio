@@ -29,13 +29,12 @@ using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 namespace GoogleCloudExtensionUnitTests.Utils
 {
     [TestClass]
-    public class ToolWindowCommandUtilsTests
+    public class ToolWindowCommandUtilsTests : ExtensionTestBase
     {
         private Mock<IGoogleCloudExtensionPackage> _packageMock;
         private IVsWindowFrame _defaultFrame;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _packageMock = new Mock<IGoogleCloudExtensionPackage>();
             _defaultFrame = LogsViewerToolWindowTests.GetMockedWindowFrame();

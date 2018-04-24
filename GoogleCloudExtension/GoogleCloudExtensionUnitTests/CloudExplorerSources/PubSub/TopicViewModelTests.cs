@@ -30,14 +30,16 @@ using System.Windows.Media.Imaging;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
     [TestClass]
-    public class TopicViewModelTests
+    public class TopicViewModelTests : ExtensionTestBase
     {
-        public const string MockTopicFullName = PubSubSourceRootViewModelTests.MockTopicFullName;
-        public const string MockTopicLeafName = PubSubSourceRootViewModelTests.MockTopicLeafName;
-        public const string MockProjectId = PubSubSourceRootViewModelTests.MockProjectId;
-        public const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
-        public const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
-        public const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
+        private const string MockExceptionMessage = "MockException";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
+
         private Mock<IPubsubSourceRootViewModel> _ownerMock;
         private readonly Topic _topicItem = new Topic { Name = MockTopicFullName };
         private TopicViewModel _objectUnderTest;
@@ -53,11 +55,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private bool _promptUserReturnValue;
         private TaskCompletionSource<object> _deleteTopicSource;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
-
             _newSubscriptionSource = new TaskCompletionSource<Subscription>();
             _getSubscriptionListSource = new TaskCompletionSource<IList<Subscription>>();
             _deleteTopicSource = new TaskCompletionSource<object>();
@@ -298,20 +297,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestChangeFiltersCommand()
         {
-            var gcePackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
-            gcePackageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
-
-            IGoogleCloudExtensionPackage previousPackage = GoogleCloudExtensionPackage.Instance;
-            GoogleCloudExtensionPackage.Instance = gcePackageMock.Object;
-
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
-                    .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
+                .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
 
             changeFiltersCommand.Execute(null);
 
-            gcePackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
-
-            GoogleCloudExtensionPackage.Instance = previousPackage;
+            PackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
         }
     }
 }

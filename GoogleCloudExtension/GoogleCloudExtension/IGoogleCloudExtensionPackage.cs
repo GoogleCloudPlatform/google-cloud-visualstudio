@@ -27,6 +27,7 @@ namespace GoogleCloudExtension
     public interface IGoogleCloudExtensionPackage : IVsPackage, Microsoft.VisualStudio.OLE.Interop.IServiceProvider, IOleCommandTarget, IVsPersistSolutionOpts, IServiceContainer, System.IServiceProvider, IVsUserSettings, IVsUserSettingsMigration, IVsUserSettingsQuery, IVsToolWindowFactory, IVsToolboxItemProvider
     {
         AnalyticsOptions AnalyticsSettings { get; }
+        string VsVersion { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();

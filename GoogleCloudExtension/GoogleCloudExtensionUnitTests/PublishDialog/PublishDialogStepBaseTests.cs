@@ -25,7 +25,7 @@ using System.Collections.Generic;
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {
     [TestClass]
-    public class PublishDialogStepBaseTests
+    public class PublishDialogStepBaseTests : ExtensionTestBase
     {
         private const string TargetProjectId = "TargetProjectId";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
@@ -38,8 +38,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             var mockImpl = new Mock<PublishDialogStepBase> { CallBase = true };

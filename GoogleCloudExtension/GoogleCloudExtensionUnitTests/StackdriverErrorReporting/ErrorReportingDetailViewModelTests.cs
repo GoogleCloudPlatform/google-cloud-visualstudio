@@ -31,7 +31,7 @@ using GroupTimeRangePeriodEnum =
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
     [TestClass]
-    public class ErrorReportingDetailViewModelTests
+    public class ErrorReportingDetailViewModelTests : ExtensionTestBase
     {
         private TimeRangeItem _defaultTimeRangeItem;
 
@@ -48,8 +48,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private IGoogleCloudExtensionPackage _oldPackage;
         private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _oldPackage = GoogleCloudExtensionPackage.Instance;
             _packageMock = new Mock<IGoogleCloudExtensionPackage>();

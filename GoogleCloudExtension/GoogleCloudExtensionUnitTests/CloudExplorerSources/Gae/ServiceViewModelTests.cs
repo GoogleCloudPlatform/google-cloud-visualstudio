@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtensionUnitTests.StackdriverLogsViewer;
@@ -28,34 +26,16 @@ using Resources = GoogleCloudExtension.Resources;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
 {
     [TestClass]
-    public class ServiceViewModelTests
+    public class ServiceViewModelTests : ExtensionTestBase
     {
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
-        private IGoogleCloudExtensionPackage _packageToRestore;
-
-        [TestInitialize]
-        public void BeforeEach()
-        {
-            EventsReporterWrapper.DisableReporting();
-            _packageToRestore = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
-            EventsReporterWrapper.DisableReporting();
-        }
-
-        [TestCleanup]
-        public void AfterEach()
-        {
-            GoogleCloudExtensionPackage.Instance = _packageToRestore;
-        }
 
         [TestMethod]
         public void TestOnBrowseStackdriverLogCommand()
         {
             var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
             logsToolWindowMock.Object.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
-            _packageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindowMock.Object);
             string filter = null;
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);
