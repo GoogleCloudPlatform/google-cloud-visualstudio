@@ -1121,6 +1121,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
@@ -1135,6 +1136,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.ShowInputControls);
         }
 
@@ -1149,6 +1151,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsTrue(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
@@ -1163,6 +1166,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
@@ -1177,6 +1181,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
@@ -1200,7 +1205,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsNotNull(_objectUnderTest.AsyncAction);
             Assert.AreEqual(_mockedPublishDialog, _objectUnderTest.PublishDialog);
             Assert.IsFalse(_objectUnderTest.CanGoNext);
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
         }
     }

@@ -206,8 +206,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override void RefreshCanPublish()
         {
-            CanPublish = IsValidGcpProject
-                && !HasErrors
+            CanPublish = base.CanPublish
                 && SelectedCluster != null
                 && SelectedCluster != s_placeholderCluster;
         }

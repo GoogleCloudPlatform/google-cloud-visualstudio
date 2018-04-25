@@ -130,6 +130,7 @@ namespace GoogleCloudExtension.PublishDialog
             protected set
             {
                 SetValueAndRaise(ref _loadingProject, value);
+                RefreshCanPublish();
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -143,6 +144,7 @@ namespace GoogleCloudExtension.PublishDialog
             set
             {
                 SetValueAndRaise(ref _generalError, value);
+                RefreshCanPublish();
                 RaisePropertyChanged(nameof(ShowInputControls));
             }
         }
@@ -368,7 +370,10 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         protected virtual void RefreshCanPublish()
         {
-            CanPublish = false;
+            CanPublish = IsValidGcpProject
+                && !LoadingProject
+                && !HasErrors
+                && !GeneralError;
         }
 
         protected async Task OnEnableApiCommandAsync()

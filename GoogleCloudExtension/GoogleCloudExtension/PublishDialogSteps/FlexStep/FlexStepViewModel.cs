@@ -183,11 +183,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// <returns>A cached completed task.</returns>
         protected override Task LoadValidProjectDataAsync() => TplExtensions.CompletedTask;
 
-        protected override void RefreshCanPublish()
-        {
-            CanPublish = IsValidGcpProject && !HasErrors;
-        }
-
         public override async void Publish()
         {
             IParsedProject project = PublishDialog.Project;
