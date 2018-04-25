@@ -9,7 +9,6 @@ namespace GoogleCloudExtensionUnitTests
     /// </summary>
     public static class VsWindowFrameMocks
     {
-
         /// <summary>
         /// Gets an <see cref="IVsWindowFrame"/> backed by a <see cref="Mock{T}"/>.
         /// </summary>
@@ -27,9 +26,6 @@ namespace GoogleCloudExtensionUnitTests
         /// Gets a <see cref="Mock"/> of an <see cref="IVsWindowFrame"/>.
         /// </summary>
         /// <returns>Gets a <see cref="Mock"/> of an <see cref="IVsWindowFrame"/>.</returns>
-        public static Mock<IVsWindowFrame> GetWindowFrameMock()
-        {
-            return Mock.Get(GetMockedWindowFrame());
-        }
+        public static Mock<IVsWindowFrame> GetWindowFrameMock() => Mock.Get(GetMockedWindowFrame());
     }
 }

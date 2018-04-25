@@ -42,6 +42,7 @@ namespace GoogleCloudExtensionUnitTests.Analytics
         protected override void AfterEach()
         {
             EventsReporterWrapper.PromptAnalyticsOptIn = AnalyticsOptInWindow.PromptUser;
+            EventsReporterWrapper.DisableReporting();
         }
 
         [TestMethod]
@@ -67,6 +68,7 @@ namespace GoogleCloudExtensionUnitTests.Analytics
             EventsReporterWrapper.EnsureAnalyticsOptIn();
 
             _promptAnalyticsMock.Verify(f => f(), Times.Never);
+            Assert.IsTrue(_analyticsOptions.DialogShown);
             Assert.IsFalse(_analyticsOptions.OptIn);
         }
 

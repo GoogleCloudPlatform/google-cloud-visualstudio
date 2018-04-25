@@ -2,10 +2,10 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -85,11 +85,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidCastException))]
         public void TestSetContentOfInvalidType()
         {
             _objectUnderTest.Content = new object();
-
-            Assert.IsNull(_objectUnderTest.Content);
         }
 
         [TestMethod]
