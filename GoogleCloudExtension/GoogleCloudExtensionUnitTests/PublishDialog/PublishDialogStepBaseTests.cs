@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {
     [TestClass]
-    public class PublishDialogStepBaseTests
+    public class PublishDialogStepBaseTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "DefaultProjectId";
         private const string TargetProjectId = "TargetProjectId";
@@ -46,8 +46,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
 
-        [TestInitialize]
-        public virtual void BeforeEach()
+        protected override void BeforeEach()
         {
             IParsedProject mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
 
@@ -68,8 +67,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 
-        [TestCleanup]
-        public void AfterEach()
+        protected override void AfterEach()
         {
             _objectUnderTest.OnFlowFinished();
         }
