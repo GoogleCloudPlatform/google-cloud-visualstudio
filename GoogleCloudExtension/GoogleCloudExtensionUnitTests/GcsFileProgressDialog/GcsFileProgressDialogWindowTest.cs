@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
 {
@@ -63,16 +64,20 @@ namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
         public async Task TestBindingsLoadCorrectly()
         {
             var tcs = new TaskCompletionSource<bool>();
-            var objectUnderTest = new GcsFileProgressDialogWindow(
-                "test-caption", "test-message", "test-progress-message", new GcsOperation[0],
-                new CancellationTokenSource());
-            objectUnderTest.SourceInitialized += (sender, args) =>
-            {
-                objectUnderTest.Close();
-                tcs.SetResult(true);
-            };
+            Dispatcher.CurrentDispatcher.Invoke(
+                () =>
+                {
+                    var objectUnderTest = new GcsFileProgressDialogWindow(
+                        "test-caption", "test-message", "test-progress-message", new GcsOperation[0],
+                        new CancellationTokenSource());
+                    objectUnderTest.SourceInitialized += (sender, args) =>
+                    {
+                        objectUnderTest.Close();
+                        tcs.SetResult(true);
+                    };
 
-            objectUnderTest.ShowModal();
+                    objectUnderTest.ShowModal();
+                });
             await tcs.Task;
         }
     }
