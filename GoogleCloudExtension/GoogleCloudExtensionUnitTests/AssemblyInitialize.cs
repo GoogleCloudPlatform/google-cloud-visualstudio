@@ -16,6 +16,7 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -39,6 +40,8 @@ namespace GoogleCloudExtensionUnitTests
         {
             GoogleCloudExtensionPackage.Instance = s_packageToRestore;
             Application.Current.Shutdown();
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
+
         }
     }
 }
