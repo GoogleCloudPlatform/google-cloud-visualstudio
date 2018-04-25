@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
     [TestClass]
-    public class PickProjectIdViewModelTests
+    public class PickProjectIdViewModelTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "default-project-id";
         private const string TestProjectId = "loaded-project-id";
@@ -44,8 +44,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private PropertyChangedEventHandler _addPropertiesChanged;
         private Mock<Action> _manageAccoutMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _testObject = null;
             CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);

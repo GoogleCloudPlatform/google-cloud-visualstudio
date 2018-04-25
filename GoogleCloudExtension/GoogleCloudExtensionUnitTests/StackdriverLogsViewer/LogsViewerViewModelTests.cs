@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
@@ -23,15 +22,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Process = System.Diagnostics.Process;
+using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
     [TestClass]
-    public class LogsViewerViewModelTests
+    public class LogsViewerViewModelTests : ExtensionTestBase
     {
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
@@ -41,9 +42,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
+
             const string defaultAccountName = "default-account";
             const string defaultProjectId = "default-project";
             const string defaultProjectName = "default-project";
@@ -55,12 +57,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 ds =>
                     ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
                     ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
-                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
-                    _listProjectLogNamesSource.Task &&
-                    ds.ListLogEntriesAsync(
-                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                        It.IsAny<CancellationToken>()) ==
-                    _listLogEntriesSource.Task);
+                    (ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                        _listProjectLogNamesSource.Task) &&
+                    (ds.ListLogEntriesAsync(
+                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                            It.IsAny<CancellationToken>()) ==
+                        _listLogEntriesSource.Task));
             CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
@@ -128,6 +130,28 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
             Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
             Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenOffScreen()
+        {
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            _objectUnderTest.IsVisibleUnbound = false;
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
+        }
+
+        [TestMethod]
+        public void TestNoLoadWhenMinimized()
+        {
+            _listLogEntriesSource.SetException(new DataSourceException(""));
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsError);
         }
 
         [TestMethod]
@@ -328,16 +352,22 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestFilterTreeNode()
         {
+            ILogsViewerViewModel newViewModel = new LogsViewerViewModel(_mockedLoggingDataSource);
+            var logsToolWindow = Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == newViewModel);
+            logsToolWindow.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
+                .Returns(logsToolWindow);
             const string testNodeName = "test-node";
             const string testNodeValue = "test-value";
 
             var treeNode = new ObjectNodeTree(testNodeName, testNodeValue, null);
             _objectUnderTest.OnDetailTreeNodeFilterCommand.Execute(treeNode);
 
-            Assert.IsFalse(_objectUnderTest.IsAutoReloadChecked);
-            Assert.IsTrue(_objectUnderTest.ShowAdvancedFilter);
-            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeName));
-            Assert.IsTrue(_objectUnderTest.AdvancedFilterText.Contains(testNodeValue));
+            Assert.IsFalse(newViewModel.IsAutoReloadChecked);
+            Assert.IsTrue(newViewModel.ShowAdvancedFilter);
+            Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeName));
+            Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeValue));
         }
     }
 }

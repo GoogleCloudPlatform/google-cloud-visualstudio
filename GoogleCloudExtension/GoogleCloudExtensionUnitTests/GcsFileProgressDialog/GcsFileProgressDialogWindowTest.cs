@@ -20,7 +20,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
 {
@@ -30,43 +29,51 @@ namespace GoogleCloudExtensionUnitTests.GcsFileProgressDialog
     [TestClass]
     public class GcsFileProgressDialogWindowTest
     {
-        private Mock<IVsSettingsManager> _settingManagerMock;
-        private Mock<IVsUIShell> _uiShellMock;
+        private Mock<IServiceProvider> _serviceProviderMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _settingManagerMock = new Mock<IVsSettingsManager>();
-            _uiShellMock = new Mock<IVsUIShell>();
+            _serviceProviderMock = new Mock<IServiceProvider>();
+
+            Mock<IVsSettingsManager> settingManagerMock =
+                _serviceProviderMock.SetupService<SVsSettingsManager, IVsSettingsManager>();
+
             // ReSharper disable once RedundantAssignment
             var intValue = 0;
             // ReSharper disable once RedundantAssignment
             var store = Mock.Of<IVsSettingsStore>(
                 ss => ss.GetIntOrDefault(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), out intValue) == 0);
-            _settingManagerMock.Setup(sm => sm.GetReadOnlySettingsStore(It.IsAny<uint>(), out store)).Returns(0);
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte =>
-            {
-                Mock<IServiceProvider> providerMock = dte.As<IServiceProvider>();
-                GoogleCloudExtensionPackageTests.SetupService<SVsSettingsManager, IVsSettingsManager>(
-                    providerMock, _settingManagerMock);
-                GoogleCloudExtensionPackageTests.SetupService<IVsUIShell, IVsUIShell>(providerMock, _uiShellMock);
-            });
+            settingManagerMock.Setup(sm => sm.GetReadOnlySettingsStore(It.IsAny<uint>(), out store)).Returns(0);
+
+            _serviceProviderMock.SetupService<IVsUIShell, IVsUIShell>();
+
+            _serviceProviderMock.SetupDefaultServices();
+            _serviceProviderMock.SetAsGlobalProvider();
         }
 
-        [TestMethod, TestCategory("OFF")]
+        [TestCleanup]
+        public void AfterEach()
+        {
+            _serviceProviderMock.Dispose();
+        }
+
+        [TestMethod]
+        [TestCategory("WPF")]
         public async Task TestBindingsLoadCorrectly()
         {
+            var tcs = new TaskCompletionSource<bool>();
             var objectUnderTest = new GcsFileProgressDialogWindow(
                 "test-caption", "test-message", "test-progress-message", new GcsOperation[0],
                 new CancellationTokenSource());
-            Task closeTask = Application.Current.Dispatcher.InvokeAsync(
-               () =>
-               {
-                   Thread.Yield();
-                   objectUnderTest.Close();
-               }).Task;
+            objectUnderTest.SourceInitialized += (sender, args) =>
+            {
+                objectUnderTest.Close();
+                tcs.SetResult(true);
+            };
+
             objectUnderTest.ShowModal();
-            await closeTask;
+            await tcs.Task;
         }
     }
 }

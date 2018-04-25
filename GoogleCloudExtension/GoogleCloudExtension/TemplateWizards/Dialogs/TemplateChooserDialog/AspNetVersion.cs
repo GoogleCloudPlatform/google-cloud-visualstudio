@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 case FrameworkType.NetFramework:
                     return new List<AspNetVersion> { AspNetCore10, AspNetCore11, AspNetCore20 };
                 case FrameworkType.NetCore:
-                    switch (GoogleCloudExtensionPackage.VsVersion)
+                    switch (GoogleCloudExtensionPackage.Instance.VsVersion)
                     {
                         case VsVersionUtils.VisualStudio2015Version:
                             return GetVs2015AspNetCoreVersions();

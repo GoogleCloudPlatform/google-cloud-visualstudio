@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -20,12 +21,11 @@ using Moq;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
     [TestClass]
-    public class PubSubSourceTests
+    public class PubSubSourceTests : ExtensionTestBase
     {
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
+            PackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(Mock.Of<CloudExplorerOptions>());
         }
 
         [TestMethod]

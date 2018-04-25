@@ -40,6 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
+        private readonly IGoogleCloudExtensionPackage _package;
 
         // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
@@ -139,6 +140,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
+        /// Indicates whether the view is visible or not
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
+
+        /// <summary>
         /// Gets the list of time range items.
         /// </summary>
         public IEnumerable<TimeRangeItem> AllTimeRangeItems => _timeRangeItemList.Value;
@@ -168,10 +174,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingDetailViewModel()
         {
+            _package = GoogleCloudExtensionPackage.Instance;
+            IsVisibleUnbound = true;
             OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
             OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
+
             CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnCurrentProjectChanged();
         }
@@ -274,6 +283,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private async Task UpdateGroupAndEventAsync()
         {
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
+            {
+                return;
+            }
+
             IsControlEnabled = false;
             try
             {

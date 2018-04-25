@@ -27,11 +27,24 @@ namespace GoogleCloudExtension
     public interface IGoogleCloudExtensionPackage : IVsPackage, Microsoft.VisualStudio.OLE.Interop.IServiceProvider, IOleCommandTarget, IVsPersistSolutionOpts, IServiceContainer, System.IServiceProvider, IVsUserSettings, IVsUserSettingsMigration, IVsUserSettingsQuery, IVsToolWindowFactory, IVsToolboxItemProvider
     {
         AnalyticsOptions AnalyticsSettings { get; }
+        string VsVersion { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
+        bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;
         void SubscribeClosingEvent(EventHandler handler);
         void UnsubscribeClosingEvent(EventHandler handler);
         ToolWindowPane FindToolWindow(Type toolWindowType, int id, bool create);
+
+        /// <summary>
+        /// Finds and returns an instance of the given tool window.
+        /// </summary>
+        /// <typeparam name="TToolWindow">The type of tool window to get.</typeparam>
+        /// <param name="create">Whether to create a new tool window if the given one is not found.</param>
+        /// <param name="id">The instance id of the tool window. Defaults to 0.</param>
+        /// <returns>
+        /// The tool window instance, or null if the given id does not already exist and create was false.
+        /// </returns>
+        TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane;
     }
 }

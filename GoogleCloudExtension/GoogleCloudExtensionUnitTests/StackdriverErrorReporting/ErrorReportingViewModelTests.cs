@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -24,26 +23,27 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GroupTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
     [TestClass]
-    public class ErrorReportingViewModelTests
+    public class ErrorReportingViewModelTests : ExtensionTestBase
     {
         private ErrorReportingViewModel _objectUnderTest;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(new Project());
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
             dataSourceMock
                 .Setup(
                     ds => ds.GetPageOfGroupStatusAsync(
-                        It.IsAny<ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                        It.IsAny<GroupTimeRangePeriodEnum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(() => _getPageOfGroupStatusSource.Task);
             _objectUnderTest = new ErrorReportingViewModel(dataSourceMock.Object);
             _propertiesChanged = new List<string>();
@@ -151,6 +151,32 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsTrue(_objectUnderTest.IsRefreshing);
             Assert.IsFalse(_objectUnderTest.IsLoadingNextPage);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenOffScreen()
+        {
+            _objectUnderTest.IsVisibleUnbound = false;
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestAutoReloadWhenMinimized()
+        {
+            _objectUnderTest.ShowError = false;
+            _getPageOfGroupStatusSource.SetException(new DataSourceException());
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
+
+            _objectUnderTest.OnAutoReloadCommand.Execute(null);
+
+            // No API call should be made as the control is off screen
+            Assert.IsFalse(_objectUnderTest.ShowError);
         }
 
         [TestMethod]

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows;
@@ -21,12 +22,23 @@ namespace GoogleCloudExtensionUnitTests
     [TestClass]
     public static class AssemblyInitialize
     {
+        private static IGoogleCloudExtensionPackage s_packageToRestore;
+
         [AssemblyInitialize]
         public static void InitializeAssembly(TestContext context)
         {
             EventsReporterWrapper.DisableReporting();
+            s_packageToRestore = GoogleCloudExtensionPackage.Instance;
+            GoogleCloudExtensionPackage.Instance = null;
             // Enable pack URIs.
             Assert.AreEqual(new Application(), Application.Current);
+        }
+
+        [AssemblyCleanup]
+        public static void CleanupAfterAllTests()
+        {
+            GoogleCloudExtensionPackage.Instance = s_packageToRestore;
+            Application.Current.Shutdown();
         }
     }
 }

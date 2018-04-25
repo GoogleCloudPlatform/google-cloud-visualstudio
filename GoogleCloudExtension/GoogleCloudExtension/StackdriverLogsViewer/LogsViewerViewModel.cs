@@ -34,8 +34,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public class LogsViewerViewModel : ViewModelBase, IDisposable
+    public class LogsViewerViewModel : ViewModelBase, ILogsViewerViewModel
     {
+        private readonly int _toolWindowIdNumber;
         internal const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
         private const uint LogStreamingIntervalInSeconds = 3;
@@ -70,6 +71,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _isAutoReloadChecked;
         private string _nextPageToken;
         private LogItem _latestLogItem;
+        private readonly IGoogleCloudExtensionPackage _package;
 
         private bool _toggleExpandAllExpanded;
 
@@ -123,6 +125,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the command that filters log entris on a detail tree view field value.
         /// </summary>
         public ProtectedCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
+
+        /// <summary>
+        /// Indicates whether the view is visible or not
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.
@@ -334,7 +341,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="dataSource">
         /// The mocked data source to use instead the value from <see cref="CreateDataSource"/>.
         /// </param>
-        internal LogsViewerViewModel(ILoggingDataSource dataSource) : this()
+        internal LogsViewerViewModel(ILoggingDataSource dataSource) : this(0)
         {
             _dataSourceOverride = dataSource;
         }
@@ -342,8 +349,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
-        public LogsViewerViewModel()
+        /// <param name="toolWindowIdNumber"></param>
+        public LogsViewerViewModel(int toolWindowIdNumber)
         {
+            IsVisibleUnbound = true;
+            _package = GoogleCloudExtensionPackage.Instance;
+            _toolWindowIdNumber = toolWindowIdNumber;
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
@@ -477,10 +488,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 newFilter.Insert(0, ComposeSimpleFilters());
             }
 
-            // Show advanced filter.
-            AdvancedFilterText = newFilter.ToString();
-            ShowAdvancedFilter = true;
-            AsyncAction = new AsyncProperty(ReloadAsync());
+            var newWindow = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            newWindow.ViewModel.FilterLog(newFilter.ToString());
         }
 
         private void OnRefreshCommand()
@@ -502,7 +511,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            IEnumerable<LogItem> query = logEntries.Select(x => new LogItem(x, SelectedTimeZone)).ToList();
+            IEnumerable<LogItem> query =
+                logEntries.Select(x => new LogItem(x, SelectedTimeZone, _toolWindowIdNumber)).ToList();
             if (autoReload && DateTimePickerModel.IsDescendingOrder)
             {
                 foreach (LogItem item in query.Reverse())
@@ -786,6 +796,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             // Possibly, the last auto reload command have not completed.
             if (AsyncAction.IsPending || !IsAutoReloadChecked)
+            {
+                return;
+            }
+
+            // If the view is not visible, don't reload
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
             {
                 return;
             }
