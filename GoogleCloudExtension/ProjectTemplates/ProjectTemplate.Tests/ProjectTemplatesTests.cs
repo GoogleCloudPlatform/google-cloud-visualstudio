@@ -144,7 +144,7 @@ namespace ProjectTemplate.Tests
         private static void RestorePackages(string projectDirectory)
         {
             var dotNetRestoreInfo =
-                new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = projectDirectory };
+                new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = projectDirectory, CreateNoWindow = true, UseShellExecute = false };
             Process.Start(dotNetRestoreInfo)?.WaitForExit();
         }
 
