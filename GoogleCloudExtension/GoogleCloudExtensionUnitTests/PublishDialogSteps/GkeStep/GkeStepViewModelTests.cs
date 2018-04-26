@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.GkeStep;
-using GoogleCloudExtensionUnitTests.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -28,8 +31,11 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
 {
     [TestClass]
-    public class GkeStepViewModelTests : PublishDialogStepBaseTestsBase<GkeStepViewModel>
+    public class GkeStepViewModelTests : ExtensionTestBase
     {
+        private const string DefaultProjectId = "DefaultProjectId";
+        private const string TargetProjectId = "TargetProjectId";
+        private const string VisualStudioProjectName = "VisualStudioProjectName";
         private const string InvalidVersion = "-Invalid Version Name!";
         private const string ValidVersion = "valid-version-name";
         private const string InvalidDeploymentName = "-Invalid Deployment Name!";
@@ -38,51 +44,343 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         private const string ZeroReplicas = "0";
         private const string NegativeReplicas = "-3";
 
-        private static readonly Cluster s_selectedCluster = new Cluster { Name = "Acluster" };
-        private static readonly List<Cluster> s_mockedClusters = new List<Cluster>
-        {
-            new Cluster { Name = "Bcluster" },
-            s_selectedCluster,
-            new Cluster { Name = "Ccluster" },
-        };
-
         private static readonly Regex s_validNamePattern = new Regex(@"^(?!-)[a-z\d\-]{1,100}$");
 
+        private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
+        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
+
+        private static readonly Cluster s_selectedCluster = new Cluster { Name = "Acluster" };
+        private static readonly Cluster s_BCluster = new Cluster { Name = "Bcluster" };
+        private static readonly Cluster s_CCluster = new Cluster { Name = "Ccluster" };
+        private static readonly List<Cluster> s_mockedClusters = new List<Cluster>
+        {
+            s_BCluster, s_selectedCluster, s_CCluster,
+        };
+        private static readonly List<Cluster> s_expectedClusters = new List<Cluster>
+        {
+            s_selectedCluster, s_BCluster, s_CCluster,
+        };
+
+        private GkeStepViewModel _objectUnderTest;
+        private Mock<IApiManager> _apiManagerMock;
+        private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
+        private TaskCompletionSource<object> _enableServicesTaskSource;
         private Mock<IGkeDataSource> _dataSourceMock;
         private TaskCompletionSource<IList<Cluster>> _clusterListTaskSource;
+        private IPublishDialog _mockedPublishDialog;
+        private Mock<Func<Project>> _pickProjectPromptMock;
+        private List<string> _changedProperties;
 
-        private string _expectedDeploymentName;
-        private IEnumerable<Cluster> _expectedClusters;
-        private Cluster _expectedSelectedCluster;
-        private string _expectedReplicas;
-        private bool _expectedRefreshClusterListCanExecute;
-        private bool _expectedCreateClusterCommandCanExecute;
-
-        protected override int RequieredAPIsForStep => 2;
-
-        protected override GkeStepViewModel CreateStep()
+        protected override void BeforeEach()
         {
-            return GkeStepViewModel.CreateStep(apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object, dataSource: _dataSourceMock.Object);
-        }
+            base.BeforeEach();
 
-        [TestInitialize]
-        public override void BeforeEach()
-        {
+            IParsedProject mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
+
+            Mock<IPublishDialog> publishDialogMock = new Mock<IPublishDialog>();
+            publishDialogMock.Setup(pd => pd.Project).Returns(mockedProject);
+            publishDialogMock.Setup(pd => pd.TrackTask(It.IsAny<Task>()));
+            _mockedPublishDialog = publishDialogMock.Object;
+
+            _pickProjectPromptMock = new Mock<Func<Project>>();
+            _changedProperties = new List<string>();
+
+            _apiManagerMock = new Mock<IApiManager>();
+            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
+            _apiManagerMock.Setup(x => x.EnableServicesAsync(It.IsAny<IEnumerable<string>>())).Returns(() => _enableServicesTaskSource.Task);
+
             _dataSourceMock = new Mock<IGkeDataSource>();
             _dataSourceMock.Setup(ds => ds.GetClusterListAsync()).Returns(() => _clusterListTaskSource.Task);
 
-            base.BeforeEach();
+            _objectUnderTest = GkeStepViewModel.CreateStep(apiManager: _apiManagerMock.Object, pickProjectPrompt: _pickProjectPromptMock.Object, dataSource: _dataSourceMock.Object);
+            _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
+        }
+
+        protected override void AfterEach()
+        {
+            _objectUnderTest.OnFlowFinished();
+
+            base.AfterEach();
+        }
+
+        [TestMethod]
+        public void TestInitialState()
+        {
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public void TestInitialStateNoProject()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(null);
+
+            AssertSelectedProjectUnchanged();
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public void TestInitialStateProject()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+
+            AssertSelectedProjectUnchanged();
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public async Task TestOnVisibleNoProject()
+        {
+            await OnVisibleWithProject(null);
+
+            AssertSelectedProjectChanged();
+            AssertNoProjectInitialState();
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestOnVisiblePositiveValidation()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+
+            await OnVisibleWithProject(s_defaultProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestOnVisibleNegativeValidation()
+        {
+            InitAreServicesEnabledMock(false);
+
+            await OnVisibleWithProject(s_defaultProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public void TestOnVisibleLongRunningValidation()
+        {
+            InitLongRunningAreServicesEnabledMock();
+
+            Task onVisibleTask = OnVisibleWithProject(s_defaultProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestOnVisibleErrorInValidation()
+        {
+            InitErrorAreServicesEnabledMock();
+
+            await OnVisibleWithProject(s_defaultProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
         public async Task TestOnVisibleNoClusters()
         {
-            await GoToNoClustersDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(new List<Cluster>());
 
-            SetNoClustersDefaultStateExpectedValues();
+            await OnVisibleWithProject(s_defaultProject);
 
             AssertSelectedProjectChanged();
-            AssertExpectedVisibleState();
+            AssertValidProjectPlaceholderClusters(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToNoExternal()
+        {
+            await OnVisibleWithProject(null);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(null);
+
+            AssertSelectedProjectUnchanged();
+            AssertNoProjectInitialState();
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToPositiveValidationExternal()
+        {
+            await OnVisibleWithProject(null);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToNegativeValidationExternal()
+        {
+            await OnVisibleWithProject(null);
+
+            InitAreServicesEnabledMock(false);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToLongRunningValidationExternal()
+        {
+            await OnVisibleWithProject(null);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToErrorInValidationExternal()
+        {
+            await OnVisibleWithProject(null);
+
+            InitErrorAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToNoExternal()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(null);
+
+            AssertSelectedProjectChanged();
+            AssertNoProjectInitialState();
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToPositiveValidationExternal()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToNegativeValidationExternal()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitAreServicesEnabledMock(false);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToLongRunningValidationExternal()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToErrorInValidationExternal()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitErrorAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
@@ -91,466 +389,1211 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
+            InitGetClusterListMock(new List<Cluster>());
             _changedProperties.Clear();
-            SetNoClustersTargetStateExpectedValues();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectPlaceholderClusters(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToNoExternal()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(null);
+
+            AssertSelectedProjectChanged();
+            AssertNoProjectInitialState();
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToPositiveValidationExternal()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
 
             InitAreServicesEnabledMock(true);
-            InitGetClusterListMock(new List<Cluster>());
+            InitGetClusterListMock(s_mockedClusters);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToNegativeValidationExternal()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToLongRunningValidationExternal()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToErrorInValidationExternal()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitErrorAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedExternally(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToNoSelectCommand()
+        {
+            await OnVisibleWithProject(null);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(null);
+
+            AssertSelectedProjectUnchanged();
+            AssertNoProjectInitialState();
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToPositiveValidationSelectCommand()
+        {
+            await OnVisibleWithProject(null);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
-            AssertExpectedVisibleState();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestNullVersionValidProject()
+        public async Task TestFromNoToNegativeValidationSelectCommand()
+        {
+            await OnVisibleWithProject(null);
+
+            InitAreServicesEnabledMock(false);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToLongRunningValidationSelectCommand()
+        {
+            await OnVisibleWithProject(null);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromNoToErrorInValidationSelectCommand()
+        {
+            await OnVisibleWithProject(null);
+
+            InitErrorAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromValidToNoSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidVersionStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToVersionState(null);
+            await OnProjectChangedSelectProjectCommand(null);
 
-            AssertVersionExpectedState(null);
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestNullVersionInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToVersionState(null);
-            SetInvalidVersionStateExpectedValues();
-
-            AssertVersionExpectedState(null);
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestEmptyVersionValidProject()
+        public async Task TestFromValidToPositiveValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidVersionStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToVersionState(string.Empty);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertVersionExpectedState(string.Empty);
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestEmptyVersionInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToVersionState(string.Empty);
-            SetInvalidVersionStateExpectedValues();
-
-            AssertVersionExpectedState(string.Empty);
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestInvalidVersionValidProject()
+        public async Task TestFromValidToNegativeValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidVersionStateExpectedValues();
 
-            await GoToVersionState(InvalidVersion);
-
-            AssertVersionExpectedState(InvalidVersion);
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestInvalidVersionInvalidProject()
-        {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToVersionState(InvalidVersion);
-            SetInvalidVersionStateExpectedValues();
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertVersionExpectedState(InvalidVersion);
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestValidVersionValidProject()
+        public async Task TestFromValidToLongRunningValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
+            InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetValidVersionStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToVersionState(ValidVersion);
+            Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertVersionExpectedState(ValidVersion);
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestValidVersionInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToVersionState(ValidVersion);
-            SetValidVersionStateExpectedValues();
-
-            AssertVersionExpectedState(ValidVersion);
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestNullDeploymentNameValidProject()
+        public async Task TestFromValidToErrorInValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
+            InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidDeploymentNameStateExpectedValues(null);
+            ResetMockCalls();
 
-            await GoToDeploymentNameState(null);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestNullDeploymentNameInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToDeploymentNameState(null);
-            SetInvalidDeploymentNameStateExpectedValues(null);
-
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestEmptyDeploymentNameValidProject()
+        public async Task TestFromValidToSameValidSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidDeploymentNameStateExpectedValues(string.Empty);
+            ResetMockCalls();
 
-            await GoToDeploymentNameState(string.Empty);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestEmptyDeploymentNameInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToDeploymentNameState(string.Empty);
-            SetInvalidDeploymentNameStateExpectedValues(string.Empty);
-
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestInvalidDeploymentNameValidProject()
+        public async Task TestFromValidToSameInvalidSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidDeploymentNameStateExpectedValues(InvalidDeploymentName);
 
-            await GoToDeploymentNameState(InvalidDeploymentName);
-
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestInvalidDeploymentNameInvalidProject()
-        {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToDeploymentNameState(InvalidDeploymentName);
-            SetInvalidDeploymentNameStateExpectedValues(InvalidDeploymentName);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertInvalidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestValidDeploymentNameValidProject()
+        public async Task TestFromValidProjectInvalidVersionToPositiveValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+            await SetVersion(InvalidVersion);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetValidDeploymentNameStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToDeploymentNameState(ValidDeploymentName);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInvalidVersion(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestValidDeploymentNameInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToDeploymentNameState(ValidDeploymentName);
-            SetValidDeploymentNameStateExpectedValues();
-
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestNullReplicasValidProject()
+        public async Task TestFromValidProjectInvalidNameToPositiveValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+            await SetDeploymentName(InvalidDeploymentName);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidReplicasStateExpectedValues(null);
+            ResetMockCalls();
 
-            await GoToReplicasState(null);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInvalidDeploymentName(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestNullReplicasInvalidProject()
-        {
-            InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
-            _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
-
-            await GoToReplicasState(null);
-            SetInvalidReplicasStateExpectedValues(null);
-
-            AssertExpectedVisibleState();
-        }
-
-        [TestMethod]
-        public async Task TestEmptyReplicasValidProject()
+        public async Task TestFromValidProjectInvalidReplicasToPositiveValidationSelectCommand()
         {
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+            await SetReplicas(NegativeReplicas);
+
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidReplicasStateExpectedValues(string.Empty);
+            ResetMockCalls();
 
-            await GoToReplicasState(string.Empty);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectNegativeReplicas(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestEmptyReplicasInvalidProject()
+        public async Task TestFromInvalidToNoSelectCommand()
         {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToReplicasState(string.Empty);
-            SetInvalidReplicasStateExpectedValues(string.Empty);
+            await OnProjectChangedSelectProjectCommand(null);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertInvalidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestZeroReplicasValidProject()
+        public async Task TestFromInvalidToPositiveValidationSelectCommand()
         {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidReplicasStateExpectedValues(ZeroReplicas);
+            ResetMockCalls();
 
-            await GoToReplicasState(ZeroReplicas);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestZeroReplicasInvalidProject()
+        public async Task TestFromInvalidToNegativeValidationSelectCommand()
         {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToReplicasState(ZeroReplicas);
-            SetInvalidReplicasStateExpectedValues(ZeroReplicas);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestNegativeReplicasValidProject()
+        public async Task TestFromInvalidToLongRunningValidationSelectCommand()
         {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToErrorInValidationSelectCommand()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitErrorAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidToSamePositiveValidationSelectCommand()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetInvalidReplicasStateExpectedValues(NegativeReplicas);
+            ResetMockCalls();
 
-            await GoToReplicasState(NegativeReplicas);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestNegativeReplicasInvalidProject()
+        public async Task TestFromInvalidToSameNegativeValidationSelectCommand()
         {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToReplicasState(NegativeReplicas);
-            SetInvalidReplicasStateExpectedValues(NegativeReplicas);
+            await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectUnchanged();
+            AssertInvalidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
         }
 
         [TestMethod]
-        public async Task TestValidReplicasValidProject()
+        public async Task TestFromInvalidProjectAndVersionToPositiveValidationSelectCommand()
         {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetVersion(InvalidVersion);
+
             InitAreServicesEnabledMock(true);
             InitGetClusterListMock(s_mockedClusters);
-            await OnVisibleWithProject(s_defaultProject);
             _changedProperties.Clear();
-            SetValidDefaultStateExpectedValues();
-            SetValidReplicasStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToReplicasState(ValidReplicas);
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInvalidVersion(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
-        public async Task TestValidReplicasInvalidProject()
+        public async Task TestFromInvalidProjectAndNameToPositiveValidationSelectCommand()
         {
             InitAreServicesEnabledMock(false);
-            InitGetClusterListMock(s_mockedClusters);
             await OnVisibleWithProject(s_defaultProject);
+            await SetDeploymentName(InvalidDeploymentName);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
             _changedProperties.Clear();
-            SetInvalidDefaultStateExpectedValues();
+            ResetMockCalls();
 
-            await GoToReplicasState(ValidReplicas);
-            SetValidReplicasStateExpectedValues();
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
 
-            AssertExpectedVisibleState();
+            AssertSelectedProjectChanged();
+            AssertValidProjectInvalidDeploymentName(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidProjectAndReplicasToPositiveValidationSelectCommand()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetReplicas(NegativeReplicas);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectNegativeReplicas(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromErrorInValidationToNoSelectCommand()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(null);
+
+            AssertSelectedProjectUnchanged();
+            AssertErrorInValidationInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromErrorInValidationToPositiveValidationSelectCommand()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertValidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestFromErrorInValidationToNegativeValidationSelectCommand()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitAreServicesEnabledMock(false);
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertInvalidProjectInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromErrorInValidationToLongRunningServiceValidationSelectCommand()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitLongRunningAreServicesEnabledMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertLongRunningValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestFromErrorInValidationToErrorInValidationSelectCommand()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await OnProjectChangedSelectProjectCommand(s_targetProject);
+
+            AssertSelectedProjectChanged();
+            AssertErrorInValidationInitialState(TargetProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+        }
+
+        [TestMethod]
+        public async Task TestEnableApisCommandSuccess()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            InitEnableApiMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await RunEnableApiCommand();
+
+            AssertSelectedProjectUnchanged();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Once());
+            AssertEnableServicesCalled(Times.Once());
+        }
+
+        [TestMethod]
+        public async Task TestEnableApisCommandFailure()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitEnableApiMock();
+            _changedProperties.Clear();
+            ResetMockCalls();
+
+            await RunEnableApiCommand();
+
+            AssertSelectedProjectUnchanged();
+            AssertInvalidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Once());
+            AssertGetClusterListCalled(Times.Never());
+            AssertEnableServicesCalled(Times.Once());
         }
 
         [TestMethod]
         public async Task TestRefreshClustersCommandSuccess()
         {
-            await GoToNoClustersDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(new List<Cluster>());
+            await OnVisibleWithProject(s_defaultProject);
+
+            InitGetClusterListMock(s_mockedClusters);
             _changedProperties.Clear();
+            ResetMockCalls();
 
-            RunRefreshClustersCommandSuccess();
-
-            SetValidDefaultStateExpectedValues();
+            await RunRefreshClustersListCommand();
 
             AssertSelectedProjectUnchanged();
-            AssertExpectedVisibleState();
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Once());
         }
 
         [TestMethod]
         public async Task TestRefreshClustersCommandFailure()
         {
-            await GoToNoClustersDefaultState();
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(new List<Cluster>());
+            await OnVisibleWithProject(s_defaultProject);
+
             _changedProperties.Clear();
+            ResetMockCalls();
 
-            RunRefreshClustersCommandFailure();
-
-            SetNoClustersDefaultStateExpectedValues();
+            await RunRefreshClustersListCommand();
 
             AssertSelectedProjectUnchanged();
-            AssertExpectedVisibleState();
+            AssertValidProjectPlaceholderClusters(DefaultProjectId);
+            AssertAreServicesEnabledCalled(Times.Never());
+            AssertGetClusterListCalled(Times.Once());
         }
 
-        //protected override void InitPositiveValidationMocks()
-        //{
-        //    InitAreServicesEnabledMock(true);
-        //    InitGetClusterListMock(s_mockedClusters);
-        //}
+        [TestMethod]
+        public async Task TestValidProjectNullVersion()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
 
-        //protected override void InitNegativeValidationMocks()
-        //{
-        //    InitAreServicesEnabledMock(false);
-        //    InitGetClusterListMock(s_mockedClusters);
-        //}
+            await SetVersion(null);
 
-        //protected override void InitLongRunningValidationMocks()
-        //{
-        //    InitLongRunningAreServicesEnabledMock();
-        //    InitLongRunningGetClusterMock();
-        //}
+            AssertValidProjectNullVersion(DefaultProjectId);
+        }
 
-        //protected override void InitErrorValidationMocks()
-        //{
-        //    InitErrorAreServicesEnabledMock();
-        //    InitErrorGetClusterMock();
-        //}
+        [TestMethod]
+        public async Task TestInvalidProjectNullVersion()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(null);
+
+            AssertInvalidProjectNullVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectEmptyVersion()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(string.Empty);
+
+            AssertValidProjectEmptyVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectEmptyVersion()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(string.Empty);
+
+            AssertInvalidProjectEmptyVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectInvalidVersion()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(InvalidVersion);
+
+            AssertValidProjectInvalidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectInvalidVersion()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(InvalidVersion);
+
+            AssertInvalidProjectInvalidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectValidVersion()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(ValidVersion);
+
+            AssertValidProjectValidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectValidVersion()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetVersion(ValidVersion);
+
+            AssertInvalidProjectValidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromValidProjectInvalidVersionToValidVersion()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetVersion(InvalidVersion);
+
+            await SetVersion(ValidVersion);
+
+            AssertValidProjectValidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidProjectInvalidVersionToValidVersion()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetVersion(InvalidVersion);
+
+            await SetVersion(ValidVersion);
+
+            AssertInvalidProjectValidVersion(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectNullDeploymentName()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(null);
+
+            AssertValidProjectNullDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectNullDeploymentName()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(null);
+
+            AssertInvalidProjectNullDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectEmptyDeploymentName()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(string.Empty);
+
+            AssertValidProjectEmptyDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectEmptyDeploymentName()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(string.Empty);
+
+            AssertInvalidProjectEmptyDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectInvalidDeploymentName()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(InvalidDeploymentName);
+
+            AssertValidProjectInvalidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectInvalidDeploymentName()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(InvalidDeploymentName);
+
+            AssertInvalidProjectInvalidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectValidDeploymentName()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(ValidDeploymentName);
+
+            AssertValidProjectValidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectValidDeploymentName()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetDeploymentName(ValidDeploymentName);
+
+            AssertInvalidProjectValidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromValidProjectInvalidNameToValidName()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetDeploymentName(InvalidDeploymentName);
+
+            await SetDeploymentName(ValidDeploymentName);
+
+            AssertValidProjectValidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidProjectInvalidNameToValidName()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetDeploymentName(InvalidDeploymentName);
+
+            await SetDeploymentName(ValidDeploymentName);
+
+            AssertInvalidProjectValidDeploymentName(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectNullReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(null);
+
+            AssertValidProjectNullReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectNullReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(null);
+
+            AssertInvalidProjectNullReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectEmptyReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(string.Empty);
+
+            AssertValidProjectEmptyReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectEmptyReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(string.Empty);
+
+            AssertInvalidProjectEmptyReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectZeroReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(ZeroReplicas);
+
+            AssertValidProjectZeroReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectZeroReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(ZeroReplicas);
+
+            AssertInvalidProjectZeroReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectNegativeReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(NegativeReplicas);
+
+            AssertValidProjectNegativeReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectNegativeReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(NegativeReplicas);
+
+            AssertInvalidProjectNegativeReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestValidProjectValidReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(ValidReplicas);
+
+            AssertValidProjectValidReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestInvalidProjectValidReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            await SetReplicas(ValidReplicas);
+
+            AssertInvalidProjectValidReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromValidProjectInvalidReplicasToValidReplicas()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetReplicas(NegativeReplicas);
+
+            await SetReplicas(ValidReplicas);
+
+            AssertValidProjectValidReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestFromInvalidProjectInvalidReplicasToValidReplicas()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            await SetReplicas(NegativeReplicas);
+
+            await SetReplicas(ValidReplicas);
+
+            AssertInvalidProjectValidReplicas(DefaultProjectId);
+        }
+
+        [TestMethod]
+        public async Task TestExposeServiceInvalidates()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = true;
+
+            _objectUnderTest.ExposeService = false;
+
+            AssertValidProjectInitialState(DefaultProjectId);
+            AssertDontExposeService();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromValidState()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromValidEventHandling()
+        {
+            InitAreServicesEnabledMock(true);
+            InitGetClusterListMock(s_mockedClusters);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromInvalidState()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromInvalidEventHandling()
+        {
+            InitAreServicesEnabledMock(false);
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromErrorState()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+
+            RaiseFlowFinished();
+
+            AssertInitialState();
+        }
+
+        [TestMethod]
+        public async Task TestOnFlowFinishedFromErrorEventHandling()
+        {
+            InitErrorAreServicesEnabledMock();
+            await OnVisibleWithProject(s_defaultProject);
+            _changedProperties.Clear();
+
+            RaiseFlowFinished();
+            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+
+            AssertSelectedProjectUnchanged();
+        }
+
+        private void InitAreServicesEnabledMock(bool servicesEnabled)
+        {
+            _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
+            _areServicesEnabledTaskSource.SetResult(servicesEnabled);
+        }
+
+        private void InitLongRunningAreServicesEnabledMock()
+        {
+            _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
+        }
+
+        private void InitErrorAreServicesEnabledMock()
+        {
+            _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
+            _areServicesEnabledTaskSource.SetException(new DataSourceException());
+        }
 
         private void InitGetClusterListMock(IList<Cluster> result)
         {
@@ -558,246 +1601,629 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _clusterListTaskSource.SetResult(result);
         }
 
-        private void InitLongRunningGetClusterMock()
+        private void InitEnableApiMock()
         {
-            _clusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
+            _enableServicesTaskSource = new TaskCompletionSource<object>();
+            _enableServicesTaskSource.SetResult(null);
         }
 
-        private void InitErrorGetClusterMock()
+        private void ResetMockCalls()
         {
-            _clusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
-            _clusterListTaskSource.SetException(new DataSourceException());
+            _apiManagerMock.ResetCalls();
+            _dataSourceMock.ResetCalls();
         }
 
-        protected void SetInitialStateExpectedValues()
+        private async Task OnVisibleWithProject(Project project)
         {
+            CredentialsStore.Default.UpdateCurrentProject(project);
+            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        private async Task OnProjectChangedExternally(Project changedTo)
+        {
+            CredentialsStore.Default.UpdateCurrentProject(changedTo);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        private async Task OnProjectChangedSelectProjectCommand(Project changedTo)
+        {
+            _pickProjectPromptMock.Setup(f => f()).Returns(changedTo);
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        private async Task RunEnableApiCommand()
+        {
+            _objectUnderTest.EnableApiCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        private async Task RunRefreshClustersListCommand()
+        {
+            _objectUnderTest.RefreshClustersListCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
+        }
+
+        private async Task SetVersion(string version)
+        {
+            _objectUnderTest.DeploymentVersion = version;
+            await _objectUnderTest.ValidationDelayTask;
+        }
+
+        private async Task SetDeploymentName(string name)
+        {
+            _objectUnderTest.DeploymentName = name;
+            await _objectUnderTest.ValidationDelayTask;
+        }
+
+        private async Task SetReplicas(string replicas)
+        {
+            _objectUnderTest.Replicas = replicas;
+            await _objectUnderTest.ValidationDelayTask;
+        }
+
+        private void RaiseFlowFinished()
+        {
+            Mock<IPublishDialog> publishDialogMock = Mock.Get(_mockedPublishDialog);
+            publishDialogMock.Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
+        }
+
+        private void AssertInitialState()
+        {
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+
+            Assert.IsNotNull(_objectUnderTest.AsyncAction);
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsCompleted);
             Assert.IsNull(_objectUnderTest.PublishDialog);
             Assert.IsNull(_objectUnderTest.GcpProjectId);
             Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsNull(_objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
-            Assert.IsFalse(_objectUnderTest.HasErrors);
             Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
-
-            _expectedDeploymentName = null;
-            _expectedClusters = Enumerable.Empty<Cluster>();
-            _expectedSelectedCluster = null;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = false;
-            _expectedCreateClusterCommandCanExecute = false;
         }
 
-        protected override void SetNoProjectStateExpectedValues()
+        private void AssertNoProjectInitialState()
         {
-            base.SetNoProjectStateExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
 
-            _expectedDeploymentName = VisualStudioProjectName.ToLower();
-            _expectedClusters = Enumerable.Empty<Cluster>();
-            _expectedSelectedCluster = null;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = false;
-            _expectedCreateClusterCommandCanExecute = false;
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsCompleted);
+            Assert.IsNull(_objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 
-        protected override void SetValidProjectStateExpectedValues()
+        private void AssertValidProjectInitialState(string expectedProjectId)
         {
-            base.SetValidProjectStateExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultDeploymentName();
+            AssertValidClustersState();
 
-            _expectedCanPublish = true;
-
-            _expectedDeploymentName = VisualStudioProjectName.ToLower();
-            _expectedClusters = s_mockedClusters;
-            _expectedSelectedCluster = s_selectedCluster;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = true;
-            _expectedCreateClusterCommandCanExecute = true;
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
         }
 
-        protected override void SetInvalidProjectStateExpectedValues()
+        private void AssertValidProjectNullVersion(string expectedProjectId)
         {
-            base.SetInvalidProjectStateExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertValidClustersState();
 
-            _expectedNeedsApiEnabled = true;
-            _expectedEnableApiCommandCanExecute = true;
-            _expectedShowInputControls = false;
-
-            _expectedDeploymentName = VisualStudioProjectName.ToLower();
-            _expectedClusters = Enumerable.Empty<Cluster>();
-            _expectedSelectedCluster = null;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = false;
-            _expectedCreateClusterCommandCanExecute = false;
+            Assert.IsNull(_objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        protected override void SetErrorInValidationServicesExpectedValues()
+        private void AssertValidProjectEmptyVersion(string expectedProjectId)
         {
-            base.SetErrorInValidationServicesExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertValidClustersState();
 
-            _expectedGeneralError = true;
-            _expectedShowInputControls = false;
-
-            _expectedDeploymentName = VisualStudioProjectName.ToLower();
-            _expectedClusters = Enumerable.Empty<Cluster>();
-            _expectedSelectedCluster = null;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = false;
-            _expectedCreateClusterCommandCanExecute = false;
+            Assert.AreEqual(string.Empty, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        protected override void SetLongRunningValidationServicesExpectedValues()
+        private void AssertValidProjectInvalidVersion(string expectedProjectId)
         {
-            base.SetLongRunningValidationServicesExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertValidClustersState();
 
-            _expectedLoadingProject = true;
-            _expectedShowInputControls = false;
-
-            _expectedDeploymentName = VisualStudioProjectName.ToLower();
-            _expectedClusters = Enumerable.Empty<Cluster>();
-            _expectedSelectedCluster = null;
-            _expectedReplicas = GkeStepViewModel.ReplicasDefaultValue;
-            _expectedRefreshClusterListCanExecute = false;
-            _expectedCreateClusterCommandCanExecute = false;
+            Assert.AreEqual(InvalidVersion, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetValidVersionStateExpectedValues()
+        private void AssertValidProjectValidVersion(string expectedProjectId)
         {
-            _expectedInputHasErrors = false;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertValidClustersState();
+
+            Assert.AreEqual(ValidVersion, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
         }
 
-        private void SetInvalidVersionStateExpectedValues()
+        private void AssertValidProjectNullDeploymentName(string expectedProjectId)
         {
-            _expectedInputHasErrors = true;
-            _expectedCanPublish = false;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+
+            Assert.IsNull(_objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetValidDeploymentNameStateExpectedValues()
+        private void AssertValidProjectEmptyDeploymentName(string expectedProjectId)
         {
-            _expectedInputHasErrors = false;
-            _expectedDeploymentName = ValidDeploymentName;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+
+            Assert.AreEqual(string.Empty, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetInvalidDeploymentNameStateExpectedValues(string invalidValue)
+        private void AssertValidProjectInvalidDeploymentName(string expectedProjectId)
         {
-            _expectedInputHasErrors = true;
-            _expectedCanPublish = false;
-            _expectedDeploymentName = invalidValue;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+
+            Assert.AreEqual(InvalidDeploymentName, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetValidReplicasStateExpectedValues()
+        private void AssertValidProjectValidDeploymentName(string expectedProjectId)
         {
-            _expectedInputHasErrors = false;
-            _expectedReplicas = ValidReplicas;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+
+            Assert.AreEqual(ValidDeploymentName, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
         }
 
-        private void SetInvalidReplicasStateExpectedValues(string invalidValue)
+        private void AssertValidProjectNullReplicas(string expectedProjectId)
         {
-            _expectedInputHasErrors = true;
-            _expectedCanPublish = false;
-            _expectedReplicas = invalidValue;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.IsNull(_objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetNoClustersDefaultStateExpectedValues()
+        private void AssertValidProjectEmptyReplicas(string expectedProjectId)
         {
-            SetValidDefaultStateExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+            AssertDefaultDeploymentName();
 
-            SetNoClustersStateExpectedValues();
+            Assert.AreEqual(string.Empty, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetNoClustersTargetStateExpectedValues()
+        private void AssertValidProjectZeroReplicas(string expectedProjectId)
         {
-            SetValidTargetStateExpectedValues();
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+            AssertDefaultDeploymentName();
 
-            SetNoClustersStateExpectedValues();
+            Assert.AreEqual(ZeroReplicas, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void SetNoClustersStateExpectedValues()
+        private void AssertValidProjectNegativeReplicas(string expectedProjectId)
         {
-            _expectedCanPublish = false;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+            AssertDefaultDeploymentName();
 
-            _expectedClusters = GkeStepViewModel.s_placeholderList;
-            _expectedSelectedCluster = GkeStepViewModel.s_placeholderCluster;
+            Assert.AreEqual(NegativeReplicas, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private async Task GoToNoClustersDefaultState()
+        private void AssertValidProjectValidReplicas(string expectedProjectId)
         {
-            InitAreServicesEnabledMock(true);
-            InitGetClusterListMock(new List<Cluster>());
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertValidClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.AreEqual(ValidReplicas, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsTrue(_objectUnderTest.CanPublish);
         }
 
-        private async Task GoToVersionState(string goToValue)
+        private void AssertValidProjectPlaceholderClusters(string expectedProjectId)
         {
-            _objectUnderTest.DeploymentVersion = goToValue;
-            await _objectUnderTest.ValidationDelayTask;
+            AssertInvariantsAfterVisible();
+            AssertValidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultDeploymentName();
+            AssertPlaceholderClustersState();
+
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private async Task GoToDeploymentNameState(string goToValue)
+        private void AssertValidProject(string expectedProjectId)
         {
-            _objectUnderTest.DeploymentName = goToValue;
-            await _objectUnderTest.ValidationDelayTask;
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsCompleted);
+            Assert.AreEqual(expectedProjectId, _objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.ShowInputControls);
         }
 
-        private async Task GoToReplicasState(string goToValue)
+        private void AssertInvalidProjectInitialState(string expectedProjectId)
         {
-            _objectUnderTest.Replicas = goToValue;
-            await _objectUnderTest.ValidationDelayTask;
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        //protected override Task RunEnableApiCommandFailure()
-        //{
-        //    InitGetClusterListMock(s_mockedClusters);
-        //    InitAreServicesEnabledMock(false);            
-        //    InitEnableApiMock();
-        //    await RunEnableApiCommand();
-        //    return base.RunEnableApiCommandFailure();
-        //}
-
-        private void RunRefreshClustersCommandSuccess()
+        private void AssertInvalidProjectNullVersion(string expectedProjectId)
         {
-            InitGetClusterListMock(s_mockedClusters);
-            RunRefreshClustersCommand();
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.IsNull(_objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void RunRefreshClustersCommandFailure()
+        private void AssertInvalidProjectEmptyVersion(string expectedProjectId)
         {
-            InitGetClusterListMock(new List<Cluster>());
-            RunRefreshClustersCommand();
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(string.Empty, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        private void RunRefreshClustersCommand()
+        private void AssertInvalidProjectInvalidVersion(string expectedProjectId)
         {
-            _objectUnderTest.RefreshClustersListCommand.Execute(null);
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(InvalidVersion, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
-        protected override void AssertInitialState()
+        private void AssertInvalidProjectValidVersion(string expectedProjectId)
         {
-            base.AssertInitialState();
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
 
+            Assert.AreEqual(ValidVersion, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectNullDeploymentName(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+
+            Assert.IsNull(_objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectEmptyDeploymentName(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(string.Empty, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectInvalidDeploymentName(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(InvalidDeploymentName, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectValidDeploymentName(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+
+            Assert.AreEqual(ValidDeploymentName, _objectUnderTest.DeploymentName);
+            Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectNullReplicas(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.IsNull(_objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectEmptyReplicas(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.AreEqual(string.Empty, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectZeroReplicas(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.AreEqual(ZeroReplicas, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectNegativeReplicas(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.AreEqual(NegativeReplicas, _objectUnderTest.Replicas);
+            Assert.IsTrue(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProjectValidReplicas(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInvalidProject(expectedProjectId);
+            AssertInitialVersionState();
+            AssertDefaultClustersState();
+            AssertDefaultDeploymentName();
+
+            Assert.AreEqual(ValidReplicas, _objectUnderTest.Replicas);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+        }
+
+        private void AssertInvalidProject(string expectedProjectId)
+        {
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsCompleted);
+            Assert.AreEqual(expectedProjectId, _objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsTrue(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsTrue(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
+        }
+
+        private void AssertLongRunningValidationInitialState(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInitialVersionState();
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.IsFalse(_objectUnderTest.AsyncAction.IsCompleted);
+            Assert.AreEqual(expectedProjectId, _objectUnderTest.GcpProjectId);
+            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
+        }
+
+        private void AssertErrorInValidationInitialState(string expectedProjectId)
+        {
+            AssertInvariantsAfterVisible();
+            AssertInitialVersionState();
+            AssertDefaultDeploymentName();
+            AssertDefaultClustersState();
+
+            Assert.IsTrue(_objectUnderTest.AsyncAction.IsCompleted);
+            Assert.AreEqual(expectedProjectId, _objectUnderTest.GcpProjectId);
+            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
+            Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.HasErrors);
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsFalse(_objectUnderTest.ShowInputControls);
+        }
+
+        private void AssertInitialVersionState()
+        {
             Assert.IsNotNull(_objectUnderTest.DeploymentVersion);
             Assert.IsTrue(s_validNamePattern.IsMatch(_objectUnderTest.DeploymentVersion));
         }
 
-        private void AssertVersionExpectedState(string expected)
+        private void AssertDefaultDeploymentName()
         {
-            Assert.AreEqual(expected, _objectUnderTest.DeploymentVersion);
+            Assert.AreEqual(VisualStudioProjectName.ToLower(), _objectUnderTest.DeploymentName);
         }
 
-        protected override void AssertAgainstExpected()
+        private void AssertDefaultClustersState()
         {
-            base.AssertAgainstExpected();
+            CollectionAssert.AreEquivalent(Enumerable.Empty<Cluster>().ToList(), _objectUnderTest.Clusters.ToList());
+            Assert.IsNull(_objectUnderTest.SelectedCluster);
+        }
 
-            Assert.AreEqual(_expectedDeploymentName, _objectUnderTest.DeploymentName);
-            CollectionAssert.AreEquivalent(_expectedClusters.ToList(), _objectUnderTest.Clusters.ToList());
-            Assert.AreEqual(_expectedSelectedCluster, _objectUnderTest.SelectedCluster);
-            Assert.AreEqual(_expectedReplicas, _objectUnderTest.Replicas);
-            Assert.AreEqual(_expectedRefreshClusterListCanExecute, _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
-            Assert.AreEqual(_expectedCreateClusterCommandCanExecute, _objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+        private void AssertValidClustersState()
+        {
+            CollectionAssert.AreEqual(s_expectedClusters, _objectUnderTest.Clusters.ToList());
+            Assert.AreEqual(s_selectedCluster, _objectUnderTest.SelectedCluster);
+        }
+
+        private void AssertPlaceholderClustersState()
+        {
+            CollectionAssert.AreEqual(GkeStepViewModel.s_placeholderList.ToList(), _objectUnderTest.Clusters.ToList());
+            Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
+        }
+
+        private void AssertDontExposeService()
+        {
+            Assert.IsFalse(_objectUnderTest.ExposeService);
+            Assert.IsFalse(_objectUnderTest.ExposePublicService);
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        private void AssertSelectedProjectChanged()
+        {
+            CollectionAssert.Contains(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
+        }
+
+        private void AssertSelectedProjectUnchanged()
+        {
+            CollectionAssert.DoesNotContain(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
+        }
+
+        private void AssertAreServicesEnabledCalled(Times times)
+        {
+            _apiManagerMock.Verify(api => api.AreServicesEnabledAsync(It.IsAny<IList<string>>()), times);
+        }
+
+        private void AssertGetClusterListCalled(Times times)
+        {
+            _dataSourceMock.Verify(src => src.GetClusterListAsync(), times);
+        }
+
+        private void AssertEnableServicesCalled(Times times)
+        {
+            _apiManagerMock.Verify(api => api.EnableServicesAsync(It.IsAny<IEnumerable<string>>()), times);
+        }
+
+        private void AssertInvariantsAfterVisible()
+        {
+            Assert.IsNotNull(_objectUnderTest.AsyncAction);
+            Assert.AreEqual(_mockedPublishDialog, _objectUnderTest.PublishDialog);
+            Assert.IsFalse(_objectUnderTest.CanGoNext);
+            Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
         }
     }
 }

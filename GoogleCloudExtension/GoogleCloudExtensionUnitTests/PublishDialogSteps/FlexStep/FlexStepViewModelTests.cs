@@ -41,7 +41,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
         private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
-        private static readonly List<string> s_mockedRequiredApis = new List<string> { KnownApis.AppEngineAdminApiName };
 
         private FlexStepViewModel _objectUnderTest;
         private Mock<IApiManager> _apiManagerMock;
@@ -1015,7 +1014,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             AssertSelectedProjectChanged();
             AssertValidProjectInvalidVersion(TargetProjectId);
             AssertAreServicesEnabledCalled(Times.Once());
-            AssertGetApplicationCalled(Times.AtMostOnce());
+            AssertGetApplicationCalled(Times.Once());
         }
 
         [TestMethod]
@@ -1227,7 +1226,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             AssertSelectedProjectChanged();
             AssertValidProjectInvalidVersion(TargetProjectId);
             AssertAreServicesEnabledCalled(Times.Once());
-            AssertGetApplicationCalled(Times.AtMostOnce());
+            AssertGetApplicationCalled(Times.Once());
         }
 
         [TestMethod]

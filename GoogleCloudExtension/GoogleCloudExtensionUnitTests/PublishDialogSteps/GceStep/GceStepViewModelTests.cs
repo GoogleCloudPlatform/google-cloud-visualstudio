@@ -50,7 +50,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
 
         private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
-        private static readonly List<string> s_mockedRequiredApis = new List<string> { "OneRequieredApi", "AnotherRequiredApi" };
 
         private static readonly Instance s_windowsInstance1 = new Instance
         {
@@ -1644,19 +1643,5 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.HasErrors);
         }
-
-        //private void RunManageCredentialsCommandSuccess()
-        //{
-        //    InitGetCredentialsForInstanceMock(s_mockedInstanceCredentials);
-        //    RunManageCredentialsCommand();
-        //}
-
-        //private void RunManageCredentialsCommandFailure()
-        //{
-        //    InitGetCredentialsForInstanceMock(new List<WindowsInstanceCredentials>());
-        //    RunManageCredentialsCommand();
-        //}
-
-
     }
 }
