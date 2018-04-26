@@ -37,15 +37,14 @@ namespace ProjectTemplate.Tests
     /// </summary>
     [TestClass]
     [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
-    [DeploymentItem(TemplatesCsvFileName + ".csv")]
     public class ProjectTemplatesTests
     {
         private const string SolutionName = "TestSolution";
         private const string SolutionFileName = SolutionName + ".sln";
 #if VS2015
-        private const string TemplatesCsvFileName = "Templates2015";
+        private const string VsVersion = "14.0";
 #elif VS2017
-        private const string TemplatesCsvFileName = "Templates2017";
+        private const string VsVersion = "15.0";
 #endif
 
         private static VisualStudioWrapper s_visualStudio;
@@ -60,19 +59,12 @@ namespace ProjectTemplate.Tests
         [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
         public TestContext TestContext { get; set; }
 
-        private string TemplateName { get; set; }
-        private string Framework { get; set; }
-        private bool IsCoreTemplate { get; set; }
-        private string Version { get; set; }
-        private string AppType { get; set; }
-        private string ProjectName => $"Test{TemplateName}Project";
-        private string ProjectPath => Path.Combine(SolutionFolderPath, ProjectName);
 
         [ClassInitialize]
         public static void InitClass(TestContext context)
         {
             CreateSolutionDirectory();
-            s_visualStudio = VisualStudioWrapper.CreateExperimentalInstance();
+            s_visualStudio = VisualStudioWrapper.CreateExperimentalInstance(VsVersion);
             Solution.Create(SolutionFolderPath, SolutionFileName);
             Solution.SaveAs(Path.Combine(SolutionFolderPath, SolutionFileName));
         }
@@ -102,38 +94,57 @@ namespace ProjectTemplate.Tests
         }
 
         [TestMethod]
-        [DataSource(
-            "Microsoft.VisualStudio.TestTools.DataSource.CSV",
-            @"|DataDirectory|\" + TemplatesCsvFileName + ".csv",
-            TemplatesCsvFileName + "#csv",
-            DataAccessMethod.Sequential)]
-        public void TestCompile()
+        [DataRow("4", "Mvc")]
+        [DataRow("4", "WebApi")]
+        public void TestCompileAspNet(string version, string appType)
         {
-            TemplateName = Convert.ToString(TestContext.DataRow[0]);
-            Framework = Convert.ToString(TestContext.DataRow[1]);
-            IsCoreTemplate = Convert.ToBoolean(TestContext.DataRow[2]);
-            Version = Convert.ToString(TestContext.DataRow[3]).Substring(1);
-            AppType = Convert.ToString(TestContext.DataRow[4]);
-
-            CreateProjectFromTemplate();
-            if (IsCoreTemplate)
-            {
-                RestorePackages();
-            }
+            string projectName = $"TestGcpAspNet{appType}";
+            CreateProjectFromTemplate(projectName, "NetFramework", "Gcp.AspNet.vstemplate", version, appType);
             Solution.SolutionBuild.Build(true);
 
-            Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, TemplateName);
+            Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, projectName);
             Assert.AreEqual(0, Solution.SolutionBuild.LastBuildInfo,
-                $"{TemplateName} build output:{Environment.NewLine}{GetBuildOutput()}");
+                $"{projectName} build output:{Environment.NewLine}{GetBuildOutput()}");
             string descriptions = string.Join(
                 Environment.NewLine, ErrorItems.Select(e => e.Project + ":" + e.Description));
-            Assert.AreEqual(0, ErrorItems.Count(e => e.Project == ProjectName),
-                $"{TemplateName} error descriptions:{Environment.NewLine}{descriptions}");
+            Assert.AreEqual(0, ErrorItems.Count(e => e.Project == projectName),
+                $"{projectName} error descriptions:{Environment.NewLine}{descriptions}");
         }
 
-        private void RestorePackages()
+        [TestMethod]
+#if VS2015
+        [DataRow("1.0-preview", "Mvc")]
+        [DataRow("1.0-preview", "WebApi")]
+#elif VS2017
+        [DataRow("1.0", "Mvc")]
+        [DataRow("1.0", "WebApi")]
+        [DataRow("1.1", "Mvc")]
+        [DataRow("1.1", "WebApi")]
+        [DataRow("2.0", "Mvc")]
+        [DataRow("2.0", "WebApi")]
+#endif
+        public void TestCompileAspNetCore(string version, string appType)
         {
-            var dotNetRestoreInfo = new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = ProjectPath };
+            string projectName = $"TestGcpAspNetCore{appType}{version.Replace(".", "").Replace("-", "")}";
+            CreateProjectFromTemplate(projectName, "NetCore", "Gcp.AspNetCore.vstemplate", version, appType);
+            RestorePackages(Path.Combine(SolutionFolderPath, projectName));
+            Solution.SolutionBuild.Build(true);
+
+            Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, projectName);
+            Assert.AreEqual(
+                0, Solution.SolutionBuild.LastBuildInfo,
+                $"{projectName} build output:{Environment.NewLine}{GetBuildOutput()}");
+            string descriptions = string.Join(
+                Environment.NewLine, ErrorItems.Select(e => e.Project + ":" + e.Description));
+            Assert.AreEqual(
+                0, ErrorItems.Count(e => e.Project == $"Test{projectName}Project"),
+                $"{projectName} error descriptions:{Environment.NewLine}{descriptions}");
+        }
+
+        private static void RestorePackages(string projectDirectory)
+        {
+            var dotNetRestoreInfo =
+                new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = projectDirectory };
             Process.Start(dotNetRestoreInfo)?.WaitForExit();
         }
 
@@ -189,21 +200,26 @@ namespace ProjectTemplate.Tests
             return buildSelection.Text;
         }
 
-        private void CreateProjectFromTemplate()
+        private void CreateProjectFromTemplate(
+            string projectName,
+            string framework,
+            string choserTemplateName,
+            string version,
+            string appType)
         {
-            Directory.CreateDirectory(ProjectPath);
-            string templatePath = Solution.GetProjectTemplate("Gcp.AspNet.vstemplate", "CSharp");
+            string projectPath = Path.Combine(SolutionFolderPath, projectName);
+            Directory.CreateDirectory(projectPath);
+            string templatePath = Solution.GetProjectTemplate(choserTemplateName, "CSharp");
             var isp = Dte as IServiceProvider;
-            var sp = new ServiceProvider(isp);
-            var vsSolution = (IVsSolution6)sp.GetService(typeof(SVsSolution));
+            var vsSolution = (IVsSolution6)isp.QueryService<SVsSolution>();
             var resultObject = new JObject(
-                new JProperty("GcpProjectId", "test-project-id"),
-                new JProperty("SelectedFramework", Framework),
-                new JProperty("AppType", AppType),
-                new JProperty("SelectedVersion", new JObject(
-                    new JProperty("Version", Version),
-                    new JProperty("IsCore", IsCoreTemplate)))
-                );
+                new JProperty("GcpProjectId", "fake-gcp-project-id"),
+                new JProperty("SelectedFramework", framework),
+                new JProperty("AppType", appType),
+                new JProperty(
+                    "SelectedVersion",
+                    new JObject(
+                        new JProperty("Version", version))));
             Array customParams = new object[]
             {
                 $"$templateChooserResult$={resultObject}"
@@ -213,12 +229,12 @@ namespace ProjectTemplate.Tests
                 templatePath,
                 customParams,
                 "",
-                ProjectPath,
-                ProjectName,
+                projectPath,
+                projectName,
                 null,
                 out newProject);
             ErrorHandler.ThrowOnFailure(hResult, -2147221492);
-            Project project = Solution.Projects.OfType<Project>().First(p => p.Name == ProjectName);
+            Project project = Solution.Projects.OfType<Project>().First(p => p.Name == projectName);
             project.Save();
         }
     }
