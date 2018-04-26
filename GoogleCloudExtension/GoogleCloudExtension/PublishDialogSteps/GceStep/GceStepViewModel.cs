@@ -279,7 +279,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         protected override void RefreshCanPublish()
         {
-            CanPublish = base.CanPublish
+            base.RefreshCanPublish();
+            CanPublish = CanPublish
                 && SelectedCredentials != null;
         }
 

@@ -58,6 +58,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
         protected override void BeforeEach()
         {
+            base.BeforeEach();
+
             IParsedProject mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
 
             Mock<IPublishDialog> publishDialogMock = new Mock<IPublishDialog>();
@@ -86,6 +88,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         protected override void AfterEach()
         {
             _objectUnderTest.OnFlowFinished();
+
+            base.AfterEach();
         }
 
         [TestMethod]

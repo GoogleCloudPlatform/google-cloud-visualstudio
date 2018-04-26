@@ -48,6 +48,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
         protected override void BeforeEach()
         {
+            base.BeforeEach();
+
             IParsedProject mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
 
             Mock<IPublishDialog> publishDialogMock = new Mock<IPublishDialog>();
@@ -70,6 +72,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         protected override void AfterEach()
         {
             _objectUnderTest.OnFlowFinished();
+
+            base.AfterEach();
         }
 
         [TestMethod]
@@ -187,6 +191,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(null);
 
@@ -201,6 +206,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(null);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -217,6 +223,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -233,6 +240,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -249,6 +257,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
 
@@ -265,6 +274,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -280,6 +290,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(null);
 
@@ -294,6 +305,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -310,6 +322,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -326,6 +339,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -342,6 +356,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
 
@@ -358,6 +373,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
@@ -374,12 +390,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(null);
 
             AssertSelectedProjectChanged();
             AssertNoProjectState();
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -391,12 +408,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementEmptyRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -408,12 +426,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -424,12 +443,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertInvalidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -441,12 +461,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertLongRunningValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -458,12 +479,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedExternally(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertErrorInValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -473,6 +495,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(null);
 
@@ -487,6 +510,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(null);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -503,6 +527,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -519,6 +544,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -535,6 +561,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -551,6 +578,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -566,6 +594,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(null);
 
@@ -580,6 +609,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -596,6 +626,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -612,6 +643,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -628,6 +660,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -644,6 +677,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
@@ -660,6 +694,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
@@ -676,6 +711,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             ImplementRequiredApisMock();
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
@@ -692,12 +728,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(null);
 
             AssertSelectedProjectUnchanged();
             AssertInvalidProjectState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -709,12 +746,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementEmptyRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -726,12 +764,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -742,12 +781,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertInvalidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -759,12 +799,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertLongRunningValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -776,12 +817,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitErrorAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertErrorInValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -793,12 +835,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             AssertSelectedProjectUnchanged();
             AssertValidProjectState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -809,12 +852,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_defaultProject);
 
             AssertSelectedProjectUnchanged();
             AssertInvalidProjectState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -825,12 +869,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(null);
 
             AssertSelectedProjectUnchanged();
             AssertErrorInValidationState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -842,12 +887,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             ImplementEmptyRequiredApisMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Once());
+            AssertAreServicesEnabledCalled(Times.Never());
         }
 
         [TestMethod]
@@ -859,12 +905,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitAreServicesEnabledMock(true);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertValidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -876,12 +923,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitAreServicesEnabledMock(false);
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertInvalidProjectState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -893,12 +941,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitLongRunningAreServicesEnabledMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             Task onProjectChangedTask = OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertLongRunningValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -909,12 +958,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await OnVisibleWithProject(s_defaultProject);
 
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await OnProjectChangedSelectProjectCommand(s_targetProject);
 
             AssertSelectedProjectChanged();
             AssertErrorInValidationState(TargetProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -927,12 +977,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             InitAreServicesEnabledMock(true);
             InitEnableApiMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await RunEnableApiCommand();
 
             AssertSelectedProjectUnchanged();
             AssertValidProjectState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -944,12 +995,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             InitEnableApiMock();
             _changedProperties.Clear();
+            ResetMockCalls();
 
             await RunEnableApiCommand();
 
             AssertSelectedProjectUnchanged();
             AssertInvalidProjectState(DefaultProjectId);
-            AssertAreServicesEnabledCalled(Times.Exactly(2));
+            AssertAreServicesEnabledCalled(Times.Once());
         }
 
         [TestMethod]
@@ -1057,6 +1109,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         {
             _enableServicesTaskSource = new TaskCompletionSource<object>();
             _enableServicesTaskSource.SetResult(null);
+        }
+
+        private void ResetMockCalls()
+        {
+            _apiManagerMock.ResetCalls();
         }
 
         private async Task OnVisibleWithProject(Project project)
