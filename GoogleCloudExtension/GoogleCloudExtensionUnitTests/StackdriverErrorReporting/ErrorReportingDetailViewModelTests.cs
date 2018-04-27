@@ -13,6 +13,9 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.UserPrompt;
@@ -22,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GoogleCloudExtension;
 using EventTimeRangePeriodEnum =
     Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using GroupTimeRangePeriodEnum =
@@ -456,6 +458,48 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.IsEventLoading);
             Assert.AreEqual(1, _objectUnderTest.EventItemCollection.Count);
             Assert.IsFalse(_objectUnderTest.ShowError);
+        }
+
+        [TestMethod]
+        public void TestUpdatingProjectId()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+
+            Assert.IsTrue(_objectUnderTest.IsAccountChanged);
+        }
+
+        [TestMethod]
+        public void TestResetProjectId()
+        {
+            CredentialsStore.Default.ResetCredentials(null, null);
+
+            Assert.IsTrue(_objectUnderTest.IsAccountChanged);
+        }
+
+        [TestMethod]
+        public void TestDisposeDisablesAutoReload()
+        {
+            _objectUnderTest.Dispose();
+
+            Assert.IsFalse(_objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestDisposeDisablesUpdatingProjectId()
+        {
+            _objectUnderTest.Dispose();
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+
+            Assert.IsFalse(_objectUnderTest.IsAccountChanged);
+        }
+
+        [TestMethod]
+        public void TestDisposeDisablesResetProjectId()
+        {
+            _objectUnderTest.Dispose();
+            CredentialsStore.Default.ResetCredentials(null, null);
+
+            Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }
 
         private void CreateErrorScenario()

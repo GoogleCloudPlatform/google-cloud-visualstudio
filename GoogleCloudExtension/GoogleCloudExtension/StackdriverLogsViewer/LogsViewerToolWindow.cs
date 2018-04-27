@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public override object Content
         {
             get { return _content; }
-            set { _content = value as LogsViewerToolWindowControl; }
+            set { _content = (LogsViewerToolWindowControl)value; }
         }
 
         /// <summary>

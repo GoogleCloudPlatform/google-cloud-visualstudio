@@ -15,7 +15,6 @@
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using GoogleCloudExtensionUnitTests.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
             string filter = null;
             var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);
-            logsToolWindowMock.Object.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            logsToolWindowMock.Object.Frame = VsWindowFrameMocks.GetMockedWindowFrame();
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindowMock.Object);
