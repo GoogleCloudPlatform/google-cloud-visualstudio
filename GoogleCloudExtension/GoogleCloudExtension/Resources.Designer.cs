@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -5182,6 +5182,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .Net Core SDK.
+        ///Either intall the Visual Studio 2015 DotNetCore tooling, or upgrade to Visual Studio 2017..
+        /// </summary>
+        public static string NoDotNetCorePreviewFoundError {
+            get {
+                return ResourceManager.GetString("NoDotNetCorePreviewFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically..
         /// </summary>
         public static string OAuthFlowWindowMessage {
@@ -6483,6 +6493,15 @@ namespace GoogleCloudExtension {
         public static string ValidationStartWithLetterMessage {
             get {
                 return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .NET Core Tools for Visual Studio 2015 Download Archive.
+        /// </summary>
+        public static string VisualStudio2015DotNetCoreToolingLinkTitle {
+            get {
+                return ResourceManager.GetString("VisualStudio2015DotNetCoreToolingLinkTitle", resourceCulture);
             }
         }
         

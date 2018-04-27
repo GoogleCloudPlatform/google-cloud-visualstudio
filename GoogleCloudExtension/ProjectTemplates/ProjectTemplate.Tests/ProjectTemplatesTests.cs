@@ -152,35 +152,23 @@ namespace ProjectTemplate.Tests
         {
             if (Directory.Exists(SolutionFolderPath))
             {
-                var watcher = new FileSystemWatcher(SolutionFolderPath);
-                try
+                while (Directory.EnumerateFileSystemEntries(SolutionFolderPath).Any())
                 {
-                    Directory.Delete(SolutionFolderPath, true);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    // MSBuild sometimes persists and holds a handle on a file in the solution package directory.
-                    KillMsBuild();
-                    Directory.Delete(SolutionFolderPath, true);
-                }
-                if (Directory.Exists(SolutionFolderPath))
-                {
-                    // Allow Directory.Delete to finish before creating.
-                    try
+                    foreach (string directory in Directory.EnumerateDirectories(SolutionFolderPath))
                     {
-                        WaitForChangedResult result = watcher.WaitForChanged(WatcherChangeTypes.Deleted, 1000);
-                        if (result.TimedOut && Directory.Exists(SolutionFolderPath))
-                        {
-                            throw new TimeoutException($"Time out waiting for deletion of {SolutionFolderPath}");
-                        }
+                        Directory.Delete(directory, true);
                     }
-                    catch (FileNotFoundException)
+
+                    foreach (string file in Directory.EnumerateFiles(SolutionFolderPath))
                     {
-                        // Directory was deleted between the "if(exists)" and the "watcher.WaitForChanged".
+                        File.Delete(file);
                     }
                 }
             }
-            Directory.CreateDirectory(SolutionFolderPath);
+            else
+            {
+                Directory.CreateDirectory(SolutionFolderPath);
+            }
         }
 
         private static void KillMsBuild()

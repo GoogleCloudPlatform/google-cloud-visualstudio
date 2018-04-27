@@ -58,7 +58,8 @@ namespace GoogleCloudExtension.VsVersion
                 .Select(Path.GetFileName)
                 .Where(
                     sdkVersion =>
-                        sdkVersion.StartsWith("1.0.0-preview") || Version.TryParse(sdkVersion, out dummy));
+                        sdkVersion.StartsWith("1.0.0-preview", StringComparison.Ordinal) ||
+                        Version.TryParse(sdkVersion, out dummy));
         }
     }
 }
