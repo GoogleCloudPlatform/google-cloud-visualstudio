@@ -213,6 +213,11 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindow.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml.cs">
+      <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
     <Compile Include="IGoogleCloudExtensionPackage.cs" />
     <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
@@ -1047,6 +1052,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
