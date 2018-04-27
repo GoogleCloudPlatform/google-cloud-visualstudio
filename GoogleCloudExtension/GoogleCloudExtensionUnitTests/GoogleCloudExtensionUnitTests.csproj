@@ -249,7 +249,8 @@
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\CsrCloneWindowViewModelTests.cs" />
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
-    <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+	<Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
+	<Compile Include="Analytics\EventsReporterWrapperTests.cs" />
     <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowTest.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
@@ -274,7 +275,7 @@
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
-    <Compile Include="VsWindowFrameMocks.cs" />
+	<Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />
     <Compile Include="StringFormatUtilsTests.cs" />
@@ -291,6 +292,7 @@
       <DependentUpon>UnitTestResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\EditableModelTests.cs" />
+	<Compile Include="Utils\GCloudWrapperUtilsTests.cs" />
     <Compile Include="Utils\StringUtilTests.cs" />
     <Compile Include="Utils\ToolWindowCommandUtilsTests.cs" />
     <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
@@ -310,6 +312,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
       <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
       <Name>GoogleCloudExtension.Deployment</Name>
+    </ProjectReference>
+	<ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
+      <Project>{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}</Project>
+      <Name>GoogleCloudExtension.GCloud</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj">
       <Project>{0C891356-CCD7-4A10-BA27-C4A4359EA825}</Project>

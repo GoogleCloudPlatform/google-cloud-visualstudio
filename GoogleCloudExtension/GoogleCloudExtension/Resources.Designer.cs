@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -3409,11 +3409,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command:.
         /// </summary>
         public static string GcloudMissingComponentErrorMessage {
             get {
                 return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gcloud components install {0}.
+        /// </summary>
+        public static string GcloudMissingComponentInstallCommand {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentInstallCommand", resourceCulture);
             }
         }
         
