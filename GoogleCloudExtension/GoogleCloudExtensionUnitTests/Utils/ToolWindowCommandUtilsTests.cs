@@ -15,7 +15,6 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtensionUnitTests.StackdriverLogsViewer;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -31,14 +30,11 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class ToolWindowCommandUtilsTests : ExtensionTestBase
     {
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
         private IVsWindowFrame _defaultFrame;
 
         protected override void BeforeEach()
         {
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _defaultFrame = LogsViewerToolWindowTests.GetMockedWindowFrame();
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            _defaultFrame = VsWindowFrameMocks.GetMockedWindowFrame();
         }
 
         [TestMethod]
@@ -46,7 +42,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             GoogleCloudExtensionPackage.Instance = null;
 
-            var result = ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>();
+            var result = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
 
             Assert.IsNull(result);
         }
@@ -55,19 +51,19 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [ExpectedException(typeof(NotSupportedException))]
         public void TestShowToolWindowNoWindow()
         {
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 0)).Returns(() => null);
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(() => null);
 
-            ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>();
+            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
         public void TestShowToolWindowNoWindowFrame()
         {
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 0))
-                .Returns(() => new TestToolWindowPane { Frame = null });
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
+                .Returns(() => new ToolWindowPane { Frame = null });
 
-            ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>();
+            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
         }
 
         [TestMethod]
@@ -75,20 +71,20 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestShowToolWindowShowError()
         {
             var mockedFrame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.E_UNEXPECTED);
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 0))
-                .Returns(() => new TestToolWindowPane { Frame = mockedFrame });
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
+                .Returns(() => new ToolWindowPane { Frame = mockedFrame });
 
-            ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>();
+            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
         }
 
         [TestMethod]
         public void TestShowToolWindowSuccess()
         {
             var mockedFrame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.S_OK);
-            var expectedResult = new TestToolWindowPane { Frame = mockedFrame };
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 0)).Returns(() => expectedResult);
+            var expectedResult = new ToolWindowPane { Frame = mockedFrame };
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(() => expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>();
+            var actualResult = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
@@ -96,12 +92,12 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestShowToolWindowSpecificSuccess()
         {
-            var expectedResult = new TestToolWindowPane { Frame = _defaultFrame };
+            var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
             const int toolWindowId = 2;
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, toolWindowId))
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, toolWindowId))
                 .Returns(() => expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.ShowToolWindow<TestToolWindowPane>(toolWindowId);
+            var actualResult = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>(toolWindowId);
 
             Assert.AreEqual(expectedResult, actualResult);
         }
@@ -109,13 +105,13 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestAddToolWindow()
         {
-            var expectedResult = new TestToolWindowPane { Frame = _defaultFrame };
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(false, 0))
+            var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 0))
                 .Returns(() => null);
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 0))
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
                 .Returns(() => expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.AddToolWindow<TestToolWindowPane>();
+            var actualResult = ToolWindowCommandUtils.AddToolWindow<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
@@ -123,16 +119,16 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestAddToolWindowAdditional()
         {
-            var existingWindow = new TestToolWindowPane { Frame = _defaultFrame };
-            var expectedResult = new TestToolWindowPane { Frame = _defaultFrame };
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(false, 0))
+            var existingWindow = new ToolWindowPane { Frame = _defaultFrame };
+            var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 0))
                 .Returns(() => existingWindow);
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(false, 1))
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 1))
                 .Returns(() => null);
-            _packageMock.Setup(p => p.FindToolWindow<TestToolWindowPane>(true, 1))
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 1))
                 .Returns(() => expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.AddToolWindow<TestToolWindowPane>();
+            var actualResult = ToolWindowCommandUtils.AddToolWindow<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
@@ -174,7 +170,5 @@ namespace GoogleCloudExtensionUnitTests.Utils
 
             Assert.IsTrue(menuCommand.Enabled);
         }
-
-        private class TestToolWindowPane : ToolWindowPane { }
     }
 }

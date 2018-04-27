@@ -91,6 +91,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _cloudExplorerOptionsMock = new Mock<CloudExplorerOptions>();
             _cloudExplorerOptionsMock.SetupSet(o => o.PubSubTopicFilters = It.IsAny<IEnumerable<string>>());
             PackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(_cloudExplorerOptionsMock.Object);
+            PackageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
 
 
             _objectUnderTest = new TestablePubsubSourceRootViewModel(_factoryMock.Object);

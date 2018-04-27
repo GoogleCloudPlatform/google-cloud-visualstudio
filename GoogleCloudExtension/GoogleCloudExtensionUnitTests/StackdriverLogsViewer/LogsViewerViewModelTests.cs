@@ -18,6 +18,7 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -354,7 +355,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         {
             ILogsViewerViewModel newViewModel = new LogsViewerViewModel(_mockedLoggingDataSource);
             var logsToolWindow = Mock.Of<LogsViewerToolWindow>(w => w.ViewModel == newViewModel);
-            logsToolWindow.Frame = LogsViewerToolWindowTests.GetMockedWindowFrame();
+            logsToolWindow.Frame = VsWindowFrameMocks.GetMockedWindowFrame();
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindow);
@@ -368,6 +369,42 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             Assert.IsTrue(newViewModel.ShowAdvancedFilter);
             Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeName));
             Assert.IsTrue(newViewModel.AdvancedFilterText.Contains(testNodeValue));
+        }
+
+        [TestMethod]
+        public void TestInvalidateAllPropertiesEmptyAccountName()
+        {
+            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "" });
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "project-id" });
+            AsyncProperty oldAction = _objectUnderTest.AsyncAction;
+
+            _objectUnderTest.InvalidateAllProperties();
+
+            Assert.AreEqual(oldAction, _objectUnderTest.AsyncAction);
+        }
+
+        [TestMethod]
+        public void TestInvalidateAllPropertiesEmptyProjectId()
+        {
+            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "account-name" });
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "" });
+            AsyncProperty oldAction = _objectUnderTest.AsyncAction;
+
+            _objectUnderTest.InvalidateAllProperties();
+
+            Assert.AreEqual(oldAction, _objectUnderTest.AsyncAction);
+        }
+
+        [TestMethod]
+        public void TestInvalidateAllPropertiesStartsReload()
+        {
+            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "account-name" });
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "project-id" });
+            AsyncProperty oldAction = _objectUnderTest.AsyncAction;
+
+            _objectUnderTest.InvalidateAllProperties();
+
+            Assert.AreNotEqual(oldAction, _objectUnderTest.AsyncAction);
         }
     }
 }

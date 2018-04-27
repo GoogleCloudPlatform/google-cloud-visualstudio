@@ -2012,7 +2012,7 @@
     <comment>Caption for the install link.</comment>
   </data>
   <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command:</value>
     <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
   </data>
   <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
@@ -2989,6 +2989,10 @@
   <data name="UiCopyMenuHeader" xml:space="preserve">
     <value>Copy</value>
     <comment>Header for a standard "Copy" menu item.</comment>
+  </data>
+  <data name="GcloudMissingComponentInstallCommand" xml:space="preserve">
+    <value>gcloud components install {0}</value>
+    <comment>Command to install a missing component. {0} is the name of the component and should be in lower case.</comment>
   </data>
   <data name="NoDotNetCorePreviewFoundError" xml:space="preserve">
     <value>Could not find a 1.0.0-preview version of .Net Core SDK.

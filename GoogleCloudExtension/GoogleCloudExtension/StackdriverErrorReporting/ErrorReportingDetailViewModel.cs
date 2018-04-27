@@ -181,8 +181,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
 
-            CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnCurrentProjectChanged();
+            CredentialsStore.Default.Reset += OnCurrentProjectChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectChanged;
         }
 
         /// <summary>
@@ -191,12 +191,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public void Dispose()
         {
             OnAutoReloadCommand.CanExecuteCommand = false;
+            CredentialsStore.Default.Reset -= OnCurrentProjectChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged -= OnCurrentProjectChanged;
         }
 
         /// <summary>
-        /// Hide detail view content when project id is changed.s
+        /// Hide detail view content when project id is changed.
         /// </summary>
-        public void OnCurrentProjectChanged()
+        private void OnCurrentProjectChanged(object sender, EventArgs e)
         {
             IsAccountChanged = true;
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
