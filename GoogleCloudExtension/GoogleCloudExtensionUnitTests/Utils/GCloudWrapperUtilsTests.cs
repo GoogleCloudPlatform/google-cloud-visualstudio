@@ -25,9 +25,9 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class GCloudWrapperUtilsTests
     {
-        private static readonly string MissingComponentTitle = Resources.GcloudMissingComponentTitle;
-        private static readonly string MissingComponentMessage = string.Format(Resources.GcloudMissingComponentErrorMessage, "Kubectl");
-        private static readonly string MissingComponentInstallCommand = string.Format(Resources.GcloudMissingComponentInstallCommand, "kubectl").ToLower();
+        private static readonly string s_missingComponentTitle = Resources.GcloudMissingComponentTitle;
+        private static readonly string s_missingComponentMessage = string.Format(Resources.GcloudMissingComponentErrorMessage, "Kubectl");
+        private static readonly string s_missingComponentInstallCommand = string.Format(Resources.GcloudMissingComponentInstallCommand, "kubectl").ToLower();
 
         private Mock<Func<GCloudComponent, Task<GCloudValidationResult>>> _validateGCloudAsyncMock;
         private TaskCompletionSource<GCloudValidationResult> _validateGCloudAsyncSource;
@@ -66,9 +66,9 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 .Setup(a => a(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Callback<string, string, string>((title, message, copyableMessage) =>
                 {
-                    Assert.AreEqual(MissingComponentTitle, title);
-                    Assert.AreEqual(MissingComponentMessage, message);
-                    Assert.AreEqual(MissingComponentInstallCommand, copyableMessage, false);
+                    Assert.AreEqual(s_missingComponentTitle, title);
+                    Assert.AreEqual(s_missingComponentMessage, message);
+                    Assert.AreEqual(s_missingComponentInstallCommand, copyableMessage, false);
                 });
 
             await GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
