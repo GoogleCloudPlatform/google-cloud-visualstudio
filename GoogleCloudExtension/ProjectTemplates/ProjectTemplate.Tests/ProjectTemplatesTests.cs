@@ -198,16 +198,15 @@ namespace ProjectTemplate.Tests
             string projectPath = Path.Combine(SolutionFolderPath, projectName);
             Directory.CreateDirectory(projectPath);
             string templatePath = Solution.GetProjectTemplate(choserTemplateName, "CSharp");
-            var isp = Dte as IServiceProvider;
-            var vsSolution = (IVsSolution6)isp.QueryService<SVsSolution>();
-            var resultObject = new JObject(
-                new JProperty("GcpProjectId", "fake-gcp-project-id"),
-                new JProperty("SelectedFramework", framework),
-                new JProperty("AppType", appType),
-                new JProperty(
-                    "SelectedVersion",
-                    new JObject(
-                        new JProperty("Version", version))));
+            var serviceProvider = Dte as IServiceProvider;
+            var vsSolution = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
+            var resultObject = new JObject
+            {
+                ["GcpProjectId"] = "fake-gcp-project-id",
+                ["SelectedFramework"] = framework,
+                ["AppType"] = appType,
+                ["SelectedVersion"] = new JObject { ["Version"] = version }
+            };
             Array customParams = new object[]
             {
                 $"$templateChooserResult$={resultObject}"
