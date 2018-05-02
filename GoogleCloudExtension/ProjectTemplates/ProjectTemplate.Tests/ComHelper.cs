@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -28,12 +28,6 @@ namespace ProjectTemplate.Tests
     /// <seealso href="http://www.helixoft.com/blog/creating-envdte-dte-for-vs-2017-from-outside-of-the-devenv-exe.html"/>
     public static class ComHelper
     {
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private static class HRESULT
-        {
-            public const int S_OK = 0;
-        }
-
         ///<see href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms678542"/>
         [DllImport("ole32.dll")]
         private static extern int CreateBindCtx(uint zero, out IBindCtx ctx);
@@ -74,7 +68,7 @@ namespace ProjectTemplate.Tests
             var monikers = new IMoniker[fetchSize];
             IntPtr fetchedCount = IntPtr.Zero;
             int hResult;
-            while ((hResult = monikersEnum.Next(fetchSize, monikers, fetchedCount)) == HRESULT.S_OK)
+            while ((hResult = monikersEnum.Next(fetchSize, monikers, fetchedCount)) == VSConstants.S_OK)
             {
                 IMoniker currentMoniker = monikers[0];
                 if (currentMoniker != null)

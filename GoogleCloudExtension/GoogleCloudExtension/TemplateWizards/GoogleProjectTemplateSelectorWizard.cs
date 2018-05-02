@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateSelectorWizard))]
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
-        // Find the AspNet part of c:\path\to\template\Gcp.AspNet.vstemplate
+        // Find the AspNet or AspNetCore part of c:\path\to\template\Gcp.AspNet.vstemplate
         private static readonly Regex s_templateTypeRegex = new Regex(@"(?<=Gcp\.)[^.]*(?=\.vstemplate$)");
         // Mockable static methods for unit testing.
         internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
