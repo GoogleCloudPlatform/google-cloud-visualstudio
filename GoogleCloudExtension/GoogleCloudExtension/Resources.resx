@@ -2995,9 +2995,9 @@
     <comment>Command to install a missing component. {0} is the name of the component and should be in lower case.</comment>
   </data>
   <data name="NoDotNetCorePreviewFoundError" xml:space="preserve">
-    <value>Could not find a 1.0.0-preview version of .Net Core SDK.
-Either intall the Visual Studio 2015 DotNetCore tooling, or upgrade to Visual Studio 2017.</value>
-    <comment>The dialog error message shown when dotnet core SDK version 1.0.0-preview is not found.</comment>
+    <value>Could not find a 1.0.0-preview version of .NET Core SDK.
+Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017.</value>
+    <comment>The dialog error message shown when .NET Core SDK version 1.0.0-preview is not found.</comment>
   </data>
   <data name="VisualStudio2015DotNetCoreToolingLinkTitle" xml:space="preserve">
     <value>.NET Core Tools for Visual Studio 2015 Download Archive</value>
