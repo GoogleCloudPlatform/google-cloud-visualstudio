@@ -1599,17 +1599,9 @@
     <value>Deployment {0} was updated.</value>
     <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
   </data>
-  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
-    <value>Invalid value for replicas, must be a number.</value>
-    <comment>Message shown when an invalid value for replicas is given.</comment>
-  </data>
   <data name="GkePublishReplicasCaption" xml:space="preserve">
     <value>Replic_as:</value>
     <comment>The caption for the replicas label.</comment>
-  </data>
-  <data name="UiInvalidValueTitle" xml:space="preserve">
-    <value>Invalid value</value>
-    <comment>Generic title for validation error prompts.</comment>
   </data>
   <data name="GkePublishNewClusterCaption" xml:space="preserve">
     <value>Create new cluster</value>
@@ -1718,30 +1710,6 @@
   <data name="TitleBarProjectIdLabel" xml:space="preserve">
     <value>Project:</value>
     <comment>Label for project id label.</comment>
-  </data>
-  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
-    <value>The version name cannot be empty.</value>
-    <comment>Message shown when the version name is empty.</comment>
-  </data>
-  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
-    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
-  </data>
-  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
-    <value>The deployment name cannot be empty.</value>
-    <comment>Message shown when the deployment name is empty.</comment>
-  </data>
-  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
-    <value>The deployment version cannot be empty.</value>
-    <comment>Message shown when the deployment version is empty.</comment>
-  </data>
-  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
-    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
-  </data>
-  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
-    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
   <data name="CloudExplorerGaeServiceIdDescription" xml:space="preserve">
     <value>Relative name of the service within the application.</value>
@@ -2387,10 +2355,6 @@
     <value>{0} can only contain letters, numbers, and dashes(-).</value>
     <comment>{Field} can only contain letters, numbers and dashes validation message.</comment>
   </data>
-  <data name="ValidationIntegerMessage" xml:space="preserve">
-    <value>{0} must be an integer.</value>
-    <comment>{Field} must be an integer validation message.</comment>
-  </data>
   <data name="ValidationMaxCharactersMessage" xml:space="preserve">
     <value>{0} must be less than {1} characters long.</value>
     <comment>{Field} must be less than {N} characters long validation message.</comment>
@@ -3002,5 +2966,9 @@ Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual S
   <data name="VisualStudio2015DotNetCoreToolingLinkTitle" xml:space="preserve">
     <value>.NET Core Tools for Visual Studio 2015 Download Archive</value>
     <comment>Title for the link to the .NET Core Tools for Visual Studio 2015 section of the .NET Core Runtime and SDK download archive.</comment>
+  </data>
+  <data name="ValidationPositiveNonZeroMessage" xml:space="preserve">
+    <value>{0} must be an integer greater than zero.</value>
+    <comment>{Field} must be an integer greater than zero validation message.</comment>
   </data>
 </root>

@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.Utils
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
@@ -76,13 +76,18 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static IEnumerable<ValidationResult> ValidateInteger(string value, string fieldName)
+        public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)
         {
-            int unused;
-            if (!int.TryParse(value, out unused))
+            int intValue;
+            if (!int.TryParse(value, out intValue))
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationIntegerMessage), fieldName);
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
+            }
+            else if (intValue <= 0)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
             }
         }
     }

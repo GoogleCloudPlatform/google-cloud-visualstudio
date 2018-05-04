@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
         private PublishDialogWindowViewModel ViewModel { get; }
 
         private PublishDialogWindow(IParsedProject project) :
-            base(String.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name))
+            base(string.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name))
         {
             var initialStep = ChoiceStepViewModel.CreateStep();
 
