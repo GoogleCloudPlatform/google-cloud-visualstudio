@@ -428,7 +428,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void AddHandlers()
         {
-            ///Checking for null in case it was never pushed in a dialog.
+            // Checking for null in case it was never pushed in a dialog.
             if (PublishDialog != null)
             {
                 PublishDialog.FlowFinished += OnFlowFinished;
@@ -438,7 +438,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void RemoveHandlers()
         {
-            ///Checking for null in case it was never pushed in a dialog.
+            // Checking for null in case it was never pushed in a dialog.
             if (PublishDialog != null)
             {
                 PublishDialog.FlowFinished -= OnFlowFinished;
