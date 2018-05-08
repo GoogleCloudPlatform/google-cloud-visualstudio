@@ -45,18 +45,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private readonly ChoiceStepContent _content;
         private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
 
+        // Disable compiler error CS0067.
         public event EventHandler CanGoNextChanged
         {
-            /// To disable compiler error CS0067.
-            /// We do nothing, since <see cref="CanGoNext"/> will never changed
-            /// we will never fire this event, so it's OK if we don't accept 
-            /// handlers and say nothing about it.
-            /// It would be disruptive if we were to throw an exception here
-            /// since this is inherited from and <see cref="IPublishDialogStep"/>
-            /// and clients of that interface expect the event to behave normally
-            /// which is, let me know when <see cref="CanGoNext"/> changes, which will
-            /// do, except that <see cref="CanGoNext"/> never changed.
-            /// Same applies to <see cref="CanPublishChanged"/>.
             add { }
             remove { }
         }
@@ -180,7 +171,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private void AddHandlers()
         {
-            ///Checking for null in case it was never pushed in a dialog.
+            // Checking for null in case it was never pushed in a dialog.
             if (PublishDialog != null)
             {
                 PublishDialog.FlowFinished += OnFlowFinished;
@@ -189,7 +180,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private void RemoveHandlers()
         {
-            ///Checking for null in case it was never pushed in a dialog.
+            // Checking for null in case it was never pushed in a dialog.
             if (PublishDialog != null)
             {
                 PublishDialog.FlowFinished -= OnFlowFinished;
