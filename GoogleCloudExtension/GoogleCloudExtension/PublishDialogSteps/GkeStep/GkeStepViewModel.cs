@@ -43,6 +43,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         internal static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
         internal static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
         internal const string ReplicasDefaultValue = "3";
+        internal const string GkeAddClusterUrlFormat = "https://console.cloud.google.com/kubernetes/add?project={0}";
 
         // The APIs required for a succesful deployment to GKE.
         private static readonly IList<string> s_requiredApis = new List<string>
@@ -65,6 +66,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
         private string _replicas = ReplicasDefaultValue;
+        private Func<string, Process> StartProcess => _startProcessOverride ?? Process.Start;
+        internal Func<string, Process> _startProcessOverride;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -219,7 +222,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private void OnCreateClusterCommand()
         {
-            Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
+            StartProcess(string.Format(GkeAddClusterUrlFormat, CredentialsStore.Default.CurrentProjectId));
         }
 
         #region IPublishDialogStep overrides
@@ -236,13 +239,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         protected override async Task InitializeDialogAsync()
         {
-            /// Start the task that initializes the dialog, mainly loads the GCP project.
+            // Start the task that initializes the dialog, mainly loads the GCP project.
             Task initializeDialogTask = base.InitializeDialogAsync();
 
-            /// In the meantime, set DeploymentName, which launches validations and updates the UI.
+            // In the meantime, set DeploymentName, which launches validations and updates the UI.
             DeploymentName = PublishDialog.Project.Name.ToLower();
 
-            /// Wait for the initialization task to be done.
+            // Wait for the initialization task to be done.
             await initializeDialogTask;
         }
 
