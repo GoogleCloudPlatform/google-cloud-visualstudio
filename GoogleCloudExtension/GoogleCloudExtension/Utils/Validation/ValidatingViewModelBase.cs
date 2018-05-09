@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.Utils.Validation
         /// The delay between detecting a validation error and displaying it.
         /// This delay will be reset as the user continues to change the input.
         /// </summary>
-        protected int MillisecondsDelay = 500;
+        protected internal int MillisecondsDelay { private get; set; } = 500;
 
         /// <summary>
         /// The map of validation errors that continue to exist after the delay.
