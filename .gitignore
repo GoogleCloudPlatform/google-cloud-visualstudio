@@ -12,7 +12,6 @@
 **/*.pyc
 *.DotSettings.user
 *.user
-!**/GoogleCloudExtension.csproj.user
 **/TestResults/*
 **/codecoverage.xml
 *.DotSettings
