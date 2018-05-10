@@ -24,14 +24,15 @@ namespace GoogleCloudExtension.DataSources
     public interface IResourceManagerDataSource
     {
         /// <summary>
-        /// Returns the complete list of projects for the current credentials.
-        /// </summary>
-        Task<IList<Project>> GetProjectsListAsync();
-
-        /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.
         /// </summary>
         /// <param name="projectId">The project ID of the project to return.</param>
         Task<Project> GetProjectAsync(string projectId);
+
+        /// <summary>
+        /// Returns the complete list of projects for the current credentials.
+        /// It always return empty list if no item is found, caller can safely assume there is no null return.
+        /// </summary>
+        Task<IList<Project>> GetProjectsListAsync();
     }
 }

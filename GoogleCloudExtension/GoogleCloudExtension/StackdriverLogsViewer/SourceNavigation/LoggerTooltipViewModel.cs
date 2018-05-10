@@ -16,7 +16,7 @@ using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation
 {
     /// <summary>
     /// View model to <seealso cref="LoggerTooltipControl"/>.
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ProtectedCommand BackToLogsViewerCommand { get; }
 
         /// <summary>
-        /// Indicate if it opens an advanced    
+        /// Indicate if it opens an advanced
         /// </summary>
         public bool FilterLogsOfSourceLine
         {
@@ -62,13 +62,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void BackToLogsViewer()
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(Log.ParentToolWindowId);
             if (Log.Entry == null || window == null)
             {
                 Debug.WriteLine("Entry or window is null, this is likely a code bug");
                 return;
             }
-
             if (FilterLogsOfSourceLine)
             {
                 window.FilterOnSourceLocation(Log);

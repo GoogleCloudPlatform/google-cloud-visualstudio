@@ -25,7 +25,8 @@ namespace GoogleCloudExtension.VsVersion
         public const string VisualStudio2015Version = "14.0";
         public const string VisualStudio2017Version = "15.0";
 
-        private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider = new Lazy<IToolsPathProvider>(GetTooslPathProvider);
+        internal static Lazy<IToolsPathProvider> s_toolsPathProvider =
+            new Lazy<IToolsPathProvider>(GetTooslPathProvider);
         private static readonly Lazy<int> s_remoteDebuggerPort = new Lazy<int>(GetRemoteDebuggerPort);
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace GoogleCloudExtension.VsVersion
 
         private static IToolsPathProvider GetTooslPathProvider()
         {
-            switch (GoogleCloudExtensionPackage.VsVersion)
+            switch (GoogleCloudExtensionPackage.Instance.VsVersion)
             {
                 case VisualStudio2015Version:
                     return new VS14.ToolsPathProvider();
@@ -49,13 +50,13 @@ namespace GoogleCloudExtension.VsVersion
                     return new VS15.ToolsPathProvider(GoogleCloudExtensionPackage.VsEdition);
 
                 default:
-                    throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.VsVersion} is not supported.");
+                    throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.Instance.VsVersion} is not supported.");
             }
         }
 
         private static int GetRemoteDebuggerPort()
         {
-            switch (GoogleCloudExtensionPackage.VsVersion)
+            switch (GoogleCloudExtensionPackage.Instance.VsVersion)
             {
                 case VisualStudio2015Version:
                     return 4020;
@@ -64,7 +65,7 @@ namespace GoogleCloudExtension.VsVersion
                     return 4022;
 
                 default:
-                    throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.VsVersion} is not supported.");
+                    throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.Instance.VsVersion} is not supported.");
             }
         }
     }

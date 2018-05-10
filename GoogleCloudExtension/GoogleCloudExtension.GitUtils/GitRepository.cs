@@ -62,7 +62,8 @@ namespace GoogleCloudExtension.GitUtils
         {
             if (await IsGitRepositoryAsync(dir))
             {
-                var root = (await RunGitCommandAsync("rev-parse --show-toplevel", dir))?.FirstOrDefault()?.Replace('/', '\\');
+                var revParseOutput = await RunGitCommandAsync("rev-parse --show-toplevel", dir, throwOnError: false);
+                var root = revParseOutput?.FirstOrDefault()?.Replace('/', '\\');
                 return root != null ? new GitRepository(root) : null;
             }
             return null;
@@ -72,13 +73,34 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the directory is under a local git repository folder.
         /// </summary>
         /// <param name="dir">The file directory.</param>
-        public static async Task<bool> IsGitRepositoryAsync(string dir) => (await RunGitCommandAsync("log -1", dir))?.Count > 0;
+        public static async Task<bool> IsGitRepositoryAsync(string dir) =>
+            (await RunGitCommandAsync("rev-parse", dir, throwOnError: false)) != null;
+
+        /// <summary>
+        /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
+        /// </summary>
+        public async Task<IList<string>> GetRemotes() => await ExecCommandAsync("remote");
+
+        /// <summary>
+        /// Returns a list of remote urls.
+        /// </summary>
+        public async Task<IList<string>> GetRemotesUrls()
+        {
+            var remotes = await GetRemotes();
+            if (remotes == null)
+            {
+                return new List<string>();
+            }
+            var allUrls = await Task.WhenAll(remotes.Select(r => ExecCommandAsync($"config --get remote.{r}.url")));
+            return allUrls.SelectMany(urls => urls).ToList();
+        }
 
         /// <summary>
         /// Returns true if the git repository contains the git SHA revision.
         /// </summary>
         /// <param name="sha">The Git SHA.</param>
-        public async Task<bool> ContainsCommitAsync(string sha) => (await ExecCommandAsync($"cat-file -t {sha}"))?.FirstOrDefault() == "commit";
+        public async Task<bool> ContainsCommitAsync(string sha) =>
+            (await ExecCommandAsync($"cat-file -t {sha}"))?.FirstOrDefault() == "commit";
 
         /// <summary>
         /// Returns the items tree of a given git SHA revision.
@@ -94,19 +116,41 @@ namespace GoogleCloudExtension.GitUtils
         public Task<List<string>> GetRevisionFileAsync(string sha, string relativePath)
             => ExecCommandAsync($"show {sha}:{relativePath.Replace('\\', '/')}");
 
-        private Task<List<string>> ExecCommandAsync(string command) => RunGitCommandAsync(command, Root);
+        public Task<List<string>> ExecCommandAsync(string command) =>
+            RunGitCommandAsync(command, Root, throwOnError: false);
 
-        private GitRepository(string gitLocalRoot)
-        {
-            Root = gitLocalRoot;
-        }
+        /// <summary>
+        /// Verifies git-credential-manager is installed properly.
+        /// </summary>
+        /// <returns>
+        /// true: Verified, git-credential-manager command executed successfully.
+        /// false: The command failed for some reason.
+        /// </returns>
+        public static async Task<bool> IsGitCredentialManagerInstalledAsync() =>
+            (await GitRepository.RunGitCommandAsync(
+                "credential-manager version",
+                Directory.GetCurrentDirectory(),
+                throwOnError: false)) != null;
 
         /// <summary>
         /// Run a git command and return the output or error output.
         /// </summary>
-        private static async Task<List<string>> RunGitCommandAsync(
+        /// <param name="command">The git command.</param>
+        /// <param name="gitLocalRoot">The git local reposotiry path.</param>
+        /// <param name="throwOnError">Optional.
+        /// By default, it is true.
+        /// False: It returns null value if there is error executing the command.
+        /// True, throw exception when there is error.
+        /// </param>
+        /// <returns>
+        /// The command execution output.
+        /// If output is empty, returns empty list. 
+        /// If return value is null, it indicates there are some errors.
+        /// </returns>
+        internal static async Task<List<string>> RunGitCommandAsync(
             string command,
-            string gitLocalRoot)
+            string gitLocalRoot,
+            bool throwOnError = true)
         {
             if (!File.Exists(gitLocalRoot) && !Directory.Exists(gitLocalRoot))
             {
@@ -118,7 +162,19 @@ namespace GoogleCloudExtension.GitUtils
                 args: command,
                 handler: (o, e) => output.Add(e.Line),
                 workingDir: gitLocalRoot);
-            return commandResult ? output : null;
+            if (!commandResult && throwOnError)
+            {
+                throw new GitCommandException();
+            }
+            else
+            {
+                return commandResult ? output : null;
+            }
+        }
+
+        private GitRepository(string gitLocalRoot)
+        {
+            Root = gitLocalRoot;
         }
     }
 }

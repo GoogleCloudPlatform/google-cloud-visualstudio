@@ -25,10 +25,10 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
     [TestClass]
-    public class SourceRootViewModelBaseTests
+    public class SourceRootViewModelBaseTests : ExtensionTestBase
     {
-        public const string MockProjectId = "parent.com:mock-project";
-        public const string MockExceptionMessage = "MockException";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockExceptionMessage = "MockException";
         private const string MockAccountName = "MockAccount";
         private const string MockRootCaption = "MockRootCaption";
         private const string MockErrorPlaceholderCaption = "MockErrorPlaceholder";
@@ -62,11 +62,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private SourceRootViewModelBase _objectUnderTest;
         private Mock<SourceRootViewModelBase> _objectUnderTestMock;
 
-        [TestInitialize]
-        public void Initialize()
+        protected override void BeforeEach()
         {
+            CredentialsStore.Default.UpdateCurrentAccount(s_userAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_project);
-            CredentialsStore.Default.CurrentAccount = s_userAccount;
 
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
@@ -135,7 +134,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoCredentials()
         {
-            CredentialsStore.Default.CurrentAccount = null;
+            CredentialsStore.Default.UpdateCurrentAccount(null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;

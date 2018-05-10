@@ -33,21 +33,18 @@ namespace GoogleCloudExtension.Utils
         /// <param name="handler">The action to execute when the command is executed.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
         public ProtectedCommand(Action handler, bool canExecuteCommand = true)
-        {
-            _action = new ProtectedAction(handler);
-            CanExecuteCommand = canExecuteCommand;
-        }
+            : this(new ProtectedAction(handler), canExecuteCommand)
+        { }
 
         /// <summary>
         /// Initializes a new instance of ProtectedCommand.
-        /// Swap the parameter order so that this constructor does not have conflict to the one above. 
         /// </summary>
+        /// <param name="protectedAction"><seealso cref="IProtectedAction"/> interface.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        /// <param name="taskHandler">The async task to execute when the command is executed.</param>
-        public ProtectedCommand(bool canExecuteCommand = true, Func<Task> taskHandler = null)
+        protected ProtectedCommand(IProtectedAction protectedAction, bool canExecuteCommand = true)
         {
-            _action = new ProtectedAsyncTask(taskHandler);
-            this.CanExecuteCommand = canExecuteCommand;
+            _action = protectedAction;
+            CanExecuteCommand = canExecuteCommand;
         }
 
         #region ICommand implementation.
@@ -78,6 +75,23 @@ namespace GoogleCloudExtension.Utils
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
+    /// in <seealso cref="ErrorHandlerUtils.HandleAsyncExceptions(Func{Task})"/> 
+    /// to handle the exceptions that could escape.
+    /// </summary>
+    public class ProtectedAsyncCommand : ProtectedCommand
+    {
+        /// <summary>
+        /// Initializes a new instance of ProtectedAsyncCommand.
+        /// </summary>
+        /// <param name="taskHandler">The async task to execute when the command is executed.</param>
+        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
+        public ProtectedAsyncCommand(Func<Task> taskHandler = null, bool canExecuteCommand = true)
+            : base(new ProtectedAsyncTask(taskHandler), canExecuteCommand)
+        { }
     }
 
     /// <summary>

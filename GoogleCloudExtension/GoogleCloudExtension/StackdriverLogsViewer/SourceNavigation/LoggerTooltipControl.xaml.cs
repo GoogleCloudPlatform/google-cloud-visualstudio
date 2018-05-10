@@ -14,7 +14,7 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation
 {
     /// <summary>
     /// Interaction logic for LoggerTooltipControl.xaml

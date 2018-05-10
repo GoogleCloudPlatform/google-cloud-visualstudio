@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// This class wraps task with the <seealso cref="ErrorHandlerUtils.HandleExceptionsAsync(Func{Task})"/>
+    /// This class wraps task with the <seealso cref="ErrorHandlerUtils.HandleAsyncExceptions(Func{Task})"/>
     /// method to correclty handle all exceptions that escape the task.
     /// This is an async task version of <seealso cref="ProtectedAction"/>.
     /// </summary>

@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// Define the interface for protected action that handles escaped exceptions.
     /// </summary>
-    interface IProtectedAction
+    public interface IProtectedAction
     {
         /// <summary>
         /// Execute the action

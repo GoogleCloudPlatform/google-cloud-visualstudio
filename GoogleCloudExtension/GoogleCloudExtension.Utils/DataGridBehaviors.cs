@@ -92,6 +92,7 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// The getter for the attached property.
+        /// </summary>
         public static IColumnSorter GetCustomSort(DataGridColumn self) => (IColumnSorter)self.GetValue(CustomSortProperty);
 
         /// <summary>

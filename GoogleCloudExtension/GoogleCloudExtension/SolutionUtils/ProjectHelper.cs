@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -63,9 +65,14 @@ namespace GoogleCloudExtension.SolutionUtils
         public string ProjectRoot { get; }
 
         /// <summary>
-        /// A private constructor to disable direct creation of instances of <seealso cref="ProjectHelper"/> class.
+        /// The parsed project file. Will refresh each time in case the project changes over time.
         /// </summary>
-        public ProjectHelper(Project project)
+        public IParsedProject ParsedProject => ProjectParser.ParseProject(_project);
+
+        /// <summary>
+        /// An internal constructor to allow for unit testing of <seealso cref="ProjectHelper"/> class.
+        /// </summary>
+        internal ProjectHelper(Project project)
         {
             if (!IsValidSupported(project))
             {
@@ -77,7 +84,7 @@ namespace GoogleCloudExtension.SolutionUtils
             try
             {
                 FullName = _project.FullName.ToLowerInvariant();
-                UniqueName = _project.UniqueName?.ToLowerInvariant();
+                UniqueName = _project.UniqueName.ToLowerInvariant();
                 if (FullName.EndsWith(UniqueName))
                 {
                     int len = FullName.Length - UniqueName.Length;
@@ -130,9 +137,29 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">A <seealso cref="Project"/> interface.</param>
         public static bool IsValidSupported(Project project)
         {
+            if (project == null
+                // The project is not the miscellaneous project which is created automatically
+                // by VS to include elements not belonging to any other project.
+                || project.Kind == Constants.vsProjectKindMisc
+                // The project does not represent a folder.
+                || project.Kind == Constants.vsProjectKindSolutionItems
+                // The project is not an unmolded project. Unmolded projects do not support
+                // automation. Several Project properties that are used acros the extension are not available
+                // for unmodeled projects.
+                // Unloaded projects are unmodeled projects.
+                // Some third party project types and some old database project are also unmodeled.
+                || project.Kind == Constants.vsProjectKindUnmodeled)
+            {
+                return false;
+            }
+
+            // Also checking these other two conditions.
+            // The above type of projects are the VS known type of projects that we don't support
+            // but since project types can be created by anyone, let's make sure that only the projects
+            // that support automation are given as valid.
             try
             {
-                return project != null && project.FullName != null && project.Properties != null;
+                return project.FullName != null && project.UniqueName != null && project.Properties != null;
             }
             catch (Exception ex) when (ex is COMException || ex is NotImplementedException)
             {

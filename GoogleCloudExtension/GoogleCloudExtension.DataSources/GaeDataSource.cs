@@ -19,6 +19,8 @@ using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -26,10 +28,13 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns information about GAE apps and keeps track of operations in flight.
     /// </summary>
-    public class GaeDataSource : DataSourceBase<AppengineService>
+    public class GaeDataSource : DataSourceBase<AppengineService>, IGaeDataSource
     {
         private static readonly string s_servingStatusUpdateMask = "servingStatus";
         private static readonly string s_trafficSplitUpdateMask = "split";
+
+        // Timeout for polling for operations.
+        private static readonly TimeSpan s_operationDefaultTimeout = new TimeSpan(0, 10, 0);
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -54,6 +59,12 @@ namespace GoogleCloudExtension.DataSources
             }
             catch (GoogleApiException ex)
             {
+                if (ex.Error.Code == 404)
+                {
+                    Debug.WriteLine("Failed to find application, not an error.");
+                    return null;
+                }
+
                 Debug.WriteLine($"Failed to get application: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
@@ -107,17 +118,23 @@ namespace GoogleCloudExtension.DataSources
         /// Deletes a GAE service for the given project and service id.
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
-        /// <returns>The GAE operation for the deletion.</returns>
-        public async Task<Operation> DeleteServiceAsync(string serviceId)
+        /// <returns>A taks that will be completed once the operation finishes.</returns>
+        public async Task DeleteServiceAsync(string serviceId)
         {
             try
             {
                 var request = Service.Apps.Services.Delete(ProjectId, serviceId);
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to delete service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.WriteLine($"Timeout while deleting service: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -127,8 +144,8 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="split">The traffic split to set.</param>
         /// <param name="serviceId">The id of the service</param>
-        /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
+        /// <returns>A task that will be comleted once the operation is finished.</returns>
+        public async Task UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
         {
             try
             {
@@ -140,29 +157,18 @@ namespace GoogleCloudExtension.DataSources
                 var request = Service.Apps.Services.Patch(service, ProjectId, serviceId);
                 // Only update the traffic split.
                 request.UpdateMask = s_trafficSplitUpdateMask;
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
-        }
-
-        /// <summary>
-        /// Awaits for the operation to complete succesfully.
-        /// </summary>
-        /// <param name="operation">The operation to await.</param>
-        /// <returns>The task that will be done once the operation is succesful.</returns>
-        public async Task AwaitOperationAsync(Operation operation)
-        {
-            var completedOperation = await Polling<Operation>.Poll(
-                operation,
-                o => GetOperationAsync(o.GetOperationId()),
-                o => o.Done ?? false);
-            if (completedOperation.Error != null)
+            catch (TimeoutException ex)
             {
-                throw new DataSourceException(completedOperation.Error.Message);
+                Debug.WriteLine($"Timeout while updating service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
             }
         }
 
@@ -217,17 +223,23 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
-        /// <returns>The GAE operation for the deletion.</returns>
-        public async Task<Operation> DeleteVersionAsync(string serviceId, string versionId)
+        /// <returns>A task that will be completed once the oepration is finished.</returns>
+        public async Task DeleteVersionAsync(string serviceId, string versionId)
         {
             try
             {
                 var request = Service.Apps.Services.Versions.Delete(ProjectId, serviceId, versionId);
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to delete version: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.WriteLine($"Timeout while deleting version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -238,8 +250,8 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="status">The serving status to set.  Either 'SERVING' or 'STOPPED'</param>
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
-        /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateVersionServingStatus(string status, string serviceId, string versionId)
+        /// <returns>A task that will be completed once the operation is finished.</returns>
+        public async Task UpdateVersionServingStatus(string status, string serviceId, string versionId)
         {
             try
             {
@@ -251,11 +263,17 @@ namespace GoogleCloudExtension.DataSources
                 var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
                 // Only update the service status.
                 request.UpdateMask = s_servingStatusUpdateMask;
-                return await request.ExecuteAsync();
+                Operation operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update serving status to '{status}': {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.WriteLine($"Timeout while updating version: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -288,22 +306,80 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// Gets a GAE operation.
+        /// Returns the list of locations that have Flex enabled.
         /// </summary>
-        /// <param name="id">The unique operation id.</param>
-        /// <returns>The GAE operation.</returns>
-        public async Task<Operation> GetOperationAsync(string id)
+        public async Task<IList<string>> GetFlexLocationsAsync()
         {
+            IList<Location> availableLocations = await GetAvailableLocationsAsync();
+            return availableLocations
+                .Where(x => x.IsFlexEnabled())
+                .Select(x => x.GetRegionName())
+                .ToList();
+        }
+
+        /// <summary>
+        /// Returns the list of available locations for the current project.
+        /// </summary>
+        public Task<IList<Location>> GetAvailableLocationsAsync()
+        {
+            var request = Service.Apps.Locations.List(ProjectId);
+
+            return LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.Locations,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Creates an application in the given location.
+        /// </summary>
+        /// <param name="location">The location where to create the app.</param>
+        /// <returns>A task that will be completed once the operation finishes.</returns>
+        public async Task CreateApplicationAsync(string location)
+        {
+            var request = Service.Apps.Create(new Application
+            {
+                Id = ProjectId,
+                LocationId = location
+            });
+
             try
             {
-                var request = Service.Apps.Operations.Get(ProjectId, id);
-                return await request.ExecuteAsync();
+                var operation = await request.ExecuteAsync();
+                await AwaitOperationAsync(operation);
             }
             catch (GoogleApiException ex)
             {
-                Debug.WriteLine($"Failed to get operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.WriteLine($"Timeout while creating app: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        private Task AwaitOperationAsync(Operation operation)
+        {
+            var tokenSource = new CancellationTokenSource(s_operationDefaultTimeout);
+
+            return operation.AwaitOperationAsync(
+                refreshOperation: op => Service.Apps.Operations.Get(ProjectId, GetOperationId(op)).ExecuteAsync(),
+                isFinished: op => op.Done ?? false,
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Message,
+                token: tokenSource.Token);
+        }
+
+        private static string GetOperationId(Operation operation) => operation.Name.Split('/').Last();
     }
 }

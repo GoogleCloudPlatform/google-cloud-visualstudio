@@ -8,6 +8,7 @@
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:mb="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
@@ -27,6 +28,55 @@
             <CollectionViewSource x:Key="cvs" Source="{Binding CurrentState.Items}" />
 
             <utils:VisibilityConverter x:Key="commonVisibilityConverter" />
+
+            <!-- Custom style for the row to customize selection code and behavior. -->
+            <Style x:Key="HighlightRowStyle" TargetType="{x:Type DataGridRow}">
+                <EventSetter Event="FrameworkElement.ContextMenuOpening" Handler="DataGrid_RowContextMenuOpening" />
+                <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="DataGrid_RowRightClickPreview" />
+
+                <Style.Triggers>
+                    <Trigger Property="AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                    </Trigger>
+                    
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#FFFFD6" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
+            <!-- Cell style to modify the selection colors. -->
+            <Style x:Key="HighlightCellStyle" TargetType="{x:Type DataGridCell}">
+                <Style.Triggers>
+                    <!-- Focussed on the cell. -->
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static DataGrid.FocusBorderBrushKey}}"/>
+                    </Trigger>
+
+                    <!-- Selected and focused. -->
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.StartPageSelectedItemBackgroundKey}}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.StartPageSelectedItemBackgroundKey}}"/>
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>
+
+                    <!-- Trigger for the case the row is selected but not foccused. -->
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="true"/>
+                            <Condition Property="Selector.IsSelectionActive" Value="false"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.FileTabInactiveDocumentBorderBackgroundKey}}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.FileTabInactiveDocumentBorderBackgroundKey}}"/>
+                        <Setter Property="Foreground" Value="White" />
+                    </MultiTrigger>
+
+                    <!-- Disabled. -->
+                    <Trigger Property="IsEnabled" Value="false">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -79,7 +129,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Text="/"
-                                       Style="{StaticResource CommonTextStyle}"
+                                       Style="{StaticResource DynamicColorTextStyle}"
                                        Margin="10,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
@@ -99,7 +149,7 @@
                 </Button.ToolTip>
                 <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file_upload.png}" />
             </Button>
-            
+
             <!-- The create new folder button. -->
             <Button Command="{Binding NewFolderCommand}"
                     Margin="10,0,0,0"
@@ -145,16 +195,14 @@
                   ContextMenu="{Binding ContextMenu}"
                   ContextMenuOpening="DataGrid_ContextMenuOpening"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
+                  GridLinesVisibility="None"
+                  AlternationCount="2"
                   utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
-                  SelectionChanged="OnDataGridSelectionChanged">
-            <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <EventSetter Event="DataGridRow.ContextMenuOpening" Handler="DataGrid_RowContextMenuOpening" />
-                    <EventSetter Event="DataGridRow.PreviewMouseRightButtonDown" Handler="DataGrid_RowRightClickPreview" />
-                </Style>
-            </DataGrid.RowStyle>            
-            
+                  SelectionChanged="OnDataGridSelectionChanged"
+                  RowStyle="{StaticResource HighlightRowStyle}"
+                  CellStyle="{StaticResource HighlightCellStyle}">
+
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="LeafName"
@@ -175,7 +223,7 @@
                                 <TextBlock Text="{Binding LeafName}"
                                            TextTrimming="CharacterEllipsis"
                                            TextWrapping="NoWrap"
-                                           Style="{StaticResource CommonTextStyle}" />
+                                           Style="{StaticResource DynamicColorTextStyle}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -189,7 +237,7 @@
                             <TextBlock Text="{Binding FormattedSize}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -202,7 +250,7 @@
                             <TextBlock Text="{Binding LastModified}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -215,7 +263,7 @@
                             <TextBlock Text="{Binding ContentType}"
                                        TextTrimming="CharacterEllipsis"
                                        TextWrapping="NoWrap"
-                                       Style="{StaticResource CommonTextStyle}" />
+                                       Style="{StaticResource DynamicColorTextStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

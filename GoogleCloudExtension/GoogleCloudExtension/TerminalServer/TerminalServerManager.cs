@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.TerminalServer
             using (var writer = new StreamWriter(path))
             {
                 // The IP (or name) of the VM to connect to.
-                writer.WriteLine($"full address:s:{instance.GetPublicIpAddress()}");
+                writer.WriteLine($"full address:s:{instance.GetFullyQualifiedDomainName()}");
 
                 // The user name to use.
                 writer.WriteLine($"username:s:{credentials.User}");

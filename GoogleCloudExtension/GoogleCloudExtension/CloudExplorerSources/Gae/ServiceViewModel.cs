@@ -270,7 +270,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnBrowseStackdriverLogCommand()
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
             window?.FilterGAEServiceLog(Service.Id);
         }
 
@@ -315,11 +315,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _owner.Context.ShowPropertiesWindow(GetItem());
         }
 
-        private async void OnOpenService()
+        private void OnOpenService()
         {
-            var app = await _owner.GaeApplication;
-            var url = GaeUtils.GetAppUrl(app.DefaultHostname, Service.Id);
-            Process.Start(url);
+            Process.Start(GaeUtils.GetAppUrl(_owner.GaeApplication.DefaultHostname, Service.Id));
         }
 
         /// <summary>
@@ -335,8 +333,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                await _owner.DataSource.AwaitOperationAsync(operation);
+                await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
@@ -381,8 +378,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                var operation = await datasource.DeleteServiceAsync(Service.Id);
-                await datasource.AwaitOperationAsync(operation);
+                await datasource.DeleteServiceAsync(Service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }

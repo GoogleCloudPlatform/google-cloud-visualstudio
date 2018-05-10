@@ -191,11 +191,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 }
 
                 Debug.WriteLine($"Resetting the password for the user {user}");
-
-                // Check that gcloud is in the right state to invoke the reset credentials method.
-                if (!await GCloudWrapperUtils.VerifyGCloudDependencies("beta"))
+                if (!await GCloudWrapperUtils.VerifyGCloudDependencies())
                 {
-                    Debug.WriteLine("Missing gcloud dependencies for resetting password.");
+                    Debug.WriteLine("Gcloud dependencies not met, aborting change of password.");
                     return null;
                 }
 

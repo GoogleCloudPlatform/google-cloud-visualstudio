@@ -140,6 +140,23 @@ namespace GoogleCloudExtension.DataSources
             instance.NetworkInterfaces?.FirstOrDefault()?.AccessConfigs?.FirstOrDefault()?.NatIP;
 
         /// <summary>
+        /// Returns the FQDN for an instance in GCE.
+        /// </summary>
+        /// <param name="instance">The instance to inspect.</param>
+        /// <returns></returns>
+        public static string GetFullyQualifiedDomainName(this Instance instance)
+        {
+            var ipAddress = instance.GetPublicIpAddress();
+            if (ipAddress == null)
+            {
+                return "";
+            }
+
+            var reverseIp = string.Join(".", ipAddress.Split('.').Reverse());
+            return $"{reverseIp}.bc.googleusercontent.com";
+        }
+
+        /// <summary>
         /// Returns a string with all of the tags for the instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" Condition="$(VisualStudioVersion) != '15.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
     <VsixType>v3</VsixType>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <!--<MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>-->
+    <MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <UseCodebase>true</UseCodebase>
     <SignAssembly>true</SignAssembly>
@@ -31,6 +31,7 @@
     <StartAction>Program</StartAction>
     <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,7 +42,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DeployExtension>True</DeployExtension>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -66,6 +66,12 @@
     </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
+    <Compile Include="Analytics\AnalyticsLearnMoreUtils.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindow.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml.cs">
+      <DependentUpon>AnalyticsOptInWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowViewModel.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
     <Compile Include="Analytics\CommandStatusUtils.cs" />
     <Compile Include="Analytics\DebugEventReporter.cs" />
@@ -73,6 +79,8 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrListedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrCreatedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
@@ -84,6 +92,7 @@
     <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrClonedEvent.cs" />
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
@@ -114,6 +123,7 @@
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrConnectSectionOpenEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
@@ -126,6 +136,14 @@
     <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
+    <Compile Include="ApiManagement\ApiManager.cs" />
+    <Compile Include="ApiManagement\IApiManager.cs" />
+    <Compile Include="ApiManagement\KnownApis.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModel.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindow.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindowContent.xaml.cs">
+      <DependentUpon>AppEngineManagementWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
@@ -186,10 +204,78 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptions.cs" />
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml.cs">
+      <DependentUpon>CloudExplorerOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModel.cs" />
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="CloudExplorer\SampleData\EmptyState.cs" />
+    <Compile Include="CloudExplorer\SampleData\LoadingState.cs" />
+    <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
+    <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
+    <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindow.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml.cs">
+      <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="IGoogleCloudExtensionPackage.cs" />
+    <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
+      <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetTemplateChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
+    <Compile Include="TemplateWizards\TemplateType.cs" />
+    <Compile Include="Utils\EditableModel.cs" />
+    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptions.cs" />
+    <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
+    <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml.cs">
+      <DependentUpon>CsrAddRepoWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
+      <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml.cs">
+      <DependentUpon>CsrGitSetupWarningContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
+    <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
+    <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\IViewModelBase.cs" />
+    <Compile Include="Utils\MockAsyncProperty.cs" />
+    <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
+    <Compile Include="PickProjectDialog\SampleData\NeedsAccountState.cs" />
+    <Compile Include="PickProjectDialog\SampleData\LoadingState.cs" />
+    <Compile Include="Options\AnalyticsOptionsPage.xaml.cs">
+      <DependentUpon>AnalyticsOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\AnalyticsOptionsPageViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelResult.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserWindow.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetCoreTemplateChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
+    <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
+    <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
+    <Compile Include="Theming\ICloseable.cs" />
     <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
@@ -227,6 +313,19 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
+      <DependentUpon>CsrReposContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
+      <DependentUpon>CsrSectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedContent.xaml.cs">
+      <DependentUpon>CsrUnconnectedContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\RepoItemViewModel.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
@@ -339,6 +438,7 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
     <Compile Include="Utils\Validation\StringValidationResult.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
@@ -433,9 +533,9 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdViewModel.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindow.cs" />
-    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml.cs">
+    <Compile Include="PickProjectDialog\PickProjectIdViewModel.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindow.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindowContent.xaml.cs">
       <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
@@ -472,9 +572,9 @@
     <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
-    <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\ToolsPathProviderBase.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
     <Compile Include="VsVersion\VsVersionUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
@@ -501,9 +601,7 @@
     <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
       <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AnalyticsOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Options\AnalyticsOptions.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
@@ -519,9 +617,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TargetOverrides.targets">
-      <SubType>Designer</SubType>
-    </None>
+    <Resource Include="Theming\Resources\refresh.png" />
     <Resource Include="Theming\Resources\ic_error_red_14px.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
@@ -562,7 +658,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
@@ -656,64 +751,72 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.26.2\lib\net45\Google.Apis.dll</HintPath>
+    <Reference Include="Google.Apis, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.29.1\lib\net45\Google.Apis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Appengine.v1, Version=1.26.2.875, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Appengine.v1.1.26.2.875\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.29.1.987, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.29.1.987\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.26.2\lib\net45\Google.Apis.Auth.dll</HintPath>
+    <Reference Include="Google.Apis.Auth, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.29.1\lib\net45\Google.Apis.Auth.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.26.2\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.29.1\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.26.2.874\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.29.1.987, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.29.1.987\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.26.2.874\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.29.1.993, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.29.1.993\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.26.2.865, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.26.2.865\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.29.1.981\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Container.v1, Version=1.26.2.850, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Container.v1.1.26.2.850\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.29.1.981\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.26.2\lib\net45\Google.Apis.Core.dll</HintPath>
+    <Reference Include="Google.Apis.Container.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.29.1.981\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.26.2.873, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.26.2.873\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    <Reference Include="Google.Apis.Core, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.29.1\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.26.2.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.26.2\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.29.1.991, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.29.1.991\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Plus.v1, Version=1.26.2.874, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Plus.v1.1.26.2.874\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.29.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.29.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.26.2.852, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.26.2.852\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.29.1.970, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.29.1.970\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.26.2.873, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.26.2.873\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+    <Reference Include="Google.Apis.Pubsub.v1, Version=1.29.1.971, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.29.1.971\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.26.2.860, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.26.2.860\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.29.1.981, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.29.1.981\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.29.1.949, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.29.1.949\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.29.1.988, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.29.1.988\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -722,6 +825,7 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.TeamFoundation.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -779,6 +883,11 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.12.0.12.0.30110\lib\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime, Version=12.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.12.1.30328\lib\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.8.0.8.0.50727\lib\Microsoft.VisualStudio.Shell.Interop.8.0.dll</HintPath>
       <Private>True</Private>
@@ -817,7 +926,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NuGet.VisualStudio, Version=4.0.0.2323, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -866,6 +975,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppEngineManagement\AppEngineManagementWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -894,9 +1011,41 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrReposContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrUnconnectedContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\DotsProgressIndicatorResources.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -907,6 +1056,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -939,6 +1092,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\AnalyticsOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1038,7 +1195,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml">
+    <Page Include="PickProjectDialog\PickProjectIdWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkTypeResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1116,6 +1289,14 @@
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj">
+      <Project>{3febb10a-adaf-4807-b741-030b1f722d35}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v14</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
+      <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj">
       <Project>{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}</Project>
       <Name>GoogleCloudExtension.TemplateWizards</Name>
@@ -1130,45 +1311,27 @@
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
-      <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>
-      <Name>GoogleAspNetCoreMvc</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
+      <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreWebApi\GoogleAspNetCoreWebApi.csproj">
-      <Project>{28f22aba-2f54-4a75-832d-ff15da0a9c4b}</Project>
-      <Name>GoogleAspNetCoreWebApi</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspnetMvc\GoogleAspnetMvc.csproj">
-      <Project>{af37626b-d22b-408a-bc79-c25c097fecf7}</Project>
-      <Name>GoogleAspnetMvc</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspnetWebApi\GoogleAspnetWebApi.csproj">
-      <Project>{30cb8c77-59a5-4e6c-b122-f614135ce7da}</Project>
-      <Name>GoogleAspnetWebApi</Name>
+    <ProjectReference Include="..\ProjectTemplates\GcpProjectTemplate\GcpProjectTemplate.csproj">
+      <Project>{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}</Project>
+      <Name>GcpProjectTemplate</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild" Condition="$(VisualStudioVersion) != '15.0'">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets'))" />
-    <Error Condition="!Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets'))" />
   </Target>
-  <Import Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
-  <Import Project="TargetOverrides.targets" />
+  <Import Condition="$(VisualStudioVersion) != '15.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
 </Project>

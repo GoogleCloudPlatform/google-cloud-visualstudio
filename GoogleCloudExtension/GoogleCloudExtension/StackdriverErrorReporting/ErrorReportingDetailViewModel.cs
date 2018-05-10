@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingDetailViewModel : ViewModelBase, IDisposable
     {
-        private Lazy<StackdriverErrorReportingDataSource> _datasource;
+        private Lazy<IStackdriverErrorReportingDataSource> _datasource;
         private bool _isGroupLoading;
         private bool _isEventLoading;
         private bool _isControlEnabled = true;
@@ -40,6 +40,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
+        private readonly IGoogleCloudExtensionPackage _package;
+
+        // References to static method dependencies. Mockable for testing.
+        internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
+        internal Func<ErrorReportingToolWindow> ShowErrorReportingToolWindow =
+            ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>;
+
+        private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
+
+        private IStackdriverErrorReportingDataSource DataSource => _dataSourceOverride ?? _datasource?.Value;
 
         /// <summary>
         /// Indicate the Google account is set.
@@ -130,6 +140,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
+        /// Indicates whether the view is visible or not
+        /// </summary>
+        public bool IsVisibleUnbound { get; set; }
+
+        /// <summary>
         /// Gets the list of time range items.
         /// </summary>
         public IEnumerable<TimeRangeItem> AllTimeRangeItems => _timeRangeItemList.Value;
@@ -149,18 +164,25 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ProtectedCommand OnAutoReloadCommand { get; }
 
+        internal ErrorReportingDetailViewModel(IStackdriverErrorReportingDataSource dataSourceOverride) : this()
+        {
+            _dataSourceOverride = dataSourceOverride;
+        }
+
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
         public ErrorReportingDetailViewModel()
         {
-            OnGotoSourceCommand = new ProtectedCommand<StackFrame>(
-                (frame) => ShowTooltipUtils.ErrorFrameToSourceLine(GroupItem, frame));
-            OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
+            _package = GoogleCloudExtensionPackage.Instance;
+            IsVisibleUnbound = true;
+            OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
+            OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
-            _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
-            CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnCurrentProjectChanged();
+            _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
+
+            CredentialsStore.Default.Reset += OnCurrentProjectChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectChanged;
         }
 
         /// <summary>
@@ -169,15 +191,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public void Dispose()
         {
             OnAutoReloadCommand.CanExecuteCommand = false;
+            CredentialsStore.Default.Reset -= OnCurrentProjectChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged -= OnCurrentProjectChanged;
         }
 
         /// <summary>
-        /// Hide detail view content when project id is changed.s
+        /// Hide detail view content when project id is changed.
         /// </summary>
-        public void OnCurrentProjectChanged()
+        private void OnCurrentProjectChanged(object sender, EventArgs e)
         {
             IsAccountChanged = true;
-            _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
         }
 
         /// <summary>
@@ -204,7 +228,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             else
             {
-                // This will triger a call to UpdateGroupAndEventAsync(). 
+                // This will triger a call to UpdateGroupAndEventAsync().
                 SelectedTimeRangeItem = AllTimeRangeItems.First(x => x.GroupTimeRange == groupSelectedTimeRangeItem.GroupTimeRange);
             }
         }
@@ -219,11 +243,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException("GroupItem is null.");
             }
 
+            // In most cases, it is because Project id is null
+            if (DataSource == null)
+            {
+                return;
+            }
+
             IsGroupLoading = true;
             ShowError = false;
             try
             {
-                var groups = await _datasource.Value?.GetPageOfGroupStatusAsync(
+                var groups = await DataSource?.GetPageOfGroupStatusAsync(
                     SelectedTimeRangeItem.GroupTimeRange,
                     SelectedTimeRangeItem.TimedCountDuration,
                     GroupItem.ErrorGroup.Group.GroupId);
@@ -255,6 +285,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private async Task UpdateGroupAndEventAsync()
         {
+            if (!IsVisibleUnbound || (_package != null && !_package.IsWindowActive()))
+            {
+                return;
+            }
+
             IsControlEnabled = false;
             try
             {
@@ -273,6 +308,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private async Task UpdateEventAsync()
         {
             EventItemCollection = null;
+
+            // In most cases, it is because Project id is null
+            if (DataSource == null)
+            {
+                return;
+            }
+
             if (GroupItem.ErrorGroup.TimedCounts != null)
             {
                 IsEventLoading = true;
@@ -280,7 +322,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 ShowError = false;
                 try
                 {
-                    var events = await _datasource.Value?.GetPageOfEventsAsync(
+                    var events = await DataSource?.GetPageOfEventsAsync(
                         GroupItem.ErrorGroup,
                         SelectedTimeRangeItem.EventTimeRange);
                     if (events?.ErrorEvents != null)

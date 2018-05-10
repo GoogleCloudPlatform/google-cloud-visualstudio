@@ -16,7 +16,6 @@ using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
@@ -26,7 +25,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
+        public ILogsViewerViewModel ViewModel => DataContext as ILogsViewerViewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindowControl"/> class.
@@ -34,17 +33,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerToolWindowControl()
         {
             PackageUtils.ReferenceType(typeof(VisibilityConverter));
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         /// <summary>
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
-        private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void DataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            var grid = sender as DataGrid;
-            ScrollViewer sv = e.OriginalSource as ScrollViewer;
+            var sv = e.OriginalSource as ScrollViewer;
             if (sv == null || !sv.IsMouseOver)
             {
                 return;
@@ -58,53 +56,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// When mouse clicks on source link text, execute the button command.
-        /// When mouse clicks on a row, toggle display the row detail.
-        /// If the mouse is clikcing on detail panel, does not collapse it.        
+        /// Implements the <see cref="ApplicationCommands.Copy"/> routed event on a details TreeView.
+        /// Executes the CopyCommand of the selected ObjectNodeTree item.
         /// </summary>
-        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void DetailsTreeView_OnCopy(object sender, ExecutedRoutedEventArgs e)
         {
-            var dependencyObj = e.OriginalSource as DependencyObject;
-            if (OriginFromSourceLink(e.OriginalSource))
-            {
-                e.Handled = true;
-                return;
-            }
-
-            DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
-            if (row != null)
-            {
-                if (null == DataGridUtils.FindAncestorControl<DataGridDetailsPresenter>(dependencyObj))
-                {
-                    row.DetailsVisibility =
-                        row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                }
-            }
+            var detailsTreeView = sender as TreeView;
+            var treeNodeViewModel = detailsTreeView?.SelectedItem as ObjectNodeTree;
+            treeNodeViewModel?.CopyCommand.Execute(null);
         }
 
-        /// <summary>
-        /// (1) When the button is clicked, skip toggling detail view action.
-        /// (2) Sometimes button does not respond to click event. This method fixes the problem.        
-        /// </summary>
-        private bool OriginFromSourceLink(object originalSource)
+        private void LogsViewerToolWindowControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            Debug.WriteLine($"Original source is {originalSource.ToString()}, type is {originalSource.GetType().Name}");
-            if (originalSource is TextBlock)
+            var viewModel = DataContext as LogsViewerViewModel;
+            if (viewModel != null)
             {
-                var textBlock = originalSource as TextBlock;
-                var button = DataGridUtils.FindAncestorControl<Controls.IconButton>(originalSource as DependencyObject);
-                if (button?.Name != "_sourceLinkButton")
-                {
-                    return false;
-                }
-                if (button.Command != null && button.Command.CanExecute(null))
-                {
-                    button.Command.Execute(null);
-                }
-                return true;
+                viewModel.IsVisibleUnbound = (bool)e.NewValue;
             }
-
-            return false;
         }
     }
 }

@@ -13,14 +13,15 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
+using VsProject = EnvDTE.Project;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -31,50 +32,53 @@ namespace GoogleCloudExtension.TemplateWizards
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
         // Mockable static methods for testing.
-        internal Func<string> PromptPickProjectId = PickProjectIdWindow.PromptUser;
-        internal Action<string, bool> DeleteDirectory = Directory.Delete;
-
-        private const string GlobalJsonFileName = "global.json";
+        internal Func<GcpProject> PromptPickProjectId =
+            () => PickProjectIdWindow.PromptUser(Resources.TemplateWizardPickProjectIdHelpText, allowAccountChange: false);
+        internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         ///<inheritdoc />
         public void RunStarted(
             object automationObject,
-            Dictionary<string, string> replacementsDictionary,
+            Dictionary<string, string> replacements,
             WizardRunKind runKind,
             object[] customParams)
         {
-            string projectId = PromptPickProjectId();
-            if (projectId == null)
+            try
             {
-                DeleteDirectory(replacementsDictionary["$destinationdirectory$"], true);
-                bool isExclusive;
-                if (bool.TryParse(replacementsDictionary["$exclusiveproject$"], out isExclusive) && isExclusive)
+                // Don't show the popup if the key has already been set.
+                if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    DeleteDirectory(replacementsDictionary["$solutiondirectory$"], true);
+                    GcpProject project = PromptPickProjectId();
+
+                    if (project == null)
+                    {
+                        // Null indicates a canceled operation.
+                        throw new WizardBackoutException();
+                    }
+                    replacements.Add(ReplacementsKeys.GcpProjectIdKey, project.ProjectId ?? "");
                 }
-                throw new WizardBackoutException();
+                if (!replacements.ContainsKey(ReplacementsKeys.PackagesPathKey))
+                {
+                    string solutionDirectory = replacements[ReplacementsKeys.SolutionDirectoryKey];
+                    string projectDirectory = replacements[ReplacementsKeys.DestinationDirectoryKey];
+                    string packageDirectory = Path.Combine(solutionDirectory, "packages");
+                    string packagesPath = PathUtils.GetRelativePath(projectDirectory, packageDirectory);
+                    replacements.Add(ReplacementsKeys.PackagesPathKey, packagesPath);
+                }
+                replacements[ReplacementsKeys.EmbeddableSafeProjectNameKey] =
+                    replacements[ReplacementsKeys.SafeProjectNameKey];
             }
-            replacementsDictionary.Add("$gcpprojectid$", projectId);
-            var solutionDir = new Uri(
-                replacementsDictionary["$solutiondirectory$"].EnsureEndSeparator().Replace('\\', '/'));
-            var packageDir = new Uri(solutionDir, "packages/");
-            var projectDir = new Uri(
-                replacementsDictionary["$destinationdirectory$"].EnsureEndSeparator().Replace('\\', '/'));
-            string packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
-            replacementsDictionary.Add("$packagespath$", packagesPath.Replace('/', Path.DirectorySeparatorChar));
+            catch
+            {
+                CleanupDirectories(replacements);
+                throw;
+            }
         }
 
         ///<inheritdoc />
         public bool ShouldAddProjectItem(string filePath)
         {
-            if (GlobalJsonFileName == Path.GetFileName(filePath))
-            {
-                return GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         ///<inheritdoc />
@@ -93,7 +97,7 @@ namespace GoogleCloudExtension.TemplateWizards
         }
 
         ///<inheritdoc />
-        public void ProjectFinishedGenerating(Project project)
+        public void ProjectFinishedGenerating(VsProject project)
         {
         }
     }

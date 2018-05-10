@@ -61,7 +61,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         public ITopicItem Item { get; }
 
-        public event EventHandler ItemChanged;
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
 
         protected TopicViewModelBase(
             IPubsubSourceRootViewModel owner,
@@ -106,6 +110,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             {
                 _isRefreshing = false;
             }
+        }
+
+        /// <summary>
+        /// Opens an external browser to the given url.
+        /// </summary>
+        public void OpenBrowser(string url)
+        {
+            Owner.OpenBrowser(url);
         }
 
         /// <summary>

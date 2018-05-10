@@ -16,7 +16,6 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -29,19 +28,37 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     {
         private const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/orphaned_subscriptions_icon.png";
 
+        internal const string PubSubConsoleSubscriptionsUrlFormat =
+                "https://console.cloud.google.com/cloudpubsub/subscriptions?project={0}";
+
         private static readonly Lazy<ImageSource> s_orphanedSubscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        public OrphanedSubscriptionsViewModel(PubsubSourceRootViewModel owner, IEnumerable<Subscription> subscriptions)
-            : base(owner, new OrphanedSubscriptionsItem(), subscriptions)
+        public OrphanedSubscriptionsViewModel(IPubsubSourceRootViewModel owner, IEnumerable<Subscription> subscriptions)
+            : base(owner, new OrphanedSubscriptionsItem(owner.Context.CurrentProject.ProjectId), subscriptions)
         {
             Icon = s_orphanedSubscriptionIcon.Value;
 
             // Include an invisible context menu so child context menus continue to show up.
             ContextMenu = new ContextMenu
             {
-                Visibility = Visibility.Hidden
+                ItemsSource = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                        Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
+                    }
+                }
             };
+        }
+
+        /// <summary>
+        /// Opens the subscriptions page of the Google Cloud Pub/Sub cloud console.
+        /// </summary>
+        private void OnOpenCloudConsoleCommand()
+        {
+            OpenBrowser(string.Format(PubSubConsoleSubscriptionsUrlFormat, Item.ProjectId));
         }
     }
 }

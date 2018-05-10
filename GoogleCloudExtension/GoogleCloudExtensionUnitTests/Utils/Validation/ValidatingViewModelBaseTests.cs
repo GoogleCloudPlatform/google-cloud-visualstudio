@@ -85,9 +85,9 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
             _testObject.ErrorsProperty = s_testResults;
 
             Assert.IsFalse(_testObject.GetErrors(propertyName).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(propertyName).GetEnumerator().MoveNext());
+            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(propertyName).Cast<object>().Any());
             Assert.IsFalse(_testObject.GetErrors(null).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(null).GetEnumerator().MoveNext());
+            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(null).Cast<object>().Any());
             Assert.IsFalse(_errorsChangedSource.Task.IsCompleted);
         }
 

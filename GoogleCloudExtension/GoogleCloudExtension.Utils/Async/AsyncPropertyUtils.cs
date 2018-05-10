@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio;
 using System;
 using System.Threading.Tasks;
 
@@ -31,7 +32,9 @@ namespace GoogleCloudExtension.Utils.Async
         public static AsyncProperty<T> CreateAsyncProperty<TIn, T>(
             Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
-            return new AsyncProperty<T>(valueSource.ContinueWith(t => func(t.Result)), defaultValue);
+            return new AsyncProperty<T>(
+                valueSource.ContinueWith(t => func(GetTaskResultSafe(t))),
+                defaultValue);
         }
 
         public static AsyncProperty<T> CreateAsyncProperty<T>(Task<T> valueSource, T defaultValue = default(T))
@@ -42,6 +45,18 @@ namespace GoogleCloudExtension.Utils.Async
         public static AsyncProperty CreateAsyncProperty(Task sourceTask)
         {
             return new AsyncProperty(sourceTask);
+        }
+
+        public static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default(TIn))
+        {
+            try
+            {
+                return task.Result;
+            }
+            catch (Exception ex) when (!ErrorHandler.IsCriticalException(ex))
+            {
+                return defaultValue;
+            }
         }
     }
 }

@@ -32,15 +32,14 @@ namespace GoogleCloudExtension.Deployment
         // The mapping of supported .NET Core versions to the base images to use for the Docker image.
         private static readonly Dictionary<KnownProjectTypes, string> s_knownRuntimeImages = new Dictionary<KnownProjectTypes, string>
         {
-            [ KnownProjectTypes.NetCoreWebApplication1_0 ] = "gcr.io/google-appengine/aspnetcore:1.0",
-            [ KnownProjectTypes.NetCoreWebApplication1_1 ] = "gcr.io/google-appengine/aspnetcore:1.1"
+            [KnownProjectTypes.NetCoreWebApplication1_0] = "gcr.io/google-appengine/aspnetcore:1.0",
+            [KnownProjectTypes.NetCoreWebApplication1_1] = "gcr.io/google-appengine/aspnetcore:1.1",
+            [KnownProjectTypes.NetCoreWebApplication2_0] = "gcr.io/google-appengine/aspnetcore:2.0"
         };
 
         /// <summary>
         /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
-        /// App Engine Flex environment. It invokes the entry point .dll given by {1}, sets up the environment
-        /// so the app listens on port 8080.
-        /// All of the files composing the app are copied to the /app path, then it is set as the working directory.
+        /// App Engine Flex environment. It invokes the entry point .dll given by {1}.
         /// The parameters into the string are:
         ///   {0}, the base image for the app's Docker image.
         ///   {1}, the entrypoint .dll for the app.
@@ -49,8 +48,6 @@ namespace GoogleCloudExtension.Deployment
             "FROM {0}\n" +
             "COPY . /app\n" +
             "WORKDIR /app\n" +
-            "EXPOSE 8080\n" +
-            "ENV ASPNETCORE_URLS=http://*:8080\n" +
             "ENTRYPOINT [\"dotnet\", \"{1}.dll\"]\n";
 
         /// <summary>

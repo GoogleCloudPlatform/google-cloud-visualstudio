@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AnalyticsPromptMessage" xml:space="preserve">
-    <value>Do you want to help Google by reporting usage statics?</value>
+    <value>Do you want to help improve Google Cloud Tools for Visual Studio by reporting usage statistics?</value>
     <comment>Message for the analytics prompt.</comment>
   </data>
   <data name="AnalyticsPromptTitle" xml:space="preserve">
@@ -256,10 +256,6 @@
   <data name="CloudExplorerGceNewInstanceMenuHeader" xml:space="preserve">
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
-  </data>
-  <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Show only Windows instances</value>
-    <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
     <value>Open Remote Desktop session...</value>
@@ -822,7 +818,7 @@
     <comment>The name of the App Engine Flex choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepAppEngineToolTip" xml:space="preserve">
-    <value>Deploy to App Engine Flex</value>
+    <value>App Engine is the preferred choice for quickly setting up your .NET Core application.</value>
     <comment>The tooltip for the App Engine Flex button.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceName" xml:space="preserve">
@@ -830,7 +826,7 @@
     <comment>The name of the GCE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceToolTip" xml:space="preserve">
-    <value>Deploy to Compute Engine</value>
+    <value>Deploy your Classic ASP.NET application to a Windows virtual machine in Google Compute Engine.</value>
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
@@ -864,6 +860,10 @@
   <data name="FlexPublishFailedMessage" xml:space="preserve">
     <value>Failed to deploy project {0} to App Engine Flex.</value>
     <comment>Message shown in the output window after a failed deployment. {0} is the project name.</comment>
+  </data>
+  <data name="FlexPublishStepStartMessage" xml:space="preserve">
+    <value>Publishing {0} to App Engine Flex.</value>
+    <comment>Start message for the Flex publish step, shown on the output window. {0} is the name of the project being published.</comment>
   </data>
   <data name="FlexPublishProgressMessage" xml:space="preserve">
     <value>Deploying to App Engine Flex...</value>
@@ -1188,7 +1188,7 @@
     <comment>Caption for the open button in dialogs.</comment>
   </data>
   <data name="LogViewerToolWindowCaption" xml:space="preserve">
-    <value>Google Stackdriver Logging</value>
+    <value>Stackdriver Logging</value>
     <comment>The Logs Viewer Tool Window caption. Keep it short because the tab is narrow.</comment>
   </data>
   <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
@@ -1352,11 +1352,11 @@
     <comment>The category for the analytics options in the options page.</comment>
   </data>
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
-    <value>Whether to report usage statistics to Google</value>
+    <value>When checked, anonymous usage statistics will be reported to Google</value>
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
-  <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
-    <value>Report Usage Statistics Enabled</value>
+  <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
+    <value>Report _Usage Statistics.</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
   <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
@@ -1516,7 +1516,7 @@
     <comment>The selection item that indicates to list logs before the time stamp.</comment>
   </data>
   <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
-    <value>Get log</value>
+    <value>Get logs</value>
     <comment>Head part of the label for picking the list log time order.</comment>
   </data>
   <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
@@ -1544,11 +1544,11 @@
     <comment>The message shown in the UI to choose cluster.</comment>
   </data>
   <data name="GkePublishDeployingToGkeMessage" xml:space="preserve">
-    <value>Deploying {0} to Container Engine</value>
+    <value>Deploying {0} to Kubernetes Engine</value>
     <comment>Message printed to the output window when deploying to GKE. {0} is the name of the project.</comment>
   </data>
   <data name="GkePublishDeploymentFailureMessage" xml:space="preserve">
-    <value>Failed to deploy {0} to Container Engine</value>
+    <value>Failed to deploy {0} to Kubernetes Engine</value>
     <comment>Message printed in the output window when the deployment fails. {0} is the project name.</comment>
   </data>
   <data name="GkePublishDeploymentNameMessage" xml:space="preserve">
@@ -1556,11 +1556,11 @@
     <comment>The message shown in the UI for deployment name textbox.</comment>
   </data>
   <data name="GkePublishDeploymentStatusMessage" xml:space="preserve">
-    <value>Deploying to Container Engine</value>
+    <value>Deploying to Kubernetes Engine</value>
     <comment>Message shown in the status bar while deploying.</comment>
   </data>
   <data name="GkePublishDeploymentSuccessMessage" xml:space="preserve">
-    <value>Project {0} deployed to Container Engine</value>
+    <value>Project {0} deployed to Kubernetes Engine</value>
     <comment>Message printed in the output window once the deployment finished succesfully. {0} is the project name.</comment>
   </data>
   <data name="GkePublishDeploymentVersionMessage" xml:space="preserve">
@@ -1584,11 +1584,11 @@
     <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
-    <value>C_ontainer Engine</value>
+    <value>_Kubernetes Engine</value>
     <comment>The name of the GKE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
-    <value>Deploy as a service to Container Engine</value>
+    <value>Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application.</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
   <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
@@ -1712,11 +1712,11 @@
     <comment>Stackdriver Error Reporting window caption.</comment>
   </data>
   <data name="TitleBarAccountLabel" xml:space="preserve">
-    <value>Account</value>
+    <value>Account:</value>
     <comment>Label for account name label.</comment>
   </data>
   <data name="TitleBarProjectIdLabel" xml:space="preserve">
-    <value>Project</value>
+    <value>Project:</value>
     <comment>Label for project id label.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
@@ -2012,7 +2012,7 @@
     <comment>Caption for the install link.</comment>
   </data>
   <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command:</value>
     <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
   </data>
   <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
@@ -2129,7 +2129,7 @@
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
     <value>{0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
-    <comment>Message displayed by validator limiting characters allowed in pub sub names. Takes the display name of the field being validated.</comment>
+    <comment>Message displayed by validator limiting characters allowed in Pub/Sub names. Takes the display name of the field being validated.</comment>
   </data>
   <data name="ValidationStartWithLetterMessage" xml:space="preserve">
     <value>{0} must start with a letter.</value>
@@ -2444,36 +2444,20 @@
     <comment>The error message that asks to install Git for Windows</comment>
   </data>
   <data name="GitUtilsMissingGitErrorTitle" xml:space="preserve">
-    <value>Git for Windows is not found</value>
+    <value>Git for Windows not found</value>
     <comment>Title of the dialog asking user to install git for Windows</comment>
   </data>
-  <data name="UiSkipButtonCaption" xml:space="preserve">
-    <value>_Skip</value>
-    <comment>Caption for a Skip button in a UI.</comment>
-  </data>
-  <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
-    <value>Task Canceled</value>
-    <comment>Text to diplay if a task was canceled.</comment>
-  </data>
-  <data name="WizardPickProjectIdDescription" xml:space="preserve">
-    <value>Input project ID or select an existing project:</value>
+  <data name="PickProjectIdDescription" xml:space="preserve">
+    <value>Select a Google Cloud Platform project:</value>
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdHelpText" xml:space="preserve">
+  <data name="TemplateWizardPickProjectIdHelpText" xml:space="preserve">
     <value>This project ID will be added to your configuration files and can be changed later.</value>
     <comment>Help text for the PickProjectId window of the project template wizards.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
+  <data name="PickProjectIdLoadingProjects" xml:space="preserve">
     <value>Loading Projects...</value>
     <comment>Text to display while loading projects.</comment>
-  </data>
-  <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
-    <value>_Enter project ID:</value>
-    <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
-  </data>
-  <data name="WizardPickProjectIdTitle" xml:space="preserve">
-    <value>Select the Google Cloud Platform project that will run this project.</value>
-    <comment>The title of the PickProjecId window of the template wizards.</comment>
   </data>
   <data name="DataTemplateGcpProjectFormat" xml:space="preserve">
     <value>{0} ({1}:{2})</value>
@@ -2483,7 +2467,7 @@
     <value>More Information</value>
     <comment>Title for an expander containing more information.</comment>
   </data>
-  <data name="WizardPickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
+  <data name="PickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
     <value>Error loading Projects</value>
     <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
@@ -2611,7 +2595,7 @@
     <value>Or create a new account</value>
     <comment>The caption to create a new account or mange accounts link</comment>
   </data>
-  <data name="WizardPickProjectIdNoAccountMessage" xml:space="preserve">
+  <data name="PickProjectIdNoAccountMessage" xml:space="preserve">
     <value>To get a list of projects, select an account.</value>
     <comment>The message shown when there is no current user on the template wizard pick project window.</comment>
   </data>
@@ -2623,10 +2607,6 @@
     <value>Project Name</value>
     <comment>Project Name column header for a GCP Project data grid.</comment>
   </data>
-  <data name="GcpProjectNumberHeader" xml:space="preserve">
-    <value>Project Number</value>
-    <comment>Project Number column header for a GCP Project data grid.</comment>
-  </data>
   <data name="AttachDebuggerConnectionFailedMessage" xml:space="preserve">
     <value>Failed to establish Remote PowerShell connection.</value>
     <comment>Error message indicates it failed to establish Remote Powershell connection.</comment>
@@ -2634,5 +2614,393 @@
   <data name="AttachDebuggerInstallerError" xml:space="preserve">
     <value>Remote PowerShell error.</value>
     <comment>Generic error message on executing Remote PowerShell commands.</comment>
+  </data>
+  <data name="CsrConnectSectionTitle" xml:space="preserve">
+    <value>Google Cloud Source Repositories</value>
+    <comment>The title of connect section of Cloud Source Repositories at Visual Studio Team Explorer.</comment>
+  </data>
+  <data name="CsrCloneCreateLinkButtonCaption" xml:space="preserve">
+    <value>Clone or Create</value>
+    <comment>The clone or create repo link button caption</comment>
+  </data>
+  <data name="CsrDescription" xml:space="preserve">
+    <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
+    <comment>Description of CSR. Intend to be attractive text.</comment>
+  </data>
+  <data name="CsrRepoItemTooltipLocalPathLabel" xml:space="preserve">
+    <value>Local Path</value>
+    <comment>Repository local path label</comment>
+  </data>
+  <data name="CsrRepoItemTooltipRepoNameLabel" xml:space="preserve">
+    <value>Repo Name</value>
+    <comment>Repository name label</comment>
+  </data>
+  <data name="CsrVisitUrlMenuHeader" xml:space="preserve">
+    <value>View the repository in Google Cloud Console</value>
+    <comment>The menu header for visiting souce repository in Google Cloud Console on the web.</comment>
+  </data>
+  <data name="CsrCloneWindowTitle" xml:space="preserve">
+    <value>Clone Google Cloud Source Repository</value>
+    <comment>The title of the clone CSR window</comment>
+  </data>
+  <data name="CsrCloneFailedMessage" xml:space="preserve">
+    <value>Failed to clone the repository.</value>
+    <comment>Error message when it fails to clone for some reason.</comment>
+  </data>
+  <data name="CsrCloneFailedToSetCredentialMessage" xml:space="preserve">
+    <value>Failed to set credential.</value>
+    <comment>Error message when it fails to set git credential</comment>
+  </data>
+  <data name="CsrCloneLocalPathLabel" xml:space="preserve">
+    <value>_Clone to:</value>
+    <comment>Label to the input local path text box</comment>
+  </data>
+  <data name="CsrNoProjectMessage" xml:space="preserve">
+    <value>Current selected GCP account has no active project.</value>
+    <comment>Prompt message if the user account has no any project</comment>
+  </data>
+  <data name="CsrClonePathBrowseButtonCaption" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Folder browse button caption</comment>
+  </data>
+  <data name="CsrProjectSelectionLabel" xml:space="preserve">
+    <value>_Project:</value>
+    <comment>Project selection label</comment>
+  </data>
+  <data name="CsrRepositorySelectionLabel" xml:space="preserve">
+    <value>_Repository:</value>
+    <comment>Repository selection label</comment>
+  </data>
+  <data name="CsrCloneLocalPathFieldName" xml:space="preserve">
+    <value>Local path</value>
+    <comment>The field name of the input local path text box</comment>
+  </data>
+  <data name="CsrClonePathExistNotEmptyMessageFormat" xml:space="preserve">
+    <value>The destination path {0} is not empty.</value>
+    <comment>Error message when destination path is not empty. {0} is the destination path where repository is copied to.</comment>
+  </data>
+  <data name="CsrClonePathNotExistMessage" xml:space="preserve">
+    <value>The path does not exist.</value>
+    <comment>Error message when the local path does not exists</comment>
+  </data>
+  <data name="CsrCloneToTextBoxToolTip" xml:space="preserve">
+    <value>Set the local repository path. {path-input}\{repo-name} is used as the destination path</value>
+    <comment>Tooltip to the "Clone to" text box on the clone dialog.</comment>
+  </data>
+  <data name="CsrProjectContainsNoRepoMessage" xml:space="preserve">
+    <value>&lt;none found&gt; Add a new repo</value>
+    <comment>The selected project does not have any repository, asks to select a different one or add a new repository.</comment>
+  </data>
+  <data name="CsrLoadingRepoMessage" xml:space="preserve">
+    <value>Loading repositories ...</value>
+    <comment>Message when loading repositories</comment>
+  </data>
+  <data name="CsrCloneRepoButtonCaption" xml:space="preserve">
+    <value>Clone</value>
+    <comment>Clone repository button caption</comment>
+  </data>
+  <data name="CsrAddRepoWindowTitle" xml:space="preserve">
+    <value>Add a new repository</value>
+    <comment>The add repository dialog title</comment>
+  </data>
+  <data name="CsrRepoNameTextBoxLabel" xml:space="preserve">
+    <value>_Repository Name:</value>
+    <comment>Repository name text box label</comment>
+  </data>
+  <data name="CsrAddRepoForProjectMessageFormat" xml:space="preserve">
+    <value>Add a new repository for project {0}.</value>
+    <comment>The message tells it is going to add an empty repository.</comment>
+  </data>
+  <data name="CsrAddRepoVisitCsrLinkCaption" xml:space="preserve">
+    <value>Visit Google Cloud Console for more options</value>
+    <comment>The caption to Google Cloud Console CSR page link.</comment>
+  </data>
+  <data name="CsrRepoNameRuleMessage" xml:space="preserve">
+    <value>Repository can only contain alphanumeric characters, underscores, and dashes</value>
+    <comment>Repo name validation error message</comment>
+  </data>
+  <data name="CsrRepoNameExistsMessage" xml:space="preserve">
+    <value>The repository name already exists</value>
+    <comment>Duplicate repo name error message</comment>
+  </data>
+  <data name="CsrAddRepoButtonCaption" xml:space="preserve">
+    <value>Add new</value>
+    <comment>Caption of add repository button</comment>
+  </data>
+  <data name="CsrRepoNameFirstCharacterExtraRuleMessage" xml:space="preserve">
+    <value>Repository name can not start with dash</value>
+    <comment>Repo name first character extra rule message</comment>
+  </data>
+  <data name="CsrRepoNameLengthLimitMessage" xml:space="preserve">
+    <value>Repository name must contain between 3 and 63 characters</value>
+    <comment>Repo name length validation message</comment>
+  </data>
+  <data name="GitInitilizationFailedMessage" xml:space="preserve">
+    <value>Google Cloud Source Repositories: Failed to initialize git. Fix your Git for Windows installation and refresh.</value>
+    <comment>When calling git set credential, or git config failed at initilization, the error message shown in Team Explorer notification area. </comment>
+  </data>
+  <data name="GitInstallationCheckAgainCaption" xml:space="preserve">
+    <value>Check again</value>
+    <comment>The caption to the link button that asks to check again.</comment>
+  </data>
+  <data name="GitUtilsGitCredentialManagerNotInstalledMessage" xml:space="preserve">
+    <value>Git credential manager for Windows is not installed. Please install or re-install Git for Windows to fix the problem.</value>
+    <comment>Git credential manager for Windows is not found error.</comment>
+  </data>
+  <data name="CsrSignInLinkButtonCaption" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>The caption for sign in link button</comment>
+  </data>
+  <data name="CsrCloneRepoNotificationFormat" xml:space="preserve">
+    <value>The repository {0} has been cloned successfully.[Switch to the repo]({1}) now.</value>
+    <comment>When cloned a new SCR repo, show the message at Team Explorer. {0} is the repo name.  {1} is the local git root path.</comment>
+  </data>
+  <data name="CsrCreateRepoNotificationFormat" xml:space="preserve">
+    <value>The repository {0} has been created successfully.[Create a new source code project]({1}) now.</value>
+    <comment>When created and cloned a new CSR repo, show the message inside Team Explorer. {0} is the repo name. {1} is the local git root path.</comment>
+  </data>
+  <data name="CsrFetchReposErrorMessage" xml:space="preserve">
+    <value>Failed to get repositories for Google Cloud project(s) {0}.</value>
+    <comment>Show error message at Team Explorer when it fails to fetch repo for the project. {0} is the project name list.</comment>
+  </data>
+  <data name="AspNetCoreVersionedName" xml:space="preserve">
+    <value>ASP.NET Core {0}</value>
+    <comment>The display name of an ASP.NET Core version, where the parameter is the Version.</comment>
+  </data>
+  <data name="AspNetVersionedName" xml:space="preserve">
+    <value>ASP.NET Framework {0}</value>
+    <comment>The display name of an ASP.NET version. The parameter is the version number.</comment>
+  </data>
+  <data name="FrameworkTypeDisplayNameNetFramework" xml:space="preserve">
+    <value>.NET Framework</value>
+    <comment>The display name of .NET Framework</comment>
+  </data>
+  <data name="FrameworkTypeDisplayNameNetCore" xml:space="preserve">
+    <value>.NET Core</value>
+    <comment>The display name of .NET Core</comment>
+  </data>
+  <data name="WizardTemplateChooserTitle" xml:space="preserve">
+    <value>New ASP.NET on Google Cloud Platform Project - {0}</value>
+    <comment>The title of the TemplateChooser window of the template wizards.</comment>
+  </data>
+  <data name="WizardTemplateChooserMvcLabel" xml:space="preserve">
+    <value>_MVC</value>
+    <comment>The label for the MVC app type radio button of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserTargetNetFrameworkLabel" xml:space="preserve">
+    <value>Target ._NET Framework:</value>
+    <comment>The label for the Target Framework input field of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserWebApiLabel" xml:space="preserve">
+    <value>_Web API</value>
+    <comment>The label for the WebAPI app type radio button of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="WizardTemplateChooserTemplateTypeLabel" xml:space="preserve">
+    <value>Template type:</value>
+    <comment>The label for the features section of the Project Template Chooser dialog.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesErrorMessage" xml:space="preserve">
+    <value>Failed to enable the necessary services.</value>
+    <comment>The message shown when there's a failure enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesProgressMessage" xml:space="preserve">
+    <value>Enabling the required services.</value>
+    <comment>The message for the progress dialog shown while enabling services.</comment>
+  </data>
+  <data name="ApiManagerEnableServicesTitle" xml:space="preserve">
+    <value>Enable Required Services</value>
+    <comment>The title for the enable services dialogs.</comment>
+  </data>
+  <data name="CloudExplorerGaeApiNotEnabledCaption" xml:space="preserve">
+    <value>The App Engine Admin API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the App Engine API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGaeEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the App Engine Admin API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
+    <value>No App Engine app found.</value>
+    <comment>Caption shown in the placheolder when no App Engine app was found.</comment>
+  </data>
+  <data name="CloudExplorerGceApiNotEnabledCaption" xml:space="preserve">
+    <value>The Compute Engine API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCE API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGceEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Compute Engine API</value>
+    <comment>Header for the menu item to enable the GCE API.</comment>
+  </data>
+  <data name="CloudExplorerGcsApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud Storage API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the GCS API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerGcsEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud Storage API</value>
+    <comment>Header for the menu item to enable the GCS API.</comment>
+  </data>
+  <data name="CloudExplorerPubSubApiNotEnabledCaption" xml:space="preserve">
+    <value>The Pub/Sub API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Pub/Sub API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerPubSubEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Pub/Sub API</value>
+    <comment>Header for the menu item to enable the Pub/Sub API.</comment>
+  </data>
+  <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
+    <value>The Cloud SQL API is not enabled.</value>
+    <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
+  </data>
+  <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable the Cloud SQL API</value>
+    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+  </data>
+  <data name="UiEnableButtonCaption" xml:space="preserve">
+    <value>Enable</value>
+    <comment>Caption for enable buttons.</comment>
+  </data>
+  <data name="PublishDialogGcpProjectIdLabel" xml:space="preserve">
+    <value>Google Cloud Project ID:</value>
+    <comment>The Google Cloud Project ID label of the AppEngine Flex Publish dialog.</comment>
+  </data>
+  <data name="PublishDialogSelectGcpProjectButtonLabel" xml:space="preserve">
+    <value>Change Current _Project...</value>
+    <comment>The label of the Change Current Project button of the AppEngine Flex Publish dialog.</comment>
+  </data>
+  <data name="PublishDialogSelectGcpProjectTitle" xml:space="preserve">
+    <value>Select Google Cloud Project</value>
+    <comment>The title of the generic select GCP project dialog.</comment>
+  </data>
+  <data name="AppEngineManagementAppCreationMessage" xml:space="preserve">
+    <value>Your app will be served from the selected region. Anyone can use your app, but users closer to the selected region will have lower latency. You can't change the region for project {0} later.</value>
+    <comment>Message shown when creating a new app. {0} is the project id.</comment>
+  </data>
+  <data name="AppEngineManagementRegionsLabel" xml:space="preserve">
+    <value>Available _regions:</value>
+    <comment>Label to be used for the regions drop box.</comment>
+  </data>
+  <data name="AppEngineManagementWindowTitle" xml:space="preserve">
+    <value>Select App Engine Region</value>
+    <comment>Caption for the select region dialog.</comment>
+  </data>
+  <data name="CloudExplorerGaeSetAppRegionMenuHeader" xml:space="preserve">
+    <value>Set App Region...</value>
+    <comment>Menu header for the menu shown to the user to set the app's region.</comment>
+  </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressTitle" xml:space="preserve">
+    <value>App Engine Region</value>
+    <comment>The caption for the progress dialog shown while setting the app engine region.</comment>
+  </data>
+  <data name="GaeUtilsSetAppEngineRegionProgressMessage" xml:space="preserve">
+    <value>Setting App Engine region.</value>
+    <comment>The message for the progress dialog shown while setting the app engine region.</comment>
+  </data>
+  <data name="AppEngineManagementLoadingRegionsPlaceholder" xml:space="preserve">
+    <value>Loading regions...</value>
+    <comment>String used as a placeholder while loading the list of regions in the dialog.</comment>
+  </data>
+  <data name="PublishDialogEnableApiCaption" xml:space="preserve">
+    <value>Enable the services</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
+  <data name="PublishDialogProjectLoadErrorMessage" xml:space="preserve">
+    <value>Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again.</value>
+    <comment>The message shown when there's an error verifying a GCP project.</comment>
+  </data>
+  <data name="PublishDialogFlexNeedToSetRegionMessage" xml:space="preserve">
+    <value>The selected GCP project needs the app region to be selected before you can deploy.</value>
+    <comment>The message shown when need to set the region for an app.</comment>
+  </data>
+  <data name="PublishDialogFlexSetAppRegionCaption" xml:space="preserve">
+    <value>Select app region</value>
+    <comment>The caption for the set app region command.</comment>
+  </data>
+  <data name="PublishDialogLoadingProjectMessage" xml:space="preserve">
+    <value>Loading project data.</value>
+    <comment>The message shown in the steps while the project is being loaded.</comment>
+  </data>
+  <data name="PublishDialogProjectNeedsApiMessage" xml:space="preserve">
+    <value>The selected GCP project needs services to be enabled before you can deploy.</value>
+    <comment>The message shown when a project needs an API enabled.</comment>
+  </data>
+  <data name="CloudExplorerPickProjectHelpMessage" xml:space="preserve">
+    <value>Select the GCP project that owns the resources you want browse in the Cloud Explorer.</value>
+    <comment>The message shown in the label for the pick project dialog when invoked from the Cloud Explorer.</comment>
+  </data>
+  <data name="PublishDialogPickProjectHelpMessage" xml:space="preserve">
+    <value>Select the GCP project where you want to deploy your app.</value>
+    <comment>The message shown in the label for the pick project when invoked from the Publish wizard.</comment>
+  </data>
+  <data name="CsrEnableApiMessage" xml:space="preserve">
+    <value>The selected project needs to be setup to use Cloud Source Repositories. </value>
+    <comment>The message to ask user to enable Cloud Source Repositories API for the project.  </comment>
+  </data>
+  <data name="CsrEnableApiLinkCaption" xml:space="preserve">
+    <value>Enable the service</value>
+    <comment>The caption for the enable API command.</comment>
+  </data>
+  <data name="WizardTemplateChooserTargetAspFrameworkLabel" xml:space="preserve">
+    <value>Target _ASP.NET Framework:</value>
+  </data>
+  <data name="CloudExplorerSelectProjectCaption" xml:space="preserve">
+    <value>Select _Project...</value>
+    <comment>Caption for the select project button in the cloud explorer.</comment>
+  </data>
+  <data name="PickProjectIdFilterProjectCaption" xml:space="preserve">
+    <value>Filter _project:</value>
+    <comment>Caption shown for the filter project textbox.</comment>
+  </data>
+  <data name="PickProjectIdRefreshButtonToolTip" xml:space="preserve">
+    <value>Refresh the projects list.</value>
+    <comment>Text for the refresh button's tooltip.</comment>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
+    <value>Pub/Sub Topics to hide:</value>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsLabelHelp" xml:space="preserve">
+    <value>Topics with a full name (e.g. projects/project-id/topics/topic-name) that matches one of these regex patters will be hidden in the Cloud Explorer.</value>
+  </data>
+  <data name="CloudExplorerOptionsPubSubTopicsFilterColumHeader" xml:space="preserve">
+    <value>Regex Patterns</value>
+  </data>
+  <data name="CloudExplorerOptionsResetToDefaultsButton" xml:space="preserve">
+    <value>Reset to defaults</value>
+  </data>
+  <data name="CloudExplorerPubSubChangeFiltersMenuHeader" xml:space="preserve">
+    <value>Set Topic Filters...</value>
+    <comment>The label for the menu item to open the topic filters options page.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicProjectDescription" xml:space="preserve">
+    <value>The Google Cloud Project Id of the Topic</value>
+    <comment>The description of the Project property of a PubSub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicProjectDisplayName" xml:space="preserve">
+    <value>Project Id</value>
+    <comment>The display name of the Project property of a PubSub topic.</comment>
+  </data>
+  <data name="AnalyticsPromptDescription" xml:space="preserve">
+    <value>This information will be collected anonymously.</value>
+    <comment>Smaller text on the Analytics Opt In Prompt.</comment>
+  </data>
+  <data name="AnalyticsPromptLinkText" xml:space="preserve">
+    <value>Learn more.</value>
+    <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
+  </data>
+  <data name="UiCopyMenuHeader" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Header for a standard "Copy" menu item.</comment>
+  </data>
+  <data name="GcloudMissingComponentInstallCommand" xml:space="preserve">
+    <value>gcloud components install {0}</value>
+    <comment>Command to install a missing component. {0} is the name of the component and should be in lower case.</comment>
+  </data>
+  <data name="NoDotNetCorePreviewFoundError" xml:space="preserve">
+    <value>Could not find a 1.0.0-preview version of .NET Core SDK.
+Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017.</value>
+    <comment>The dialog error message shown when .NET Core SDK version 1.0.0-preview is not found.</comment>
+  </data>
+  <data name="VisualStudio2015DotNetCoreToolingLinkTitle" xml:space="preserve">
+    <value>.NET Core Tools for Visual Studio 2015 Download Archive</value>
+    <comment>Title for the link to the .NET Core Tools for Visual Studio 2015 section of the .NET Core Runtime and SDK download archive.</comment>
   </data>
 </root>

@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="GoogleCloudExtension.AppEngineManagement.AppEngineManagementWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.AppEngineManagement"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:AppEngineManagementViewModel}}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True" IsEnabled="{Binding Locations.IsCompleted}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding ActionCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                                      IsCancel="true" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel>
+            <TextBlock Style="{StaticResource CommonTextStyle}"
+                       Text="{Binding ProjectId, StringFormat={x:Static ext:Resources.AppEngineManagementAppCreationMessage}, Mode=OneTime}"
+                       Margin="0,0,0,15" />
+
+            <Label Target="{Binding ElementName=_locations}"
+                   Content="{x:Static ext:Resources.AppEngineManagementRegionsLabel}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ComboBox x:Name="_locations"
+                      ItemsSource="{Binding Locations.Value}"
+                      SelectedItem="{Binding SelectedLocation, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True"
+                      Style="{StaticResource CommonComboBoxStyle}" />
+            </Grid>
+        </StackPanel>
+    </theming:CommonDialogWindowBaseContent>
+
+</UserControl>

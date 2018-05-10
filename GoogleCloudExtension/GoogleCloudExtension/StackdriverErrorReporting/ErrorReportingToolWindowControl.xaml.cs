@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
@@ -26,7 +27,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingToolWindowControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+        }
+
+        private void ErrorReportingToolWindowControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var viewModel = DataContext as ErrorReportingViewModel;
+            if (viewModel != null)
+            {
+                viewModel.IsVisibleUnbound = (bool) e.NewValue;
+            }
         }
     }
 }

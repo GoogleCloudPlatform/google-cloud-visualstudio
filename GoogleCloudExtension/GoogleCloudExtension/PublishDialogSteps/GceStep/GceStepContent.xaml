@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GceStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:GceStepViewModel}">
 
@@ -17,40 +19,88 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
-               Target="{Binding ElementName=_instances}"
-               Style="{StaticResource CommonLabelStyle}"/>
-        <ComboBox x:Name="_instances"
-                  ItemsSource="{Binding Instances.Value}"
-                  DisplayMemberPath="Name"
-                  IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,15"
-                  SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
+        <DockPanel HorizontalAlignment="Left">
+            <Label
+                DockPanel.Dock="Top"
+                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
+                Style="{StaticResource CommonLabelStyle}" />
+            <Button
+                DockPanel.Dock="Right"
+                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
+                Style="{StaticResource CommonButtonDynamicStyle}"
+                Command="{Binding SelectProjectCommand}" />
+            <TextBox
+                Text="{Binding GcpProjectId, Mode=OneWay}"
+                Width="200"
+                Margin="0,0,5,0"
+                IsReadOnly="True"
+                Style="{StaticResource CommonTextBoxStyle}" />
+        </DockPanel>
 
-        <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
-               Target="{Binding ElementName=_credentials}"
-               Style="{StaticResource CommonLabelStyle}"/>
-        <ComboBox x:Name="_credentials"
-                  ItemsSource="{Binding Credentials}"
-                  IsSynchronizedWithCurrentItem="True"
-                  DisplayMemberPath="User"
-                  SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
+        <!-- The message that the project is being validated. -->
+        <StackPanel Margin="0,5,0,0"
+                    Orientation="Horizontal"
+                    Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
+            <controls:ProgressIndicator  />
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
+        </StackPanel>
 
-        <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
-            <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
-                <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
-            </Hyperlink>
-        </TextBlock>
+        <!-- The controls to select the VM. -->
+        <StackPanel Margin="0,5,0,0"
+                    Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
+            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+                   Target="{Binding ElementName=_instances}"
+                   Style="{StaticResource CommonLabelStyle}"/>
+            <ComboBox x:Name="_instances"
+                      ItemsSource="{Binding Instances}"
+                      DisplayMemberPath="Name"
+                      IsSynchronizedWithCurrentItem="True"
+                      Margin="0,0,0,15"
+                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
 
-        <CheckBox Margin="0,8,0,0"
+            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
+                   Target="{Binding ElementName=_credentials}"
+                   Style="{StaticResource CommonLabelStyle}"/>
+            <ComboBox x:Name="_credentials"
+                      ItemsSource="{Binding Credentials}"
+                      IsSynchronizedWithCurrentItem="True"
+                      DisplayMemberPath="User"
+                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
+
+            <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}"/>
 
-        <CheckBox Margin="0,8,0,0"
+            <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
                   IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}" />
+        </StackPanel>
+
+        <!-- Message shown when the API needs to be enabled. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}">
+            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
+            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
+            </Hyperlink>
+        </TextBlock>
+
+        <!-- Message shwon when there is a general error. -->
+        <TextBlock Margin="0,5,0,0"
+                   TextWrapping="Wrap"
+                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
+                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}" />
 
     </StackPanel>
 </UserControl>

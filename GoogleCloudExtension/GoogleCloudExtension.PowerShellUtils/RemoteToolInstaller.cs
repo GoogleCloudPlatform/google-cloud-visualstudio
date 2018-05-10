@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.PowerShellUtils
                 return await target.ExecuteAsync(AddInstallCommands, cancelToken);
             }
             catch (Exception ex) when (
-                ex is ParameterBindingException && 
+                ex is ParameterBindingException &&
                 ex.Message.Contains(PowerShellFailedToConnectException.SessionEmptyErrorMessage))
             {
                 throw new PowerShellFailedToConnectException(ex);

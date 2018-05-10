@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -26,11 +25,6 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The currently selected project.
         /// </summary>
         Project CurrentProject { get; }
-
-        /// <summary>
-        /// The current list of projects loaded.
-        /// </summary>
-        IEnumerable<Project> Projects { get; }
 
         /// <summary>
         /// Shows the properties window for the provided item.

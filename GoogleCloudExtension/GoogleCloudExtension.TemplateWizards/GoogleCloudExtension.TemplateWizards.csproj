@@ -149,6 +149,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DelegatingTemplateWizard.cs" />
+    <Compile Include="GoogleProjectTemplateSelectorWizard.cs" />
     <Compile Include="GoogleProjectTemplateWizard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

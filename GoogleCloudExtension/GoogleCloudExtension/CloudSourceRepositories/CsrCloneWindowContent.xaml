@@ -1,0 +1,173 @@
+﻿<UserControl x:Class="GoogleCloudExtension.CloudSourceRepositories.CsrCloneWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.CloudSourceRepositories"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ctrl="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:csr="clr-namespace:Google.Apis.CloudSourceRepositories.v1.Data;assembly=Google.Apis.CloudSourceRepositories.v1"
+             mc:Ignorable="d"
+             x:Name="_cloneWindowContent"
+             d:DataContext="{d:DesignInstance {x:Type local:CsrCloneWindowViewModel}}"             
+             d:DesignHeight="300" d:DesignWidth="280">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.CsrCloneRepoButtonCaption}"
+                                      Command="{Binding CloneRepoCommand}"
+                                      IsDefault="True" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel IsEnabled="{Binding IsReady}">
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrProjectSelectionLabel}"
+                Target="{Binding ElementName=_projectsComboBox}"
+                Style="{StaticResource CommonLabelStyle}" />
+
+            <ComboBox 
+                x:Name="_projectsComboBox"
+                ItemsSource="{Binding Projects}"
+                SelectedItem="{Binding SelectedProject}"
+                DisplayMemberPath="Name"        
+                IsSynchronizedWithCurrentItem="True"
+                IsTextSearchEnabled="True"
+                Style="{StaticResource CommonComboBoxStyle}"/>
+
+            <!-- Message shown when the API needs to be enabled. -->
+            <TextBlock Margin="0,5,0,0"
+                       Foreground="Red"
+                       TextWrapping="Wrap"
+                       Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+                       Style="{StaticResource CommonTextStyle}">
+                <TextBlock Text="{x:Static ext:Resources.CsrEnableApiMessage}" 
+                           TextWrapping="Wrap"/>
+                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                           Command="{Binding EnableApiCommand}">
+                    <TextBlock Text="{x:Static ext:Resources.CsrEnableApiLinkCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrRepositorySelectionLabel}"
+                Target="{Binding ElementName=_repositoryComboBox}"
+                Style="{StaticResource CommonLabelStyle}"
+                Margin="0,5,0,0"/>
+
+            <DockPanel>
+                <Button DockPanel.Dock="Right" 
+                        Margin="5,0,0,0"
+                        Content="{x:Static ext:Resources.CsrAddRepoButtonCaption}"
+                        Style="{StaticResource CommonButtonStandardStyle}"
+                        Command="{Binding CreateRepoCommand}"
+                        />
+                <ContentControl>
+                    <ContentControl.Resources>
+                        <!-- Show text "empty list, choose another project" -->
+                        <ComboBox
+                            x:Key="EmptyList"
+                            SelectedIndex="0"
+                            IsEnabled="False"
+                            FontStyle="Oblique"
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBoxItem Content="{x:Static ext:Resources.CsrProjectContainsNoRepoMessage }"/>
+                        </ComboBox>
+
+                        <ComboBox
+                            x:Key="LoadingList"
+                            SelectedIndex="0"
+                            IsEnabled="False"
+                            FontStyle="Oblique"
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBoxItem Content="{x:Static ext:Resources.CsrLoadingRepoMessage}"/>
+                        </ComboBox>
+
+                        <ComboBox
+                            x:Key="NormalList"
+                            x:Name="_repositoryComboBox"
+                            ItemsSource="{Binding RepositoriesAsync.Value}"
+                            SelectedItem="{Binding SelectedRepository}"
+                            IsSynchronizedWithCurrentItem="True"
+                            IsTextSearchEnabled="True"
+                            Style="{StaticResource CommonComboBoxStyle}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type csr:Repo}">
+                                    <TextBlock Text="{Binding Converter={local:RepoNameConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </ContentControl.Resources>
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Setter Property="Content" Value="{StaticResource LoadingList}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="NoItems" >
+                                    <Setter Property="Content" Value="{StaticResource EmptyList}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="HasItems" >
+                                    <Setter Property="Content" Value="{StaticResource NormalList}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+               
+                </ContentControl>
+            </DockPanel>
+
+            <Label 
+                Content="{x:Static ext:Resources.CsrCloneLocalPathLabel}"
+                Target="{Binding ElementName=_localPathTextBox}"
+                Style="{StaticResource CommonLabelStyle}" 
+                Margin="0,5,0,0" />
+
+            <DockPanel>
+                <Button 
+                    DockPanel.Dock="Right"
+                    Content="{x:Static ext:Resources.CsrClonePathBrowseButtonCaption}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Command="{Binding PickFolderCommand}"
+                    Style="{StaticResource CommonButtonStandardStyle}" />
+
+                <TextBox 
+                    x:Name="_localPathTextBox"
+                    Text="{Binding LocalPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextBoxStyle}"
+                    Margin="0,0,5,0">
+                    <TextBox.ToolTip>
+                        <ToolTip 
+                            Content="{x:Static ext:Resources.CsrCloneToTextBoxToolTip}"
+                            Style="{StaticResource CommonTooltipStyle}"/>
+                    </TextBox.ToolTip>
+                </TextBox>
+
+            </DockPanel>
+
+            <ctrl:DotsProgressIndicator 
+                Margin="0,12,0,0" 
+                Width="60" 
+                HorizontalAlignment="Left" 
+                Visibility="{Binding IsReady, Converter={utils:VisibilityConverter IsNegated=True}}"/>
+
+        </StackPanel>
+    </theming:CommonDialogWindowBaseContent>
+
+</UserControl>

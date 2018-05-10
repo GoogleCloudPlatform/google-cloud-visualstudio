@@ -33,5 +33,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// Refreshes the subscriptions of this topic.
         /// </summary>
         Task Refresh();
+
+        /// <summary>
+        /// Opens an external browser.
+        /// </summary>
+        /// <param name="url">
+        /// The URL to open the browser to.
+        /// </param>
+        void OpenBrowser(string url);
     }
 }

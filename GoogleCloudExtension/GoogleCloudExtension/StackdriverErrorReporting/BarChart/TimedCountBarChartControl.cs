@@ -119,7 +119,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             TimedCountBarChartControl control = source as TimedCountBarChartControl;
             if (e.NewValue != e.OldValue)
             {
-                control.OnUpdateTimedCountItems();
+                control?.OnUpdateTimedCountItems();
             }
         }
 

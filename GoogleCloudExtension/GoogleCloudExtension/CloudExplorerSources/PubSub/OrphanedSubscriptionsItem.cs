@@ -23,6 +23,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     {
         public const string DeletedTopicName = "_deleted-topic_";
 
+        public OrphanedSubscriptionsItem(string projectId)
+        {
+            ProjectId = projectId;
+        }
+
         /// <summary>
         /// Display name of the orphaned subscriptions item.
         /// </summary>
@@ -38,5 +43,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicFullNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicFullNameDisplayName))]
         public string FullName => DeletedTopicName;
+
+        /// <summary>
+        /// The id of the project the orphaned subscriptions belong to.
+        /// </summary>
+        [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicProjectDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicProjectDisplayName))]
+        public string ProjectId { get; }
     }
 }

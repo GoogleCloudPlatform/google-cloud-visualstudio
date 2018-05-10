@@ -1,16 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C659BF40-9EC6-415D-9EBA-17F8B820A5A2}"
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		..\README.md = ..\README.md
+		..\TestScript.ps1 = ..\TestScript.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectTemplates", "ProjectTemplates", "{E7013004-B8B7-4226-8271-D2A0AD141DB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{A31CD856-439B-427E-8475-C00495ECD737}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension", "GoogleCloudExtension\GoogleCloudExtension.csproj", "{BFD6AFBF-F0DB-4CE1-9681-DAE4E93F6DC5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -42,14 +45,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GcsUtils", "GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj", "{0C891356-CCD7-4A10-BA27-C4A4359EA825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreMvc", "ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj", "{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreWebApi", "ProjectTemplates\GoogleAspNetCoreWebApi\GoogleAspNetCoreWebApi.csproj", "{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetMvc", "ProjectTemplates\GoogleAspnetMvc\GoogleAspnetMvc.csproj", "{AF37626B-D22B-408A-BC79-C25C097FECF7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetWebApi", "ProjectTemplates\GoogleAspnetWebApi\GoogleAspnetWebApi.csproj", "{30CB8C77-59A5-4E6C-B122-F614135CE7DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TemplateWizards", "GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj", "{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Interop", "GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj", "{856B9F2E-441F-405A-9D5C-AF5DC5653902}"
@@ -57,6 +52,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.DataSources.UnitTests", "GoogleCloudExtension.DataSources.UnitTests\GoogleCloudExtension.DataSources.UnitTests.csproj", "{F8EC0537-5C77-49FE-BF9F-CE8FE15984ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.PowerShellUtils", "GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj", "{D94A10B2-5ADC-4708-AE7B-49B70381AB91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TeamExplorerExtension", "GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj", "{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TeamExplorerExtension.v14", "GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj", "{3FEBB10A-ADAF-4807-B741-030B1F722D35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TeamExplorerExtension.v15", "GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj", "{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTemplate.Tests", "ProjectTemplates\ProjectTemplate.Tests\ProjectTemplate.Tests.csproj", "{03C93F30-2ED3-4F20-BFEC-F172937454A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoApp", "TestProjects\EchoApp\EchoApp.csproj", "{108901A6-861D-4021-A2C9-CE93554A26F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GcpProjectTemplate", "ProjectTemplates\GcpProjectTemplate\GcpProjectTemplate.csproj", "{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,22 +119,6 @@ Global
 		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -144,14 +135,40 @@ Global
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C93F30-2ED3-4F20-BFEC-F172937454A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{108901A6-861D-4021-A2C9-CE93554A26F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
-		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
-		{AF37626B-D22B-408A-BC79-C25C097FECF7} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
-		{30CB8C77-59A5-4E6C-B122-F614135CE7DA} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{03C93F30-2ED3-4F20-BFEC-F172937454A1} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{108901A6-861D-4021-A2C9-CE93554A26F5} = {A31CD856-439B-427E-8475-C00495ECD737}
+		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEC11134-8C3A-4892-83C2-0CF5257F17A4}
 	EndGlobalSection
 EndGlobal

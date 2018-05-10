@@ -16,6 +16,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Runtime.InteropServices;
 
@@ -38,28 +39,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets a <seealso cref="LogsViewerViewModel"/> object that is associated with the Logs Viewer Window.
         /// </summary>
-        public LogsViewerViewModel ViewModel => (Content as LogsViewerToolWindowControl)?.DataContext as LogsViewerViewModel;
+        public virtual ILogsViewerViewModel ViewModel => _content.ViewModel;
+
+        private LogsViewerToolWindowControl _content;
+
+        /// <summary>Gets or sets the content of this tool window. </summary>
+        /// <returns>The object that represents the content of this tool window.</returns>
+        public override object Content
+        {
+            get { return _content; }
+            set { _content = (LogsViewerToolWindowControl)value; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindow"/> class.
         /// </summary>
-        public LogsViewerToolWindow() : base(null)
+        public LogsViewerToolWindow()
         {
             Caption = Resources.LogViewerToolWindowCaption;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new LogsViewerToolWindowControl();
+            _content = new LogsViewerToolWindowControl();
 
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
-            CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
+            CredentialsStore.Default.CurrentProjectIdChanged += OnProjectIdChanged;
+            CredentialsStore.Default.Reset += OnProjectIdChanged;
 
             EventsReporterWrapper.ReportEvent(LogsViewerOpenEvent.Create());
         }
 
+        private void OnProjectIdChanged(object sender, EventArgs e)
+        {
+            CreateNewViewModel();
+        }
+
         /// <summary>
-        /// Create view mode when window object is created. 
+        /// Create view mode when window object is created.
         /// </summary>
         public override void OnToolWindowCreated()
         {
@@ -71,13 +87,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             base.OnClose();
             ViewModel?.Dispose();
+            CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectIdChanged;
+            CredentialsStore.Default.Reset -= OnProjectIdChanged;
         }
 
         private void CreateNewViewModel()
         {
-            var control = Content as LogsViewerToolWindowControl;
-            var newModel = new LogsViewerViewModel();
-            control.DataContext = newModel;
+            object toolWindowIdNumber;
+            ((IVsWindowFrame)Frame).GetProperty((int)VsFramePropID.MultiInstanceToolNum, out toolWindowIdNumber);
+            int windowIdNumber = Convert.ToInt32(toolWindowIdNumber);
+            var newModel = new LogsViewerViewModel(windowIdNumber);
+            _content.DataContext = newModel;
             newModel.InvalidateAllProperties();
         }
     }

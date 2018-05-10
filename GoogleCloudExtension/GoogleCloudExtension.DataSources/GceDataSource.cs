@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Data source that returns information about GCE instances and keeps track of operations in flight.
     /// </summary>
-    public class GceDataSource : DataSourceBase<ComputeService>
+    public class GceDataSource : DataSourceBase<ComputeService>, IGceDataSource
     {
         /// <summary>
         /// This list is a global list of all of the operations pending created by instances of this class.
@@ -425,48 +425,30 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        private async Task WaitAsync(Operation operation)
+        private Task WaitAsync(Operation operation)
         {
-            try
+            string zoneName = null;
+
+            if (operation.Zone != null)
             {
-                Debug.WriteLine($"Waiting on operation {operation.Name}");
-                string zoneName = null;
+                zoneName = new Uri(operation.Zone).Segments.Last();
+            }
 
-                if (operation.Zone != null)
+            return operation.AwaitOperationAsync(
+                refreshOperation: (op) =>
                 {
-                    zoneName = new Uri(operation.Zone).Segments.Last();
-                }
-
-                while (true)
-                {
-                    Operation newOperation;
-
                     if (zoneName != null)
                     {
-                        newOperation = await Service.ZoneOperations.Get(ProjectId, zoneName, operation.Name).ExecuteAsync();
+                        return Service.ZoneOperations.Get(ProjectId, zoneName, op.Name).ExecuteAsync();
                     }
                     else
                     {
-                        newOperation = await Service.GlobalOperations.Get(ProjectId, operation.Name).ExecuteAsync();
+                        return Service.GlobalOperations.Get(ProjectId, op.Name).ExecuteAsync();
                     }
-
-                    if (newOperation.Status == "DONE")
-                    {
-                        if (newOperation.Error != null)
-                        {
-                            throw new DataSourceException($"Operation {operation.Name} failed: {newOperation.Error}.");
-                        }
-                        return;
-                    }
-
-                    await Task.Delay(2000);
-                }
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to read operation: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
+                },
+                isFinished: op => op.Status == "DONE",
+                getErrorData: op => op.Error,
+                getErrorMessage: err => err.Errors.FirstOrDefault()?.Message);
         }
     }
 }

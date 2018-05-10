@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="GoogleCloudExtension.Options.AnalyticsOptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.Options"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type local:AnalyticsOptionsPageViewModel}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/DefaultStylesResource.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <StackPanel>
+        <GroupBox Header="{x:Static ext:Resources.AnalyticsOptionsCategory}">
+            <StackPanel>
+                <CheckBox
+                    Content="{x:Static ext:Resources.AnalyticsOptionsOptInLabel}"
+                    ToolTip="{x:Static ext:Resources.AnalyticsOptionsOptInDescription}"
+                    IsChecked="{Binding OptIn}"/>
+                <Button
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource ButtonLikeHyperlinkStyle}"
+                    Command="{Binding AnalyticsLearnMoreLinkCommand}"
+                    Content="{x:Static ext:Resources.AnalyticsPromptLinkText}" />                
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>

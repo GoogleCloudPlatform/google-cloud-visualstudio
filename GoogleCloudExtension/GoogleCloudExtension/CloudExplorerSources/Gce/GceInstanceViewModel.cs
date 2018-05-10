@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             // To be safe and in case the constructor/initiailzation code could be modified in the future.
             if (_attachDebuggerCommand != null)
             {
-                _attachDebuggerCommand.CanExecuteCommand = 
+                _attachDebuggerCommand.CanExecuteCommand =
                     Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
             }
             base.OnMenuItemOpen();
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 Debug.WriteLine($"RefreshInstanceState failed {ex}");
-                IsError = true;     // Set state to error
+                IsError = true; // Set state to error
             }
             finally
             {
@@ -268,8 +268,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnBrowseStackdriverLogCommand()
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
-            window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
+            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            window?.FilterVMInstanceLog(Instance.Id.ToString());
         }
 
         private void OnAttachDebugger()

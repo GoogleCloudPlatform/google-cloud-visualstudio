@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public abstract class AttachDebuggerStepBase : ViewModelBase, IAttachDebuggerStep
     {
-        private CancellationTokenSource _cancellationTokenSource;
+        private readonly CancellationTokenSource _cancellationTokenSource;
         private bool _isCancelButtonEnabled;
         private bool _isOKButtonEnabled;
         private bool _isCancelButtonVisible = true;

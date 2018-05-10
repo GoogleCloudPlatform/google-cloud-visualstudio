@@ -1,11 +1,11 @@
 ﻿// Copyright 2016 Google Inc. All Rights Reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,48 +13,66 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
-using Microsoft.VisualStudio;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
 {
     /// <summary>
-    /// Tests for the GoogleCloudExtensionPackage class.
+    /// Tests for <see cref="GoogleCloudExtensionPackage"/> class.
     /// </summary>
     [TestClass]
     [DeploymentItem(VsixManifestFileName)]
     public class GoogleCloudExtensionPackageTests
     {
+        private Mock<IEventsReporter> _reporterMock;
+        private GoogleCloudExtensionPackage _objectUnderTest;
+        private Mock<DTE> _dteMock;
+        private Mock<IServiceProvider> _serviceProviderMock;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
-        private static Guid s_iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
-            .GetType("Microsoft.VisualStudio.NativeMethods")
-            .GetField("IID_IUnknown").GetValue(null);
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _reporterMock = new Mock<IEventsReporter>();
+            EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
+            _dteMock = new Mock<DTE>();
+            _serviceProviderMock = _dteMock.As<IServiceProvider>();
+            _objectUnderTest = new GoogleCloudExtensionPackage();
+        }
+
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GoogleCloudExtensionPackage.Instance = null;
+            ServiceProvider.GlobalProvider?.Dispose();
+            _serviceProviderMock.Dispose();
+        }
 
         [TestMethod]
         public void TestPackageValues()
         {
-            string mockedVersion = "MockVsVersion";
-            string mockedEdition = "MockedEdition";
-            InitPackageMock(
-                dteMock =>
-                {
-                    dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-                    dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
-                });
-            string expectedAssemblyVersion = GetVsixManifestVersion();
+            const string mockedVersion = "MockVsVersion";
+            const string mockedEdition = "MockedEdition";
+            _dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+            _dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
 
-            Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.VsVersion);
+            InitPackageMock();
+
+            string expectedAssemblyVersion = GetVsixManifestVersion();
+            Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
             Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.ApplicationName);
             Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.ApplicationVersion);
@@ -69,6 +87,86 @@ namespace GoogleCloudExtensionUnitTests
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
         }
 
+        [TestMethod]
+        public void TestUpdatePackageVersion()
+        {
+            _objectUnderTest.AnalyticsSettings.InstalledVersion = "0.1.0.0";
+
+            InitPackageMock();
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()));
+        }
+
+        [TestMethod]
+        public void TestNewPackageInstallation()
+        {
+            InitPackageMock();
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()));
+        }
+
+        [TestMethod]
+        public void TestSamePackageVersion()
+        {
+            _objectUnderTest.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
+
+            InitPackageMock();
+
+            Assert.AreEqual(
+                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+            _reporterMock.Verify(
+                r => r.ReportEvent(
+                    It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenNormalState()
+        {
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
+
+            InitPackageMock();
+
+            Assert.IsTrue(_objectUnderTest.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMaximizedState()
+        {
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
+
+            InitPackageMock();
+
+            Assert.IsTrue(_objectUnderTest.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestWindowActiveWhenMinimizedState()
+        {
+            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
+
+            InitPackageMock();
+
+            Assert.IsFalse(_objectUnderTest.IsWindowActive());
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
@@ -79,36 +177,14 @@ namespace GoogleCloudExtensionUnitTests
             return identity?.Attribute("Version")?.Value;
         }
 
-        public static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
+        private void InitPackageMock()
         {
-            var serviceProviderMock = new Mock<IServiceProvider>();
-            var dteMock = new Mock<DTE>();
-            var activityLogMock = new Mock<IVsActivityLog>();
-            activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(VSConstants.S_OK);
-            dteSetupAction(dteMock);
-            SetupService<DTE, DTE>(serviceProviderMock, dteMock);
-            SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
+            _serviceProviderMock.SetupService<DTE, DTE>(_dteMock);
+            _serviceProviderMock.SetupDefaultServices();
+            _serviceProviderMock.SetAsGlobalProvider();
 
-            // Remove the old GlobalProvider if it exists.
-            ServiceProvider.GlobalProvider?.Dispose();
-            // This sets the ServiceProvider.GlobalProvider
-            // and causes it to use the mocked IServiceProvider.
-            ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
             // This runs the Initialize() method.
-            ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
-        }
-
-        private static void SetupService<ServiceType, InterfaceType>(
-            Mock<IServiceProvider> serviceProviderMock,
-            IMock<InterfaceType> mockObj) where InterfaceType : class
-        {
-            var serviceGuid = typeof(ServiceType).GUID;
-            // ReSharper disable once RedundantAssignment
-            IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
-            serviceProviderMock
-                .Setup(x => x.QueryService(ref serviceGuid, ref s_iidIUnknown, out interfacePtr))
-                .Returns(0);
+            ((IVsPackage)_objectUnderTest).SetSite(_serviceProviderMock.Object);
         }
     }
 }

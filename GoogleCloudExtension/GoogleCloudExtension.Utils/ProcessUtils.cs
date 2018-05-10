@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.Utils
     }
 
     /// <summary>
-    /// Evemt args passed to the output handler of a process.
+    /// Event args passed to the output handler of a process.
     /// </summary>
     public class OutputHandlerEventArgs : EventArgs
     {
@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.Utils
             string workingDir = null,
             IDictionary<string, string> environment = null)
         {
-            var startInfo = GetStartInfoForInteractiveProcess(
+            ProcessStartInfo startInfo = GetStartInfoForInteractiveProcess(
                 file: file,
                 args: args,
                 workingDir: workingDir,
@@ -134,11 +134,12 @@ namespace GoogleCloudExtension.Utils
 
             return Task.Run(async () =>
             {
-                var process = Process.Start(startInfo);
-                var readErrorsTask = process.StandardError.ReadToEndAsync();
-                var readOutputTask = process.StandardOutput.ReadToEndAsync();
+                Process process = Process.Start(startInfo);
+                Debug.Assert(process != null, $"{nameof(process)} should never be null when UseShellExecute is false.");
+                Task<string> readErrorsTask = process.StandardError.ReadToEndAsync();
+                Task<string> readOutputTask = process.StandardOutput.ReadToEndAsync();
                 process.WaitForExit();
-                var succeeded = process.ExitCode == 0;
+                bool succeeded = process.ExitCode == 0;
                 return new ProcessOutput(
                     succeeded: succeeded,
                     standardOutput: await readOutputTask,
@@ -160,7 +161,7 @@ namespace GoogleCloudExtension.Utils
             string workingDir = null,
             IDictionary<string, string> environment = null)
         {
-            var output = await ProcessUtils.GetCommandOutputAsync(
+            ProcessOutput output = await GetCommandOutputAsync(
                 file: file,
                 args: args,
                 workingDir: workingDir,
@@ -188,27 +189,26 @@ namespace GoogleCloudExtension.Utils
             // If the caller provides a working directory use it otherwise default to the user's profile directory
             // so we have a stable working directory instead of a random working directory as Visual Studio changes the
             // current working directory often.
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = file,
                 Arguments = args,
-                WorkingDirectory = workingDir ?? Environment.GetEnvironmentVariable("USERPROFILE"),
+                WorkingDirectory = workingDir ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                RedirectStandardInput = true
             };
 
             // Customize the environment for the incoming process.
             if (environment != null)
             {
-                foreach (var entry in environment)
+                foreach (KeyValuePair<string, string> entry in environment)
                 {
                     startInfo.EnvironmentVariables[entry.Key] = entry.Value;
                 }
             }
-
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardInput = true;
             return startInfo;
         }
 
@@ -218,7 +218,7 @@ namespace GoogleCloudExtension.Utils
             {
                 while (!stream.EndOfStream)
                 {
-                    var line = stream.ReadLine();
+                    string line = stream.ReadLine();
                     handler(null, new OutputHandlerEventArgs(line, outputStream));
                 }
             });

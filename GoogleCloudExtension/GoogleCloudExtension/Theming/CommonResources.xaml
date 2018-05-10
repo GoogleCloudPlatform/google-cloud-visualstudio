@@ -3,7 +3,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
                     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
-                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
 
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
@@ -12,10 +13,14 @@
 
     <!-- Text style. -->
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    
+
+    <!-- This style is to be used on TextBlocks that are to have dynamic colors. -->
+    <Style x:Key="DynamicColorTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
     <!-- Large text style. -->
     <Style x:Key="CommonTextStyleLarge" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
         <Setter Property="TextElement.FontSize" Value="20px" />
@@ -226,7 +231,7 @@
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" />
+                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" Padding="0,0,0,2"/>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -245,7 +250,10 @@
 
     <Style x:Key="LabeledRadioButtonStyle" BasedOn="{StaticResource CommonRadioButton}" TargetType="{x:Type RadioButton}">
         <Style.Resources>
-            <Style BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}"/>
+            <Style BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}">
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
         </Style.Resources>
         <Setter Property="ContentTemplate">
             <Setter.Value>
@@ -289,7 +297,7 @@
 
     <!-- Colors for the focused state. -->
     <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
-    
+
     <SolidColorBrush x:Key="Validation.Border.Brush" Color="Red"/>
     <SolidColorBrush x:Key="Validation.Background.Brush" Color="#FFDDEE"/>
 
@@ -598,13 +606,16 @@
         <Setter Property="MouseOverForeground" Value="#8A2BE2" />
     </Style>
 
+    <!-- Refer to these as DynamicResources to avoid breaking the designer. -->
+    <mp:ImageResource x:Key="PlayIconResource" Path="StackdriverErrorReporting/Resources/play_icon.png"/>
+    <mp:ImageResource x:Key="PauseIconResource" Path="StackdriverErrorReporting/Resources/pause_icon.png" />
     <!-- Style for auto reload button -->
     <Style x:Key="AutoReloadButtonStyle" 
            TargetType="{x:Type controls:AutoReloadButton}" 
            BasedOn="{StaticResource ImageToggleButtonStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
-        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/pause_icon.png}" />
+        <Setter Property="UncheckedImage" Value="{DynamicResource PlayIconResource}" />
+        <Setter Property="CheckedImage" Value="{DynamicResource PauseIconResource}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Padding" Value="6" />
@@ -906,9 +917,8 @@
     <!-- Common hyperlink style. -->
 
     <!-- Common hyperlink colors. -->
-    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
     <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
-    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="{DynamicResource {x:Static vsshell:VsColors.StartPageTextHeadingMouseOverKey}}" />
 
     <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
         <Style.Triggers>
@@ -923,10 +933,27 @@
                 <Setter Property="Cursor" Value="Hand" />
             </Trigger>
         </Style.Triggers>
-        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
         <Setter Property="TextDecorations" Value="None" />
     </Style>
-    
+
+    <!-- Creating this style just because the Hyperlink does not work properly on the Options page. -->
+    <Style x:Key="ButtonLikeHyperlinkStyle" TargetType="{x:Type Button}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock>
+                    <Hyperlink
+                        Style="{StaticResource CommonHyperlinkStyle}"
+                        Command="{TemplateBinding Command}">
+                        <Run Text="{TemplateBinding Content}" />                        
+                    </Hyperlink>
+                    </TextBlock>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Common ComboBox style -->
     <Style x:Key="CommonComboBoxStyle"
            TargetType="{x:Type ComboBox}">
@@ -941,7 +968,7 @@
         <Setter Property="Background" Value="White" />
     </Style>
 
-    <!-- Default tyle for a tooltip. -->
+    <!-- Default style for a tooltip. -->
     <SolidColorBrush x:Key="CommonTooltipColors.Border" Color="#FFBDBDBD" />
     <SolidColorBrush x:Key="CommonTooltipColors.Background" Color="#FFEEEEEE" />
 

@@ -114,11 +114,8 @@ namespace GoogleCloudExtension.Deployment
 
             using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
-                var appRootPath = Path.Combine(stageDirectory, "app");
-                var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
-
                 if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(project, appRootPath, toolsPathProvider, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction),
                         progress,
                         from: 0.1, to: 0.3))
                 {
@@ -126,15 +123,18 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                NetCoreAppUtils.CopyOrCreateDockerfile(project, appRootPath);
-                var image = CloudBuilderUtils.CreateBuildFile(
+                NetCoreAppUtils.CopyOrCreateDockerfile(project, stageDirectory);
+                var imageTag = CloudBuilderUtils.GetImageTag(
                     project: options.GCloudContext.ProjectId,
                     imageName: options.DeploymentName,
-                    imageVersion: options.DeploymentVersion,
-                    buildFilePath: buildFilePath);
+                    imageVersion: options.DeploymentVersion);
 
                 if (!await ProgressHelper.UpdateProgress(
-                    GCloudWrapper.BuildContainerAsync(buildFilePath, appRootPath, outputAction, options.GCloudContext),
+                    GCloudWrapper.BuildContainerAsync(
+                        imageTag: imageTag,
+                        contentsPath: stageDirectory,
+                        outputAction: outputAction,
+                        context: options.GCloudContext),
                     progress,
                     from: 0.4, to: 0.7))
                 {
@@ -159,7 +159,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine($"Creating new deployment {options.DeploymentName}");
                     if (!await KubectlWrapper.CreateDeploymentAsync(
                             name: options.DeploymentName,
-                            imageTag: image,
+                            imageTag: imageTag,
                             replicas: options.Replicas,
                             outputAction: outputAction,
                             context: options.KubectlContext))
@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine($"Updating existing deployment {options.DeploymentName}");
                     if (!await KubectlWrapper.UpdateDeploymentImageAsync(
                             options.DeploymentName,
-                            image,
+                            imageTag,
                             outputAction,
                             options.KubectlContext))
                     {

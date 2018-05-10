@@ -95,7 +95,5 @@ namespace GoogleCloudExtension.UserPrompt
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
-
-
     }
 }

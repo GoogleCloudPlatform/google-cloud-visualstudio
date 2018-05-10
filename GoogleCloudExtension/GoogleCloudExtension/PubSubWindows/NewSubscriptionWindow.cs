@@ -19,7 +19,7 @@ using GoogleCloudExtension.Theming;
 namespace GoogleCloudExtension.PubSubWindows
 {
     /// <summary>
-    /// The window for the new pub sub subscription dialog.
+    /// The window for the new Pub/Sub subscription dialog.
     /// </summary>
     public class NewSubscriptionWindow : CommonDialogWindowBase
     {

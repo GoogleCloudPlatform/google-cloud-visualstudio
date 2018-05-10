@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -49,7 +48,7 @@ namespace GoogleCloudExtension.Utils
         ///         (a) A space inside a double quotes pair.  Add it to currentToken.
         ///         (b) else, it is a separator, add the currentToken to
         /// </summary>
-        public static IEnumerable<string> SplitStringBySpaceOrQuote(string source)
+        public static List<string> SplitStringBySpaceOrQuote(string source)
         {
             if (source == null)
             {
@@ -174,24 +173,6 @@ namespace GoogleCloudExtension.Utils
             }
 
             return -1;
-        }
-
-        /// <summary>
-        /// Adds a trailing slash if the directory is missing it.
-        /// </summary>
-        /// <param name="directoryString">The directory path string.</param>
-        /// <returns>The path to the directory with a trailing separator character.</returns>
-        public static string EnsureEndSeparator(this string directoryString)
-        {
-            directoryString.ThrowIfNull(nameof(directoryString));
-            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
-            {
-                return directoryString + Path.DirectorySeparatorChar;
-            }
-            else
-            {
-                return directoryString;
-            }
         }
     }
 }

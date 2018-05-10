@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Utils;
 using System;
 using System.IO;
@@ -20,9 +19,9 @@ using System.IO;
 namespace GoogleCloudExtension.VsVersion.VS15
 {
     /// <summary>
-    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
+    /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
     /// </summary>
-    internal class ToolsPathProvider : IToolsPathProvider
+    internal class ToolsPathProvider : ToolsPathProviderBase
     {
         private readonly string _edition;
 
@@ -31,7 +30,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
             _edition = edition;
         }
 
-        public string GetDotnetPath()
+        public override string GetDotnetPath()
         {
             var programFilesPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
             var result = Path.Combine(programFilesPath, @"dotnet\dotnet.exe");
@@ -39,12 +38,15 @@ namespace GoogleCloudExtension.VsVersion.VS15
             return result;
         }
 
-        public string GetExternalToolsPath()
+        public override string GetExternalToolsPath()
         {
-            return "";
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\Web\External");
+            GcpOutputWindow.OutputDebugLine($"External tools path: {result}");
+            return result;
         }
 
-        public string GetMsbuildPath()
+        public override string GetMsbuildPath()
         {
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\MSBuild\15.0\Bin\MSBuild.exe");
@@ -53,7 +55,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
             return result;
         }
 
-        public string GetMsdeployPath()
+        public override string GetMsdeployPath()
         {
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles");
             var result = Path.Combine(programFilesPath, @"IIS\Microsoft Web Deploy V3\msdeploy.exe");
@@ -62,7 +64,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
             return result;
         }
 
-        public string GetRemoteDebuggerToolsPath()
+        public override string GetRemoteDebuggerToolsPath()
         {
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             // TODO: add x86 support later

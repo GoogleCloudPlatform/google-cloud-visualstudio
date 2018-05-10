@@ -12,3 +12,7 @@
 **/*.pyc
 *.DotSettings.user
 *.user
+**/TestResults/*
+**/codecoverage.xml
+*.DotSettings
+/GoogleCloudExtension/ProjectTemplates/GcpProjectTemplate/Core/MVC/wwwroot/lib

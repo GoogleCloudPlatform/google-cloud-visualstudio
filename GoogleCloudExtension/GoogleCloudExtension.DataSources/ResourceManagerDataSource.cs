@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,21 +30,44 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>, IResourceManagerDataSource
     {
+        /// <summary>
+        /// LifecycleState constants.
+        /// <see href="https://cloud.google.com/resource-manager/reference/rest/v1/projects#LifecycleState"/>
+        /// </summary>
+        public static class LifecycleState
+        {
+            public const string Active = "ACTIVE";
+            public const string DeleteRequested = "DELETE_REQUESTED";
+        }
+
         /// <param name="credential">The credentials to use for the service.</param>
         /// <param name="appName">The name of the application.</param>
         public ResourceManagerDataSource(GoogleCredential credential, string appName)
-            : base(credential, init => new CloudResourceManagerService(init), appName)
+            : this(credential, init => new CloudResourceManagerService(init), appName)
+        { }
+
+        /// <summary>
+        /// For unit testing.
+        /// </summary>
+        /// <param name="credential">The credentials to use for the service.</param>
+        /// <param name="factory">The service factory function.</param>
+        /// <param name="appName">The name of the application.</param>
+        internal ResourceManagerDataSource(
+            GoogleCredential credential,
+            Func<BaseClientService.Initializer, CloudResourceManagerService> factory,
+            string appName) : base(credential, factory, appName)
         { }
 
         /// <summary>
         /// Returns the complete list of projects for the current credentials.
+        /// It always return empty list if no item is found, caller can safely assume there is no null return.
         /// </summary>
         public Task<IList<Project>> GetProjectsListAsync()
         {
             return LoadPagedListAsync(
                 (token) =>
                 {
-                    if (String.IsNullOrEmpty(token))
+                    if (string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine("Fetching first page.");
                         return Service.Projects.List().ExecuteAsync();
@@ -50,22 +75,36 @@ namespace GoogleCloudExtension.DataSources
                     else
                     {
                         Debug.WriteLine($"Fetching page: {token}");
-                        var request = Service.Projects.List();
+                        ProjectsResource.ListRequest request = Service.Projects.List();
                         request.PageToken = token;
                         return request.ExecuteAsync();
                     }
                 },
                 x => x.Projects,
-                x => x.NextPageToken);
+                x => x.NextPageToken,
+                predicate: x => x.LifecycleState == LifecycleState.Active);
         }
 
         /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.
         /// </summary>
         /// <param name="projectId">The project ID of the project to return.</param>
-        public Task<Project> GetProjectAsync(string projectId)
+        public async Task<Project> GetProjectAsync(string projectId)
         {
-            return Service.Projects.Get(projectId).ExecuteAsync();
+            try
+            {
+                return await Service.Projects.Get(projectId).ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                if (ex.Error?.Code == 404)
+                {
+                    Debug.WriteLine($"Could not find project: {projectId}");
+                    return null;
+                }
+
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }

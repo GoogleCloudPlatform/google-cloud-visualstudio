@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Utils
     {
         /// <summary>
         /// Compares <paramref name="x"/> vs. <paramref name="y"/> and returns their relative comparison in the
-        /// same way that <seealso cref="IComparer"/> does, returning:
+        /// same way that <seealso cref="System.Collections.IComparer"/> does, returning:
         ///   negative, if x is "smaller" that y.
         ///   0, if x is "equal" to y.
         ///   positive, if x is greater than y.

@@ -19,14 +19,14 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class RemoteDebuggerRemoteToolsInstalledEvent
     {
         private const string RemoteDebuggerRemoteToolsInstalledEventName = "remoteDebuggerRemoteToolsInstalled";
-        private const string DeploymentDurationProperty = "duration";
+        private const string DurationProperty = "duration";
 
         public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
                 RemoteDebuggerRemoteToolsInstalledEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
-                DeploymentDurationProperty, duration.TotalSeconds.ToString());
+                DurationProperty, duration.TotalSeconds.ToString());
         }
     }
 }

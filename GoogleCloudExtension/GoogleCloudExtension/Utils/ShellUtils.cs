@@ -161,6 +161,45 @@ namespace GoogleCloudExtension.Utils
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
+        /// <summary>
+        /// Create empty solution at the <paramref name="localPath"/>
+        /// </summary>
+        /// <param name="localPath">Create the solution at the path.</param>
+        /// <param name="name">The solution name.</param>
+        public static void CreateEmptySolution(string localPath, string name)
+        {
+            localPath.ThrowIfNullOrEmpty(nameof(localPath));
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            try
+            {
+                dte.Solution.Create(localPath, name);
+                dte.Solution.Close(false);
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            { }
+        }
+
+        /// <summary>
+        /// Open a create solution dialog on the given path.
+        /// </summary>
+        /// <param name="path">The initial path in the create solution dialog.</param>
+        public static void LaunchCreateSolutionDialog(string path)
+        {
+            path.ThrowIfNullOrEmpty(nameof(path));
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+
+            // Set default project location
+            // Refer to https://msdn.microsoft.com/en-us/library/ms165643.aspx
+            var locationItem = dte.Properties["Environment", "ProjectsAndSolution"].Item("ProjectsLocation");
+            if (locationItem != null)
+            {
+                locationItem.Value = path;
+            }
+
+            var solution = GetGloblalServiceProvider()?.GetService(typeof(SVsSolution)) as IVsSolution;
+            solution?.CreateNewProjectViaDlg(null, null, 0);
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();
