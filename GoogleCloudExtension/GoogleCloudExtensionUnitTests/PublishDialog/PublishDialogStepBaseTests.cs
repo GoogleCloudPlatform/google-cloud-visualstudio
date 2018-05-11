@@ -53,8 +53,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             public override FrameworkElement Content { get; } = Mock.Of<FrameworkElement>();
 
-            public override IPublishDialogStep Next() => null;
-
             public override void Publish() { }
 
             protected internal override IList<string> ApisRequieredForPublishing() => RequiredApis;
@@ -86,10 +84,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             public int LoadValidProjectDataAsyncCallCount { get; private set; } = 0;
 
-            public TaskCompletionSource<object> LoadValidProjectDataResult { get; set; } =
+            public TaskCompletionSource<object> LoadValidProjectDataResult { get; private set; } =
                 new TaskCompletionSource<object>();
 
-            public new bool IsValidGcpProject => base.IsValidGcpProject;
+            public new bool IsValidGcpProject
+            {
+                get { return base.IsValidGcpProject; }
+                set { base.IsValidGcpProject = value; }
+            }
 
             protected override async Task InitializeDialogAsync()
             {
@@ -124,6 +126,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             public Task ReloadProjectAsyncBase() => ReloadProjectAsync();
 
             public void StartAndTrackBase(Func<Task> func) => StartAndTrack(func);
+
+            protected override void OnIsValidGcpProjectChanged()
+            {
+                OnIsValidGcpProjectChangedCallCount++;
+            }
+
+            public int OnIsValidGcpProjectChangedCallCount { get; set; }
         }
 
         protected override void BeforeEach()
@@ -159,7 +168,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
@@ -227,7 +235,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             await _objectUnderTest.ValidateProjectAsyncBase();
 
             Assert.IsFalse(_objectUnderTest.IsValidGcpProject);
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
         }
 
@@ -320,10 +327,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
+        public void TestReloadProjectAsync_AwaitsLoadValidProjectDataResult()
+        {
+            _objectUnderTest.ValidateProjectResult.SetResult(true);
+            Task task = _objectUnderTest.ReloadProjectAsyncBase();
+
+            Assert.IsFalse(task.IsCompleted);
+        }
+
+        [TestMethod]
         public async Task TestReloadProjectAsync_DataLoaded()
         {
-            _objectUnderTest.ValidateProjectResult.SetResult(false);
+            _objectUnderTest.ValidateProjectResult.SetResult(true);
             _objectUnderTest.LoadAnyProjectDataResult.SetResult(null);
+            _objectUnderTest.LoadValidProjectDataResult.SetResult(null);
 
             await _objectUnderTest.ReloadProjectAsyncBase();
 
@@ -341,7 +358,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsTrue(_objectUnderTest.GeneralError);
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
         }
 
         [TestMethod]
@@ -393,7 +409,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.OnFlowFinishedBase();
 
             Assert.IsNull(_objectUnderTest.PublishDialog);
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
             Assert.IsFalse(_objectUnderTest.IsValidGcpProject);
             Assert.IsFalse(_objectUnderTest.LoadingProject);
             Assert.IsFalse(_objectUnderTest.GeneralError);
@@ -430,5 +445,25 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void TestStartAndTrack_ThrowsArgumentNullException() => _objectUnderTest.StartAndTrackBase(() => null);
+
+        [TestMethod]
+        public void TestOnIsValidGcpProjectIdChanged_CalledWhenIsValidGcpProjectIdChanges()
+        {
+            _objectUnderTest.IsValidGcpProject = true;
+            _objectUnderTest.OnIsValidGcpProjectChangedCallCount = 0;
+            _objectUnderTest.IsValidGcpProject = false;
+
+            Assert.AreEqual(1, _objectUnderTest.OnIsValidGcpProjectChangedCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnIsValidGcpProjectIdChanged_NotCalledWhenIsValidGcpProjectIdSetToSameValue()
+        {
+            _objectUnderTest.IsValidGcpProject = true;
+            _objectUnderTest.OnIsValidGcpProjectChangedCallCount = 0;
+            _objectUnderTest.IsValidGcpProject = true;
+
+            Assert.AreEqual(0, _objectUnderTest.OnIsValidGcpProjectChangedCallCount);
+        }
     }
 }

@@ -229,14 +229,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override FrameworkElement Content => _content;
 
-        /// <summary>
-        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
-        /// </summary>
-        public override IPublishDialogStep Next()
-        {
-            throw new NotSupportedException();
-        }
-
         protected override async Task InitializeDialogAsync()
         {
             // Start the task that initializes the dialog, mainly loads the GCP project.

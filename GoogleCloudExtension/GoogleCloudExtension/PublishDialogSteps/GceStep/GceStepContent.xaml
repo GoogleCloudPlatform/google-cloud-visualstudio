@@ -7,6 +7,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:extensions="clr-namespace:GoogleCloudExtension.Extensions"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:GceStepViewModel}">
 
@@ -51,12 +52,19 @@
             <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
                    Target="{Binding ElementName=_instances}"
                    Style="{StaticResource CommonLabelStyle}"/>
-            <ComboBox x:Name="_instances"
+            <DockPanel Margin="0,0,0,15">
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding RefreshInstancesCommand}"
+                        Style="{StaticResource CommonButtonDynamicStyle}">
+                    <Image Source="{extensions:ImageResource Theming/Resources/refresh.png}" />
+                </Button>
+                <ComboBox x:Name="_instances"
                       ItemsSource="{Binding Instances}"
                       DisplayMemberPath="Name"
                       IsSynchronizedWithCurrentItem="True"
-                      Margin="0,0,0,15"
-                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
+                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                          Margin="0,0,5,0"/>
+            </DockPanel>
 
             <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
                    Target="{Binding ElementName=_credentials}"
@@ -104,3 +112,4 @@
 
     </StackPanel>
 </UserControl>
+

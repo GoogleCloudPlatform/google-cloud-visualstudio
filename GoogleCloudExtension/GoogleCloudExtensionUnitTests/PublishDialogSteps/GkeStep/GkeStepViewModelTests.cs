@@ -351,14 +351,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);
         }
 
-
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestNext_ThrowsNotSupportedException()
-        {
-            _objectUnderTest.Next();
-        }
-
         [TestMethod]
         public void TestInitializeDialogAsync_SetsDeploymentName()
         {

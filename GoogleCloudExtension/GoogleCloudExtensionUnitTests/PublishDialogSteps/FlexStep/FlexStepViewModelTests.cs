@@ -245,12 +245,5 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.Version);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestNext_NotSupported()
-        {
-            _objectUnderTest.Next();
-        }
     }
 }
