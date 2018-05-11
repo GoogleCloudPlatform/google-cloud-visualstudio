@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3002,5 +3002,30 @@ Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual S
   <data name="VisualStudio2015DotNetCoreToolingLinkTitle" xml:space="preserve">
     <value>.NET Core Tools for Visual Studio 2015 Download Archive</value>
     <comment>Title for the link to the .NET Core Tools for Visual Studio 2015 section of the .NET Core Runtime and SDK download archive.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_DecryptErrorMessage" xml:space="preserve">
+    <value>Failed to decrypt credentials from: {0}
+File is corrupted and will be deleted.</value>
+    <comment>Message displayed when there is an error decrypting a windows credential file.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_DecryptionErrorTitle" xml:space="preserve">
+    <value>Decryption Error</value>
+    <comment>The title of the error dialog when there is an exception decrypting a windows credential file.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_DeletingCorruptedErrorMessage" xml:space="preserve">
+    <value>Failed to delete corrupted credentials file: {0}</value>
+    <comment>The error message displayed when deleting a corrupted windows credential file fails.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_DeletingCorruptedErrorTitle" xml:space="preserve">
+    <value>Delete failed</value>
+    <comment>The title of the error dialog when deletion of a corrupted windows credentail file fails.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_CredentialFileLoadErrorMessage" xml:space="preserve">
+    <value>Failed to load credentials from: {0}</value>
+    <comment>The error message displayed when loading a windows credential file failed.</comment>
+  </data>
+  <data name="WindowsCredentialsStore_CredentialFileLoadErrorTitle" xml:space="preserve">
+    <value>Load failed</value>
+    <comment>The title of the error dialog box when loading a windows credential file failed.</comment>
   </data>
 </root>

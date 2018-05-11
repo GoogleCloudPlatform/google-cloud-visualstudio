@@ -15,9 +15,9 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -146,22 +146,28 @@ namespace GoogleCloudExtension.Accounts
 
                 return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
             }
-            catch (CryptographicException)
+            catch (CryptographicException cryptographicException)
             {
-                Debug.WriteLine($"Failed to decrypt credentials from: {path}");
+                UserPromptUtils.ErrorPrompt(
+                    string.Format(Resources.WindowsCredentialsStore_DecryptErrorMessage, path),
+                    Resources.WindowsCredentialsStore_DecryptionErrorTitle, cryptographicException.ToString());
                 try
                 {
                     File.Delete(path);
                 }
-                catch (IOException)
+                catch (IOException ioException)
                 {
-                    Debug.WriteLine($"Failed cleaning corrupted credentials {path}");
+                    UserPromptUtils.ErrorPrompt(
+                        string.Format(Resources.WindowsCredentialsStore_DeletingCorruptedErrorMessage, path),
+                        Resources.WindowsCredentialsStore_DeletingCorruptedErrorTitle, ioException.ToString());
                 }
                 return null;
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                Debug.WriteLine($"Failed to load credentials from: {path}");
+                UserPromptUtils.ErrorPrompt(
+                    string.Format(Resources.WindowsCredentialsStore_CredentialFileLoadErrorMessage, path),
+                    Resources.WindowsCredentialsStore_CredentialFileLoadErrorTitle, e.ToString());
                 return null;
             }
         }

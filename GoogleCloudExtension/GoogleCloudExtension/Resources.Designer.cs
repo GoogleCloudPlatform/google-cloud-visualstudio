@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -5191,8 +5191,8 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .Net Core SDK.
-        ///Either intall the Visual Studio 2015 DotNetCore tooling, or upgrade to Visual Studio 2017..
+        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .NET Core SDK.
+        ///Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017..
         /// </summary>
         public static string NoDotNetCorePreviewFoundError {
             get {
@@ -6520,6 +6520,61 @@ namespace GoogleCloudExtension {
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load credentials from: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStore_CredentialFileLoadErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_CredentialFileLoadErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load failed.
+        /// </summary>
+        public static string WindowsCredentialsStore_CredentialFileLoadErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_CredentialFileLoadErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to decrypt credentials from: {0}
+        ///File is corrupted and will be deleted..
+        /// </summary>
+        public static string WindowsCredentialsStore_DecryptErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_DecryptErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decryption Error.
+        /// </summary>
+        public static string WindowsCredentialsStore_DecryptionErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_DecryptionErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete corrupted credentials file: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStore_DeletingCorruptedErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_DeletingCorruptedErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete failed.
+        /// </summary>
+        public static string WindowsCredentialsStore_DeletingCorruptedErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStore_DeletingCorruptedErrorTitle", resourceCulture);
             }
         }
         
