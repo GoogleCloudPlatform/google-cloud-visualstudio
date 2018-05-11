@@ -149,8 +149,8 @@ namespace GoogleCloudExtension.Accounts
             catch (CryptographicException cryptographicException)
             {
                 UserPromptUtils.ErrorPrompt(
-                    string.Format(Resources.WindowsCredentialsStore_DecryptErrorMessage, path),
-                    Resources.WindowsCredentialsStore_DecryptionErrorTitle, cryptographicException.ToString());
+                    string.Format(Resources.WindowsCredentialsStoreDecryptErrorMessage, path),
+                    Resources.WindowsCredentialsStoreDecryptionErrorTitle, cryptographicException.ToString());
                 try
                 {
                     File.Delete(path);
@@ -158,16 +158,16 @@ namespace GoogleCloudExtension.Accounts
                 catch (IOException ioException)
                 {
                     UserPromptUtils.ErrorPrompt(
-                        string.Format(Resources.WindowsCredentialsStore_DeletingCorruptedErrorMessage, path),
-                        Resources.WindowsCredentialsStore_DeletingCorruptedErrorTitle, ioException.ToString());
+                        string.Format(Resources.WindowsCredentialsStoreDeletingCorruptedErrorMessage, path),
+                        Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle, ioException.ToString());
                 }
                 return null;
             }
             catch (IOException e)
             {
                 UserPromptUtils.ErrorPrompt(
-                    string.Format(Resources.WindowsCredentialsStore_CredentialFileLoadErrorMessage, path),
-                    Resources.WindowsCredentialsStore_CredentialFileLoadErrorTitle, e.ToString());
+                    string.Format(Resources.WindowsCredentialsStoreCredentialFileLoadErrorMessage, path),
+                    Resources.WindowsCredentialsStoreCredentialFileLoadErrorTitle, e.ToString());
                 return null;
             }
         }

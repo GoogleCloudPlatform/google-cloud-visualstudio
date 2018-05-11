@@ -6526,18 +6526,18 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Failed to load credentials from: {0}.
         /// </summary>
-        public static string WindowsCredentialsStore_CredentialFileLoadErrorMessage {
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorMessage {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_CredentialFileLoadErrorMessage", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Load failed.
         /// </summary>
-        public static string WindowsCredentialsStore_CredentialFileLoadErrorTitle {
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorTitle {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_CredentialFileLoadErrorTitle", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorTitle", resourceCulture);
             }
         }
         
@@ -6545,36 +6545,36 @@ namespace GoogleCloudExtension {
         ///   Looks up a localized string similar to Failed to decrypt credentials from: {0}
         ///File is corrupted and will be deleted..
         /// </summary>
-        public static string WindowsCredentialsStore_DecryptErrorMessage {
+        public static string WindowsCredentialsStoreDecryptErrorMessage {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_DecryptErrorMessage", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Decryption Error.
         /// </summary>
-        public static string WindowsCredentialsStore_DecryptionErrorTitle {
+        public static string WindowsCredentialsStoreDecryptionErrorTitle {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_DecryptionErrorTitle", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptionErrorTitle", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Failed to delete corrupted credentials file: {0}.
         /// </summary>
-        public static string WindowsCredentialsStore_DeletingCorruptedErrorMessage {
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorMessage {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_DeletingCorruptedErrorMessage", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Delete failed.
         /// </summary>
-        public static string WindowsCredentialsStore_DeletingCorruptedErrorTitle {
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorTitle {
             get {
-                return ResourceManager.GetString("WindowsCredentialsStore_DeletingCorruptedErrorTitle", resourceCulture);
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorTitle", resourceCulture);
             }
         }
         
