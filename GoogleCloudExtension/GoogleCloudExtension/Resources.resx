@@ -3005,11 +3005,11 @@ Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual S
   </data>
   <data name="WindowsCredentialsStoreDecryptErrorMessage" xml:space="preserve">
     <value>Failed to decrypt credentials from: {0}
-File is corrupted and will be deleted.</value>
+Delete corrupted file?</value>
     <comment>Message displayed when there is an error decrypting a windows credential file.</comment>
   </data>
   <data name="WindowsCredentialsStoreDecryptionErrorTitle" xml:space="preserve">
-    <value>Decryption Error</value>
+    <value>Delete Corrupted File</value>
     <comment>The title of the error dialog when there is an exception decrypting a windows credential file.</comment>
   </data>
   <data name="WindowsCredentialsStoreDeletingCorruptedErrorMessage" xml:space="preserve">

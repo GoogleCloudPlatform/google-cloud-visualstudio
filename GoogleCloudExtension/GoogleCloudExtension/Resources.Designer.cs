@@ -6543,7 +6543,7 @@ namespace GoogleCloudExtension {
         
         /// <summary>
         ///   Looks up a localized string similar to Failed to decrypt credentials from: {0}
-        ///File is corrupted and will be deleted..
+        ///Delete corrupted file?.
         /// </summary>
         public static string WindowsCredentialsStoreDecryptErrorMessage {
             get {
@@ -6552,7 +6552,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Decryption Error.
+        ///   Looks up a localized string similar to Delete Corrupted File.
         /// </summary>
         public static string WindowsCredentialsStoreDecryptionErrorTitle {
             get {

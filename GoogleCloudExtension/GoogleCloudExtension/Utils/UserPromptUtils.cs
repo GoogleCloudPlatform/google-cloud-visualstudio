@@ -104,6 +104,26 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
+        /// Shows an error message dialog to the user, with an Ok and a Cancel button.
+        /// </summary>
+        /// <param name="message">The message for the dialog.</param>
+        /// <param name="title">The title for the dialog.</param>
+        /// <param name="errorDetails">The error details for the dialog, optional.</param>
+        public static bool ErrorActionPrompt(string message, string title, string errorDetails = null)
+        {
+            return PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    ErrorDetails = errorDetails,
+                    ActionButtonCaption = Resources.UiYesButtonCaption,
+                    CancelButtonCaption = Resources.UiNoButtonCaption,
+                    Icon = s_errorIcon.Value
+                });
+        }
+
+        /// <summary>
         /// Shows an error message for the given exception.
         /// </summary>
         /// <param name="ex">The exception to show.</param>

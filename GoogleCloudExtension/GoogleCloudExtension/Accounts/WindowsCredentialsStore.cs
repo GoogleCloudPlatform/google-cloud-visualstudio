@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.Accounts
     internal class WindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
-        internal const string PasswordFileExtension = ".data";
+        private const string PasswordFileExtension = ".data";
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore =
             new Lazy<WindowsCredentialsStore>(() => new WindowsCredentialsStore());
@@ -54,10 +54,6 @@ namespace GoogleCloudExtension.Accounts
         internal Action<string, byte[]> WriteAllBytes { private get; set; } = File.WriteAllBytes;
         internal Func<string, DirectoryInfo> CreateDirectory { private get; set; } = Directory.CreateDirectory;
         internal Action<string> DeleteFile { private get; set; } = File.Delete;
-        internal Func<byte[], byte[], DataProtectionScope, byte[]> Protect { private get; set; } =
-            ProtectedData.Protect;
-        internal Func<byte[], byte[], DataProtectionScope, byte[]> Unprotect { private get; set; } =
-            ProtectedData.Unprotect;
 
         /// <summary>
         /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
@@ -140,24 +136,28 @@ namespace GoogleCloudExtension.Accounts
             {
                 string userName = GetUserName(path);
                 byte[] encryptedPassword = ReadAllBytes(path);
-                byte[] passwordBytes = Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
+                byte[] passwordBytes = ProtectedData.Unprotect(
+                    encryptedPassword, null, DataProtectionScope.CurrentUser);
 
                 return new WindowsInstanceCredentials(userName, Encoding.UTF8.GetString(passwordBytes));
             }
             catch (CryptographicException cryptographicException)
             {
-                UserPromptUtils.ErrorPrompt(
+                bool delete = UserPromptUtils.ErrorActionPrompt(
                     string.Format(Resources.WindowsCredentialsStoreDecryptErrorMessage, path),
                     Resources.WindowsCredentialsStoreDecryptionErrorTitle, cryptographicException.ToString());
-                try
+                if (delete)
                 {
-                    DeleteFile(path);
-                }
-                catch (IOException ioException)
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        string.Format(Resources.WindowsCredentialsStoreDeletingCorruptedErrorMessage, path),
-                        Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle, ioException.ToString());
+                    try
+                    {
+                        DeleteFile(path);
+                    }
+                    catch (IOException ioException)
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            string.Format(Resources.WindowsCredentialsStoreDeletingCorruptedErrorMessage, path),
+                            Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle, ioException.ToString());
+                    }
                 }
                 return null;
             }
@@ -179,7 +179,7 @@ namespace GoogleCloudExtension.Accounts
 
             string filePath = Path.Combine(path, GetFileName(credentials));
             byte[] passwordBytes = Encoding.UTF8.GetBytes(credentials.Password);
-            byte[] encrypted = Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
+            byte[] encrypted = ProtectedData.Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
             WriteAllBytes(filePath, encrypted);
         }
 

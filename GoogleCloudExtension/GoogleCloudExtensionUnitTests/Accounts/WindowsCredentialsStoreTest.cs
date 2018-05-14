@@ -30,7 +30,7 @@ using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 namespace GoogleCloudExtensionUnitTests.Accounts
 {
     /// <summary>
-    /// Summary description for WindowsCredentialsStoreTest
+    /// Tests for the <see cref="WindowsCredentialsStore"/>.
     /// </summary>
     [TestClass]
     public class WindowsCredentialsStoreTest : ExtensionTestBase
@@ -48,8 +48,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private Mock<Action<string, byte[]>> _writeAllBytesMock;
         private Mock<Func<string, DirectoryInfo>> _createDirectoryMock;
         private Mock<Action<string>> _deleteFileMock;
-        private Mock<Func<byte[], byte[], DataProtectionScope, byte[]>> _protectMock;
-        private Mock<Func<byte[], byte[], DataProtectionScope, byte[]>> _unprotectMock;
 
         protected override void BeforeEach()
         {
@@ -62,9 +60,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _createDirectoryMock = new Mock<Func<string, DirectoryInfo>>();
             _deleteFileMock = new Mock<Action<string>>();
 
-            _protectMock = new Mock<Func<byte[], byte[], DataProtectionScope, byte[]>>();
-            _unprotectMock = new Mock<Func<byte[], byte[], DataProtectionScope, byte[]>>();
-
             _objectUnderTest = new WindowsCredentialsStore
             {
                 DirectoryExists = _directoryExistsMock.Object,
@@ -72,14 +67,12 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                 ReadAllBytes = _readAllBytesMock.Object,
                 WriteAllBytes = _writeAllBytesMock.Object,
                 CreateDirectory = _createDirectoryMock.Object,
-                DeleteFile = _deleteFileMock.Object,
-                Protect = _protectMock.Object,
-                Unprotect = _unprotectMock.Object
+                DeleteFile = _deleteFileMock.Object
             };
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstanceReturnsEmptyListForNonExistantDirectory()
+        public void TestGetCredentialsForInstance_ReturnsEmptyListForNonExistantDirectory()
         {
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
@@ -89,7 +82,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstanceSkipsFilesWithWrongExtension()
+        public void TestGetCredentialsForInstance_SkipsFilesWithWrongExtension()
         {
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { @"c:\badExtension.bad" });
@@ -101,56 +94,51 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstanceLoadsCredentialsFile()
+        public void TestGetCredentialsForInstance_LoadsCredentialsFile()
         {
             const string credentialFilePath = @"c:\username.data";
-            var encryptedBytes = new byte[] { 1, 2, 3 };
-            const string passwordString = "passwordString";
+            const string password = "passwordString";
+            byte[] encryptedBytes = ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(password), null, DataProtectionScope.CurrentUser);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { credentialFilePath });
             _readAllBytesMock.Setup(f => f(credentialFilePath)).Returns(() => encryptedBytes);
-            _unprotectMock.Setup(f => f(encryptedBytes, It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>()))
-                .Returns(() => Encoding.UTF8.GetBytes(passwordString));
 
             List<WindowsInstanceCredentials> result =
                 _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
 
             CollectionAssert.AreEqual(
-                new[] { new WindowsInstanceCredentials("username", passwordString) }, result);
+                new[] { new WindowsInstanceCredentials("username", password) }, result);
         }
 
         [TestMethod]
-        public void TestGetCredentialslForInstanceSortsByUsername()
+        public void TestGetCredentialslForInstance_SortsByUsername()
         {
-            var encryptedBytes = new byte[] { 1, 2, 3 };
-            const string passwordString = "passwordString";
+            const string password = "passwordString";
+            byte[] encryptedBytes = ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(password), null, DataProtectionScope.CurrentUser);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { @"c:\b.data", @"c:\c.data", @"c:\a.data" });
             _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Returns(() => encryptedBytes);
-            _unprotectMock.Setup(f => f(It.IsAny<byte[]>(), It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>()))
-                .Returns(() => Encoding.UTF8.GetBytes(passwordString));
 
             List<WindowsInstanceCredentials> result =
                 _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
 
             var expected = new[]
             {
-                new WindowsInstanceCredentials("a", passwordString),
-                new WindowsInstanceCredentials("b", passwordString),
-                new WindowsInstanceCredentials("c", passwordString)
+                new WindowsInstanceCredentials("a", password),
+                new WindowsInstanceCredentials("b", password),
+                new WindowsInstanceCredentials("c", password)
             };
             CollectionAssert.AreEqual(expected, result);
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstanceHandlesReadIoException()
+        public void TestGetCredentialsForInstance_HandlesReadIoException()
         {
-            const string passwordString = "passwordString";
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { @"c:\username.data" });
             _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Throws(new IOException("Test Exception Message"));
-            _unprotectMock.Setup(f => f(It.IsAny<byte[]>(), It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>()))
-                .Returns(() => Encoding.UTF8.GetBytes(passwordString));
 
             List<WindowsInstanceCredentials> result =
                 _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
@@ -165,37 +153,58 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstanceHandlesDecryptionException()
+        public void TestGetCredentialsForInstance_HandleDecryptionExceptionWithDeleteFile()
         {
             const string corruptedFilePath = @"c:\corrupted.data";
+            PromptUserMock.Setup(
+                    f => f(
+                        It.Is<UserPromptWindow.Options>(
+                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
+                .Returns(true);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
             _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Returns(new byte[] { 1, 2, 3 });
-            _unprotectMock.Setup(f => f(It.IsAny<byte[]>(), It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>()))
-                .Throws(new CryptographicException("Test Exception Message"));
 
             List<WindowsInstanceCredentials> result =
                 _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
 
             var expected = new WindowsInstanceCredentials[] { };
             CollectionAssert.AreEqual(expected, result);
-            PromptUserMock.Verify(
-                f => f(
-                    It.Is<UserPromptWindow.Options>(
-                        o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)),
-                Times.Once);
             _deleteFileMock.Verify(f => f(corruptedFilePath), Times.Once);
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstancePromptsOnDeleteException()
+        public void TestGetCredentialsForInstance_HandleDecryptionExceptionSkipDeleteFile()
         {
             const string corruptedFilePath = @"c:\corrupted.data";
+            PromptUserMock.Setup(
+                    f => f(
+                        It.Is<UserPromptWindow.Options>(
+                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
+                .Returns(false);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
             _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Returns(new byte[] { 1, 2, 3 });
-            _unprotectMock.Setup(f => f(It.IsAny<byte[]>(), It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>()))
-                .Throws(new CryptographicException("Test Exception Message"));
+
+            List<WindowsInstanceCredentials> result =
+                _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
+
+            CollectionAssert.AreEqual(new WindowsInstanceCredentials[] { }, result);
+            _deleteFileMock.Verify(f => f(corruptedFilePath), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestGetCredentialsForInstance_PromptsOnDeleteException()
+        {
+            const string corruptedFilePath = @"c:\corrupted.data";
+            PromptUserMock.Setup(
+                    f => f(
+                        It.Is<UserPromptWindow.Options>(
+                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
+                .Returns(true);
+            _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
+            _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
+            _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Returns(new byte[] { 1, 2, 3 });
             _deleteFileMock.Setup(f => f(corruptedFilePath)).Throws(new IOException("Test Exception Message"));
 
             List<WindowsInstanceCredentials> result =
@@ -210,7 +219,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestAddCredentialsToInstanceCreatesMissingDirectory()
+        public void TestAddCredentialsToInstance_CreatesMissingDirectory()
         {
             CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "TestProject" });
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
@@ -228,22 +237,20 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestAddCredentialsToInstanceWritesEncryptedPasswordToFile()
+        public void TestAddCredentialsToInstance_WritesEncryptedPasswordToFile()
         {
             const string password = "testPassword";
             const string user = "testUser";
-            byte[] encryptedBytes = { 1, 2, 3 };
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-            _protectMock.Setup(f => f(passwordBytes, It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>())).Returns(encryptedBytes);
+            var credentials = new WindowsInstanceCredentials(user, password);
 
-            _objectUnderTest.AddCredentialsToInstance(s_defaultInstance, new WindowsInstanceCredentials(user, password));
+            _objectUnderTest.AddCredentialsToInstance(s_defaultInstance, credentials);
 
             _writeAllBytesMock.Verify(
                 f => f(
-                    It.Is<string>(
-                        s => s.EndsWith(
-                            user + WindowsCredentialsStore.PasswordFileExtension, StringComparison.Ordinal)),
-                    encryptedBytes),
+                    It.Is<string>(s => Path.GetFileName(s) == "testUser.data"),
+                    It.Is<byte[]>(
+                        bytes => Encoding.UTF8.GetString(
+                            ProtectedData.Unprotect(bytes, null, DataProtectionScope.CurrentUser)) == password)),
                 Times.Once);
         }
     }
