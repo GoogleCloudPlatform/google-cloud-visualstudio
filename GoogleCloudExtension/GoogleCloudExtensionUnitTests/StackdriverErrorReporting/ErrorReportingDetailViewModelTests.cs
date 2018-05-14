@@ -46,7 +46,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private Mock<IStackdriverErrorReportingDataSource> _dataSourceMock;
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
-        private Mock<Func<UserPromptWindow.Options, bool>> _promptUserMock;
         private IGoogleCloudExtensionPackage _oldPackage;
         private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
@@ -87,9 +86,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                 new ErrorGroupStats { Group = new ErrorGroup { GroupId = "" }, TimedCounts = new List<TimedCount>() },
                 _defaultTimeRangeItem);
 
-            _promptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
-            _promptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
-            UserPromptWindow.PromptUserFunction = _promptUserMock.Object;
+            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
         }
 
         [TestCleanup]

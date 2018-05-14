@@ -25,13 +25,11 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
     public class WindowsCredentialsChooserViewModel : ViewModelBase
     {
-        private static readonly IEnumerable<WindowsInstanceCredentials> s_addNewCredentials = new List<WindowsInstanceCredentials>
-        {
-            new WindowsInstanceCredentials
+        private static readonly IEnumerable<WindowsInstanceCredentials> s_addNewCredentials =
+            new List<WindowsInstanceCredentials>
             {
-                User = Resources.WindowsCredentialsChooserNoCredentialsFoundMessage,
-            }
-        };
+                new WindowsInstanceCredentials(Resources.WindowsCredentialsChooserNoCredentialsFoundMessage, null)
+            };
 
         private readonly Instance _instance;
         private readonly WindowsCredentialsChooserWindow.Options _options;

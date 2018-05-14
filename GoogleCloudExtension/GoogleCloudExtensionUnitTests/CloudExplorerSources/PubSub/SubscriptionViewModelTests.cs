@@ -18,6 +18,7 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -51,7 +52,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         {
             _promptOptions = new List<UserPromptWindow.Options>();
             _promptReturnValue = true;
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 _promptOptions.Add(options);
                 return _promptReturnValue;

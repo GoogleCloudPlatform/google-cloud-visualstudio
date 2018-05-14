@@ -30,10 +30,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
     /// Unit tests for <seealso cref="FlexStepViewModel"/>.
     /// </summary>
     [TestClass]
-    public class FlexStepViewModelTests
+    public class FlexStepViewModelTests : ExtensionTestBase
     {
         private FlexStepViewModel _objectUnderTest;
-        private Mock<Func<UserPromptWindow.Options, bool>> _promptUserFunctionMock;
         private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
         private TaskCompletionSource<Google.Apis.Appengine.v1.Data.Application> _appTaskSource;
         private Mock<IApiManager> _mockedApiManager;
@@ -43,8 +42,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestInitialize]
         public void Initialize()
         {
-            _promptUserFunctionMock = new Mock<Func<UserPromptWindow.Options, bool>>();
-            UserPromptWindow.PromptUserFunction = _promptUserFunctionMock.Object;
 
             _mockedApiManager = new Mock<IApiManager>();
             _mockedGaeDataSource = new Mock<IGaeDataSource>();
@@ -162,13 +159,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public void TestValidateInputNullVersion()
         {
-            _promptUserFunctionMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
+            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             _objectUnderTest.Version = null;
 
             bool result = _objectUnderTest.ValidateInput();
 
             Assert.IsFalse(result);
-            _promptUserFunctionMock.Verify(
+            PromptUserMock.Verify(
                 f => f(
                     It.Is<UserPromptWindow.Options>(
                         o => o.Title == Resources.UiInvalidValueTitle &&
@@ -179,7 +176,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public void TestValidateInputEmptyVersion()
         {
-            _promptUserFunctionMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
+            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             _objectUnderTest.Version = "";
 
             bool result = _objectUnderTest.ValidateInput();
@@ -188,7 +185,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             Func<UserPromptWindow.Options, bool> optionsPredicate =
                 o => o.Title == Resources.UiInvalidValueTitle &&
                 o.Prompt == Resources.FlexPublishEmptyVersionMessage;
-            _promptUserFunctionMock.Verify(
+            PromptUserMock.Verify(
                 f => f(
                     It.Is<UserPromptWindow.Options>(o => optionsPredicate(o))),
                 Times.Once);
@@ -197,13 +194,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public void TestValidateInputInvalidVersion()
         {
-            _promptUserFunctionMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
+            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             _objectUnderTest.Version = "-Invalid Version Name!";
 
             bool result = _objectUnderTest.ValidateInput();
 
             Assert.IsFalse(result);
-            _promptUserFunctionMock.Verify(
+            PromptUserMock.Verify(
                 f => f(
                     It.Is<UserPromptWindow.Options>(
                         o => o.Title == Resources.UiInvalidValueTitle &&
@@ -214,13 +211,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         [TestMethod]
         public void TestValidateInputValidVersion()
         {
-            _promptUserFunctionMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
+            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
             _objectUnderTest.Version = "valid-version-name";
 
             bool result = _objectUnderTest.ValidateInput();
 
             Assert.IsTrue(result);
-            _promptUserFunctionMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
+            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
         }
     }
 }

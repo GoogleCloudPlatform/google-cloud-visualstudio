@@ -18,7 +18,7 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -307,7 +307,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return null;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;
@@ -334,7 +334,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicFullName;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;
@@ -361,7 +361,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicFullName;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;

@@ -22,9 +22,46 @@ namespace GoogleCloudExtension.GCloud
     public sealed class WindowsInstanceCredentials
     {
         [JsonProperty("username")]
-        public string User { get; set; }
+        public string User { get; }
 
         [JsonProperty("password")]
-        public string Password { get; set; }
+        public string Password { get; }
+
+        [JsonConstructor]
+        public WindowsInstanceCredentials(string user, string password)
+        {
+            User = user;
+            Password = password;
+        }
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() => JsonConvert.SerializeObject(this);
+
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+            {
+                return true;
+            }
+            else if (!(obj is WindowsInstanceCredentials))
+            {
+                return false;
+            }
+            else
+            {
+                var credentials = (WindowsInstanceCredentials)obj;
+                return User == credentials.User &&
+                    Password == credentials.Password;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1879510246;
+            hashCode = hashCode * -1521134295 + User.GetHashCode();
+            hashCode = hashCode * -1521134295 + Password.GetHashCode();
+            return hashCode;
+        }
     }
 }
