@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud
@@ -30,6 +31,7 @@ namespace GoogleCloudExtension.GCloud
         [JsonConstructor]
         public WindowsInstanceCredentials(string user, string password)
         {
+            user.ThrowIfNull(nameof(user));
             User = user;
             Password = password;
         }
