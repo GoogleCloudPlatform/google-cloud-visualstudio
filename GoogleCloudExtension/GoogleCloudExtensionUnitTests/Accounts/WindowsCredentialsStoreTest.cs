@@ -45,8 +45,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private Mock<Func<string, bool>> _directoryExistsMock;
         private Mock<Func<string, IEnumerable<string>>> _enumerateFilesMock;
         private Mock<Func<string, byte[]>> _readAllBytesMock;
-        private Mock<Func<byte[], byte[], DataProtectionScope, byte[]>> _unprotectMock;
+        private Mock<Action<string, byte[]>> _writeAllBytesMock;
+        private Mock<Func<string, DirectoryInfo>> _createDirectoryMock;
         private Mock<Action<string>> _deleteFileMock;
+        private Mock<Func<byte[], byte[], DataProtectionScope, byte[]>> _protectMock;
+        private Mock<Func<byte[], byte[], DataProtectionScope, byte[]>> _unprotectMock;
 
         protected override void BeforeEach()
         {
@@ -55,16 +58,23 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _directoryExistsMock = new Mock<Func<string, bool>>();
             _enumerateFilesMock = new Mock<Func<string, IEnumerable<string>>>();
             _readAllBytesMock = new Mock<Func<string, byte[]>>();
-            _unprotectMock = new Mock<Func<byte[], byte[], DataProtectionScope, byte[]>>();
+            _writeAllBytesMock = new Mock<Action<string, byte[]>>();
+            _createDirectoryMock = new Mock<Func<string, DirectoryInfo>>();
             _deleteFileMock = new Mock<Action<string>>();
+
+            _protectMock = new Mock<Func<byte[], byte[], DataProtectionScope, byte[]>>();
+            _unprotectMock = new Mock<Func<byte[], byte[], DataProtectionScope, byte[]>>();
 
             _objectUnderTest = new WindowsCredentialsStore
             {
                 DirectoryExists = _directoryExistsMock.Object,
                 EnumerateFiles = _enumerateFilesMock.Object,
                 ReadAllBytes = _readAllBytesMock.Object,
-                Unprotect = _unprotectMock.Object,
-                DeleteFile = _deleteFileMock.Object
+                WriteAllBytes = _writeAllBytesMock.Object,
+                CreateDirectory = _createDirectoryMock.Object,
+                DeleteFile = _deleteFileMock.Object,
+                Protect = _protectMock.Object,
+                Unprotect = _unprotectMock.Object
             };
         }
 
@@ -76,21 +86,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             List<WindowsInstanceCredentials> result = _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
 
             CollectionAssert.AreEqual(new List<WindowsInstanceCredentials>(), result);
-        }
-
-        [TestMethod]
-        public void TestGetCredentialsForInstanceCachesResultForNonExistantDirectory()
-        {
-            _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
-            IEnumerable<WindowsInstanceCredentials> firstResult =
-                _objectUnderTest.GetCredentialsForInstance(s_defaultInstance);
-            _directoryExistsMock.Reset();
-
-            IEnumerable<WindowsInstanceCredentials> secondResult =
-                _objectUnderTest.GetCredentialsForInstance(s_defaultInstance);
-
-            _directoryExistsMock.Verify(f => f(It.IsAny<string>()), Times.Never);
-            Assert.AreSame(firstResult, secondResult);
         }
 
         [TestMethod]
@@ -211,6 +206,44 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                 f => f(
                     It.Is<UserPromptWindow.Options>(
                         o => o.Title == Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle)),
+                Times.Once);
+        }
+
+        [TestMethod]
+        public void TestAddCredentialsToInstanceCreatesMissingDirectory()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "TestProject" });
+            _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
+
+            var instance = new Instance
+            {
+                Name = "TestInstance",
+                Zone = "https://www.googleapis.com/compute/v1/projects/deploy-from-visual-studio-dev/zones/testzone"
+            };
+            _objectUnderTest.AddCredentialsToInstance(instance, new WindowsInstanceCredentials("user", "password"));
+
+            string expectedPath = Path.Combine(
+                WindowsCredentialsStore.s_credentialsStoreRoot, @"TestProject\testzone\TestInstance");
+            _createDirectoryMock.Verify(f => f(expectedPath), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestAddCredentialsToInstanceWritesEncryptedPasswordToFile()
+        {
+            const string password = "testPassword";
+            const string user = "testUser";
+            byte[] encryptedBytes = { 1, 2, 3 };
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            _protectMock.Setup(f => f(passwordBytes, It.IsAny<byte[]>(), It.IsAny<DataProtectionScope>())).Returns(encryptedBytes);
+
+            _objectUnderTest.AddCredentialsToInstance(s_defaultInstance, new WindowsInstanceCredentials(user, password));
+
+            _writeAllBytesMock.Verify(
+                f => f(
+                    It.Is<string>(
+                        s => s.EndsWith(
+                            user + WindowsCredentialsStore.PasswordFileExtension, StringComparison.Ordinal)),
+                    encryptedBytes),
                 Times.Once);
         }
     }

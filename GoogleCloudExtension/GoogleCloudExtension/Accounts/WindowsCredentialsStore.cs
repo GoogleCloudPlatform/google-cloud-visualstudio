@@ -18,7 +18,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -39,29 +38,26 @@ namespace GoogleCloudExtension.Accounts
     internal class WindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
-        private const string PasswordFileExtension = ".data";
+        internal const string PasswordFileExtension = ".data";
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore =
             new Lazy<WindowsCredentialsStore>(() => new WindowsCredentialsStore());
-        private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
+        internal static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
         private static readonly Regex s_invalidNameCharPattern = new Regex("[;:\\?\\\\]");
-
-        /// <summary>
-        /// In memory cache of the credentials for the current credentials (account and project pair).
-        /// </summary>
-        private readonly Dictionary<string, IEnumerable<WindowsInstanceCredentials>> _credentialsForInstance =
-            new Dictionary<string, IEnumerable<WindowsInstanceCredentials>>();
 
         public static WindowsCredentialsStore Default => s_defaultStore.Value;
 
         /// Mockable static methods for testing.
-        internal Func<byte[], byte[], DataProtectionScope, byte[]> Unprotect { private get; set; } =
-            ProtectedData.Unprotect;
-
         internal Func<string, bool> DirectoryExists { private get; set; } = Directory.Exists;
         internal Func<string, IEnumerable<string>> EnumerateFiles { private get; set; } = Directory.EnumerateFiles;
         internal Func<string, byte[]> ReadAllBytes { private get; set; } = File.ReadAllBytes;
+        internal Action<string, byte[]> WriteAllBytes { private get; set; } = File.WriteAllBytes;
+        internal Func<string, DirectoryInfo> CreateDirectory { private get; set; } = Directory.CreateDirectory;
         internal Action<string> DeleteFile { private get; set; } = File.Delete;
+        internal Func<byte[], byte[], DataProtectionScope, byte[]> Protect { private get; set; } =
+            ProtectedData.Protect;
+        internal Func<byte[], byte[], DataProtectionScope, byte[]> Unprotect { private get; set; } =
+            ProtectedData.Unprotect;
 
         /// <summary>
         /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
@@ -69,15 +65,9 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="instance">The GCE VM</param>
         /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with The GCE VM. It might be
         /// empty if no credentials are found.</returns>
-        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        public IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
+        public IList<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
         {
-            string instancePath = GetInstancePath(instance);
             IEnumerable<WindowsInstanceCredentials> result;
-            if (_credentialsForInstance.TryGetValue(instancePath, out result))
-            {
-                return result;
-            }
 
             string instanceStoragePath = GetStoragePathForInstance(instance);
             if (!DirectoryExists(instanceStoragePath))
@@ -92,9 +82,8 @@ namespace GoogleCloudExtension.Accounts
                     .Where(x => x != null)
                     .OrderBy(x => x.User);
             }
-            _credentialsForInstance[instancePath] = result;
 
-            return result;
+            return result.ToList();
         }
 
         /// <summary>
@@ -104,11 +93,9 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="credentials">The credentials to store.</param>
         public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
-            string instancePath = GetInstancePath(instance);
             string instanceStoragePath = GetStoragePathForInstance(instance);
 
             SaveEncryptedCredentials(instanceStoragePath, credentials);
-            _credentialsForInstance.Remove(instancePath);
         }
 
         /// <summary>
@@ -118,14 +105,12 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="credentials">The credentials.</param>
         public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
-            string instancePath = GetInstancePath(instance);
             string instanceStoragePath = GetStoragePathForInstance(instance);
             string credentialsPath = Path.Combine(instanceStoragePath, GetFileName(credentials));
 
             if (File.Exists(credentialsPath))
             {
-                File.Delete(credentialsPath);
-                _credentialsForInstance.Remove(instancePath);
+                DeleteFile(credentialsPath);
             }
         }
 
@@ -189,13 +174,13 @@ namespace GoogleCloudExtension.Accounts
         {
             if (!DirectoryExists(path))
             {
-                Directory.CreateDirectory(path);
+                CreateDirectory(path);
             }
 
             string filePath = Path.Combine(path, GetFileName(credentials));
             byte[] passwordBytes = Encoding.UTF8.GetBytes(credentials.Password);
-            byte[] encrypted = ProtectedData.Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
-            File.WriteAllBytes(filePath, encrypted);
+            byte[] encrypted = Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
+            WriteAllBytes(filePath, encrypted);
         }
 
         private static string GetCredentialsStoreRoot()
