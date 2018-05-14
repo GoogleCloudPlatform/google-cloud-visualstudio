@@ -25,18 +25,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class GcpPublishStepsUtils
     {
-        /// <summary>
-        /// This regexp defines what names are valid for GCP deployments. Basically it defines a valid name
-        /// as only containing lowercase letters and numbers and optionally the - character. It also specifies
-        /// that the name has to be less than 100 chars.
-        /// This regexp is the same one used by gcloud to validate version names.
-        /// </summary>
-        private static readonly Regex s_validNamePattern = new Regex(@"^(?!-)[a-z\d\-]{1,100}$");
-
         // Static properties for unit testing.
         internal static DateTime? NowOverride { private get; set; }
         private static DateTime Now => NowOverride ?? DateTime.Now;
-
         /// <summary>
         /// Returns a default version name suitable for publishing to GKE and Flex.
         /// </summary>
@@ -51,8 +42,8 @@ namespace GoogleCloudExtension.Utils
         /// Determines if the given name is a valid name.
         /// </summary>
         /// <param name="name">The name to check.</param>
-        /// <returns>True if the name is valid, false otherwise.</returns>
-        public static bool IsValidName(string name) => !string.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+        /// <param name="fieldName">The name of the field being validated.</param>
+        /// <returns>The results of the validation.</returns>
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {
@@ -78,6 +69,25 @@ namespace GoogleCloudExtension.Utils
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValidationMaxCharactersMessage), fieldName, 100);
             }
+        }
+
+        /// <summary>
+        /// Converts a possibly invalid name to one that will pass name validation.
+        /// </summary>
+        /// <param name="name">The name to converto to valid.</param>
+        /// <returns>A valid name built from the starting name.</returns>
+        public static string ToValidName(string name)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+            string kebobedName = StringUtils.ToKebobCase(name);
+            string beginsWithLetterOrNumber = Regex.Replace(kebobedName, @"^[^a-z\d]+", "");
+            string invalidCharactersReplaced = Regex.Replace(beginsWithLetterOrNumber, @"[^a-z\d\-]", "-");
+            return invalidCharactersReplaced.Length > 100 ?
+                invalidCharactersReplaced.Substring(0, 100) :
+                invalidCharactersReplaced;
         }
 
         public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)

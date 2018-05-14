@@ -243,7 +243,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Task initializeDialogTask = base.InitializeDialogAsync();
 
             // In the meantime, set DeploymentName, which launches validations and updates the UI.
-            DeploymentName = PublishDialog.Project.Name.ToLower();
+            DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
 
             // Wait for the initialization task to be done.
             await initializeDialogTask;
