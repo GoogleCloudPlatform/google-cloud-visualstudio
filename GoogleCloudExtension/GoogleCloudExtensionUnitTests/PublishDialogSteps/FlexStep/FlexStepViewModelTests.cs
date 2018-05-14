@@ -17,7 +17,6 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.Utils;
@@ -49,14 +48,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         private IPublishDialog _mockedPublishDialog;
         private Mock<Func<Project>> _pickProjectPromptMock;
 
+        [ClassInitialize]
+        public static void BeforeAll(TestContext context) => GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
+
+        [ClassCleanup]
+        public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
+
         protected override void BeforeEach()
         {
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _setAppRegionTaskSource = new TaskCompletionSource<bool>();
 
-            var mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
-
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == mockedProject);
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == VisualStudioProjectName);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
@@ -71,7 +74,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = FlexStepViewModel.CreateStep(
-                dataSource: _gaeDataSourceMock.Object, apiManager: _apiManagerMock.Object,
+                dataSource: _gaeDataSourceMock.Object,
+                apiManager: _apiManagerMock.Object,
                 pickProjectPrompt: _pickProjectPromptMock.Object,
                 setAppRegionAsyncFunc: _setAppRegionAsyncFuncMock.Object);
             _objectUnderTest.MillisecondsDelay = 0;
@@ -95,7 +99,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsyncNoProjectSetsNeedsAppCreated()
+        public async Task TestValidateProjectAsync_NoProjectSetsNeedsAppCreated()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.NeedsAppCreated = true;
@@ -108,7 +112,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsyncErrorInApplicationValidation()
+        public async Task TestValidateProjectAsync_ErrorInApplicationValidation()
         {
             _getApplicationTaskSource.SetException(new DataSourceException());
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
@@ -123,7 +127,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsyncNeedsAppCreated()
+        public async Task TestValidateProjectAsync_NeedsAppCreated()
         {
             _getApplicationTaskSource.SetResult(null);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
@@ -137,7 +141,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsyncSucceeds()
+        public async Task TestValidateProjectAsync_Succeeds()
         {
             _objectUnderTest.NeedsAppCreated = true;
             _getApplicationTaskSource.SetResult(_mockedApplication);
@@ -152,7 +156,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestSetAppRegionCommandExecutesDependency()
+        public void TestSetAppRegionCommand_ExecutesDependency()
         {
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
@@ -160,7 +164,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestSetAppRegionCommandBeginsReload()
+        public void TestSetAppRegionCommand_BeginsReload()
         {
             _setAppRegionTaskSource.SetResult(true);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
@@ -172,7 +176,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestSetAppRegionCommandSkipsReloadOnSetRegionFailure()
+        public void TestSetAppRegionCommand_SkipsReloadOnSetRegionFailure()
         {
             _setAppRegionTaskSource.SetResult(false);
             _objectUnderTest.SetAppRegionCommand.Execute(null);
@@ -181,7 +185,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestSetAppRegionCommandSkipsReloadOnSetRegionException()
+        public void TestSetAppRegionCommand_SkipsReloadOnSetRegionException()
         {
             _setAppRegionTaskSource.SetException(new Exception("test exception"));
             _objectUnderTest.SetAppRegionCommand.Execute(null);
@@ -190,7 +194,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetVersionNull()
+        public async Task TestSetVersion_Null()
         {
             _objectUnderTest.Version = null;
             await _objectUnderTest.ValidationDelayTask;
@@ -200,7 +204,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetVersionEmpty()
+        public async Task TestSetVersion_Empty()
         {
             _objectUnderTest.Version = string.Empty;
             await _objectUnderTest.ValidationDelayTask;
@@ -210,7 +214,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetVersionInvalid()
+        public async Task TestSetVersion_Invalid()
         {
             _objectUnderTest.Version = InvalidVersion;
             await _objectUnderTest.ValidationDelayTask;
@@ -220,7 +224,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public async Task TestSetVersionValid()
+        public async Task TestSetVersion_Valid()
         {
             _objectUnderTest.Version = ValidVersion;
             await _objectUnderTest.ValidationDelayTask;
@@ -230,7 +234,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestOnFlowFinishedSetsNeedsAppCreatedAndVersion()
+        public void TestOnFlowFinished_SetsNeedsAppCreatedAndVersion()
         {
             _objectUnderTest.NeedsAppCreated = true;
             _objectUnderTest.Version = null;
@@ -244,7 +248,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
-        public void TestNextNotSupported()
+        public void TestNext_NotSupported()
         {
             _objectUnderTest.Next();
         }

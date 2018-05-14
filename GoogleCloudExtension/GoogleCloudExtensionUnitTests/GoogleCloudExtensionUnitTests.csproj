@@ -310,6 +310,10 @@
       <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
       <Name>GoogleCloudExtension.DataSources</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment.UnitTests\GoogleCloudExtension.Deployment.UnitTests.csproj">
+      <Project>{85d0caad-a3e0-4a3b-b107-500caa2a5994}</Project>
+      <Name>GoogleCloudExtension.Deployment.UnitTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
       <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
       <Name>GoogleCloudExtension.Deployment</Name>
@@ -333,6 +337,10 @@
     <ProjectReference Include="..\GoogleCloudExtension\GoogleCloudExtension.csproj">
       <Project>{bfd6afbf-f0db-4ce1-9681-dae4e93f6dc5}</Project>
       <Name>GoogleCloudExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestingHelpers\TestingHelpers.csproj">
+      <Project>{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}</Project>
+      <Name>TestingHelpers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

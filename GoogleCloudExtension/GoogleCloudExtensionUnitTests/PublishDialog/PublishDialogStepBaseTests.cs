@@ -15,7 +15,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -46,7 +45,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private List<string> _changedProperties;
 
         /// <summary>
-        /// A minimal implementation of PublishDialogStepBase.
+        /// A minimal implementation of PublishDialogStepBase. Most functions faked with counter to record call counts.
         /// </summary>
         private class TestPublishDialogStep : PublishDialogStepBase
         {
@@ -62,10 +61,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
             public List<string> RequiredApis { private get; set; } = s_mockedRequiredApis;
 
-            protected override void ClearLoadedProjectData()
-            {
-                ClearLoadedProjectDataCallCount++;
-            }
+            protected override void ClearLoadedProjectData() => ClearLoadedProjectDataCallCount++;
 
             public int ClearLoadedProjectDataCallCount { get; private set; } = 0;
 
@@ -123,17 +119,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             public TaskCompletionSource<bool> ValidateProjectResult { get; private set; } =
                 new TaskCompletionSource<bool>();
 
-            public Task ValidateProjectAsyncBase()
-            {
-                return base.ValidateProjectAsync();
-            }
+            public Task ValidateProjectAsyncBase() => base.ValidateProjectAsync();
 
-            public Task ReloadProjectAsyncBase()
-            {
-                return base.ReloadProjectAsync();
-            }
+            public Task ReloadProjectAsyncBase() => ReloadProjectAsync();
 
-            public void StartAndTrackBase(Func<Task> func) => base.StartAndTrack(func);
+            public void StartAndTrackBase(Func<Task> func) => StartAndTrack(func);
         }
 
         protected override void BeforeEach()
@@ -141,9 +131,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _enableServicesTaskSource = new TaskCompletionSource<object>();
 
-            var mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
-
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(d => d.Project == mockedProject);
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(d => d.Project.Name == VisualStudioProjectName);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
             _changedProperties = new List<string>();
@@ -156,10 +144,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 
-        protected override void AfterEach()
-        {
-            _objectUnderTest.OnFlowFinished();
-        }
+        protected override void AfterEach() => _objectUnderTest.OnFlowFinished();
 
         [TestMethod]
         public void TestInitialState()
@@ -180,7 +165,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnVisibleInitializes()
+        public void TestOnVisible_Initializes()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -190,7 +175,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnVisibleAddsFlowFinishedHandler()
+        public void TestOnVisible_AddsFlowFinishedHandler()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
@@ -200,7 +185,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnVisibleRemovesOldFlowFinishedHandler()
+        public void TestOnVisible_RemovesOldFlowFinishedHandler()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -211,7 +196,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnVisibleAddsProjectChangedHandler()
+        public void TestOnVisible_AddsProjectChangedHandler()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             Task latestAction = _objectUnderTest.AsyncAction;
@@ -222,7 +207,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnVisibleRemovesOldProjectChangedHandler()
+        public void TestOnVisible_RemovesOldProjectChangedHandler()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -235,7 +220,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestValidateProjectEmptyProjectIsInvalid()
+        public async Task TestValidateProject_EmptyProjectIsInvalid()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
 
@@ -247,7 +232,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestValidateProjectValidProjectWithNoRequiredApis()
+        public async Task TestValidateProject_ValidProjectWithNoRequiredApis()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RequiredApis = new List<string>();
@@ -260,7 +245,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestValidateProjectValidProjectWithRequiredApisLoading()
+        public void TestValidateProject_ValidProjectWithRequiredApisLoading()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RequiredApis = s_mockedRequiredApis;
@@ -275,7 +260,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestValidateProjectValidProjectWithRequiredApisNotEnabled()
+        public async Task TestValidateProject_ValidProjectWithRequiredApisNotEnabled()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RequiredApis = s_mockedRequiredApis;
@@ -289,7 +274,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestValidateProjectValidProjectWithRequiredApisEnabled()
+        public async Task TestValidateProject_ValidProjectWithRequiredApisEnabled()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RequiredApis = s_mockedRequiredApis;
@@ -304,7 +289,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
 
         [TestMethod]
-        public void TestReloadProjectAsyncLoading()
+        public void TestReloadProjectAsync_Loading()
         {
             _objectUnderTest.GeneralError = true;
 
@@ -317,7 +302,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestReloadProjectAsyncLoadsValidProjectDataOnValidProject()
+        public void TestReloadProjectAsync_LoadsValidProjectDataOnValidProject()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(true);
             _objectUnderTest.ReloadProjectAsyncBase();
@@ -326,7 +311,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestReloadProjectAsyncSkipsLoadValidProjectDataOnInvalidProject()
+        public void TestReloadProjectAsync_SkipsLoadValidProjectDataOnInvalidProject()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(false);
             _objectUnderTest.ReloadProjectAsyncBase();
@@ -335,7 +320,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestReloadProjectAsyncDataLoaded()
+        public async Task TestReloadProjectAsync_DataLoaded()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(false);
             _objectUnderTest.LoadAnyProjectDataResult.SetResult(null);
@@ -347,7 +332,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public async Task TestReloadProjectAsyncError()
+        public async Task TestReloadProjectAsync_Error()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(false);
             _objectUnderTest.LoadAnyProjectDataResult.SetException(new Exception("Test Exception"));
@@ -360,7 +345,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestInitializeDialogAsyncRaisesGcpProjectIdPropertyChanged()
+        public void TestInitializeDialogAsync_RaisesGcpProjectIdPropertyChanged()
         {
             _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
 
@@ -371,7 +356,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestEnableApisCommandCallsEnableServices()
+        public void TestEnableApisCommand_CallsEnableServices()
         {
             _objectUnderTest.RequiredApis = s_mockedRequiredApis;
             _objectUnderTest.EnableApiCommand.Execute(null);
@@ -380,7 +365,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestEnableApisCommandReloadsProject()
+        public void TestEnableApisCommand_ReloadsProject()
         {
             _enableServicesTaskSource.SetResult(null);
             _objectUnderTest.EnableApiCommand.Execute(null);
@@ -390,7 +375,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestEnableApisCommandFailure()
+        public void TestEnableApisCommand_Failure()
         {
             _enableServicesTaskSource.SetException(new Exception("Test Exception"));
             _objectUnderTest.EnableApiCommand.Execute(null);
@@ -401,7 +386,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnFlowFinishedResetsProperties()
+        public void TestOnFlowFinished_ResetsProperties()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -418,7 +403,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestOnFlowFinishedRemovesHandlers()
+        public void TestOnFlowFinished_RemovesHandlers()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -432,7 +417,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestStartAndTrackSetsAsyncAction()
+        public void TestStartAndTrack_SetsAsyncAction()
         {
             Task task = Task.FromResult(true);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -444,9 +429,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestStartAndTrackThrowsArgumentNullException()
-        {
-            _objectUnderTest.StartAndTrackBase(() => null);
-        }
+        public void TestStartAndTrack_ThrowsArgumentNullException() => _objectUnderTest.StartAndTrackBase(() => null);
     }
 }

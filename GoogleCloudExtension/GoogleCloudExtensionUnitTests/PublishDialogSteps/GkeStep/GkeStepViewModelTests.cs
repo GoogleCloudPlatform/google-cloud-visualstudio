@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
 {
@@ -55,6 +56,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         private List<string> _changedProperties;
         private int _canPublishChangedCount;
         private Mock<Func<string, Process>> _startProcessMock;
+
+        [ClassInitialize]
+        public static void BeforeAll(TestContext context) =>
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
+
+        [ClassCleanup]
+        public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
 
         protected override void BeforeEach()
         {
@@ -89,7 +97,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public void TestInitialState()
         {
-            CollectionAssert.AreEquivalent(Enumerable.Empty<Cluster>().ToList(), _objectUnderTest.Clusters.ToList());
+            CollectionAssert.That.IsEmpty(_objectUnderTest.Clusters);
             Assert.IsNull(_objectUnderTest.SelectedCluster);
             Assert.IsNull(_objectUnderTest.DeploymentName);
             Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.DeploymentVersion);
@@ -106,8 +114,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         [TestMethod]
         public void TestSetSelectedCluster()
         {
-            _objectUnderTest.SelectedCluster = null;
-
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);
@@ -115,7 +121,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestSetSelectedClusterEnablesPublishAsync()
+        public async Task TestSetSelectedCluster_EnablesPublishAsync()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -126,11 +132,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             Assert.IsTrue(_objectUnderTest.CanPublish);
-            Assert.IsTrue(_canPublishChangedCount > 0);
+            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
-        public async Task TestSetSelectedClusterToNullDisablesPublish()
+        public async Task TestSetSelectedCluster_ToNullDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -141,11 +147,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _objectUnderTest.SelectedCluster = null;
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
-            Assert.IsTrue(_canPublishChangedCount > 0);
+            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
-        public async Task TestSetSelectedClusterToPlaceholderDisablesPublish()
+        public async Task TestSetSelectedCluster_ToPlaceholderDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -156,7 +162,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _objectUnderTest.SelectedCluster = GkeStepViewModel.s_placeholderCluster;
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
-            Assert.IsTrue(_canPublishChangedCount > 0);
+            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
@@ -171,7 +177,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetDeploymentNameValidationInvalid()
+        public void TestSetDeploymentName_ValidationInvalid()
         {
             _objectUnderTest.DeploymentName = "(AnInvalidName)";
 
@@ -179,7 +185,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetDeploymentNameValidationValid()
+        public void TestSetDeploymentName_ValidationValid()
         {
             _objectUnderTest.DeploymentName = "a-valid-name";
 
@@ -198,7 +204,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetDeploymentVersionValidationInvalid()
+        public void TestSetDeploymentVersion_ValidationInvalid()
         {
             _objectUnderTest.DeploymentVersion = "(AnInvalidVersion)";
 
@@ -206,7 +212,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetDeploymentVersionValidationValid()
+        public void TestSetDeploymentVersion_ValidationValid()
         {
             _objectUnderTest.DeploymentVersion = "a-valid-version";
 
@@ -225,7 +231,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetReplicasValidationInvalid()
+        public void TestSetReplicas_ValidationInvalid()
         {
             _objectUnderTest.Replicas = "(Not A Number)";
 
@@ -233,7 +239,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetReplicasValidationValid()
+        public void TestSetReplicas_ValidationValid()
         {
             _objectUnderTest.Replicas = " 5 ";
 
@@ -259,7 +265,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestSetExposeServiceToFaulseInvalidatesFields()
+        public void TestSetExposeService_ToFalseInvalidatesFields()
         {
             _objectUnderTest.ExposePublicService = true;
             _objectUnderTest.OpenWebsite = true;
@@ -302,7 +308,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestRefreshClustersListCommandTracksTask()
+        public void TestRefreshClustersListCommand_TracksTask()
         {
             Task originalAsyncAction = _objectUnderTest.AsyncAction;
 
@@ -313,7 +319,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestRefreshClustersListCommandReceivingNullSetsPlaceholder()
+        public async Task TestRefreshClustersListCommand_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
@@ -324,7 +330,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestRefreshClustersListCommandReceivingEmptySetsPlaceholder()
+        public async Task TestRefreshClustersListCommand_ReceivingEmptySetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
@@ -335,7 +341,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestRefreshClustersListCommandSetsClustersInOrder()
+        public async Task TestRefreshClustersListCommand_SetsClustersInOrder()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
@@ -348,13 +354,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
-        public void TestNextThrowsNotSupportedException()
+        public void TestNext_ThrowsNotSupportedException()
         {
             _objectUnderTest.Next();
         }
 
         [TestMethod]
-        public void TestInitializeDialogAsyncSetsDeploymentName()
+        public void TestInitializeDialogAsync_SetsDeploymentName()
         {
             Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("AProjectName");
 
@@ -364,7 +370,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestValidateProjectAsyncMissingProjectDisablesCommands()
+        public void TestValidateProjectAsync_MissingProjectDisablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = true;
@@ -377,7 +383,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestValidateProjectAsyncEnablesCommands()
+        public void TestValidateProjectAsync_EnablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = false;
@@ -390,7 +396,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsyncReceivingNullSetsPlaceholder()
+        public async Task TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -401,7 +407,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsyncReceivingEmptySetsPlaceholder()
+        public async Task TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -412,7 +418,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsyncSetsClustersInOrder()
+        public async Task TestLoadValidProjectDataAsync_SetsClustersInOrder()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
@@ -423,7 +429,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestOnFlowFinishedResetsValues()
+        public void TestOnFlowFinished_ResetsValues()
         {
             _objectUnderTest.DeploymentVersion = "test-deployment-version";
             _objectUnderTest.DeploymentName = "test-deployment-name";

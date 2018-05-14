@@ -16,7 +16,6 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
@@ -26,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestingHelpers;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
@@ -119,12 +119,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            var mockedProject = Mock.Of<IParsedProject>(p => p.Name == VisualStudioProjectName);
-
-            var publishDialogMock = new Mock<IPublishDialog>();
-            publishDialogMock.Setup(pd => pd.Project).Returns(mockedProject);
-            publishDialogMock.Setup(pd => pd.TrackTask(It.IsAny<Task>()));
-            _mockedPublishDialog = publishDialogMock.Object;
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == VisualStudioProjectName);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
@@ -160,9 +155,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public void TestInitialState()
         {
-            CollectionAssert.AreEquivalent(new List<Instance>(), _objectUnderTest.Instances.ToList());
+            CollectionAssert.That.IsEmpty(_objectUnderTest.Instances);
             Assert.IsNull(_objectUnderTest.SelectedInstance);
-            CollectionAssert.AreEquivalent(new List<WindowsInstanceCredentials>(), _objectUnderTest.Credentials.ToList());
+            CollectionAssert.That.IsEmpty(_objectUnderTest.Credentials);
             Assert.IsNull(_objectUnderTest.SelectedCredentials);
             Assert.IsFalse(_objectUnderTest.ManageCredentialsCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
@@ -180,7 +175,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedInstanceUpdatesCredentials()
+        public void TestSetSelectedInstance_UpdatesCredentials()
         {
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
@@ -192,7 +187,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedInstanceToNullClearsCredentials()
+        public void TestSetSelectedInstance_ToNullClearsCredentials()
         {
             _objectUnderTest.SelectedInstance = null;
 
@@ -201,7 +196,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedInstanceToNullDisablesManagedCredentialsCommand()
+        public void TestSetSelectedInstance_ToNullDisablesManagedCredentialsCommand()
         {
             _objectUnderTest.ManageCredentialsCommand.CanExecuteCommand = true;
 
@@ -211,7 +206,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedInstanceToEnablesManagedCredentialsCommand()
+        public void TestSetSelectedInstance_ToEnablesManagedCredentialsCommand()
         {
             _objectUnderTest.ManageCredentialsCommand.CanExecuteCommand = false;
 
@@ -231,22 +226,24 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedCredentialsToNullDisablesCanPublish()
+        public void TestSetSelectedCredentials_ToNullDisablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
+            _objectUnderTest.SelectedCredentials =
+                new WindowsInstanceCredentials { User = "User2", Password = "Password2" };
             _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCredentials = null;
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
-            Assert.IsTrue(_canPublishChangedCount > 0);
+            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
-        public void TestSetSelectedCredentialsEnablesCanPublish()
+        public void TestSetSelectedCredentials_EnablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
@@ -258,7 +255,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials { User = "User2", Password = "Password2" };
 
             Assert.IsTrue(_objectUnderTest.CanPublish);
-            Assert.IsTrue(_canPublishChangedCount > 0);
+            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
@@ -280,7 +277,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestManageCredentialsCommandPromptsManageCredentials()
+        public void TestManageCredentialsCommand_PromptsManageCredentials()
         {
             _objectUnderTest.SelectedInstance = s_windows2016Instance;
 
@@ -290,18 +287,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestManageCredentialsCommandWithNullSelectedInstanceEmptiesCredentials()
+        public void TestManageCredentialsCommand_WithNullSelectedInstanceEmptiesCredentials()
         {
             _objectUnderTest.SelectedInstance = null;
 
             _objectUnderTest.ManageCredentialsCommand.Execute(null);
 
-            Assert.AreEqual(0, _objectUnderTest.Credentials.Count());
+            CollectionAssert.That.IsEmpty(_objectUnderTest.Credentials);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.Credentials));
         }
 
         [TestMethod]
-        public void TestManageCredentialsCommandSetsCredentials()
+        public void TestManageCredentialsCommand_SetsCredentials()
         {
             _objectUnderTest.SelectedInstance = s_windows2016Instance;
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
@@ -314,16 +311,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestClearLoadedProjectDataClearsInstances()
+        public void TestClearLoadedProjectData_ClearsInstances()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
-            Assert.AreEqual(0, _objectUnderTest.Instances.Count());
+            CollectionAssert.That.IsEmpty(_objectUnderTest.Instances);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.Instances));
         }
 
         [TestMethod]
-        public void TestClearLoadedProjectDataSetsSelectedInstanceToNull()
+        public void TestClearLoadedProjectData_SetsSelectedInstanceToNull()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
@@ -332,7 +329,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public async Task TestLoadAnyProjectDataAsyncSetsInstancesToRunningWindowsInstances()
+        public async Task TestLoadAnyProjectDataAsync_SetsInstancesToRunningWindowsInstances()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             _changedProperties.Clear();
@@ -344,7 +341,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public async Task TestLoadAnyProjectDataAsyncSetsSelectedInstance()
+        public async Task TestLoadAnyProjectDataAsync_SetsSelectedInstance()
         {
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             _changedProperties.Clear();
@@ -357,7 +354,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
-        public void TestNextThrowsNotSupportedException()
+        public void TestNext_ThrowsNotSupportedException()
         {
             _objectUnderTest.Next();
         }
