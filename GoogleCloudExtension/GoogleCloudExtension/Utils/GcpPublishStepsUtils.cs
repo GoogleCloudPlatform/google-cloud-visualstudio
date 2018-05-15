@@ -33,13 +33,17 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         private static readonly Regex s_validNamePattern = new Regex(@"^(?!-)[a-z\d\-]{1,100}$");
 
+        // Static properties for unit testing.
+        internal static DateTime? NowOverride { private get; set; }
+        private static DateTime Now => NowOverride ?? DateTime.Now;
+
         /// <summary>
         /// Returns a default version name suitable for publishing to GKE and Flex.
         /// </summary>
         /// <returns>The default name string.</returns>
         public static string GetDefaultVersion()
         {
-            var now = DateTime.Now;
+            DateTime now = Now;
             return $"{now.Year:0000}{now.Month:00}{now.Day:00}t{now.Hour:00}{now.Minute:00}{now.Second:00}";
         }
 
@@ -52,7 +56,7 @@ namespace GoogleCloudExtension.Utils
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
@@ -76,13 +80,18 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static IEnumerable<ValidationResult> ValidateInteger(string value, string fieldName)
+        public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)
         {
-            int unused;
-            if (!int.TryParse(value, out unused))
+            int intValue;
+            if (!int.TryParse(value, out intValue))
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationIntegerMessage), fieldName);
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
+            }
+            else if (intValue <= 0)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
             }
         }
     }

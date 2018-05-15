@@ -7,7 +7,8 @@ if (-not $Configuration) {
 $testDllNames = "GoogleAnalyticsUtilsTests.dll",
 	"GoogleCloudExtensionUnitTests.dll",
 	"GoogleCloudExtension.Utils.UnitTests.dll",
-	"GoogleCloudExtension.DataSources.UnitTests.dll"
+	"GoogleCloudExtension.DataSources.UnitTests.dll",
+	"GoogleCloudExtension.Deployment.UnitTests.dll"
 
 if ($env:APPVEYOR_SCHEDULED_BUILD -or $FunctionalTests) {
 	# Don't run functional tests on triggered (PR) builds.

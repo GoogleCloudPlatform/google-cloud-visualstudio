@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -23,6 +24,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,7 +32,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 {
@@ -39,8 +40,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
-        private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
-        private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+        internal static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+        internal static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+        internal const string ReplicasDefaultValue = "3";
+        internal const string GkeAddClusterUrlFormat = "https://console.cloud.google.com/kubernetes/add?project={0}";
 
         // The APIs required for a succesful deployment to GKE.
         private static readonly IList<string> s_requiredApis = new List<string>
@@ -54,15 +57,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
-        private IEnumerable<Cluster> _clusters;
-        private Cluster _selectedCluster;
-        private string _deploymentName;
-        private string _deploymentVersion;
+        private IEnumerable<Cluster> _clusters = Enumerable.Empty<Cluster>();
+        private Cluster _selectedCluster = null;
+        private string _deploymentName = null;
+        private string _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _dontExposeService = true;
         private bool _exposeService = false;
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
-        private string _replicas = "3";
+        private string _replicas = ReplicasDefaultValue;
+        private Func<string, Process> StartProcess => _startProcessOverride ?? Process.Start;
+        internal Func<string, Process> _startProcessOverride;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -70,7 +75,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public IEnumerable<Cluster> Clusters
         {
             get { return _clusters; }
-            private set { SetValueAndRaise(ref _clusters, value); }
+            private set
+            {
+                SetValueAndRaise(ref _clusters, value);
+                SelectedCluster = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -82,7 +91,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 SetValueAndRaise(ref _selectedCluster, value);
-                UpdateCanPublish();
+                RefreshCanPublish();
             }
         }
 
@@ -124,7 +133,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateInteger(value, Resources.GkePublishReplicasFieldName);
+                    GcpPublishStepsUtils.ValidatePositiveNonZeroInteger(value, Resources.GkePublishReplicasFieldName);
                 SetAndRaiseWithValidation(ref _replicas, value, validations);
             }
         }
@@ -179,64 +188,113 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
-        /// <summary>
-        /// The command to execute to enable the necessary APIs for the project.
-        /// </summary>
-        public ICommand EnableApiCommand { get; }
-
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager)
-            : base(apiManager)
+        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
 
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
-            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
+            RefreshClustersListCommand = new ProtectedAsyncCommand(async () =>
+            {
+                StartAndTrack(OnRefreshClustersListCommand);
+                await AsyncAction;
+            }, false);
         }
 
-        private void UpdateCanPublish()
+        protected override void RefreshCanPublish()
         {
-            CanPublish = SelectedCluster != null
-                && SelectedCluster != s_placeholderCluster
-                && !HasErrors;
+            base.RefreshCanPublish();
+            CanPublish = CanPublish
+                && SelectedCluster != null
+                && SelectedCluster != s_placeholderCluster;
         }
 
-        protected override void HasErrorsChanged()
+        private async Task OnRefreshClustersListCommand()
         {
-            UpdateCanPublish();
-        }
-
-        private void OnRefreshClustersListCommand()
-        {
-            Task<IEnumerable<Cluster>> refreshTask = GetAllClustersAsync();
-            PublishDialog.TrackTask(refreshTask);
+            await RefreshClustersAsync();
         }
 
         private void OnCreateClusterCommand()
         {
-            Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
-        }
-
-        private async Task OnEnableApiCommandAsync()
-        {
-            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
-            LoadingProjectTask = InitializeDialogState();
+            StartProcess(string.Format(GkeAddClusterUrlFormat, CredentialsStore.Default.CurrentProjectId));
         }
 
         #region IPublishDialogStep overrides
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        /// <summary>
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
+        /// </summary>
+        public override IPublishDialogStep Next()
         {
-            base.OnPushedToDialog(dialog);
-            LoadingProjectTask = InitializeDialogState();
+            throw new NotSupportedException();
+        }
+
+        protected override async Task InitializeDialogAsync()
+        {
+            // Start the task that initializes the dialog, mainly loads the GCP project.
+            Task initializeDialogTask = base.InitializeDialogAsync();
+
+            // In the meantime, set DeploymentName, which launches validations and updates the UI.
+            DeploymentName = PublishDialog.Project.Name.ToLower();
+
+            // Wait for the initialization task to be done.
+            await initializeDialogTask;
+        }
+
+        protected override async Task ValidateProjectAsync()
+        {
+            RefreshClustersListCommand.CanExecuteCommand = false;
+            CreateClusterCommand.CanExecuteCommand = false;
+
+            await base.ValidateProjectAsync();
+            if (IsValidGcpProject)
+            {
+                RefreshClustersListCommand.CanExecuteCommand = true;
+                CreateClusterCommand.CanExecuteCommand = true;
+            }
+        }
+
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
+
+        /// <summary>
+        /// Clear Clusters from the previous selected project.
+        /// </summary>
+        protected override void ClearLoadedProjectData()
+        {
+            Clusters = Enumerable.Empty<Cluster>();
+        }
+
+        /// <summary>
+        /// No project dependent data to load.
+        /// </summary>
+        /// <returns>A cached completed task.</returns>
+        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
+
+        /// <summary>
+        /// Get clusters for the selected project.
+        /// </summary>
+        protected override async Task LoadValidProjectDataAsync()
+        {
+            await RefreshClustersAsync();
+        }
+
+        protected internal override void OnFlowFinished()
+        {
+            base.OnFlowFinished();
+            _deploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
+            _deploymentName = null;
+            _replicas = ReplicasDefaultValue;
+            RefreshClustersListCommand.CanExecuteCommand = false;
+            CreateClusterCommand.CanExecuteCommand = false;
         }
 
         /// <summary>
@@ -244,18 +302,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
-            if (!ValidateInput())
-            {
-                Debug.WriteLine("Invalid input cancelled the operation.");
-                return;
-            }
-
-            var project = PublishDialog.Project;
+            IParsedProject project = PublishDialog.Project;
             try
             {
                 ShellUtils.SaveAllFiles();
 
-                var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
+                Task<bool> verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
                 PublishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {
@@ -271,20 +323,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
                 };
 
-                var kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
+                Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
                     cluster: SelectedCluster.Name,
                     zone: SelectedCluster.Zone,
                     context: gcloudContext);
                 PublishDialog.TrackTask(kubectlContextTask);
 
-                using (var kubectlContext = await kubectlContextTask)
+                using (KubectlContext kubectlContext = await kubectlContextTask)
                 {
-                    var deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
+                    Task<bool> deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
                     PublishDialog.TrackTask(deploymentExistsTask);
                     if (await deploymentExistsTask)
                     {
                         if (!UserPromptUtils.ActionPrompt(
-                                String.Format(Resources.GkePublishDeploymentAlreadyExistsMessage, DeploymentName),
+                                string.Format(Resources.GkePublishDeploymentAlreadyExistsMessage, DeploymentName),
                                 Resources.GkePublishDeploymentAlreadyExistsTitle,
                                 actionCaption: Resources.UiUpdateButtonCaption))
                         {
@@ -308,7 +360,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     GcpOutputWindow.Activate();
                     GcpOutputWindow.Clear();
-                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+                    GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
 
                     PublishDialog.FinishFlow();
 
@@ -316,7 +368,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     GkeDeploymentResult result;
                     using (StatusbarHelper.Freeze())
                     using (StatusbarHelper.ShowDeployAnimation())
-                    using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
+                    using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (ShellUtils.SetShellUIBusy())
                     {
                         var deploymentStartTime = DateTime.Now;
@@ -331,7 +383,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     if (result != null)
                     {
-                        OutputResultData(result, options);
+                        OutputResultData(result, options, project);
 
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
@@ -344,7 +396,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     }
                     else
                     {
-                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                        GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                         StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                         EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
@@ -353,9 +405,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
-                PublishDialog.FinishFlow();
+
+                PublishDialog?.FinishFlow();
 
                 EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }
@@ -363,66 +416,29 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         #endregion
 
-        private async Task InitializeDialogState()
+        private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options, IParsedProject project)
         {
-            try
-            {
-                // Mark that the project is being loaded and verified.
-                LoadingProject = true;
-
-                if (string.IsNullOrEmpty(DeploymentName))
-                {
-                    DeploymentName = PublishDialog.Project.Name.ToLower();
-                }
-                if (string.IsNullOrEmpty(DeploymentVersion))
-                {
-                    DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
-                }
-
-                Task<bool> validateTask = ValidateGcpProjectState();
-                PublishDialog.TrackTask(validateTask);
-
-                if (await validateTask)
-                {
-                    Task<IEnumerable<Cluster>> clustersTask = GetAllClustersAsync();
-                    PublishDialog.TrackTask(clustersTask);
-                    Clusters = await clustersTask;
-                }
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                CanPublish = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
-        }
-
-        private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options)
-        {
-            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, PublishDialog.Project.Name));
+            GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
             if (result.DeploymentUpdated)
             {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
+                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
             }
             if (result.DeploymentScaled)
             {
                 GcpOutputWindow.OutputLine(
-                    String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
+                    string.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
             }
 
             if (result.ServiceUpdated)
             {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
+                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
             }
             if (result.ServiceExposed)
             {
                 if (result.PublicServiceIpAddress != null)
                 {
                     GcpOutputWindow.OutputLine(
-                        String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
+                        string.Format(Resources.GkePublishServiceIpMessage, options.DeploymentName, result.PublicServiceIpAddress));
                 }
                 else
                 {
@@ -433,14 +449,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     else
                     {
                         GcpOutputWindow.OutputLine(
-                            String.Format(
-                                Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
+                            string.Format(
+                                Resources.GkePublishServiceClusterIpMessage, options.DeploymentName, result.ClusterServiceIpAddress));
                     }
                 }
             }
             if (result.ServiceDeleted)
             {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
+                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishServiceDeletedMessage, options.DeploymentName));
             }
         }
 
@@ -453,87 +469,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        private bool ValidateInput()
+        private async Task RefreshClustersAsync()
         {
-            int replicas;
-            if (!int.TryParse(Replicas, out replicas))
+            IList<Cluster> clusters = await CurrentDataSource.GetClusterListAsync();
+
+            if (clusters == null || clusters.Count == 0)
             {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishInvalidReplicasMessage, Resources.UiInvalidValueTitle);
-                return false;
+                Clusters = s_placeholderList;
             }
-
-            if (String.IsNullOrEmpty(DeploymentName))
+            else
             {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentNameMessage, Resources.UiInvalidValueTitle);
-                return false;
+                Clusters = clusters.OrderBy(x => x.Name).ToList();
             }
-
-            if (!GcpPublishStepsUtils.IsValidName(DeploymentName))
-            {
-                UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.GkePublishInvalidDeploymentNameMessage, DeploymentName),
-                    Resources.UiInvalidValueTitle);
-                return false;
-            }
-            if (String.IsNullOrEmpty(DeploymentVersion))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
-            if (!GcpPublishStepsUtils.IsValidName(DeploymentVersion))
-            {
-                UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.GkePublishInvalidDeploymentVersionMessage, DeploymentVersion),
-                    Resources.UiInvalidValueTitle);
-                return false;
-            }
-
-            return true;
-        }
-
-        protected override void OnProjectChanged()
-        {
-            LoadingProjectTask = InitializeDialogState();
-        }
-
-        private async Task<bool> ValidateGcpProjectState()
-        {
-            // Reset UI state.
-            CanPublish = true;
-            NeedsApiEnabled = false;
-            RefreshClustersListCommand.CanExecuteCommand = true;
-            CreateClusterCommand.CanExecuteCommand = true;
-
-            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
-            {
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                RefreshClustersListCommand.CanExecuteCommand = false;
-                CreateClusterCommand.CanExecuteCommand = false;
-                return false;
-            }
-            return true;
-        }
-
-        private async Task<IEnumerable<Cluster>> GetAllClustersAsync()
-        {
-            var clusters = await CurrentDataSource.GetClusterListAsync();
-
-            var result = clusters?.OrderBy(x => x.Name).ToList();
-            if (result == null || result.Count == 0)
-            {
-                return s_placeholderList;
-            }
-            return result;
         }
 
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.
         /// </summary>
-        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null)
+        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
         {
             var content = new GkeStepContent();
-            var viewModel = new GkeStepViewModel(content, dataSource, apiManager);
+            var viewModel = new GkeStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
             content.DataContext = viewModel;
 
             return viewModel;
