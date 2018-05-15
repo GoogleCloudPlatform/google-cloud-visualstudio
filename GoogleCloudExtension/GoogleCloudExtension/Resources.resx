@@ -845,10 +845,6 @@
     <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
-  <data name="PublishDialogNextButtonCaption" xml:space="preserve">
-    <value>_Next</value>
-    <comment>The caption for the next button.</comment>
-  </data>
   <data name="PublishDialogPrevButtonCaption" xml:space="preserve">
     <value>_Prev</value>
     <comment>The caption for the prev button.</comment>
