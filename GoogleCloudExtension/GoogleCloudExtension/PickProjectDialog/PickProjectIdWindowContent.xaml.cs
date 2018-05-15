@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace GoogleCloudExtension.PickProjectDialog
@@ -21,25 +22,26 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// </summary>
     public partial class PickProjectIdWindowContent
     {
-        public PickProjectIdWindowContent()
+        // ReSharper disable once MemberCanBePrivate.Global
+        public const string CvsKey = "cvs";
+        private PickProjectIdViewModel ViewModel { get; }
+        public PickProjectIdWindowContent(PickProjectIdViewModel viewModel)
         {
             InitializeComponent();
+
+            DataContext = ViewModel = viewModel;
 
             // Ensure the focus is in the filter textbox.
             _filter.Focus();
         }
 
-        private void OnFilterItemInCollectionView(object sender, System.Windows.Data.FilterEventArgs e)
-        {
-            var viewModel = DataContext as PickProjectIdViewModel;
-            e.Accepted = viewModel?.FilterItem(e.Item) ?? false;
-        }
+        private void OnFilterItemInCollectionView(object sender, FilterEventArgs e) =>
+            e.Accepted = ViewModel?.FilterItem(e.Item) ?? false;
 
-        private void OnFilterTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void OnFilterTextChanged(object sender, TextChangedEventArgs e)
         {
-            var cvs = Resources["cvs"] as CollectionViewSource;
-            var view = cvs.View;
-            view.Refresh();
+            var collectionViewSource = Resources[CvsKey] as CollectionViewSource;
+            collectionViewSource?.View?.Refresh();
         }
     }
 }
