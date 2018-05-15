@@ -19,13 +19,12 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Google Inc.")]
-[assembly: AssemblyProduct("Cloud Tools for Powershell")]
+[assembly: AssemblyProduct("Cloud Tools for Visual Studio")]
 [assembly: AssemblyCopyright("Copyright © Google Inc. 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
-
 [assembly: Guid("85d0caad-a3e0-4a3b-b107-500caa2a5994")]
 
 [assembly: AssemblyVersion("1.0.0.0")]
