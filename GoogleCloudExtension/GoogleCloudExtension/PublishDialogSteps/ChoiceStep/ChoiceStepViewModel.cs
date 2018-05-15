@@ -18,8 +18,10 @@ using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtension.PublishDialogSteps.GkeStep;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
@@ -30,7 +32,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
     /// for the publish process. This is always the first step to be shown in the wizard, and it
     /// navigates to the step specified by the user pressing the choice button.
     /// </summary>
-    public class ChoiceStepViewModel : PublishDialogStepBase
+    public class ChoiceStepViewModel : ValidatingViewModelBase, IPublishDialogStep
     {
         private const string AppEngineIconPath = "PublishDialogSteps/ChoiceStep/Resources/AppEngine_128px_Retina.png";
         private const string GceIconPath = "PublishDialogSteps/ChoiceStep/Resources/ComputeEngine_128px_Retina.png";
@@ -41,7 +43,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private static readonly Lazy<ImageSource> s_gkeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GkeIconPath));
 
         private readonly ChoiceStepContent _content;
-        private IEnumerable<Choice> _choices;
+        private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
+
+        // Disable compiler error CS0067.
+        public event EventHandler CanGoNextChanged
+        {
+            add { }
+            remove { }
+        }
+        public event EventHandler CanPublishChanged
+        {
+            add { }
+            remove { }
+        }
 
         /// <summary>
         /// The choices available for the project being published.
@@ -52,9 +66,43 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             set { SetValueAndRaise(ref _choices, value); }
         }
 
+        protected internal IPublishDialog PublishDialog { get; private set; }
+
+        /// <inheritdoc />
+        public FrameworkElement Content => _content;
+
+        /// <inheritdoc />
+        public bool CanGoNext => false;
+
+        /// <inheritdoc />
+        public bool CanPublish => false;
+
         private ChoiceStepViewModel(ChoiceStepContent content)
         {
             _content = content;
+        }
+
+        public void OnVisible(IPublishDialog dialog)
+        {
+            PublishDialog = dialog;
+            AddHandlers();
+            Choices = GetChoicesForCurrentProject();
+        }
+
+        /// <summary>
+        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
+        /// </summary>
+        public IPublishDialogStep Next()
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// This step never publishes. <see cref="IPublishDialogStep.CanPublish"/> is always <code>false</code>
+        /// </summary>
+        public void Publish()
+        {
+            throw new NotSupportedException();
         }
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
@@ -111,20 +159,35 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             PublishDialog.NavigateToStep(nextStep);
         }
 
-        #region IPublishDialogStep
-
-        public override FrameworkElement Content => _content;
-
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        protected internal virtual void OnFlowFinished()
         {
-            base.OnPushedToDialog(dialog);
-
-            Choices = GetChoicesForCurrentProject();
+            RemoveHandlers();
+            PublishDialog = null;
+            Choices = Enumerable.Empty<Choice>();
         }
 
-        #endregion
+        private void OnFlowFinished(object sender, EventArgs e)
+            => OnFlowFinished();
 
-        public static IPublishDialogStep CreateStep()
+        private void AddHandlers()
+        {
+            // Checking for null in case it was never pushed in a dialog.
+            if (PublishDialog != null)
+            {
+                PublishDialog.FlowFinished += OnFlowFinished;
+            }
+        }
+
+        private void RemoveHandlers()
+        {
+            // Checking for null in case it was never pushed in a dialog.
+            if (PublishDialog != null)
+            {
+                PublishDialog.FlowFinished -= OnFlowFinished;
+            }
+        }
+
+        public static ChoiceStepViewModel CreateStep()
         {
             var content = new ChoiceStepContent();
             var viewModel = new ChoiceStepViewModel(content);

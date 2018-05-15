@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using System;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -42,6 +43,13 @@ namespace GoogleCloudExtension.PublishDialog
         /// Called from a step that wants to finish the flow. In essence closes the dialog.
         /// </summary>
         void FinishFlow();
+
+        /// <summary>
+        /// Event raised when <see cref="FinishFlow"/> is called by one of the steps.
+        /// Gives the rest of the steps associated with this publish dialog an opportunity
+        /// to cleanup.
+        /// </summary>
+        event EventHandler FlowFinished;
 
         /// <summary>
         /// Makes the dialog look "busy" as long as <paramref name="task"/> is not completed.

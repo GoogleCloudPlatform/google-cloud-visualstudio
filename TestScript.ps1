@@ -8,6 +8,7 @@ $testDllNames = "GoogleAnalyticsUtilsTests.dll",
 	"GoogleCloudExtensionUnitTests.dll",
 	"GoogleCloudExtension.Utils.UnitTests.dll",
 	"GoogleCloudExtension.DataSources.UnitTests.dll",
+	"GoogleCloudExtension.Deployment.UnitTests.dll",
 	"GoogleCloudExtension.GCloud.UnitTests.dll"
 
 if ($env:APPVEYOR_SCHEDULED_BUILD -or $FunctionalTests) {

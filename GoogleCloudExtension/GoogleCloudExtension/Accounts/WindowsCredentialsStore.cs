@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.Accounts
     /// 
     /// The password is encrypted/decryped using the <seealso cref="ProtectedData"/> class.
     /// </summary>
-    internal class WindowsCredentialsStore
+    internal class WindowsCredentialsStore : IWindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
         private const string PasswordFileExtension = ".data";
