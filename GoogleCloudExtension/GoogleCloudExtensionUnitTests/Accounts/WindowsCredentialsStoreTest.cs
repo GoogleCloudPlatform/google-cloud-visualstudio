@@ -43,6 +43,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
         private WindowsCredentialsStore _objectUnderTest;
         private Mock<Func<string, bool>> _directoryExistsMock;
+        private Mock<Func<string, bool>> _fileExistsMock;
         private Mock<Func<string, IEnumerable<string>>> _enumerateFilesMock;
         private Mock<Func<string, byte[]>> _readAllBytesMock;
         private Mock<Action<string, byte[]>> _writeAllBytesMock;
@@ -54,6 +55,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             CredentialsStore.Default.UpdateCurrentProject(
                 new Project { Name = "DefaultProjectName", ProjectId = "DefaultProjectId" });
             _directoryExistsMock = new Mock<Func<string, bool>>();
+            _fileExistsMock = new Mock<Func<string, bool>>();
             _enumerateFilesMock = new Mock<Func<string, IEnumerable<string>>>();
             _readAllBytesMock = new Mock<Func<string, byte[]>>();
             _writeAllBytesMock = new Mock<Action<string, byte[]>>();
@@ -63,6 +65,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _objectUnderTest = new WindowsCredentialsStore
             {
                 DirectoryExists = _directoryExistsMock.Object,
+                FileExists = _fileExistsMock.Object,
                 EnumerateFiles = _enumerateFilesMock.Object,
                 ReadAllBytes = _readAllBytesMock.Object,
                 WriteAllBytes = _writeAllBytesMock.Object,
@@ -252,6 +255,39 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                         bytes => Encoding.UTF8.GetString(
                             ProtectedData.Unprotect(bytes, null, DataProtectionScope.CurrentUser)) == password)),
                 Times.Once);
+        }
+
+        [TestMethod]
+        public void TestDeleteCredentialsForInstance_SkipsForNonExistantFile()
+        {
+            _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
+
+            _objectUnderTest.DeleteCredentialsForInstance(
+                s_defaultInstance, new WindowsInstanceCredentials("user", "password"));
+
+            _deleteFileMock.Verify(f => f(It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestDeleteCredentialsForInstance_DeletesFile()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "test-project-id" });
+            _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
+
+            var testInstance = new Instance
+            {
+                Name = "TestInstanceName",
+                Zone = "https://www.googleapis.com/compute/v1/projects/deploy-from-visual-studio-dev/zones/test-zone"
+            };
+            _objectUnderTest.DeleteCredentialsForInstance(testInstance, new WindowsInstanceCredentials("testUser", "password"));
+
+            _deleteFileMock.Verify(
+                f => f(
+                    It.Is<string>(
+                        s => Path.GetFileName(s) == "testUser.data" &&
+                            Path.GetDirectoryName(s).EndsWith(
+                                @"test-project-id/test-zone/TestInstanceName", StringComparison.Ordinal))),
+                Times.Never);
         }
     }
 }

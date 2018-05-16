@@ -49,6 +49,7 @@ namespace GoogleCloudExtension.Accounts
 
         /// Mockable static methods for testing.
         internal Func<string, bool> DirectoryExists { private get; set; } = Directory.Exists;
+        internal Func<string, bool> FileExists { private get; set; } = File.Exists;
         internal Func<string, IEnumerable<string>> EnumerateFiles { private get; set; } = Directory.EnumerateFiles;
         internal Func<string, byte[]> ReadAllBytes { private get; set; } = File.ReadAllBytes;
         internal Action<string, byte[]> WriteAllBytes { private get; set; } = File.WriteAllBytes;
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.Accounts
             string instanceStoragePath = GetStoragePathForInstance(instance);
             string credentialsPath = Path.Combine(instanceStoragePath, GetFileName(credentials));
 
-            if (File.Exists(credentialsPath))
+            if (FileExists(credentialsPath))
             {
                 DeleteFile(credentialsPath);
             }
