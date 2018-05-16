@@ -25,7 +25,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [DataRow(null)]
         [DataRow("")]
         [DataRow("already-kebob-case")]
-        [DataRow("end-with-dash")]
+        [DataRow("end-with-dash-")]
         public void TestToValid_NameUnchanged(string unchangingName)
         {
             string result = GcpPublishStepsUtils.ToValidName(unchangingName);

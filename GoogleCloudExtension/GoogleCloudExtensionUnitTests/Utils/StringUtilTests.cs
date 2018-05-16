@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 using static GoogleCloudExtension.Utils.StringUtils;
 
 namespace GoogleCloudExtensionUnitTests.Utils
@@ -85,6 +86,28 @@ namespace GoogleCloudExtensionUnitTests.Utils
             string result = ToKebobCase(argument);
 
             Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public void TestToKebobCase_ExtremelyLongValueChanges()
+        {
+            string longNumberString = string.Join("", Enumerable.Range(1, 200));
+            string argument = "CamelCaseHead" + longNumberString + "CamelCaseTail";
+            string expected = "camel-case-head-" + longNumberString + "-camel-case-tail";
+
+            string result = ToKebobCase(argument);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void TestToKebobCase_ExtremelyLongValueUnchanged()
+        {
+            string longNumberString = string.Join("", Enumerable.Range(1, 200));
+
+            string result = ToKebobCase(longNumberString);
+
+            Assert.AreEqual(longNumberString, result);
         }
     }
 }
