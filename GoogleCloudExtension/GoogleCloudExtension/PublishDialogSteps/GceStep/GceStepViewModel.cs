@@ -116,6 +116,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// </summary>
         public ProtectedCommand ManageCredentialsCommand { get; }
 
+        public ProtectedCommand RefreshInstancesCommand { get; }
+
         /// <summary>
         /// Whether to open the website after a succesful publish operation. Defaults to true.
         /// </summary>
@@ -160,19 +162,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             _currentWindowsCredentialStore = currentWindowsCredentialStore;
             _manageCredentialsPrompt = manageCredentialsPrompt;
 
-            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, false);
+            RefreshInstancesCommand = new ProtectedCommand(() => StartAndTrack(LoadValidProjectDataAsync), IsValidGcpProject);
+        }
+
+        protected override void OnIsValidGcpProjectChanged()
+        {
+            RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
         }
 
         private void OnManageCredentialsCommand()
         {
             ManageCredentialsPrompt(SelectedInstance);
             UpdateCredentials();
-        }
-
-        private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
-        {
-            IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
-            return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
         }
 
         #region IPublishDialogStep
@@ -274,7 +276,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// </summary>
         protected override async Task LoadValidProjectDataAsync()
         {
-            Instances = await GetAllWindowsInstancesAsync();
+            IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
+            Instances = instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
         }
 
         protected override void RefreshCanPublish()
@@ -282,14 +285,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             base.RefreshCanPublish();
             CanPublish = CanPublish
                 && SelectedCredentials != null;
-        }
-
-        /// <summary>
-        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
-        /// </summary>
-        public override IPublishDialogStep Next()
-        {
-            throw new NotSupportedException();
         }
 
         #endregion

@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -5128,8 +5128,8 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .Net Core SDK.
-        ///Either intall the Visual Studio 2015 DotNetCore tooling, or upgrade to Visual Studio 2017..
+        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .NET Core SDK.
+        ///Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017..
         /// </summary>
         public static string NoDotNetCorePreviewFoundError {
             get {
@@ -5476,15 +5476,6 @@ namespace GoogleCloudExtension {
         public static string PublishDialogLoadingProjectMessage {
             get {
                 return ResourceManager.GetString("PublishDialogLoadingProjectMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Next.
-        /// </summary>
-        public static string PublishDialogNextButtonCaption {
-            get {
-                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
             }
         }
         

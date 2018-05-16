@@ -56,7 +56,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         [TestMethod]
         public void TestInitialState()
         {
-            Assert.IsFalse(_objectUnderTest.CanGoNext);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsNull(_objectUnderTest.PublishDialog);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
@@ -139,13 +138,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
                 },
                 _objectUnderTest.Choices.Select(c => Tuple.Create(c.Name, c.ToolTip, c.Command.CanExecute(null)))
                     .ToList());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestNext_Throws()
-        {
-            _objectUnderTest.Next();
         }
 
         [TestMethod]
