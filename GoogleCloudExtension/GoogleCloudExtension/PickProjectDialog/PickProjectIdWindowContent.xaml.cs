@@ -24,8 +24,8 @@ namespace GoogleCloudExtension.PickProjectDialog
     {
         // ReSharper disable once MemberCanBePrivate.Global
         public const string CvsKey = "cvs";
-        private PickProjectIdViewModel ViewModel { get; }
-        public PickProjectIdWindowContent(PickProjectIdViewModel viewModel)
+        private IPickProjectIdViewModel ViewModel { get; }
+        public PickProjectIdWindowContent(IPickProjectIdViewModel viewModel)
         {
             InitializeComponent();
 
