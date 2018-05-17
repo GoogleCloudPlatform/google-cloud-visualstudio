@@ -109,9 +109,9 @@ namespace GoogleCloudExtension.Utils
         /// <param name="message">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
         /// <param name="errorDetails">The error details for the dialog, optional.</param>
-        public static bool ErrorActionPrompt(string message, string title, string errorDetails = null)
-        {
-            return PromptUser(
+        /// <returns>Returns true if the user pressed the yes button, false if the user pressed the no button or closed the dialog.</returns>
+        public static bool ErrorActionPrompt(string message, string title, string errorDetails = null) =>
+            PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -121,7 +121,6 @@ namespace GoogleCloudExtension.Utils
                     CancelButtonCaption = Resources.UiNoButtonCaption,
                     Icon = s_errorIcon.Value
                 });
-        }
 
         /// <summary>
         /// Shows an error message for the given exception.
