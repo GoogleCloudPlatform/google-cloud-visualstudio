@@ -351,22 +351,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);
         }
 
-
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestNext_ThrowsNotSupportedException()
+        public void TestInitializeDialogAsync_SetsValidDeploymentName()
         {
-            _objectUnderTest.Next();
-        }
-
-        [TestMethod]
-        public void TestInitializeDialogAsync_SetsDeploymentName()
-        {
-            Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("AProjectName");
+            Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("VisualStudioProjectName");
 
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
-            Assert.AreEqual("aprojectname", _objectUnderTest.DeploymentName);
+            Assert.AreEqual("visual-studio-project-name", _objectUnderTest.DeploymentName);
         }
 
         [TestMethod]

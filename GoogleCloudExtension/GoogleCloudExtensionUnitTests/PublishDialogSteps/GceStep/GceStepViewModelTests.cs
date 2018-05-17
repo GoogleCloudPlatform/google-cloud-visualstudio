@@ -160,6 +160,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             CollectionAssert.That.IsEmpty(_objectUnderTest.Credentials);
             Assert.IsNull(_objectUnderTest.SelectedCredentials);
             Assert.IsFalse(_objectUnderTest.ManageCredentialsCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
             Assert.IsFalse(_objectUnderTest.LaunchRemoteDebugger);
             Assert.IsInstanceOfType(_objectUnderTest.Content, typeof(GceStepContent));
@@ -353,10 +354,49 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestNext_ThrowsNotSupportedException()
+        public void TestRefreshInstancesCommand_TracksNewTask()
         {
-            _objectUnderTest.Next();
+            Task oldAsyncAction = _objectUnderTest.AsyncAction;
+
+            _objectUnderTest.RefreshInstancesCommand.Execute(null);
+
+            Assert.AreNotSame(oldAsyncAction, _objectUnderTest.AsyncAction);
+        }
+
+        [TestMethod]
+        public async Task TestRefreshInstancesCommand_RefreshesInstances()
+        {
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+
+            _objectUnderTest.RefreshInstancesCommand.Execute(null);
+            await _objectUnderTest.AsyncAction;
+
+            CollectionAssert.AreEqual(s_runningWindowsInstances.ToList(), _objectUnderTest.Instances.ToList());
+        }
+
+        [TestMethod]
+        public void TestRefreshInstancesCommand_EnabledByValidProject()
+        {
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            CredentialsStore.Default.UpdateCurrentProject(null);
+
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+
+            Assert.IsTrue(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestRefreshInstancesCommand_DisabledByInvalidProject()
+        {
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+
+            CredentialsStore.Default.UpdateCurrentProject(null);
+
+            Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
+
         }
     }
 }

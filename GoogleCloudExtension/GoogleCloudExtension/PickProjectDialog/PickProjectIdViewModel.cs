@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// <summary>
     /// View model for picking a project id.
     /// </summary>
-    public class PickProjectIdViewModel : ViewModelBase
+    public class PickProjectIdViewModel : ViewModelBase, IPickProjectIdViewModel
     {
         private IEnumerable<Project> _projects;
         private Project _selectedProject;

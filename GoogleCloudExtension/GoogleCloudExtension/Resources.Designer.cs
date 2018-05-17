@@ -5480,15 +5480,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Next.
-        /// </summary>
-        public static string PublishDialogNextButtonCaption {
-            get {
-                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {

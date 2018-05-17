@@ -50,11 +50,6 @@ namespace GoogleCloudExtension.PublishDialog
         public ProtectedCommand PrevCommand { get; }
 
         /// <summary>
-        /// The command to execute when pressing the "Next" button.
-        /// </summary>
-        public ProtectedCommand NextCommand { get; }
-
-        /// <summary>
         /// The command to execute when presing the "Publish" button.
         /// </summary>
         public ProtectedCommand PublishCommand { get; }
@@ -79,16 +74,9 @@ namespace GoogleCloudExtension.PublishDialog
             _project = project;
 
             PrevCommand = new ProtectedCommand(OnPrevCommand);
-            NextCommand = new ProtectedCommand(OnNextCommand);
             PublishCommand = new ProtectedCommand(OnPublishCommand);
 
             PushStep(initialStep);
-        }
-
-        private void OnNextCommand()
-        {
-            var nextStep = CurrentStep.Next();
-            PushStep(nextStep);
         }
 
         private void OnPrevCommand()
@@ -114,7 +102,7 @@ namespace GoogleCloudExtension.PublishDialog
         private void AddStepEvents()
         {
             var top = _stack.Peek();
-            top.CanGoNextChanged += OnCanGoNextChanged;
+
             top.CanPublishChanged += OnCanPublishChanged;
             top.ErrorsChanged += OnErrorsChanged;
         }
@@ -124,7 +112,6 @@ namespace GoogleCloudExtension.PublishDialog
             if (_stack.Count > 0)
             {
                 var top = _stack.Peek();
-                top.CanGoNextChanged -= OnCanGoNextChanged;
                 top.CanPublishChanged -= OnCanPublishChanged;
                 top.ErrorsChanged -= OnErrorsChanged;
             }
@@ -145,18 +132,12 @@ namespace GoogleCloudExtension.PublishDialog
         {
             Content = CurrentStep.Content;
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
-            NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
         }
 
         private void OnCanPublishChanged(object sender, EventArgs e)
         {
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
-        }
-
-        private void OnCanGoNextChanged(object sender, EventArgs e)
-        {
-            NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
         }
 
         private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)

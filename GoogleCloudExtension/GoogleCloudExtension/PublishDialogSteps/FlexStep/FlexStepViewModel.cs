@@ -269,14 +269,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
         }
 
-        /// <summary>
-        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
-        /// </summary>
-        public override IPublishDialogStep Next()
-        {
-            throw new NotSupportedException();
-        }
-
         protected internal override void OnFlowFinished()
         {
             base.OnFlowFinished();

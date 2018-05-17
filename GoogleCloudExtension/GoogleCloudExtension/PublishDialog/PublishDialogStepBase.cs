@@ -33,7 +33,6 @@ namespace GoogleCloudExtension.PublishDialog
     /// </summary>
     public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
-        private bool _canGoNext = false;
         private bool _canPublish = false;
         private readonly IApiManager _apiManager;
         private bool _loadingProject = false;
@@ -41,29 +40,12 @@ namespace GoogleCloudExtension.PublishDialog
         private bool _generalError = false;
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
-        private IList<string> _requiredApis = new List<string>();
         private Task _asyncAction = TplExtensions.CompletedTask;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
 
         protected internal IPublishDialog PublishDialog { get; private set; }
-
-        /// <summary>
-        /// Indicates whether the next button is active.
-        /// </summary>
-        public bool CanGoNext
-        {
-            get { return _canGoNext; }
-            protected set
-            {
-                if (_canGoNext != value)
-                {
-                    _canGoNext = value;
-                    CanGoNextChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
 
         /// <summary>
         /// Indicates whether the publish button is active.
@@ -181,11 +163,6 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         /// <summary>
-        /// Event raised whenever <seealso cref="CanGoNext"/> value changes.
-        /// </summary>
-        public event EventHandler CanGoNextChanged;
-
-        /// <summary>
         /// Event raised whenever <seealso cref="CanPublish"/> value changes.
         /// </summary>
         public event EventHandler CanPublishChanged;
@@ -211,9 +188,15 @@ namespace GoogleCloudExtension.PublishDialog
                 {
                     _isValidGcpProject = value;
                     RefreshCanPublish();
+                    OnIsValidGcpProjectChanged();
                 }
             }
         }
+
+        /// <summary>
+        /// This method is called when IsValidGcpProject is set to a new value.
+        /// </summary>
+        protected virtual void OnIsValidGcpProjectChanged() { }
 
         protected PublishDialogStepBase(IApiManager apiManager, Func<Project> pickProjectPrompt)
         {
@@ -227,12 +210,6 @@ namespace GoogleCloudExtension.PublishDialog
                 await AsyncAction;
             }, false);
         }
-
-        /// <summary>
-        /// Returns the next step to navigate to when the next button is pressed.
-        /// </summary>
-        /// <returns>The next step to navigate to.</returns>
-        public abstract IPublishDialogStep Next();
 
         /// <summary>
         /// Performs the publish step action, will only be called if <seealso cref="CanPublish"/> return true.
@@ -300,7 +277,6 @@ namespace GoogleCloudExtension.PublishDialog
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 IsValidGcpProject = false;
-                CanGoNext = false;
                 GeneralError = true;
             }
             finally
@@ -313,7 +289,6 @@ namespace GoogleCloudExtension.PublishDialog
         {
             // Reset UI State
             IsValidGcpProject = false;
-            CanGoNext = false;
             NeedsApiEnabled = false;
 
             IList<string> requiredApis = RequiredApis;
@@ -391,7 +366,6 @@ namespace GoogleCloudExtension.PublishDialog
         {
             RemoveHandlers();
             PublishDialog = null;
-            CanGoNext = false;
             IsValidGcpProject = false;
             LoadingProject = false;
             GeneralError = false;

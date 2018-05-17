@@ -46,11 +46,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
 
         // Disable compiler error CS0067.
-        public event EventHandler CanGoNextChanged
-        {
-            add { }
-            remove { }
-        }
         public event EventHandler CanPublishChanged
         {
             add { }
@@ -72,9 +67,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         public FrameworkElement Content => _content;
 
         /// <inheritdoc />
-        public bool CanGoNext => false;
-
-        /// <inheritdoc />
         public bool CanPublish => false;
 
         private ChoiceStepViewModel(ChoiceStepContent content)
@@ -87,14 +79,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             PublishDialog = dialog;
             AddHandlers();
             Choices = GetChoicesForCurrentProject();
-        }
-
-        /// <summary>
-        /// This step never goes next. <see cref="IPublishDialogStep.CanGoNext"/> is always <code>false</code>
-        /// </summary>
-        public IPublishDialogStep Next()
-        {
-            throw new NotSupportedException();
         }
 
         /// <summary>
