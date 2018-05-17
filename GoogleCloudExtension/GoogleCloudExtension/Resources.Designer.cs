@@ -6443,6 +6443,61 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load credentials from: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load failed.
+        /// </summary>
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to decrypt credentials from: {0}
+        ///Delete corrupted file?.
+        /// </summary>
+        public static string WindowsCredentialsStoreDecryptErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Corrupted File.
+        /// </summary>
+        public static string WindowsCredentialsStoreDecryptionErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptionErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete corrupted credentials file: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete failed.
+        /// </summary>
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _MVC.
         /// </summary>
         public static string WizardTemplateChooserMvcLabel {

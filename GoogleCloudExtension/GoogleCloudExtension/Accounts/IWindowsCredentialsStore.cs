@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="instance">The GCE VM</param>
         /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with The GCE VM. It might be
         /// empty if no credentials are found.</returns>
-        IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance);
+        IList<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance);
 
         /// <summary>
         /// Returns the path where to store credential related information for a GCE VM.

@@ -97,13 +97,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             s_windows2012Instance
         };
 
-        private static readonly WindowsInstanceCredentials s_credentials = new WindowsInstanceCredentials { User = "User1", Password = "Password1" };
+        private static readonly WindowsInstanceCredentials s_credentials = new WindowsInstanceCredentials("User1", "Password1");
 
         private static readonly List<WindowsInstanceCredentials> s_credentialsList =
             new List<WindowsInstanceCredentials>
             {
                 s_credentials,
-                new WindowsInstanceCredentials {User = "User2", Password = "Password2"}
+                new WindowsInstanceCredentials ("User2", "Password2")
             };
 
         private GceStepViewModel _objectUnderTest;
@@ -219,7 +219,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public void TestSetSelectedCredentials()
         {
-            var credentials2 = new WindowsInstanceCredentials { User = "User2", Password = "Password2" };
+            var credentials2 = new WindowsInstanceCredentials("User2", "Password2");
             _objectUnderTest.SelectedCredentials = credentials2;
 
             Assert.AreEqual(credentials2, _objectUnderTest.SelectedCredentials);
@@ -234,7 +234,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
                 .Returns(s_credentialsList);
             _objectUnderTest.OnVisible(_mockedPublishDialog);
             _objectUnderTest.SelectedCredentials =
-                new WindowsInstanceCredentials { User = "User2", Password = "Password2" };
+                new WindowsInstanceCredentials("User2", "Password2");
             _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCredentials = null;
@@ -253,7 +253,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _objectUnderTest.SelectedCredentials = null;
             _canPublishChangedCount = 0;
 
-            _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials { User = "User2", Password = "Password2" };
+            _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials("User2", "Password2");
 
             Assert.IsTrue(_objectUnderTest.CanPublish);
             Assert.AreEqual(1, _canPublishChangedCount);

@@ -158,11 +158,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
             else
             {
-                credentials = new WindowsInstanceCredentials
-                {
-                    User = request.User,
-                    Password = request.Password
-                };
+                credentials = new WindowsInstanceCredentials(request.User, request.Password);
             }
 
             if (credentials != null)

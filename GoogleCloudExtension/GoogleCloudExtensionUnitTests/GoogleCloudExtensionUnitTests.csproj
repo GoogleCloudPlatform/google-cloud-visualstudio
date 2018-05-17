@@ -214,6 +214,7 @@
       <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\stdole.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
       <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
       <Private>True</Private>
@@ -229,6 +230,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModelTests.cs" />
