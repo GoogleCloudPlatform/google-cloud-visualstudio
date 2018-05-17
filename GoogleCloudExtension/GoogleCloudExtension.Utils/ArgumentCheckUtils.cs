@@ -28,11 +28,11 @@ namespace GoogleCloudExtension.Utils
             return arg;
         }
 
-        public static T ThrowIfNull<T>(this T arg, string message)
+        public static T ThrowIfNull<T>(this T arg, string paramName)
         {
             if (arg == null)
             {
-                throw new ArgumentNullException(message ?? "");
+                throw new ArgumentNullException(paramName ?? "");
             }
 
             return arg;
