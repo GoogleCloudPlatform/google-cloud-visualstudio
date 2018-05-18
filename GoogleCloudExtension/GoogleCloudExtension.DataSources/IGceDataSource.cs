@@ -68,5 +68,33 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="name">The name of the instance.</param>
         /// <returns>The new operation in flight.</returns>
         GceOperation StopInstance(string zoneName, string name);
+
+        /// <summary>
+        /// Starts an instance in the given project.
+        /// </summary>
+        /// <param name="instance">The instance to start.</param>
+        /// <returns>The new pending operation.</returns>
+        GceOperation StartInstance(Instance instance);
+
+        /// <summary>
+        ///  Starts an instance in the current project, given its <paramref name="zoneName"/> and <paramref name="name"/>.
+        /// </summary>
+        /// <param name="zoneName">The zone where the instance is located.</param>
+        /// <param name="name">The name of the instance.</param>
+        /// <returns>The new pending operation.</returns>
+        GceOperation StartInstance(string zoneName, string name);
+
+        /// <summary>
+        /// Updates the instance ports, enables the <paramref name="portsToEnable"/> and disables the
+        /// ports in <paramref name="portsToDisable"/>.
+        /// </summary>
+        /// <param name="instance">The instance to modify.</param>
+        /// <param name="portsToEnable">The list of ports to enable.</param>
+        /// <param name="portsToDisable">The list of ports to disable.</param>
+        /// <returns>The operation.</returns>
+        GceOperation UpdateInstancePorts(
+            Instance instance,
+            IList<FirewallPort> portsToEnable,
+            IList<FirewallPort> portsToDisable);
     }
 }

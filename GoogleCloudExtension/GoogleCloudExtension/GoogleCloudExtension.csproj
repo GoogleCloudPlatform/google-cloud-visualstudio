@@ -27,6 +27,10 @@
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <!-- Default Visual Studio Start values. -->
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
     <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -54,6 +58,7 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="Accounts\IWindowsCredentialsStore.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
     <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
@@ -213,6 +218,14 @@
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
     <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindow.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml.cs">
+      <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="IGoogleCloudExtensionPackage.cs" />
+    <Compile Include="PickProjectDialog\IPickProjectIdViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
     </Compile>
@@ -243,6 +256,7 @@
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
     <Compile Include="PickProjectDialog\SampleData\NeedsAccountState.cs" />
@@ -646,7 +660,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
@@ -1044,6 +1057,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

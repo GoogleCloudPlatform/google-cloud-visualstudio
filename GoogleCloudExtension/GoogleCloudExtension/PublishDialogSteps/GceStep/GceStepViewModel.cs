@@ -24,13 +24,13 @@ using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
@@ -48,12 +48,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         private readonly GceStepContent _content;
         private readonly IGceDataSource _dataSource;
-        private Instance _selectedInstance;
-        private IEnumerable<WindowsInstanceCredentials> _credentials;
-        private WindowsInstanceCredentials _selectedCredentials;
+        private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
+        private readonly Action<Instance> _manageCredentialsPrompt;
+        private Instance _selectedInstance = null;
+        private IEnumerable<WindowsInstanceCredentials> _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
+        private WindowsInstanceCredentials _selectedCredentials = null;
         private bool _openWebsite = true;
-        private bool _launchRemoteDebugger;
-        private IEnumerable<Instance> _instances;
+        private bool _launchRemoteDebugger = false;
+        private IEnumerable<Instance> _instances = Enumerable.Empty<Instance>();
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -62,7 +64,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public IEnumerable<Instance> Instances
         {
             get { return _instances; }
-            private set { SetValueAndRaise(ref _instances, value); }
+            private set
+            {
+                SetValueAndRaise(ref _instances, value);
+                SelectedInstance = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -85,7 +91,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public IEnumerable<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
-            private set { SetValueAndRaise(ref _credentials, value); }
+            private set
+            {
+                SetValueAndRaise(ref _credentials, value);
+                SelectedCredentials = value?.FirstOrDefault();
+            }
         }
 
         /// <summary>
@@ -97,20 +107,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set
             {
                 SetValueAndRaise(ref _selectedCredentials, value);
-                RaisePropertyChanged(nameof(HasSelectedCredentials));
-                CanPublish = value != null;
+                RefreshCanPublish();
             }
         }
-
-        /// <summary>
-        /// Returns whether there are credentials selected for the publish process.
-        /// </summary>
-        public bool HasSelectedCredentials => SelectedCredentials != null;
 
         /// <summary>
         /// The command to execute when pressing the manage credentials button.
         /// </summary>
         public ProtectedCommand ManageCredentialsCommand { get; }
+
+        public ProtectedCommand RefreshInstancesCommand { get; }
 
         /// <summary>
         /// Whether to open the website after a succesful publish operation. Defaults to true.
@@ -130,57 +136,45 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
-        /// <summary>
-        /// The command to execute to enable the necessary APIs for the project.
-        /// </summary>
-        public ICommand EnableApiCommand { get; }
-
-        private IGceDataSource CurrentDataSource => _dataSource ?? new GceDataSource(
+        private IGceDataSource CurrentDataSource =>
+            _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GceStepViewModel(GceStepContent content, IGceDataSource dataSource, IApiManager apiManager)
-            : base(apiManager)
+        private IWindowsCredentialsStore CurrentWindowsCredentialsStore =>
+            _currentWindowsCredentialStore ?? WindowsCredentialsStore.Default;
+
+        private Action<Instance> ManageCredentialsPrompt =>
+            _manageCredentialsPrompt ?? ManageWindowsCredentialsWindow.PromptUser;
+
+        private GceStepViewModel(
+            GceStepContent content,
+            IGceDataSource dataSource,
+            IApiManager apiManager,
+            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt,
+            IWindowsCredentialsStore currentWindowsCredentialStore,
+            Action<Instance> manageCredentialsPrompt)
+            : base(apiManager, pickProjectPrompt)
         {
             _content = content;
             _dataSource = dataSource;
+            _currentWindowsCredentialStore = currentWindowsCredentialStore;
+            _manageCredentialsPrompt = manageCredentialsPrompt;
 
-            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
-            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync);
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, false);
+            RefreshInstancesCommand = new ProtectedCommand(() => StartAndTrack(LoadValidProjectDataAsync), IsValidGcpProject);
         }
 
-        private async Task OnEnableApiCommandAsync()
+        protected override void OnIsValidGcpProjectChanged()
         {
-            await CurrentApiManager.EnableServicesAsync(s_requiredApis);
-            LoadingProjectTask = InitializeDialogState();
+            RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
         }
 
         private void OnManageCredentialsCommand()
         {
-            ManageWindowsCredentialsWindow.PromptUser(SelectedInstance);
+            ManageCredentialsPrompt(SelectedInstance);
             UpdateCredentials();
-        }
-
-        private async Task<IEnumerable<Instance>> GetAllWindowsInstancesAsync()
-        {
-            IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
-            return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
-        }
-
-        private async Task<bool> ValidateGcpProject()
-        {
-            // Reset UI state.
-            CanPublish = true;
-            NeedsApiEnabled = false;
-
-            if (!await CurrentApiManager.AreServicesEnabledAsync(s_requiredApis))
-            {
-                CanPublish = false;
-                NeedsApiEnabled = true;
-                return false;
-            }
-            return true;
         }
 
         #region IPublishDialogStep
@@ -190,6 +184,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override async void Publish()
         {
             IParsedProject project = PublishDialog.Project;
+            Instance selectedInstance = SelectedInstance;
+            WindowsInstanceCredentials selectedCredentials = SelectedCredentials;
 
             try
             {
@@ -201,7 +197,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 PublishDialog.FinishFlow();
 
-                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name);
+                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, selectedInstance.Name);
                 TimeSpan deploymentDuration;
                 bool result;
                 using (StatusbarHelper.Freeze())
@@ -212,8 +208,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     DateTime startDeploymentTime = DateTime.Now;
                     result = await WindowsVmDeployment.PublishProjectAsync(
                         project,
-                        SelectedInstance,
-                        SelectedCredentials,
+                        selectedInstance,
+                        selectedCredentials,
                         progress,
                         VsVersionUtils.ToolsPathProvider,
                         GcpOutputWindow.OutputLine);
@@ -222,10 +218,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 if (result)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
                     StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                    string url = SelectedInstance.GetDestinationAppUri();
+                    string url = selectedInstance.GetDestinationAppUri();
                     GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
@@ -236,7 +232,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                     if (LaunchRemoteDebugger)
                     {
-                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(SelectedInstance);
+                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(selectedInstance);
                     }
                 }
                 else
@@ -252,56 +248,58 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
+                PublishDialog?.FinishFlow();
+
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        /// <summary>
+        /// Clearing instances from a potential previous project.
+        /// </summary>
+        protected override void ClearLoadedProjectData()
         {
-            base.OnPushedToDialog(dialog);
-            LoadingProjectTask = InitializeDialogState();
+            Instances = Enumerable.Empty<Instance>();
+        }
+
+        /// <inheritdoc />
+        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
+
+        /// <summary>
+        /// No data to load
+        /// </summary>
+        /// <returns>A cached completed task</returns>
+        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
+
+        /// <summary>
+        /// Loads the instances of the project given that it is valid.
+        /// </summary>
+        protected override async Task LoadValidProjectDataAsync()
+        {
+            IList<Instance> instances = await CurrentDataSource.GetInstanceListAsync();
+            Instances = instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
+        }
+
+        protected override void RefreshCanPublish()
+        {
+            base.RefreshCanPublish();
+            CanPublish = CanPublish
+                && SelectedCredentials != null;
         }
 
         #endregion
 
-        private async Task InitializeDialogState()
-        {
-            try
-            {
-                // Show the loading message while the project is being validated and the
-                // data being loaded.
-                LoadingProject = true;
-
-                Task<bool> validateTask = ValidateGcpProject();
-                PublishDialog.TrackTask(validateTask);
-
-                if (await validateTask)
-                {
-                    Task<IEnumerable<Instance>> instancesTask = GetAllWindowsInstancesAsync();
-                    PublishDialog.TrackTask(instancesTask);
-                    Instances = await instancesTask;
-                }
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                CanPublish = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
-        }
-
-        protected override void OnProjectChanged()
-        {
-            LoadingProjectTask = InitializeDialogState();
-        }
-
-        internal static GceStepViewModel CreateStep(IGceDataSource dataSource = null, IApiManager apiManager = null)
+        internal static GceStepViewModel CreateStep(
+            IGceDataSource dataSource = null,
+            IApiManager apiManager = null,
+            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null,
+            IWindowsCredentialsStore currentWindowsCredentialStore = null,
+            Action<Instance> manageCredentialsPrompt = null)
         {
             var content = new GceStepContent();
-            var viewModel = new GceStepViewModel(content, dataSource, apiManager);
+            var viewModel = new GceStepViewModel(
+                content, dataSource, apiManager, pickProjectPrompt,
+                currentWindowsCredentialStore, manageCredentialsPrompt);
             content.DataContext = viewModel;
 
             return viewModel;
@@ -315,9 +313,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
             else
             {
-                Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(SelectedInstance);
+                Credentials = CurrentWindowsCredentialsStore.GetCredentialsForInstance(SelectedInstance);
             }
-            SelectedCredentials = Credentials.FirstOrDefault();
         }
     }
 }

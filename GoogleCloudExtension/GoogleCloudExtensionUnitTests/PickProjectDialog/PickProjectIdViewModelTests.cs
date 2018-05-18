@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.PickProjectDialog;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.PickProjectDialog;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
-namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
+namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 {
     [TestClass]
-    public class PickProjectIdViewModelTests
+    public class PickProjectIdViewModelTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "default-project-id";
         private const string TestProjectId = "loaded-project-id";
@@ -45,8 +44,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private PropertyChangedEventHandler _addPropertiesChanged;
         private Mock<Action> _manageAccoutMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _testObject = null;
             CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);

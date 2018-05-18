@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
                 // This is the chance to update the section view with new active repo.
                 Debug.WriteLine($"CsrTeamExplorerSection.SectionContent");
                 string newActive = _teamExploerServices?.GetActiveRepository();
-                if (String.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     _viewModel.UpdateActiveRepo(newActive);
                     _activeRepo = newActive;

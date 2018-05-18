@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// The class is the view model for Resource Type, resource key value selector.
-    /// It is tightly coupled with <seealso cref="LogsViewerViewModel"/>. 
+    /// It is tightly coupled with <seealso cref="LogsViewerViewModel"/>.
     /// </summary>
     public class ResourceTypeMenuViewModel : MenuItemViewModel
     {
@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 ResourceTypeNameConsts.GlobalType
             };
 
-        private readonly Lazy<LoggingDataSource> _dataSource;
+        private readonly Func<ILoggingDataSource> _dataSource;
         private MenuItemViewModel _selectedMenuItem;
         private IList<ResourceKeys> _resourceKeys;
 
@@ -69,43 +69,51 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Initializes an instance of <seealso cref="ResourceTypeMenuViewModel"/> class.
         /// </summary>
         /// <param name="dataSource">Logging data source.</param>
-        public ResourceTypeMenuViewModel(Lazy<LoggingDataSource> dataSource) : base(null)
+        public ResourceTypeMenuViewModel(Func<ILoggingDataSource> dataSource) : base(null)
         {
             IsSubmenuPopulated = false;
             _dataSource = dataSource;
         }
 
         /// <summary>
-        /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypes"/>
+        /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypesAsync"/>
         /// Exception is handled by the caller.
         /// </summary>
-        public async Task PopulateResourceTypes()
+        public async Task PopulateResourceTypesAsync()
         {
             if (IsSubmenuPopulated)
             {
                 return;
             }
 
-            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            var descriptors = await _dataSource().GetResourceDescriptorsAsync();
             var newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
-            foreach (var defaultSelection in s_defaultResourceSelections)
+            foreach (string defaultSelection in s_defaultResourceSelections)
             {
-                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                MonitoredResourceDescriptor desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
                 if (desc != null)
                 {
                     newOrderDescriptors.Add(desc);
                 }
             }
-            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)).OrderBy(x => x.DisplayName));
 
-            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
+            newOrderDescriptors.AddRange(
+                descriptors?.Where(x => !s_defaultResourceSelections.Contains(x.Type)).OrderBy(x => x.DisplayName) ??
+                Enumerable.Empty<MonitoredResourceDescriptor>());
+
+            _resourceKeys = await _dataSource().ListResourceKeysAsync();
             var items =
                 from desc in newOrderDescriptors
-                join keys in _resourceKeys
+                join keys in _resourceKeys ?? Enumerable.Empty<ResourceKeys>()
                     on desc.Type equals keys.Type
                 select new ResourceTypeItemViewModel(keys, _dataSource, this) { Header = desc.DisplayName };
-            items.ToList().ForEach(x => MenuItems.Add(x));
+
+            foreach (ResourceTypeItemViewModel item in items)
+            {
+                MenuItems.Add(item);
+            }
+
             if (MenuItems.Count != 0)
             {
                 CommandBubblingHandler(MenuItems.FirstOrDefault());

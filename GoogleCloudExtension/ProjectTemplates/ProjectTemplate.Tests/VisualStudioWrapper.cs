@@ -152,7 +152,11 @@ namespace ProjectTemplate.Tests
             return new VisualStudioWrapper("devenv", "/rootSuffix Exp");
         }
 
-        private static VisualStudioWrapper CreateExperimentalInstance(string version)
+        /// <summary>
+        /// Factory method for creating a new <see cref="VisualStudioWrapper"/> linked to an experimental instance.
+        /// </summary>
+        /// <returns>A new <see cref="VisualStudioWrapper"/> of the given version.</returns>
+        public static VisualStudioWrapper CreateExperimentalInstance(string version)
         {
             string devEnvPath = GetDevEnvPath(version);
             return new VisualStudioWrapper(devEnvPath, "/rootSuffix Exp");
@@ -195,8 +199,8 @@ namespace ProjectTemplate.Tests
                 string name;
                 moniker.GetDisplayName(bindCtx, null, out name);
                 return !string.IsNullOrWhiteSpace(name) &&
-                    name.StartsWith("!VisualStudio.DTE") &&
-                    name.EndsWith(":" + _devEnvProcess.Id);
+                    name.StartsWith("!VisualStudio.DTE", StringComparison.Ordinal) &&
+                    name.EndsWith($":{_devEnvProcess.Id}", StringComparison.Ordinal);
             }
             catch (NotImplementedException)
             {

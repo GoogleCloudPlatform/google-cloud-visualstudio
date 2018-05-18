@@ -29,7 +29,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- The collection view to maniuplate the list of projects. -->
-            <CollectionViewSource x:Key="cvs"
+            <CollectionViewSource x:Key="{x:Static local:PickProjectIdWindowContent.CvsKey}"
                                   Source="{Binding Projects}"
                                   Filter="OnFilterItemInCollectionView"
                                   IsLiveFilteringRequested="True" />
@@ -144,7 +144,7 @@
             <!-- The data row. -->
             <DataGrid Grid.Row="2"
                       Grid.ColumnSpan="2"
-                      ItemsSource="{Binding Source={StaticResource cvs}}"
+                      ItemsSource="{Binding Source={StaticResource {x:Static local:PickProjectIdWindowContent.CvsKey}}}"
                       SelectedItem="{Binding SelectedProject}"
                       SelectionMode="Single"
                       SelectionUnit="FullRow"

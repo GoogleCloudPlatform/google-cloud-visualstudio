@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Utils;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
@@ -25,47 +24,44 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public partial class ErrorReportingDetailToolWindowControl : UserControl
     {
-        private ErrorReportingDetailViewModel ViewModel => DataContext as ErrorReportingDetailViewModel;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingDetailToolWindowControl"/> class.
         /// </summary>
         public ErrorReportingDetailToolWindowControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
-        /// <summary>
-        /// When mouse click on a row, toggle display the row detail.
-        /// if the mouse is clikcing on detail panel, does not collapse it.
-        /// </summary>
-        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void DeselectSelectedTargetRow(object sender, MouseButtonEventArgs e)
         {
-            var dependencyObj = e.OriginalSource as DependencyObject;
-            DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
-            if (row != null)
+            var cell = DataGridUtils.FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
+            if (cell != null && cell.IsSelected)
             {
-                if (null == DataGridUtils.FindAncestorControl<DataGridDetailsPresenter>(dependencyObj))
+                var grid = DataGridUtils.FindAncestorControl<DataGrid>(cell);
+                if (grid != null)
                 {
-                    row.DetailsVisibility =
-                        row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    switch (grid.SelectionUnit)
+                    {
+                        case DataGridSelectionUnit.Cell:
+                        case DataGridSelectionUnit.CellOrRowHeader:
+                            cell.IsSelected = false;
+                            break;
+                        case DataGridSelectionUnit.FullRow:
+                            grid.UnselectAllCells();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// This is necessary workaround to enable outer scroll bar.
-        /// </summary>
-        private void dataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void ErrorReportingDetailToolWindowControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (!e.Handled)
+            var viewModel = DataContext as ErrorReportingDetailViewModel;
+            if (viewModel != null)
             {
-                e.Handled = true;
-                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
-                eventArg.RoutedEvent = MouseWheelEvent;
-                eventArg.Source = sender;
-                var parent = ((Control)sender).Parent as UIElement;
-                parent.RaiseEvent(eventArg);
+                viewModel.IsVisibleUnbound = (bool) e.NewValue;
             }
         }
     }

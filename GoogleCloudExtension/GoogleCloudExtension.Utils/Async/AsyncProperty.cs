@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Utils.Async
     /// </summary>
     public class AsyncProperty : AsyncPropertyBase
     {
-        protected override Task Task { get; }
+        public override Task Task { get; }
 
         public AsyncProperty(Task task)
         {
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.Utils.Async
         /// </summary>
         public Task ValueTask => _completionSource.Value.Task;
 
-        protected override Task Task => _valueSource;
+        public override Task Task => _valueSource;
 
         public AsyncProperty(Task<T> valueSource, T defaultValue = default(T))
         {
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.Utils.Async
 
         private void AwaitForValue()
         {
-            _valueSource.ContinueWith((t) =>
+            _valueSource.ContinueWith(t =>
             {
                 // Value is initiated with defaultValue at constructor.
                 Value = AsyncPropertyUtils.GetTaskResultSafe(t, defaultValue: Value);

@@ -18,9 +18,9 @@ using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,14 +31,16 @@ using System.Windows.Media.Imaging;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
     [TestClass]
-    public class TopicViewModelTests
+    public class TopicViewModelTests : ExtensionTestBase
     {
-        public const string MockTopicFullName = PubSubSourceRootViewModelTests.MockTopicFullName;
-        public const string MockTopicLeafName = PubSubSourceRootViewModelTests.MockTopicLeafName;
-        public const string MockProjectId = PubSubSourceRootViewModelTests.MockProjectId;
-        public const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
-        public const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
-        public const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
+        private const string MockExceptionMessage = "MockException";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
+
         private Mock<IPubsubSourceRootViewModel> _ownerMock;
         private readonly Topic _topicItem = new Topic { Name = MockTopicFullName };
         private TopicViewModel _objectUnderTest;
@@ -54,11 +56,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private bool _promptUserReturnValue;
         private TaskCompletionSource<object> _deleteTopicSource;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
-
             _newSubscriptionSource = new TaskCompletionSource<Subscription>();
             _getSubscriptionListSource = new TaskCompletionSource<IList<Subscription>>();
             _deleteTopicSource = new TaskCompletionSource<object>();
@@ -82,7 +81,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             _promptUserOptions = new List<UserPromptWindow.Options>();
             _promptUserReturnValue = true;
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 _promptUserOptions.Add(options);
                 return _promptUserReturnValue;
@@ -300,13 +299,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public void TestChangeFiltersCommand()
         {
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.ItemsSource.OfType<MenuItem>()
-                    .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
-            var showOptionPageMock = new Mock<Action<Type>>();
-            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionPageMock.Object;
+                .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
 
             changeFiltersCommand.Execute(null);
 
-            showOptionPageMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
+            PackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
         }
     }
 }

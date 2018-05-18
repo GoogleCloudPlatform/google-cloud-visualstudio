@@ -29,6 +29,12 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
         private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
 
+        // Mockable static method for testing.
+        internal static Func<UserPromptWindow.Options, bool> PromptUserOverride { private get; set; } = null;
+
+        private static Func<UserPromptWindow.Options, bool> PromptUser =>
+            PromptUserOverride ?? UserPromptWindow.PromptUser;
+
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
@@ -50,7 +56,7 @@ namespace GoogleCloudExtension.Utils
             actionCaption = actionCaption ?? Resources.UiYesButtonCaption;
             cancelCaption = cancelCaption ?? Resources.UiCancelButtonCaption;
 
-            return UserPromptWindow.PromptUser(
+            return PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -69,7 +75,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void OkPrompt(string message, string title)
         {
-            UserPromptWindow.PromptUser(
+            PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -86,7 +92,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="errorDetails">The error details for the dialog, optional.</param>
         public static void ErrorPrompt(string message, string title, string errorDetails = null)
         {
-            UserPromptWindow.PromptUser(
+            PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -96,6 +102,25 @@ namespace GoogleCloudExtension.Utils
                     Icon = s_errorIcon.Value
                 });
         }
+
+        /// <summary>
+        /// Shows an error message dialog to the user, with an Ok and a Cancel button.
+        /// </summary>
+        /// <param name="message">The message for the dialog.</param>
+        /// <param name="title">The title for the dialog.</param>
+        /// <param name="errorDetails">The error details for the dialog, optional.</param>
+        /// <returns>Returns true if the user pressed the yes button, false if the user pressed the no button or closed the dialog.</returns>
+        public static bool ErrorActionPrompt(string message, string title, string errorDetails = null) =>
+            PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    ErrorDetails = errorDetails,
+                    ActionButtonCaption = Resources.UiYesButtonCaption,
+                    CancelButtonCaption = Resources.UiNoButtonCaption,
+                    Icon = s_errorIcon.Value
+                });
 
         /// <summary>
         /// Shows an error message for the given exception.

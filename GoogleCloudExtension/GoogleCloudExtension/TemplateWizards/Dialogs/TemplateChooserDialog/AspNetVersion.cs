@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private static IList<AspNetVersion> GetVs2015AspNetCoreVersions()
         {
-            if (NetCoreSdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview")))
+            if (NetCoreSdkVersions.Any(sdkVersion => sdkVersion.StartsWith("1.0.0-preview", StringComparison.Ordinal)))
             {
                 return new List<AspNetVersion>
                 {
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 case FrameworkType.NetFramework:
                     return new List<AspNetVersion> { AspNetCore10, AspNetCore11, AspNetCore20 };
                 case FrameworkType.NetCore:
-                    switch (GoogleCloudExtensionPackage.VsVersion)
+                    switch (GoogleCloudExtensionPackage.Instance.VsVersion)
                     {
                         case VsVersionUtils.VisualStudio2015Version:
                             return GetVs2015AspNetCoreVersions();

@@ -214,7 +214,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
 
-            IEnumerable<string> gitPaths = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            IEnumerable<string> gitPaths = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.Instance.VsVersion);
             if (gitPaths != null)
             {
                 foreach (var path in gitPaths)

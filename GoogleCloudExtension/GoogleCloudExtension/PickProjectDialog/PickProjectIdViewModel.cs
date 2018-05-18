@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// <summary>
     /// View model for picking a project id.
     /// </summary>
-    public class PickProjectIdViewModel : ViewModelBase
+    public class PickProjectIdViewModel : ViewModelBase, IPickProjectIdViewModel
     {
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// For Testing.
         /// </summary>
         /// <param name="owner">The window or mock window that owns this ViewModel.</param>
-        /// <param name="dataSourceFactory">The factory of the source of projects.</param>
+        /// <param name="mockedProjectList">An override of the result of <see cref="CredentialsStore.CurrentAccountProjects"/>.</param>
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
             IPickProjectIdWindow owner,

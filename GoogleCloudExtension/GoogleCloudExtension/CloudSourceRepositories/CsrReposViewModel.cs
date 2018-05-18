@@ -310,7 +310,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private async Task<List<GitRepository>> GetLocalGitRepositoriesAsync()
         {
             List<GitRepository> localRepos = new List<GitRepository>();
-            var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            var repos = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.Instance.VsVersion);
             if (repos != null)
             {
                 var localRepoTasks = repos.Where(r => !string.IsNullOrWhiteSpace(r))

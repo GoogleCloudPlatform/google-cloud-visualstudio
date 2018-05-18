@@ -51,10 +51,11 @@ namespace GoogleCloudExtension.Accounts
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
         private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
+        private static CredentialsStore s_credentialsStoreOverride;
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
 
-        public static CredentialsStore Default => s_defaultCredentialsStore.Value;
+        public static CredentialsStore Default => s_credentialsStoreOverride ?? s_defaultCredentialsStore.Value;
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
@@ -235,6 +236,24 @@ namespace GoogleCloudExtension.Accounts
             StoredUserAccount result = null;
             _cachedCredentials.TryGetValue(accountName, out result);
             return result?.UserAccount;
+        }
+
+        /// <summary>
+        /// For testing.
+        /// Sets a new credential store as default.
+        /// </summary>
+        internal static void CreateNewOverride()
+        {
+            s_credentialsStoreOverride = new CredentialsStore();
+        }
+
+        /// <summary>
+        /// For testing.
+        /// Returns the default credential store to its original value.
+        /// </summary>
+        internal static void ClearOverride()
+        {
+            s_credentialsStoreOverride = null;
         }
 
         private void InvalidateProjectList()

@@ -13,52 +13,12 @@
 // limitations under the License.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Utils;
-using System;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceSource : CloudExplorerSourceBase<GceSourceRootViewModel>
     {
-        private const string WindowsOnlyButtonIconPath = "CloudExplorerSources/Gce/Resources/filter.png";
-
-        private static readonly Lazy<ImageSource> s_windowsOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WindowsOnlyButtonIconPath));
-
-        private readonly ButtonDefinition _windowsOnlyButton;
-
         public GceSource(ICloudSourceContext context) : base(context)
-        {
-            _windowsOnlyButton = new ButtonDefinition
-            {
-                ToolTip = Resources.CloudExplorerGceOnlyWindowsButtonToolTip,
-                Command = new ProtectedCommand(OnOnlyWindowsCommand),
-                Icon = s_windowsOnlyButtonIcon.Value,
-            };
-            ActualButtons.Add(_windowsOnlyButton);
-            ActualRoot.ShowOnlyWindowsInstancesChanged += OnShowOnlyWindowsInstancesChanged;
-        }
-
-        #region Event handlers
-
-        private void OnShowOnlyWindowsInstancesChanged(object sender, EventArgs e)
-        {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
-            });
-        }
-
-        #endregion
-
-        #region Command handlers.
-
-        private void OnOnlyWindowsCommand()
-        {
-            _windowsOnlyButton.IsChecked = !_windowsOnlyButton.IsChecked;
-            ActualRoot.ShowOnlyWindowsInstances = _windowsOnlyButton.IsChecked;
-        }
-
-        #endregion
+        { }
     }
 }

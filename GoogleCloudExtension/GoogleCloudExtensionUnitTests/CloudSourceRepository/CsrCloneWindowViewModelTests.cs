@@ -68,15 +68,17 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         [TestMethod]
         public async Task ChangeSelectedProjectTest()
         {
-            Mock<Repo> repoMock = new Mock<Repo>();
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock.Object, new Mock<Repo>().Object });
+            var defaultRepo = new Repo { Name = "DefaultRepoName" };
+            _testTaskCompletionSource.SetResult(new List<Repo> { defaultRepo, new Repo { Name = "OtherRepo" } });
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
-                .Returns(Task.FromResult<bool>(true))
+                .Returns(Task.FromResult(true))
                 .Verifiable();
+
             _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
-            Assert.AreEqual(repoMock.Object, _cloneWindowViewModel.SelectedRepository);
+
+            Assert.AreEqual(defaultRepo, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
             _apiManagerMock.Verify();
         }
@@ -108,13 +110,15 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
                 x => x.EnableServicesAsync(It.IsAny<IList<string>>()))
                 .Returns(Task.FromResult(0))
                 .Verifiable();
-            Mock<Repo> repoMock = new Mock<Repo>();
-            _testTaskCompletionSource.SetResult(new List<Repo> { repoMock.Object, new Mock<Repo>().Object });
+            var defaultRepo = new Repo { Name = "DefaultRepoName" };
+            _testTaskCompletionSource.SetResult(new List<Repo> { defaultRepo, new Repo { Name = "OtherRepo" } });
             Assert.IsTrue(_cloneWindowViewModel.EnableApiCommand.CanExecuteCommand);
+
             _cloneWindowViewModel.EnableApiCommand.Execute(null);
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
+
             _apiManagerMock.Verify();
-            Assert.AreEqual(repoMock.Object, _cloneWindowViewModel.SelectedRepository);
+            Assert.AreEqual(defaultRepo, _cloneWindowViewModel.SelectedRepository);
             Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
         }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -256,10 +256,6 @@
   <data name="CloudExplorerGceNewInstanceMenuHeader" xml:space="preserve">
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
-  </data>
-  <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Show only Windows instances</value>
-    <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
     <value>Open Remote Desktop session...</value>
@@ -822,7 +818,7 @@
     <comment>The name of the App Engine Flex choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepAppEngineToolTip" xml:space="preserve">
-    <value>Deploy to App Engine Flex</value>
+    <value>App Engine is the preferred choice for quickly setting up your .NET Core application.</value>
     <comment>The tooltip for the App Engine Flex button.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceName" xml:space="preserve">
@@ -830,7 +826,7 @@
     <comment>The name of the GCE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceToolTip" xml:space="preserve">
-    <value>Deploy to Compute Engine</value>
+    <value>Deploy your Classic ASP.NET application to a Windows virtual machine in Google Compute Engine.</value>
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
@@ -848,10 +844,6 @@
   <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
     <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
-  </data>
-  <data name="PublishDialogNextButtonCaption" xml:space="preserve">
-    <value>_Next</value>
-    <comment>The caption for the next button.</comment>
   </data>
   <data name="PublishDialogPrevButtonCaption" xml:space="preserve">
     <value>_Prev</value>
@@ -1592,7 +1584,7 @@
     <comment>The name of the GKE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
-    <value>Deploy as a service to Kubernetes Engine</value>
+    <value>Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application.</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
   <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
@@ -1603,17 +1595,9 @@
     <value>Deployment {0} was updated.</value>
     <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
   </data>
-  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
-    <value>Invalid value for replicas, must be a number.</value>
-    <comment>Message shown when an invalid value for replicas is given.</comment>
-  </data>
   <data name="GkePublishReplicasCaption" xml:space="preserve">
     <value>Replic_as:</value>
     <comment>The caption for the replicas label.</comment>
-  </data>
-  <data name="UiInvalidValueTitle" xml:space="preserve">
-    <value>Invalid value</value>
-    <comment>Generic title for validation error prompts.</comment>
   </data>
   <data name="GkePublishNewClusterCaption" xml:space="preserve">
     <value>Create new cluster</value>
@@ -1722,30 +1706,6 @@
   <data name="TitleBarProjectIdLabel" xml:space="preserve">
     <value>Project:</value>
     <comment>Label for project id label.</comment>
-  </data>
-  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
-    <value>The version name cannot be empty.</value>
-    <comment>Message shown when the version name is empty.</comment>
-  </data>
-  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
-    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
-  </data>
-  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
-    <value>The deployment name cannot be empty.</value>
-    <comment>Message shown when the deployment name is empty.</comment>
-  </data>
-  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
-    <value>The deployment version cannot be empty.</value>
-    <comment>Message shown when the deployment version is empty.</comment>
-  </data>
-  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
-    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
-  </data>
-  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
-    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
-    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
   <data name="CloudExplorerGaeServiceIdDescription" xml:space="preserve">
     <value>Relative name of the service within the application.</value>
@@ -2016,7 +1976,7 @@
     <comment>Caption for the install link.</comment>
   </data>
   <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command:</value>
     <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
   </data>
   <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
@@ -2390,10 +2350,6 @@
   <data name="ValidationAllLetterNumberOrDashMessage" xml:space="preserve">
     <value>{0} can only contain letters, numbers, and dashes(-).</value>
     <comment>{Field} can only contain letters, numbers and dashes validation message.</comment>
-  </data>
-  <data name="ValidationIntegerMessage" xml:space="preserve">
-    <value>{0} must be an integer.</value>
-    <comment>{Field} must be an integer validation message.</comment>
   </data>
   <data name="ValidationMaxCharactersMessage" xml:space="preserve">
     <value>{0} must be less than {1} characters long.</value>
@@ -2989,5 +2945,51 @@
   <data name="AnalyticsPromptLinkText" xml:space="preserve">
     <value>Learn more.</value>
     <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
+  </data>
+  <data name="UiCopyMenuHeader" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Header for a standard "Copy" menu item.</comment>
+  </data>
+  <data name="GcloudMissingComponentInstallCommand" xml:space="preserve">
+    <value>gcloud components install {0}</value>
+    <comment>Command to install a missing component. {0} is the name of the component and should be in lower case.</comment>
+  </data>
+  <data name="NoDotNetCorePreviewFoundError" xml:space="preserve">
+    <value>Could not find a 1.0.0-preview version of .NET Core SDK.
+Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017.</value>
+    <comment>The dialog error message shown when .NET Core SDK version 1.0.0-preview is not found.</comment>
+  </data>
+  <data name="VisualStudio2015DotNetCoreToolingLinkTitle" xml:space="preserve">
+    <value>.NET Core Tools for Visual Studio 2015 Download Archive</value>
+    <comment>Title for the link to the .NET Core Tools for Visual Studio 2015 section of the .NET Core Runtime and SDK download archive.</comment>
+  </data>
+  <data name="ValidationPositiveNonZeroMessage" xml:space="preserve">
+    <value>{0} must be an integer greater than zero.</value>
+    <comment>{Field} must be an integer greater than zero validation message.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreDecryptErrorMessage" xml:space="preserve">
+    <value>Failed to decrypt credentials from: {0}
+Delete corrupted file?</value>
+    <comment>Message displayed when there is an error decrypting a windows credential file.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreDecryptionErrorTitle" xml:space="preserve">
+    <value>Delete Corrupted File</value>
+    <comment>The title of the error dialog when there is an exception decrypting a windows credential file.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreDeletingCorruptedErrorMessage" xml:space="preserve">
+    <value>Failed to delete corrupted credentials file: {0}</value>
+    <comment>The error message displayed when deleting a corrupted windows credential file fails.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreDeletingCorruptedErrorTitle" xml:space="preserve">
+    <value>Delete failed</value>
+    <comment>The title of the error dialog when deletion of a corrupted windows credentail file fails.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreCredentialFileLoadErrorMessage" xml:space="preserve">
+    <value>Failed to load credentials from: {0}</value>
+    <comment>The error message displayed when loading a windows credential file failed.</comment>
+  </data>
+  <data name="WindowsCredentialsStoreCredentialFileLoadErrorTitle" xml:space="preserve">
+    <value>Load failed</value>
+    <comment>The title of the error dialog box when loading a windows credential file failed.</comment>
   </data>
 </root>

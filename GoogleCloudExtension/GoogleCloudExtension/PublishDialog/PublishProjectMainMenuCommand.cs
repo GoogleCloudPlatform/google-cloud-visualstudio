@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="e">Event args.</param>
         private void OnDeployCommand(object sender, EventArgs e)
         {
-            var project = SolutionHelper.CurrentSolution.StartupProject;
+            var project = SolutionHelper.CurrentSolution.StartupProject.ParsedProject;
             Debug.WriteLine($"Deploying project: {project.FullPath}");
             PublishDialogWindow.PromptUser(project);
         }
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.PublishDialog
 
             menuCommand.Visible = true;
 
-            var startupProject = SolutionHelper.CurrentSolution.StartupProject;
+            var startupProject = SolutionHelper.CurrentSolution.StartupProject?.ParsedProject;
             if (startupProject == null)
             {
                 menuCommand.Enabled = false;

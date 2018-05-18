@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Process = System.Diagnostics.Process;
 
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
 {
@@ -23,10 +26,17 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
     /// </summary>
     public class AspNetCoreTemplateChooserViewModel : TemplateChooserViewModelBase
     {
+        internal const string DotnetCoreDownloadArchiveUrl = "https://github.com/dotnet/core/blob/master/release-notes/download-archive.md#net-core-tools-for-visual-studio-2015";
         private FrameworkType _selectedFramework;
         private AspNetVersion _selectedVersion;
         private IList<AspNetVersion> _availableVersions;
         private IList<FrameworkType> _availableFrameworks;
+        private bool _netCoreMissingError;
+
+        // Mockable static functions for testing.
+        internal static Func<string, Process> StartProcessOverride { private get; set; } = null;
+        private static Func<string, Process> StartProcess => StartProcessOverride ?? Process.Start;
+
 
         private static readonly FrameworkType[] s_netCoreUnavailableFrameworks = { FrameworkType.NetFramework };
 
@@ -44,7 +54,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 SetValueAndRaise(ref _availableFrameworks, value);
                 if (!AvailableFrameworks.Contains(SelectedFramework))
                 {
-                    SelectedFramework = AvailableFrameworks.First();
+                    SelectedFramework = AvailableFrameworks.FirstOrDefault();
                 }
             }
         }
@@ -73,7 +83,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 SetValueAndRaise(ref _availableVersions, value);
                 if (!AvailableVersions.Contains(SelectedVersion))
                 {
-                    SelectedVersion = AvailableVersions.First();
+                    SelectedVersion = AvailableVersions.FirstOrDefault();
                 }
             }
         }
@@ -87,11 +97,38 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
             set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
+        /// <summary>
+        /// True if no usable versions of dotnet core are found in VS 2015.
+        /// </summary>
+        public bool NetCoreMissingError
+        {
+            get { return _netCoreMissingError; }
+            private set { SetValueAndRaise(ref _netCoreMissingError, value); }
+        }
+
+        public ProtectedCommand OpenVisualStudio2015DotNetCoreToolingDownloadLink { get; } =
+            new ProtectedCommand(() => StartProcess(DotnetCoreDownloadArchiveUrl));
+
         /// <param name="closeWindow">The action that will close the dialog.</param>
         public AspNetCoreTemplateChooserViewModel(Action closeWindow) : base(closeWindow)
         {
+            OpenVisualStudio2015DotNetCoreToolingDownloadLink.CanExecuteCommand = false;
             bool netCoreAvailable = AspNetVersion.GetAvailableAspNetCoreVersions(FrameworkType.NetCore).Any();
-            AvailableFrameworks = netCoreAvailable ? s_netCoreAvailableFrameworks : s_netCoreUnavailableFrameworks;
+            if (netCoreAvailable)
+            {
+                AvailableFrameworks = s_netCoreAvailableFrameworks;
+            }
+            else if (GoogleCloudExtensionPackage.Instance.VsVersion == VsVersionUtils.VisualStudio2015Version)
+            {
+                AvailableFrameworks = new List<FrameworkType>();
+                NetCoreMissingError = true;
+                OkCommand.CanExecuteCommand = false;
+                OpenVisualStudio2015DotNetCoreToolingDownloadLink.CanExecuteCommand = true;
+            }
+            else
+            {
+                AvailableFrameworks = s_netCoreUnavailableFrameworks;
+            }
         }
 
         /// <summary>

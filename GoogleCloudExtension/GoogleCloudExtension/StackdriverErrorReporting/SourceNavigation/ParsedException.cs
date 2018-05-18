@@ -67,11 +67,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private List<StackFrame> ParseFrames()
         {
-            if (_lines.Length <= 1)
-            {
-                return null;
-            }
-
             return _lines.Skip(1).Select(x => new StackFrame(x)).ToList();
         }
     }
