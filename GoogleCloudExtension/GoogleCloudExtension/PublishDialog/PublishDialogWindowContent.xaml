@@ -25,8 +25,6 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}"
                                       Command="{Binding PrevCommand}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogNextButtonCaption}"
-                                      Command="{Binding NextCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}"
                                       Command="{Binding PublishCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"

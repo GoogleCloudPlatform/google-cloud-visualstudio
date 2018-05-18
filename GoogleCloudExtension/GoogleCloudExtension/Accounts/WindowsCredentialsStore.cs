@@ -15,9 +15,9 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -35,21 +35,26 @@ namespace GoogleCloudExtension.Accounts
     /// 
     /// The password is encrypted/decryped using the <seealso cref="ProtectedData"/> class.
     /// </summary>
-    internal class WindowsCredentialsStore
+    internal class WindowsCredentialsStore : IWindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
         private const string PasswordFileExtension = ".data";
 
-        private static readonly Lazy<WindowsCredentialsStore> s_defaultStore = new Lazy<WindowsCredentialsStore>();
-        private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
+        private static readonly Lazy<WindowsCredentialsStore> s_defaultStore =
+            new Lazy<WindowsCredentialsStore>(() => new WindowsCredentialsStore());
+        internal static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
         private static readonly Regex s_invalidNameCharPattern = new Regex("[;:\\?\\\\]");
 
-        /// <summary>
-        /// In memory cache of the credentials for the current credentials (account and project pair).
-        /// </summary>
-        private readonly Dictionary<string, IEnumerable<WindowsInstanceCredentials>> _credentialsForInstance = new Dictionary<string, IEnumerable<WindowsInstanceCredentials>>();
-
         public static WindowsCredentialsStore Default => s_defaultStore.Value;
+
+        /// Mockable static methods for testing.
+        internal Func<string, bool> DirectoryExists { private get; set; } = Directory.Exists;
+        internal Func<string, bool> FileExists { private get; set; } = File.Exists;
+        internal Func<string, IEnumerable<string>> EnumerateFiles { private get; set; } = Directory.EnumerateFiles;
+        internal Func<string, byte[]> ReadAllBytes { private get; set; } = File.ReadAllBytes;
+        internal Action<string, byte[]> WriteAllBytes { private get; set; } = File.WriteAllBytes;
+        internal Func<string, DirectoryInfo> CreateDirectory { private get; set; } = Directory.CreateDirectory;
+        internal Action<string> DeleteFile { private get; set; } = File.Delete;
 
         /// <summary>
         /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
@@ -57,31 +62,25 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="instance">The GCE VM</param>
         /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with The GCE VM. It might be
         /// empty if no credentials are found.</returns>
-        public IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
+        public IList<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
         {
-            var instancePath = GetInstancePath(instance);
             IEnumerable<WindowsInstanceCredentials> result;
-            if (_credentialsForInstance.TryGetValue(instancePath, out result))
-            {
-                return result;
-            }
 
-            var instanceStoragePath = GetStoragePathForInstance(instance);
-            if (!Directory.Exists(instanceStoragePath))
+            string instanceStoragePath = GetStoragePathForInstance(instance);
+            if (!DirectoryExists(instanceStoragePath))
             {
                 result = Enumerable.Empty<WindowsInstanceCredentials>();
             }
             else
             {
-                result = Directory.EnumerateFiles(instanceStoragePath)
+                result = EnumerateFiles(instanceStoragePath)
                     .Where(x => Path.GetExtension(x) == PasswordFileExtension)
-                    .Select(x => LoadEncryptedCredentials(x))
+                    .Select(LoadEncryptedCredentials)
                     .Where(x => x != null)
                     .OrderBy(x => x.User);
             }
-            _credentialsForInstance[instancePath] = result;
 
-            return result;
+            return result.ToList();
         }
 
         /// <summary>
@@ -91,11 +90,9 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="credentials">The credentials to store.</param>
         public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
-            var instancePath = GetInstancePath(instance);
-            var instanceStoragePath = GetStoragePathForInstance(instance);
+            string instanceStoragePath = GetStoragePathForInstance(instance);
 
             SaveEncryptedCredentials(instanceStoragePath, credentials);
-            _credentialsForInstance.Remove(instancePath);
         }
 
         /// <summary>
@@ -105,14 +102,12 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="credentials">The credentials.</param>
         public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
-            var instancePath = GetInstancePath(instance);
-            var instanceStoragePath = GetStoragePathForInstance(instance);
-            var credentialsPath = Path.Combine(instanceStoragePath, GetFileName(credentials));
+            string instanceStoragePath = GetStoragePathForInstance(instance);
+            string credentialsPath = Path.Combine(instanceStoragePath, GetFileName(credentials));
 
-            if (File.Exists(credentialsPath))
+            if (FileExists(credentialsPath))
             {
-                File.Delete(credentialsPath);
-                _credentialsForInstance.Remove(instancePath);
+                DeleteFile(credentialsPath);
             }
         }
 
@@ -123,7 +118,7 @@ namespace GoogleCloudExtension.Accounts
         /// <returns>The full path where to store information for the instance.</returns>
         public string GetStoragePathForInstance(Instance instance)
         {
-            var instancePath = GetInstancePath(instance);
+            string instancePath = GetInstancePath(instance);
             return Path.Combine(s_credentialsStoreRoot, instancePath);
         }
 
@@ -140,54 +135,64 @@ namespace GoogleCloudExtension.Accounts
         {
             try
             {
-                var userName = GetUserName(path);
-                var encryptedPassword = File.ReadAllBytes(path);
-                var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
+                string userName = GetUserName(path);
+                byte[] encryptedPassword = ReadAllBytes(path);
+                byte[] passwordBytes = ProtectedData.Unprotect(
+                    encryptedPassword, null, DataProtectionScope.CurrentUser);
 
-                return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
+                return new WindowsInstanceCredentials(userName, Encoding.UTF8.GetString(passwordBytes));
             }
-            catch (CryptographicException)
+            catch (CryptographicException cryptographicException)
             {
-                Debug.WriteLine($"Failed to decrypt credentials from: {path}");
-                try
+                bool delete = UserPromptUtils.ErrorActionPrompt(
+                    string.Format(Resources.WindowsCredentialsStoreDecryptErrorMessage, path),
+                    Resources.WindowsCredentialsStoreDecryptionErrorTitle, cryptographicException.ToString());
+                if (delete)
                 {
-                    File.Delete(path);
-                }
-                catch (IOException)
-                {
-                    Debug.WriteLine($"Failed cleaning corrupted credentials {path}");
+                    try
+                    {
+                        DeleteFile(path);
+                    }
+                    catch (IOException ioException)
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            string.Format(Resources.WindowsCredentialsStoreDeletingCorruptedErrorMessage, path),
+                            Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle, ioException.ToString());
+                    }
                 }
                 return null;
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                Debug.WriteLine($"Failed to load credentials from: {path}");
+                UserPromptUtils.ErrorPrompt(
+                    string.Format(Resources.WindowsCredentialsStoreCredentialFileLoadErrorMessage, path),
+                    Resources.WindowsCredentialsStoreCredentialFileLoadErrorTitle, e.ToString());
                 return null;
             }
         }
 
         private void SaveEncryptedCredentials(string path, WindowsInstanceCredentials credentials)
         {
-            if (!Directory.Exists(path))
+            if (!DirectoryExists(path))
             {
-                Directory.CreateDirectory(path);
+                CreateDirectory(path);
             }
 
-            var filePath = Path.Combine(path, GetFileName(credentials));
-            var passwordBytes = Encoding.UTF8.GetBytes(credentials.Password);
-            var encrypted = ProtectedData.Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
-            File.WriteAllBytes(filePath, encrypted);
+            string filePath = Path.Combine(path, GetFileName(credentials));
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(credentials.Password);
+            byte[] encrypted = ProtectedData.Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
+            WriteAllBytes(filePath, encrypted);
         }
 
         private static string GetCredentialsStoreRoot()
         {
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             return Path.Combine(localAppData, WindowsInstanceCredentialsPath);
         }
 
-        private static string GetInstancePath(Instance instance)
+        private string GetInstancePath(Instance instance)
         {
-            var credentials = CredentialsStore.Default;
+            CredentialsStore credentials = CredentialsStore.Default;
             return $@"{ToValidPathName(credentials.CurrentProjectId)}\{ToValidPathName(instance.GetZoneName())}\{ToValidPathName(instance.Name)}";
         }
 

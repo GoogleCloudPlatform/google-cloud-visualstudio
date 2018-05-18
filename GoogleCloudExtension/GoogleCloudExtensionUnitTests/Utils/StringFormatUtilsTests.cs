@@ -15,7 +15,7 @@
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GoogleCloudExtensionUnitTests
+namespace GoogleCloudExtensionUnitTests.Utils
 {
     [TestClass]
     public class StringFormatUtilsTests

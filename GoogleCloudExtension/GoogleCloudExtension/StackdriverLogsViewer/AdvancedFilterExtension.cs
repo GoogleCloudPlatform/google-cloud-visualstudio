@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -34,13 +33,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="instanceId">The VM instance Id.</param>
         public static void FilterVMInstanceLog(this LogsViewerToolWindow window, string instanceId)
         {
-            if (window?.ViewModel == null || String.IsNullOrWhiteSpace(instanceId))
+            if (window?.ViewModel == null || string.IsNullOrWhiteSpace(instanceId))
             {
                 Debug.WriteLine("Invalid input at FilterVMInstanceLog");
                 return;
             }
 
-            StringBuilder filter = new StringBuilder();
+            var filter = new StringBuilder();
             filter.AppendLine($"resource.type=\"{ResourceTypeNameConsts.GceInstanceType}\"");
             filter.AppendLine($"resource.labels.instance_id=\"{instanceId}\"");
             window.ViewModel.FilterLog(filter.ToString());
@@ -48,7 +47,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Show logs that only contain the GAE service id label,
-        /// that is under resource type of gae_app.        
+        /// that is under resource type of gae_app.
         /// </summary>
         /// <param name="window">A <seealso cref="LogsViewerToolWindow"/> object. </param>
         /// <param name="serviceId">GAE service id. Expect non null value input.</param>
@@ -57,16 +56,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </param>
         public static void FilterGAEServiceLog(this LogsViewerToolWindow window, string serviceId, string version = null)
         {
-            if (window?.ViewModel == null || String.IsNullOrWhiteSpace(serviceId))
+            if (window?.ViewModel == null || string.IsNullOrWhiteSpace(serviceId))
             {
                 Debug.WriteLine("Invalid input at FilterVMInstanceLog");
                 return;
             }
 
-            StringBuilder filter = new StringBuilder();
+            var filter = new StringBuilder();
             filter.AppendLine($"resource.type=\"{ResourceTypeNameConsts.GaeAppType}\"");
             filter.AppendLine($"resource.labels.module_id=\"{serviceId}\"");
-            if (!String.IsNullOrWhiteSpace(version))
+            if (!string.IsNullOrWhiteSpace(version))
             {
                 filter.AppendLine($"resource.labels.version_id=\"{version}\"");
             }
@@ -80,7 +79,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="log">A <seealso cref="LogItem"/> object.</param>
         public static void FilterOnSourceLocation(this LogsViewerToolWindow window, LogItem log)
         {
-            StringBuilder filter = new StringBuilder();
+            var filter = new StringBuilder();
             filter.AppendLine($"resource.type=\"{log.Entry.Resource.Type}\"");
             filter.AppendLine($"logName=\"{log.Entry.LogName}\"");
             filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.File)}=\"{log.SourceFilePath.Replace(@"\", @"\\")}\"");

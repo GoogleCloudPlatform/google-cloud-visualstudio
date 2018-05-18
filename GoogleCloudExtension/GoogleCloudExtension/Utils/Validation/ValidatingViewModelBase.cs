@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace GoogleCloudExtension.Utils.Validation
         /// The delay between detecting a validation error and displaying it.
         /// This delay will be reset as the user continues to change the input.
         /// </summary>
-        protected int MillisecondsDelay = 500;
+        protected internal int MillisecondsDelay { private get; set; } = 500;
 
         /// <summary>
         /// The map of validation errors that continue to exist after the delay.
@@ -56,6 +57,17 @@ namespace GoogleCloudExtension.Utils.Validation
         /// Triggered when validations change after the delay.
         /// </summary>
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        /// <summary>
+        /// Exposes the validation delay task for testing purposes given that the
+        /// validation method is (needs to be) async void.
+        /// </summary>
+        internal Task ValidationDelayTask { get; private set; }
+
+        protected ValidatingViewModelBase()
+        {
+            ValidationDelayTask = TplExtensions.CompletedTask;
+        }
 
         /// <summary>
         /// Gets the validation errors for the given property that have passed the delay.
@@ -116,7 +128,8 @@ namespace GoogleCloudExtension.Utils.Validation
         {
             if (validationResults.Any(r => !r.IsValid))
             {
-                await Task.Delay(MillisecondsDelay);
+                ValidationDelayTask = Task.Delay(MillisecondsDelay);
+                await ValidationDelayTask;
             }
             if (validationResults.Equals(_pendingResultsMap[property]))
             {

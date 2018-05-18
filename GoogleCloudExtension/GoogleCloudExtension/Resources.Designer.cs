@@ -19,7 +19,7 @@ namespace GoogleCloudExtension {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -1515,15 +1515,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGceNewInstanceMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceNewInstanceMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show only Windows instances.
-        /// </summary>
-        public static string CloudExplorerGceOnlyWindowsButtonToolTip {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceOnlyWindowsButtonToolTip", resourceCulture);
             }
         }
         
@@ -3265,29 +3256,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version name cannot be empty..
-        /// </summary>
-        public static string FlexPublishEmptyVersionMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishEmptyVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
             get {
                 return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid version {0}. The version must only use lowercase letters, digits and the - character..
-        /// </summary>
-        public static string FlexPublishInvalidVersionMessage {
-            get {
-                return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
             }
         }
         
@@ -3418,11 +3391,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command:.
         /// </summary>
         public static string GcloudMissingComponentErrorMessage {
             get {
                 return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gcloud components install {0}.
+        /// </summary>
+        public static string GcloudMissingComponentInstallCommand {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentInstallCommand", resourceCulture);
             }
         }
         
@@ -4282,56 +4264,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The deployment name cannot be empty..
-        /// </summary>
-        public static string GkePublishEmptyDeploymentNameMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEmptyDeploymentNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The deployment version cannot be empty..
-        /// </summary>
-        public static string GkePublishEmptyDeploymentVersionMessage {
-            get {
-                return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character..
-        /// </summary>
-        public static string GkePublishInvalidDeploymentNameMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidDeploymentNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character..
-        /// </summary>
-        public static string GkePublishInvalidDeploymentVersionMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidDeploymentVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
-        /// </summary>
-        public static string GkePublishInvalidReplicasMessage {
-            get {
-                return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
             }
         }
         
@@ -5191,6 +5128,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find a 1.0.0-preview version of .NET Core SDK.
+        ///Either intall the .NET Core tools for Visual Studio 2015, or upgrade to Visual Studio 2017..
+        /// </summary>
+        public static string NoDotNetCorePreviewFoundError {
+            get {
+                return ResourceManager.GetString("NoDotNetCorePreviewFoundError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically..
         /// </summary>
         public static string OAuthFlowWindowMessage {
@@ -5380,7 +5327,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to App Engine Flex.
+        ///   Looks up a localized string similar to App Engine is the preferred choice for quickly setting up your .NET Core application..
         /// </summary>
         public static string PublishDialogChoiceStepAppEngineToolTip {
             get {
@@ -5398,7 +5345,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy to Compute Engine.
+        ///   Looks up a localized string similar to Deploy your Classic ASP.NET application to a Windows virtual machine in Google Compute Engine..
         /// </summary>
         public static string PublishDialogChoiceStepGceToolTip {
             get {
@@ -5416,7 +5363,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deploy as a service to Kubernetes Engine.
+        ///   Looks up a localized string similar to Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application..
         /// </summary>
         public static string PublishDialogChoiceStepGkeToolTip {
             get {
@@ -5529,15 +5476,6 @@ namespace GoogleCloudExtension {
         public static string PublishDialogLoadingProjectMessage {
             get {
                 return ResourceManager.GetString("PublishDialogLoadingProjectMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Next.
-        /// </summary>
-        public static string PublishDialogNextButtonCaption {
-            get {
-                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
             }
         }
         
@@ -6145,6 +6083,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string UiCopyMenuHeader {
+            get {
+                return ResourceManager.GetString("UiCopyMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string UiDateLabel {
@@ -6213,15 +6160,6 @@ namespace GoogleCloudExtension {
         public static string UiGoButtonCaption {
             get {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid value.
-        /// </summary>
-        public static string UiInvalidValueTitle {
-            get {
-                return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
             }
         }
         
@@ -6433,15 +6371,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} must be an integer..
-        /// </summary>
-        public static string ValidationIntegerMessage {
-            get {
-                return ResourceManager.GetString("ValidationIntegerMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} must be less than {1} characters long..
         /// </summary>
         public static string ValidationMaxCharactersMessage {
@@ -6456,6 +6385,15 @@ namespace GoogleCloudExtension {
         public static string ValidationMinCharactersMessage {
             get {
                 return ResourceManager.GetString("ValidationMinCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be an integer greater than zero..
+        /// </summary>
+        public static string ValidationPositiveNonZeroMessage {
+            get {
+                return ResourceManager.GetString("ValidationPositiveNonZeroMessage", resourceCulture);
             }
         }
         
@@ -6487,11 +6425,75 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .NET Core Tools for Visual Studio 2015 Download Archive.
+        /// </summary>
+        public static string VisualStudio2015DotNetCoreToolingLinkTitle {
+            get {
+                return ResourceManager.GetString("VisualStudio2015DotNetCoreToolingLinkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No credentials found....
         /// </summary>
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load credentials from: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load failed.
+        /// </summary>
+        public static string WindowsCredentialsStoreCredentialFileLoadErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreCredentialFileLoadErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to decrypt credentials from: {0}
+        ///Delete corrupted file?.
+        /// </summary>
+        public static string WindowsCredentialsStoreDecryptErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Corrupted File.
+        /// </summary>
+        public static string WindowsCredentialsStoreDecryptionErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDecryptionErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete corrupted credentials file: {0}.
+        /// </summary>
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete failed.
+        /// </summary>
+        public static string WindowsCredentialsStoreDeletingCorruptedErrorTitle {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsStoreDeletingCorruptedErrorTitle", resourceCulture);
             }
         }
         

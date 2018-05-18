@@ -49,32 +49,55 @@ limitations under the License.
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                 IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel>
-                    <Label
-                        Content="{x:Static ext:Resources.WizardTemplateChooserTargetNetFrameworkLabel}"
-                        Target="{Binding ElementName=_targetFramework}"
-                        Margin="0" />
-                    <ComboBox
-                        x:Name="_targetFramework"
-                        ItemsSource="{Binding AvailableFrameworks}"
-                        SelectedValue="{Binding SelectedFramework}"
-                        ItemTemplate="{StaticResource FrameworkTypeTemplate}"
-                        MinWidth="150px"/>
+        <ContentControl>
+            <ContentControl.Resources>
+                <StackPanel x:Key="SelectPanel">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel>
+                            <Label
+                                Content="{x:Static ext:Resources.WizardTemplateChooserTargetNetFrameworkLabel}"
+                                Target="{Binding ElementName=_targetFramework}"
+                                Margin="0" />
+                            <ComboBox
+                                x:Name="_targetFramework"
+                                ItemsSource="{Binding AvailableFrameworks}"
+                                SelectedValue="{Binding SelectedFramework}"
+                                ItemTemplate="{StaticResource FrameworkTypeTemplate}"
+                                MinWidth="150px"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label
+                                Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
+                                Target="{Binding ElementName=_targetAspNetFramework}" />
+                            <ComboBox
+                                x:Name="_targetAspNetFramework"
+                                ItemsSource="{Binding AvailableVersions}"
+                                SelectedItem="{Binding SelectedVersion}"
+                                MinWidth="180px" />
+                        </StackPanel>
+                    </StackPanel>
+                    <local:AppTypeSelectorControl/>
                 </StackPanel>
-                <StackPanel>
-                    <Label
-                        Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
-                        Target="{Binding ElementName=_targetAspNetFramework}" />
-                    <ComboBox
-                        x:Name="_targetAspNetFramework"
-                        ItemsSource="{Binding AvailableVersions}"
-                        SelectedItem="{Binding SelectedVersion}"
-                        MinWidth="180px" />
+                <StackPanel x:Key="ErrorPanel">
+                    <TextBlock Text="{x:Static ext:Resources.NoDotNetCorePreviewFoundError}"/>
+                    <Button Style="{StaticResource ButtonLikeHyperlinkStyle}"
+                            Command="{Binding OpenVisualStudio2015DotNetCoreToolingDownloadLink}"
+                            Content="{x:Static ext:Resources.VisualStudio2015DotNetCoreToolingLinkTitle}"
+                            Margin="6,0,0,0"/>
                 </StackPanel>
-            </StackPanel>
-            <local:AppTypeSelectorControl/>
-        </StackPanel>
+            </ContentControl.Resources>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding NetCoreMissingError}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource ErrorPanel}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding NetCoreMissingError}" Value="False">
+                            <Setter Property="Content" Value="{StaticResource SelectPanel}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

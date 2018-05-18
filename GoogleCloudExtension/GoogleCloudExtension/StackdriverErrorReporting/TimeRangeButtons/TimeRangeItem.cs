@@ -70,6 +70,41 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             GroupTimeRange = timeRange;
         }
 
+        /// <summary>Determines whether the specified object is equal to the current object.</summary>
+        /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        /// <param name="obj">The object to compare with the current object. </param>
+        public override bool Equals(object obj)
+        {
+            if (obj == this)
+            {
+                return true;
+            }
+            else if (!(obj is TimeRangeItem))
+            {
+                return false;
+            }
+            else
+            {
+                var other = (TimeRangeItem)obj;
+                return Caption.Equals(other.Caption) && TimedCountDuration.Equals(other.TimedCountDuration) &&
+                    EventTimeRange.Equals(other.EventTimeRange) && GroupTimeRange.Equals(other.GroupTimeRange);
+            }
+        }
+
+        /// <summary>Serves as the default hash function. </summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+        {
+            int hashCode = Caption.GetHashCode();
+            hashCode *= 31;
+            hashCode += TimedCountDuration.GetHashCode();
+            hashCode *= 31;
+            hashCode += EventTimeRange.GetHashCode();
+            hashCode *= 31;
+            hashCode += GroupTimeRange.GetHashCode();
+            return hashCode;
+        }
+
         /// <summary>
         /// Create a list of <seealso cref="TimeRangeItem"/> for Error Reporting windows.
         /// Create new list instead of using a static instance, 

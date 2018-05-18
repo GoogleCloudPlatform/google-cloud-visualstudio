@@ -15,6 +15,7 @@
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
+using GoogleCloudExtension.Options;
 using System;
 using System.Diagnostics;
 
@@ -25,6 +26,10 @@ namespace GoogleCloudExtension.Analytics
     /// </summary>
     internal static class EventsReporterWrapper
     {
+        /// <summary>
+        /// Mockable static method for testing.
+        /// </summary>
+        internal static Func<bool> PromptAnalyticsOptIn { private get; set; } = AnalyticsOptInWindow.PromptUser;
         public const string ExtensionEventType = "visualstudio";
         public const string ExtensionEventSource = "virtual.visualstudio";
 
@@ -39,7 +44,7 @@ namespace GoogleCloudExtension.Analytics
         /// <summary>
         /// Used by unit test to prevent analytics from running.
         /// </summary>
-        public static void DisableReporting()
+        internal static void DisableReporting()
         {
             ReporterLazy = new Lazy<IEventsReporter>(() => null);
         }
@@ -49,11 +54,11 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static void EnsureAnalyticsOptIn()
         {
-            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
+            AnalyticsOptions settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = AnalyticsOptInWindow.PromptUser();
+                settings.OptIn = PromptAnalyticsOptIn();
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }

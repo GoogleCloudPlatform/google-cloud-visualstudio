@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
-using System;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.UserPrompt
@@ -66,11 +65,6 @@ namespace GoogleCloudExtension.UserPrompt
             public string CancelButtonCaption { get; set; } = GoogleCloudExtension.Resources.UiCancelButtonCaption;
         }
 
-        /// <summary>
-        /// This property can be used by unit tests to skip the user prompts.
-        /// </summary>
-        internal static Func<Options, bool> PromptUserFunction { private get; set; } = PromptUserImplementation;
-
         private UserPromptWindowViewModel ViewModel { get; }
 
         private UserPromptWindow(Options options) : base(options.Title)
@@ -85,11 +79,6 @@ namespace GoogleCloudExtension.UserPrompt
         /// <param name="options"></param>
         /// <returns>Returns true if the user pressed the action button, false otherwise.</returns>
         public static bool PromptUser(Options options)
-        {
-            return PromptUserFunction(options);
-        }
-
-        private static bool PromptUserImplementation(Options options)
         {
             var dialog = new UserPromptWindow(options);
             dialog.ShowModal();

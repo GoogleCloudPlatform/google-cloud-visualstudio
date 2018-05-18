@@ -18,6 +18,7 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -30,12 +31,14 @@ using System.Windows.Media.Imaging;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
     [TestClass]
-    public class SubscriptionViewModelTests
+    public class SubscriptionViewModelTests : ExtensionTestBase
     {
-        private const string MockSubscriptionLeafName = TopicViewModelTests.MockSubscriptionLeafName;
-        private const string MockSubscriptionFullName = TopicViewModelTests.MockSubscriptionFullName;
-        private const string MockTopicFullName = TopicViewModelTests.MockTopicFullName;
-        private const string MockExceptionMessage = TopicViewModelTests.MockExceptionMessage;
+        private const string MockExceptionMessage = "MockException";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+        private const string MockSubscriptionLeafName = "MockSubscription";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
 
         private SubscriptionViewModel _objectUnderTest;
         private Mock<ITopicViewModelBase> _ownerMock;
@@ -45,14 +48,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<object> _deleteSubscriptionSource;
         private TaskCompletionSource<object> _refreshSource;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(dte => { });
-
             _promptOptions = new List<UserPromptWindow.Options>();
             _promptReturnValue = true;
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 _promptOptions.Add(options);
                 return _promptReturnValue;

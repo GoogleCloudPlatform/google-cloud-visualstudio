@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -20,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -92,6 +95,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ObjectNodeTree Parent { get; }
 
         /// <summary>
+        /// Copies the node to the clipboard.
+        /// </summary>
+        public ProtectedCommand CopyCommand { get; }
+
+        /// <summary>
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
         /// </summary>
         /// <param name="name">object name</param>
@@ -107,6 +115,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             ParseObjectTree(obj);
+            CopyCommand = new ProtectedCommand(() => Clipboard.SetText(NodeValue ?? JsonConvert.SerializeObject(obj)));
         }
 
         /// <summary>

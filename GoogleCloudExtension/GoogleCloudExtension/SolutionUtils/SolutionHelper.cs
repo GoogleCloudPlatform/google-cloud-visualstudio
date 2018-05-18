@@ -14,8 +14,6 @@
 
 using EnvDTE;
 using EnvDTE80;
-using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Projects;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -34,9 +32,6 @@ namespace GoogleCloudExtension.SolutionUtils
     internal class SolutionHelper
     {
         private const string ProjectJsonName = "project.json";
-
-        // This is the GUID for solution folder items.
-        private const string SolutionFolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
 
         private readonly Solution _solution;
 
@@ -66,12 +61,12 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// Returns the startup project for the current solution.
         /// </summary>
-        public IParsedProject StartupProject => GetStartupProject();
+        public ProjectHelper StartupProject => GetStartupProject();
 
         /// <summary>
         /// Returns the selected project in the Solution Explorer.
         /// </summary>
-        public IParsedProject SelectedProject => GetSelectedProject();
+        public ProjectHelper SelectedProject => GetSelectedProject();
 
         /// <summary>
         /// Get a list of <seealso cref="ProjectHelper"/> objects under current solution.
@@ -94,7 +89,7 @@ namespace GoogleCloudExtension.SolutionUtils
             return query.ToList<ProjectSourceFile>();
         }
 
-        private IParsedProject GetSelectedProject()
+        private ProjectHelper GetSelectedProject()
         {
             var selectedProjectDirectory = GetSelectedProjectDirectory();
             if (selectedProjectDirectory == null)
@@ -109,7 +104,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 var projectDirectory = Path.GetDirectoryName(p.FullName);
                 if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    return ProjectParser.ParseProject(p);
+                    return new ProjectHelper(p);
                 }
             }
 
@@ -117,62 +112,6 @@ namespace GoogleCloudExtension.SolutionUtils
             Debug.WriteLine($"Could not find a project in {selectedProjectDirectory}");
             return null;
         }
-
-        /// <summary>
-        /// Lists all of the projects included in the solution, recursing as necessary to extract the
-        /// projects from the solution folders.
-        /// </summary>
-        private IList<Project> GetSolutionProjects()
-        {
-            List<Project> result = new List<Project>();
-
-            var rootProjects = _solution.Projects;
-            foreach (Project item in rootProjects)
-            {
-                if (item.Kind == SolutionFolderKind)
-                {
-                    result.AddRange(GetSolutionFolderProjects(item));
-                }
-                else
-                {
-                    result.Add(item);
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Performs a deep search into the given solution folder, looking for all of the projects
-        /// directly, or indirectly, under it.
-        /// </summary>
-        private IList<Project> GetSolutionFolderProjects(Project solutionDir)
-        {
-            List<Project> result = new List<Project>();
-
-            // Indexes in ProjectItems start at 1 and go through Count.
-            for (int i = 1; i <= solutionDir.ProjectItems.Count; ++i)
-            {
-                var item = solutionDir.ProjectItems.Item(i).SubProject;
-                if (item == null)
-                {
-                    continue;
-                }
-
-                if (item.Kind == SolutionFolderKind)
-                {
-                    result.AddRange(GetSolutionFolderProjects(item));
-                }
-                else
-                {
-                    result.Add(item);
-                }
-            }
-
-            return result;
-        }
-
-
 
         /// <summary>
         /// Uses COM interop to find out what is the selected node in the Solution Explorer and from that what
@@ -227,7 +166,7 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
-        private IParsedProject GetStartupProject()
+        private ProjectHelper GetStartupProject()
         {
             var sb = SolutionBuild;
             if (sb == null)
@@ -248,11 +187,12 @@ namespace GoogleCloudExtension.SolutionUtils
             }
 
             string projectName = Path.GetFileNameWithoutExtension(startupProjectFilePath);
-            foreach (Project p in _solution.Projects)
+            var projects = GetSolutionProjects();
+            foreach (Project p in projects)
             {
                 if (p.Name == projectName)
                 {
-                    return ProjectParser.ParseProject(p);
+                    return new ProjectHelper(p);
                 }
             }
 
@@ -264,15 +204,71 @@ namespace GoogleCloudExtension.SolutionUtils
         private List<ProjectHelper> GetProjectList()
         {
             List<ProjectHelper> list = new List<ProjectHelper>();
-            foreach (Project project in _solution.Projects)
+            var projects = GetSolutionProjects();
+            foreach (Project project in projects)
             {
-                if (ProjectHelper.IsValidSupported(project))
-                {
-                    list.Add(new ProjectHelper(project));
-                }
+                list.Add(new ProjectHelper(project));
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// Lists all of the projects included in the solution, recursing as necessary to extract the
+        /// projects from the solution folders.
+        /// Internal for testing.
+        /// </summary>
+        private IList<Project> GetSolutionProjects()
+        {
+            List<Project> result = new List<Project>();
+
+            var rootProjects = _solution.Projects;
+            foreach (Project item in rootProjects)
+            {
+                // If it's a folder, search projects under it.
+                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                {
+                    result.AddRange(GetSolutionFolderProjects(item));
+                }
+                // Skipping unsupported projects.
+                else if (ProjectHelper.IsValidSupported(item))
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Performs a deep search into the given solution folder, looking for all of the projects
+        /// directly, or indirectly, under it.
+        /// </summary>
+        private IList<Project> GetSolutionFolderProjects(Project solutionDir)
+        {
+            List<Project> result = new List<Project>();
+
+            // Indexes in ProjectItems start at 1 and go through Count.
+            for (int i = 1; i <= solutionDir.ProjectItems.Count; ++i)
+            {
+                var item = solutionDir.ProjectItems.Item(i).SubProject;
+                if (item == null)
+                {
+                    continue;
+                }
+                // If it's a folder, search projects under it.
+                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                {
+                    result.AddRange(GetSolutionFolderProjects(item));
+                }
+                // Skipping unsupported projects.
+                else if (ProjectHelper.IsValidSupported(item))
+                {
+                    result.Add(item);
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -6,14 +6,16 @@
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="1024" d:DesignWidth="860"             
-             Name="_logsViewerToolWindow" >
+             d:DesignHeight="1024" d:DesignWidth="860"
+             d:DataContext="{d:DesignInstance local:LogsViewerViewModel}"
+             Name="_logsViewerToolWindow"
+             IsVisibleChanged="LogsViewerToolWindowControl_OnIsVisibleChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,48 +25,60 @@
                 <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
-            <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
+            <ControlTemplate x:Key="EllipsisBlockTemplate" TargetType="TextBox">
+                <TextBlock
+                    Text="{TemplateBinding Text}"
+                    TextWrapping="{TemplateBinding TextWrapping}"
+                    TextTrimming="CharacterEllipsis"
+                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                    Style="{StaticResource CommonTextStyle}" />
+            </ControlTemplate>
 
-            <DataGridTemplateColumn
-                x:Key="MessageColumn" 
-                Width="*">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <DockPanel LastChildFill="True" >
-                            <Grid DockPanel.Dock="Left">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock 
-                                    Text="{Binding Message}"
-                                    TextWrapping="NoWrap"
-                                    TextTrimming="CharacterEllipsis" />
+            <!-- This style makes a Text Box look like a Text Block when not focused.-->
+            <Style x:Key="EllipsisBoxStyle" TargetType="TextBox">
+                <Style.Triggers>
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="False">
+                        <Setter Property="Template" Value="{StaticResource EllipsisBlockTemplate}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
-                                <controls:IconButton
-                                    Grid.Column="1"
-                                    x:Name="_sourceLinkButton"
-                                    Margin="6,0,12,0"
-                                    Style="{StaticResource MouseOverLinkButtonStyle}"
-                                    Command="{Binding OnNavigateToSourceCommand}"
-                                    Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
-                                    Content="{Binding SourceLinkCaption}">
-                                    <controls:IconButton.ToolTip>
-                                        <ToolTip Content="{Binding SourceFilePath}" 
-                                                    Style="{StaticResource CommonTooltipStyle}" />
-                                    </controls:IconButton.ToolTip>
-                                </controls:IconButton>
-                            </Grid>
+            <DataTemplate x:Key="MessageColumnTemplate" DataType="local:LogItem">
+                <DockPanel LastChildFill="True">
+                    <Grid DockPanel.Dock="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <TextBlock DockPanel.Dock="Right"/>
-                            
-                        </DockPanel>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            
+                        <TextBox
+                            Text="{Binding Message, Mode=OneWay}"
+                            TextWrapping="NoWrap"
+                            IsReadOnly="True"
+                            Style="{StaticResource EllipsisBoxStyle}"/>
+
+                        <controls:IconButton
+                            Grid.Column="1"
+                            x:Name="_sourceLinkButton"
+                            Margin="6,0,12,0"
+                            Style="{StaticResource MouseOverLinkButtonStyle}"
+                            Command="{Binding OnNavigateToSourceCommand}"
+                            Visibility="{Binding SourceLinkVisible, Converter={utils:VisibilityConverter}}"
+                            Content="{Binding SourceLinkCaption}">
+
+                            <controls:IconButton.ToolTip>
+                                <ToolTip Content="{Binding SourceFilePath}"
+                                         Style="{StaticResource CommonTooltipStyle}" />
+                            </controls:IconButton.ToolTip>
+                        </controls:IconButton>
+                    </Grid>
+
+                    <TextBlock DockPanel.Dock="Right"/>
+
+                </DockPanel>
+            </DataTemplate>
+
             <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
@@ -83,19 +97,19 @@
             </HierarchicalDataTemplate>
 
             <!-- data grid group item. -->
-            <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
-                <StackPanel>
+            <ControlTemplate x:Key="GroupItemTemplate" TargetType="{x:Type GroupItem}">
+                <StackPanel d:DataContext="{d:DesignInstance CollectionViewGroup}">
                     <StackPanel 
                         Orientation="Horizontal" 
                         Background="#E0E0E0">
 
                         <TextBlock 
-                            Text="{Binding Name}"  
+                            Text="{Binding Name}"
                             Padding="6" 
                             FontWeight="DemiBold"
                             Style="{StaticResource CommonTextStyle}"/>
 
-                        <controls:FixBackgroundComboBox                         
+                        <controls:FixBackgroundComboBox
                             DockPanel.Dock="Left"
                             x:Name="comboTimeZone" 
                             Margin="6,0,0,0" 
@@ -117,6 +131,33 @@
                 </StackPanel>
             </ControlTemplate>
 
+            <DataTemplate x:Key="DateCellTemplate" DataType="local:LogItem">
+                <TextBox
+                    IsReadOnly="True"
+                    Text="{Binding Time, Mode=OneWay}"
+                    TextWrapping="NoWrap"
+                    Margin="6,0,6,0"
+                    Style="{StaticResource EllipsisBoxStyle}">
+
+                    <TextBox.ToolTip>
+                        <ToolTip Content="{Binding Date}"
+                                 Style="{StaticResource CommonTooltipStyle}" />
+                    </TextBox.ToolTip>
+                </TextBox>
+            </DataTemplate>
+
+            <DataTemplate x:Key="SeverityLevelCellTemplate" DataType="local:LogItem">
+                <Image Source="{Binding SeverityLevel}"
+                       Width="12"
+                       Height="12"
+                       Margin="9,1,8,1">
+                    <Image.ToolTip>
+                        <ToolTip Content="{Binding SeverityTip}"
+                                 Style="{StaticResource CommonTooltipStyle}" />
+                    </Image.ToolTip>
+                </Image>
+            </DataTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -130,7 +171,7 @@
         
         <Grid 
             Grid.Row="1"
-            Visibility="{Binding Project, Converter={StaticResource nullEmptyInvisibleConverter}}">
+            Visibility="{Binding Project, Converter={utils:NullEmptyInvisibleConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -142,12 +183,12 @@
                 Padding="12,6,0,6"    
                 BorderThickness="0,0,0,1"    
                 BorderBrush="LightGray"
-                IsEnabled="{Binding IsControlEnabled}" >
+                IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}" >
                 <controls:AutoReloadButton 
                     x:Name="_autoReloadButton"
                     Style="{StaticResource AutoReloadButtonStyle}" 
                     AutoReloadCommand="{Binding OnAutoReloadCommand}"
-                    Content="{x:Static ext:Resources.LogViewerAutoReloadButtonCaption}"                    
+                    Content="{x:Static ext:Resources.LogViewerAutoReloadButtonCaption}"
                     IntervalSeconds="{Binding AutoReloadIntervalSeconds}"
                     IsChecked="{Binding IsAutoReloadChecked}"/>
             </Border>
@@ -156,14 +197,14 @@
             <StackPanel      
                 Grid.Row="1"
                 Margin="12,6,12,6"  
-                IsEnabled="{Binding IsControlEnabled}"
+                IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}"
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Stretch" 
                 Orientation="Vertical"
-                Visibility="{Binding IsChecked, ElementName=_autoReloadButton, Converter={StaticResource visibilityConverterNegated}}">
+                Visibility="{Binding IsChecked, ElementName=_autoReloadButton, Converter={utils:VisibilityConverter IsNegated=True}}">
 
                 <!-- Advanced Filter -->
-                <Grid Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
+                <Grid Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -186,7 +227,7 @@
                         MaxLines="6"
                         VerticalScrollBarVisibility="Auto" />
 
-                    <Button 
+                    <Button
                         Grid.Column="2" 
                         Margin="6,0,0,0" 
                         HorizontalAlignment="Right"
@@ -226,7 +267,7 @@
 
                 <!-- Basic Filters. -->
                 <StackPanel 
-                    Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverterNegated}}">
+                    Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter IsNegated=True}}">
                     <StackPanel 
                         Orientation="Horizontal" 
                         HorizontalAlignment="Left" 
@@ -271,7 +312,6 @@
                             DataContext="{Binding DateTimePickerModel}" />
 
                         <controls:IconButton
-                            Grid.Column="1" 
                             Margin="6,0,16,0"
                             Width="32" 
                             Height="32"
@@ -362,40 +402,37 @@
 
             <Grid Grid.Row="2" 
                   Margin="12,6,12,12" 
-                  IsEnabled="{Binding IsControlEnabled}">
+                  IsEnabled="{Binding AsyncAction.IsPending, Converter={utils:NotConverter}}">
 
                 <!-- DataGrid, displays all log entries. -->
-                <DataGrid 
+                <DataGrid
                     Panel.ZIndex="10" 
-                    x:Name="_dataGridLogEntries"
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Stretch" 
-                    Background="White" 
-                    BorderThickness="1" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="White"
+                    BorderThickness="1"
                     BorderBrush="LightGray"
-                    GridLinesVisibility="None" 
-                    CanUserResizeRows="False"                  
-                    RowStyle="{StaticResource rowStyle}" 
+                    GridLinesVisibility="None"
+                    CanUserResizeRows="False"
+                    RowStyle="{StaticResource rowStyle}"
                     CellStyle="{StaticResource cellStyle}"
-                    AutoGenerateColumns="False" 
-                    IsReadOnly="True" 
-                    HeadersVisibility="Column" 
-                    ColumnHeaderHeight="22" 
-                    ItemsSource="{Binding LogItemCollection}"   
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    HeadersVisibility="Column"
+                    ColumnHeaderHeight="22"
+                    ItemsSource="{Binding LogItemCollection}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     AlternationCount="2"
-                    ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
-                    PreviewMouseDown="dataGrid_PreviewMouseDown">
+                    ScrollViewer.ScrollChanged="DataGrid_ScrollChanged"
+                    RowDetailsVisibilityMode="VisibleWhenSelected">
 
                     <!-- Override the text highlight color. -->
                     <DataGrid.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                                         Color="Black"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
                     </DataGrid.Resources>
 
                     <DataGrid.Style>
                         <Style TargetType="DataGrid">
-                            <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsExpanded, ElementName=_allExpander}" Value="True">
                                     <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
@@ -405,10 +442,10 @@
                     </DataGrid.Style>
 
                     <DataGrid.GroupStyle>
-                        <GroupStyle >
-                            <GroupStyle.ContainerStyle >
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
                                 <Style TargetType="{x:Type GroupItem}" >
-                                    <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
+                                    <Setter Property="Template" Value="{StaticResource GroupItemTemplate}" />
                                 </Style>
                             </GroupStyle.ContainerStyle>
                             <GroupStyle.Panel>
@@ -420,61 +457,43 @@
                     </DataGrid.GroupStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn 
-                            IsReadOnly="True" >
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Image Source="{Binding SeverityLevel}" 
-                                           Width="12" 
-                                           Height="12"
-                                           Margin="9,1,8,1" >
-                                        <Image.ToolTip>
-                                            <ToolTip Content="{Binding SeverityTip}" 
-                                                     Style="{StaticResource CommonTooltipStyle}"/>
-                                        </Image.ToolTip>
-                                    </Image>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn
+                            IsReadOnly="True"
+                            CellTemplate="{StaticResource SeverityLevelCellTemplate}"/>
 
                         <DataGridTemplateColumn
-                            IsReadOnly="True" 
-                            SortMemberPath="TimeStamp" >
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock 
-                                        Text="{Binding Time}" 
-                                        TextWrapping="NoWrap"
-                                        TextTrimming="CharacterEllipsis" 
-                                        Margin="6,0,6,0">
-                                        <TextBlock.ToolTip>
-                                            <ToolTip Content="{Binding Date}" 
-                                                     Style="{StaticResource CommonTooltipStyle}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                            IsReadOnly="True"
+                            SortMemberPath="TimeStamp" CellTemplate="{StaticResource DateCellTemplate}"/>
 
-                        <StaticResource ResourceKey="MessageColumn" />
+                        <DataGridTemplateColumn Width="*" CellTemplate="{StaticResource MessageColumnTemplate}" />
                     </DataGrid.Columns>
 
                     <DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="local:LogItem">
                             <!-- Use a border to make the background right. -->
                             <Border Background="White" Padding="30,0,0,2">
 
-                                <!-- Override the template to disable inner scrollbar -->
-                                <TreeView BorderThickness="0" 
-                                          ItemsSource="{Binding TreeViewObjects}">
-                                    <TreeView.Template>
-                                        <ControlTemplate>
-                                            <ItemsPresenter />
-                                        </ControlTemplate>
-                                    </TreeView.Template>
+                                <TreeView BorderThickness="0"
+                                          ItemsSource="{Binding TreeViewObjects}"
+                                          SelectedValuePath="NodeValue"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <TreeView.CommandBindings>
+                                        <CommandBinding Command="ApplicationCommands.Copy"
+                                                        Executed="DetailsTreeView_OnCopy" />
+                                    </TreeView.CommandBindings>
                                     <TreeView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type TreeViewItem}" >
+                                        <Style TargetType="{x:Type TreeViewItem}">
                                             <Setter Property="IsExpanded" Value="True" />
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu
+                                                        d:DataContext="{d:DesignInstance local:ObjectNodeTree}">
+                                                        <MenuItem Header="{x:Static ext:Resources.UiCopyMenuHeader}"
+                                                                  Command="{Binding CopyCommand}" />
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
                                         </Style>
                                     </TreeView.ItemContainerStyle>
                                 </TreeView>
@@ -495,8 +514,8 @@
                     TextWrapping="Wrap"
                     MaxHeight="360" 
                     Foreground="Red" 
-                    Text="{Binding RequestErrorMessage, Mode=OneWay}" 
-                    Visibility="{Binding ShowRequestErrorMessage, Converter={StaticResource visibilityConverter}}" 
+                    Text="{Binding AsyncAction.ErrorMessage, Mode=OneWay}" 
+                    Visibility="{Binding AsyncAction.IsError, Converter={utils:VisibilityConverter}}" 
                     IsReadOnly="True"
                     VerticalScrollBarVisibility="Auto" />
 
@@ -504,9 +523,9 @@
                     Margin="0,0,0,12" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center"
-                    Visibility="{Binding ShowRequestStatus, Converter={StaticResource visibilityConverter}}">
+                    Visibility="{Binding AsyncAction.IsSuccess, Converter={utils:VisibilityConverter IsNegated=True}}">
 
-                    <TextBlock 
+                    <TextBlock
                         Padding="8,5,3,5" 
                         Text="{Binding RequestStatusText}"
                         Style="{StaticResource CommonTextStyle}" />
@@ -514,16 +533,17 @@
                     <controls:DotsProgressIndicator 
                         Padding="0,5,8,5" />
 
-                    <Button 
+                    <Button
                         Margin="12,0,12,0" 
                         VerticalAlignment="Center"
                         IsEnabled="True"
                         Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
                         Command="{Binding CancelRequestCommand}" 
-                        Visibility="{Binding ShowCancelRequestButton, Converter={StaticResource visibilityConverter}}" 
+                        Visibility="{Binding ShowCancelRequestButton, Converter={utils:VisibilityConverter}}" 
                         Style="{StaticResource CommonButtonStandardStyle}" />
                 </StackPanel>
             </Grid>
         </Grid>
     </Grid>
 </UserControl>
+

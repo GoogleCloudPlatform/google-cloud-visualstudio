@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.Utils
         ///         (a) A space inside a double quotes pair.  Add it to currentToken.
         ///         (b) else, it is a separator, add the currentToken to
         /// </summary>
-        public static IEnumerable<string> SplitStringBySpaceOrQuote(string source)
+        public static List<string> SplitStringBySpaceOrQuote(string source)
         {
             if (source == null)
             {
@@ -173,6 +173,45 @@ namespace GoogleCloudExtension.Utils
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Converts the input CameCase text to lower-kebob-case
+        /// </summary>
+        /// <param name="camelCaseText">The input text to convert.</param>
+        /// <returns>The text converted to kebob-case.</returns>
+        public static string ToKebobCase(string camelCaseText)
+        {
+            if (camelCaseText == null)
+            {
+                return null;
+            }
+            var lastCharLowerLetter = false;
+            var lastCharLetter = false;
+            var lastCharDidget = false;
+            var result = new StringBuilder();
+            foreach (char c in camelCaseText)
+            {
+                if (char.IsUpper(c) && lastCharLowerLetter)
+                {
+                    result.Append("-");
+                }
+                else if (char.IsLetter(c) && lastCharDidget)
+                {
+                    result.Append("-");
+                }
+                else if (char.IsDigit(c) && lastCharLetter)
+                {
+                    result.Append("-");
+                }
+
+                result.Append(char.ToLower(c));
+                lastCharLowerLetter = char.IsLower(c);
+                lastCharLetter = char.IsLetter(c);
+                lastCharDidget = char.IsDigit(c);
+            }
+
+            return result.ToString();
         }
     }
 }

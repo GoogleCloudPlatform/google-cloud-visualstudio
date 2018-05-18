@@ -50,11 +50,6 @@ namespace GoogleCloudExtension.PublishDialog
         public ProtectedCommand PrevCommand { get; }
 
         /// <summary>
-        /// The command to execute when pressing the "Next" button.
-        /// </summary>
-        public ProtectedCommand NextCommand { get; }
-
-        /// <summary>
         /// The command to execute when presing the "Publish" button.
         /// </summary>
         public ProtectedCommand PublishCommand { get; }
@@ -79,16 +74,9 @@ namespace GoogleCloudExtension.PublishDialog
             _project = project;
 
             PrevCommand = new ProtectedCommand(OnPrevCommand);
-            NextCommand = new ProtectedCommand(OnNextCommand);
             PublishCommand = new ProtectedCommand(OnPublishCommand);
 
             PushStep(initialStep);
-        }
-
-        private void OnNextCommand()
-        {
-            var nextStep = CurrentStep.Next();
-            PushStep(nextStep);
         }
 
         private void OnPrevCommand()
@@ -107,14 +95,14 @@ namespace GoogleCloudExtension.PublishDialog
             _stack.Push(step);
             AddStepEvents();
 
-            step.OnPushedToDialog(this);
+            step.OnVisible(this);
             CurrentStepChanged();
         }
 
         private void AddStepEvents()
         {
             var top = _stack.Peek();
-            top.CanGoNextChanged += OnCanGoNextChanged;
+
             top.CanPublishChanged += OnCanPublishChanged;
             top.ErrorsChanged += OnErrorsChanged;
         }
@@ -124,7 +112,6 @@ namespace GoogleCloudExtension.PublishDialog
             if (_stack.Count > 0)
             {
                 var top = _stack.Peek();
-                top.CanGoNextChanged -= OnCanGoNextChanged;
                 top.CanPublishChanged -= OnCanPublishChanged;
                 top.ErrorsChanged -= OnErrorsChanged;
             }
@@ -134,6 +121,8 @@ namespace GoogleCloudExtension.PublishDialog
         {
             RemoveStepEvents();
             _stack.Pop();
+            IPublishDialogStep newStep = _stack.Peek();
+            newStep.OnVisible(this);
             AddStepEvents();
 
             CurrentStepChanged();
@@ -143,18 +132,12 @@ namespace GoogleCloudExtension.PublishDialog
         {
             Content = CurrentStep.Content;
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
-            NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
         }
 
         private void OnCanPublishChanged(object sender, EventArgs e)
         {
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
-        }
-
-        private void OnCanGoNextChanged(object sender, EventArgs e)
-        {
-            NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
         }
 
         private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
@@ -164,6 +147,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         #region IPublishDialog
 
+        /// <inheritdoc />
         async void IPublishDialog.TrackTask(Task task)
         {
             try
@@ -187,17 +171,24 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        /// <inheritdoc />
         IParsedProject IPublishDialog.Project => _project;
 
+        /// <inheritdoc />
         void IPublishDialog.NavigateToStep(IPublishDialogStep step)
         {
             PushStep(step);
         }
 
+        /// <inheritdoc />
         void IPublishDialog.FinishFlow()
         {
+            FlowFinished?.Invoke(this, EventArgs.Empty);
             _owner.Close();
         }
+
+        /// <inheritdoc />
+        public event EventHandler FlowFinished;
 
         #endregion
 
@@ -214,7 +205,6 @@ namespace GoogleCloudExtension.PublishDialog
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
         #endregion
     }
 }

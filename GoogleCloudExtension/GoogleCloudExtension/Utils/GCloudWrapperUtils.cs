@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.CopyablePrompt;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
 using System;
@@ -22,6 +23,22 @@ namespace GoogleCloudExtension.Utils
     internal static class GCloudWrapperUtils
     {
         /// <summary>
+        /// Override to use for testing.
+        /// </summary>
+        internal static Func<GCloudComponent, Task<GCloudValidationResult>> ValidateGCloudAsyncOverride { get; set; }
+
+        /// <summary>
+        /// Override to use for testing.
+        /// </summary>
+        internal static Action<string, string, string> ShowCopyablePromptOverride { get; set; }
+
+        private static Func<GCloudComponent, Task<GCloudValidationResult>> ValidateGCloudAsync =>
+            ValidateGCloudAsyncOverride ?? GCloudWrapper.ValidateGCloudAsync;
+
+        private static Action<string, string, string> ShowCopyablePrompt =>
+            ShowCopyablePromptOverride ?? CopyablePromptDialogWindow.PromptUser;
+
+        /// <summary>
         /// Verify that the Cloud SDK is installed and at the right version. Optionally also verify that the given
         /// component is installed.
         /// </summary>
@@ -29,7 +46,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the Cloud SDK installation is valid.</returns>
         public static async Task<bool> VerifyGCloudDependencies(GCloudComponent component = GCloudComponent.None)
         {
-            var result = await GCloudWrapper.ValidateGCloudAsync(component);
+            GCloudValidationResult result = await ValidateGCloudAsync(component);
             if (result.IsValid)
             {
                 return true;
@@ -45,7 +62,7 @@ namespace GoogleCloudExtension.Utils
             else if (!result.IsCloudSdkUpdated)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: String.Format(
+                    message: string.Format(
                         Resources.GCloudWrapperUtilsOldCloudSdkMessage,
                         result.CloudSdkVersion,
                         GCloudWrapper.GCloudSdkMinimumVersion),
@@ -53,9 +70,10 @@ namespace GoogleCloudExtension.Utils
             }
             else
             {
-                UserPromptUtils.ErrorPrompt(
-                       message: String.Format(Resources.GcloudMissingComponentErrorMessage, component),
-                       title: Resources.GcloudMissingComponentTitle);
+                ShowCopyablePrompt(
+                    Resources.GcloudMissingComponentTitle,
+                    string.Format(Resources.GcloudMissingComponentErrorMessage, component),
+                    string.Format(Resources.GcloudMissingComponentInstallCommand, component.ToString().ToLower()));
             }
 
             return false;

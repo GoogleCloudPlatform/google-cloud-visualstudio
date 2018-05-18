@@ -12,7 +12,7 @@
         <License>License.txt</License>
         <Icon>logo_cloud_128.png</Icon>
         <PreviewImage>logo_cloud_512.png</PreviewImage>
-        <Tags>gcp, gcloud, google, cloud</Tags>
+        <Tags>gcp, gcloud, google, cloud, compute, kubernetes, tool, deploy, asp.net, asp.net core, app engine</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,)" />

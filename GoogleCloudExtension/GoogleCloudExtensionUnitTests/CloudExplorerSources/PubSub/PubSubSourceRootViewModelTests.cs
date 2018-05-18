@@ -18,17 +18,16 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.UserPrompt;
-using GoogleCloudExtensionUnitTests.CloudExplorer;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Process = System.Diagnostics.Process;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 {
@@ -36,26 +35,25 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     /// Tests for <see cref="PubsubSourceRootViewModel"/>
     /// </summary>
     [TestClass]
-    public class PubSubSourceRootViewModelTests
+    public class PubSubSourceRootViewModelTests : ExtensionTestBase
     {
-        public const string MockTopicLeafName = "MockTopic";
-        public const string MockTopicFullName = TopicPrefix + MockTopicLeafName;
-        public const string MockSubscriptionLeafName = "MockSubscription";
-        public const string MockSubscriptionFullName = SubscriptionPrefix + MockSubscriptionLeafName;
 
-        public const string MockExceptionMessage = SourceRootViewModelBaseTests.MockExceptionMessage;
-        public const string MockProjectId = SourceRootViewModelBaseTests.MockProjectId;
-        private const string ProjectResourcePrefix = "projects/" + MockProjectId;
-        private const string TopicPrefix = ProjectResourcePrefix + "/topics/";
-        private const string SubscriptionPrefix = ProjectResourcePrefix + "/subscriptions/";
+        private const string MockProjectId = "parent.com:mock-project";
+        private const string MockExceptionMessage = "MockException";
+        private const string TopicPrefix = "projects/parent.com:mock-project/topics/";
 
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+        private const string MockSubscriptionLeafName = "MockSubscription";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
 
         /// <summary>
         /// Defined by the Pub/Sub api.
         /// <see href="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics/delete"/>
         /// </summary>
-        public const string DeletedTopicName = "_deleted-topic_";
-
+        private const string DeletedTopicName = "_deleted-topic_";
 
         private static readonly Topic s_topic = new Topic { Name = MockTopicFullName };
 
@@ -78,21 +76,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TaskCompletionSource<IList<Subscription>> _subscriptionSource;
         private TestablePubsubSourceRootViewModel _objectUnderTest;
         private Mock<Func<string, Process>> _startProcessMock;
+        private Mock<CloudExplorerOptions> _cloudExplorerOptionsMock;
 
-        [ClassInitialize]
-        public static void BeforeAll(TestContext context)
-        {
-            PubsubSourceRootViewModel.TopicFiltersOverride = CloudExplorerOptions.DefaultPubSubTopicFilters;
-        }
-
-        [ClassCleanup]
-        public static void AfterAll()
-        {
-            PubsubSourceRootViewModel.TopicFiltersOverride = null;
-        }
-
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _startProcessMock = new Mock<Func<string, Process>>();
 
@@ -101,6 +87,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(MockProjectId);
             _factoryMock = new Mock<Func<IPubsubDataSource>>();
             _factoryMock.Setup(f => f()).Returns(() => _dataSourceMock.Object);
+
+            _cloudExplorerOptionsMock = new Mock<CloudExplorerOptions>();
+            _cloudExplorerOptionsMock.SetupSet(o => o.PubSubTopicFilters = It.IsAny<IEnumerable<string>>());
+            PackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(_cloudExplorerOptionsMock.Object);
+            PackageMock.Setup(p => p.ShowOptionPage<CloudExplorerOptions>());
+
+
             _objectUnderTest = new TestablePubsubSourceRootViewModel(_factoryMock.Object);
             _objectUnderTest.StartProcess = _startProcessMock.Object;
 
@@ -228,10 +221,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public async Task TestLoadParentChild()
         {
-            _objectUnderTest.Initialize(_contextMock.Object);
+            _cloudExplorerOptionsMock.SetupGet(o => o.PubSubTopicFilters).Returns(CloudExplorerOptions.DefaultPubSubTopicFilters);
             _topicSource.SetResult(new List<Topic> { s_topic });
             _subscriptionSource.SetResult(new List<Subscription> { s_childSubscription });
 
+            _objectUnderTest.Initialize(_contextMock.Object);
             await _objectUnderTest.LoadData();
 
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -247,10 +241,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public async Task TestLoadOrphanedSubscription()
         {
-            _objectUnderTest.Initialize(_contextMock.Object);
+            _cloudExplorerOptionsMock.SetupGet(o => o.PubSubTopicFilters).Returns(CloudExplorerOptions.DefaultPubSubTopicFilters);
             _topicSource.SetResult(new List<Topic> { s_topic });
             _subscriptionSource.SetResult(new List<Subscription> { s_orphanedSubscription });
 
+            _objectUnderTest.Initialize(_contextMock.Object);
             await _objectUnderTest.LoadData();
 
             Assert.AreEqual(2, _objectUnderTest.Children.Count);
@@ -269,8 +264,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public async Task TestLoadBlacklistedTopics()
         {
-            _objectUnderTest.Initialize(_contextMock.Object);
-            string gcrProjectId = MockProjectId.Replace(":", "%2F");
+            _cloudExplorerOptionsMock.SetupGet(o => o.PubSubTopicFilters).Returns(CloudExplorerOptions.DefaultPubSubTopicFilters);
+            const string mockProjectId = MockProjectId;
+            string gcrProjectId = mockProjectId.Replace(":", "%2F");
             string nonBlacklistTopicName = $"{TopicPrefix}cloud-builds:projects:xxxx-id-xxx:topics";
             _topicSource.SetResult(
                 new List<Topic>
@@ -278,10 +274,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                     new Topic {Name = $"{TopicPrefix}cloud-builds"},
                     new Topic {Name = $"{TopicPrefix}repository-changes.default"},
                     new Topic {Name = $"{TopicPrefix}repository-changes.another-repo-name"},
-                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{MockProjectId}"},
-                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{MockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}gcr.io%2F{mockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{mockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{mockProjectId}"},
+                    new Topic {Name = $"{TopicPrefix}us.gcr.io%2F{mockProjectId}"},
                     new Topic {Name = $"{TopicPrefix}gcr.io%2F{gcrProjectId}"},
                     new Topic {Name = $"{TopicPrefix}asia.gcr.io%2F{gcrProjectId}"},
                     new Topic {Name = $"{TopicPrefix}eu.gcr.io%2F{gcrProjectId}"},
@@ -290,6 +286,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 });
             _subscriptionSource.SetResult(new List<Subscription>());
 
+            _objectUnderTest.Initialize(_contextMock.Object);
             await _objectUnderTest.LoadData();
 
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -299,7 +296,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         }
 
         [TestMethod]
-        public void TestNewTopicCommandCanceled()
+        public async Task TestNewTopicCommandCanceled()
         {
             string projectIdParam = null;
             string details = null;
@@ -310,13 +307,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return null;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;
             };
 
-            _objectUnderTest.OnNewTopicCommand();
+            await _objectUnderTest.OnNewTopicCommandAsync();
 
             Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.IsNull(details);
@@ -325,7 +322,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         }
 
         [TestMethod]
-        public void TestNewTopicCommandError()
+        public async Task TestNewTopicCommandError()
         {
             string projectIdParam = null;
             string details = null;
@@ -337,13 +334,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicFullName;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;
             };
 
-            _objectUnderTest.OnNewTopicCommand();
+            await _objectUnderTest.OnNewTopicCommandAsync();
 
             Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.AreEqual(MockExceptionMessage, details);
@@ -353,7 +350,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         }
 
         [TestMethod]
-        public void TestNewTopicCommandSuccess()
+        public async Task TestNewTopicCommandSuccess()
         {
             string projectIdParam = null;
             string details = null;
@@ -364,13 +361,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicFullName;
             };
-            UserPromptWindow.PromptUserFunction = options =>
+            UserPromptUtils.PromptUserOverride = options =>
             {
                 details = options.ErrorDetails;
                 return true;
             };
 
-            _objectUnderTest.OnNewTopicCommand();
+            await _objectUnderTest.OnNewTopicCommandAsync();
 
             Assert.AreEqual(MockProjectId, projectIdParam);
             Assert.IsNull(details);
@@ -383,7 +380,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         public void TestOpenCloudConsoleCommand()
         {
             _objectUnderTest.Initialize(_contextMock.Object);
-
             _objectUnderTest.OnOpenCloudConsoleCommand();
 
             string expectedUrl = string.Format(PubsubSourceRootViewModel.PubSubConsoleUrlFormat, MockProjectId);
@@ -393,10 +389,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public async Task TestOptionsSaveTriggersRefresh()
         {
+            _cloudExplorerOptionsMock.Setup(o => o.SaveSettingsToStorage()).Raises(o => o.SavingSettings += null, EventArgs.Empty);
             _topicSource.SetResult(new List<Topic>());
             _subscriptionSource.SetResult(new List<Subscription>());
-            await _objectUnderTest.LoadData();
 
+            await _objectUnderTest.LoadData();
             GoogleCloudExtensionPackage.Instance.GetDialogPage<CloudExplorerOptions>().SaveSettingsToStorage();
 
             Assert.AreEqual(1, _objectUnderTest.RefreshHitCount);
@@ -415,26 +412,25 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestChangeFiltersCommand()
         {
-            var showOptionsPageMethodMock = new Mock<Action<Type>>();
-            GoogleCloudExtensionPackage.Instance.ShowOptionPageMethod = showOptionsPageMethodMock.Object;
             _objectUnderTest.Initialize(_contextMock.Object);
             ICommand changeFiltersCommand = _objectUnderTest.ContextMenu.Items.OfType<MenuItem>()
                     .Single(mi => mi.Header.Equals(Resources.CloudExplorerPubSubChangeFiltersMenuHeader)).Command;
 
             changeFiltersCommand.Execute(null);
 
-            showOptionsPageMethodMock.Verify(a => a(typeof(CloudExplorerOptions)), Times.Once);
+            PackageMock.Verify(p => p.ShowOptionPage<CloudExplorerOptions>(), Times.Once);
         }
 
         private class TestablePubsubSourceRootViewModel : PubsubSourceRootViewModel
         {
             public int RefreshHitCount { get; private set; }
 
-            public TestablePubsubSourceRootViewModel(Func<IPubsubDataSource> factory) : base(factory) { }
+            public TestablePubsubSourceRootViewModel(Func<IPubsubDataSource> factory)
+                : base(factory) { }
 
-            internal Task LoadData()
+            internal async Task LoadData()
             {
-                return LoadDataOverride();
+                await LoadDataOverride();
             }
 
             public override void Refresh()

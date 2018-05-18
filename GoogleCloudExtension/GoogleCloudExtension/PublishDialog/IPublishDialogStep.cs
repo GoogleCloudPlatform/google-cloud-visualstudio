@@ -24,16 +24,6 @@ namespace GoogleCloudExtension.PublishDialog
     public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
         /// <summary>
-        /// Returns whether the step can go to a next step.
-        /// </summary>
-        bool CanGoNext { get; }
-
-        /// <summary>
-        /// Event raised whenever <seealso cref="CanGoNext"/> value changes.
-        /// </summary>
-        event EventHandler CanGoNextChanged;
-
-        /// <summary>
         /// Returns whether the step can perform the publish operation.
         /// </summary>
         bool CanPublish { get; }
@@ -49,12 +39,6 @@ namespace GoogleCloudExtension.PublishDialog
         FrameworkElement Content { get; }
 
         /// <summary>
-        /// Returns the next step to navigate to when the next button is pressed.
-        /// </summary>
-        /// <returns>The next step to navigate to.</returns>
-        IPublishDialogStep Next();
-
-        /// <summary>
         /// Performs the publish step action, will only be called if <seealso cref="CanPublish"/> return true.
         /// </summary>
         void Publish();
@@ -63,6 +47,6 @@ namespace GoogleCloudExtension.PublishDialog
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
         /// <param name="dialog">The dialog that is hosting this step.</param>
-        void OnPushedToDialog(IPublishDialog dialog);
+        void OnVisible(IPublishDialog dialog);
     }
 }

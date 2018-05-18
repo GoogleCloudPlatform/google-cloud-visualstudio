@@ -28,13 +28,18 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
     [TestClass]
     public class TopicViewModelBaseTests
     {
-        private const string MockTopicFullName = PubSubSourceRootViewModelTests.MockTopicFullName;
-        private const string MockSubscriptionFullName = PubSubSourceRootViewModelTests.MockSubscriptionFullName;
-        private const string MockSubscriptionFullName2 = MockSubscriptionFullName + "2";
-        private const string DeletedTopicName = PubSubSourceRootViewModelTests.DeletedTopicName;
-        private const string MockTopicLeafName = PubSubSourceRootViewModelTests.MockTopicLeafName;
-        private const string MockSubscriptionLeafName = PubSubSourceRootViewModelTests.MockSubscriptionLeafName;
-        private const string MockExceptionMessage = PubSubSourceRootViewModelTests.MockExceptionMessage;
+        private const string MockExceptionMessage = "MockException";
+        private const string DeletedTopicName = "_deleted-topic_";
+        private const string MockTopicLeafName = "MockTopic";
+        private const string MockTopicFullName = "projects/parent.com:mock-project/topics/MockTopic";
+        private const string MockSubscriptionLeafName = "MockSubscription";
+
+        private const string MockSubscriptionFullName =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription";
+
+        private const string MockSubscriptionFullName2 =
+            "projects/parent.com:mock-project/subscriptions/MockSubscription2";
+
         private Mock<IPubsubSourceRootViewModel> _ownerMock;
         private Mock<ITopicItem> _itemMock;
         private readonly Subscription _childSubscription = new Subscription { Name = MockSubscriptionFullName, Topic = MockTopicFullName };

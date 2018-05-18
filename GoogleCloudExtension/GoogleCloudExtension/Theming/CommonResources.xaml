@@ -3,7 +3,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
                     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
-                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
 
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
@@ -12,7 +13,6 @@
 
     <!-- Text style. -->
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
@@ -606,13 +606,16 @@
         <Setter Property="MouseOverForeground" Value="#8A2BE2" />
     </Style>
 
+    <!-- Refer to these as DynamicResources to avoid breaking the designer. -->
+    <mp:ImageResource x:Key="PlayIconResource" Path="StackdriverErrorReporting/Resources/play_icon.png"/>
+    <mp:ImageResource x:Key="PauseIconResource" Path="StackdriverErrorReporting/Resources/pause_icon.png" />
     <!-- Style for auto reload button -->
     <Style x:Key="AutoReloadButtonStyle" 
            TargetType="{x:Type controls:AutoReloadButton}" 
            BasedOn="{StaticResource ImageToggleButtonStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
-        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/pause_icon.png}" />
+        <Setter Property="UncheckedImage" Value="{DynamicResource PlayIconResource}" />
+        <Setter Property="CheckedImage" Value="{DynamicResource PauseIconResource}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Padding" Value="6" />
@@ -909,14 +912,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>    
+    </Style>
 
     <!-- Common hyperlink style. -->
 
     <!-- Common hyperlink colors. -->
-    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
     <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
-    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="{DynamicResource {x:Static vsshell:VsColors.StartPageTextHeadingMouseOverKey}}" />
 
     <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
         <Style.Triggers>
@@ -931,7 +933,6 @@
                 <Setter Property="Cursor" Value="Hand" />
             </Trigger>
         </Style.Triggers>
-        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
         <Setter Property="TextDecorations" Value="None" />
     </Style>
 

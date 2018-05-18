@@ -22,34 +22,44 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
     [TestClass]
-    public class AspNetCoreTemplateChooserViewModelTests
+    public class AspNetCoreTemplateChooserViewModelTests : ExtensionTestBase
     {
         private const string DefaultProjectId = "default-project-id";
         private List<string> _targetSdkVersions;
         private Mock<Action> _closeWindowMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _targetSdkVersions = new List<string>();
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
             CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
         }
 
         [TestMethod]
-        public void TestInitialConditionsMissingNetCoreSdk()
+        public void TestInitialConditionsVs2015MissingNetCoreSdk()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2015Version);
+
+            var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
+
+            Assert.IsTrue(objectUnderTest.NetCoreMissingError);
+            Assert.IsFalse(objectUnderTest.OkCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestInitialConditionsVs2017MissingNetCoreSdk()
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
 
@@ -64,8 +74,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2015()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2015Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2015Version);
             _targetSdkVersions.Add("1.0.0-preview2-003156");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -80,8 +89,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithNetCoreSdk10()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("1.0.0");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -99,8 +107,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithNetCoreSdk20()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("2.0.0");
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
@@ -118,8 +125,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsVs2017WithBothNetCoreSdk10And20()
         {
-            GoogleCloudExtensionPackageTests.InitPackageMock(
-                dteMock => dteMock.Setup(dte => dte.Version).Returns(VsVersionUtils.VisualStudio2017Version));
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("2.0.0");
             _targetSdkVersions.Add("1.0.0");
 
@@ -191,6 +197,20 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             Assert.AreEqual(resultFrameworkType, objectUnderTest.Result.SelectedFramework);
             Assert.AreEqual(resultVersion, objectUnderTest.Result.SelectedVersion);
             Assert.AreEqual(AppType.WebApi, objectUnderTest.Result.AppType);
+        }
+
+        [TestMethod]
+        public void TestOpenVisualStudio2015DotNetCoreToolingDownloadLink()
+        {
+
+            var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
+            var startProcessMock = new Mock<Func<string, Process>>();
+            AspNetCoreTemplateChooserViewModel.StartProcessOverride = startProcessMock.Object;
+
+            objectUnderTest.OpenVisualStudio2015DotNetCoreToolingDownloadLink.Execute(null);
+
+            startProcessMock.Verify(
+                f => f(AspNetCoreTemplateChooserViewModel.DotnetCoreDownloadArchiveUrl), Times.Once);
         }
     }
 }

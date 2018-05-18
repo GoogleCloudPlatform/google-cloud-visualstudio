@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 using static GoogleCloudExtension.Utils.StringUtils;
 
 namespace GoogleCloudExtensionUnitTests.Utils
@@ -57,6 +58,56 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.AreEqual(-1, LastNonSpaceIndex(""));
             Assert.AreEqual(-1, LastNonSpaceIndex(null));
             Assert.AreEqual(8, LastNonSpaceIndex("   uu  pp  "));
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("word")]
+        [DataRow("already-kebob-case")]
+        [DataRow("%$#(*&)(@#$")]
+        public void TestToKebobCase_Unchanged(string unchangingArgument)
+        {
+            string result = ToKebobCase(unchangingArgument);
+
+            Assert.AreEqual(unchangingArgument, result);
+        }
+
+        [TestMethod]
+        [DataRow("ALLUPPERCASE", "alluppercase")]
+        [DataRow("UpperCamelCase", "upper-camel-case")]
+        [DataRow("lowerCamelCase", "lower-camel-case")]
+        [DataRow("Upper-Kebob-Case", "upper-kebob-case")]
+        [DataRow("20number2", "20-number-2")]
+        [DataRow("UpperCamelCaseWith2Numbers100", "upper-camel-case-with-2-numbers-100")]
+        [DataRow("CamelCase&Symbols!", "camel-case&symbols!")]
+        public void TestToKebobCase_Changes(string argument, string expectedResult)
+        {
+            string result = ToKebobCase(argument);
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public void TestToKebobCase_ExtremelyLongValueChanges()
+        {
+            string longNumberString = string.Join("", Enumerable.Range(1, 200));
+            string argument = "CamelCaseHead" + longNumberString + "CamelCaseTail";
+            string expected = "camel-case-head-" + longNumberString + "-camel-case-tail";
+
+            string result = ToKebobCase(argument);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod]
+        public void TestToKebobCase_ExtremelyLongValueUnchanged()
+        {
+            string longNumberString = string.Join("", Enumerable.Range(1, 200));
+
+            string result = ToKebobCase(longNumberString);
+
+            Assert.AreEqual(longNumberString, result);
         }
     }
 }
