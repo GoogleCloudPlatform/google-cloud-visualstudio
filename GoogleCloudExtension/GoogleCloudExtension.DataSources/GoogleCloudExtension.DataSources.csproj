@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GoogleCloudExtension.DataSources</RootNamespace>
     <AssemblyName>GoogleCloudExtension.DataSources</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,20 +60,20 @@
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.33.1.1229, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.33.1.1229\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.33.1.1215, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.33.1.1215\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.33.1.1223, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.33.1.1223\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.33.1.1213, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.33.1.1213\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.33.1.1231, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.33.1.1231\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Container.v1, Version=1.33.1.1212, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Container.v1.1.33.1.1212\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Container.v1, Version=1.33.1.1219, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.33.1.1219\lib\net45\Google.Apis.Container.v1.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.33.1\lib\net45\Google.Apis.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.33.1.1222\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.33.1.1227, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.33.1.1227\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.PlatformServices, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.33.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
@@ -89,8 +90,8 @@
     <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.33.1.1222\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.33.1.1219, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.33.1.1219\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.33.1.1229, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.33.1.1229\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -101,11 +102,25 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net46\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net46\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
       <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
