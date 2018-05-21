@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LogsResource = Google.Apis.Logging.v2.Extensions.LogsResource;
 
 namespace GoogleCloudExtension.DataSources
 {
