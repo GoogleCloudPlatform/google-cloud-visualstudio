@@ -654,13 +654,9 @@
     <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
     <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
     <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="app.config" />
     <None Include="Key.snk" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
