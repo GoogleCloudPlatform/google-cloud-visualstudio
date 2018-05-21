@@ -1,7 +1,7 @@
 # Configuration for the build for the Visual Studio extension for Google Cloud.
 
 # Version for the build.
-version: 2.0.0-dev+{build}
+version: 2.0.0-dev.{build}
 
 # We're using Visual Studio 2017
 image: Visual Studio 2017
