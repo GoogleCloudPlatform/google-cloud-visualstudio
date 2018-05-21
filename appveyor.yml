@@ -1,27 +1,34 @@
 # Configuration for the build for the Visual Studio extension for Google Cloud.
 
 # Version for the build.
-version: 1.0.{build}-{branch}
+version: 2.0.0-dev.{build}
 
-# We're using Visual Studio 2015
-image: Visual Studio 2015
+# We're using Visual Studio 2017
+image: Visual Studio 2017
 
-before_build:
+configuration: Release
+
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - GoogleCloudExtension\packages -> **\packages.config
+
+install:
   - choco install opencover.portable
   - choco install codecov
 
-# Perform the build.
-build_script:
-  - bash -c ./tools/ensure_strings_extracted.sh
-  - bash -c ./tools/ensure_no_unused_strings.sh
-  - nuget restore .\GoogleCloudExtension
-  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Debug /p:DeployExtension=False /p:TreatWarningsAsErrors=True
-  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release /p:TreatWarningsAsErrors=True
+before_build:
+  - bash: ./tools/ensure_strings_extracted.sh
+  - bash: ./tools/ensure_no_unused_strings.sh
+  - nuget restore GoogleCloudExtension
+
+build:
+  project: GoogleCloudExtension\GoogleCloudExtension.sln
+  verbosity: normal
 
 # Defines the artifacts to be saved.
 artifacts:
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
-  - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
   - path: logs
 
 # Run the analytics tests with code coverage report.
