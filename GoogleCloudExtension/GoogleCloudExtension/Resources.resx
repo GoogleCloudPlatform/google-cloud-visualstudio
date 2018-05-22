@@ -437,10 +437,6 @@
     <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
-  <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
-    <value>No projects found</value>
-    <comment>Message for the placeholder element displayed when no projects are found.</comment>
-  </data>
   <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
     <value>Failed to load Topics</value>
     <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>

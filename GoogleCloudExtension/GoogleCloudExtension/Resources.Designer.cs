@@ -2041,15 +2041,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No projects found.
-        /// </summary>
-        public static string CloudExplorerNoProjectsFoundPlaceholderMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerNoProjectsFoundPlaceholderMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Regex Patterns.
         /// </summary>
         public static string CloudExplorerOptionsPubSubTopicsFilterColumHeader {
