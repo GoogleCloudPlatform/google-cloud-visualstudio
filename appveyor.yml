@@ -18,8 +18,8 @@ install:
   - choco install codecov
 
 before_build:
-  - bash: ./tools/ensure_strings_extracted.sh
-  - bash: ./tools/ensure_no_unused_strings.sh
+  - bash -c ./tools/ensure_strings_extracted.sh
+  - bash -c ./tools/ensure_no_unused_strings.sh
   - nuget restore GoogleCloudExtension
 
 build:

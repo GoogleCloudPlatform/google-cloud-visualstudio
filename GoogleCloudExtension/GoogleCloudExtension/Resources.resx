@@ -3188,4 +3188,8 @@ Delete corrupted file?</value>
     <value>Project</value>
     <comment>The caption of the root node fo the Project cloud console link group.</comment>
   </data>
+  <data name="UnusedString" xml:space="preserve">
+    <value>I am not used</value>
+    <comment>Testing the scripts detection.</comment>
+  </data>
 </root>
