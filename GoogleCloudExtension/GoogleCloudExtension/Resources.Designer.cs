@@ -6785,15 +6785,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I am not used.
-        /// </summary>
-        public static string UnusedString {
-            get {
-                return ResourceManager.GetString("UnusedString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} can not be empty..
         /// </summary>
         public static string ValdiationNotEmptyMessage {
