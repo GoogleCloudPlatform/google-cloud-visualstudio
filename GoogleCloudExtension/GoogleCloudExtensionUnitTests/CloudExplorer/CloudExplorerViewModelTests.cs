@@ -34,14 +34,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private ResourceManagerDataSource _mockedResourceManagerDataSource;
         private IGPlusDataSource _mockedGPlusDataSource;
         private Mock<IGPlusDataSource> _gPlusDataSourceMock;
-        private Mock<ResourceManagerDataSource> _resourceManagerDataSourceMock;
         private List<string> _propertiesChanged;
 
         protected override void BeforeEach()
         {
             PackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(Mock.Of<CloudExplorerOptions>());
 
-            _resourceManagerDataSourceMock = new Mock<ResourceManagerDataSource>();
             _gPlusDataSourceMock = new Mock<IGPlusDataSource>();
             _mockedResourceManagerDataSource = null;
             _mockedGPlusDataSource = null;
@@ -75,7 +73,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         }
 
         [TestMethod]
-        public async Task TestRefreshCommand_ResetsCredentials()
+        public async Task TestRefreshCommand_ResetsCredentialsAsync()
         {
             _mockedGPlusDataSource = _gPlusDataSourceMock.Object;
             const string profileName = "NewProfileName";

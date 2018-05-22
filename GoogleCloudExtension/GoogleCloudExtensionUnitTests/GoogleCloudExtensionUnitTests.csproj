@@ -90,6 +90,9 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.33.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.33.1.1222\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Pubsub.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Pubsub.v1.1.33.1.1222\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
     </Reference>
@@ -354,7 +357,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="key.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\GoogleCloudExtension\source.extension.vsixmanifest">
