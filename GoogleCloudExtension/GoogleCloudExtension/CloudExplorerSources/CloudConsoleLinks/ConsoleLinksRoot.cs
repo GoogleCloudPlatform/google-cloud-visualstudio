@@ -267,7 +267,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         /// <param name="context">The <see cref="ICloudSourceContext"/> to get the current project id from.</param>
         /// <param name="startProcess">The injected mock implementation of <see cref="Process.Start(string)"/>.</param>
         internal ConsoleLinksRoot(ICloudSourceContext context, Func<string, Process> startProcess)
-
         {
             _context = context;
             _startProcess = startProcess;

@@ -27,14 +27,6 @@ namespace GoogleCloudExtensionUnitTests.Utils
     {
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(
-                new UserAccount
-                {
-                    AccountName = "TestAccountName",
-                    ClientId = "TestClientId",
-                    ClientSecret = "TestClientSecret",
-                    RefreshToken = "TestRefreshToken"
-                });
             DataSourceFactory.DefaultOverride = null;
         }
 
