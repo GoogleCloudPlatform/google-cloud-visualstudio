@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class provides helpers to update the properties window, manage the currently selected "item".
     /// </summary>
-    public class SelectionUtils
+    public class SelectionUtils : ISelectionUtils
     {
         private readonly ToolWindowPane _owner;
         private readonly Lazy<ITrackSelection> _selectionTracker;

@@ -185,6 +185,7 @@
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroup.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
@@ -205,11 +206,13 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptions.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml.cs">
       <DependentUpon>CloudExplorerOptionsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModel.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRoot.cs" />
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
     <Compile Include="CloudExplorer\ITreeNode.cs" />
@@ -256,6 +259,8 @@
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\IDataSourceFactory.cs" />
+    <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
@@ -278,7 +283,7 @@
     <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
     <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
     <Compile Include="Theming\ICloseable.cs" />
-    <Compile Include="Utils\DataSourceFactories.cs" />
+    <Compile Include="Utils\DataSourceFactory.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
@@ -295,13 +300,13 @@
     <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceItem.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
-    <Compile Include="CloudExplorer\CloudConsoleSource.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
     <Compile Include="CloudExplorer\IAcceptInput.cs" />
     <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
-    <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />
+    <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBase.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
     <Compile Include="CloudExplorer\CloudExplorerToolWindow.cs" />
     <Compile Include="CloudExplorer\CloudExplorerCommand.cs" />
@@ -313,7 +318,7 @@
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorer\TreeHierarchy.cs" />
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
-    <Compile Include="CloudExplorer\TreeLeafLink.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
       <DependentUpon>CsrReposContent.xaml</DependentUpon>

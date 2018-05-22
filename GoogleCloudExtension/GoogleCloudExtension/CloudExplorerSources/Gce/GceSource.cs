@@ -16,7 +16,7 @@ using GoogleCloudExtension.CloudExplorer;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    internal class GceSource : CloudExplorerSourceBase<GceSourceRootViewModel>
+    internal class GceSource : DynamicCloudExplorerSourceBase<GceSourceRootViewModel>
     {
         public GceSource(ICloudSourceContext context) : base(context)
         { }

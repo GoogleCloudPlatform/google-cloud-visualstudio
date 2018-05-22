@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// Source class for the Pubsub tree.
     /// </summary>
-    internal class PubsubSource : CloudExplorerSourceBase<PubsubSourceRootViewModel>
+    internal class PubsubSource : DynamicCloudExplorerSourceBase<PubsubSourceRootViewModel>
     {
         public PubsubSource(ICloudSourceContext context) : base(context) { }
     }

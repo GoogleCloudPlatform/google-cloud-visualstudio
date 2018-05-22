@@ -102,6 +102,9 @@
       <HintPath>..\packages\Google.Apis.1.29.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.29.1.970, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.29.1.970\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Pubsub.v1, Version=1.29.1.971, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Pubsub.v1.1.29.1.971\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
@@ -233,6 +236,10 @@
     <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSourceTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroupTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRootTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkTests.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
@@ -242,6 +249,9 @@
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerViewModelTests.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageTests.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
     <Compile Include="CloudExplorer\Options\CloudExplorerOptionsTests.cs" />
@@ -279,6 +289,7 @@
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
+    <Compile Include="Utils\DataSourceFactoryTests.cs" />
     <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />

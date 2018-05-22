@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// The service wrapped by this data source.
         /// </summary>
-        protected TService Service { get; }
+        public TService Service { get; }
 
         /// <summary>
         /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="serviceFactory"/> to
