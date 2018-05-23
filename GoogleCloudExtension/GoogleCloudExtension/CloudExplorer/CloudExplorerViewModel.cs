@@ -14,6 +14,7 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
 using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
@@ -41,28 +42,22 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
 
-        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(RefreshImagePath));
-        private static readonly PlaceholderMessage s_projectPlaceholder = new PlaceholderMessage { Message = Resources.CloudExplorerNoProjectsFoundPlaceholderMessage };
-        private static readonly IList<PlaceholderMessage> s_projectsWithPlaceholder = new List<PlaceholderMessage> { s_projectPlaceholder };
+        internal static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(RefreshImagePath));
 
-        private readonly SelectionUtils _selectionUtils;
-        private readonly IEnumerable<ICloudExplorerSource> _sources;
+        private readonly ISelectionUtils _selectionUtils;
+        private readonly IEnumerable<ICloudExplorerSource<ISourceRootViewModelBase>> _sources;
         private bool _isBusy;
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private Project _currentProject;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
-        private Lazy<GPlusDataSource> _plusDataSource;
+        private Lazy<IGPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
         private string _emptyStateButtonCaption;
         private ICommand _emptyStateCommand;
         private bool _loadingProject;
         private string _projectDisplayString;
-        private IList<TreeHierarchy> _roots;
-
-        // The UI automation server seems to need to have the roots alive for another cycle as we update
-        // the UI with the new roots when the refresh happens. This field will keep the old roots alive for that cycle.
-        private IList<TreeHierarchy> _oldRoots;
+        private IList<ISourceRootViewModelBase> _roots;
 
         /// <summary>
         /// Returns whether the view model is busy performing an operation.
@@ -97,7 +92,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The list list of roots for the hieratchical view, each root contains all of the data
         /// from a given source.
         /// </summary>
-        public IList<TreeHierarchy> Roots
+        public IList<ISourceRootViewModelBase> Roots
         {
             get { return _roots; }
             private set { SetValueAndRaise(ref _roots, value); }
@@ -165,17 +160,22 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The command to show the manage accounts dialog.
         /// </summary>
-        public ICommand ManageAccountsCommand { get; }
+        public ProtectedCommand ManageAccountsCommand { get; }
 
         /// <summary>
         /// The command to execute when a user double clicks on an item.
         /// </summary>
-        public ICommand DoubleClickCommand { get; }
+        public ProtectedCommand<IAcceptInput> DoubleClickCommand { get; }
 
         /// <summary>
         /// The command to execute to select a new GCP project.
         /// </summary>
-        public ICommand SelectProjectCommand { get; }
+        public ProtectedCommand SelectProjectCommand { get; }
+
+        /// <summary>
+        /// The command executed by the refresh button.
+        /// </summary>
+        internal ProtectedAsyncCommand RefreshCommand { get; }
 
         #region ICloudSourceContext implementation.
 
@@ -189,14 +189,19 @@ namespace GoogleCloudExtension.CloudExplorer
 
         #endregion
 
-        public CloudExplorerViewModel(SelectionUtils selectionUtils)
+        public CloudExplorerViewModel(ISelectionUtils selectionUtils)
         {
             _selectionUtils = selectionUtils;
+
+            RefreshCommand = new ProtectedAsyncCommand(OnRefreshCommand);
+            ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
+            DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
+            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
 
             // Contains the list of sources to display to the user, in the order they will
             // be displayed.
 
-            _sources = new List<ICloudExplorerSource>
+            _sources = new List<ICloudExplorerSource<ISourceRootViewModelBase>>
             {
                 // The Google App Engine source.
                 new GaeSource(this),
@@ -214,35 +219,24 @@ namespace GoogleCloudExtension.CloudExplorer
                 new PubsubSource(this),
 
                 // The source to navigate to the cloud console.
-                new CloudConsoleSource(),
+                new CloudConsoleLinksSource(this),
             };
 
-            var refreshButtonEnumerable = new[]
+            Buttons = new[]
             {
                 new ButtonDefinition
                 {
                     Icon = s_refreshIcon.Value,
                     ToolTip = Resources.CloudExplorerRefreshButtonToolTip,
-                    Command = new ProtectedCommand(OnRefreshCommand),
+                    Command = RefreshCommand,
                 }
             };
-            Buttons = refreshButtonEnumerable.Concat(_sources.SelectMany(x => x.Buttons));
-
-            ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
-            DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
-            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
 
             CredentialsStore.Default.CurrentAccountChanged += OnCredentialsChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCredentialsChanged;
             CredentialsStore.Default.Reset += OnCredentialsChanged;
 
             ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
-        }
-
-        private static GPlusDataSource CreatePlusDataSource()
-        {
-            var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private void UpdateUserProfile()
@@ -293,28 +287,28 @@ namespace GoogleCloudExtension.CloudExplorer
             Process.Start("https://console.cloud.google.com/");
         }
 
-        private void OnRefreshCommand()
-        {
-            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
-        }
+        private async Task OnRefreshCommand() => await ResetCredentialsAsync();
 
         #endregion
 
         #region Event handlers
 
-        private void OnCredentialsChanged(object sender, EventArgs e)
-        {
-            ErrorHandlerUtils.HandleAsyncExceptions(async () =>
-            {
-                Debug.WriteLine("Resetting the credentials.");
-                await ResetCredentialsAsync();
-            });
-        }
+        private void OnCredentialsChanged(object sender, EventArgs e) =>
+            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
 
         #endregion
 
         private async Task<Project> GetProjectForIdAsync(string projectId)
-            => projectId != null ? await _resourceManagerDataSource.Value.GetProjectAsync(projectId) : null;
+        {
+            if (projectId != null)
+            {
+                return await _resourceManagerDataSource.Value.GetProjectAsync(projectId);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         private async Task ResetCredentialsAsync()
         {
@@ -351,6 +345,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 IsBusy = false;
             }
+            RaiseAllPropertyChanged();
         }
 
         private async Task LoadCurrentProject()
@@ -409,14 +404,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateAccountDependentDataSources()
         {
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceFactories.CreateResourceManagerDataSource);
-            _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
+            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceFactory.Default.CreateResourceManagerDataSource);
+            _plusDataSource = new Lazy<IGPlusDataSource>(DataSourceFactory.Default.CreatePlusDataSource);
         }
 
         private async void RefreshSources()
         {
-            // Clear the roots collection to clean the UI.
-            _oldRoots = Roots;
             Roots = null;
             foreach (var source in _sources)
             {

@@ -15,21 +15,41 @@
 using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using System;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     ///  Holder of data source factory methods.
     /// </summary>
-    public static class DataSourceFactories
+    public class DataSourceFactory : IDataSourceFactory
     {
-        public static ResourceManagerDataSource CreateResourceManagerDataSource()
+        private static readonly Lazy<DataSourceFactory> s_lazyDefault = new Lazy<DataSourceFactory>(() => new DataSourceFactory());
+        internal static IDataSourceFactory DefaultOverride { private get; set; } = null;
+        public static IDataSourceFactory Default => DefaultOverride ?? s_lazyDefault.Value;
+
+        private DataSourceFactory() { }
+
+        public ResourceManagerDataSource CreateResourceManagerDataSource()
         {
             GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
             if (currentCredential != null)
             {
                 return new ResourceManagerDataSource(
                     currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public IGPlusDataSource CreatePlusDataSource()
+        {
+            GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            if (currentCredential != null)
+            {
+                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {

@@ -29,6 +29,7 @@ namespace GoogleCloudExtensionUnitTests
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         protected Mock<Func<UserPromptWindow.Options, bool>> PromptUserMock { get; private set; }
+        protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
         [TestInitialize]
         public void IntializeGlobalsForTest()
@@ -36,9 +37,13 @@ namespace GoogleCloudExtensionUnitTests
             CredentialsStore.CreateNewOverride();
             PackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
+
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             PromptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             UserPromptUtils.PromptUserOverride = PromptUserMock.Object;
+
+            DataSourceFactoryMock = new Mock<IDataSourceFactory>();
+            DataSourceFactory.DefaultOverride = DataSourceFactoryMock.Object;
             EventsReporterWrapper.DisableReporting();
             BeforeEach();
         }
@@ -51,6 +56,7 @@ namespace GoogleCloudExtensionUnitTests
             AfterEach();
             UserPromptUtils.PromptUserOverride = null;
             GoogleCloudExtensionPackage.Instance = null;
+            DataSourceFactory.DefaultOverride = null;
             CredentialsStore.ClearOverride();
         }
 

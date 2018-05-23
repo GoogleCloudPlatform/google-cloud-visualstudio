@@ -437,10 +437,6 @@
     <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
-  <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
-    <value>No projects found</value>
-    <comment>Message for the placeholder element displayed when no projects are found.</comment>
-  </data>
   <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
     <value>Failed to load Topics</value>
     <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>
@@ -2991,5 +2987,205 @@ Delete corrupted file?</value>
   <data name="WindowsCredentialsStoreCredentialFileLoadErrorTitle" xml:space="preserve">
     <value>Load failed</value>
     <comment>The title of the error dialog box when loading a windows credential file failed.</comment>
+  </data>
+  <data name="CloudLinkGettingStartedCaption" xml:space="preserve">
+    <value>Getting started</value>
+    <comment>Caption for the cloud console link to Getting started</comment>
+  </data>
+  <data name="CloudLinkAppEngineCaption" xml:space="preserve">
+    <value>App Engine</value>
+    <comment>Caption for the cloud console link to App Engine</comment>
+  </data>
+  <data name="CloudLinkComputeEngineCaption" xml:space="preserve">
+    <value>Compute Engine</value>
+    <comment>Caption for the cloud console link to Compute Engine</comment>
+  </data>
+  <data name="CloudLinkKubernetesEngineCaption" xml:space="preserve">
+    <value>Kubernetes Engine</value>
+    <comment>Caption for the cloud console link to Kubernetes Engine</comment>
+  </data>
+  <data name="CloudLinkContainerRegistryCaption" xml:space="preserve">
+    <value>Container Registry</value>
+    <comment>Caption for the cloud console link to Container Registry</comment>
+  </data>
+  <data name="CloudLinkDeploymentManagerCaption" xml:space="preserve">
+    <value>Deployment Manager</value>
+    <comment>Caption for the cloud console link to Deployment Manager</comment>
+  </data>
+  <data name="CloudLinkCloudLauncherCaption" xml:space="preserve">
+    <value>Cloud Launcher</value>
+    <comment>Caption for the cloud console link to Cloud Launcher</comment>
+  </data>
+  <data name="CloudLinkIAmCaption" xml:space="preserve">
+    <value>IAM &amp; admin</value>
+    <comment>Caption for the cloud console link to IAM &amp; admin</comment>
+  </data>
+  <data name="CloudLinkBillingCaption" xml:space="preserve">
+    <value>Billing</value>
+    <comment>Caption for the cloud console link to Billing</comment>
+  </data>
+  <data name="CloudLinkApisAndServicesCaption" xml:space="preserve">
+    <value>Apis &amp; Services</value>
+    <comment>Caption for the cloud console link to Apis &amp; Services</comment>
+  </data>
+  <data name="CloudLinkSupportCaption" xml:space="preserve">
+    <value>Support</value>
+    <comment>Caption for the cloud console link to Support</comment>
+  </data>
+  <data name="CloudLinkSecurityCenterCaption" xml:space="preserve">
+    <value>Security</value>
+    <comment>Caption for the cloud console link to Security</comment>
+  </data>
+  <data name="CloudLinkCloudFunctionsCaption" xml:space="preserve">
+    <value>Cloud Functions</value>
+    <comment>Caption for the cloud console link to Cloud Functions</comment>
+  </data>
+  <data name="CloudLinkCloudTasksCaption" xml:space="preserve">
+    <value>Cloud Tasks</value>
+    <comment>Caption for the cloud console link to Cloud Tasks</comment>
+  </data>
+  <data name="CloudLinkBigtableCaption" xml:space="preserve">
+    <value>Bigtable</value>
+    <comment>Caption for the cloud console link to Bigtable</comment>
+  </data>
+  <data name="CloudLinkDatastoreCaption" xml:space="preserve">
+    <value>Datastore</value>
+    <comment>Caption for the cloud console link to Datastore</comment>
+  </data>
+  <data name="CloudLinkCloudStorageCaption" xml:space="preserve">
+    <value>Storage</value>
+    <comment>Caption for the cloud console link to Storage</comment>
+  </data>
+  <data name="CloudLinkCloudSqlCaption" xml:space="preserve">
+    <value>SQL</value>
+    <comment>Caption for the cloud console link to SQL</comment>
+  </data>
+  <data name="CloudLinkSpannerCaption" xml:space="preserve">
+    <value>Spanner</value>
+    <comment>Caption for the cloud console link to Spanner</comment>
+  </data>
+  <data name="CloudLinkMemoryStoreCaption" xml:space="preserve">
+    <value>Memorystore</value>
+    <comment>Caption for the cloud console link to Memorystore</comment>
+  </data>
+  <data name="CloudLinkFileStoreCaption" xml:space="preserve">
+    <value>Filestore</value>
+    <comment>Caption for the cloud console link to Filestore</comment>
+  </data>
+  <data name="CloudLinkVpcNetworkCaption" xml:space="preserve">
+    <value>VPC network</value>
+    <comment>Caption for the cloud console link to VPC network</comment>
+  </data>
+  <data name="CloudLinkNetworkServicesCaption" xml:space="preserve">
+    <value>Network services</value>
+    <comment>Caption for the cloud console link to Network services</comment>
+  </data>
+  <data name="CloudLinkHybridConnectivityCaption" xml:space="preserve">
+    <value>Hybrid Connectivity</value>
+    <comment>Caption for the cloud console link to Hybrid Connectivity</comment>
+  </data>
+  <data name="CloudLinkNetworkServiceTierCaption" xml:space="preserve">
+    <value>Network Service Tier</value>
+    <comment>Caption for the cloud console link to Network Service Tier</comment>
+  </data>
+  <data name="CloudLinkNetworkSecurityCaption" xml:space="preserve">
+    <value>Network Security</value>
+    <comment>Caption for the cloud console link to Network Security</comment>
+  </data>
+  <data name="CloudLinkStackDriverMonitoringCaption" xml:space="preserve">
+    <value>Monitoring</value>
+    <comment>Caption for the cloud console link to StackDriver Monitoring</comment>
+  </data>
+  <data name="CloudLinkStackDriverDebugCaption" xml:space="preserve">
+    <value>Debug</value>
+    <comment>Caption for the cloud console link to StackDriver Debug</comment>
+  </data>
+  <data name="CloudLinkStackDriverTraceCaption" xml:space="preserve">
+    <value>Trace</value>
+    <comment>Caption for the cloud console link to StackDriver Trace</comment>
+  </data>
+  <data name="CloudLinkStackDriverLoggingCaption" xml:space="preserve">
+    <value>Logging</value>
+    <comment>Caption for the cloud console link to StackDriver Logging</comment>
+  </data>
+  <data name="CloudLinkStackDriverErrorReportingCaption" xml:space="preserve">
+    <value>Error Reporting</value>
+    <comment>Caption for the cloud console link to StackDriver Error Reporting</comment>
+  </data>
+  <data name="CloudLinkStackDriverProfilerCaption" xml:space="preserve">
+    <value>Profiler</value>
+    <comment>Caption for the cloud console link to StackDriver Profiler</comment>
+  </data>
+  <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
+    <value>Source Repositories</value>
+    <comment>Caption for the cloud console link to Source Repositories</comment>
+  </data>
+  <data name="CloudLinkEndpointsCaption" xml:space="preserve">
+    <value>Endpoints</value>
+    <comment>Caption for the cloud console link to Endpoints</comment>
+  </data>
+  <data name="CloudLinkBigQueryCaption" xml:space="preserve">
+    <value>BigQuery</value>
+    <comment>Caption for the cloud console link to BigQuery</comment>
+  </data>
+  <data name="CloudLinkPubSubCaption" xml:space="preserve">
+    <value>Pub/Sub</value>
+    <comment>Caption for the cloud console link to Pub/Sub</comment>
+  </data>
+  <data name="CloudLinkDataprocCaption" xml:space="preserve">
+    <value>Dataproc</value>
+    <comment>Caption for the cloud console link to Dataproc</comment>
+  </data>
+  <data name="CloudLinkDataflowCaption" xml:space="preserve">
+    <value>Dataflow</value>
+    <comment>Caption for the cloud console link to Dataflow</comment>
+  </data>
+  <data name="CloudLinkMachineLearningEngineCaption" xml:space="preserve">
+    <value>ML Engine</value>
+    <comment>Caption for the cloud console link to ML Engine</comment>
+  </data>
+  <data name="CloudLinkIoTCoreCaption" xml:space="preserve">
+    <value>IoT Core</value>
+    <comment>Caption for the cloud console link to IoT Core</comment>
+  </data>
+  <data name="CloudLinkComposerCaption" xml:space="preserve">
+    <value>Composer</value>
+    <comment>Caption for the cloud console link to Composer</comment>
+  </data>
+  <data name="CloudLinkGenomicsCaption" xml:space="preserve">
+    <value>Genomics</value>
+    <comment>Caption for the cloud console link to Genomics</comment>
+  </data>
+  <data name="CloudLinkDataprepCaption" xml:space="preserve">
+    <value>Dataprep</value>
+    <comment>Caption for the cloud console link to Dataprep</comment>
+  </data>
+  <data name="ConsoleLinkComputeGroupCaption" xml:space="preserve">
+    <value>Compute</value>
+    <comment>The caption of the root node fo the Compute cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkStorageGroupCaption" xml:space="preserve">
+    <value>Storage</value>
+    <comment>The caption of the root node fo the Storage cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkNetworkingGroupCaption" xml:space="preserve">
+    <value>Networking</value>
+    <comment>The caption of the root node fo the Networking cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkStackDriverGroupCaption" xml:space="preserve">
+    <value>StackDriver</value>
+    <comment>The caption of the root node fo the StackDriver cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkToolsGroupCaption" xml:space="preserve">
+    <value>Tools</value>
+    <comment>The caption of the root node fo the Tools cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkBigDataGroupCaption" xml:space="preserve">
+    <value>Big Data</value>
+    <comment>The caption of the root node fo the Big Data cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkProjectGroupCaption" xml:space="preserve">
+    <value>Project</value>
+    <comment>The caption of the root node fo the Project cloud console link group.</comment>
   </data>
 </root>

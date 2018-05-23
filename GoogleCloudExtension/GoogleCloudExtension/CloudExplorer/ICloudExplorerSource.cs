@@ -12,24 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// Interface to be implemented by cloud explorer data sources.
     /// </summary>
-    public interface ICloudExplorerSource
+    public interface ICloudExplorerSource<out T> where T : ITreeHierarchy
     {
         /// <summary>
         /// Returns the root of the hierarchy for this source.
         /// </summary>
-        TreeHierarchy Root { get; }
-
-        /// <summary>
-        /// Returns the buttons, if any, defined by the source.
-        /// </summary>
-        IEnumerable<ButtonDefinition> Buttons { get; }
+        T Root { get; }
 
         /// <summary>
         /// Called when the sources need to reload their data.

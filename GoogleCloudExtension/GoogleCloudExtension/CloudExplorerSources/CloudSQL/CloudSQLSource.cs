@@ -16,7 +16,7 @@ using GoogleCloudExtension.CloudExplorer;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
-    internal class CloudSQLSource : CloudExplorerSourceBase<CloudSQLSourceRootViewModel>
+    internal class CloudSQLSource : DynamicCloudExplorerSourceBase<CloudSQLSourceRootViewModel>
     {
         public CloudSQLSource(ICloudSourceContext context) : base(context)
         { }

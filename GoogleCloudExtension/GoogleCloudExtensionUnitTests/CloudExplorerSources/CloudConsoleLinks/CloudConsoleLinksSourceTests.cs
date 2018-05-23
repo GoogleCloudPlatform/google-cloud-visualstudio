@@ -1,11 +1,11 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
-//
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,15 +13,21 @@
 // limitations under the License.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gae
+namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
 {
-    /// <summary>
-    /// Google App Engine source for the Cloud Explorer.
-    /// </summary>
-    internal class GaeSource : DynamicCloudExplorerSourceBase<GaeSourceRootViewModel>
+    [TestClass]
+    public class CloudConsoleLinksSourceTests
     {
-        public GaeSource(ICloudSourceContext context) : base(context)
-        { }
+        [TestMethod]
+        public void TestConstructor_SetsRoot()
+        {
+            var objectUnderTest = new CloudConsoleLinksSource(Mock.Of<ICloudSourceContext>());
+
+            Assert.IsNotNull(objectUnderTest.Root);
+        }
     }
 }

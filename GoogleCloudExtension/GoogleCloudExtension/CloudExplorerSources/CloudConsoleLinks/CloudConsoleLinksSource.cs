@@ -12,35 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using System.Collections.Generic;
-using System.Linq;
+using GoogleCloudExtension.CloudExplorer;
 
-namespace GoogleCloudExtension.CloudExplorer
+namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
 {
     /// <summary>
     /// This class represents the node in the Cloud Explorer that points the users towards
     /// the Cloud Console for more services.
     /// </summary>
-    public class CloudConsoleSource : ICloudExplorerSource
+    public class CloudConsoleLinksSource : CloudExplorerSourceBase<ConsoleLinksRoot>
     {
-        private static readonly LinkInfo s_consoleLink = new LinkInfo(
-            link: "https://console.cloud.google.com",
-            caption: Resources.CloudExplorerConsoleLinkCaption);
+        public sealed override ConsoleLinksRoot Root { get; }
 
-        public CloudConsoleSource()
+        public CloudConsoleLinksSource(ICloudSourceContext context) : base(context)
         {
-            Root = new TreeLeafLink(s_consoleLink);
+            Root = new ConsoleLinksRoot(context);
         }
-
-        public IEnumerable<ButtonDefinition> Buttons => Enumerable.Empty<ButtonDefinition>();
-
-        public TreeHierarchy Root { get; }
-
-        public void InvalidateProjectOrAccount()
-        { }
-
-        public void Refresh()
-        { }
     }
 }
