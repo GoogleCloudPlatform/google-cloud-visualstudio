@@ -48,10 +48,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             var objectUnderTest = new ConsoleLinksRoot(Mock.Of<ICloudSourceContext>());
 
             List<TreeNode> directLinkChildren = objectUnderTest.Children
-                .Take(ConsoleLinksRoot.s_primaryConsoleLinkFormats.Count).ToList();
+                .Take(ConsoleLinksRoot.PrimaryConsoleLinkFormats.Count()).ToList();
             CollectionAssert.AllItemsAreInstancesOfType(directLinkChildren, typeof(ConsoleLink));
             CollectionAssert.AreEqual(
-                ConsoleLinksRoot.s_primaryConsoleLinkFormats.Select(l => l.Caption).ToList(),
+                ConsoleLinksRoot.PrimaryConsoleLinkFormats.Select(l => l.Caption).ToList(),
                 directLinkChildren.Select(c => c.Caption).ToList());
         }
 
@@ -61,10 +61,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             var objectUnderTest = new ConsoleLinksRoot(Mock.Of<ICloudSourceContext>());
 
             List<TreeNode> linkGroupChildren = objectUnderTest.Children
-                .Skip(ConsoleLinksRoot.s_primaryConsoleLinkFormats.Count).ToList();
+                .Skip(ConsoleLinksRoot.PrimaryConsoleLinkFormats.Count()).ToList();
             CollectionAssert.AllItemsAreInstancesOfType(linkGroupChildren, typeof(ConsoleLinkGroup));
             CollectionAssert.AreEqual(
-                ConsoleLinksRoot.s_groupedConsoleLinkFormats.Select(t => t.Item1).ToList(),
+                ConsoleLinksRoot.GroupedConsoleLinkFormats.Select(t => t.groupCaption).ToList(),
                 linkGroupChildren.Select(c => c.Caption).ToList());
         }
 

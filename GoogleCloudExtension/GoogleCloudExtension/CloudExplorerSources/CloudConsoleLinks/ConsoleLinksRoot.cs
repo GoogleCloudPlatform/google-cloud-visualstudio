@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
 {
@@ -74,181 +75,92 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         internal static readonly LinkInfo s_consoleHomeFormatInfo = new LinkInfo(
             HomeUrl, Resources.CloudExplorerConsoleLinkCaption);
 
-        internal static readonly IReadOnlyList<LinkInfo> s_primaryConsoleLinkFormats = new[]
+        private static readonly IReadOnlyList<(string, string)> s_primaryConsoleLinkPaths = new[]
         {
-            new LinkInfo(
-                CloudConsoleRootUrl + GettingStartedPath + ProjectUrlArgumentFormat,
-                Resources.CloudLinkGettingStartedCaption),
-            new LinkInfo(
-                CloudConsoleRootUrl + AppEnginePath + ProjectUrlArgumentFormat, Resources.CloudLinkAppEngineCaption),
-            new LinkInfo(
-                CloudConsoleRootUrl + ComputeEnginePath + ProjectUrlArgumentFormat,
-                Resources.CloudLinkComputeEngineCaption),
-            new LinkInfo(
-                CloudConsoleRootUrl + KubernetesEnginePath + ProjectUrlArgumentFormat,
-                Resources.CloudLinkKubernetesEngineCaption)
+            (GettingStartedPath, Resources.CloudLinkGettingStartedCaption),
+            (AppEnginePath, Resources.CloudLinkAppEngineCaption),
+            (ComputeEnginePath, Resources.CloudLinkComputeEngineCaption),
+            (KubernetesEnginePath, Resources.CloudLinkKubernetesEngineCaption)
         };
 
-        internal static readonly IReadOnlyList<Tuple<string, IReadOnlyList<LinkInfo>>>
-            s_groupedConsoleLinkFormats = new[]
+        private static readonly IReadOnlyList<(string groupCaption, IReadOnlyList<(string path, string caption)> paths)>
+            s_groupedConsoleLinkPaths = new(string groupCaption, IReadOnlyList<(string path, string caption)> paths)[]
             {
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkProjectGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + CloudLauncherPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkCloudLauncherCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + IAmPath + ProjectUrlArgumentFormat, Resources.CloudLinkIAmCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + BillingPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkBillingCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + ApisAndServicesPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkApisAndServicesCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + SupportPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkSupportCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + SecurityCenterPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkSecurityCenterCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkComputeGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + AppEnginePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkAppEngineCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + ComputeEnginePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkComputeEngineCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + KubernetesEnginePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkKubernetesEngineCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + CloudFunctionsPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkCloudFunctionsCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + CloudTasksPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkCloudTasksCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkStorageGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + BigtablePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkBigtableCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + DatastorePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkDatastoreCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + CloudStoragePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkCloudStorageCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + CloudSqlPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkCloudSqlCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + SpannerPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkSpannerCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + MemoryStorePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkMemoryStoreCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + FileStorePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkFileStoreCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkNetworkingGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + VpcNetworkPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkVpcNetworkCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + NetworkServicesPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkNetworkServicesCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + HybridConnectivityPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkHybridConnectivityCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + NetworkServiceTierPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkNetworkServiceTierCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + NetworkSecurityPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkNetworkSecurityCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkStackDriverGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverMonitoringPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverMonitoringCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverDebugPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverDebugCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverTracePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverTraceCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverLoggingPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverLoggingCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverErrorReportingPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverErrorReportingCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + StackDriverProfilerPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkStackDriverProfilerCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkToolsGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + ContainerRegistryPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkContainerRegistryCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + SourceRepositoriesPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkSourceRepositoriesCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + DeploymentManagerPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkDeploymentManagerCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + EndpointsPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkEndpointsCaption)
-                    }),
-                Tuple.Create<string, IReadOnlyList<LinkInfo>>(
-                    Resources.ConsoleLinkBigDataGroupCaption, new[]
-                    {
-                        new LinkInfo(
-                            CloudConsoleRootUrl + BigQueryPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkBigQueryCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + PubSubPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkPubSubCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + DataprocPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkDataprocCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + DataflowPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkDataflowCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + MachineLearningEnginePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkMachineLearningEngineCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + IoTCorePath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkIoTCoreCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + ComposerPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkComposerCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + GenomicsPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkGenomicsCaption),
-                        new LinkInfo(
-                            CloudConsoleRootUrl + DataprepPath + ProjectUrlArgumentFormat,
-                            Resources.CloudLinkDataprepCaption)
-                    })
+                (Resources.ConsoleLinkProjectGroupCaption, new[]
+                {
+                    (CloudLauncherPath, Resources.CloudLinkCloudLauncherCaption),
+                    (IAmPath, Resources.CloudLinkIAmCaption),
+                    (BillingPath, Resources.CloudLinkBillingCaption),
+                    (ApisAndServicesPath, Resources.CloudLinkApisAndServicesCaption),
+                    (SupportPath, Resources.CloudLinkSupportCaption),
+                    (SecurityCenterPath, Resources.CloudLinkSecurityCenterCaption)
+                }),
+                (Resources.ConsoleLinkComputeGroupCaption, new[]
+                {
+                    (AppEnginePath, Resources.CloudLinkAppEngineCaption),
+                    (ComputeEnginePath, Resources.CloudLinkComputeEngineCaption),
+                    (KubernetesEnginePath, Resources.CloudLinkKubernetesEngineCaption),
+                    (CloudFunctionsPath, Resources.CloudLinkCloudFunctionsCaption),
+                    (CloudTasksPath, Resources.CloudLinkCloudTasksCaption)
+                }),
+                (Resources.ConsoleLinkStorageGroupCaption, new[]
+                {
+                    (BigtablePath, Resources.CloudLinkBigtableCaption),
+                    (DatastorePath, Resources.CloudLinkDatastoreCaption),
+                    (CloudStoragePath, Resources.CloudLinkCloudStorageCaption),
+                    (CloudSqlPath, Resources.CloudLinkCloudSqlCaption),
+                    (SpannerPath, Resources.CloudLinkSpannerCaption),
+                    (MemoryStorePath, Resources.CloudLinkMemoryStoreCaption),
+                    (FileStorePath, Resources.CloudLinkFileStoreCaption)
+                }),
+                (Resources.ConsoleLinkNetworkingGroupCaption, new[]
+                {
+                    (VpcNetworkPath, Resources.CloudLinkVpcNetworkCaption),
+                    (NetworkServicesPath, Resources.CloudLinkNetworkServicesCaption),
+                    (HybridConnectivityPath, Resources.CloudLinkHybridConnectivityCaption),
+                    (NetworkServiceTierPath, Resources.CloudLinkNetworkServiceTierCaption),
+                    (NetworkSecurityPath, Resources.CloudLinkNetworkSecurityCaption)
+                }),
+                (Resources.ConsoleLinkStackDriverGroupCaption, new[]
+                {
+                    (StackDriverMonitoringPath, Resources.CloudLinkStackDriverMonitoringCaption),
+                    (StackDriverDebugPath, Resources.CloudLinkStackDriverDebugCaption),
+                    (StackDriverTracePath, Resources.CloudLinkStackDriverTraceCaption),
+                    (StackDriverLoggingPath, Resources.CloudLinkStackDriverLoggingCaption),
+                    (StackDriverErrorReportingPath, Resources.CloudLinkStackDriverErrorReportingCaption),
+                    (StackDriverProfilerPath, Resources.CloudLinkStackDriverProfilerCaption)
+                }),
+                (Resources.ConsoleLinkToolsGroupCaption, new[]
+                {
+                    (ContainerRegistryPath, Resources.CloudLinkContainerRegistryCaption),
+                    (SourceRepositoriesPath, Resources.CloudLinkSourceRepositoriesCaption),
+                    (DeploymentManagerPath, Resources.CloudLinkDeploymentManagerCaption),
+                    (EndpointsPath, Resources.CloudLinkEndpointsCaption)
+                }),
+                (Resources.ConsoleLinkBigDataGroupCaption, new[]
+                {
+                    (BigQueryPath, Resources.CloudLinkBigQueryCaption),
+                    (PubSubPath, Resources.CloudLinkPubSubCaption),
+                    (DataprocPath, Resources.CloudLinkDataprocCaption),
+                    (DataflowPath, Resources.CloudLinkDataflowCaption),
+                    (MachineLearningEnginePath, Resources.CloudLinkMachineLearningEngineCaption),
+                    (IoTCorePath, Resources.CloudLinkIoTCoreCaption),
+                    (ComposerPath, Resources.CloudLinkComposerCaption),
+                    (GenomicsPath, Resources.CloudLinkGenomicsCaption),
+                    (DataprepPath, Resources.CloudLinkDataprepCaption)
+                })
             };
 
-        private readonly ICloudSourceContext _context;
         private readonly Func<string, Process> _startProcess;
+
+        private readonly ICloudSourceContext _context;
+
+        internal static IEnumerable<LinkInfo> PrimaryConsoleLinkFormats =>
+            s_primaryConsoleLinkPaths.Select(PathTupleToLinkInfo);
+
+        internal static IEnumerable<(string groupCaption, IEnumerable<LinkInfo> links)> GroupedConsoleLinkFormats =>
+            s_groupedConsoleLinkPaths.Select(
+                tuple => (tuple.groupCaption, tuple.paths.Select(PathTupleToLinkInfo)));
 
         /// <summary>
         /// The command to execute when the link is pressed.
@@ -273,19 +185,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
             Caption = s_consoleHomeFormatInfo.Caption;
             NavigateCommand = new ProtectedCommand(OnNavigateCommand);
 
-            foreach (LinkInfo formatLinkInfo in s_primaryConsoleLinkFormats)
+            foreach (LinkInfo formatLinkInfo in PrimaryConsoleLinkFormats)
             {
                 Children.Add(new ConsoleLink(formatLinkInfo, _context));
             }
 
-            foreach (Tuple<string, IReadOnlyList<LinkInfo>> consoleLinkFormatsGroup in
-                s_groupedConsoleLinkFormats)
+            foreach ((string groupCaption, IEnumerable<LinkInfo> linkInfos) in GroupedConsoleLinkFormats)
             {
-                IReadOnlyList<LinkInfo> groupLinks = consoleLinkFormatsGroup.Item2;
-                string groupCaption = consoleLinkFormatsGroup.Item1;
-                Children.Add(new ConsoleLinkGroup(groupCaption, _context, groupLinks));
+                Children.Add(new ConsoleLinkGroup(groupCaption, _context, linkInfos));
             }
         }
+
+        private static LinkInfo PathTupleToLinkInfo((string path, string caption) tuple) =>
+            new LinkInfo(CloudConsoleRootUrl + tuple.path + ProjectUrlArgumentFormat, tuple.caption);
 
         public void Refresh() { }
 
