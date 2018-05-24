@@ -30,11 +30,6 @@ namespace GoogleCloudExtension.ApiManagement
         public const string ComputeEngineApiName = "compute.googleapis.com";
 
         /// <summary>
-        /// The API necessary to use GCS.
-        /// </summary>
-        public const string CloudStorageApiName = "storage-api.googleapis.com";
-
-        /// <summary>
         /// The API necessary to use GKS.
         /// </summary>
         public const string ContainerEngineApiName = "container.googleapis.com";
