@@ -69,9 +69,6 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.33.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.33.1.1222\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
     </Reference>
@@ -116,7 +113,6 @@
     <Compile Include="OperationUtilsUnitTests.cs" />
     <Compile Include="ResourceManagerDataSourceUnitTests.cs" />
     <Compile Include="DataSourceUnitTestsBase.cs" />
-    <Compile Include="PubSubDataSourceUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceManagementDataSourceUnitTests.cs" />
   </ItemGroup>

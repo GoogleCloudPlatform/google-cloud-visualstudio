@@ -18,7 +18,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Options;
@@ -69,7 +68,6 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
-    [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
     [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {

@@ -127,11 +127,6 @@
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
     <Compile Include="Analytics\Events\CsrConnectSectionOpenEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubTopicCreatedEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubTopicDeletedEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubTopicsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
     <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
@@ -195,24 +190,7 @@
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\IPubsubSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\ITopicViewModelBase.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptions.cs" />
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml.cs">
-      <DependentUpon>CloudExplorerOptionsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRoot.cs" />
     <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
@@ -221,7 +199,6 @@
     <Compile Include="CloudExplorer\SampleData\LoadingState.cs" />
     <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
     <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
-    <Compile Include="CloudExplorer\Options\ICloudExplorerOptions.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindow.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml.cs">
       <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
@@ -240,7 +217,6 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
     <Compile Include="TemplateWizards\TemplateType.cs" />
     <Compile Include="Utils\EditableModel.cs" />
-    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptions.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
     <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
@@ -435,17 +411,6 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
-    <Compile Include="PubSubWindows\NewSubscriptionViewModel.cs" />
-    <Compile Include="PubSubWindows\NewSubscriptionWindow.cs" />
-    <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
-      <DependentUpon>NewSubscriptionWindowContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PubSubWindows\NewTopicViewModel.cs" />
-    <Compile Include="PubSubWindows\NewTopicWindow.cs" />
-    <Compile Include="PubSubWindows\NewTopicWindowContent.xaml.cs">
-      <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
     <Compile Include="Utils\Validation\StringValidationResult.cs" />
@@ -684,9 +649,6 @@
     <Resource Include="GcsFileBrowser\Resources\folder.png" />
     <Resource Include="GcsFileBrowser\Resources\file.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
-    <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
-    <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
-    <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
     <Resource Include="GcsFileBrowser\Resources\create_new_folder.png" />
     <Resource Include="GcsFileBrowser\Resources\delete_forever.png" />
     <Resource Include="GcsFileBrowser\Resources\file_upload.png" />
@@ -791,9 +753,6 @@
     </Reference>
     <Reference Include="Google.Apis.Plus.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Plus.v1.1.33.1.1222\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.33.1.1222\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
@@ -996,10 +955,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1107,14 +1062,6 @@
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>

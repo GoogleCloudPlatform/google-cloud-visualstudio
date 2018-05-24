@@ -81,9 +81,6 @@
     <Reference Include="Google.Apis.Plus.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Plus.v1.1.33.1.1222\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.33.1.1222\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
     </Reference>
@@ -139,11 +136,9 @@
     <Compile Include="IGkeDataSource.cs" />
     <Compile Include="IGPlusDataSource.cs" />
     <Compile Include="ILoggingDataSource.cs" />
-    <Compile Include="IPubsubDataSource.cs" />
     <Compile Include="IResourceManagerDataSource.cs" />
     <Compile Include="IStackdriverErrorReportingDataSource.cs" />
     <Compile Include="OperationUtils.cs" />
-    <Compile Include="PubSubDataSource.cs" />
     <Compile Include="ServiceManagementDataSource.cs" />
     <Compile Include="ServiceStatus.cs" />
     <Compile Include="StackdriverErrorReportingDataSource.cs" />

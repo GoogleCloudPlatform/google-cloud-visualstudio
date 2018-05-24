@@ -15,7 +15,6 @@
 using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -38,8 +37,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
         protected override void BeforeEach()
         {
-            PackageMock.Setup(p => p.GetDialogPage<CloudExplorerOptions>()).Returns(Mock.Of<CloudExplorerOptions>());
-
             _gPlusDataSourceMock = new Mock<IGPlusDataSource>();
             _mockedResourceManagerDataSource = null;
             _mockedGPlusDataSource = null;
