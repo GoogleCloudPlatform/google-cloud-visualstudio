@@ -85,7 +85,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _gPlusDataSourceMock.Setup(ds => ds.GetProfileAsync()).Returns(Task.FromResult(getProfileResult));
             _propertiesChanged.Clear();
             _objectUnderTest.RefreshCommand.Execute(null);
-            await Task.Delay(100);
+            await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
 
             CollectionAssert.Contains(_propertiesChanged, "ProfileNameAsync");
             Assert.AreEqual(profileName, _objectUnderTest.ProfileNameAsync.Value);

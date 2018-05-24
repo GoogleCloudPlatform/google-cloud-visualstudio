@@ -71,7 +71,7 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
         public async Task LocationsLoadedTest()
         {
             _flexLocationsSource.SetResult(s_mockFlexLocations);
-            await _testedViewModel.Locations.ValueTask;
+            await _testedViewModel.Locations.SafeTask;
 
             Assert.AreEqual(AppEngineManagementViewModel.DefaultRegionName, _testedViewModel.SelectedLocation);
             CollectionAssert.AreEqual(s_sortedMockFlexLocations, _testedViewModel.Locations.Value.ToList());
@@ -81,7 +81,7 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
         public async Task CanExecuteTest()
         {
             _flexLocationsSource.SetResult(s_mockFlexLocations);
-            await _testedViewModel.Locations.ValueTask;
+            await _testedViewModel.Locations.SafeTask;
             _testedViewModel.SelectedLocation = s_mockFlexLocations.First();
 
             Assert.IsTrue(_testedViewModel.ActionCommand.CanExecute(null));
@@ -91,7 +91,7 @@ namespace GoogleCloudExtensionUnitTests.AppEngineManagement
         public async Task ResultTest()
         {
             _flexLocationsSource.SetResult(s_mockFlexLocations);
-            await _testedViewModel.Locations.ValueTask;
+            await _testedViewModel.Locations.SafeTask;
             _testedViewModel.SelectedLocation = s_mockFlexLocations.First();
 
             _testedViewModel.ActionCommand.Execute(null);

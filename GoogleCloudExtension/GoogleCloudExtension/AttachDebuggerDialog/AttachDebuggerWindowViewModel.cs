@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// The command to execute when OK button is pressed.
         /// </summary>
-        public ProtectedCommand OKCommand { get; }
+        public ProtectedAsyncCommand OKCommand { get; }
 
         /// <summary>
         /// Show or hide progress indicator
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             var context = new AttachDebuggerContext(gceInstance, dialogWindow);
             var firstStep = SetCredentialStepViewModel.CreateStep(context);
-            ErrorHandlerUtils.HandleAsyncExceptions(() => ExceuteAsync(() => GotoStep(firstStep)));
+            ErrorHandlerUtils.HandleExceptionsAsync(() => ExceuteAsync(() => GotoStep(firstStep)));
         }
 
         private async Task OnOKCommand()

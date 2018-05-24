@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Responds to OK button click event
         /// </summary>
-        public ProtectedCommand OkCommand { get; }
+        public ProtectedAsyncCommand OkCommand { get; }
 
         /// <summary>
         /// Responds console link command

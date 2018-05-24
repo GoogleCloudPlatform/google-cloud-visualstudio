@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public void OnGitInstallationCheckSuccess()
         {
-            ErrorHandlerUtils.HandleAsyncExceptions(() => InitializeGitAsync(_teamExplorerService));
+            ErrorHandlerUtils.HandleExceptionsAsync(() => InitializeGitAsync(_teamExplorerService));
 
             _accountChangedHandler = (sender, e) => OnAccountChanged();
             CredentialsStore.Default.CurrentAccountChanged += _accountChangedHandler;
@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             if (!CsrGitSetupWarningViewModel.GitInstallationVerified)
             {
-                ErrorHandlerUtils.HandleAsyncExceptions(CheckGitInstallationAsync);
+                ErrorHandlerUtils.HandleExceptionsAsync(CheckGitInstallationAsync);
             }
             else if (CredentialsStore.Default.CurrentAccount == null)
             {
@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             else
             {
-                ErrorHandlerUtils.HandleAsyncExceptions(() => InitializeGitAsync(_teamExplorerService));
+                ErrorHandlerUtils.HandleExceptionsAsync(() => InitializeGitAsync(_teamExplorerService));
 
                 Content = _reposContent;
                 s_currentAccount = CredentialsStore.Default.CurrentAccount?.AccountName;
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             if (!CsrGitSetupWarningViewModel.GitInstallationVerified)
             {
-                ErrorHandlerUtils.HandleAsyncExceptions(CheckGitInstallationAsync);
+                ErrorHandlerUtils.HandleExceptionsAsync(CheckGitInstallationAsync);
             }
             else
             {

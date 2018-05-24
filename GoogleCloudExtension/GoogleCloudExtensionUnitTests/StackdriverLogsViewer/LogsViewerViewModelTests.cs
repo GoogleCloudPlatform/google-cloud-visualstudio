@@ -219,7 +219,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _listLogEntriesSource.SetCanceled();
             try
             {
-                await _objectUnderTest.AsyncAction.Task;
+                await _objectUnderTest.AsyncAction.ActualTask;
             }
             catch (TaskCanceledException)
             {
@@ -260,7 +260,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                     new[] { new LogEntry { Timestamp = DateTimeOffset.Parse("2001-1-1 11:01") } }, null));
 
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
-            await _objectUnderTest.AsyncAction.Task;
+            await _objectUnderTest.AsyncAction.ActualTask;
 
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsNull(_objectUnderTest.RequestStatusText);
@@ -278,7 +278,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _listLogEntriesSource.SetResult(new LogEntryRequestResult(new LogEntry[0], null));
 
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
-            await _objectUnderTest.AsyncAction.Task;
+            await _objectUnderTest.AsyncAction.ActualTask;
 
             Assert.IsTrue(_objectUnderTest.AsyncAction.IsSuccess);
             Assert.IsNull(_objectUnderTest.RequestStatusText);
@@ -298,7 +298,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 new LogEntryRequestResult(
                     new[] { new LogEntry { Timestamp = originalTimestamp } }, null));
             _objectUnderTest.SubmitAdvancedFilterCommand.Execute(null);
-            await _objectUnderTest.AsyncAction.Task;
+            await _objectUnderTest.AsyncAction.ActualTask;
             TimeZoneInfo newTimeZone =
                 _objectUnderTest.SystemTimeZones.First(tz => !tz.Equals(_objectUnderTest.SelectedTimeZone));
 
