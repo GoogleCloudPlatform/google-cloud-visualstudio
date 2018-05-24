@@ -87,9 +87,6 @@
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.33.1.1222\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Apis.Storage.v1, Version=1.33.1.1229, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Storage.v1.1.33.1.1229\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
     </Reference>
@@ -128,9 +125,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CloudSQLDataSource.cs" />
     <Compile Include="CsrDataSource.cs" />
-    <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GaeLocationExtensions.cs" />
