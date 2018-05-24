@@ -87,11 +87,11 @@ namespace GoogleCloudExtension.Utils.Async
                 }
 
                 OnTaskComplete();
-                RaisePropertiesChanged();
+                RaiseTaskCompletedPropertiesChanged();
             }
         }
 
-        private void RaisePropertiesChanged()
+        private void RaiseTaskCompletedPropertiesChanged()
         {
             SafeRaisePropertyChanged(nameof(IsPending));
             SafeRaisePropertyChanged(nameof(IsCompleted));
@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.Utils.Async
                 SafeRaisePropertyChanged(nameof(IsError));
             }
 
-            if (!string.IsNullOrEmpty(ErrorMessage))
+            if (ErrorMessage != null)
             {
                 SafeRaisePropertyChanged(nameof(ErrorMessage));
             }
@@ -128,6 +128,9 @@ namespace GoogleCloudExtension.Utils.Async
             }
         }
 
+        /// <summary>
+        /// Called when the actual task completes.
+        /// </summary>
         protected virtual void OnTaskComplete()
         {
         }
