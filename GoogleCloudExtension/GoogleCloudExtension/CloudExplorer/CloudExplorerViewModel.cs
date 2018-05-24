@@ -15,7 +15,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
-using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
@@ -211,9 +210,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // The Google Cloud Storage source.
                 new GcsSource(this),
-
-                // The Google Cloud SQL source.
-                new CloudSQLSource(this),
 
                 // The Google Publish/Subscription source.
                 new PubsubSource(this),
