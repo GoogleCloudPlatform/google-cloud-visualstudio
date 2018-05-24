@@ -50,35 +50,27 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public async Task TestHandleAsyncExceptions_DoesNotPromptForSuccessAsync()
+        public async Task TestHandleExceptionsAsync_DoesNotPromptForSuccessAsync()
         {
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetResult(null);
-
-            await ErrorHandlerUtils.HandleExceptionsAsync(() => tcs.Task);
+            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.CompletedTask);
 
             PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
         }
 
         [TestMethod]
-        public async Task TestHandleAsyncExceptions_PromptsForNormalExceptionAsync()
+        public async Task TestHandleExceptionsAsync_PromptsForNormalExceptionAsync()
         {
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetException(new Exception());
-
-            await ErrorHandlerUtils.HandleExceptionsAsync(() => tcs.Task);
+            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.FromException(new Exception()));
 
             PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Once);
         }
 
         [TestMethod]
-        public async Task TestHandleAsyncExceptions_ThrowsCriticalExceptionAsync()
+        public async Task TestHandleExceptionsAsync_ThrowsCriticalExceptionAsync()
         {
-            var tcs = new TaskCompletionSource<object>();
-            tcs.SetException(new AccessViolationException());
-
             await Assert.ThrowsExceptionAsync<AccessViolationException>(
-                async () => await ErrorHandlerUtils.HandleExceptionsAsync(() => tcs.Task));
+                async () => await ErrorHandlerUtils.HandleExceptionsAsync(
+                    () => Task.FromException(new AccessViolationException())));
 
             PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
         }
