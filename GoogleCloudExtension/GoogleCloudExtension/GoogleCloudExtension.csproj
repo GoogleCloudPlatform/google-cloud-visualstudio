@@ -80,7 +80,6 @@
     <Compile Include="Analytics\Events\AddWindowsCredentialEvent.cs" />
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
-    <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\CsrListedEvent.cs" />
     <Compile Include="Analytics\Events\CsrCreatedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
@@ -104,10 +103,8 @@
     <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerShowAdvancedFilterHelpEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerSimpleTextSearchEvent.cs" />
-    <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
-    <Compile Include="Analytics\Events\OpenCloudSqlConnectionDialogEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
@@ -168,12 +165,6 @@
       <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="AttachDebuggerDialog\SetCredentialStepViewModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
-      <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroup.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
@@ -280,10 +271,6 @@
     <Compile Include="CloudExplorerSources\Gce\WindowsInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\ZoneItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\ZoneViewModel.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSource.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\InstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
     <Compile Include="CloudExplorer\IAcceptInput.cs" />
@@ -342,9 +329,6 @@
     </Compile>
     <Compile Include="Accounts\WindowsCredentialsStore.cs" />
     <Compile Include="Extensions\ImageResource.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
-      <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
@@ -353,8 +337,6 @@
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerViewModel.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerWindow.cs" />
     <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
       <DependentUpon>NamePromptContent.xaml</DependentUpon>
     </Compile>
@@ -585,7 +567,6 @@
     <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
-    <Compile Include="Utils\CloudSqlUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
@@ -676,9 +657,6 @@
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_offline.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_running.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_unknown.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stoped.png" />
@@ -757,9 +735,6 @@
     </Reference>
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.33.1.1222\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -949,10 +924,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1010,10 +981,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MySQLInstaller\MySQLInstallerWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

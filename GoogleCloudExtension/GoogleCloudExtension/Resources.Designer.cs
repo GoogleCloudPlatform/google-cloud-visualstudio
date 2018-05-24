@@ -601,78 +601,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network.
-        /// </summary>
-        public static string AuthorizedNetworksNetworkHeader {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksNetworkHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Authorized Network.
-        /// </summary>
-        public static string AuthorizedNetworksWindowAddNetworkButton {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowAddNetworkButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Authorized Networks.
-        /// </summary>
-        public static string AuthorizedNetworksWindowCaption {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24)..
-        /// </summary>
-        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorMessage {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid Subnet..
-        /// </summary>
-        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorTitle {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage authorized networks that can connect to your instance..
-        /// </summary>
-        public static string AuthorizedNetworksWindowMessage {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name (Optional):.
-        /// </summary>
-        public static string AuthorizedNetworksWindowNameTextBoxTitle {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowNameTextBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Network (CIDR Notation):.
-        /// </summary>
-        public static string AuthorizedNetworksWindowValueTextBoxTitle {
-            get {
-                return ResourceManager.GetString("AuthorizedNetworksWindowValueTextBoxTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable API.
         /// </summary>
         public static string CloudExploreDisabledApiEnableApiMenuHeader {
@@ -2172,159 +2100,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSelectProjectCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerSelectProjectCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Cloud SQL API is not enabled..
-        /// </summary>
-        public static string CloudExplorerSqlApiNotEnabledCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlApiNotEnabledCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Backend Type.
-        /// </summary>
-        public static string CloudExplorerSqlBackendTypeDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlBackendTypeDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Database Version.
-        /// </summary>
-        public static string CloudExplorerSqlDatabaseVersionDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlDatabaseVersionDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable the Cloud SQL API.
-        /// </summary>
-        public static string CloudExplorerSqlEnableApiMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlEnableApiMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load the list of Google Cloud SQL instances..
-        /// </summary>
-        public static string CloudExplorerSqlFailedMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlFailedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to list instances..
-        /// </summary>
-        public static string CloudExplorerSqlFailedToLoadInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlFailedToLoadInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance Properties.
-        /// </summary>
-        public static string CloudExplorerSqlInstanceCategory {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlInstanceCategory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IPv6 Address (First Gen).
-        /// </summary>
-        public static string CloudExplorerSqlInstanceIp6AddressDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlInstanceIp6AddressDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IP Address.
-        /// </summary>
-        public static string CloudExplorerSqlInstanceIpAddressDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlInstanceIpAddressDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Instance Type.
-        /// </summary>
-        public static string CloudExplorerSqlInstanceTypeDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlInstanceTypeDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading instances....
-        /// </summary>
-        public static string CloudExplorerSqlLoadingInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlLoadingInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage authorized networks....
-        /// </summary>
-        public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlManageAuthorizedNetworksMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No instances found..
-        /// </summary>
-        public static string CloudExplorerSqlNoInstancesFoundCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlNoInstancesFoundCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Data Connection....
-        /// </summary>
-        public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlOpenAddDataConnectionMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Google Cloud SQL.
-        /// </summary>
-        public static string CloudExplorerSqlRootNodeCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlRootNodeCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to updated authorized networks..
-        /// </summary>
-        public static string CloudExplorerSqlUpdateAthorizedNetworksErrorMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlUpdateAthorizedNetworksErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updating authorized networks....
-        /// </summary>
-        public static string CloudExplorerSqlUpdatedAthorizedNetworksCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlUpdatedAthorizedNetworksCaption", resourceCulture);
             }
         }
         
@@ -4678,33 +4453,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
-        /// </summary>
-        public static string MySqlInstallerWindowBottomMessage {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowBottomMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download MySQL for Visual Studio.
-        /// </summary>
-        public static string MySqlInstallerWindowTitle {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To add a Google Cloud SQL database as a Data Connection &quot;MySQL for Visual Studio&quot; must be installed. It is highly recommended that the &quot;MySQL Connector/Net&quot; also be installed to be able to properly interact with the database..
-        /// </summary>
-        public static string MySqlInstallerWindowTopMessage {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowTopMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enter name.
         /// </summary>
         public static string NamePromptCaption {
@@ -5813,15 +5561,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Download.
-        /// </summary>
-        public static string UiDownloadButtonCaption {
-            get {
-                return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string UiEnableButtonCaption {
@@ -5989,15 +5728,6 @@ namespace GoogleCloudExtension {
         public static string UiTimeLabel {
             get {
                 return ResourceManager.GetString("UiTimeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Undo.
-        /// </summary>
-        public static string UiUndoButtonCaption {
-            get {
-                return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
             }
         }
         

@@ -15,7 +15,6 @@ Google.Apis.CloudResourceManager.v1
 Google.Apis.Compute.v1
 Google.Apis.Core
 Google.Apis.Plus.v1
-Google.Apis.SQLAdmin.v1beta4
 Log4net
 
                               Apache License
