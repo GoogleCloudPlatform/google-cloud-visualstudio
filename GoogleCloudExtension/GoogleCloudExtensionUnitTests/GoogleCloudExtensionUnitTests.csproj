@@ -259,6 +259,7 @@
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
@@ -285,7 +286,11 @@
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
     <Compile Include="Utils\DataSourceFactoryTests.cs" />
+    <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
     <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
+    <Compile Include="Utils\ProtectedAsyncCommandTests.cs" />
+    <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
+    <Compile Include="Utils\ProtectedCommandTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />

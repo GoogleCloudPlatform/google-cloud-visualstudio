@@ -16,7 +16,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
@@ -40,8 +39,6 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex) when (!IsCriticalException(ex))
             {
-                Debug.WriteLine($"Uncaught exception: {ex.Message}");
-
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }
@@ -58,9 +55,9 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the exception is critical, false otherwise.</returns>
         public static bool IsCriticalException(Exception ex)
         {
-            if (ex is AggregateException)
+            if (ex is AggregateException exception)
             {
-                return ErrorHandler.ContainsCriticalException(ex as AggregateException);
+                return ErrorHandler.ContainsCriticalException(exception);
             }
             else
             {
@@ -73,7 +70,7 @@ namespace GoogleCloudExtension.Utils
         /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
         /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
         /// </summary>
-        public static async void HandleAsyncExceptions(Func<Task> task)
+        public static async Task HandleExceptionsAsync(Func<Task> task)
         {
             try
             {
@@ -81,8 +78,6 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex) when (!IsCriticalException(ex))
             {
-                Debug.WriteLine($"Uncaught exception: {ex.Message}");
-
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }

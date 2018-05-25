@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public void Refresh()
         {
-            ErrorHandlerUtils.HandleAsyncExceptions(ListRepositoryAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(ListRepositoryAsync);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
                 _teamExplorer.ShowMessage(msg,
-                    command: new ProtectedCommand(handler: () =>
+                    command: new ProtectedCommand(() =>
                     {
                         SetRepoActive(repoItem);
                         ShellUtils.LaunchCreateSolutionDialog(repoItem.LocalPath);
@@ -353,7 +353,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
                 _teamExplorer.ShowMessage(msg,
-                    command: new ProtectedCommand(handler: () =>
+                    command: new ProtectedCommand(() =>
                     {
                         SetRepoActive(repoItem);
                         _teamExplorer.ShowHomeSection();

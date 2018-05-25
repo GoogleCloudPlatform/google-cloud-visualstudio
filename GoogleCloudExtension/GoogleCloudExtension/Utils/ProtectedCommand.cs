@@ -13,139 +13,62 @@
 // limitations under the License.
 
 using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
-    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
-    /// </summary>
-    public class ProtectedCommand : ICommand
-    {
-        private bool _canExecuteCommand;
-        private readonly IProtectedAction _action;
-
-        /// <summary>
-        /// Initializes a new instance of ProtectedCommand.
-        /// </summary>
-        /// <param name="handler">The action to execute when the command is executed.</param>
-        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        public ProtectedCommand(Action handler, bool canExecuteCommand = true)
-            : this(new ProtectedAction(handler), canExecuteCommand)
-        { }
-
-        /// <summary>
-        /// Initializes a new instance of ProtectedCommand.
-        /// </summary>
-        /// <param name="protectedAction"><seealso cref="IProtectedAction"/> interface.</param>
-        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        protected ProtectedCommand(IProtectedAction protectedAction, bool canExecuteCommand = true)
-        {
-            _action = protectedAction;
-            CanExecuteCommand = canExecuteCommand;
-        }
-
-        #region ICommand implementation.
-
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter) => CanExecuteCommand;
-
-        public void Execute(object parameter)
-        {
-            _action.Invoke();
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Gets/sets whether the command can be executed or not.
-        /// </summary>
-        public bool CanExecuteCommand
-        {
-            get { return _canExecuteCommand; }
-            set
-            {
-                if (_canExecuteCommand != value)
-                {
-                    _canExecuteCommand = value;
-                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
-    /// in <seealso cref="ErrorHandlerUtils.HandleAsyncExceptions(Func{Task})"/> 
+    /// This class implements the <seealso cref="System.Windows.Input.ICommand"/>
+    /// interface and wraps the action for the command in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
     /// to handle the exceptions that could escape.
     /// </summary>
-    public class ProtectedAsyncCommand : ProtectedCommand
+    public class ProtectedCommand : ProtectedCommandBase
     {
+        private readonly Action _action;
+
         /// <summary>
-        /// Initializes a new instance of ProtectedAsyncCommand.
+        /// Initializes a new instance of <see cref="ProtectedCommand"/>.
         /// </summary>
-        /// <param name="taskHandler">The async task to execute when the command is executed.</param>
+        /// <param name="action">The action to invoke when the command is executed.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        public ProtectedAsyncCommand(Func<Task> taskHandler = null, bool canExecuteCommand = true)
-            : base(new ProtectedAsyncTask(taskHandler), canExecuteCommand)
-        { }
+        public ProtectedCommand(Action action, bool canExecuteCommand = true) : base(canExecuteCommand)
+        {
+            _action = action;
+        }
+
+        /// <summary>
+        /// Safely executes the supplied action.
+        /// </summary>
+        public override void Execute(object _) => ErrorHandlerUtils.HandleExceptions(_action);
     }
 
     /// <summary>
-    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
-    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
+    /// This class implements the <seealso cref="System.Windows.Input.ICommand"/>
+    /// interface and wraps the action for the command in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
+    /// to handle the exceptions that could escape.
     /// </summary>
-    public class ProtectedCommand<T> : ICommand
+    public class ProtectedCommand<T> : ProtectedCommandBase
     {
-        private bool _canExecuteCommand;
-        private readonly ProtectedAction<T> _action;
+        private readonly Action<T> _action;
 
         /// <summary>
-        /// Initializes the new instance of ProtectedCommand.
+        /// Initializes the new instance of <see cref="ProtectedCommand{T}"/>.
         /// </summary>
-        /// <param name="handler">The action to execute when executing the command.</param>
+        /// <param name="action">The action to invoke when executing the command.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        public ProtectedCommand(Action<T> handler, bool canExecuteCommand = true)
+        public ProtectedCommand(Action<T> action, bool canExecuteCommand = true) : base(canExecuteCommand)
         {
-            _action = new ProtectedAction<T>(handler);
-            CanExecuteCommand = canExecuteCommand;
+            _action = action;
         }
-
-        #region ICommand implementation.
-
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return CanExecuteCommand;
-        }
-
-        public void Execute(object parameter)
-        {
-            if (parameter is T)
-            {
-                _action.Invoke((T)parameter);
-            }
-        }
-
-        #endregion
 
         /// <summary>
-        /// Gets/sets whether the command can be executed.
+        /// Safely executes the supplied action.
         /// </summary>
-        public bool CanExecuteCommand
+        /// <param name="argument">The argument to the action.</param>
+        public override void Execute(object argument)
         {
-            get { return _canExecuteCommand; }
-            set
+            if (argument is T typedArgument)
             {
-                if (_canExecuteCommand != value)
-                {
-                    _canExecuteCommand = value;
-                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-                }
+                ErrorHandlerUtils.HandleExceptions(() => _action.Invoke(typedArgument));
             }
         }
     }

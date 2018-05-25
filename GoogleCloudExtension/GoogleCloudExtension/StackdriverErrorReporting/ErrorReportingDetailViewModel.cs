@@ -134,7 +134,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 SetValueAndRaise(ref _selectedTimeRange, value);
                 if (value != null)
                 {
-                    ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync);
+                    ErrorHandlerUtils.HandleExceptionsAsync(UpdateGroupAndEventAsync);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             IsVisibleUnbound = true;
             OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
             OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
-            OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync));
+            OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(UpdateGroupAndEventAsync));
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
 
             CredentialsStore.Default.Reset += OnCurrentProjectChanged;
@@ -224,7 +224,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             GroupItem = errorGroupItem;
             if (groupSelectedTimeRangeItem.GroupTimeRange == SelectedTimeRangeItem?.GroupTimeRange)
             {
-                ErrorHandlerUtils.HandleAsyncExceptions(UpdateEventAsync);
+                ErrorHandlerUtils.HandleExceptionsAsync(UpdateEventAsync);
             }
             else
             {
