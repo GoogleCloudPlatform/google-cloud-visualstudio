@@ -17,7 +17,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
-using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
@@ -207,9 +206,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // The Google Compute Engine source.
                 new GceSource(this),
-
-                // The Google Cloud Storage source.
-                new GcsSource(this),
 
                 // The Google Publish/Subscription source.
                 new PubsubSource(this),
