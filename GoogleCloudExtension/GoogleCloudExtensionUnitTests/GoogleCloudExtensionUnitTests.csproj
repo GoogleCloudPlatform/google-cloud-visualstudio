@@ -93,9 +93,6 @@
     <Reference Include="Google.Apis.Plus.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Plus.v1.1.33.1.1222\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.33.1.1222\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -239,19 +236,9 @@
     <Compile Include="CloudExplorerSources\Gae\VersionViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModelTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModelTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBaseTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBaseTests.cs" />
     <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBaseTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModelTests.cs" />
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageTests.cs" />
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsPageViewModelTests.cs" />
-    <Compile Include="CloudExplorer\Options\CloudExplorerOptionsTests.cs" />
-    <Compile Include="CloudExplorer\Options\SerializableCloudExplorerOptionsTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="CloudSourceRepository\AsyncRepositoriesTests.cs" />
     <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />

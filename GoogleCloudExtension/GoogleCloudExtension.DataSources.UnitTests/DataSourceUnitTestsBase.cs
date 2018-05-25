@@ -40,49 +40,6 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
         /// </summary>
         /// <typeparam name="TService">The type of service to mock.</typeparam>
-        /// <typeparam name="TResource1">A resource type in the service.</typeparam>
-        /// <typeparam name="TResource2">A resource type in the outer resource type.</typeparam>
-        /// <typeparam name="TRequest">The type of the request.</typeparam>
-        /// <typeparam name="TResponse">The type of the response the request returns.</typeparam>
-        /// <param name="outerResourceExpression">
-        ///     The path to the resource of the service. (e.g. (PubsubService service) => service.Projects)
-        /// </param>
-        /// <param name="innerResourceExpression">
-        ///     The path to the inner resource of the outer resource. (e.g. Projects => Projects.Topics)
-        /// </param>
-        /// <param name="requestExpression">
-        ///     The request expression on the second resource (e.g. Topics => Topics.List(It.IsAny&lt;string&gt;()))
-        /// </param>
-        /// <param name="responses">The list of reponses for the request to return.</param>
-        /// <returns>A mocked version of the service.</returns>
-        protected static TService GetMockedService<TService, TResource1, TResource2, TRequest, TResponse>(
-            Expression<Func<TService, TResource1>> outerResourceExpression,
-            Expression<Func<TResource1, TResource2>> innerResourceExpression,
-            Expression<Func<TResource2, TRequest>> requestExpression,
-            IEnumerable<TResponse> responses)
-            where TService : BaseClientService
-            where TResource1 : class
-            where TResource2 : class
-            where TRequest : ClientServiceRequest<TResponse>
-        {
-            IClientService clientService = GetMockedClientService<TRequest, TResponse>(responses);
-            TRequest request = GetMockedRequest<TRequest, TResponse>(requestExpression, clientService);
-
-            var innerResourceMock = new Mock<TResource2>(clientService);
-            innerResourceMock.Setup(requestExpression).Returns(request);
-
-            var outerResourceMock = new Mock<TResource1>(clientService);
-            outerResourceMock.Setup(innerResourceExpression).Returns(innerResourceMock.Object);
-
-            var serviceMock = new Mock<TService>();
-            serviceMock.Setup(outerResourceExpression).Returns(outerResourceMock.Object);
-            return serviceMock.Object;
-        }
-
-        /// <summary>
-        /// Gets a mock for a service that extends <see cref="BaseClientService"/>.
-        /// </summary>
-        /// <typeparam name="TService">The type of service to mock.</typeparam>
         /// <typeparam name="TResource">A resource type of the service.</typeparam>
         /// <typeparam name="TRequest">The type of the request.</typeparam>
         /// <typeparam name="TResponse">The type of the response the request returns.</typeparam>

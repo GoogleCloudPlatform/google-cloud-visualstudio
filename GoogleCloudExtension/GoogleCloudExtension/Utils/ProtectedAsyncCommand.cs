@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.Utils
             LatestExecution = new AsyncProperty(actionTask);
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private void SetValueAndRaise<T>(out T field, T value, [CallerMemberName] string propertyName = null)
         {

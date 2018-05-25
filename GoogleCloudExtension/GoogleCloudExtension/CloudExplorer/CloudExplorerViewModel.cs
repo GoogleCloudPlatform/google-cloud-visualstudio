@@ -18,7 +18,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
-using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PickProjectDialog;
@@ -207,9 +206,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // The Google Compute Engine source.
                 new GceSource(this),
-
-                // The Google Publish/Subscription source.
-                new PubsubSource(this),
 
                 // The source to navigate to the cloud console.
                 new CloudConsoleLinksSource(this)
