@@ -68,7 +68,6 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
-    [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());

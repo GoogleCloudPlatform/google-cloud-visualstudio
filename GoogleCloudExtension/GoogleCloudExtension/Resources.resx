@@ -369,58 +369,6 @@
     <value>The status of the zone.</value>
     <comment>The description of the status property of a GCE zone.</comment>
   </data>
-  <data name="CloudExplorerGcsBucketCategory" xml:space="preserve">
-    <value>Bucket Properties</value>
-    <comment>The category for GCS bucket properties.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketCreatedDescription" xml:space="preserve">
-    <value>The creation time stamp for the bucket</value>
-    <comment>The description of the created property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketModifiedDescription" xml:space="preserve">
-    <value>The modification time stamp for the bucket</value>
-    <comment>The description of the updated property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketNameDescription" xml:space="preserve">
-    <value>The name of the bucket</value>
-    <comment>The description of the name property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketStorageClassDescription" xml:space="preserve">
-    <value>The storage class for the bucket</value>
-    <comment>The description of the storage class property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketStorageClassDisplayName" xml:space="preserve">
-    <value>Storage Class</value>
-    <comment>The display name of the storage class property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketVersioningEnabledDescription" xml:space="preserve">
-    <value>Whether versioning is enabled for the bucket</value>
-    <comment>The description of the versioning enabled property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketVersioningEnabledDisplayName" xml:space="preserve">
-    <value>Is Versioning Enabled</value>
-    <comment>The display name of the versioning enabled property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsFailedToListBucketsCaption" xml:space="preserve">
-    <value>Failed to list buckets.</value>
-    <comment>Caption shown when failed to load GCS buckets.</comment>
-  </data>
-  <data name="CloudExplorerGcsLoadingBucketsCaption" xml:space="preserve">
-    <value>Loading buckets...</value>
-    <comment>Caption shown while loading the GCS buckets.</comment>
-  </data>
-  <data name="CloudExplorerGcsNoBucketsFoundCaption" xml:space="preserve">
-    <value>No buckets found.</value>
-    <comment>Caption shown when no GCS buckets are found.</comment>
-  </data>
-  <data name="CloudExplorerGcsRootNodeCaption" xml:space="preserve">
-    <value>Google Cloud Storage</value>
-    <comment>The caption for the root node of the GCS source.</comment>
-  </data>
-  <data name="CloudExplorerGcsSourceApiDisabledMessage" xml:space="preserve">
-    <value>The Google Cloud Storage API is not enabled for this project.</value>
-    <comment>Message shown when the GCS API is disabled.</comment>
-  </data>
   <data name="CloudExplorerLoadingMessage" xml:space="preserve">
     <value>Loading...</value>
     <comment>General loading message.</comment>
@@ -444,62 +392,6 @@
   <data name="CloudExplorerSelectAccountMessage" xml:space="preserve">
     <value>Select _account...</value>
     <comment>General select account message.</comment>
-  </data>
-  <data name="CloudExplorerSqlBackendTypeDisplayName" xml:space="preserve">
-    <value>Backend Type</value>
-    <comment>The display name for the backend type property for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlDatabaseVersionDisplayName" xml:space="preserve">
-    <value>Database Version</value>
-    <comment>The display name for the database version proeprty for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlFailedMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud SQL instances.</value>
-    <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlUpdateAthorizedNetworksErrorMessage" xml:space="preserve">
-    <value>Failed to updated authorized networks.</value>
-    <comment>Message shown when an attempt to updated authorized networks fails.</comment>
-  </data>
-  <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to list instances.</value>
-    <comment>Caption shown when failed to load SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceCategory" xml:space="preserve">
-    <value>Instance Properties</value>
-    <comment>Category for the SQL instance properties.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceIpAddressDisplayName" xml:space="preserve">
-    <value>IP Address</value>
-    <comment>The display name for the instance IP address.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceTypeDisplayName" xml:space="preserve">
-    <value>Instance Type</value>
-    <comment>The display name for the instance type property for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlNoInstancesFoundCaption" xml:space="preserve">
-    <value>No instances found.</value>
-    <comment>Caption shown when no SQL instances are found.</comment>
-  </data>
-  <data name="CloudExplorerSqlUpdatedAthorizedNetworksCaption" xml:space="preserve">
-    <value>Updating authorized networks...</value>
-    <comment>Caption shown when the authorized networks are being updated.</comment>
-  </data>
-  <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection...</value>
-    <comment>Menu header for the open add data connection dialog menu item.</comment>
-  </data>
-  <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
-    <value>Manage authorized networks...</value>
-    <comment>Menu header for the option to manage authorized networks.</comment>
-  </data>
-  <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
-    <value>Google Cloud SQL</value>
-    <comment>Caption for the root node in the SQL source.</comment>
   </data>
   <data name="CloudExplorerStatusMenuHeader" xml:space="preserve">
     <value>Status</value>
@@ -549,18 +441,6 @@
     <value>Manage Accounts</value>
     <comment>The title for the manage accounts window.</comment>
   </data>
-  <data name="MySqlInstallerWindowBottomMessage" xml:space="preserve">
-    <value>Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio.</value>
-    <comment>Bottom message for the MySql installer window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTitle" xml:space="preserve">
-    <value>Download MySQL for Visual Studio</value>
-    <comment>Title for the MySql isntaller window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTopMessage" xml:space="preserve">
-    <value>To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed. It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.</value>
-    <comment>Top message for the MySql installer window.</comment>
-  </data>
   <data name="OAuthFlowWindowMessage" xml:space="preserve">
     <value>A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically.</value>
     <comment>OAUTH flow window message.</comment>
@@ -576,34 +456,6 @@
   <data name="PortManagerWindowMessage" xml:space="preserve">
     <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
-    <value>Manage Authorized Networks</value>
-    <comment>Caption for the manage authorized networks dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowMessage" xml:space="preserve">
-    <value>Manage authorized networks that can connect to your instance.</value>
-    <comment>Main message in the authorized networks dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowNameTextBoxTitle" xml:space="preserve">
-    <value>Name (Optional):</value>
-    <comment>Title for the name text box use to create new authorized networks.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowValueTextBoxTitle" xml:space="preserve">
-    <value>Network (CIDR Notation):</value>
-    <comment>Title for the value text box use to create new authorized networks.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowAddNetworkButton" xml:space="preserve">
-    <value>Add Authorized Network</value>
-    <comment>Title for the button to create a new authorized network.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorTitle" xml:space="preserve">
-    <value>Invalid Subnet.</value>
-    <comment>Title for an error message in the authorized networks dialog for an ipv4 address.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorMessage" xml:space="preserve">
-    <value>Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24).</value>
-    <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
     <value>Reset the password for {0} on instance {1}?</value>
@@ -653,10 +505,6 @@
     <value>Close</value>
     <comment>Caption for the close window button.</comment>
   </data>
-  <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>_Download</value>
-    <comment>The caption for the general download button.</comment>
-  </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
     <value>OK</value>
     <comment>Caption for Ok buttons.</comment>
@@ -669,10 +517,6 @@
     <value>_Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
-  <data name="UiUndoButtonCaption" xml:space="preserve">
-    <value>_Undo</value>
-    <comment>Caption for Undo buttons.</comment>
-  </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
     <value>Open on Cloud Platform Console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
@@ -680,22 +524,6 @@
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
     <value>Properties</value>
     <comment>Header for the generic properties menu item, to show the properties window.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationDescription" xml:space="preserve">
-    <value>The location where the bucket resides.</value>
-    <comment>The description of the location property in a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationDisplayName" xml:space="preserve">
-    <value>Location</value>
-    <comment>The display name for the location property in a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsShowBucketsCommand" xml:space="preserve">
-    <value>Show Buckets</value>
-    <comment>The command to show the buckets in a flat list.</comment>
-  </data>
-  <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
-    <value>Show Locations</value>
-    <comment>The command to use use to show the buckets per location.</comment>
   </data>
   <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
     <value>_Add credentials</value>
@@ -1167,10 +995,6 @@
     <value>Click to hide all log item details</value>
     <comment>Tool tip to toggle expand all button when it is expanded.</comment>
   </data>
-  <data name="AuthorizedNetworksNetworkHeader" xml:space="preserve">
-    <value>Network</value>
-    <comment>Header for the control groupin.</comment>
-  </data>
   <data name="LogViewerExpandAllTip" xml:space="preserve">
     <value>Click to see all log item details</value>
     <comment>Tool tip to toggle expand all button when it is collapsed.</comment>
@@ -1182,10 +1006,6 @@
   <data name="LogViewerRefreshButtonToolTip" xml:space="preserve">
     <value>Get newest log (in descending order)</value>
     <comment>Log viewer window referesh image button tool tip.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationCaption" xml:space="preserve">
-    <value>{0} ({1})</value>
-    <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
   </data>
   <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
     <value>Click to select different timezone</value>
@@ -1211,85 +1031,9 @@
     <value>Error Updating Firewall</value>
     <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
-  <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
-    <value>Type</value>
-    <comment>The header for the Content Type column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
-    <value>Failed to list objects to delete.</value>
-    <comment>Error message shown when failed to list all the files to be deleted.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletePromptMessage" xml:space="preserve">
-    <value>Are you sure you want to delete these files?</value>
-    <comment>Message for the delete confirmation prompt for GCS files.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingProgressCaption" xml:space="preserve">
-    <value>Deleting Files</value>
-    <comment>Caption for the progress dialog for the delete file operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingProgressMessage" xml:space="preserve">
-    <value>Files being deleted</value>
-    <comment>Message for the progress dialog for the delete file operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDonwloadHeader" xml:space="preserve">
-    <value>Download...</value>
-    <comment>Header for the Download option in the context menu.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingProgressCaption" xml:space="preserve">
-    <value>Downloading Files</value>
-    <comment>Caption for the progress dialog for the download operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingProgressMessage" xml:space="preserve">
-    <value>Files being downloaded:</value>
-    <comment>Message for the prgoress dialog for the download operations.</comment>
-  </data>
-  <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
-    <value>Unable to load {0}. Try refreshing.</value>
-    <comment>Error message shown when failed to load a directory.</comment>
-  </data>
-  <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
-    <value>Failed to create directories for download.</value>
-    <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
-  </data>
-  <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
-    <value>Download files</value>
-    <comment>Messagefor the dialog used to select a target folder.</comment>
-  </data>
-  <data name="GcsFileBrowserLastModifiedHeader" xml:space="preserve">
-    <value>Last Modified</value>
-    <comment>The header for the Last Modified column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserNameHeader" xml:space="preserve">
-    <value>Name</value>
-    <comment>The header for the Name column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
-    <value>New Folder...</value>
-    <comment>Header for the New Folder option in the context menu.</comment>
-  </data>
-  <data name="GcsFileBrowserSizeHeader" xml:space="preserve">
-    <value>Size</value>
-    <comment>The header for the Size column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
-    <value>Uploading Files</value>
-    <comment>Caption for the progress dialog for the upload operations.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
-    <value>_Files being uploaded:</value>
-    <comment>Message for the progress dialog for the upload operations.</comment>
-  </data>
   <data name="LogViewerLogItemDateFormat" xml:space="preserve">
     <value>MM-dd-yyyy</value>
     <comment>Log item date format.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
-    <value>IPv6 Address (First Gen)</value>
-    <comment>The display name for the IP v6 address.</comment>
-  </data>
-  <data name="UiBrowseMenuHeader" xml:space="preserve">
-    <value>Browse</value>
-    <comment>Header for a browse menu item.</comment>
   </data>
   <data name="UiErrorCaption" xml:space="preserve">
     <value>Error</value>
@@ -1310,70 +1054,6 @@
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
     <value>Report _Usage Statistics.</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
-    <value>Directory</value>
-    <comment>The category for the directory properties.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryNameDescription" xml:space="preserve">
-    <value>The name of the directory.</value>
-    <comment>The description for the directory name property.</comment>
-  </data>
-  <data name="GcsFileBrowserFileCategory" xml:space="preserve">
-    <value>File</value>
-    <comment>The category for the file properties.</comment>
-  </data>
-  <data name="GcsFileBrowserFileContentTypeDescription" xml:space="preserve">
-    <value>The type of the file.</value>
-    <comment>The description of the content type of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
-    <value>Type</value>
-    <comment>The display name for the content type property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
-    <value>The full path to the blob.</value>
-    <comment>Description for the file full path for the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFullPathDisplayName" xml:space="preserve">
-    <value>GCS Path</value>
-    <comment>The display name for the full path for the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileLastModifiedDescription" xml:space="preserve">
-    <value>The last modified time stamp of the blob.</value>
-    <comment>The description for the last modified property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileLastModifiedDisplayName" xml:space="preserve">
-    <value>Last Modified</value>
-    <comment>The display name for the LastModified property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileNameDescription" xml:space="preserve">
-    <value>Name of the blob.</value>
-    <comment>The description for the file name.</comment>
-  </data>
-  <data name="GcsFileBrowserFileSizeDescription" xml:space="preserve">
-    <value>Size of the blob in bytes.</value>
-    <comment>The description for the size property of a file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileSizeDisplayName" xml:space="preserve">
-    <value>Size</value>
-    <comment>The display name for the size property of a file.</comment>
-  </data>
-  <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The display name for the name of the item.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryFullPathDescription" xml:space="preserve">
-    <value>The full path to the directory.</value>
-    <comment>Description of the GcsPath property of the directory.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryItemDisplayName" xml:space="preserve">
-    <value>Cloud Storage Directory</value>
-    <comment>Display name for a directory item.</comment>
-  </data>
-  <data name="GcsFileBrowserFileItemDisplayName" xml:space="preserve">
-    <value>Cloud Storage File</value>
-    <comment>Display name for a file item.</comment>
   </data>
   <data name="NamePromptCaption" xml:space="preserve">
     <value>Enter name</value>
@@ -2011,121 +1691,9 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
-  <data name="GcsFileBrowserFailedToCreateRemoteFolder" xml:space="preserve">
-    <value>Failed to create folder {0}.</value>
-    <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
-  </data>
-  <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
-    <value>Error</value>
-    <comment>Message shown when an operation is in the error state.</comment>
-  </data>
-  <data name="GcsFileProgressDialogFailedToEnumerateFiles" xml:space="preserve">
-    <value>Failed to enumerate files.</value>
-    <comment>Error message shown when failed to enumerate files while uploading them.</comment>
-  </data>
-  <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
-    <value>File</value>
-    <comment>Header used in the file name column in the data grid for the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogPendingState" xml:space="preserve">
-    <value>Pending</value>
-    <comment>Message shown when an operation is still in the pending state.</comment>
-  </data>
-  <data name="GcsFileProgressDialogProgressHeader" xml:space="preserve">
-    <value>Progress</value>
-    <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingOverallProgressMessage" xml:space="preserve">
-    <value>Files deleted {0} of {1}</value>
-    <comment>Message shown while delete files. {0} is the count of files deleted, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingOverallProgressMessage" xml:space="preserve">
-    <value>Files downloaded {0} of {1}</value>
-    <comment>Message shown while downloading files. {0} is the count of files downloaded, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingOverallProgressMessage" xml:space="preserve">
-    <value>Files uploaded {0} of {1}</value>
-    <comment>Message shown while uploading files. {0} is the count of files uploaded, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
-    <value>Operation cancelled</value>
-    <comment>Message shown when the operation is cancelled.</comment>
-  </data>
-  <data name="GcsFileProgressDialogCancellingOperationMessage" xml:space="preserve">
-    <value>Cancelling operation</value>
-    <comment>Message shown while the operation is being cancelled.</comment>
-  </data>
-  <data name="GcsFileProgressDialogHideDetailsCaption" xml:space="preserve">
-    <value>Hide details</value>
-    <comment>Caption for the action hyperlink in the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogShowDetailsCaption" xml:space="preserve">
-    <value>Show details</value>
-    <comment>Caption for the action hyperlink in the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogStartingOperation" xml:space="preserve">
-    <value>Operation starting</value>
-    <comment>Message shown when the operation is started.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
-    <value>Failed to rename {0}.</value>
-    <comment>Message shown when the rename operation fails. {0} is the name of the file or directory.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
-    <value>Rename file...</value>
-    <comment>Header for the Rename File menu entry.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingProgressMessage" xml:space="preserve">
-    <value>Renaming file.</value>
-    <comment>Message shown while the rename operation is in flight.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFolderHeader" xml:space="preserve">
-    <value>Rename folder...</value>
-    <comment>Header used for the rename directory menu option.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
-    <value>Renaming files</value>
-    <comment>Caption for the progress dialog when renaming multiple files.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesMessage" xml:space="preserve">
-    <value>Files being renamed</value>
-    <comment>Message displayed when renaming multiple files.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesProgressMessage" xml:space="preserve">
-    <value>Files renamed {0} of {1}</value>
-    <comment>Message displayed to show the progress of renaming multiple files. {0} is the current count of completed operations, {1} is the total count of operations</comment>
-  </data>
-  <data name="GcsFileBrowserFailedLoadRootDirectoryMessage" xml:space="preserve">
-    <value>Failed to load directory.</value>
-    <comment>Message shown when there's a failure loading the root directory.</comment>
-  </data>
-  <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
-    <value>Upload a file or drop one here from Windows Explorer.</value>
-    <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
-  </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
     <value>Refresh</value>
     <comment>Caption for Refresh buttons.</comment>
-  </data>
-  <data name="UiSelectAllHeader" xml:space="preserve">
-    <value>Select all</value>
-    <comment>Header to be used in menus for select all operations.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderTitle" xml:space="preserve">
-    <value>New folder</value>
-    <comment>Title for the new folder dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderTooltip" xml:space="preserve">
-    <value>New folder</value>
-    <comment>Tooltip to be shown in the new folder button.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFileTitle" xml:space="preserve">
-    <value>Rename file</value>
-    <comment>Title for the rename file dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFolderTitle" xml:space="preserve">
-    <value>Rename folder</value>
-    <comment>Title for the rename folder dialog.</comment>
   </data>
   <data name="ValdiationNotEmptyMessage" xml:space="preserve">
     <value>{0} can not be empty.</value>
@@ -2162,18 +1730,6 @@
   <data name="PublishDialogFlexVersionNameFieldName" xml:space="preserve">
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadFilesButtonCaption" xml:space="preserve">
-    <value>_Upload files</value>
-    <comment>Caption for the upload button.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadFilesToolTip" xml:space="preserve">
-    <value>Upload files</value>
-    <comment>Toolstip shown on the upload files button.</comment>
-  </data>
-  <data name="UiDeleteToolTip" xml:space="preserve">
-    <value>Delete</value>
-    <comment>Tooltip show on delete buttons.</comment>
   </data>
   <data name="GitUtilsGitInstallLinkCaption" xml:space="preserve">
     <value>Install Git for Windows</value>
@@ -2557,7 +2113,7 @@
   </data>
   <data name="CloudExplorerGaeEnableApiMenuHeader" xml:space="preserve">
     <value>Enable the App Engine Admin API</value>
-    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+    <comment>Header for the menu item to enable the App Engine Admin API.</comment>
   </data>
   <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
     <value>No App Engine app found.</value>
@@ -2570,22 +2126,6 @@
   <data name="CloudExplorerGceEnableApiMenuHeader" xml:space="preserve">
     <value>Enable the Compute Engine API</value>
     <comment>Header for the menu item to enable the GCE API.</comment>
-  </data>
-  <data name="CloudExplorerGcsApiNotEnabledCaption" xml:space="preserve">
-    <value>The Cloud Storage API is not enabled.</value>
-    <comment>Caption shown in the placeholder displayed when the GCS API is not enabled.</comment>
-  </data>
-  <data name="CloudExplorerGcsEnableApiMenuHeader" xml:space="preserve">
-    <value>Enable the Cloud Storage API</value>
-    <comment>Header for the menu item to enable the GCS API.</comment>
-  </data>
-  <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
-    <value>The Cloud SQL API is not enabled.</value>
-    <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
-  </data>
-  <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
-    <value>Enable the Cloud SQL API</value>
-    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
   <data name="UiEnableButtonCaption" xml:space="preserve">
     <value>Enable</value>
