@@ -66,6 +66,8 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Async\AsyncPropertyBaseTests.cs" />
+    <Compile Include="Async\AsyncPropertyTests.cs" />
     <Compile Include="NullEmptyInvisibleConverterTests.cs" />
     <Compile Include="PathUtilsTests.cs" />
     <Compile Include="ProcessUtilsTests.cs" />

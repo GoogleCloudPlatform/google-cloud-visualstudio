@@ -186,7 +186,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Command to execute to refresh the list of clusters.
         /// </summary>
-        public ProtectedCommand RefreshClustersListCommand { get; }
+        public ProtectedAsyncCommand RefreshClustersListCommand { get; }
 
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,

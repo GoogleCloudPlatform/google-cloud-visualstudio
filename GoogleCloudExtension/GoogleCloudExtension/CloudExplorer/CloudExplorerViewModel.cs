@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
@@ -59,10 +60,10 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns whether the view model is busy performing an operation.
         /// </summary>
-        public bool IsBusy
+        private bool IsBusy
         {
-            get { return _isBusy; }
-            private set
+            get => _isBusy;
+            set
             {
                 SetValueAndRaise(ref _isBusy, value);
                 RaisePropertyChanged(nameof(IsReady));
@@ -78,7 +79,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The negation of IsEmptyState.
         /// </summary>
-        public bool IsNotEmptyState => !IsEmptyState;
+        private bool IsNotEmptyState => !IsEmptyState;
 
         /// <summary>
         /// Returns whether the view model is ready for interactions. Simplifies binding.
@@ -190,7 +191,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             _selectionUtils = selectionUtils;
 
-            RefreshCommand = new ProtectedAsyncCommand(OnRefreshCommand);
+            RefreshCommand = new ProtectedAsyncCommand(OnRefreshCommandAsync);
             ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
             DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
@@ -207,7 +208,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new GceSource(this),
 
                 // The source to navigate to the cloud console.
-                new CloudConsoleLinksSource(this),
+                new CloudConsoleLinksSource(this)
             };
 
             Buttons = new[]
@@ -216,7 +217,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 {
                     Icon = s_refreshIcon.Value,
                     ToolTip = Resources.CloudExplorerRefreshButtonToolTip,
-                    Command = RefreshCommand,
+                    Command = RefreshCommand
                 }
             };
 
@@ -224,14 +225,14 @@ namespace GoogleCloudExtension.CloudExplorer
             CredentialsStore.Default.CurrentProjectIdChanged += OnCredentialsChanged;
             CredentialsStore.Default.Reset += OnCredentialsChanged;
 
-            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(ResetCredentialsAsync);
         }
 
         private void UpdateUserProfile()
         {
             if (_plusDataSource.Value != null)
             {
-                var profileTask = _plusDataSource.Value.GetProfileAsync();
+                Task<Person> profileTask = _plusDataSource.Value.GetProfileAsync();
                 ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
@@ -275,14 +276,14 @@ namespace GoogleCloudExtension.CloudExplorer
             Process.Start("https://console.cloud.google.com/");
         }
 
-        private async Task OnRefreshCommand() => await ResetCredentialsAsync();
+        private async Task OnRefreshCommandAsync() => await ResetCredentialsAsync();
 
         #endregion
 
         #region Event handlers
 
         private void OnCredentialsChanged(object sender, EventArgs e) =>
-            ErrorHandlerUtils.HandleAsyncExceptions(ResetCredentialsAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(ResetCredentialsAsync);
 
         #endregion
 
@@ -313,13 +314,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();
-                RefreshSources();
+                await RefreshSourcesAsync();
 
                 // Notify of changes of the empty state.
                 InvalidateEmptyState();
 
                 // Update the enabled state of the buttons, to match the empty state.
-                foreach (var button in Buttons)
+                foreach (ButtonDefinition button in Buttons)
                 {
                     button.IsEnabled = IsNotEmptyState;
                 }
@@ -396,10 +397,10 @@ namespace GoogleCloudExtension.CloudExplorer
             _plusDataSource = new Lazy<IGPlusDataSource>(DataSourceFactory.Default.CreatePlusDataSource);
         }
 
-        private async void RefreshSources()
+        private async Task RefreshSourcesAsync()
         {
             Roots = null;
-            foreach (var source in _sources)
+            foreach (ICloudExplorerSource<ISourceRootViewModelBase> source in _sources)
             {
                 source.Refresh();
             }
@@ -415,7 +416,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         private void NotifySourcesOfUpdatedAccountOrProject()
         {
-            foreach (var source in _sources)
+            foreach (ICloudExplorerSource<ISourceRootViewModelBase> source in _sources)
             {
                 source.InvalidateProjectOrAccount();
             }

@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 {
                     NeedsApiEnabled = false;
                     RepositoriesAsync.ClearList();
-                    ErrorHandlerUtils.HandleAsyncExceptions(() => ExecuteAsync(async () =>
+                    ErrorHandlerUtils.HandleExceptionsAsync(() => ExecuteAsync(async () =>
                     {
                         IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
                         NeedsApiEnabled = !(await apiManager.AreServicesEnabledAsync(s_requiredApis));
@@ -147,7 +147,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Responds to Clone button click event
         /// </summary>
-        public ProtectedCommand CloneRepoCommand { get; }
+        public ProtectedAsyncCommand CloneRepoCommand { get; }
 
         /// <summary>
         /// Responds to create repo button click event
@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Responds to the enable api link button click event
         /// </summary>
-        public ProtectedCommand EnableApiCommand { get; }
+        public ProtectedAsyncCommand EnableApiCommand { get; }
 
         /// <summary>
         /// Gets a result of type <seealso cref="CloneDialogResult"/>.
@@ -331,7 +331,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 _newReposList.Add(_latestCreatedRepo.Name);
                 // Update the repos list
-                ErrorHandlerUtils.HandleAsyncExceptions(
+                ErrorHandlerUtils.HandleExceptionsAsync(
                     () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
             }
         }
