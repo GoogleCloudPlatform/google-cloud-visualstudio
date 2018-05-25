@@ -80,7 +80,6 @@
     <Compile Include="Analytics\Events\AddWindowsCredentialEvent.cs" />
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
-    <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\CsrListedEvent.cs" />
     <Compile Include="Analytics\Events\CsrCreatedEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
@@ -97,17 +96,6 @@
     <Compile Include="Analytics\Events\CsrClonedEvent.cs" />
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
-    <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserDirectoryLoadedEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserFilesDroppedEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserOpenDirectoryEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserRenameFileEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserStartDeleteEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserStartDownloadEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserNewFolderEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserOpenEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserStartRenameDirectoryEvent.cs" />
-    <Compile Include="Analytics\Events\GcsFileBrowserStartUploadEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
@@ -115,13 +103,10 @@
     <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerShowAdvancedFilterHelpEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerSimpleTextSearchEvent.cs" />
-    <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
-    <Compile Include="Analytics\Events\OpenCloudSqlConnectionDialogEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
-    <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
@@ -180,12 +165,6 @@
       <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="AttachDebuggerDialog\SetCredentialStepViewModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
-    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
-      <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroup.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
@@ -194,7 +173,6 @@
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\IPubsubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\ITopicViewModelBase.cs" />
@@ -293,14 +271,6 @@
     <Compile Include="CloudExplorerSources\Gce\WindowsInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\ZoneItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\ZoneViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\BucketItem.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\BucketViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\GcsSource.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\GcsSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSource.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\InstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
     <Compile Include="CloudExplorer\IAcceptInput.cs" />
@@ -352,16 +322,6 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
-    <Compile Include="GcsFileBrowser\GcsBrowserState.cs" />
-    <Compile Include="GcsFileBrowser\GcsBrowserViewModel.cs" />
-    <Compile Include="GcsFileBrowser\GcsColumnSorter.cs" />
-    <Compile Include="GcsFileBrowser\GcsDirectoryItem.cs" />
-    <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
-    <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">
-      <DependentUpon>GcsFileBrowserWindowControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GcsFileBrowser\GcsRow.cs" />
-    <Compile Include="GcsFileBrowser\GcsFileItem.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
@@ -369,9 +329,6 @@
     </Compile>
     <Compile Include="Accounts\WindowsCredentialsStore.cs" />
     <Compile Include="Extensions\ImageResource.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
-      <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
@@ -380,8 +337,6 @@
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerViewModel.cs" />
-    <Compile Include="MySQLInstaller\MySQLInstallerWindow.cs" />
     <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
       <DependentUpon>NamePromptContent.xaml</DependentUpon>
     </Compile>
@@ -550,11 +505,6 @@
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogViewModel.cs" />
-    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindow.cs" />
-    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml.cs">
-      <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Theming\CommonImageResources.cs" />
     <Compile Include="TitleBar\TitleBar.xaml.cs">
       <DependentUpon>TitleBar.xaml</DependentUpon>
@@ -617,7 +567,6 @@
     <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
-    <Compile Include="Utils\CloudSqlUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
@@ -679,17 +628,10 @@
     <Resource Include="Controls\Resources\step_7_dark.png" />
     <Resource Include="Controls\Resources\step_8_dark.png" />
     <Resource Include="Controls\Resources\step_9_dark.png" />
-    <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
-    <Resource Include="GcsFileBrowser\Resources\refresh.png" />
-    <Resource Include="GcsFileBrowser\Resources\folder.png" />
-    <Resource Include="GcsFileBrowser\Resources\file.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
-    <Resource Include="GcsFileBrowser\Resources\create_new_folder.png" />
-    <Resource Include="GcsFileBrowser\Resources\delete_forever.png" />
-    <Resource Include="GcsFileBrowser\Resources\file_upload.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -715,11 +657,7 @@
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_offline.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_running.png" />
-    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_unknown.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
-    <Resource Include="CloudExplorerSources\Gcs\Resources\bucket_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_transition.png" />
@@ -797,12 +735,6 @@
     </Reference>
     <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.33.1.1222\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.33.1.1229, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.33.1.1229\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -992,10 +924,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CloudExplorer\Options\CloudExplorerOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1052,15 +980,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MySQLInstaller\MySQLInstallerWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1117,10 +1037,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1257,10 +1173,6 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj">
-      <Project>{0c891356-ccd7-4a10-ba27-c4a4359ea825}</Project>
-      <Name>GoogleCloudExtension.GcsUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
       <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
