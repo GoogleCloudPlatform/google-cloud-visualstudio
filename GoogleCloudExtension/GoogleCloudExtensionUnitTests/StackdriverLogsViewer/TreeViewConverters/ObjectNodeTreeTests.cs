@@ -161,7 +161,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.TreeViewConverters
 
             objectUnderTest.CopyCommand.Execute(null);
 
-            Assert.AreEqual(expectedNodeClipboard, Clipboard.GetText());
+            Assert.AreEqual(expectedNodeClipboard, Clipboard.GetDataObject()?.GetData(typeof(string)));
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.TreeViewConverters
 
             objectUnderTest.CopyCommand.Execute(null);
 
-            Assert.AreEqual(expectedNodeClipboard, Clipboard.GetText());
+            Assert.AreEqual(expectedNodeClipboard, Clipboard.GetDataObject()?.GetData(typeof(string)));
         }
     }
 }

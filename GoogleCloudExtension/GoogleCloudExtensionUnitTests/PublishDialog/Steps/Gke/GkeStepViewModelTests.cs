@@ -307,7 +307,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         {
             _getClusterListTaskSource.SetResult(null);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.RefreshClustersListCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -318,7 +318,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.RefreshClustersListCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -329,7 +329,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.RefreshClustersListCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.AreEqual(s_inOrderClusters, _objectUnderTest.Clusters.ToList());
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);

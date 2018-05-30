@@ -357,7 +357,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _getInstanceListTaskSource.SetResult(s_allInstances);
 
             _objectUnderTest.RefreshInstancesCommand.Execute(null);
-            await _objectUnderTest.RefreshInstancesCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.AreEqual(s_runningWindowsInstances.ToList(), _objectUnderTest.Instances.ToList());
         }
