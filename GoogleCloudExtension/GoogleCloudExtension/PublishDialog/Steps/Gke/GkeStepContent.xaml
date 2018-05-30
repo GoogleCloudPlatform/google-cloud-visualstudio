@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="GoogleCloudExtension.PublishDialogSteps.GkeStep.GkeStepContent"
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.Gke.GkeStepContent"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gke"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../../../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

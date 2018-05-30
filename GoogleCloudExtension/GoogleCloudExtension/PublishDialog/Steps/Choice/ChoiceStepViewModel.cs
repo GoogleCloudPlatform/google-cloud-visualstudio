@@ -13,19 +13,18 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.FlexStep;
-using GoogleCloudExtension.PublishDialogSteps.GceStep;
-using GoogleCloudExtension.PublishDialogSteps.GkeStep;
+using GoogleCloudExtension.PublishDialog.Steps.Flex;
+using GoogleCloudExtension.PublishDialog.Steps.Gce;
+using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
+namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 {
     /// <summary>
     /// The view model for the publish dialog step that allows the user to choose the target
@@ -34,23 +33,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
     /// </summary>
     public class ChoiceStepViewModel : ValidatingViewModelBase, IPublishDialogStep
     {
-        private const string AppEngineIconPath = "PublishDialogSteps/ChoiceStep/Resources/AppEngine_128px_Retina.png";
-        private const string GceIconPath = "PublishDialogSteps/ChoiceStep/Resources/ComputeEngine_128px_Retina.png";
-        private const string GkeIconPath = "PublishDialogSteps/ChoiceStep/Resources/ContainerEngine_128px_Retina.png";
+        private const string AppEngineIconPath = "PublishDialog/Steps/Choice/Resources/AppEngine_128px_Retina.png";
+        private const string GceIconPath = "PublishDialog/Steps/Choice/Resources/ComputeEngine_128px_Retina.png";
+        private const string GkeIconPath = "PublishDialog/Steps/Choice/Resources/ContainerEngine_128px_Retina.png";
 
         private static readonly Lazy<ImageSource> s_appEngineIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AppEngineIconPath));
         private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GceIconPath));
         private static readonly Lazy<ImageSource> s_gkeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GkeIconPath));
 
-        private readonly ChoiceStepContent _content;
         private IEnumerable<Choice> _choices = Enumerable.Empty<Choice>();
-
-        // Disable compiler error CS0067.
-        public event EventHandler CanPublishChanged
-        {
-            add { }
-            remove { }
-        }
 
         /// <summary>
         /// The choices available for the project being published.
@@ -61,32 +52,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        protected internal IPublishDialog PublishDialog { get; private set; }
+        private IPublishDialog PublishDialog { get; }
 
-        /// <inheritdoc />
-        public FrameworkElement Content => _content;
-
-        /// <inheritdoc />
-        public bool CanPublish => false;
-
-        private ChoiceStepViewModel(ChoiceStepContent content)
+        public ChoiceStepViewModel(IPublishDialog publishDialog)
         {
-            _content = content;
-        }
-
-        public void OnVisible(IPublishDialog dialog)
-        {
-            PublishDialog = dialog;
-            AddHandlers();
-            Choices = GetChoicesForCurrentProject();
-        }
-
-        /// <summary>
-        /// This step never publishes. <see cref="IPublishDialogStep.CanPublish"/> is always <code>false</code>
-        /// </summary>
-        public void Publish()
-        {
-            throw new NotSupportedException();
+            PublishDialog = publishDialog;
         }
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
@@ -127,57 +97,51 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private void OnGkeChoiceCommand()
         {
-            var nextStep = GkeStepViewModel.CreateStep();
+            var nextStep = new GkeStepContent(PublishDialog);
             PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnAppEngineChoiceCommand()
         {
-            var nextStep = FlexStepViewModel.CreateStep();
+            var nextStep = new FlexStepContent(PublishDialog);
             PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnGceChoiceCommand()
         {
-            var nextStep = GceStepViewModel.CreateStep();
+            var nextStep = new GceStepContent(PublishDialog);
             PublishDialog.NavigateToStep(nextStep);
         }
 
-        protected internal virtual void OnFlowFinished()
+        public void OnNotVisible()
         {
             RemoveHandlers();
-            PublishDialog = null;
             Choices = Enumerable.Empty<Choice>();
         }
 
-        private void OnFlowFinished(object sender, EventArgs e)
-            => OnFlowFinished();
+        private void OnFlowFinished(object sender, EventArgs e) => OnNotVisible();
 
         private void AddHandlers()
         {
-            // Checking for null in case it was never pushed in a dialog.
-            if (PublishDialog != null)
-            {
-                PublishDialog.FlowFinished += OnFlowFinished;
-            }
+            PublishDialog.FlowFinished += OnFlowFinished;
         }
 
         private void RemoveHandlers()
         {
-            // Checking for null in case it was never pushed in a dialog.
-            if (PublishDialog != null)
-            {
-                PublishDialog.FlowFinished -= OnFlowFinished;
-            }
+            PublishDialog.FlowFinished -= OnFlowFinished;
         }
 
-        public static ChoiceStepViewModel CreateStep()
-        {
-            var content = new ChoiceStepContent();
-            var viewModel = new ChoiceStepViewModel(content);
-            content.DataContext = viewModel;
+        public IProtectedCommand PublishCommand { get; } =
+            new ProtectedCommand(() => throw new NotSupportedException(), false);
 
-            return viewModel;
+        /// <summary>
+        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// </summary>
+        public Task OnVisibleAsync()
+        {
+            Choices = GetChoicesForCurrentProject();
+            AddHandlers();
+            return Task.CompletedTask;
         }
     }
 }

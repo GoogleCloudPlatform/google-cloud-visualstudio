@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,7 +65,7 @@ namespace GoogleCloudExtension.Utils.Validation
 
         protected ValidatingViewModelBase()
         {
-            ValidationDelayTask = TplExtensions.CompletedTask;
+            ValidationDelayTask = Task.CompletedTask;
         }
 
         /// <summary>

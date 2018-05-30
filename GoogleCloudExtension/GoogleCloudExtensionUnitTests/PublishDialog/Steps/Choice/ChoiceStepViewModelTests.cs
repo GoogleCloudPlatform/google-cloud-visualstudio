@@ -16,20 +16,22 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Deployment.UnitTests;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
-using GoogleCloudExtension.PublishDialogSteps.FlexStep;
-using GoogleCloudExtension.PublishDialogSteps.GceStep;
-using GoogleCloudExtension.PublishDialogSteps.GkeStep;
+using GoogleCloudExtension.PublishDialog.Steps.Choice;
+using GoogleCloudExtension.PublishDialog.Steps.Flex;
+using GoogleCloudExtension.PublishDialog.Steps.Gce;
+using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TestingHelpers;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
+namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
 {
     [TestClass]
-    public class ChoiceStepViewModelTests
+    public class ChoiceStepViewModelTests : ExtensionTestBase
     {
         private const string VisualStudioProjectName = "VisualStudioProjectName";
 
@@ -37,36 +39,32 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         private IPublishDialog _mockedPublishDialog;
         private FakeParsedProject _parsedProject;
 
-        [TestInitialize]
-        public virtual void BeforeEach()
+        protected override void BeforeEach()
         {
-            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
 
+            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
-            _objectUnderTest = ChoiceStepViewModel.CreateStep();
+            _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
         }
 
-        [TestCleanup]
-        public void AfterEach()
+        protected override void AfterEach()
         {
-            _objectUnderTest.OnFlowFinished();
+            Mock.Get(_mockedPublishDialog).Raise(d => d.FlowFinished += null, EventArgs.Empty);
         }
 
         [TestMethod]
         public void TestInitialState()
         {
-            Assert.IsFalse(_objectUnderTest.CanPublish);
-            Assert.IsNull(_objectUnderTest.PublishDialog);
+            Assert.IsFalse(_objectUnderTest.PublishCommand.CanExecuteCommand);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
-            Assert.IsInstanceOfType(_objectUnderTest.Content, typeof(ChoiceStepContent));
         }
 
         [TestMethod]
-        public void TestChoices_WebApplication()
+        public async Task TestChoices_WebApplication()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -89,10 +87,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         }
 
         [TestMethod]
-        public void TestChoices_DotnetCore()
+        public async Task TestChoices_DotnetCore()
         {
             _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -115,10 +113,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         }
 
         [TestMethod]
-        public void TestChoices_None()
+        public async Task TestChoices_None()
         {
             _parsedProject.ProjectType = KnownProjectTypes.None;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -141,31 +139,30 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
-        public void TestPublish_Throws()
+        public void TestPublishCommand_Throws()
         {
-            _objectUnderTest.Publish();
+            _objectUnderTest.PublishCommand.Execute(null);
+
+            PromptUserMock.Verify(p => p(It.IsAny<UserPromptWindow.Options>()));
         }
 
         [TestMethod]
         public void TestOnFlowFinished_ResetsChoicesAndPublishDialog()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.Choices = null;
 
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
 
-            Assert.IsNull(_objectUnderTest.PublishDialog);
-            // ReSharper disable once AssignNullToNotNullAttribute
             CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
         }
 
         [TestMethod]
-        public void TestOnFlowFinished_RemovesHandlers()
+        public async Task TestOnFlowFinished_RemovesHandlers()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
             _objectUnderTest.Choices = null;
 
@@ -175,41 +172,41 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         }
 
         [TestMethod]
-        public void TestOnAppEngineChoiceCommand()
+        public async Task TestOnAppEngineChoiceCommand()
         {
             _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepAppEngineFlexName).Command
                 .Execute(null);
 
-            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<FlexStepViewModel>()));
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<FlexStepContent>()));
         }
 
         [TestMethod]
-        public void TestOnGkeChoiceCommand()
+        public async Task TestOnGkeChoiceCommand()
 
         {
             _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGkeName).Command
                 .Execute(null);
 
-            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GkeStepViewModel>()));
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GkeStepContent>()));
         }
 
         [TestMethod]
-        public void TestOnGceChoiceCommand()
+        public async Task TestOnGceChoiceCommand()
 
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGceName).Command
                 .Execute(null);
 
-            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GceStepViewModel>()));
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GceStepContent>()));
         }
     }
 }

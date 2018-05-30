@@ -13,12 +13,13 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.PublishDialog.Steps;
+using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -29,11 +30,10 @@ namespace GoogleCloudExtension.PublishDialog
     /// </summary>
     public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, INotifyDataErrorInfo
     {
-        private readonly PublishDialogWindow _owner;
-        private readonly IParsedProject _project;
-        private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
+        private readonly Stack<IStepContent<IPublishDialogStep>> _stack = new Stack<IStepContent<IPublishDialogStep>>();
         private FrameworkElement _content;
-        private bool _isReady = true;
+        private IProtectedCommand _publishCommand;
+        private readonly Action _closeWindow;
 
         /// <summary>
         /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
@@ -52,31 +52,25 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// The command to execute when presing the "Publish" button.
         /// </summary>
-        public ProtectedCommand PublishCommand { get; }
-
-        /// <summary>
-        /// Whether the dialog is ready to process user input (enabled) or not.
-        /// </summary>
-        public bool IsReady
+        public IProtectedCommand PublishCommand
         {
-            get { return _isReady; }
-            set { SetValueAndRaise(ref _isReady, value); }
+            get => _publishCommand;
+            set => SetValueAndRaise(ref _publishCommand, value);
         }
 
         /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
         /// </summary>
-        private IPublishDialogStep CurrentStep => _stack.Peek();
+        private IPublishDialogStep CurrentStep => _stack.Peek().ViewModel;
 
-        public PublishDialogWindowViewModel(IParsedProject project, IPublishDialogStep initialStep, PublishDialogWindow owner)
+        public PublishDialogWindowViewModel(IParsedProject project, Action closeWindow)
         {
-            _owner = owner;
-            _project = project;
+            _closeWindow = closeWindow;
+            Project = project;
 
             PrevCommand = new ProtectedCommand(OnPrevCommand);
-            PublishCommand = new ProtectedCommand(OnPublishCommand);
 
-            PushStep(initialStep);
+            PushStep(new ChoiceStepContent(this));
         }
 
         private void OnPrevCommand()
@@ -84,60 +78,43 @@ namespace GoogleCloudExtension.PublishDialog
             PopStep();
         }
 
-        private void OnPublishCommand()
+        private void PushStep(IStepContent<IPublishDialogStep> nextStepContent)
         {
-            CurrentStep.Publish();
-        }
-
-        private void PushStep(IPublishDialogStep step)
-        {
-            RemoveStepEvents();
-            _stack.Push(step);
-            AddStepEvents();
-
-            step.OnVisible(this);
-            CurrentStepChanged();
-        }
-
-        private void AddStepEvents()
-        {
-            var top = _stack.Peek();
-
-            top.CanPublishChanged += OnCanPublishChanged;
-            top.ErrorsChanged += OnErrorsChanged;
-        }
-
-        private void RemoveStepEvents()
-        {
-            if (_stack.Count > 0)
-            {
-                var top = _stack.Peek();
-                top.CanPublishChanged -= OnCanPublishChanged;
-                top.ErrorsChanged -= OnErrorsChanged;
-            }
+            IStepContent<IPublishDialogStep> oldStepContent = _stack.Count > 0 ? _stack.Peek() : null;
+            _stack.Push(nextStepContent);
+            Content = nextStepContent as FrameworkElement;
+            ChangeCurrentStep(oldStepContent?.ViewModel);
         }
 
         private void PopStep()
         {
-            RemoveStepEvents();
-            _stack.Pop();
-            IPublishDialogStep newStep = _stack.Peek();
-            newStep.OnVisible(this);
-            AddStepEvents();
-
-            CurrentStepChanged();
+            IStepContent<IPublishDialogStep> oldStepContent = _stack.Pop();
+            Content = _stack.Peek() as FrameworkElement;
+            ChangeCurrentStep(oldStepContent.ViewModel);
         }
 
-        private void CurrentStepChanged()
+        private void ChangeCurrentStep(IPublishDialogStep oldStep)
         {
-            Content = CurrentStep.Content;
+            if (oldStep != null)
+            {
+                RemoveStepEvents(oldStep);
+                oldStep.OnNotVisible();
+            }
+
+            CurrentStep.OnVisibleAsync();
+            AddStepEvents(CurrentStep);
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
-            PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
+            PublishCommand = CurrentStep.PublishCommand;
         }
 
-        private void OnCanPublishChanged(object sender, EventArgs e)
+        private void AddStepEvents(IPublishDialogStep dialogStep)
         {
-            PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
+            dialogStep.ErrorsChanged += OnErrorsChanged;
+        }
+
+        private void RemoveStepEvents(IPublishDialogStep dialogStep)
+        {
+            dialogStep.ErrorsChanged -= OnErrorsChanged;
         }
 
         private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
@@ -148,43 +125,18 @@ namespace GoogleCloudExtension.PublishDialog
         #region IPublishDialog
 
         /// <inheritdoc />
-        async void IPublishDialog.TrackTask(Task task)
-        {
-            try
-            {
-                IsReady = false;
-                await task;
-            }
-            catch (Exception ex)
-            {
-                // This method is not interested at all in the exceptions thrown from the task. Other parts of the
-                // extension will handle that error. But if we detect that there's a critical error we will let it
-                // propagate.
-                if (ErrorHandlerUtils.IsCriticalException(ex))
-                {
-                    throw;
-                }
-            }
-            finally
-            {
-                IsReady = true;
-            }
-        }
+        public IParsedProject Project { get; }
 
-        /// <inheritdoc />
-        IParsedProject IPublishDialog.Project => _project;
-
-        /// <inheritdoc />
-        void IPublishDialog.NavigateToStep(IPublishDialogStep step)
+        public void NavigateToStep(IStepContent<IPublishDialogStep> step)
         {
             PushStep(step);
         }
 
         /// <inheritdoc />
-        void IPublishDialog.FinishFlow()
+        public void FinishFlow()
         {
             FlowFinished?.Invoke(this, EventArgs.Empty);
-            _owner.Close();
+            _closeWindow();
         }
 
         /// <inheritdoc />
@@ -195,13 +147,13 @@ namespace GoogleCloudExtension.PublishDialog
         #region INotifyDataErrorInfo
 
         /// <inheritdoc />
-        IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+        public IEnumerable GetErrors(string propertyName)
         {
             return CurrentStep.GetErrors(propertyName);
         }
 
         /// <inheritdoc />
-        bool INotifyDataErrorInfo.HasErrors => CurrentStep.HasErrors;
+        public bool HasErrors => CurrentStep.HasErrors;
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;

@@ -18,14 +18,12 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace GoogleCloudExtension.PublishDialog
+namespace GoogleCloudExtension.PublishDialog.Steps
 {
     /// <summary>
     /// This is the base class for all step implementation, providing default implementations
@@ -33,60 +31,37 @@ namespace GoogleCloudExtension.PublishDialog
     /// </summary>
     public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
-        private bool _canPublish = false;
         private readonly IApiManager _apiManager;
         private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
         private bool _generalError = false;
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
-        private Task _asyncAction = TplExtensions.CompletedTask;
+        private Task _asyncAction = Task.CompletedTask;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
 
-        protected internal IPublishDialog PublishDialog { get; private set; }
+        protected internal IPublishDialog PublishDialog { get; }
 
         /// <summary>
         /// Indicates whether the publish button is active.
         /// </summary>
         public bool CanPublish
         {
-            get { return _canPublish; }
-            protected set
-            {
-                if (_canPublish != value)
-                {
-                    _canPublish = value;
-                    CanPublishChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
+            get => PublishCommand.CanExecuteCommand;
+            protected set => PublishCommand.CanExecuteCommand = value;
         }
-
-        /// <summary>
-        /// The content of the step.
-        /// </summary>
-        public abstract FrameworkElement Content { get; }
 
         /// <summary>
         /// The ID of the current Google Cloud Project.
         /// </summary>
-        public string GcpProjectId
-        {
-            get
-            {
-                if (PublishDialog == null)
-                {
-                    return null;
-                }
-                return CredentialsStore.Default.CurrentProjectId;
-            }
-        }
+        public string GcpProjectId => CredentialsStore.Default.CurrentProjectId;
 
         /// <summary>
         /// The command used to select the Google Cloud Project.
         /// </summary>
-        public ProtectedCommand SelectProjectCommand { get; }
+        public ProtectedAsyncCommand SelectProjectCommand { get; }
 
         /// <summary>
         /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
@@ -147,27 +122,6 @@ namespace GoogleCloudExtension.PublishDialog
         protected IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
 
         /// <summary>
-        /// The task that tracks the asycn actions performed from the Dialog.
-        /// </summary>
-        protected internal Task AsyncAction
-        {
-            get { return _asyncAction; }
-            private set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException($"{nameof(AsyncAction)} can't be null.");
-                }
-                _asyncAction = value;
-            }
-        }
-
-        /// <summary>
-        /// Event raised whenever <seealso cref="CanPublish"/> value changes.
-        /// </summary>
-        public event EventHandler CanPublishChanged;
-
-        /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
         /// </summary>
         public ProtectedAsyncCommand EnableApiCommand { get; }
@@ -193,44 +147,41 @@ namespace GoogleCloudExtension.PublishDialog
             }
         }
 
+        public abstract IProtectedCommand PublishCommand { get; }
+
+        protected PublishDialogStepBase(
+            IApiManager apiManager,
+            Func<Project> pickProjectPrompt,
+            IPublishDialog publishDialog)
+        {
+            _apiManager = apiManager;
+            _pickProjectPrompt = pickProjectPrompt;
+            PublishDialog = publishDialog;
+
+            SelectProjectCommand = new ProtectedAsyncCommand(OnSelectProjectCommand, false);
+            EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync, false);
+        }
+
         /// <summary>
         /// This method is called when IsValidGcpProject is set to a new value.
         /// </summary>
         protected virtual void OnIsValidGcpProjectChanged() { }
 
-        protected PublishDialogStepBase(IApiManager apiManager, Func<Project> pickProjectPrompt)
-        {
-            _apiManager = apiManager;
-            _pickProjectPrompt = pickProjectPrompt;
-
-            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand, false);
-            EnableApiCommand = new ProtectedAsyncCommand(async () =>
-            {
-                StartAndTrack(OnEnableApiCommandAsync);
-                await AsyncAction;
-            }, false);
-        }
-
-        /// <summary>
-        /// Performs the publish step action, will only be called if <seealso cref="CanPublish"/> return true.
-        /// </summary>
-        public abstract void Publish();
-
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        /// <param name="dialog">The dialog that is hosting this step.</param>
-        public virtual async void OnVisible(IPublishDialog dialog)
+        public virtual async Task OnVisibleAsync()
         {
-            RemoveHandlers();
-            PublishDialog = dialog;
 
-            StartAndTrack(InitializeDialogAsync);
+            await InitializeDialogAsync();
 
             AddHandlers();
             SelectProjectCommand.CanExecuteCommand = true;
+        }
 
-            await AsyncAction;
+        public void OnNotVisible()
+        {
+            RemoveHandlers();
         }
 
         protected virtual async Task InitializeDialogAsync()
@@ -242,7 +193,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// Called whenever the current GCP Project changes, either from
         /// within this step or from somewhere else.
         /// </summary>
-        protected async Task OnProjectChangedAsync()
+        private async Task OnProjectChangedAsync()
         {
             // Start the task that reloads the project.
             Task reloadTask = ReloadProjectAsync();
@@ -365,18 +316,16 @@ namespace GoogleCloudExtension.PublishDialog
         protected internal virtual void OnFlowFinished()
         {
             RemoveHandlers();
-            PublishDialog = null;
             IsValidGcpProject = false;
             LoadingProject = false;
             GeneralError = false;
             NeedsApiEnabled = false;
             SelectProjectCommand.CanExecuteCommand = false;
-            AsyncAction = TplExtensions.CompletedTask;
 
             ClearLoadedProjectData();
         }
 
-        private async void OnSelectProjectCommand()
+        private async Task OnSelectProjectCommand()
         {
             Project selectedProject = PickProjectPrompt();
             bool hasChanged = !string.Equals(selectedProject?.ProjectId, CredentialsStore.Default.CurrentProjectId);
@@ -386,15 +335,13 @@ namespace GoogleCloudExtension.PublishDialog
             }
             else if (!hasChanged)
             {
-                StartAndTrack(ReloadProjectAsync);
-                await AsyncAction;
+                await ReloadProjectAsync();
             }
         }
 
         private async void OnProjectChanged(object sender, EventArgs e)
         {
-            StartAndTrack(OnProjectChangedAsync);
-            await AsyncAction;
+            await OnProjectChangedAsync();
         }
 
         private void OnFlowFinished(object sender, EventArgs e)
@@ -412,18 +359,8 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void RemoveHandlers()
         {
-            // Checking for null in case it was never pushed in a dialog.
-            if (PublishDialog != null)
-            {
-                PublishDialog.FlowFinished -= OnFlowFinished;
-                CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
-            }
-        }
-
-        protected void StartAndTrack(Func<Task> asyncAction)
-        {
-            AsyncAction = asyncAction();
-            PublishDialog.TrackTask(AsyncAction);
+            PublishDialog.FlowFinished -= OnFlowFinished;
+            CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
         }
     }
 }

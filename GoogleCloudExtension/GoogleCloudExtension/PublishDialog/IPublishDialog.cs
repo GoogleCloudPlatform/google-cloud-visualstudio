@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.PublishDialog.Steps;
 using System;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// as the current displayed step in the dialog.
         /// </summary>
         /// <param name="step">The step to navigate to.</param>
-        void NavigateToStep(IPublishDialogStep step);
+        void NavigateToStep(IStepContent<IPublishDialogStep> step);
 
         /// <summary>
         /// Called from a step that wants to finish the flow. In essence closes the dialog.
@@ -50,11 +50,5 @@ namespace GoogleCloudExtension.PublishDialog
         /// to cleanup.
         /// </summary>
         event EventHandler FlowFinished;
-
-        /// <summary>
-        /// Makes the dialog look "busy" as long as <paramref name="task"/> is not completed.
-        /// </summary>
-        /// <param name="task">The task.</param>
-        void TrackTask(Task task);
     }
 }

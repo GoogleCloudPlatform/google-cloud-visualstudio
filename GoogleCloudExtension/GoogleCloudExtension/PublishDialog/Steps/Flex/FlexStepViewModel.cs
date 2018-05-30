@@ -20,18 +20,15 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
+namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 {
     /// <summary>
     /// The view model for the Flex step in the publish app wizard.
@@ -42,10 +39,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private static readonly IList<string> s_requiredApis = new List<string>
         {
             // We require the App Engine Admin API in order to deploy to app engine.
-            KnownApis.AppEngineAdminApiName,
+            KnownApis.AppEngineAdminApiName
         };
 
-        private readonly FlexStepContent _content;
         private readonly IGaeDataSource _dataSource;
         private readonly Func<Task<bool>> _setAppRegionAsyncFunc;
         private string _version = GcpPublishStepsUtils.GetDefaultVersion();
@@ -118,18 +114,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private FlexStepViewModel(FlexStepContent content, IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, Func<Task<bool>> setAppRegionAsyncFunc)
-            : base(apiManager, pickProjectPrompt)
+        public FlexStepViewModel(IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, Func<Task<bool>> setAppRegionAsyncFunc, IPublishDialog publishDialog)
+            : base(apiManager, pickProjectPrompt, publishDialog)
         {
-            _content = content;
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;
 
-            SetAppRegionCommand = new ProtectedAsyncCommand(async () =>
-            {
-                StartAndTrack(OnSetAppRegionCommandAsync);
-                await AsyncAction;
-            }, false);
+            SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync, false);
+
+            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
         private async Task OnSetAppRegionCommandAsync()
@@ -142,8 +135,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         #region IPublishDialogStep
 
-        /// <inheritdoc/>
-        public override FrameworkElement Content => _content;
+        public override IProtectedCommand PublishCommand { get; }
 
         protected override async Task ValidateProjectAsync()
         {
@@ -175,24 +167,22 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
+        protected override Task LoadAnyProjectDataAsync() => Task.CompletedTask;
 
         /// <summary>
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadValidProjectDataAsync() => TplExtensions.CompletedTask;
+        protected override Task LoadValidProjectDataAsync() => Task.CompletedTask;
 
-        public override async void Publish()
+        private async Task PublishAsync()
         {
             IParsedProject project = PublishDialog.Project;
             try
             {
                 ShellUtils.SaveAllFiles();
 
-                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
-                PublishDialog.TrackTask(verifyGcloudTask);
-                if (!await verifyGcloudTask)
+                if (!await GCloudWrapperUtils.VerifyGCloudDependencies())
                 {
                     Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
                     return;
@@ -277,18 +267,5 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         }
 
         #endregion
-
-        /// <summary>
-        /// Creates a new step instance. This method will also create the necessary view and conect both
-        /// objects together.
-        /// </summary>
-        internal static FlexStepViewModel CreateStep(IGaeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null, Func<Task<bool>> setAppRegionAsyncFunc = null)
-        {
-            var content = new FlexStepContent();
-            var viewModel = new FlexStepViewModel(content, dataSource, apiManager, pickProjectPrompt, setAppRegionAsyncFunc);
-            content.DataContext = viewModel;
-
-            return viewModel;
-        }
     }
 }

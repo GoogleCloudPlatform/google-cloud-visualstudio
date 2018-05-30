@@ -21,18 +21,15 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
-using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace GoogleCloudExtension.PublishDialogSteps.GceStep
+namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 {
     /// <summary>
     /// The view model for the publish step that publishes the project to a GCE VM.
@@ -43,10 +40,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Need the GCE API to perform all work.
-            KnownApis.ComputeEngineApiName,
+            KnownApis.ComputeEngineApiName
         };
 
-        private readonly GceStepContent _content;
         private readonly IGceDataSource _dataSource;
         private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
         private readonly Action<Instance> _manageCredentialsPrompt;
@@ -116,7 +112,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// </summary>
         public ProtectedCommand ManageCredentialsCommand { get; }
 
-        public ProtectedCommand RefreshInstancesCommand { get; }
+        public ProtectedAsyncCommand RefreshInstancesCommand { get; }
 
         /// <summary>
         /// Whether to open the website after a succesful publish operation. Defaults to true.
@@ -148,23 +144,25 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private Action<Instance> ManageCredentialsPrompt =>
             _manageCredentialsPrompt ?? ManageWindowsCredentialsWindow.PromptUser;
 
-        private GceStepViewModel(
-            GceStepContent content,
+        public GceStepViewModel(
             IGceDataSource dataSource,
             IApiManager apiManager,
             Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt,
             IWindowsCredentialsStore currentWindowsCredentialStore,
-            Action<Instance> manageCredentialsPrompt)
-            : base(apiManager, pickProjectPrompt)
+            Action<Instance> manageCredentialsPrompt,
+            IPublishDialog publishDialog)
+            : base(apiManager, pickProjectPrompt, publishDialog)
         {
-            _content = content;
             _dataSource = dataSource;
             _currentWindowsCredentialStore = currentWindowsCredentialStore;
             _manageCredentialsPrompt = manageCredentialsPrompt;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, false);
-            RefreshInstancesCommand = new ProtectedCommand(() => StartAndTrack(LoadValidProjectDataAsync), IsValidGcpProject);
+            RefreshInstancesCommand = new ProtectedAsyncCommand(LoadValidProjectDataAsync, IsValidGcpProject);
+            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
+
+        public override IProtectedCommand PublishCommand { get; }
 
         protected override void OnIsValidGcpProjectChanged()
         {
@@ -179,9 +177,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         #region IPublishDialogStep
 
-        public override FrameworkElement Content => _content;
-
-        public override async void Publish()
+        private async Task PublishAsync()
         {
             IParsedProject project = PublishDialog.Project;
             Instance selectedInstance = SelectedInstance;
@@ -269,7 +265,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// No data to load
         /// </summary>
         /// <returns>A cached completed task</returns>
-        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
+        protected override Task LoadAnyProjectDataAsync() => Task.CompletedTask;
 
         /// <summary>
         /// Loads the instances of the project given that it is valid.
@@ -288,22 +284,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         }
 
         #endregion
-
-        internal static GceStepViewModel CreateStep(
-            IGceDataSource dataSource = null,
-            IApiManager apiManager = null,
-            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null,
-            IWindowsCredentialsStore currentWindowsCredentialStore = null,
-            Action<Instance> manageCredentialsPrompt = null)
-        {
-            var content = new GceStepContent();
-            var viewModel = new GceStepViewModel(
-                content, dataSource, apiManager, pickProjectPrompt,
-                currentWindowsCredentialStore, manageCredentialsPrompt);
-            content.DataContext = viewModel;
-
-            return viewModel;
-        }
 
         private void UpdateCredentials()
         {
