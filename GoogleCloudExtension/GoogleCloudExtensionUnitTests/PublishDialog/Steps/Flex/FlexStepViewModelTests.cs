@@ -20,6 +20,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -117,7 +118,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
-            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsError);
             Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
@@ -161,29 +162,32 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         {
             _setAppRegionTaskSource.SetResult(true);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisibleAsync();
+            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
 
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(onVisibleTask.IsCompleted);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
         }
 
         [TestMethod]
         public void TestSetAppRegionCommand_SkipsReloadOnSetRegionFailure()
         {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
             _setAppRegionTaskSource.SetResult(false);
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.AreEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
         }
 
         [TestMethod]
         public void TestSetAppRegionCommand_SkipsReloadOnSetRegionException()
         {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
             _setAppRegionTaskSource.SetException(new Exception("test exception"));
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.AreEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
         }
 
         [TestMethod]

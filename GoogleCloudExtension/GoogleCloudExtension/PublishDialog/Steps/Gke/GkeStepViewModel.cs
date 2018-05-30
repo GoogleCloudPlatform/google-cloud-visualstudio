@@ -66,6 +66,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         internal Func<string, Process> _startProcessOverride;
 
         /// <summary>
+        /// List of APIs required for publishing to the current project.
+        /// </summary>
+        protected override IList<string> RequiredApis => s_requiredApis;
+
+        /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
         public IEnumerable<Cluster> Clusters
@@ -182,7 +187,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// <summary>
         /// Command to execute to refresh the list of clusters.
         /// </summary>
-        public ProtectedAsyncCommand RefreshClustersListCommand { get; }
+        public ProtectedCommand RefreshClustersListCommand { get; }
 
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -196,7 +201,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
-            RefreshClustersListCommand = new ProtectedAsyncCommand(OnRefreshClustersListCommand, false);
+            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, false);
         }
 
         protected override void RefreshCanPublish()
@@ -207,9 +212,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 && SelectedCluster != s_placeholderCluster;
         }
 
-        private async Task OnRefreshClustersListCommand()
+        private void OnRefreshClustersListCommand()
         {
-            await RefreshClustersAsync();
+            PublishDialog.TrackTask(RefreshClustersAsync());
         }
 
         private void OnCreateClusterCommand()
@@ -223,14 +228,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         protected override async Task InitializeDialogAsync()
         {
-            // Start the task that initializes the dialog, mainly loads the GCP project.
-            Task initializeDialogTask = base.InitializeDialogAsync();
-
-            // In the meantime, set DeploymentName, which launches validations and updates the UI.
             DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
-
-            // Wait for the initialization task to be done.
-            await initializeDialogTask;
+            await base.InitializeDialogAsync();
         }
 
         protected override async Task ValidateProjectAsync()
@@ -245,9 +244,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 CreateClusterCommand.CanExecuteCommand = true;
             }
         }
-
-        /// <inheritdoc />
-        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
 
         /// <summary>
         /// Clear Clusters from the previous selected project.
@@ -292,6 +288,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 ShellUtils.SaveAllFiles();
 
                 Task<bool> verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
+                PublishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {
                     Debug.WriteLine("Aborting deployment, no kubectl was found.");
@@ -303,17 +300,19 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion
                 };
 
                 Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
                     cluster: SelectedCluster.Name,
                     zone: SelectedCluster.Zone,
                     context: gcloudContext);
+                PublishDialog.TrackTask(kubectlContextTask);
 
                 using (KubectlContext kubectlContext = await kubectlContextTask)
                 {
                     Task<bool> deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
+                    PublishDialog.TrackTask(deploymentExistsTask);
                     if (await deploymentExistsTask)
                     {
                         if (!UserPromptUtils.ActionPrompt(
@@ -352,7 +351,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (ShellUtils.SetShellUIBusy())
                     {
-                        var deploymentStartTime = DateTime.Now;
+                        DateTime deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
                             project,
                             options,

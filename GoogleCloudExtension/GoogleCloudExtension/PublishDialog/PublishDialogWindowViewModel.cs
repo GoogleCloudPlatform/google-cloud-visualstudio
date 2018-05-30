@@ -16,11 +16,12 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -31,14 +32,21 @@ namespace GoogleCloudExtension.PublishDialog
     public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, INotifyDataErrorInfo
     {
         private readonly Stack<IStepContent<IPublishDialogStep>> _stack = new Stack<IStepContent<IPublishDialogStep>>();
-        private FrameworkElement _content;
+        private IStepContent<IPublishDialogStep> _content;
         private IProtectedCommand _publishCommand;
         private readonly Action _closeWindow;
+        private AsyncProperty _asyncAction = new AsyncProperty();
+
+        public AsyncProperty AsyncAction
+        {
+            get => _asyncAction;
+            set => SetValueAndRaise(ref _asyncAction, value);
+        }
 
         /// <summary>
         /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
         /// </summary>
-        public FrameworkElement Content
+        public IStepContent<IPublishDialogStep> Content
         {
             get { return _content; }
             set { SetValueAndRaise(ref _content, value); }
@@ -82,14 +90,14 @@ namespace GoogleCloudExtension.PublishDialog
         {
             IStepContent<IPublishDialogStep> oldStepContent = _stack.Count > 0 ? _stack.Peek() : null;
             _stack.Push(nextStepContent);
-            Content = nextStepContent as FrameworkElement;
+            Content = nextStepContent;
             ChangeCurrentStep(oldStepContent?.ViewModel);
         }
 
         private void PopStep()
         {
             IStepContent<IPublishDialogStep> oldStepContent = _stack.Pop();
-            Content = _stack.Peek() as FrameworkElement;
+            Content = _stack.Peek();
             ChangeCurrentStep(oldStepContent.ViewModel);
         }
 
@@ -141,6 +149,12 @@ namespace GoogleCloudExtension.PublishDialog
 
         /// <inheritdoc />
         public event EventHandler FlowFinished;
+
+        /// <summary>
+        /// Makes the dialog look "busy" as long as the <paramref name="task"/> is running.
+        /// </summary>
+        /// <param name="task">The task to track.</param>
+        public void TrackTask(Task task) => AsyncAction = new AsyncProperty(task);
 
         #endregion
 

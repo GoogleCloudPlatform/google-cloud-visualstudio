@@ -60,9 +60,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 PublishCommand = Mock.Of<IProtectedCommand>();
             }
 
-            protected internal override IList<string> ApisRequieredForPublishing() => RequiredApis;
-
-            public List<string> RequiredApis { private get; set; } = s_mockedRequiredApis;
+            protected override IList<string> RequiredApis => RequiredApisOverride;
+            public List<string> RequiredApisOverride { private get; set; } = s_mockedRequiredApis;
 
             protected override void ClearLoadedProjectData() => ClearLoadedProjectDataCallCount++;
 
@@ -130,8 +129,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             public Task ValidateProjectAsyncBase() => base.ValidateProjectAsync();
 
-            public Task ReloadProjectAsyncBase() => ReloadProjectAsync();
-
             protected override void OnIsValidGcpProjectChanged()
             {
                 OnIsValidGcpProjectChangedCallCount++;
@@ -165,11 +162,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestInitialState()
         {
             Assert.AreEqual(_mockedPublishDialog, _objectUnderTest.PublishDialog);
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.IsCompleted);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.IsPending);
             Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
-            Assert.IsFalse(_objectUnderTest.GeneralError);
             Assert.IsFalse(_objectUnderTest.HasErrors);
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
@@ -224,7 +221,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public async Task TestValidateProject_ValidProjectWithNoRequiredApis()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.RequiredApis = new List<string>();
+            _objectUnderTest.RequiredApisOverride = new List<string>();
 
             await _objectUnderTest.ValidateProjectAsyncBase();
 
@@ -236,7 +233,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestValidateProject_ValidProjectWithRequiredApisLoading()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.RequiredApis = s_mockedRequiredApis;
+            _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
 
             Task validateProjectTask = _objectUnderTest.ValidateProjectAsyncBase();
 
@@ -249,7 +246,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public async Task TestValidateProject_ValidProjectWithRequiredApisNotEnabled()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.RequiredApis = s_mockedRequiredApis;
+            _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(false);
 
             await _objectUnderTest.ValidateProjectAsyncBase();
@@ -262,7 +259,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public async Task TestValidateProject_ValidProjectWithRequiredApisEnabled()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.RequiredApis = s_mockedRequiredApis;
+            _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(true);
 
             await _objectUnderTest.ValidateProjectAsyncBase();
@@ -273,14 +270,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
 
         [TestMethod]
-        public void TestReloadProjectAsync_Loading()
+        public void TestReloadProjectCommand_Loading()
         {
-            _objectUnderTest.GeneralError = true;
+            _objectUnderTest.LoadProject();
 
-            _objectUnderTest.ReloadProjectAsyncBase();
-
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
             Assert.AreEqual(1, _objectUnderTest.ClearLoadedProjectDataCallCount);
             Assert.AreEqual(1, _objectUnderTest.LoadAnyProjectDataCallCount);
         }
@@ -289,7 +283,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestReloadProjectAsync_LoadsValidProjectDataOnValidProject()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(true);
-            _objectUnderTest.ReloadProjectAsyncBase();
+            _objectUnderTest.LoadProject();
 
             Assert.AreEqual(1, _objectUnderTest.LoadValidProjectDataAsyncCallCount);
         }
@@ -298,7 +292,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestReloadProjectAsync_SkipsLoadValidProjectDataOnInvalidProject()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(false);
-            _objectUnderTest.ReloadProjectAsyncBase();
+            _objectUnderTest.LoadProject();
 
             Assert.AreEqual(0, _objectUnderTest.LoadValidProjectDataAsyncCallCount);
         }
@@ -307,9 +301,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestReloadProjectAsync_AwaitsLoadValidProjectDataResult()
         {
             _objectUnderTest.ValidateProjectResult.SetResult(true);
-            Task task = _objectUnderTest.ReloadProjectAsyncBase();
+            _objectUnderTest.LoadProject();
 
-            Assert.IsFalse(task.IsCompleted);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.ActualTask.IsCompleted);
         }
 
         [TestMethod]
@@ -319,10 +313,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.LoadAnyProjectDataResult.SetResult(null);
             _objectUnderTest.LoadValidProjectDataResult.SetResult(null);
 
-            await _objectUnderTest.ReloadProjectAsyncBase();
+            await _objectUnderTest.LoadProjectAsync();
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsSuccess);
         }
 
         [TestMethod]
@@ -331,10 +324,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.ValidateProjectResult.SetResult(false);
             _objectUnderTest.LoadAnyProjectDataResult.SetException(new Exception("Test Exception"));
 
-            await _objectUnderTest.ReloadProjectAsyncBase();
+            await _objectUnderTest.LoadProjectAsync();
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
-            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsError);
         }
 
         [TestMethod]
@@ -351,7 +343,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public void TestEnableApisCommand_CallsEnableServices()
         {
-            _objectUnderTest.RequiredApis = s_mockedRequiredApis;
+            _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _objectUnderTest.EnableApiCommand.Execute(null);
 
             _apiManagerMock.Verify(api => api.EnableServicesAsync(s_mockedRequiredApis), Times.Once());
@@ -364,7 +356,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.EnableApiCommand.Execute(null);
 
             // Verify project reload started.
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
         }
 
         [TestMethod]
@@ -377,7 +369,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             Assert.IsTrue(_objectUnderTest.EnableApiCommand.LatestExecution.IsError);
             // Verify project reload did not start.
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.IsPending);
         }
 
         [TestMethod]
@@ -389,8 +381,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.OnFlowFinishedBase();
 
             Assert.IsFalse(_objectUnderTest.IsValidGcpProject);
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
-            Assert.IsFalse(_objectUnderTest.GeneralError);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.IsPending);
+            Assert.IsFalse(_objectUnderTest.LoadProjectTask.IsError);
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
             Assert.AreEqual(1, _objectUnderTest.ClearLoadedProjectDataCallCount);

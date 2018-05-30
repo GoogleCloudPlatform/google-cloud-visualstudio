@@ -41,7 +41,7 @@
         <!-- The message that the project is being validated. -->
         <StackPanel Margin="0,5,0,0"
                     Orientation="Horizontal"
-                    Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
+                    Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}">
             <controls:ProgressIndicator  />
             <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
         </StackPanel>
@@ -94,7 +94,6 @@
 
         <!-- Message shown when the API needs to be enabled. -->
         <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
@@ -105,9 +104,8 @@
 
         <!-- Message shwon when there is a general error. -->
         <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
                    Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}" />
 
     </StackPanel>

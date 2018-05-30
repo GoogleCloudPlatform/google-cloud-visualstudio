@@ -53,6 +53,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             (() => GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource));
 
         /// <summary>
+        /// List of APIs required for publishing to the current project.
+        /// </summary>
+        protected override IList<string> RequiredApis => s_requiredApis;
+
+        /// <summary>
         /// The version to use for the the app in App Engine Flex.
         /// </summary>
         public string Version
@@ -127,9 +132,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         private async Task OnSetAppRegionCommandAsync()
         {
-            if (await SetAppRegionAsyncFunc())
+            Task<bool> setAppRegionTask = SetAppRegionAsyncFunc();
+            PublishDialog.TrackTask(setAppRegionTask);
+            if (await setAppRegionTask)
             {
-                await ReloadProjectAsync();
+                await LoadProjectAsync();
             }
         }
 
@@ -155,9 +162,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             }
         }
 
-        /// <inheritdoc />
-        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
-
         /// <summary>
         /// No project dependent data to clear.
         /// </summary>
@@ -182,7 +186,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             {
                 ShellUtils.SaveAllFiles();
 
-                if (!await GCloudWrapperUtils.VerifyGCloudDependencies())
+                Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
+                PublishDialog.TrackTask(verifyGcloudTask);
+                if (!await verifyGcloudTask)
                 {
                     Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
                     return;
@@ -193,7 +199,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion
                 };
                 var options = new AppEngineFlexDeployment.DeploymentOptions
                 {

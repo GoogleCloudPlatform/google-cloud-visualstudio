@@ -22,6 +22,11 @@ namespace GoogleCloudExtension.Utils.Async
     public class AsyncProperty : AsyncPropertyBase<Task>
     {
         public AsyncProperty(Task task) : base(task) { }
+
+        /// <summary>
+        /// Creates an <see cref="AsyncProperty"/> with an already completed task.
+        /// </summary>
+        public AsyncProperty() : base(Task.CompletedTask) { }
     }
 
     /// <summary>

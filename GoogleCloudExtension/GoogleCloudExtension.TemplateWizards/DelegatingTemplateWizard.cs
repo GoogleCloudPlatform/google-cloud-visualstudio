@@ -19,7 +19,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.TemplateWizards
     /// A template wizard that delegates to an implementation of IWizard received via MEF.
     /// </summary>
     /// <typeparam name="T">The type of the wizard to import and delegate to.</typeparam>
-    public abstract class DelegatingTemplateWizard<T> : IWizard where T : IWizard
+    public abstract class DelegatingTemplateWizard<T> : IWizard where T : class, IWizard
     {
         [Import]
         private T _wizard = default(T);
@@ -41,10 +40,7 @@ namespace GoogleCloudExtension.TemplateWizards
         {
             var provider = (IServiceProvider)automationObject;
             var model = (IComponentModel)provider.QueryService<SComponentModel>();
-            using (var container = new CompositionContainer(model.DefaultExportProvider))
-            {
-                container.ComposeParts(this);
-            }
+            _wizard = model.GetService<T>();
             _wizard.RunStarted(automationObject, replacementsDictionary, runKind, customParams);
         }
 

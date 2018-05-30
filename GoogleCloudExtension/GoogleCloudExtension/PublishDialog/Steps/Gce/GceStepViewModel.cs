@@ -54,6 +54,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         private IEnumerable<Instance> _instances = Enumerable.Empty<Instance>();
 
         /// <summary>
+        /// List of APIs required for publishing to the current project.
+        /// </summary>
+        protected override IList<string> RequiredApis => s_requiredApis;
+
+        /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
         /// the available target for the publish process.
         /// </summary>
@@ -112,7 +117,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public ProtectedCommand ManageCredentialsCommand { get; }
 
-        public ProtectedAsyncCommand RefreshInstancesCommand { get; }
+        public ProtectedCommand RefreshInstancesCommand { get; }
 
         /// <summary>
         /// Whether to open the website after a succesful publish operation. Defaults to true.
@@ -158,7 +163,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             _manageCredentialsPrompt = manageCredentialsPrompt;
 
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, false);
-            RefreshInstancesCommand = new ProtectedAsyncCommand(LoadValidProjectDataAsync, IsValidGcpProject);
+            RefreshInstancesCommand = new ProtectedCommand(
+                () => PublishDialog.TrackTask(LoadValidProjectDataAsync()), false);
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
@@ -257,9 +263,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         {
             Instances = Enumerable.Empty<Instance>();
         }
-
-        /// <inheritdoc />
-        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
 
         /// <summary>
         /// No data to load

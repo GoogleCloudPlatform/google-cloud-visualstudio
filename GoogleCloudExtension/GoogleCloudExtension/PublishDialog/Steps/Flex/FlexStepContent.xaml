@@ -8,7 +8,7 @@
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance local:FlexStepViewModel}">
 
     <UserControl.Resources>
@@ -60,14 +60,13 @@
         <!-- The message that the project is being loaded. -->
         <StackPanel Margin="0,5,0,0"
                     Orientation="Horizontal"
-                    Visibility="{Binding LoadingProject, Converter={utils:VisibilityConverter}}">
+                    Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}">
             <controls:ProgressIndicator  />
             <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
         </StackPanel>
 
         <!-- Message shown when the API needs to be enabled. -->
         <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
                    Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap"/>
@@ -79,7 +78,6 @@
 
         <!-- Message shown when the app needs to be created. -->
         <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
                    Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexNeedToSetRegionMessage}" TextWrapping="Wrap" />
@@ -91,9 +89,8 @@
 
         <!-- Message shwon when there is a general error. -->
         <TextBlock Margin="0,5,0,0"
-                   TextWrapping="Wrap"
                    Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding GeneralError, Converter={utils:VisibilityConverter}}"
+                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
                    Style="{StaticResource CommonTextStyle}" />
     </StackPanel>
 </UserControl>

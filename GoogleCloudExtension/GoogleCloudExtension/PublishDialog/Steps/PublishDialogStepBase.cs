@@ -17,9 +17,11 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -32,12 +34,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps
     public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
         private readonly IApiManager _apiManager;
-        private bool _loadingProject = false;
         private bool _needsApiEnabled = false;
-        private bool _generalError = false;
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
-        private Task _asyncAction = Task.CompletedTask;
+        private AsyncProperty _loadProjectTask;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// <summary>
         /// The command used to select the Google Cloud Project.
         /// </summary>
-        public ProtectedAsyncCommand SelectProjectCommand { get; }
+        public ProtectedCommand SelectProjectCommand { get; }
 
         /// <summary>
         /// Whether the GCP project selected needs APIs to be enabled before a deployment can be made.
@@ -77,32 +77,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
-        /// <summary>
-        /// Whether the project is loading, which includes validating that the project is correctly
-        /// setup for deployment and loading the necessary data to display to the user.
-        /// </summary>
-        public bool LoadingProject
+        public AsyncProperty LoadProjectTask
         {
-            get { return _loadingProject; }
-            protected set
-            {
-                SetValueAndRaise(ref _loadingProject, value);
-                RefreshCanPublish();
-                RaisePropertyChanged(nameof(ShowInputControls));
-            }
-        }
-
-        /// <summary>
-        /// Whether there was an error validating the project.
-        /// </summary>
-        public bool GeneralError
-        {
-            get { return _generalError; }
+            get => _loadProjectTask;
             set
             {
-                SetValueAndRaise(ref _generalError, value);
-                RefreshCanPublish();
-                RaisePropertyChanged(nameof(ShowInputControls));
+                LoadProjectTask.PropertyChanged -= LoadProjectTaskOnPropertyChanged;
+                SetValueAndRaise(ref _loadProjectTask, value);
+                LoadProjectTask.PropertyChanged += LoadProjectTaskOnPropertyChanged;
+                LoadProjectTaskOnPropertyChanged(LoadProjectTask, new PropertyChangedEventArgs(null));
             }
         }
 
@@ -110,16 +93,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// Whether the input controls should be visible at this point.
         /// </summary>
         public virtual bool ShowInputControls =>
-            PublishDialog != null
-            && !string.IsNullOrWhiteSpace(GcpProjectId)
-            && !LoadingProject
-            && !NeedsApiEnabled
-            && !GeneralError;
+            !string.IsNullOrWhiteSpace(GcpProjectId)
+            && LoadProjectTask.IsSuccess
+            && !NeedsApiEnabled;
 
         /// <summary>
         /// Returns the <seealso cref="IApiManager"/> instance to use.
         /// </summary>
-        protected IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
+        private IApiManager CurrentApiManager => _apiManager ?? ApiManager.Default;
 
         /// <summary>
         /// The command to execute to enable the necessary APIs for the project.
@@ -131,7 +112,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// This property is just a wrapper on the abstract method <see cref="ApisRequieredForPublishing"/>
         /// so as to guarantee a non null result.
         /// </summary>
-        private IList<string> RequiredApis => ApisRequieredForPublishing() ?? new List<string>();
+        protected abstract IList<string> RequiredApis { get; }
 
         protected bool IsValidGcpProject
         {
@@ -157,9 +138,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             _apiManager = apiManager;
             _pickProjectPrompt = pickProjectPrompt;
             PublishDialog = publishDialog;
+            _loadProjectTask = new AsyncProperty(null);
 
-            SelectProjectCommand = new ProtectedAsyncCommand(OnSelectProjectCommand, false);
+            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand, false);
             EnableApiCommand = new ProtectedAsyncCommand(OnEnableApiCommandAsync, false);
+        }
+
+        private void LoadProjectTaskOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RefreshCanPublish();
+            RaisePropertyChanged(nameof(ShowInputControls));
         }
 
         /// <summary>
@@ -195,24 +183,18 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         private async Task OnProjectChangedAsync()
         {
-            // Start the task that reloads the project.
-            Task reloadTask = ReloadProjectAsync();
-
-            // While the project is loading signal property changed.
-            // Basically telling the UI to refresh the texts.
             RaisePropertyChanged(nameof(GcpProjectId));
-
-            // Wait for project loading to be done.
-            await reloadTask;
+            await LoadProjectAsync();
         }
 
-        protected async Task ReloadProjectAsync()
+        public void LoadProject()
         {
-            try
-            {
-                LoadingProject = true;
-                GeneralError = false;
+            LoadProjectTask = new AsyncProperty(LoadProjectTaskAsync());
+            PublishDialog.TrackTask(LoadProjectTask.ActualTask);
 
+            async Task LoadProjectTaskAsync()
+            {
+                IsValidGcpProject = false;
                 ClearLoadedProjectData();
                 Task loadDataAlwaysTask = LoadAnyProjectDataAsync();
 
@@ -225,15 +207,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
                 await loadDataAlwaysTask;
             }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                IsValidGcpProject = false;
-                GeneralError = true;
-            }
-            finally
-            {
-                LoadingProject = false;
-            }
+        }
+
+        public Task LoadProjectAsync()
+        {
+            LoadProject();
+            return LoadProjectTask.SafeTask;
         }
 
         protected virtual async Task ValidateProjectAsync()
@@ -259,14 +238,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps
                 IsValidGcpProject = true;
             }
         }
-
-        /// <summary>
-        /// Called during project validation.
-        /// A project can only be valid for publishing it the required APIs
-        /// are enabled.
-        /// </summary>
-        /// <returns>The list of required APIs or an empty list.</returns>
-        protected internal abstract IList<string> ApisRequieredForPublishing();
 
         /// <summary>
         /// Called before loading a project to remove any data from a previous one.
@@ -297,15 +268,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         protected virtual void RefreshCanPublish()
         {
             CanPublish = IsValidGcpProject
-                && !LoadingProject
-                && !HasErrors
-                && !GeneralError;
+                && LoadProjectTask.IsSuccess
+                && !HasErrors;
         }
 
-        protected async Task OnEnableApiCommandAsync()
+        private async Task OnEnableApiCommandAsync()
         {
             await CurrentApiManager.EnableServicesAsync(RequiredApis);
-            await ReloadProjectAsync();
+            await LoadProjectAsync();
         }
 
         /// <summary>
@@ -317,15 +287,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         {
             RemoveHandlers();
             IsValidGcpProject = false;
-            LoadingProject = false;
-            GeneralError = false;
+            LoadProjectTask = new AsyncProperty(null);
             NeedsApiEnabled = false;
             SelectProjectCommand.CanExecuteCommand = false;
 
             ClearLoadedProjectData();
         }
 
-        private async Task OnSelectProjectCommand()
+        private void OnSelectProjectCommand()
         {
             Project selectedProject = PickProjectPrompt();
             bool hasChanged = !string.Equals(selectedProject?.ProjectId, CredentialsStore.Default.CurrentProjectId);
@@ -335,7 +304,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
             else if (!hasChanged)
             {
-                await ReloadProjectAsync();
+                LoadProject();
             }
         }
 

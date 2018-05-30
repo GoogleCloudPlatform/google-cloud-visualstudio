@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog.Steps;
 using System;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -50,5 +51,11 @@ namespace GoogleCloudExtension.PublishDialog
         /// to cleanup.
         /// </summary>
         event EventHandler FlowFinished;
+
+        /// <summary>
+        /// Makes the dialog look "busy" as long as the <paramref name="task"/> is running.
+        /// </summary>
+        /// <param name="task">The task to track.</param>
+        void TrackTask(Task task);
     }
 }
