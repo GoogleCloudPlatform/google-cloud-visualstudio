@@ -147,10 +147,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public void TestOnFlowFinished_ResetsChoicesAndPublishDialog()
+        public async Task TestOnFlowFinished_ResetsChoicesAndPublishDialog()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            _objectUnderTest.OnVisibleAsync();
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.Choices = null;
 
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
