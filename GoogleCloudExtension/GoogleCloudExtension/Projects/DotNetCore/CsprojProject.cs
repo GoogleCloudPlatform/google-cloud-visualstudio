@@ -22,27 +22,23 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// <summary>
     /// This class represents a .NET Core project based on .csproj.
     /// </summary>
-    internal class CsprojProject : IParsedProject
+    public class CsprojProject : IParsedDteProject
     {
-        private readonly Project _project;
+        public Project Project { get; }
 
-        #region IParsedProject
+        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
 
-        public string DirectoryPath => Path.GetDirectoryName(_project.FullName);
+        public string FullPath => Project.FullName;
 
-        public string FullPath => _project.FullName;
-
-        public string Name => _project.Name;
+        public string Name => Project.Name;
 
         public KnownProjectTypes ProjectType { get; }
-
-        #endregion
 
         public CsprojProject(Project project, string targetFramework)
         {
             GcpOutputWindow.OutputDebugLine($"Found project {project.FullName} targeting {targetFramework}");
 
-            _project = project;
+            Project = project;
             switch (targetFramework)
             {
                 case "netcoreapp1.0":
@@ -58,7 +54,7 @@ namespace GoogleCloudExtension.Projects.DotNetCore
                     break;
 
                 default:
-                    GcpOutputWindow.OutputDebugLine($"Unsopported target framework {targetFramework}");
+                    GcpOutputWindow.OutputDebugLine($"Unsupported target framework {targetFramework}");
                     ProjectType = KnownProjectTypes.None;
                     break;
             }

@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Projects.DotNetCore;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -60,7 +58,7 @@ namespace GoogleCloudExtension.Projects
         /// </summary>
         /// <param name="project">The <seealso cref="Project"/> instance to parse.</param>
         /// <returns>The resulting <seealso cref="IParsedProject"/> or null if the project is not supported.</returns>
-        public static IParsedProject ParseProject(Project project)
+        public static IParsedDteProject ParseProject(Project project)
         {
             var extension = Path.GetExtension(project.FullName);
             switch (extension)
@@ -78,7 +76,7 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private static IParsedProject ParseCsprojProject(Project project)
+        private static IParsedDteProject ParseCsprojProject(Project project)
         {
             GcpOutputWindow.OutputDebugLine($"Parsing .csproj {project.FullName}");
 
@@ -124,7 +122,7 @@ namespace GoogleCloudExtension.Projects
             return null;
         }
 
-        private static IParsedProject ParseJsonProject(Project project)
+        private static IParsedDteProject ParseJsonProject(Project project)
         {
             var projectDir = Path.GetDirectoryName(project.FullName);
             var projectJsonPath = Path.Combine(projectDir, ProjectJsonFileName);
@@ -135,7 +133,7 @@ namespace GoogleCloudExtension.Projects
                 return null;
             }
 
-            return new JsonProject(projectJsonPath);
+            return new DotNetCore.JsonProject(project);
         }
     }
 }

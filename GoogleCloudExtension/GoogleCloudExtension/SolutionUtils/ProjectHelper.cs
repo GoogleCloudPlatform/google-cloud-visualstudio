@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using System;
 using System.Collections.Generic;
@@ -67,7 +66,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// The parsed project file. Will refresh each time in case the project changes over time.
         /// </summary>
-        public IParsedProject ParsedProject => ProjectParser.ParseProject(_project);
+        public IParsedDteProject ParsedProject => ProjectParser.ParseProject(_project);
 
         /// <summary>
         /// An internal constructor to allow for unit testing of <seealso cref="ProjectHelper"/> class.

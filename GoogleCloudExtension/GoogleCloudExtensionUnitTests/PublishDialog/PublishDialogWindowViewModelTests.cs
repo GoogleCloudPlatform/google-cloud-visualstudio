@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
@@ -31,7 +31,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
     [TestClass]
     public class PublishDialogWindowViewModelTests
     {
-        private IParsedProject _mockedParsedProject;
+        private IParsedDteProject _mockedParsedProject;
         private PublishDialogWindowViewModel _objectUnderTest;
         private Action _mockedCloseWindowAction;
         private Mock<IStepContent<IPublishDialogStep>> _stepContentMock;
@@ -41,7 +41,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         public void BeforeEach()
         {
             _mockedCloseWindowAction = Mock.Of<Action>();
-            _mockedParsedProject = Mock.Of<IParsedProject>();
+            _mockedParsedProject = Mock.Of<IParsedDteProject>();
             _changedProperties = new List<string>();
 
             _objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);

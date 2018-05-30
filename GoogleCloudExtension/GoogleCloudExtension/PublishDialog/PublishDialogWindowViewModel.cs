@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.Utils;
@@ -71,14 +71,16 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         private IPublishDialogStep CurrentStep => _stack.Peek().ViewModel;
 
-        public PublishDialogWindowViewModel(IParsedProject project, Action closeWindow)
+        public PublishDialogWindowViewModel(IParsedDteProject project, Action closeWindow)
         {
             _closeWindow = closeWindow;
             Project = project;
 
             PrevCommand = new ProtectedCommand(OnPrevCommand);
 
-            PushStep(new ChoiceStepContent(this));
+            var initialStep = new ChoiceStepContent(this);
+            PushStep(initialStep);
+            initialStep.ViewModel.ExecutePreviousChoice();
         }
 
         private void OnPrevCommand()
@@ -125,15 +127,9 @@ namespace GoogleCloudExtension.PublishDialog
             dialogStep.ErrorsChanged -= OnErrorsChanged;
         }
 
-        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
-        {
-            ErrorsChanged?.Invoke(sender, e);
-        }
-
         #region IPublishDialog
 
-        /// <inheritdoc />
-        public IParsedProject Project { get; }
+        public IParsedDteProject Project { get; }
 
         public void NavigateToStep(IStepContent<IPublishDialogStep> step)
         {
@@ -171,6 +167,11 @@ namespace GoogleCloudExtension.PublishDialog
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+        {
+            ErrorsChanged?.Invoke(sender, e);
+        }
         #endregion
     }
 }
