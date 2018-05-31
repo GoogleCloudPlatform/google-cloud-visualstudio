@@ -26,6 +26,7 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -122,6 +123,11 @@ namespace GoogleCloudExtension
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
+        /// <summary>
+        /// The initalized instance of the package.
+        /// </summary>
+        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
         public GoogleCloudExtensionPackage()
         {
@@ -257,7 +263,28 @@ namespace GoogleCloudExtension
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
         }
 
-        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
+        /// <summary>Gets type-based services from the VSPackage service container.</summary>
+        /// <param name="serviceType">The type of service to retrieve.</param>
+        /// <returns>An instance of the requested service, or null if the service could not be found.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="serviceType" /> is null.</exception>
+        protected override object GetService(Type serviceType)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return base.GetService(serviceType) ?? ServiceProvider.GlobalProvider.GetService(serviceType);
+        }
+
+        public I GetService<S, I>()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return (I)GetService(typeof(S));
+        }
+
+        public T GetService<T>() where T : class
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return (T)GetService(typeof(T)) ?? GetService<SComponentModel, IComponentModel>().GetService<T>();
+        }
 
         #endregion
 
@@ -270,19 +297,15 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage
-        {
-            return (T)GetDialogPage(typeof(T));
-        }
+        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
 
         /// <summary>
         /// Displays the options page of the given type.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
-        public void ShowOptionPage<T>() where T : DialogPage
-        {
-            ShowOptionPage(typeof(T));
-        }
+        public void ShowOptionPage<T>() where T : DialogPage => ShowOptionPage(typeof(T));
+
+        #endregion
 
         /// <summary>
         /// Finds and returns an instance of the given tool window.
@@ -297,8 +320,6 @@ namespace GoogleCloudExtension
         {
             return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
         }
-
-        #endregion
 
         /// <summary>
         /// Checks the installed version vs the version that is running, and will report either a new install

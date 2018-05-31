@@ -68,19 +68,6 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         /// <summary>
-        /// Sets the mock of the given service provider to be the global service provider.
-        /// </summary>
-        /// <param name="serviceProviderMock">The mock of the service provider.</param>
-        public static void SetAsGlobalProvider(this Mock<IServiceProvider> serviceProviderMock)
-        {
-            // Remove the old GlobalProvider if it exists.
-            ServiceProvider.GlobalProvider?.Dispose();
-            // This sets the ServiceProvider.GlobalProvider
-            // and causes it to use the mocked IServiceProvider.
-            ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
-        }
-
-        /// <summary>
         /// Dispose of the GlobalProvider and allow garbage collection of the services.
         /// </summary>
         /// <param name="serviceProviderMock">The service provider mock to dispose.</param>

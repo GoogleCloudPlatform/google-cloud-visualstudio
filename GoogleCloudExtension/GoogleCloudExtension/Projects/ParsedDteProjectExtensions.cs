@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Projects
 {
     public static class ParsedDteProjectExtensions
     {
-        private const uint UserFileFlag = (uint)_PersistStorageType.PST_USER_FILE;
+        public const uint UserFileFlag = (uint)_PersistStorageType.PST_USER_FILE;
 
         /// <summary>
         /// Reads a property from the project's .user file.
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.Projects
         private static IVsBuildPropertyStorage GetProjectPropertyStore(IParsedDteProject parsedProject)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var solution = (IVsSolution)ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution));
+            var solution = GoogleCloudExtensionPackage.Instance.GetService<IVsSolution>();
             ErrorHandler.ThrowOnFailure(
                 solution.GetProjectOfUniqueName(parsedProject.Project.UniqueName, out IVsHierarchy vsProject));
             // ReSharper disable once SuspiciousTypeConversion.Global

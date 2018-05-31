@@ -17,14 +17,12 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
@@ -34,12 +32,11 @@ namespace GoogleCloudExtensionUnitTests
     /// </summary>
     [TestClass]
     [DeploymentItem(VsixManifestFileName)]
-    public class GoogleCloudExtensionPackageTests
+    public class GoogleCloudExtensionPackageTests : MockedGlobalServiceProviderTestsBase
     {
         private Mock<IEventsReporter> _reporterMock;
         private GoogleCloudExtensionPackage _objectUnderTest;
-        private Mock<DTE> _dteMock;
-        private Mock<IServiceProvider> _serviceProviderMock;
+        protected override IVsPackage Package => _objectUnderTest;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
@@ -48,17 +45,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
-            _dteMock = new Mock<DTE>();
-            _serviceProviderMock = _dteMock.As<IServiceProvider>();
             _objectUnderTest = new GoogleCloudExtensionPackage();
-        }
-
-        [TestCleanup]
-        public void AfterEach()
-        {
-            GoogleCloudExtensionPackage.Instance = null;
-            ServiceProvider.GlobalProvider?.Dispose();
-            _serviceProviderMock.Dispose();
         }
 
         [TestMethod]
@@ -66,10 +53,10 @@ namespace GoogleCloudExtensionUnitTests
         {
             const string mockedVersion = "MockVsVersion";
             const string mockedEdition = "MockedEdition";
-            _dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-            _dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
+            DteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+            DteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
@@ -92,7 +79,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             _objectUnderTest.AnalyticsSettings.InstalledVersion = "0.1.0.0";
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
@@ -106,7 +93,7 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestNewPackageInstallation()
         {
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
@@ -122,7 +109,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             _objectUnderTest.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
@@ -140,9 +127,9 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenNormalState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -150,9 +137,9 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenMaximizedState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -160,9 +147,9 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenMinimizedState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsFalse(_objectUnderTest.IsWindowActive());
         }
@@ -175,16 +162,6 @@ namespace GoogleCloudExtensionUnitTests
             XElement metadata = manifestRoot?.Element(ns.GetName("Metadata"));
             XElement identity = metadata?.Element(ns.GetName("Identity"));
             return identity?.Attribute("Version")?.Value;
-        }
-
-        private void InitPackageMock()
-        {
-            _serviceProviderMock.SetupService<DTE, DTE>(_dteMock);
-            _serviceProviderMock.SetupDefaultServices();
-            _serviceProviderMock.SetAsGlobalProvider();
-
-            // This runs the Initialize() method.
-            ((IVsPackage)_objectUnderTest).SetSite(_serviceProviderMock.Object);
         }
     }
 }

@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage(
-    "Style",
-    "VSTHRD200:Use \"Async\" suffix for async methods",
-    Justification = "Test naming conventions are different.")]
-[assembly: SuppressMessage(
-    "Usage",
-    "VSTHRD010:Invoke single-threaded types on Main thread",
-    Justification = "Many false positives due to mock setups.")]
-
-
+namespace GoogleCloudExtension.Services.FileSystem
+{
+    /// <summary>
+    /// Interface for a file service that matches the static members of <see cref="System.IO.File"/>.
+    /// </summary>
+    public interface IFile
+    {
+        /// <inheritdoc cref="System.IO.File.Exists"/>
+        bool Exists(string path);
+    }
+}

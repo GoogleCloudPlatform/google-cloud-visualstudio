@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// </summary>
     public class CsprojProject : IParsedDteProject
     {
+        public const string NetCoreApp1_0 = "netcoreapp1.0";
+        public const string NetCoreApp1_1 = "netcoreapp1.1";
+        public const string NetCoreApp2_0 = "netcoreapp2.0";
         public Project Project { get; }
 
         public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
@@ -41,15 +44,15 @@ namespace GoogleCloudExtension.Projects.DotNetCore
             Project = project;
             switch (targetFramework)
             {
-                case "netcoreapp1.0":
+                case NetCoreApp1_0:
                     ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
                     break;
 
-                case "netcoreapp1.1":
+                case NetCoreApp1_1:
                     ProjectType = KnownProjectTypes.NetCoreWebApplication1_1;
                     break;
 
-                case "netcoreapp2.0":
+                case NetCoreApp2_0:
                     ProjectType = KnownProjectTypes.NetCoreWebApplication2_0;
                     break;
 

@@ -204,6 +204,12 @@
     <Compile Include="PublishDialog\Steps\Choice\Choice.cs" />
     <Compile Include="PublishDialog\Steps\Choice\ChoiceStepViewModel.cs" />
     <Compile Include="PublishDialog\Steps\IStepContent.cs" />
+    <Compile Include="Services\FileSystem\FileSystemService.cs" />
+    <Compile Include="Services\FileSystem\IFile.cs" />
+    <Compile Include="Services\FileSystem\IFileSystem.cs" />
+    <Compile Include="Services\FileSystem\IoFileService.cs" />
+    <Compile Include="Services\FileSystem\IXDocument.cs" />
+    <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
     <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>

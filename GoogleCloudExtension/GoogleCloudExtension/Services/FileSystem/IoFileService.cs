@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel.Composition;
+using System.IO;
 
-[assembly: SuppressMessage(
-    "Style",
-    "VSTHRD200:Use \"Async\" suffix for async methods",
-    Justification = "Test naming conventions are different.")]
-[assembly: SuppressMessage(
-    "Usage",
-    "VSTHRD010:Invoke single-threaded types on Main thread",
-    Justification = "Many false positives due to mock setups.")]
-
-
+namespace GoogleCloudExtension.Services.FileSystem
+{
+    /// <summary>
+    /// An <see cref="IFile"/> service implementation that delegates to <see cref="File"/>.
+    /// </summary>
+    [Export(typeof(IFile))]
+    public class IoFileService : IFile
+    {
+        /// <inheritdoc cref="File.Exists"/>
+        public bool Exists(string path) => File.Exists(path);
+    }
+}
