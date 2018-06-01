@@ -119,10 +119,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_EnablesPublishAsync()
+        public void TestSetSelectedCluster_EnablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = null;
             _canPublishChangedCount = 0;
 
@@ -133,10 +133,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_ToNullDisablesPublish()
+        public void TestSetSelectedCluster_ToNullDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -147,10 +147,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_ToPlaceholderDisablesPublish()
+        public void TestSetSelectedCluster_ToPlaceholderDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -336,68 +336,68 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestInitializeDialogAsync_SetsValidDeploymentName()
+        public void TestInitializeDialogAsync_SetsValidDeploymentName()
         {
             Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("VisualStudioProjectName");
             _getClusterListTaskSource.SetResult(null);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual("visual-studio-project-name", _objectUnderTest.DeploymentName);
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_MissingProjectDisablesCommands()
+        public void TestValidateProjectAsync_MissingProjectDisablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = true;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = true;
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_EnablesCommands()
+        public void TestValidateProjectAsync_EnablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = false;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = false;
             _getClusterListTaskSource.SetResult(null);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
+        public void TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
+        public void TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_SetsClustersInOrder()
+        public void TestLoadValidProjectDataAsync_SetsClustersInOrder()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(s_inOrderClusters, _objectUnderTest.Clusters.ToList());
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);

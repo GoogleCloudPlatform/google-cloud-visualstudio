@@ -20,6 +20,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -35,6 +36,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
+        public const string GoogleAppEnginePublish_Promote = "GoogleAppEnginePublish.Promote";
+        public const string GoogleAppEnginePublish_OpenWebsite = "GoogleAppEnginePublish.OpenWebsite";
+        public const string GoogleAppEnginePublish_NextVersion = "GoogleAppEnginePublish.NextVersion";
+
         // The list of APIs that are required for a successful deployment to App Engine Flex.
         private static readonly IList<string> s_requiredApis = new List<string>
         {
@@ -114,6 +119,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
+        public override IProtectedCommand PublishCommand { get; }
+
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
@@ -130,19 +137,26 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
-        private async Task OnSetAppRegionCommandAsync()
+        public override void OnVisible()
         {
-            Task<bool> setAppRegionTask = SetAppRegionAsyncFunc();
-            PublishDialog.TrackTask(setAppRegionTask);
-            if (await setAppRegionTask)
-            {
-                await LoadProjectAsync();
-            }
+            base.OnVisible();
+            LoadProperties();
+        }
+
+        public override void OnNotVisible()
+        {
+            base.OnNotVisible();
+            SaveProperties();
+        }
+
+        protected internal override void OnFlowFinished()
+        {
+            base.OnFlowFinished();
+            SaveProperties();
+            NeedsAppCreated = false;
         }
 
         #region IPublishDialogStep
-
-        public override IProtectedCommand PublishCommand { get; }
 
         protected override async Task ValidateProjectAsync()
         {
@@ -179,6 +193,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// <returns>A cached completed task.</returns>
         protected override Task LoadValidProjectDataAsync() => Task.CompletedTask;
 
+        private async Task OnSetAppRegionCommandAsync()
+        {
+            Task<bool> setAppRegionTask = SetAppRegionAsyncFunc();
+            PublishDialog.TrackTask(setAppRegionTask);
+            if (await setAppRegionTask)
+            {
+                LoadProject();
+            }
+        }
+
         private async Task PublishAsync()
         {
             IParsedProject project = PublishDialog.Project;
@@ -207,6 +231,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                     Promote = Promote,
                     Context = context
                 };
+
+                Version = GcpPublishStepsUtils.IncrementVersion(Version);
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
@@ -265,11 +291,43 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             }
         }
 
-        protected internal override void OnFlowFinished()
+        private void LoadProperties()
         {
-            base.OnFlowFinished();
-            _version = GcpPublishStepsUtils.GetDefaultVersion();
-            NeedsAppCreated = false;
+            string promoteProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_Promote);
+            if (bool.TryParse(promoteProperty, out bool promote))
+            {
+                Promote = promote;
+            }
+
+            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_OpenWebsite);
+            if (bool.TryParse(openWebsiteProperty, out bool openWebSite))
+            {
+                OpenWebsite = openWebSite;
+            }
+
+            string nextVersionProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_NextVersion);
+            if (!string.IsNullOrWhiteSpace(nextVersionProperty))
+            {
+                Version = nextVersionProperty;
+            }
+            else
+            {
+                Version = GcpPublishStepsUtils.GetDefaultVersion();
+            }
+        }
+
+        private void SaveProperties()
+        {
+            PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_Promote, Promote.ToString());
+            PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_OpenWebsite, OpenWebsite.ToString());
+            if (string.IsNullOrWhiteSpace(Version) || GcpPublishStepsUtils.IsDefaultVersion(Version))
+            {
+                PublishDialog.Project.DeleteUserProperty(GoogleAppEnginePublish_NextVersion);
+            }
+            else
+            {
+                PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_NextVersion, Version);
+            }
         }
 
         #endregion

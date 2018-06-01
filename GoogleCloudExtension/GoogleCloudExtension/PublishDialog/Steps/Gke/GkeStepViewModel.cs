@@ -226,10 +226,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         public override IProtectedCommand PublishCommand { get; }
 
-        protected override async Task InitializeDialogAsync()
+        public override void OnVisible()
         {
             DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
-            await base.InitializeDialogAsync();
+            base.OnVisible();
         }
 
         protected override async Task ValidateProjectAsync()

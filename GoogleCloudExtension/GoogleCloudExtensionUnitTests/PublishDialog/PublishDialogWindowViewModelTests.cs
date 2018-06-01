@@ -26,7 +26,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
@@ -59,8 +58,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
 
             _stepContentMock = new Mock<FrameworkElement>().As<IStepContent<IPublishDialogStep>>();
-            _stepContentMock.Setup(c => c.ViewModel.OnVisibleAsync()).Returns(Task.CompletedTask);
-
+            _stepContentMock.DefaultValueProvider = DefaultValueProvider.Mock;
         }
         [TestMethod]
         public void TestConstructor_SetsProject()

@@ -22,7 +22,6 @@ using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Choice
@@ -70,12 +69,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        public Task OnVisibleAsync()
+        public void OnVisible()
         {
             AddHandlers();
             Choices = GetChoicesForCurrentProject();
-
-            return Task.CompletedTask;
         }
 
         /// <summary>

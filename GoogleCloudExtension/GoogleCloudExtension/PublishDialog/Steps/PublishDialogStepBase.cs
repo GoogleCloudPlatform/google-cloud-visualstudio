@@ -109,8 +109,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
         /// <summary>
         /// List of APIs required for publishing to the current project.
-        /// This property is just a wrapper on the abstract method <see cref="ApisRequieredForPublishing"/>
-        /// so as to guarantee a non null result.
         /// </summary>
         protected abstract IList<string> RequiredApis { get; }
 
@@ -158,33 +156,26 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        public virtual async Task OnVisibleAsync()
+        public virtual void OnVisible()
         {
-
-            await InitializeDialogAsync();
-
+            OnProjectChanged();
             AddHandlers();
             SelectProjectCommand.CanExecuteCommand = true;
         }
 
-        public void OnNotVisible()
+        public virtual void OnNotVisible()
         {
             RemoveHandlers();
-        }
-
-        protected virtual async Task InitializeDialogAsync()
-        {
-            await OnProjectChangedAsync();
         }
 
         /// <summary>
         /// Called whenever the current GCP Project changes, either from
         /// within this step or from somewhere else.
         /// </summary>
-        private async Task OnProjectChangedAsync()
+        private void OnProjectChanged()
         {
             RaisePropertyChanged(nameof(GcpProjectId));
-            await LoadProjectAsync();
+            LoadProject();
         }
 
         public void LoadProject()
@@ -207,12 +198,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
                 await loadDataAlwaysTask;
             }
-        }
-
-        public Task LoadProjectAsync()
-        {
-            LoadProject();
-            return LoadProjectTask.SafeTask;
         }
 
         protected virtual async Task ValidateProjectAsync()
@@ -275,7 +260,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         private async Task OnEnableApiCommandAsync()
         {
             await CurrentApiManager.EnableServicesAsync(RequiredApis);
-            await LoadProjectAsync();
+            LoadProject();
         }
 
         /// <summary>
@@ -308,22 +293,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
-        private async void OnProjectChanged(object sender, EventArgs e)
-        {
-            await OnProjectChangedAsync();
-        }
+        private void OnProjectChanged(object sender, EventArgs e) => OnProjectChanged();
 
-        private void OnFlowFinished(object sender, EventArgs e)
-            => OnFlowFinished();
+        private void OnFlowFinished(object sender, EventArgs e) => OnFlowFinished();
 
         private void AddHandlers()
         {
-            // Checking for null in case it was never pushed in a dialog.
-            if (PublishDialog != null)
-            {
-                PublishDialog.FlowFinished += OnFlowFinished;
-                CredentialsStore.Default.CurrentProjectIdChanged += OnProjectChanged;
-            }
+            PublishDialog.FlowFinished += OnFlowFinished;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnProjectChanged;
         }
 
         private void RemoveHandlers()
