@@ -26,12 +26,20 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         public class AsyncProperty0Tests
         {
             [TestMethod]
-            public void TestConstructor_PassesTaskParameterToBase()
+            public void Test1ArgConstructor_PassesTaskParameterToBase()
             {
                 var task = new Task(() => { });
                 var objectUnderTest = new AsyncProperty(task);
 
                 Assert.AreEqual(task, objectUnderTest.ActualTask);
+            }
+
+            [TestMethod]
+            public void Test0ArgConstructor_PassesCompletedTaskToBase()
+            {
+                var objectUnderTest = new AsyncProperty();
+
+                Assert.IsTrue(objectUnderTest.ActualTask.IsCompleted);
             }
         }
 

@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
+using GoogleCloudExtension.Utils;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.PublishDialogSteps.GceStep
+namespace GoogleCloudExtension.PublishDialog.Steps
 {
     /// <summary>
-    /// Interaction logic for GceTargetWindowContent.xaml
+    /// Interface that defines the services offered by a publish dialog step.
     /// </summary>
-    public partial class GceStepContent : UserControl
+    public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
-        public GceStepContent()
-        {
-            InitializeComponent();
-        }
+        IProtectedCommand PublishCommand { get; }
+
+        /// <summary>
+        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// </summary>
+        Task OnVisibleAsync();
+
+        void OnNotVisible();
     }
 }

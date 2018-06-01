@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.Accounts
     /// <summary>
     /// Extracted interface from <see cref="WindowsCredentialsStore"/> for testing purposes.
     /// </summary>
-    internal interface IWindowsCredentialsStore
+    public interface IWindowsCredentialsStore
     {
         /// <summary>
         /// Adds a Windows credential to the store for the given <paramref name="instance"/>.

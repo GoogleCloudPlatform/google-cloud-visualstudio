@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,7 +42,7 @@ namespace GoogleCloudExtension.Utils.Validation
             new Dictionary<string, IList<ValidationResult>>();
 
         /// <summary>
-        /// The map of validation errors.
+        /// The map of validation errors. Any updates to this map should raise  <see cref="HasErrors"/> property changed.
         /// </summary>
         private readonly Dictionary<string, IList<ValidationResult>> _pendingResultsMap =
             new Dictionary<string, IList<ValidationResult>>();
@@ -66,7 +65,7 @@ namespace GoogleCloudExtension.Utils.Validation
 
         protected ValidatingViewModelBase()
         {
-            ValidationDelayTask = TplExtensions.CompletedTask;
+            ValidationDelayTask = Task.CompletedTask;
         }
 
         /// <summary>
@@ -120,7 +119,8 @@ namespace GoogleCloudExtension.Utils.Validation
                 validationResults = validations.ToList();
             }
             _pendingResultsMap[property] = validationResults;
-            HasErrorsChangedInternal();
+            RaisePropertyChanged(nameof(HasErrors));
+            HasErrorsChanged();
             ScheduleUpdateErrors(property, validationResults);
         }
 
@@ -136,12 +136,6 @@ namespace GoogleCloudExtension.Utils.Validation
                 _validationsMap[property] = _pendingResultsMap[property];
                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(property));
             }
-        }
-
-        private void HasErrorsChangedInternal()
-        {
-            RaisePropertyChanged(nameof(HasErrors));
-            HasErrorsChanged();
         }
 
         /// <summary>

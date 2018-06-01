@@ -21,19 +21,16 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
+namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 {
     /// <summary>
     /// This class represents the deployment wizard's step to deploy an app to GKE.
@@ -55,7 +52,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             KnownApis.CloudBuildApiName
         };
 
-        private readonly GkeStepContent _content;
         private readonly IGkeDataSource _dataSource;
         private IEnumerable<Cluster> _clusters = Enumerable.Empty<Cluster>();
         private Cluster _selectedCluster = null;
@@ -68,6 +64,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _replicas = ReplicasDefaultValue;
         private Func<string, Process> StartProcess => _startProcessOverride ?? Process.Start;
         internal Func<string, Process> _startProcessOverride;
+
+        /// <summary>
+        /// List of APIs required for publishing to the current project.
+        /// </summary>
+        protected override IList<string> RequiredApis => s_requiredApis;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -186,25 +187,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Command to execute to refresh the list of clusters.
         /// </summary>
-        public ProtectedAsyncCommand RefreshClustersListCommand { get; }
+        public ProtectedCommand RefreshClustersListCommand { get; }
 
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
 
-        private GkeStepViewModel(GkeStepContent content, IGkeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt)
-            : base(apiManager, pickProjectPrompt)
+        public GkeStepViewModel(IGkeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, IPublishDialog publishDialog)
+            : base(apiManager, pickProjectPrompt, publishDialog)
         {
-            _content = content;
             _dataSource = dataSource;
 
+            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
-            RefreshClustersListCommand = new ProtectedAsyncCommand(async () =>
-            {
-                StartAndTrack(OnRefreshClustersListCommand);
-                await AsyncAction;
-            }, false);
+            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, false);
         }
 
         protected override void RefreshCanPublish()
@@ -215,9 +212,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 && SelectedCluster != s_placeholderCluster;
         }
 
-        private async Task OnRefreshClustersListCommand()
+        private void OnRefreshClustersListCommand()
         {
-            await RefreshClustersAsync();
+            PublishDialog.TrackTask(RefreshClustersAsync());
         }
 
         private void OnCreateClusterCommand()
@@ -227,18 +224,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         #region IPublishDialogStep overrides
 
-        public override FrameworkElement Content => _content;
+        public override IProtectedCommand PublishCommand { get; }
 
         protected override async Task InitializeDialogAsync()
         {
-            // Start the task that initializes the dialog, mainly loads the GCP project.
-            Task initializeDialogTask = base.InitializeDialogAsync();
-
-            // In the meantime, set DeploymentName, which launches validations and updates the UI.
             DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
-
-            // Wait for the initialization task to be done.
-            await initializeDialogTask;
+            await base.InitializeDialogAsync();
         }
 
         protected override async Task ValidateProjectAsync()
@@ -254,9 +245,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        /// <inheritdoc />
-        protected internal override IList<string> ApisRequieredForPublishing() => s_requiredApis;
-
         /// <summary>
         /// Clear Clusters from the previous selected project.
         /// </summary>
@@ -269,7 +257,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadAnyProjectDataAsync() => TplExtensions.CompletedTask;
+        protected override Task LoadAnyProjectDataAsync() => Task.CompletedTask;
 
         /// <summary>
         /// Get clusters for the selected project.
@@ -292,7 +280,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Start the publish operation.
         /// </summary>
-        public override async void Publish()
+        private async Task PublishAsync()
         {
             IParsedProject project = PublishDialog.Project;
             try
@@ -312,7 +300,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion
                 };
 
                 Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
@@ -363,7 +351,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (ShellUtils.SetShellUIBusy())
                     {
-                        var deploymentStartTime = DateTime.Now;
+                        DateTime deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
                             project,
                             options,
@@ -473,18 +461,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 Clusters = clusters.OrderBy(x => x.Name).ToList();
             }
-        }
-
-        /// <summary>
-        /// Creates a GKE step complete with behavior and visuals.
-        /// </summary>
-        internal static GkeStepViewModel CreateStep(IGkeDataSource dataSource = null, IApiManager apiManager = null, Func<Project> pickProjectPrompt = null)
-        {
-            var content = new GkeStepContent();
-            var viewModel = new GkeStepViewModel(content, dataSource, apiManager, pickProjectPrompt);
-            content.DataContext = viewModel;
-
-            return viewModel;
         }
     }
 }

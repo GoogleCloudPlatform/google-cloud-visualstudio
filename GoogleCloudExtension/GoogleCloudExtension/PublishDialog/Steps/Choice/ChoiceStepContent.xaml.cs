@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +14,27 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
+namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 {
     /// <summary>
-    /// Interaction logic for GkeStepContent.xaml
+    /// Interaction logic for ChoiceStepContent.xaml
     /// </summary>
-    public partial class GkeStepContent : UserControl
+    public partial class ChoiceStepContent : UserControl, IStepContent<ChoiceStepViewModel>
     {
-        public GkeStepContent()
+        public ChoiceStepViewModel ViewModel
+        {
+            get => DataContext as ChoiceStepViewModel;
+            private set => DataContext = value;
+        }
+
+        public ChoiceStepContent()
         {
             InitializeComponent();
+        }
+
+        public ChoiceStepContent(IPublishDialog publishDialog) : this()
+        {
+            ViewModel = new ChoiceStepViewModel(publishDialog);
         }
     }
 }

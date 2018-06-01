@@ -18,15 +18,16 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.FlexStep;
+using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
+namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 {
     [TestClass]
     public class FlexStepViewModelTests : ExtensionTestBase
@@ -73,11 +74,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _setAppRegionAsyncFuncMock = new Mock<Func<Task<bool>>>();
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
-            _objectUnderTest = FlexStepViewModel.CreateStep(
-                dataSource: _gaeDataSourceMock.Object,
-                apiManager: _apiManagerMock.Object,
-                pickProjectPrompt: _pickProjectPromptMock.Object,
-                setAppRegionAsyncFunc: _setAppRegionAsyncFuncMock.Object);
+            _objectUnderTest = new FlexStepViewModel(
+                _gaeDataSourceMock.Object, _apiManagerMock.Object, _pickProjectPromptMock.Object,
+                _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _objectUnderTest.MillisecondsDelay = 0;
         }
 
@@ -95,7 +94,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
             Assert.IsTrue(_objectUnderTest.Promote);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
-            Assert.IsInstanceOfType(_objectUnderTest.Content, typeof(FlexStepContent));
         }
 
         [TestMethod]
@@ -104,8 +102,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.NeedsAppCreated = true;
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             _gaeDataSourceMock.Verify(src => src.GetApplicationAsync(), Times.Never());
@@ -117,12 +114,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _getApplicationTaskSource.SetException(new DataSourceException());
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
-            Assert.IsTrue(_objectUnderTest.GeneralError);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsError);
             Assert.IsFalse(_objectUnderTest.CanPublish);
         }
 
@@ -132,8 +128,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _getApplicationTaskSource.SetResult(null);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
             Assert.IsTrue(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
@@ -147,8 +142,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
             _getApplicationTaskSource.SetResult(_mockedApplication);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
@@ -168,29 +162,32 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         {
             _setAppRegionTaskSource.SetResult(true);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
 
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsTrue(_objectUnderTest.LoadingProject);
+            Assert.IsFalse(onVisibleTask.IsCompleted);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
         }
 
         [TestMethod]
         public void TestSetAppRegionCommand_SkipsReloadOnSetRegionFailure()
         {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
             _setAppRegionTaskSource.SetResult(false);
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.AreEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
         }
 
         [TestMethod]
         public void TestSetAppRegionCommand_SkipsReloadOnSetRegionException()
         {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
             _setAppRegionTaskSource.SetException(new Exception("test exception"));
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsFalse(_objectUnderTest.LoadingProject);
+            Assert.AreEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
         }
 
         [TestMethod]
@@ -234,11 +231,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.FlexStep
         }
 
         [TestMethod]
-        public void TestOnFlowFinished_SetsNeedsAppCreatedAndVersion()
+        public async Task TestOnFlowFinished_SetsNeedsAppCreatedAndVersion()
         {
             _objectUnderTest.NeedsAppCreated = true;
             _objectUnderTest.Version = null;
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
 

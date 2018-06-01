@@ -18,7 +18,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.GceStep;
+using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using TestingHelpers;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
+namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 {
     [TestClass]
     public class GceStepViewModelTests : ExtensionTestBase
@@ -135,16 +135,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _windowsCredentialStoreMock = new Mock<IWindowsCredentialsStore>();
             _manageCredentialsPromptMock = new Mock<Action<Instance>>();
 
-            _objectUnderTest = GceStepViewModel.CreateStep(
-                apiManager: mockedApiManager,
-                pickProjectPrompt: _pickProjectPromptMock.Object,
-                dataSource: mockedDataSource,
-                currentWindowsCredentialStore: _windowsCredentialStoreMock.Object,
-                manageCredentialsPrompt: _manageCredentialsPromptMock.Object);
+            _objectUnderTest = new GceStepViewModel(
+                mockedDataSource, mockedApiManager, _pickProjectPromptMock.Object, _windowsCredentialStoreMock.Object,
+                _manageCredentialsPromptMock.Object, _mockedPublishDialog);
 
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-            _objectUnderTest.CanPublishChanged += (sender, args) => _canPublishChangedCount++;
+            _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
         }
 
         protected override void AfterEach()
@@ -163,7 +160,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
             Assert.IsFalse(_objectUnderTest.LaunchRemoteDebugger);
-            Assert.IsInstanceOfType(_objectUnderTest.Content, typeof(GceStepContent));
         }
 
         [TestMethod]
@@ -227,12 +223,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedCredentials_ToNullDisablesCanPublish()
+        public async Task TestSetSelectedCredentials_ToNullDisablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.SelectedCredentials =
                 new WindowsInstanceCredentials("User2", "Password2");
             _canPublishChangedCount = 0;
@@ -244,12 +240,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestSetSelectedCredentials_EnablesCanPublish()
+        public async Task TestSetSelectedCredentials_EnablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.SelectedCredentials = null;
             _canPublishChangedCount = 0;
 
@@ -314,8 +310,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public void TestClearLoadedProjectData_ClearsInstances()
         {
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
 
+            Assert.IsFalse(onVisibleTask.IsCompleted);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Instances);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.Instances));
         }
@@ -323,8 +320,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public void TestClearLoadedProjectData_SetsSelectedInstanceToNull()
         {
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
 
+            Assert.IsFalse(onVisibleTask.IsCompleted);
             Assert.IsNull(_objectUnderTest.SelectedInstance);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.SelectedInstance));
         }
@@ -332,11 +330,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public async Task TestLoadAnyProjectDataAsync_SetsInstancesToRunningWindowsInstances()
         {
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            Task asyncAction = _objectUnderTest.OnVisibleAsync();
             _changedProperties.Clear();
 
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await _objectUnderTest.AsyncAction;
+            await asyncAction;
 
             CollectionAssert.AreEqual(s_runningWindowsInstances.ToList(), _objectUnderTest.Instances.ToList());
         }
@@ -344,23 +342,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         [TestMethod]
         public async Task TestLoadAnyProjectDataAsync_SetsSelectedInstance()
         {
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            Task asyncAction = _objectUnderTest.OnVisibleAsync();
             _changedProperties.Clear();
 
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await _objectUnderTest.AsyncAction;
+            await asyncAction;
 
             CollectionAssert.Contains(s_runningWindowsInstances.ToList(), _objectUnderTest.SelectedInstance);
-        }
-
-        [TestMethod]
-        public void TestRefreshInstancesCommand_TracksNewTask()
-        {
-            Task oldAsyncAction = _objectUnderTest.AsyncAction;
-
-            _objectUnderTest.RefreshInstancesCommand.Execute(null);
-
-            Assert.AreNotSame(oldAsyncAction, _objectUnderTest.AsyncAction);
         }
 
         [TestMethod]
@@ -369,16 +357,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
             _getInstanceListTaskSource.SetResult(s_allInstances);
 
             _objectUnderTest.RefreshInstancesCommand.Execute(null);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.AreEqual(s_runningWindowsInstances.ToList(), _objectUnderTest.Instances.ToList());
         }
 
         [TestMethod]
-        public void TestRefreshInstancesCommand_EnabledByValidProject()
+        public async Task TestRefreshInstancesCommand_EnabledByValidProject()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
             CredentialsStore.Default.UpdateCurrentProject(null);
 
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
@@ -387,10 +375,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GceStep
         }
 
         [TestMethod]
-        public void TestRefreshInstancesCommand_DisabledByInvalidProject()
+        public async Task TestRefreshInstancesCommand_DisabledByInvalidProject()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             CredentialsStore.Default.UpdateCurrentProject(null);

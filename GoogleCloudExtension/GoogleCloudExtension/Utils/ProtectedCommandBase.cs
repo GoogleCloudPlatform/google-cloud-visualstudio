@@ -13,14 +13,13 @@
 // limitations under the License.
 
 using System;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     /// Base class for all protected commands. Provides the <see cref="CanExecute"/> implementation.
     /// </summary>
-    public abstract class ProtectedCommandBase : ICommand
+    public abstract class ProtectedCommandBase : IProtectedCommand
     {
         private bool _canExecuteCommand;
 

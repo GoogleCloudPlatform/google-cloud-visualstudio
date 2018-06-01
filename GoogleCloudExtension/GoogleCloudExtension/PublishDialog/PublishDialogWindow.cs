@@ -13,9 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -29,9 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
         private PublishDialogWindow(IParsedProject project) :
             base(string.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name))
         {
-            var initialStep = ChoiceStepViewModel.CreateStep();
-
-            ViewModel = new PublishDialogWindowViewModel(project, initialStep, this);
+            ViewModel = new PublishDialogWindowViewModel(project, Close);
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
         }
 
@@ -52,7 +48,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <returns>True if the project is supported by this wizard, false otherwise.</returns>
         public static bool CanPublish(IParsedProject project)
         {
-            var projectType = project.ProjectType;
+            KnownProjectTypes projectType = project.ProjectType;
             return projectType == KnownProjectTypes.WebApplication ||
                 projectType == KnownProjectTypes.NetCoreWebApplication1_0 ||
                 projectType == KnownProjectTypes.NetCoreWebApplication1_1 ||

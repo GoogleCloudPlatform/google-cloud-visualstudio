@@ -18,7 +18,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.PublishDialogSteps.GkeStep;
+using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -29,7 +29,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
 
-namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
+namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 {
     [TestClass]
     public class GkeStepViewModelTests : ExtensionTestBase
@@ -42,11 +42,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         private static readonly Cluster s_cCluster = new Cluster { Name = "Ccluster" };
         private static readonly List<Cluster> s_outOfOrderClusters = new List<Cluster>
         {
-            s_bCluster, s_aCluster, s_cCluster,
+            s_bCluster, s_aCluster, s_cCluster
         };
         private static readonly List<Cluster> s_inOrderClusters = new List<Cluster>
         {
-            s_aCluster, s_bCluster, s_cCluster,
+            s_aCluster, s_bCluster, s_cCluster
         };
 
         private GkeStepViewModel _objectUnderTest;
@@ -79,12 +79,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             _getClusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
             var mockedDataSource = Mock.Of<IGkeDataSource>(ds => ds.GetClusterListAsync() == _getClusterListTaskSource.Task);
 
-            _objectUnderTest = GkeStepViewModel.CreateStep(
-                apiManager: mockedApiManager, pickProjectPrompt: _pickProjectPromptMock.Object,
-                dataSource: mockedDataSource);
+            _objectUnderTest = new GkeStepViewModel(
+                mockedDataSource, mockedApiManager, _pickProjectPromptMock.Object, _mockedPublishDialog);
             _objectUnderTest.MillisecondsDelay = 0;
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-            _objectUnderTest.CanPublishChanged += (sender, args) => _canPublishChangedCount++;
+            _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
             _startProcessMock = new Mock<Func<string, Process>>();
             _objectUnderTest._startProcessOverride = _startProcessMock.Object;
         }
@@ -108,7 +107,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
             Assert.IsFalse(_objectUnderTest.OpenWebsite);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
-            Assert.IsInstanceOfType(_objectUnderTest.Content, typeof(GkeStepContent));
         }
 
         [TestMethod]
@@ -124,8 +122,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestSetSelectedCluster_EnablesPublishAsync()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.SelectedCluster = null;
             _canPublishChangedCount = 0;
 
@@ -139,8 +136,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestSetSelectedCluster_ToNullDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -154,8 +150,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestSetSelectedCluster_ToPlaceholderDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -308,22 +303,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         }
 
         [TestMethod]
-        public void TestRefreshClustersListCommand_TracksTask()
-        {
-            Task originalAsyncAction = _objectUnderTest.AsyncAction;
-
-            _objectUnderTest.RefreshClustersListCommand.Execute(null);
-
-            Assert.AreNotSame(originalAsyncAction, _objectUnderTest.AsyncAction);
-            Assert.IsFalse(_objectUnderTest.AsyncAction.IsCompleted);
-        }
-
-        [TestMethod]
         public async Task TestRefreshClustersListCommand_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -334,7 +318,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -345,43 +329,45 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
             _objectUnderTest.RefreshClustersListCommand.Execute(null);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.AreEqual(s_inOrderClusters, _objectUnderTest.Clusters.ToList());
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);
         }
 
         [TestMethod]
-        public void TestInitializeDialogAsync_SetsValidDeploymentName()
+        public async Task TestInitializeDialogAsync_SetsValidDeploymentName()
         {
             Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("VisualStudioProjectName");
+            _getClusterListTaskSource.SetResult(null);
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.AreEqual("visual-studio-project-name", _objectUnderTest.DeploymentName);
         }
 
         [TestMethod]
-        public void TestValidateProjectAsync_MissingProjectDisablesCommands()
+        public async Task TestValidateProjectAsync_MissingProjectDisablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = true;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = true;
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public void TestValidateProjectAsync_EnablesCommands()
+        public async Task TestValidateProjectAsync_EnablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = false;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = false;
+            _getClusterListTaskSource.SetResult(null);
 
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
@@ -391,8 +377,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -402,8 +387,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
@@ -413,8 +397,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.GkeStep
         public async Task TestLoadValidProjectDataAsync_SetsClustersInOrder()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            _objectUnderTest.OnVisible(_mockedPublishDialog);
-            await _objectUnderTest.AsyncAction;
+            await _objectUnderTest.OnVisibleAsync();
 
             CollectionAssert.AreEqual(s_inOrderClusters, _objectUnderTest.Clusters.ToList());
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);
