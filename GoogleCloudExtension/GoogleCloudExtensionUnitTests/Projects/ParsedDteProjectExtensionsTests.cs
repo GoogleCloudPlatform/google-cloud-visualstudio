@@ -12,161 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Projects;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
+using GoogleCloudExtension.Services.VsProject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtensionUnitTests.Projects
 {
     [TestClass]
     public class ParsedDteProjectExtensionsTests : ExtensionTestBase
     {
-        private Mock<IVsSolution> _vsSolutionMock;
-        private Mock<IVsBuildPropertyStorage> _buildStoreMock;
+        private const string PropertyName = "PropertyName";
+        private Project _mockedProject;
         private IParsedDteProject _mockedParsedProject;
-        private IVsHierarchy _mockedVsProject;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private const string PropertyValue = "PropertyValue";
 
-        [TestInitialize]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public new void BeforeEach()
+        protected override void BeforeEach()
         {
-            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project.UniqueName == "DefaultProjectName");
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            var vsProjectMock = new Mock<IVsHierarchy>();
-            _buildStoreMock = vsProjectMock.As<IVsBuildPropertyStorage>();
-            _mockedVsProject = vsProjectMock.Object;
-            _vsSolutionMock = new Mock<IVsSolution>();
-            _vsSolutionMock.Setup(s => s.GetProjectOfUniqueName(It.IsAny<string>(), out _mockedVsProject))
-                .Returns(VSConstants.S_OK);
-            PackageMock.Setup(p => p.GetService<IVsSolution>()).Returns(_vsSolutionMock.Object);
+            _mockedProject = Mock.Of<Project>();
+            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project == _mockedProject);
         }
 
         [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestGetUserProperty_ThrowsOnSolutionFailure()
+        public void TestGetUserProperty_DelegatesToPropertyService()
         {
-            const string propertyName = "PropertyName";
-            IVsHierarchy vsProject = _mockedVsProject;
-            _vsSolutionMock.Setup(s => s.GetProjectOfUniqueName(It.IsAny<string>(), out vsProject))
-                .Returns(VSConstants.E_FAIL);
+            _mockedParsedProject.GetUserProperty(PropertyName);
 
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.GetUserProperty(propertyName));
+            _propertyServiceMock.Verify(s => s.GetUserProperty(_mockedProject, PropertyName));
         }
 
         [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestGetUserProperty_ThrowsOnBuildPropertyStorageFail()
+        public void TestSaveUserProperty_DelegatesToPropertyService()
         {
-            var value = "PropertyValue";
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.GetPropertyValue(
-                        propertyName, null, ParsedDteProjectExtensions.UserFileFlag, out value))
-                .Returns(VSConstants.E_FAIL);
+            _mockedParsedProject.SaveUserProperty(PropertyName, PropertyValue);
 
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.GetUserProperty(propertyName));
+            _propertyServiceMock.Verify(s => s.SaveUserProperty(_mockedProject, PropertyName, PropertyValue));
         }
 
         [TestMethod]
-        public void TestGetUserProperty_ReturnsProperty()
+        public void TestDeleteUserProperty_DelegatesToPropertyService()
         {
-            var expectedValue = "PropertyValue";
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.GetPropertyValue(
-                        propertyName, null, ParsedDteProjectExtensions.UserFileFlag, out expectedValue))
-                .Returns(VSConstants.S_OK);
+            _mockedParsedProject.DeleteUserProperty(PropertyName);
 
-            string result = _mockedParsedProject.GetUserProperty(propertyName);
-
-            Assert.AreEqual(expectedValue, result);
-        }
-
-        [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestSaveUserProperty_ThrowsOnSolutionFailure()
-        {
-            const string value = "PropertyValue";
-            const string propertyName = "PropertyName";
-            IVsHierarchy vsProject = _mockedVsProject;
-            _vsSolutionMock.Setup(s => s.GetProjectOfUniqueName(It.IsAny<string>(), out vsProject))
-                .Returns(VSConstants.E_FAIL);
-
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.SaveUserProperty(propertyName, value));
-        }
-
-        [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestSaveUserProperty_ThrowsOnBuildPropertyStorageFail()
-        {
-            var value = "PropertyValue";
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.SetPropertyValue(propertyName, null, ParsedDteProjectExtensions.UserFileFlag, value))
-                .Returns(VSConstants.E_FAIL);
-
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.SaveUserProperty(propertyName, value));
-        }
-
-        [TestMethod]
-        public void TestSaveUserProperty_SavesProperty()
-        {
-            var value = "PropertyValue";
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.SetPropertyValue(propertyName, null, ParsedDteProjectExtensions.UserFileFlag, value))
-                .Returns(VSConstants.S_OK).Verifiable();
-
-            _mockedParsedProject.SaveUserProperty(propertyName, value);
-
-            _buildStoreMock.Verify();
-        }
-
-        [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestDeleteUserProperty_ThrowsOnSolutionFailure()
-        {
-            const string propertyName = "PropertyName";
-            IVsHierarchy vsProject = _mockedVsProject;
-            _vsSolutionMock.Setup(s => s.GetProjectOfUniqueName(It.IsAny<string>(), out vsProject))
-                .Returns(VSConstants.E_FAIL);
-
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.DeleteUserProperty(propertyName));
-        }
-
-        [TestMethod]
-        [SuppressMessage("ReSharper", "RedundantAssignment")]
-        public void TestDeleteUserProperty_ThrowsOnBuildPropertyStorageFail()
-        {
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.RemoveProperty(propertyName, null, ParsedDteProjectExtensions.UserFileFlag))
-                .Returns(VSConstants.E_FAIL);
-
-            Assert.ThrowsException<COMException>(() => _mockedParsedProject.DeleteUserProperty(propertyName));
-        }
-
-        [TestMethod]
-        public void TestDeleteUserProperty_DeletesProperty()
-        {
-            const string propertyName = "PropertyName";
-            _buildStoreMock
-                .Setup(
-                    s => s.RemoveProperty(propertyName, null, ParsedDteProjectExtensions.UserFileFlag))
-                .Returns(VSConstants.S_OK).Verifiable();
-
-            _mockedParsedProject.DeleteUserProperty(propertyName);
-
-            _buildStoreMock.Verify();
+            _propertyServiceMock.Verify(s => s.DeleteUserProperty(_mockedProject, PropertyName));
         }
     }
 }

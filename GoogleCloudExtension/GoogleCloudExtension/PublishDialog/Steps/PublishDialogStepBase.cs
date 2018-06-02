@@ -158,13 +158,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         public virtual void OnVisible()
         {
-            OnProjectChanged();
             AddHandlers();
+            LoadProjectProperties();
+            OnProjectChanged();
             SelectProjectCommand.CanExecuteCommand = true;
         }
 
         public virtual void OnNotVisible()
         {
+            SaveProjectProperties();
             RemoveHandlers();
         }
 
@@ -271,6 +273,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         protected internal virtual void OnFlowFinished()
         {
             RemoveHandlers();
+            SaveProjectProperties();
             IsValidGcpProject = false;
             LoadProjectTask = new AsyncProperty(null);
             NeedsApiEnabled = false;
@@ -308,5 +311,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             PublishDialog.FlowFinished -= OnFlowFinished;
             CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
         }
+
+        protected abstract void LoadProjectProperties();
+
+        protected abstract void SaveProjectProperties();
     }
 }

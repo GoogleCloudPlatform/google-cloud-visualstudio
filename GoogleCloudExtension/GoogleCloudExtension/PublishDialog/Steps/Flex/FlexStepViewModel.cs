@@ -36,9 +36,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
-        public const string GoogleAppEnginePublish_Promote = "GoogleAppEnginePublish.Promote";
-        public const string GoogleAppEnginePublish_OpenWebsite = "GoogleAppEnginePublish.OpenWebsite";
-        public const string GoogleAppEnginePublish_NextVersion = "GoogleAppEnginePublish.NextVersion";
+        public const string PromoteProjectPropertyName = "GoogleAppEnginePublishPromote";
+        public const string OpenWebsiteProjectPropertyName = "GoogleAppEnginePublishOpenWebsite";
+        public const string NextVersionProjectPropertyName = "GoogleAppEnginePublishNextVersion";
 
         // The list of APIs that are required for a successful deployment to App Engine Flex.
         private static readonly IList<string> s_requiredApis = new List<string>
@@ -137,22 +137,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
-        public override void OnVisible()
-        {
-            base.OnVisible();
-            LoadProperties();
-        }
-
-        public override void OnNotVisible()
-        {
-            base.OnNotVisible();
-            SaveProperties();
-        }
-
         protected internal override void OnFlowFinished()
         {
             base.OnFlowFinished();
-            SaveProperties();
             NeedsAppCreated = false;
         }
 
@@ -291,21 +278,21 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             }
         }
 
-        private void LoadProperties()
+        protected override void LoadProjectProperties()
         {
-            string promoteProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_Promote);
+            string promoteProperty = PublishDialog.Project.GetUserProperty(PromoteProjectPropertyName);
             if (bool.TryParse(promoteProperty, out bool promote))
             {
                 Promote = promote;
             }
 
-            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_OpenWebsite);
+            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(OpenWebsiteProjectPropertyName);
             if (bool.TryParse(openWebsiteProperty, out bool openWebSite))
             {
                 OpenWebsite = openWebSite;
             }
 
-            string nextVersionProperty = PublishDialog.Project.GetUserProperty(GoogleAppEnginePublish_NextVersion);
+            string nextVersionProperty = PublishDialog.Project.GetUserProperty(NextVersionProjectPropertyName);
             if (!string.IsNullOrWhiteSpace(nextVersionProperty))
             {
                 Version = nextVersionProperty;
@@ -316,17 +303,17 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             }
         }
 
-        private void SaveProperties()
+        protected override void SaveProjectProperties()
         {
-            PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_Promote, Promote.ToString());
-            PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_OpenWebsite, OpenWebsite.ToString());
+            PublishDialog.Project.SaveUserProperty(PromoteProjectPropertyName, Promote.ToString());
+            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
             if (string.IsNullOrWhiteSpace(Version) || GcpPublishStepsUtils.IsDefaultVersion(Version))
             {
-                PublishDialog.Project.DeleteUserProperty(GoogleAppEnginePublish_NextVersion);
+                PublishDialog.Project.DeleteUserProperty(NextVersionProjectPropertyName);
             }
             else
             {
-                PublishDialog.Project.SaveUserProperty(GoogleAppEnginePublish_NextVersion, Version);
+                PublishDialog.Project.SaveUserProperty(NextVersionProjectPropertyName, Version);
             }
         }
 

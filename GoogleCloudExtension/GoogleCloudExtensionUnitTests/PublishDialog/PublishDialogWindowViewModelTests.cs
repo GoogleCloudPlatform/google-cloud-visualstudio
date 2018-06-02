@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -38,21 +38,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private Action _mockedCloseWindowAction;
         private Mock<IStepContent<IPublishDialogStep>> _stepContentMock;
         private List<string> _changedProperties;
-        private Mock<IVsBuildPropertyStorage> _vsPropertyStoreMock;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
 
         protected override void BeforeEach()
         {
             _mockedCloseWindowAction = Mock.Of<Action>();
-            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project.UniqueName == "DefaultUniqueName");
+            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project == Mock.Of<Project>());
             _changedProperties = new List<string>();
 
-            var vsHierarchyMock = new Mock<IVsHierarchy>();
-            _vsPropertyStoreMock = vsHierarchyMock.As<IVsBuildPropertyStorage>();
-            // ReSharper disable once RedundantAssignment
-            IVsHierarchy vsProject = vsHierarchyMock.Object;
-            PackageMock.Setup(
-                    p => p.GetService<IVsSolution>().GetProjectOfUniqueName(It.IsAny<string>(), out vsProject))
-                .Returns(VSConstants.S_OK);
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
@@ -87,13 +82,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public void TestConstructor_NavigatesToPreviousChoice()
         {
-            // ReSharper disable once RedundantAssignment
-            string previousChoiceId = ChoiceStepViewModel.GkeChoiceId;
-            _vsPropertyStoreMock
+            _propertyServiceMock
                 .Setup(
-                    s => s.GetPropertyValue(
-                        ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName, null,
-                        ParsedDteProjectExtensions.UserFileFlag, out previousChoiceId)).Returns(VSConstants.S_OK);
+                    s => s.GetUserProperty(
+                        It.IsAny<Project>(), ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns(ChoiceStepViewModel.GkeChoiceId);
 
             var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
 

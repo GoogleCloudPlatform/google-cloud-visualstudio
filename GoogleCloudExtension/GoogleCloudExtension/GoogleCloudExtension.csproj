@@ -210,6 +210,8 @@
     <Compile Include="Services\FileSystem\IoFileService.cs" />
     <Compile Include="Services\FileSystem\IXDocument.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
+    <Compile Include="Services\VsProject\IVsProjectPropertyService.cs" />
+    <Compile Include="Services\VsProject\VsProjectPropertyService.cs" />
     <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>

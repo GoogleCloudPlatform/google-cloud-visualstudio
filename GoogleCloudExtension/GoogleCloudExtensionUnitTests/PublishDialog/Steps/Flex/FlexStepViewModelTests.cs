@@ -17,13 +17,11 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -51,36 +49,33 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private TaskCompletionSource<bool> _setAppRegionTaskSource;
         private IPublishDialog _mockedPublishDialog;
         private Mock<Func<Project>> _pickProjectPromptMock;
-        private Mock<IVsBuildPropertyStorage> _vsPropertyStoreMock;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private EnvDTE.Project _mockedProject;
 
         [ClassInitialize]
-        public static void BeforeAll(TestContext context) => GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
+        public static void BeforeAll(TestContext context) =>
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
 
         [ClassCleanup]
         public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
 
         protected override void BeforeEach()
         {
-
-            var vsHierarchyMock = new Mock<IVsHierarchy>();
-            _vsPropertyStoreMock = vsHierarchyMock.As<IVsBuildPropertyStorage>();
-            // ReSharper disable once RedundantAssignment
-            IVsHierarchy vsProject = vsHierarchyMock.Object;
-            PackageMock.Setup(
-                    p => p.GetService<IVsSolution>().GetProjectOfUniqueName(It.IsAny<string>(), out vsProject))
-                .Returns(VSConstants.S_OK);
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _setAppRegionTaskSource = new TaskCompletionSource<bool>();
 
+            _mockedProject = Mock.Of<EnvDTE.Project>();
             _mockedPublishDialog = Mock.Of<IPublishDialog>(
-                pd => pd.Project.Name == VisualStudioProjectName &&
-                    pd.Project.Project.UniqueName == "DefaultUniqueName");
+                pd => pd.Project.Name == VisualStudioProjectName && pd.Project.Project == _mockedProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
             _apiManagerMock = new Mock<IApiManager>();
-            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(Task.FromResult(true));
+            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
+                .Returns(Task.FromResult(true));
 
             _gaeDataSourceMock = new Mock<IGaeDataSource>();
             _gaeDataSourceMock.Setup(x => x.GetApplicationAsync()).Returns(() => _getApplicationTaskSource.Task);
@@ -205,202 +200,106 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Null()
+        public void TestSetVersion_Null()
         {
             _objectUnderTest.Version = null;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.IsNull(_objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Empty()
+        public void TestSetVersion_Empty()
         {
             _objectUnderTest.Version = string.Empty;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(string.Empty, _objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Invalid()
+        public void TestSetVersion_Invalid()
         {
             _objectUnderTest.Version = InvalidVersion;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(InvalidVersion, _objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Valid()
+        public void TestSetVersion_Valid()
         {
             _objectUnderTest.Version = ValidVersion;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(ValidVersion, _objectUnderTest.Version);
             Assert.IsFalse(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public void TestOnFlowFinished_SetsNeedsAppCreated()
-        {
-            _objectUnderTest.NeedsAppCreated = true;
-            _objectUnderTest.OnVisible();
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
-        }
-
-        [TestMethod]
-        public void TestOnFlowFinished_SavesPromoteProperty()
-        {
-            _objectUnderTest.OnVisible();
-            _objectUnderTest.Promote = true;
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_Promote, null, ParsedDteProjectExtensions.UserFileFlag,
-                    bool.TrueString));
-        }
-
-        [TestMethod]
-        public void TestOnFlowFinished_SavesOpenWebsiteProperty()
-        {
-            _objectUnderTest.OnVisible();
-            _objectUnderTest.OpenWebsite = true;
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_OpenWebsite, null, ParsedDteProjectExtensions.UserFileFlag,
-                    bool.TrueString));
-        }
-
-        [TestMethod]
-        public void TestOnFlowFinished_SavesNextVersionPropertyForNonStandard()
-        {
-            _objectUnderTest.OnVisible();
-            const string versionString = "version-string-2";
-            _objectUnderTest.Version = versionString;
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null, ParsedDteProjectExtensions.UserFileFlag,
-                    versionString));
-        }
-
-        [TestMethod]
-        public void TestOnFlowFinished_DeletesNextVersionPropertyForDefaultProperty()
-        {
-            _objectUnderTest.OnVisible();
-            _objectUnderTest.Version = "12345678t123456";
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            _vsPropertyStoreMock.Verify(
-                s => s.RemoveProperty(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null,
-                    ParsedDteProjectExtensions.UserFileFlag));
-        }
-
-        [TestMethod]
-        public void TestOnFlowFinished_DeletesNextVersionPropertyForEmptyProperty()
-        {
-            _objectUnderTest.OnVisible();
-            _objectUnderTest.Version = "   ";
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            _vsPropertyStoreMock.Verify(
-                s => s.RemoveProperty(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null,
-                    ParsedDteProjectExtensions.UserFileFlag));
-        }
-
-        [TestMethod]
-        public void TestOnNotVisible_SavesPromoteProperty()
+        public void TestSaveProjectProperties_SavesPromoteProperty()
         {
             _objectUnderTest.Promote = true;
 
             _objectUnderTest.OnNotVisible();
 
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_Promote, null, ParsedDteProjectExtensions.UserFileFlag,
-                    bool.TrueString));
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName, bool.TrueString));
         }
 
         [TestMethod]
-        public void TestOnNotVisible_SavesOpenWebsiteProperty()
+        public void TestSaveProjectProperties_SavesOpenWebsiteProperty()
         {
             _objectUnderTest.OpenWebsite = true;
 
             _objectUnderTest.OnNotVisible();
 
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_OpenWebsite, null, ParsedDteProjectExtensions.UserFileFlag,
-                    bool.TrueString));
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName, bool.TrueString));
         }
 
         [TestMethod]
-        public void TestOnNotVisible_SavesNextVersionPropertyForNonStandard()
+        public void TestSaveProjectProperties_SavesNextVersionPropertyForNonStandard()
         {
             const string versionString = "version-string-2";
             _objectUnderTest.Version = versionString;
 
             _objectUnderTest.OnNotVisible();
 
-            _vsPropertyStoreMock.Verify(
-                s => s.SetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null, ParsedDteProjectExtensions.UserFileFlag,
-                    versionString));
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.NextVersionProjectPropertyName, versionString));
         }
 
         [TestMethod]
-        public void TestOnNotVisible_DeletesNextVersionPropertyForDefaultProperty()
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForDefaultProperty()
         {
             _objectUnderTest.Version = "12345678t123456";
 
             _objectUnderTest.OnNotVisible();
 
-            _vsPropertyStoreMock.Verify(
-                s => s.RemoveProperty(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null,
-                    ParsedDteProjectExtensions.UserFileFlag));
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
         }
 
         [TestMethod]
-        public void TestOnNotVisible_DeletesNextVersionPropertyForEmptyProperty()
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForEmptyProperty()
         {
             _objectUnderTest.Version = "   ";
 
             _objectUnderTest.OnNotVisible();
 
-            _vsPropertyStoreMock.Verify(
-                s => s.RemoveProperty(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null,
-                    ParsedDteProjectExtensions.UserFileFlag));
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
         }
 
         [TestMethod]
-        public void TestOnVisible_LoadsPromoteProperty()
+        public void TestLoadProjectProperties_LoadsPromoteProperty()
         {
-            // ReSharper disable once RedundantAssignment
             string promoteProperty = bool.FalseString;
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_Promote, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out promoteProperty));
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
 
             _objectUnderTest.OnVisible();
 
@@ -408,14 +307,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestOnVisible_SkipLoadOfUnparsablePromoteProperty()
+        public void TestLoadProjectProperties_SkipLoadOfUnparsablePromoteProperty()
         {
-            // ReSharper disable once RedundantAssignment
-            var promoteProperty = "unparsable as bool";
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_Promote, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out promoteProperty));
+            const string promoteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
 
             _objectUnderTest.OnVisible();
 
@@ -423,14 +320,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestOnVisible_LoadsOpenWebsiteProperty()
+        public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
         {
-            // ReSharper disable once RedundantAssignment
             string openWebsiteProperty = bool.FalseString;
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_OpenWebsite, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out openWebsiteProperty));
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
 
             _objectUnderTest.OnVisible();
 
@@ -438,14 +333,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestOnVisible_SkipLoadOfUnparsableOpenWebSiteProperty()
+        public void TestLoadProjectProperties_SkipLoadOfUnparsableOpenWebSiteProperty()
         {
-            // ReSharper disable once RedundantAssignment
-            var openWebsiteProperty = "unparsable as bool";
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_OpenWebsite, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out openWebsiteProperty));
+            const string openWebsiteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
 
             _objectUnderTest.OnVisible();
 
@@ -453,14 +346,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestOnVisible_LoadsNextVersionProperty()
+        public void TestLoadProjectProperties_LoadsNextVersionProperty()
         {
-            // ReSharper disable once RedundantAssignment
-            var nextVersionProperty = "NextVersion";
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out nextVersionProperty));
+            const string nextVersionProperty = "NextVersion";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
 
             _objectUnderTest.OnVisible();
 
@@ -468,15 +359,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestOnVisible_SetsVersionToDefaultOnEmptyNextVersionProperty()
+        public void TestLoadProjectProperties_SetsVersionToDefaultOnEmptyNextVersionProperty()
         {
             GcpPublishStepsUtils.NowOverride = DateTime.Parse("2008-08-08 08:08:08");
-            // ReSharper disable once RedundantAssignment
-            var nextVersionProperty = " ";
-            _vsPropertyStoreMock.Setup(
-                s => s.GetPropertyValue(
-                    FlexStepViewModel.GoogleAppEnginePublish_NextVersion, null, ParsedDteProjectExtensions.UserFileFlag,
-                    out nextVersionProperty));
+            const string nextVersionProperty = " ";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
 
             _objectUnderTest.OnVisible();
 

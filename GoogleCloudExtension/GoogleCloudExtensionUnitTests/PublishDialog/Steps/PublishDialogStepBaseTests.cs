@@ -18,6 +18,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -101,6 +102,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             protected internal override void OnFlowFinished() => OnFlowFinishedCallCount++;
 
+            protected override void LoadProjectProperties() => LoadPropertiesCallCount++;
+
+            public int LoadPropertiesCallCount { get; private set; }
+
+            protected override void SaveProjectProperties() => SavePropertiesCallCount++;
+
+            public int SavePropertiesCallCount { get; private set; }
+
             public void OnFlowFinishedBase() => base.OnFlowFinished();
 
             public int OnFlowFinishedCallCount { get; private set; } = 0;
@@ -116,10 +125,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             public Task ValidateProjectAsyncBase() => base.ValidateProjectAsync();
 
-            protected override void OnIsValidGcpProjectChanged()
-            {
-                OnIsValidGcpProjectChangedCallCount++;
-            }
+            protected override void OnIsValidGcpProjectChanged() => OnIsValidGcpProjectChangedCallCount++;
 
             public int OnIsValidGcpProjectChangedCallCount { get; set; }
 
@@ -166,12 +172,37 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public void TestOnVisible_Initializes()
+        public void TestOnVisible_EnablesSelectProjectCommand()
         {
             _objectUnderTest.OnVisible();
 
-            Assert.AreEqual(_mockedPublishDialog, _objectUnderTest.PublishDialog);
             Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestOnVisible_RaisesGcpProjectIdPropertyChanged()
+        {
+            _objectUnderTest.OnVisible();
+
+            CollectionAssert.Contains(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
+        }
+
+        [TestMethod]
+        public void TestOnVisible_StartsProjectLoad()
+        {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreNotEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
+        }
+
+        [TestMethod]
+        public void TestOnVisible_LoadsProperties()
+        {
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(1, _objectUnderTest.LoadPropertiesCallCount);
         }
 
         [TestMethod]
@@ -182,6 +213,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
 
             Assert.AreEqual(1, _objectUnderTest.OnFlowFinishedCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnNotVisible_SavesProperties()
+        {
+            _objectUnderTest.OnNotVisible();
+
+            Assert.AreEqual(1, _objectUnderTest.SavePropertiesCallCount);
         }
 
         [TestMethod]
@@ -319,14 +358,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public void TestInitializeDialogAsync_RaisesGcpProjectIdPropertyChanged()
-        {
-            _objectUnderTest.OnVisible();
-
-            CollectionAssert.Contains(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
-        }
-
-        [TestMethod]
         public void TestEnableApisCommand_CallsEnableServices()
         {
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
@@ -372,6 +403,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
             Assert.AreEqual(1, _objectUnderTest.ClearLoadedProjectDataCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnFlowFinished_SavesProjectProperties()
+        {
+            _objectUnderTest.OnFlowFinishedBase();
+
+            Assert.AreEqual(1, _objectUnderTest.SavePropertiesCallCount);
         }
 
         [TestMethod]

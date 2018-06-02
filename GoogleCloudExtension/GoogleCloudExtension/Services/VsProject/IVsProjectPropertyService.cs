@@ -12,39 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Services.VsProject;
+using EnvDTE;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.Services.VsProject
 {
-    public static class ParsedDteProjectExtensions
+    public interface IVsProjectPropertyService
     {
-        private static IVsProjectPropertyService ProjectPropertyService =>
-            GoogleCloudExtensionPackage.Instance.GetService<IVsProjectPropertyService>();
-
         /// <summary>
         /// Reads a property from the project's .user file.
         /// </summary>
-        /// <param name="parsedProject">The project to read the property from.</param>
+        /// <param name="project">The project to read the property from.</param>
         /// <param name="propertyName">The name of the property to read.</param>
         /// <returns>The value of the property.</returns>
-        public static string GetUserProperty(this IParsedDteProject parsedProject, string propertyName) =>
-            ProjectPropertyService.GetUserProperty(parsedProject.Project, propertyName);
+        string GetUserProperty(Project project, string propertyName);
 
         /// <summary>
         /// Saves a property to the project's .user file.
         /// </summary>
-        /// <param name="parsedProject">The project to save the property to.</param>
+        /// <param name="project">The project to save the property to.</param>
         /// <param name="propertyName">The name of the property to save.</param>
         /// <param name="value">The value of the property.</param>
-        public static void SaveUserProperty(this IParsedDteProject parsedProject, string propertyName, string value) =>
-            ProjectPropertyService.SaveUserProperty(parsedProject.Project, propertyName, value);
+        void SaveUserProperty(Project project, string propertyName, string value);
 
         /// <summary>
         /// Deletes a property from the project's .user file.
         /// </summary>
-        /// <param name="parsedProject">The project to delete the property from.</param>
+        /// <param name="project">The project to delete the property from.</param>
         /// <param name="propertyName">The name of the property to delete.</param>
-        public static void DeleteUserProperty(this IParsedDteProject parsedProject, string propertyName) =>
-            ProjectPropertyService.DeleteUserProperty(parsedProject.Project, propertyName);
+        void DeleteUserProperty(Project project, string propertyName);
     }
 }

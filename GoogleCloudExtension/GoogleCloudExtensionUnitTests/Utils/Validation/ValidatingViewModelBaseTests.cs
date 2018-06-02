@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Utils.Validation
 {
@@ -32,237 +33,242 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
     {
         private const string TestPropertyName = "test property";
 
-        private static readonly ValidationResult s_testResult = new ValidationResult(false, "message");
+        private static readonly ValidationResult s_invalidTestResult = new ValidationResult(false, "message");
 
-        private static readonly ValidationResult s_secondTestResult = new ValidationResult(false, "second message");
+        private static readonly ValidationResult s_validTestResult = new ValidationResult(true, "second message");
 
-        private static readonly ValidationResult s_setTestValidation = new ValidationResult(false, "second message");
+        private static readonly List<ValidationResult> s_invalidResults = new List<ValidationResult> { s_invalidTestResult };
 
-        private static readonly List<ValidationResult> s_testResults = new List<ValidationResult> { s_testResult };
-
-        private static readonly List<ValidationResult> s_secondTestResults =
-            new List<ValidationResult> { s_secondTestResult };
-
-        private static readonly List<ValidationResult> s_setTestValidations =
-            new List<ValidationResult> { s_setTestValidation };
+        private static readonly List<ValidationResult> s_validTestResults =
+            new List<ValidationResult> { s_validTestResult };
 
         private TestModel _testObject;
-
-        private TaskCompletionSource<string> _errorsChangedSource;
-        private int _totalErrorsChanged;
+        private List<string> _errorsChangedProperties;
+        private List<string> _propertiesChanged;
 
         [TestInitialize]
         public void InitializeForTest()
         {
             _testObject = new TestModel();
-            _errorsChangedSource = new TaskCompletionSource<string>();
-            _totalErrorsChanged = 0;
-            _testObject.ErrorsChanged += (sender, args) =>
-            {
-                _errorsChangedSource.SetResult(args.PropertyName);
-                _totalErrorsChanged++;
-            };
+            _errorsChangedProperties = new List<string>();
+            _propertiesChanged = new List<string>();
+            _testObject.ErrorsChanged += (sender, args) => _errorsChangedProperties.Add(args.PropertyName);
+            _testObject.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
         }
 
         [TestMethod]
         public void TestInitialConditions()
         {
-            const string propertyName = nameof(_testObject.ErrorsProperty);
-
+            Assert.AreEqual(Task.CompletedTask, _testObject.LatestDelayedValidationUpdateTask);
             Assert.IsFalse(_testObject.HasErrors);
-            Assert.IsFalse(_testObject.GetErrors(propertyName).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(propertyName).GetEnumerator().MoveNext());
-            Assert.IsFalse(_testObject.GetErrors(null).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(null).GetEnumerator().MoveNext());
-            Assert.AreEqual(0, _testObject.HasErrorChangedCount);
+            CollectionAssert.That.IsEmpty(_testObject.GetErrors(null).ToList());
+            Assert.AreEqual(0, _testObject.HasErrorChangedCallCount);
         }
 
         [TestMethod]
-        public void TestUnfufilledConditions()
+        public void TestSetValidationResults_WithPendingErrorsRaisesHasErrorsPropertyChanged()
         {
-            const string propertyName = nameof(_testObject.ErrorsProperty);
             _testObject.Delay = -1;
-            _testObject.ErrorsProperty = s_testResults;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
 
-            Assert.IsFalse(_testObject.GetErrors(propertyName).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(propertyName).Cast<object>().Any());
-            Assert.IsFalse(_testObject.GetErrors(null).Any());
-            Assert.IsFalse(((INotifyDataErrorInfo)_testObject).GetErrors(null).Cast<object>().Any());
-            Assert.IsFalse(_errorsChangedSource.Task.IsCompleted);
+            CollectionAssert.Contains(_propertiesChanged, nameof(_testObject.HasErrors));
         }
 
         [TestMethod]
-        public async Task TestSetValidationResults1()
+        public async Task TestSetValidationResults_WithPendingErrorsRaisesErrorsChangedForProperty()
         {
             _testObject.Delay = 0;
-            _testObject.ErrorsProperty = s_testResults;
-            string erroredProperty = await _errorsChangedSource.Task;
 
-            Assert.AreEqual(nameof(_testObject.ErrorsProperty), erroredProperty);
-            CollectionAssert.AreEqual(s_testResults, _testObject.GetErrors(erroredProperty).ToList());
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+            await _testObject.LatestDelayedValidationUpdateTask;
+
+            CollectionAssert.Contains(_errorsChangedProperties, TestPropertyName);
+        }
+
+        [TestMethod]
+        public async Task TestSetValidationResults_UsesCallerMemberName()
+        {
+            _testObject.Delay = 0;
+
+            _testObject.SetValidationResultsProperty = s_invalidResults;
+            await _testObject.LatestDelayedValidationUpdateTask;
+
+            CollectionAssert.Contains(_errorsChangedProperties, nameof(_testObject.SetValidationResultsProperty));
+        }
+
+        [TestMethod]
+        public void TestHasErrors_WithPendingErrorsReturnsTrue()
+        {
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+
             Assert.IsTrue(_testObject.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetValidationResults2()
+        public void TestPropertyHasErrors_WithPendingErrorsReturnsTrue()
         {
-            _testObject.Delay = 0;
-            _testObject.SetValidationResultsProxy(s_testResults, TestPropertyName);
-            string erroredProperty = await _errorsChangedSource.Task;
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
 
-            Assert.AreEqual(TestPropertyName, erroredProperty);
-            CollectionAssert.AreEqual(s_testResults, _testObject.GetErrors(erroredProperty).ToList());
-            Assert.IsTrue(_testObject.HasErrors);
+            Assert.IsTrue(_testObject.PropertyHasErrors(TestPropertyName));
         }
 
         [TestMethod]
-        public async Task TestSetValidationResults3()
+        public void TestGetErrors_DoesNotReturnPendingErrors()
         {
             _testObject.Delay = -1;
-            _testObject.SetValidationResultsProxy(null, TestPropertyName);
-            Assert.IsTrue(_errorsChangedSource.Task.IsCompleted);
-            string erroredProperty = await _errorsChangedSource.Task;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
 
-            Assert.AreEqual(TestPropertyName, erroredProperty);
-            CollectionAssert.AreEqual(new object[0], _testObject.GetErrors(erroredProperty).ToList());
+            CollectionAssert.That.IsEmpty(_testObject.GetErrors(TestPropertyName));
+        }
+
+        [TestMethod]
+        public async Task TestGetErrors_ReturnsDelayedErrors()
+        {
+            _testObject.Delay = 0;
+
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+            await _testObject.LatestDelayedValidationUpdateTask;
+            IEnumerable<ValidationResult> results = _testObject.GetErrors(TestPropertyName);
+
+            CollectionAssert.AreEqual(s_invalidResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestSetValidationResults_DoesNotDelayValidResults()
+        {
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_validTestResults, TestPropertyName);
+
+            CollectionAssert.AreEqual(s_validTestResults, _testObject.GetErrors(TestPropertyName).ToList());
+        }
+
+        [TestMethod]
+        public void TestHasErrors_UsesNewerResults()
+        {
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+            _testObject.SetValidationResults(s_validTestResults, TestPropertyName);
+
             Assert.IsFalse(_testObject.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetValidationResults4()
+        public void TestPropertyHasErrors_UsesNewerResults()
         {
-            _testObject.Delay = 500;
-            _testObject.SetValidationResultsProxy(s_testResults, TestPropertyName);
-            await Task.Delay(100);
-            Assert.IsFalse(_errorsChangedSource.Task.IsCompleted);
-            _testObject.SetValidationResultsProxy(null, TestPropertyName);
-            string erroredProperty = await _errorsChangedSource.Task;
-            _errorsChangedSource = new TaskCompletionSource<string>();
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+            _testObject.SetValidationResults(s_validTestResults, TestPropertyName);
 
-            Task first = await Task.WhenAny(_errorsChangedSource.Task, Task.Delay(600));
-            Assert.AreNotEqual(_errorsChangedSource.Task, first);
-            Assert.AreEqual(1, _totalErrorsChanged);
-            Assert.AreEqual(TestPropertyName, erroredProperty);
-            CollectionAssert.AreEqual(new object[0], _testObject.GetErrors(erroredProperty).ToList());
+            Assert.IsFalse(_testObject.PropertyHasErrors(TestPropertyName));
+        }
+
+        [TestMethod]
+        public async Task TestSetValidationResults_PendingInvalidResultsDoNotOverwriteNewerValidResults()
+        {
+            _testObject.Delay = 200;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+            Task invalidPendingTask = _testObject.LatestDelayedValidationUpdateTask;
+            _testObject.SetValidationResults(s_validTestResults, TestPropertyName);
+            await invalidPendingTask;
+
             Assert.IsFalse(_testObject.HasErrors);
+            CollectionAssert.AreEqual(s_validTestResults, _testObject.GetErrors(TestPropertyName).ToList());
         }
 
         [TestMethod]
-        public async Task TestInterfaceGetErrors()
+        public void TestInterfaceGetErrors_SameAsGetErrors()
         {
             _testObject.Delay = 0;
-            _testObject.ErrorsProperty = s_testResults;
-            string erroredProperty = await _errorsChangedSource.Task;
-            _errorsChangedSource = new TaskCompletionSource<string>();
-            _testObject.SetValidationResultsProxy(s_secondTestResults, TestPropertyName);
-            string secondErroredProperty = await _errorsChangedSource.Task;
+            _testObject.SetValidationResults(s_validTestResults, TestPropertyName);
 
-            IEnumerable interfaceErrors = ((INotifyDataErrorInfo)_testObject).GetErrors(erroredProperty);
-            Assert.IsInstanceOfType(interfaceErrors, typeof(IEnumerable<ValidationResult>));
-            CollectionAssert.AreEqual(
-                _testObject.GetErrors(erroredProperty).ToList(),
-                ((IEnumerable<ValidationResult>)interfaceErrors).ToList());
-
-            IEnumerable secondInterfaceErrors = ((INotifyDataErrorInfo)_testObject).GetErrors(secondErroredProperty);
-            Assert.IsInstanceOfType(secondInterfaceErrors, typeof(IEnumerable<ValidationResult>));
-            CollectionAssert.AreEqual(
-                _testObject.GetErrors(secondErroredProperty).ToList(),
-                ((IEnumerable<ValidationResult>)secondInterfaceErrors).ToList());
-
-            IEnumerable allInterfaceErrors = ((INotifyDataErrorInfo)_testObject).GetErrors(null);
-            Assert.IsInstanceOfType(allInterfaceErrors, typeof(IEnumerable<ValidationResult>));
-            CollectionAssert.AreEqual(
-                _testObject.GetErrors(null).ToList(), ((IEnumerable<ValidationResult>)allInterfaceErrors).ToList());
+            IEnumerable interfaceErrors = ((INotifyDataErrorInfo)_testObject).GetErrors(TestPropertyName);
+            CollectionAssert.AreEqual(s_validTestResults, interfaceErrors.Cast<ValidationResult>().ToList());
         }
 
         [TestMethod]
-        public async Task TestGetErrors()
-        {
-            _testObject.Delay = 0;
-            _testObject.ErrorsProperty = s_testResults;
-            string firstErroredProperty = await _errorsChangedSource.Task;
-            _errorsChangedSource = new TaskCompletionSource<string>();
-            _testObject.SetValidationResultsProxy(s_secondTestResults, TestPropertyName);
-            string secondErroredProperty = await _errorsChangedSource.Task;
-
-            CollectionAssert.AreEqual(s_testResults, _testObject.GetErrors(firstErroredProperty).ToList());
-            CollectionAssert.AreEqual(s_secondTestResults, _testObject.GetErrors(secondErroredProperty).ToList());
-            CollectionAssert.AreEqual(s_testResults.Concat(s_secondTestResults).ToList(), _testObject.GetErrors(null).ToList());
-        }
-
-        [TestMethod]
-        public void TestHasErrors()
+        public void TestSetValidationResults_CallsHasErrorsChanged()
         {
             _testObject.Delay = -1;
-            _testObject.ErrorsProperty = s_testResults;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
 
-            Assert.IsTrue(_testObject.HasErrors);
-            Assert.IsFalse(_errorsChangedSource.Task.IsCompleted);
+            Assert.AreEqual(1, _testObject.HasErrorChangedCallCount);
         }
 
         [TestMethod]
-        public void TestHasErrorsChanged()
+        public void TestSetAndRaiseWithValidations_SetsReferencedValue()
         {
-            _testObject.Delay = -1;
-            _testObject.SetValidationResultsProxy(s_testResults, TestPropertyName);
+            string storage = null;
+            const string expectedValue = "expectedValue";
+            _testObject.Delay = 0;
+            _testObject.SetAndRaiseWithValidation(ref storage, expectedValue, s_validTestResults, TestPropertyName);
 
-            Assert.AreEqual(1, _testObject.HasErrorChangedCount);
-            Assert.IsFalse(_errorsChangedSource.Task.IsCompleted);
+            Assert.AreEqual(expectedValue, storage);
         }
 
         [TestMethod]
-        public async Task TestSetAndRaiseWithValidations()
+        public void TestSetAndRaiseWithValidations_CallsSetValidationResults()
+        {
+            string storage = null;
+            const string value = "value";
+            _testObject.Delay = 0;
+            _testObject.SetAndRaiseWithValidation(ref storage, value, s_validTestResults, TestPropertyName);
+
+            Assert.AreEqual(1, _testObject.HasErrorChangedCallCount);
+        }
+
+
+        [TestMethod]
+        public void TestSetAndRaiseWithValidations_UsesCallerMemberName()
         {
             _testObject.Delay = 0;
-            _testObject.SomeIntProperty = int.MaxValue;
-            string changedProperty = await _errorsChangedSource.Task;
+            _testObject.SetAndRaiseWithValidationProperty = 0;
 
-            Assert.AreEqual(nameof(_testObject.SomeIntProperty), changedProperty);
-            Assert.AreEqual(int.MaxValue, _testObject.SomeIntProperty);
-            CollectionAssert.AreEqual(s_setTestValidations, _testObject.GetErrors(changedProperty).ToList());
+            CollectionAssert.Contains(_errorsChangedProperties, nameof(_testObject.SetAndRaiseWithValidationProperty));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
-        public void TestSetValidationResultsNullProperty()
+        public void TestSetValidationResults_GivenNullPropertyThrows()
         {
-            _testObject.SetValidationResultsProxy(s_testResults, null);
+            _testObject.SetValidationResults(s_invalidResults, null);
         }
 
         private class TestModel : ValidatingViewModelBase
         {
-            private int _someIntProperty;
+            private int _intField;
 
             public int Delay
             {
-                set { MillisecondsDelay = value; }
+                set => MillisecondsDelay = value;
             }
 
-            public IEnumerable<ValidationResult> ErrorsProperty
+            public IEnumerable<ValidationResult> SetValidationResultsProperty
             {
-                set
-                {
-                    SetValidationResults(value);
-                }
+                set => SetValidationResults(value);
             }
 
-            public int SomeIntProperty
+            public int SetAndRaiseWithValidationProperty
             {
-                get { return _someIntProperty; }
-                set { SetAndRaiseWithValidation(ref _someIntProperty, value, s_setTestValidations); }
+                set => SetAndRaiseWithValidation(ref _intField, value, Enumerable.Empty<ValidationResult>());
             }
 
-            public int HasErrorChangedCount { get; private set; } = 0;
+            public new void SetValidationResults(IEnumerable<ValidationResult> results, string propertyName) =>
+                base.SetValidationResults(results, propertyName);
 
-            public void SetValidationResultsProxy(IEnumerable<ValidationResult> results, string propertyName)
+            public new void SetAndRaiseWithValidation<T>(
+                ref T storage,
+                T value,
+                IEnumerable<ValidationResult> validations,
+                string propertyName)
             {
-                SetValidationResults(results, propertyName);
+                base.SetAndRaiseWithValidation(ref storage, value, validations, propertyName);
             }
 
-            protected override void HasErrorsChanged()
-            {
-                HasErrorChangedCount++;
-            }
+            protected override void HasErrorsChanged() => HasErrorChangedCallCount++;
+
+            public int HasErrorChangedCallCount { get; private set; } = 0;
         }
     }
 }

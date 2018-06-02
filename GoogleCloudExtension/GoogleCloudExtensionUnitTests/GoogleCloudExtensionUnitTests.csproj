@@ -273,6 +273,7 @@
     <Compile Include="Services\FileSystem\FileSystemServiceTests.cs" />
     <Compile Include="Services\FileSystem\IoFileServiceTests.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
+    <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItemTests.cs" />
