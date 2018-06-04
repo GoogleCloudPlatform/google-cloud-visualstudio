@@ -1583,10 +1583,6 @@
     <value>Migrating all traffic to {0}</value>
     <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
   </data>
-  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
-    <value>Don't expose a service</value>
-    <comment>Caption for the option of not exposing the service.</comment>
-  </data>
   <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
     <value>Make service public</value>
     <comment>Caption for the checkbox to make a service public.</comment>

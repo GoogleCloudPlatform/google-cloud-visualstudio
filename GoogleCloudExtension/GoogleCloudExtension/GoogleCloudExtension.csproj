@@ -505,7 +505,6 @@
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\StringFormatUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
-    <Compile Include="Utils\IProtectedAction.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />

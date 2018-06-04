@@ -3454,15 +3454,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t expose a service.
-        /// </summary>
-        public static string GkePublishDontExposeServiceCaption {
-            get {
-                return ResourceManager.GetString("GkePublishDontExposeServiceCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
