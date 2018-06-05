@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
@@ -19,13 +20,13 @@ using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
@@ -38,6 +39,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         private ChoiceStepViewModel _objectUnderTest;
         private IPublishDialog _mockedPublishDialog;
         private FakeParsedProject _parsedProject;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
 
         protected override void BeforeEach()
         {
@@ -48,6 +50,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             };
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
         }
@@ -60,10 +64,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_WebApplication()
+        public void TestChoices_WebApplication()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -86,10 +90,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_DotnetCore()
+        public void TestChoices_DotnetCore()
         {
             _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -112,10 +116,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_None()
+        public void TestChoices_None()
         {
             _parsedProject.ProjectType = KnownProjectTypes.None;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -146,35 +150,22 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_ResetsChoicesAndPublishDialog()
+        public void TestOnNotVisible_RemovesHandlers()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
-            _objectUnderTest.Choices = null;
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.OnNotVisible();
+            _propertyServiceMock.ResetCalls();
 
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
 
-            CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(It.IsAny<Project>(), It.IsAny<string>()), Times.Never);
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_RemovesHandlers()
+        public void TestOnAppEngineChoiceCommand_PushesFlexStep()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-            _objectUnderTest.Choices = null;
-
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-
-            Assert.IsNull(_objectUnderTest.Choices);
-        }
-
-        [TestMethod]
-        public async Task TestOnAppEngineChoiceCommand()
-        {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepAppEngineFlexName).Command
                 .Execute(null);
@@ -183,11 +174,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnGkeChoiceCommand()
+        public void TestOnGkeChoiceCommand_PushesGkeStep()
 
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGkeName).Command
                 .Execute(null);
@@ -196,11 +186,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnGceChoiceCommand()
+        public void TestOnGceChoiceCommand_PushesGceStep()
 
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGceName).Command
                 .Execute(null);

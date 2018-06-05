@@ -21,7 +21,6 @@ using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Choice
@@ -52,6 +51,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             set { SetValueAndRaise(ref _choices, value); }
         }
 
+        public IProtectedCommand PublishCommand { get; } =
+            new ProtectedCommand(() => throw new NotSupportedException(), false);
+
         private IPublishDialog PublishDialog { get; }
 
         public ChoiceStepViewModel(IPublishDialog publishDialog)
@@ -59,10 +61,22 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             PublishDialog = publishDialog;
         }
 
+        /// <summary>
+        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// </summary>
+        public void OnVisible()
+        {
+            AddHandlers();
+            Choices = GetChoicesForCurrentProject();
+        }
+
+        /// <summary>
+        /// Called every time that this step is no longer at the top of the navigation stack.
+        /// </summary>
+        public void OnNotVisible() => RemoveHandlers();
+
         private IEnumerable<Choice> GetChoicesForCurrentProject()
         {
-            KnownProjectTypes projectType = PublishDialog.Project.ProjectType;
-
             return new List<Choice>
             {
                 new Choice
@@ -88,7 +102,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
                     Name = Resources.PublishDialogChoiceStepGceName,
                     Command = new ProtectedCommand(
                         OnGceChoiceCommand,
-                        canExecuteCommand: projectType == KnownProjectTypes.WebApplication),
+                        canExecuteCommand: PublishDialog.Project.ProjectType == KnownProjectTypes.WebApplication),
                     Icon = s_gceIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepGceToolTip
                 },
@@ -113,13 +127,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             PublishDialog.NavigateToStep(nextStep);
         }
 
-        public void OnNotVisible()
+        private void OnFlowFinished(object sender, EventArgs e)
         {
             RemoveHandlers();
-            Choices = Enumerable.Empty<Choice>();
         }
-
-        private void OnFlowFinished(object sender, EventArgs e) => OnNotVisible();
 
         private void AddHandlers()
         {
@@ -129,19 +140,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         private void RemoveHandlers()
         {
             PublishDialog.FlowFinished -= OnFlowFinished;
-        }
-
-        public IProtectedCommand PublishCommand { get; } =
-            new ProtectedCommand(() => throw new NotSupportedException(), false);
-
-        /// <summary>
-        /// Called every time that this step is at the top of the navigation stack and therefore visible.
-        /// </summary>
-        public Task OnVisibleAsync()
-        {
-            Choices = GetChoicesForCurrentProject();
-            AddHandlers();
-            return Task.CompletedTask;
         }
     }
 }

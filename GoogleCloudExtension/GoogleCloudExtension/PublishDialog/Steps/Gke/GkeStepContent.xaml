@@ -134,11 +134,6 @@
                 
                 <StackPanel>
                     <RadioButton GroupName="password"
-                             Content="{x:Static ext:Resources.GkePublishDontExposeServiceCaption}"
-                             IsChecked="{Binding DontExposeService}"
-                             Style="{StaticResource CommonRadioButton}"
-                             Margin="{StaticResource CommonRadioButtonMargin}" />
-                    <RadioButton GroupName="password"
                              Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
                              IsChecked="{Binding ExposeService}"
                              Style="{StaticResource CommonRadioButton}"

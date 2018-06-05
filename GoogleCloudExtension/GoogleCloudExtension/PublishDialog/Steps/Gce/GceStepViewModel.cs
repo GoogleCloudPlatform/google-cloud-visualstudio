@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public Instance SelectedInstance
         {
-            get { return _selectedInstance; }
+            get => _selectedInstance;
             set
             {
                 SetValueAndRaise(ref _selectedInstance, value);
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public WindowsInstanceCredentials SelectedCredentials
         {
-            get { return _selectedCredentials; }
+            get => _selectedCredentials;
             set
             {
                 SetValueAndRaise(ref _selectedCredentials, value);
@@ -124,8 +124,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public bool OpenWebsite
         {
-            get { return _openWebsite; }
-            set { SetValueAndRaise(ref _openWebsite, value); }
+            get => _openWebsite;
+            set => SetValueAndRaise(ref _openWebsite, value);
         }
 
         /// <summary>
@@ -133,8 +133,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public bool LaunchRemoteDebugger
         {
-            get { return _launchRemoteDebugger; }
-            set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
+            get => _launchRemoteDebugger;
+            set => SetValueAndRaise(ref _launchRemoteDebugger, value);
         }
 
         private IGceDataSource CurrentDataSource =>
@@ -170,10 +170,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
         public override IProtectedCommand PublishCommand { get; }
 
-        protected override void OnIsValidGcpProjectChanged()
-        {
-            RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
-        }
+        protected override void OnIsValidGcpProjectChanged() => RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
 
         private void OnManageCredentialsCommand()
         {
@@ -259,10 +256,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// <summary>
         /// Clearing instances from a potential previous project.
         /// </summary>
-        protected override void ClearLoadedProjectData()
-        {
-            Instances = Enumerable.Empty<Instance>();
-        }
+        protected override void ClearLoadedProjectData() => Instances = Enumerable.Empty<Instance>();
 
         /// <summary>
         /// No data to load
@@ -284,6 +278,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             base.RefreshCanPublish();
             CanPublish = CanPublish
                 && SelectedCredentials != null;
+        }
+
+        protected override void LoadProjectProperties()
+        {
+        }
+
+        protected override void SaveProjectProperties()
+        {
         }
 
         #endregion

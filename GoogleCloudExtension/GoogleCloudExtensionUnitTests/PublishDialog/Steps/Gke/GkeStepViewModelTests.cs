@@ -19,7 +19,9 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -35,11 +37,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
     public class GkeStepViewModelTests : ExtensionTestBase
     {
         private const string VisualStudioProjectName = "VisualStudioProjectName";
+        private const string ClusterCId = "id for c";
         private static readonly Project s_defaultProject = new Project { ProjectId = "TestProjectId" };
 
-        private static readonly Cluster s_aCluster = new Cluster { Name = "Acluster" };
-        private static readonly Cluster s_bCluster = new Cluster { Name = "Bcluster" };
-        private static readonly Cluster s_cCluster = new Cluster { Name = "Ccluster" };
+        private static readonly Cluster s_aCluster = new Cluster { Name = "Acluster", SelfLink = "id for a" };
+        private static readonly Cluster s_bCluster = new Cluster { Name = "Bcluster", SelfLink = "id for b" };
+        private static readonly Cluster s_cCluster = new Cluster { Name = "Ccluster", SelfLink = ClusterCId };
         private static readonly List<Cluster> s_outOfOrderClusters = new List<Cluster>
         {
             s_bCluster, s_aCluster, s_cCluster
@@ -56,6 +59,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         private List<string> _changedProperties;
         private int _canPublishChangedCount;
         private Mock<Func<string, Process>> _startProcessMock;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private FakeParsedProject _parsedProject;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -67,8 +72,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         protected override void BeforeEach()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == VisualStudioProjectName);
+            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
             _changedProperties = new List<string>();
@@ -101,7 +109,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             Assert.IsNull(_objectUnderTest.DeploymentName);
             Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.DeploymentVersion);
             Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
-            Assert.IsTrue(_objectUnderTest.DontExposeService);
             Assert.IsFalse(_objectUnderTest.ExposeService);
             Assert.IsFalse(_objectUnderTest.ExposePublicService);
             Assert.IsFalse(_objectUnderTest.OpenWebsite);
@@ -119,10 +126,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_EnablesPublishAsync()
+        public void TestSetSelectedCluster_EnablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = null;
             _canPublishChangedCount = 0;
 
@@ -133,10 +140,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_ToNullDisablesPublish()
+        public void TestSetSelectedCluster_ToNullDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -147,10 +154,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCluster_ToPlaceholderDisablesPublish()
+        public void TestSetSelectedCluster_ToPlaceholderDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
             _canPublishChangedCount = 0;
 
@@ -242,36 +249,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetDontExposeService()
-        {
-            _objectUnderTest.DontExposeService = false;
-
-            Assert.IsFalse(_objectUnderTest.DontExposeService);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.DontExposeService));
-        }
-
-        [TestMethod]
         public void TestSetExposeService()
         {
             _objectUnderTest.ExposeService = true;
 
             Assert.IsTrue(_objectUnderTest.ExposeService);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.ExposeService));
-        }
-
-        [TestMethod]
-        public void TestSetExposeService_ToFalseInvalidatesFields()
-        {
-            _objectUnderTest.ExposePublicService = true;
-            _objectUnderTest.OpenWebsite = true;
-            _changedProperties.Clear();
-
-            _objectUnderTest.ExposeService = false;
-
-            Assert.IsFalse(_objectUnderTest.ExposePublicService);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.ExposePublicService));
-            Assert.IsFalse(_objectUnderTest.OpenWebsite);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.OpenWebsite));
         }
 
         [TestMethod]
@@ -336,68 +319,68 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public async Task TestInitializeDialogAsync_SetsValidDeploymentName()
+        public void TestInitializeDialogAsync_SetsValidDeploymentName()
         {
             Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("VisualStudioProjectName");
             _getClusterListTaskSource.SetResult(null);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual("visual-studio-project-name", _objectUnderTest.DeploymentName);
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_MissingProjectDisablesCommands()
+        public void TestValidateProjectAsync_MissingProjectDisablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = true;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = true;
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_EnablesCommands()
+        public void TestValidateProjectAsync_EnablesCommands()
         {
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = false;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = false;
             _getClusterListTaskSource.SetResult(null);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsTrue(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
+        public void TestLoadValidProjectDataAsync_ReceivingNullSetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
+        public void TestLoadValidProjectDataAsync_ReceivingEmptySetsPlaceholder()
         {
             _getClusterListTaskSource.SetResult(new List<Cluster>());
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.AreEqual(GkeStepViewModel.s_placeholderList, _objectUnderTest.Clusters);
             Assert.AreEqual(GkeStepViewModel.s_placeholderCluster, _objectUnderTest.SelectedCluster);
         }
 
         [TestMethod]
-        public async Task TestLoadValidProjectDataAsync_SetsClustersInOrder()
+        public void TestLoadValidProjectDataAsync_SetsClustersInOrder()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(s_inOrderClusters, _objectUnderTest.Clusters.ToList());
             Assert.AreEqual(s_aCluster, _objectUnderTest.SelectedCluster);

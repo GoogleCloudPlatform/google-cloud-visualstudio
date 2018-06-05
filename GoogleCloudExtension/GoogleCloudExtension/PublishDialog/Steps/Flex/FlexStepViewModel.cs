@@ -114,6 +114,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
+        public override IProtectedCommand PublishCommand { get; }
+
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
@@ -130,19 +132,13 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
-        private async Task OnSetAppRegionCommandAsync()
+        protected internal override void OnFlowFinished()
         {
-            Task<bool> setAppRegionTask = SetAppRegionAsyncFunc();
-            PublishDialog.TrackTask(setAppRegionTask);
-            if (await setAppRegionTask)
-            {
-                await LoadProjectAsync();
-            }
+            base.OnFlowFinished();
+            NeedsAppCreated = false;
         }
 
         #region IPublishDialogStep
-
-        public override IProtectedCommand PublishCommand { get; }
 
         protected override async Task ValidateProjectAsync()
         {
@@ -178,6 +174,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         /// <returns>A cached completed task.</returns>
         protected override Task LoadValidProjectDataAsync() => Task.CompletedTask;
+
+        private async Task OnSetAppRegionCommandAsync()
+        {
+            Task<bool> setAppRegionTask = SetAppRegionAsyncFunc();
+            PublishDialog.TrackTask(setAppRegionTask);
+            if (await setAppRegionTask)
+            {
+                LoadProject();
+            }
+        }
 
         private async Task PublishAsync()
         {
@@ -265,11 +271,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             }
         }
 
-        protected internal override void OnFlowFinished()
+        protected override void LoadProjectProperties()
         {
-            base.OnFlowFinished();
-            _version = GcpPublishStepsUtils.GetDefaultVersion();
-            NeedsAppCreated = false;
+        }
+
+        protected override void SaveProjectProperties()
+        {
         }
 
         #endregion

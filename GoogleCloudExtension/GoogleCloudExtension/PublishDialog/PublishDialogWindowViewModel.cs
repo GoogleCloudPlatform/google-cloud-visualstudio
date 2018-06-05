@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.PublishDialog
                 oldStep.OnNotVisible();
             }
 
-            CurrentStep.OnVisibleAsync();
+            CurrentStep.OnVisible();
             AddStepEvents(CurrentStep);
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
             PublishCommand = CurrentStep.PublishCommand;
