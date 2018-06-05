@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -184,9 +184,16 @@
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
     <Compile Include="IGoogleCloudExtensionPackage.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdViewModel.cs" />
+    <Compile Include="Projects\IParsedDteProject.cs" />
     <Compile Include="PublishDialog\Steps\Choice\Choice.cs" />
     <Compile Include="PublishDialog\Steps\Choice\ChoiceStepViewModel.cs" />
     <Compile Include="PublishDialog\Steps\IStepContent.cs" />
+    <Compile Include="Services\FileSystem\FileSystemService.cs" />
+    <Compile Include="Services\FileSystem\IFile.cs" />
+    <Compile Include="Services\FileSystem\IFileSystem.cs" />
+    <Compile Include="Services\FileSystem\IoFileService.cs" />
+    <Compile Include="Services\FileSystem\IXDocument.cs" />
+    <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
     <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
       <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
@@ -1180,6 +1187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PublishDialogSteps\ChoiceStep\" />
+    <Folder Include="Services\VsProject\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
