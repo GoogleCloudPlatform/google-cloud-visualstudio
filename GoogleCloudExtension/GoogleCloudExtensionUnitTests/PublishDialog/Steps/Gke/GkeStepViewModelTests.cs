@@ -258,17 +258,67 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetExposePublicService()
+        public void TestExposePublicService_HiddenByExposeService()
         {
+            _objectUnderTest.ExposeService = false;
             _objectUnderTest.ExposePublicService = true;
 
-            Assert.IsTrue(_objectUnderTest.ExposePublicService);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.ExposePublicService));
+            Assert.IsFalse(_objectUnderTest.ExposePublicService);
         }
 
         [TestMethod]
-        public void TestSetOpenWebsite()
+        public void TestExposePublicService_FalseIndependentOfExposeService()
         {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = false;
+
+            Assert.IsFalse(_objectUnderTest.ExposePublicService);
+        }
+
+        [TestMethod]
+        public void TestExposePublicService_True()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+
+            Assert.IsTrue(_objectUnderTest.ExposePublicService);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_HiddenByExposeService()
+        {
+            _objectUnderTest.ExposeService = false;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = true;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_HiddenByExposePublicService()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = false;
+            _objectUnderTest.OpenWebsite = true;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_FalseIndependently()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = false;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_True()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
             _objectUnderTest.OpenWebsite = true;
 
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
@@ -477,6 +527,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
                 .Returns(bool.TrueString);
 
             _objectUnderTest.OnVisible();
+            _objectUnderTest.ExposeService = true;
 
             Assert.IsTrue(_objectUnderTest.ExposePublicService);
         }
@@ -489,6 +540,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
                 .Returns(bool.TrueString);
 
             _objectUnderTest.OnVisible();
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
 
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
         }

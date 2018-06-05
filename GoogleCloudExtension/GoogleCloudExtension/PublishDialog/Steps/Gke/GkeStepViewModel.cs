@@ -157,7 +157,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         public bool ExposeService
         {
             get => _exposeService;
-            set => SetValueAndRaise(ref _exposeService, value);
+            set
+            {
+                SetValueAndRaise(ref _exposeService, value);
+                RaisePropertyChanged(nameof(ExposePublicService));
+                RaisePropertyChanged(nameof(OpenWebsite));
+            }
         }
 
         /// <summary>
@@ -165,8 +170,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// </summary>
         public bool ExposePublicService
         {
-            get => _exposePublicService;
-            set => SetValueAndRaise(ref _exposePublicService, value);
+            get => ExposeService && _exposePublicService;
+            set
+            {
+                SetValueAndRaise(ref _exposePublicService, value);
+                RaisePropertyChanged(nameof(OpenWebsite));
+            }
         }
 
         /// <summary>
@@ -174,7 +183,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// </summary>
         public bool OpenWebsite
         {
-            get => _openWebsite;
+            get => ExposeService && ExposePublicService && _openWebsite;
             set => SetValueAndRaise(ref _openWebsite, value);
         }
 
@@ -328,9 +337,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             }
 
             PublishDialog.Project.SaveUserProperty(ExposeServiceProjectPropertyName, ExposeService.ToString());
+
+            // Use fields directly here rather than Properties to save hidden state.
             PublishDialog.Project.SaveUserProperty(
-                ExposePublicServiceProjectPropertyName, ExposePublicService.ToString());
-            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
+                ExposePublicServiceProjectPropertyName, _exposePublicService.ToString());
+            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, _openWebsite.ToString());
         }
 
         /// <summary>
@@ -388,7 +399,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         DeploymentName = DeploymentName,
                         DeploymentVersion = DeploymentVersion,
                         ExposeService = ExposeService,
-                        ExposePublicService = ExposeService && ExposePublicService,
+                        ExposePublicService = ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),

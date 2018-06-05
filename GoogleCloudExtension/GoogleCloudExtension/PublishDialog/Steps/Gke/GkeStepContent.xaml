@@ -144,15 +144,10 @@
                           IsChecked="{Binding ExposePublicService}"
                           Style="{StaticResource CommonTextStyleBase}" />
                     <CheckBox IsChecked="{Binding OpenWebsite}"
-                          Margin="0,5,0,0"
+                              Margin="0,5,0,0"
                               Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                          Style="{StaticResource CommonTextStyleBase}">
-                        <CheckBox.IsEnabled>
-                            <MultiBinding Converter="{gwpf:BooleanAndConverter}">
-                                <Binding Path="ExposeService"/>
-                                <Binding Path="ExposePublicService" />
-                            </MultiBinding>
-                        </CheckBox.IsEnabled>
+                              IsEnabled="{Binding ExposePublicService}"
+                              Style="{StaticResource CommonTextStyleBase}">
                     </CheckBox>
                 </StackPanel>
             </GroupBox>
