@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
@@ -21,6 +22,12 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class GcpPublishStepsUtilsTests
     {
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GcpPublishStepsUtils.NowOverride = null;
+        }
+
         [TestMethod]
         [DataRow(null)]
         [DataRow("")]
@@ -53,6 +60,78 @@ namespace GoogleCloudExtensionUnitTests.Utils
             string result = GcpPublishStepsUtils.ToValidName(longString);
 
             Assert.IsTrue(result.Length == 100);
+        }
+
+        [TestMethod]
+        public void TestIncrementVersion_ReplacesDefaultVersion()
+        {
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2011-11-11 01:01:01");
+            string initalVersion = GcpPublishStepsUtils.GetDefaultVersion();
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2012-12-12 02:02:02");
+
+            string result = GcpPublishStepsUtils.IncrementVersion(initalVersion);
+
+            Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), result);
+        }
+
+        [TestMethod]
+        public void TestIncrementVersion_IncrementsSingleIntegerVersion()
+        {
+            const string initalVersion = "My1Version";
+
+            string result = GcpPublishStepsUtils.IncrementVersion(initalVersion);
+
+            Assert.AreEqual("My2Version", result);
+        }
+
+        [TestMethod]
+        public void TestIncrementVersion_IncrementsTrailingIntegerVersion()
+        {
+            const string initalVersion = "My1Version3";
+
+            string result = GcpPublishStepsUtils.IncrementVersion(initalVersion);
+
+            Assert.AreEqual("My1Version4", result);
+        }
+
+        [TestMethod]
+        public void TestIncrementVersion_AppendsTrailingInteger()
+        {
+            const string initalVersion = "My1Version2BeUpdated";
+
+            string result = GcpPublishStepsUtils.IncrementVersion(initalVersion);
+
+            Assert.AreEqual("My1Version2BeUpdated2", result);
+        }
+
+        [TestMethod]
+        public void TestIncrementVersion_HandlesNull()
+        {
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2023-10-10 10:10:10");
+
+            string result = GcpPublishStepsUtils.IncrementVersion(null);
+
+            Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), result);
+        }
+
+        [TestMethod]
+        public void TestIsDefaultVersion_True()
+        {
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2010-10-10 10:10:10");
+
+            Assert.IsTrue(GcpPublishStepsUtils.IsDefaultVersion(GcpPublishStepsUtils.GetDefaultVersion()));
+            Assert.IsTrue(GcpPublishStepsUtils.IsDefaultVersion("12345678t123456"));
+        }
+
+        [TestMethod]
+        [DataRow("5")]
+        [DataRow("MyVersion23")]
+        [DataRow("   ")]
+        [DataRow("")]
+        [DataRow(null)]
+        public void TestIsDefaultVersion_False(string version)
+        {
+            Assert.IsFalse(GcpPublishStepsUtils.IsDefaultVersion(version));
         }
     }
 }

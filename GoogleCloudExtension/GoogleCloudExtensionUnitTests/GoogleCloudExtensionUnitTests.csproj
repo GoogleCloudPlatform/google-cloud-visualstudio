@@ -251,17 +251,29 @@
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
+    <Compile Include="MockedGlobalServiceProviderTestsBase.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdWindowContentTests.cs" />
+    <Compile Include="Projects\DotNet4\CsprojProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\CsprojProjectTests.cs" />
+    <Compile Include="Projects\FakeParsedProject.cs" />
+    <Compile Include="Projects\ParsedDteProjectExtensionsTests.cs" />
+    <Compile Include="Projects\ProjectParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowViewModelTests.cs" />
     <Compile Include="PublishDialog\Steps\Choice\ChoiceStepViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\ChoiceTests.cs" />
     <Compile Include="PublishDialog\Steps\Flex\FlexStepViewModelTests.cs" />
     <Compile Include="PublishDialog\Steps\Gce\GceStepViewModelTests.cs" />
     <Compile Include="PublishDialog\Steps\Gke\GkeStepViewModelTests.cs" />
     <Compile Include="PublishDialog\Steps\PublishDialogStepBaseTests.cs" />
     <Compile Include="ServiceProviderMockExtensions.cs" />
+    <Compile Include="Services\FileSystem\FileSystemServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IoFileServiceTests.cs" />
+    <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
+    <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItemTests.cs" />
@@ -354,6 +366,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\GoogleCloudExtension\source.extension.vsixmanifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Services\FileSystem\Resources\TestXmlFile.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

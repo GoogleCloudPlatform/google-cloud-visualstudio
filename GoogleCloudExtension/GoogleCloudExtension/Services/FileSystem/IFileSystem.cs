@@ -12,28 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Deployment.UnitTests
+
+namespace GoogleCloudExtension.Services.FileSystem
 {
-    public class FakeParsedProject : IParsedProject
+    /// <summary>
+    /// Service interface for performing file system operations.
+    /// </summary>
+    public interface IFileSystem
     {
         /// <summary>
-        /// The name of the project.
+        /// File operations. Matches the static members of <see cref="System.IO.File"/>
         /// </summary>
-        public string Name { get; set; }
+        IFile File { get; }
 
         /// <summary>
-        /// The full path to the project, including the project file.
+        /// XDocument load operations. Matches the static methods of <see cref="XDocument"/>
         /// </summary>
-        public string FullPath { get; set; }
-
-        /// <summary>
-        /// The full path to the directory that contains the project file.
-        /// </summary>
-        public string DirectoryPath { get; set; }
-
-        /// <summary>
-        /// The type of the project.
-        /// </summary>
-        public KnownProjectTypes ProjectType { get; set; }
+        IXDocument XDocument { get; }
     }
 }

@@ -24,23 +24,37 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
     public class Choice : Model
     {
         /// <summary>
+        /// Gets the ID string of the choice. i.e. Gae, Gce, Gke.
+        /// </summary>
+        public string Id { get; }
+
+        /// <summary>
         /// Returns the name of the choice, App Engine, GCE, etc...
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
         /// The tooltip string for the choice button.
         /// </summary>
-        public string ToolTip { get; set; }
-
-        /// <summary>
-        /// The command to execute when the user presses on the choice.
-        /// </summary>
-        public ICommand Command { get; set; }
+        public string ToolTip { get; }
 
         /// <summary>
         /// The icon to show for the choice.
         /// </summary>
-        public ImageSource Icon { get; set; }
+        public ImageSource Icon { get; }
+
+        /// <summary>
+        /// The command to execute when the user presses on the choice.
+        /// </summary>
+        public ICommand Command { get; }
+
+        public Choice(string id, string name, string toolTip, ImageSource icon, ICommand command)
+        {
+            Id = id;
+            Name = name;
+            ToolTip = toolTip;
+            Icon = icon;
+            Command = command;
+        }
     }
 }

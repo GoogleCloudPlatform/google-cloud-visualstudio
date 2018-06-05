@@ -19,6 +19,8 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
+using GoogleCloudExtension.Services.VsProject;
+using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -46,36 +48,42 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             Name = "AInstace",
             Status = "RUNNING",
+            Zone = "https://zoneA",
             Disks = new[] { new AttachedDisk { Boot = true, Licenses = new[] { WindowsServer2008License } } }
         };
         private static readonly Instance s_windows2008StagingInstance = new Instance
         {
             Name = "BInstace",
             Status = "STAGING",
+            Zone = "https://zoneB",
             Disks = new[] { new AttachedDisk { Boot = true, Licenses = new[] { WindowsServer2008License } } }
         };
         private static readonly Instance s_windows2016Instance = new Instance
         {
             Name = "CInstace",
             Status = "RUNNING",
+            Zone = "https://zoneC",
             Disks = new[] { new AttachedDisk { Boot = true, Licenses = new[] { WindowsServer2016License } } }
         };
         private static readonly Instance s_nonWindowsInstance = new Instance
         {
             Name = "DInstace",
             Status = "RUNNING",
+            Zone = "https://zoneD",
             Disks = new[] { new AttachedDisk { Boot = true, Licenses = new[] { AnyOtherLicense } } }
         };
         private static readonly Instance s_windows2012Instance = new Instance
         {
             Name = "EInstace",
             Status = "RUNNING",
+            Zone = "https://zoneE",
             Disks = new[] { new AttachedDisk { Boot = true, Licenses = new[] { WindowsServer2012License } } }
         };
         private static readonly Instance s_nonBootWindows2012Instance = new Instance
         {
             Name = "FInstace",
             Status = "RUNNING",
+            Zone = "https://zoneF",
             Disks = new[] { new AttachedDisk { Boot = false, Licenses = new[] { WindowsServer2012License } } }
         };
 
@@ -110,16 +118,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         private TaskCompletionSource<IList<Instance>> _getInstanceListTaskSource;
         private Mock<IWindowsCredentialsStore> _windowsCredentialStoreMock;
         private Mock<Action<Instance>> _manageCredentialsPromptMock;
-        private IPublishDialog _mockedPublishDialog;
         private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
         private int _canPublishChangedCount = 0;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private FakeParsedProject _parsedProject;
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == VisualStudioProjectName);
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
@@ -135,9 +145,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _windowsCredentialStoreMock = new Mock<IWindowsCredentialsStore>();
             _manageCredentialsPromptMock = new Mock<Action<Instance>>();
 
+            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
             _objectUnderTest = new GceStepViewModel(
                 mockedDataSource, mockedApiManager, _pickProjectPromptMock.Object, _windowsCredentialStoreMock.Object,
-                _manageCredentialsPromptMock.Object, _mockedPublishDialog);
+                _manageCredentialsPromptMock.Object, Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject));
 
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
@@ -223,12 +234,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCredentials_ToNullDisablesCanPublish()
+        public void TestSetSelectedCredentials_ToNullDisablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCredentials =
                 new WindowsInstanceCredentials("User2", "Password2");
             _canPublishChangedCount = 0;
@@ -240,12 +251,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
-        public async Task TestSetSelectedCredentials_EnablesCanPublish()
+        public void TestSetSelectedCredentials_EnablesCanPublish()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(s_windows2016Instance))
                 .Returns(s_credentialsList);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCredentials = null;
             _canPublishChangedCount = 0;
 
@@ -310,9 +321,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         [TestMethod]
         public void TestClearLoadedProjectData_ClearsInstances()
         {
-            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
-            Assert.IsFalse(onVisibleTask.IsCompleted);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Instances);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.Instances));
         }
@@ -320,9 +331,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         [TestMethod]
         public void TestClearLoadedProjectData_SetsSelectedInstanceToNull()
         {
-            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
-            Assert.IsFalse(onVisibleTask.IsCompleted);
+            Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
             Assert.IsNull(_objectUnderTest.SelectedInstance);
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.SelectedInstance));
         }
@@ -330,11 +341,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         [TestMethod]
         public async Task TestLoadAnyProjectDataAsync_SetsInstancesToRunningWindowsInstances()
         {
-            Task asyncAction = _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _changedProperties.Clear();
 
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await asyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.AreEqual(s_runningWindowsInstances.ToList(), _objectUnderTest.Instances.ToList());
         }
@@ -342,11 +353,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         [TestMethod]
         public async Task TestLoadAnyProjectDataAsync_SetsSelectedInstance()
         {
-            Task asyncAction = _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             _changedProperties.Clear();
 
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await asyncAction;
+            await _objectUnderTest.LoadProjectTask.SafeTask;
 
             CollectionAssert.Contains(s_runningWindowsInstances.ToList(), _objectUnderTest.SelectedInstance);
         }
@@ -363,10 +374,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
-        public async Task TestRefreshInstancesCommand_EnabledByValidProject()
+        public void TestRefreshInstancesCommand_EnabledByValidProject()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             CredentialsStore.Default.UpdateCurrentProject(null);
 
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
@@ -375,16 +386,164 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
-        public async Task TestRefreshInstancesCommand_DisabledByInvalidProject()
+        public void TestRefreshInstancesCommand_DisabledByInvalidProject()
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             CredentialsStore.Default.UpdateCurrentProject(null);
 
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
+        }
 
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsInstanceProperties()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName))
+                .Returns(targetInstance.Name);
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName))
+                .Returns(targetInstance.GetZoneName());
+
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(targetInstance, _objectUnderTest.SelectedInstance);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsCredentialProperty()
+        {
+            var targetCredentials = new WindowsInstanceCredentials("user2", "passwrod");
+            _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(It.IsAny<Instance>())).Returns(
+                new[]
+                {
+                    new WindowsInstanceCredentials("user1", "password"),
+                    targetCredentials,
+                    new WindowsInstanceCredentials("user3", "passwrod")
+                });
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName))
+                .Returns(targetCredentials.User);
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(targetCredentials, _objectUnderTest.SelectedCredentials);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(bool.FalseString);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_HandlesNonBoolOpenWebsiteProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns("unparseable");
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsLaunchRemoteDebuggerProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Returns(bool.TrueString);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.LaunchRemoteDebugger);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_HandlesNonBoolLaunchRemoteDebuggerProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Returns("unparseable");
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.LaunchRemoteDebugger);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceNameProperty()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _objectUnderTest.SelectedInstance = targetInstance;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName, targetInstance.Name));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceZoneProperty()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _objectUnderTest.SelectedInstance = targetInstance;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName, targetInstance.GetZoneName()));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceUserNameProperty()
+        {
+            const string userName = "testUserName";
+            _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials(userName, "password");
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName, userName));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesOpenWebsiteProperty()
+        {
+            _objectUnderTest.OpenWebsite = false;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName, bool.FalseString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesLaunchRemoteDebuggerProperty()
+        {
+            _objectUnderTest.LaunchRemoteDebugger = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName, bool.TrueString));
         }
     }
 }

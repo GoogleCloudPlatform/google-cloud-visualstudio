@@ -19,6 +19,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -48,24 +49,33 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private TaskCompletionSource<bool> _setAppRegionTaskSource;
         private IPublishDialog _mockedPublishDialog;
         private Mock<Func<Project>> _pickProjectPromptMock;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private EnvDTE.Project _mockedProject;
 
         [ClassInitialize]
-        public static void BeforeAll(TestContext context) => GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
+        public static void BeforeAll(TestContext context) =>
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2088-12-23 01:01:01");
 
         [ClassCleanup]
         public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
 
         protected override void BeforeEach()
         {
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _setAppRegionTaskSource = new TaskCompletionSource<bool>();
 
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == VisualStudioProjectName);
+            _mockedProject = Mock.Of<EnvDTE.Project>();
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(
+                pd => pd.Project.Name == VisualStudioProjectName && pd.Project.Project == _mockedProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
             _apiManagerMock = new Mock<IApiManager>();
-            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(Task.FromResult(true));
+            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
+                .Returns(Task.FromResult(true));
 
             _gaeDataSourceMock = new Mock<IGaeDataSource>();
             _gaeDataSourceMock.Setup(x => x.GetApplicationAsync()).Returns(() => _getApplicationTaskSource.Task);
@@ -97,24 +107,24 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_NoProjectSetsNeedsAppCreated()
+        public void TestValidateProjectAsync_NoProjectSetsNeedsAppCreated()
         {
             CredentialsStore.Default.UpdateCurrentProject(null);
             _objectUnderTest.NeedsAppCreated = true;
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             _gaeDataSourceMock.Verify(src => src.GetApplicationAsync(), Times.Never());
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_ErrorInApplicationValidation()
+        public void TestValidateProjectAsync_ErrorInApplicationValidation()
         {
             _getApplicationTaskSource.SetException(new DataSourceException());
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
@@ -123,12 +133,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_NeedsAppCreated()
+        public void TestValidateProjectAsync_NeedsAppCreated()
         {
             _getApplicationTaskSource.SetResult(null);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsTrue(_objectUnderTest.NeedsAppCreated);
             Assert.IsTrue(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
@@ -136,13 +146,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestValidateProjectAsync_Succeeds()
+        public void TestValidateProjectAsync_Succeeds()
         {
             _objectUnderTest.NeedsAppCreated = true;
             _getApplicationTaskSource.SetResult(_mockedApplication);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
             Assert.IsFalse(_objectUnderTest.SetAppRegionCommand.CanExecuteCommand);
@@ -162,11 +172,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         {
             _setAppRegionTaskSource.SetResult(true);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
-            Task onVisibleTask = _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.SetAppRegionCommand.Execute(null);
 
-            Assert.IsFalse(onVisibleTask.IsCompleted);
             Assert.IsTrue(_objectUnderTest.LoadProjectTask.IsPending);
         }
 
@@ -191,55 +200,175 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Null()
+        public void TestSetVersion_Null()
         {
             _objectUnderTest.Version = null;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.IsNull(_objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Empty()
+        public void TestSetVersion_Empty()
         {
             _objectUnderTest.Version = string.Empty;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(string.Empty, _objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Invalid()
+        public void TestSetVersion_Invalid()
         {
             _objectUnderTest.Version = InvalidVersion;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(InvalidVersion, _objectUnderTest.Version);
             Assert.IsTrue(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestSetVersion_Valid()
+        public void TestSetVersion_Valid()
         {
             _objectUnderTest.Version = ValidVersion;
-            await _objectUnderTest.ValidationDelayTask;
 
             Assert.AreEqual(ValidVersion, _objectUnderTest.Version);
             Assert.IsFalse(_objectUnderTest.HasErrors);
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_SetsNeedsAppCreatedAndVersion()
+        public void TestSaveProjectProperties_SavesPromoteProperty()
         {
-            _objectUnderTest.NeedsAppCreated = true;
-            _objectUnderTest.Version = null;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.Promote = true;
 
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
+            _objectUnderTest.OnNotVisible();
 
-            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName, bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesOpenWebsiteProperty()
+        {
+            _objectUnderTest.OpenWebsite = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName, bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesNextVersionPropertyForNonStandard()
+        {
+            const string versionString = "version-string-2";
+            _objectUnderTest.Version = versionString;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.NextVersionProjectPropertyName, versionString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForDefaultProperty()
+        {
+            _objectUnderTest.Version = "12345678t123456";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForEmptyProperty()
+        {
+            _objectUnderTest.Version = "   ";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsPromoteProperty()
+        {
+            string promoteProperty = bool.FalseString;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.Promote);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SkipLoadOfUnparsablePromoteProperty()
+        {
+            const string promoteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.Promote);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
+        {
+            string openWebsiteProperty = bool.FalseString;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SkipLoadOfUnparsableOpenWebSiteProperty()
+        {
+            const string openWebsiteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsNextVersionProperty()
+        {
+            const string nextVersionProperty = "NextVersion";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(nextVersionProperty, _objectUnderTest.Version);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SetsVersionToDefaultOnEmptyNextVersionProperty()
+        {
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2008-08-08 08:08:08");
+            const string nextVersionProperty = " ";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
+
+            _objectUnderTest.OnVisible();
+
             Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.Version);
         }
     }

@@ -21,25 +21,21 @@ namespace GoogleCloudExtension.Projects.DotNet4
     /// <summary>
     /// This class represents .NET 4.x .csproj based project.
     /// </summary>
-    internal class CsprojProject : IParsedProject
+    internal class CsprojProject : IParsedDteProject
     {
-        private readonly Project _project;
+        public Project Project { get; }
 
-        #region IParsedProject
+        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
 
-        public string DirectoryPath => Path.GetDirectoryName(_project.FullName);
+        public string FullPath => Project.FullName;
 
-        public string FullPath => _project.FullName;
-
-        public string Name => _project.Name;
+        public string Name => Project.Name;
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
 
-        #endregion
-
         public CsprojProject(Project project)
         {
-            _project = project;
+            Project = project;
         }
     }
 }

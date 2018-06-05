@@ -12,20 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Deployment.UnitTests;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
@@ -38,19 +40,21 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         private ChoiceStepViewModel _objectUnderTest;
         private IPublishDialog _mockedPublishDialog;
         private FakeParsedProject _parsedProject;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
 
         protected override void BeforeEach()
         {
-
-            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
+            _parsedProject = new FakeParsedProject
+            {
+                Name = VisualStudioProjectName,
+                ProjectType = KnownProjectTypes.WebApplication
+            };
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
-            _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
-        }
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-        protected override void AfterEach()
-        {
-            Mock.Get(_mockedPublishDialog).Raise(d => d.FlowFinished += null, EventArgs.Empty);
+            _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
         }
 
         [TestMethod]
@@ -61,10 +65,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_WebApplication()
+        public void TestChoices_WebApplication()
         {
             _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -87,10 +91,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_DotnetCore()
+        public void TestChoices_DotnetCore()
         {
             _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -113,10 +117,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestChoices_None()
+        public void TestChoices_None()
         {
             _parsedProject.ProjectType = KnownProjectTypes.None;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
                 new[]
@@ -147,35 +151,48 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_ResetsChoicesAndPublishDialog()
+        public void TestOnFlowFinished_RemovesProperty()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
-            _objectUnderTest.Choices = null;
+            _objectUnderTest.OnVisible();
 
-            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
+            Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, EventArgs.Empty);
 
-            CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(
+                    _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName));
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_RemovesHandlers()
+        public void TestOnFlowFinished_RemovesHandlers()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
-            _objectUnderTest.Choices = null;
+            _propertyServiceMock.ResetCalls();
 
             Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
 
-            Assert.IsNull(_objectUnderTest.Choices);
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(
+                    _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName), Times.Never);
         }
 
         [TestMethod]
-        public async Task TestOnAppEngineChoiceCommand()
+        public void TestOnNotVisible_RemovesHandlers()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.OnNotVisible();
+            _propertyServiceMock.ResetCalls();
+
+            Mock.Get(_mockedPublishDialog).Raise(dg => dg.FlowFinished += null, EventArgs.Empty);
+
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(It.IsAny<Project>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestOnAppEngineChoiceCommand_PushesFlexStep()
+        {
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepAppEngineFlexName).Command
                 .Execute(null);
@@ -184,11 +201,24 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnGkeChoiceCommand()
+        public void TestOnAppEngineChoiceCommand_SavesProjectProperty()
+        {
+            _objectUnderTest.OnVisible();
+
+            _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepAppEngineFlexName).Command
+                .Execute(null);
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
+                    ChoiceStepViewModel.GaeChoiceId));
+        }
+
+        [TestMethod]
+        public void TestOnGkeChoiceCommand_PushesGkeStep()
 
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGkeName).Command
                 .Execute(null);
@@ -197,16 +227,84 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
-        public async Task TestOnGceChoiceCommand()
+        public void TestOnGkeChoiceCommand_SavesProjectProperty()
 
         {
-            _parsedProject.ProjectType = KnownProjectTypes.WebApplication;
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
+
+            _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGkeName).Command
+                .Execute(null);
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
+                    ChoiceStepViewModel.GkeChoiceId));
+        }
+
+        [TestMethod]
+        public void TestOnGceChoiceCommand_PushesGceStep()
+
+        {
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGceName).Command
                 .Execute(null);
 
             Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GceStepContent>()));
+        }
+
+        [TestMethod]
+        public void TestOnGceChoiceCommand_SavesProjectProperty()
+
+        {
+            _objectUnderTest.OnVisible();
+
+            _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGceName).Command
+                .Execute(null);
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
+                    ChoiceStepViewModel.GceChoiceId));
+        }
+
+        [TestMethod]
+        public void TestExecutePreviousChoice_DoesNothingForNoPreviousChoice()
+        {
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExecutePreviousChoice();
+
+            Mock.Get(_mockedPublishDialog).Verify(
+                pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestExecutePreviousChoice_DoesNothingForInvalidPreviousChoice()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(
+                        _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns("InvalidChoice");
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExecutePreviousChoice();
+
+            Mock.Get(_mockedPublishDialog).Verify(
+                pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestExecutePreviousChoice_ExecutesPreviousValidChoice()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(
+                        _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns(ChoiceStepViewModel.GkeChoiceId);
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExecutePreviousChoice();
+
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.NavigateToStep(It.IsAny<GkeStepContent>()));
         }
     }
 }

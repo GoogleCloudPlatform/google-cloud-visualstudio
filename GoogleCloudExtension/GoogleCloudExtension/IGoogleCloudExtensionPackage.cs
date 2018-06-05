@@ -46,5 +46,20 @@ namespace GoogleCloudExtension
         /// The tool window instance, or null if the given id does not already exist and create was false.
         /// </returns>
         TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane;
+
+        /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns></returns>
+        I GetService<S, I>();
+
+        /// <summary>
+        /// Gets a service registered and used as one type.
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
+        /// <returns></returns>
+        T GetService<T>() where T : class;
     }
 }

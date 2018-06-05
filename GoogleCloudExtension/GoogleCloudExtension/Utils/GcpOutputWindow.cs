@@ -30,10 +30,10 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<IVsOutputWindowPane> s_outputWindowPane = new Lazy<IVsOutputWindowPane>(() =>
         {
             var outputWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-            outputWindow.CreatePane(s_windowGuid, WindowTitle, 1, 1);
+            outputWindow?.CreatePane(s_windowGuid, WindowTitle, 1, 1);
 
             IVsOutputWindowPane outputWindowPane = null;
-            outputWindow.GetPane(s_windowGuid, out outputWindowPane);
+            outputWindow?.GetPane(s_windowGuid, out outputWindowPane);
 
             return outputWindowPane;
         });
@@ -44,8 +44,8 @@ namespace GoogleCloudExtension.Utils
         /// <param name="str">The line of text to output.</param>
         public static void OutputLine(string str)
         {
-            s_outputWindowPane.Value.OutputString(str);
-            s_outputWindowPane.Value.OutputString("\n");
+            s_outputWindowPane.Value?.OutputString(str);
+            s_outputWindowPane.Value?.OutputString("\n");
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public static void Activate()
         {
-            s_outputWindowPane.Value.Activate();
+            s_outputWindowPane.Value?.Activate();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public static void Clear()
         {
-            s_outputWindowPane.Value.Clear();
+            s_outputWindowPane.Value?.Clear();
         }
     }
 }
