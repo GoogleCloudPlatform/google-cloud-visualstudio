@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
+using EnvDTE;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
@@ -23,33 +24,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {
     [TestClass]
-    public class PublishDialogWindowViewModelTests
+    public class PublishDialogWindowViewModelTests : ExtensionTestBase
     {
-        private IParsedProject _mockedParsedProject;
+        private IParsedDteProject _mockedParsedProject;
         private PublishDialogWindowViewModel _objectUnderTest;
         private Action _mockedCloseWindowAction;
         private Mock<IStepContent<IPublishDialogStep>> _stepContentMock;
         private List<string> _changedProperties;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _mockedCloseWindowAction = Mock.Of<Action>();
-            _mockedParsedProject = Mock.Of<IParsedProject>();
+            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project == Mock.Of<Project>());
             _changedProperties = new List<string>();
 
             _objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
 
             _stepContentMock = new Mock<FrameworkElement>().As<IStepContent<IPublishDialogStep>>();
-            _stepContentMock.Setup(c => c.ViewModel.OnVisibleAsync()).Returns(Task.CompletedTask);
-
+            _stepContentMock.DefaultValueProvider = DefaultValueProvider.Mock;
         }
         [TestMethod]
         public void TestConstructor_SetsProject()
@@ -212,7 +210,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public void TestFinishFlow_TriggersFlowFinishedEvent()
         {
-            bool isCalled = false;
+            var isCalled = false;
             _objectUnderTest.FlowFinished += (sender, args) => isCalled = true;
 
             _objectUnderTest.FinishFlow();

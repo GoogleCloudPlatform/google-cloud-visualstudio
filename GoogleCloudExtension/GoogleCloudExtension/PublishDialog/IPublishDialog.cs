@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps;
 using System;
 using System.Threading.Tasks;
@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Returns the the VS project selected by the user.
         /// </summary>
-        IParsedProject Project { get; }
+        IParsedDteProject Project { get; }
 
         /// <summary>
         /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and sets the step
