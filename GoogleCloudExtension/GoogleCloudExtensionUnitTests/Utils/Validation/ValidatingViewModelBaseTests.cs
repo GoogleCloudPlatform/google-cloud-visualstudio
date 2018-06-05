@@ -115,6 +115,21 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
         }
 
         [TestMethod]
+        public void TestPropertyHasErrors_GivenNullReturnsHasError()
+        {
+            _testObject.Delay = -1;
+            _testObject.SetValidationResults(s_invalidResults, TestPropertyName);
+
+            Assert.IsTrue(_testObject.PropertyHasErrors(null));
+        }
+
+        [TestMethod]
+        public void TestPropertyHasErrors_GivenUnknownPropertyRetrunsFalse()
+        {
+            Assert.IsFalse(_testObject.PropertyHasErrors("Unknown Property"));
+        }
+
+        [TestMethod]
         public void TestGetErrors_DoesNotReturnPendingErrors()
         {
             _testObject.Delay = -1;
@@ -235,6 +250,23 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
             _testObject.SetValidationResults(s_invalidResults, null);
         }
 
+        [TestMethod]
+        public async Task TestSetValidationResults_GivenNullResultsSetsEmptyValidations()
+        {
+            _testObject.Delay = 0;
+
+            _testObject.SetValidationResults(null, TestPropertyName);
+            await _testObject.LatestDelayedValidationUpdateTask;
+
+            CollectionAssert.That.IsEmpty(_testObject.GetErrors(TestPropertyName));
+        }
+
+        [TestMethod]
+        public void TestHasErrorsChanged_DoesNothing()
+        {
+            _testObject.HasErrorsChangedBase();
+        }
+
         private class TestModel : ValidatingViewModelBase
         {
             private int _intField;
@@ -266,7 +298,12 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
                 base.SetAndRaiseWithValidation(ref storage, value, validations, propertyName);
             }
 
-            protected override void HasErrorsChanged() => HasErrorChangedCallCount++;
+            public void HasErrorsChangedBase() => base.HasErrorsChanged();
+
+            protected override void HasErrorsChanged()
+            {
+                HasErrorChangedCallCount++;
+            }
 
             public int HasErrorChangedCallCount { get; private set; } = 0;
         }

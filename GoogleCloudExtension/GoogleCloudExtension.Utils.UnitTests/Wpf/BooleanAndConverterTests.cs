@@ -22,6 +22,14 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
     [TestClass]
     public class BooleanAndConverterTests
     {
+        private BooleanAndConverter _objectUnderTest;
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _objectUnderTest = new BooleanAndConverter();
+        }
+
         [TestMethod]
         [DataRow(new object[] { true, true }, true)]
         [DataRow(new object[] { false, true }, false)]
@@ -29,7 +37,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         [DataRow(new object[] { "false", "true" }, false)]
         public void TestConvert_ArrayOfBools(object[] values, bool expectedResult)
         {
-            object result = new BooleanAndConverter().Convert(
+            object result = _objectUnderTest.Convert(
                 values, typeof(bool), null, CultureInfo.CurrentUICulture);
 
             Assert.AreEqual(expectedResult, result);
@@ -42,7 +50,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         [DataRow(new object[] { "false", "true" }, false)]
         public void TestConvert_ArrayOfBoolsToString(object[] values, bool expectedResult)
         {
-            object result = new BooleanAndConverter().Convert(
+            object result = _objectUnderTest.Convert(
                 values, typeof(string), null, CultureInfo.CurrentUICulture);
 
             Assert.AreEqual(expectedResult.ToString(CultureInfo.CurrentUICulture), result);
@@ -51,10 +59,15 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         [TestMethod]
         public void TestConvert_UnconvertableValueThrows()
         {
-            var objectUnderTest = new BooleanAndConverter();
             Assert.ThrowsException<InvalidCastException>(
-                () => objectUnderTest.Convert(
+                () => _objectUnderTest.Convert(
                     new[] { new object() }, typeof(bool), null, CultureInfo.CurrentUICulture));
+        }
+
+        [TestMethod]
+        public void TestConvertBack_ThrowsNotSupported()
+        {
+            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.ConvertBack(null, null, null, null));
         }
     }
 }

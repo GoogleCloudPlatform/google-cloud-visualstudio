@@ -17,6 +17,9 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Services.FileSystem;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -152,6 +155,48 @@ namespace GoogleCloudExtensionUnitTests
             RunPackageInitalize();
 
             Assert.IsFalse(_objectUnderTest.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestGetServicesSI_GetsServiceOfTypeIRegisteredByS()
+        {
+            Mock<IVsSolution> solutionMock = ServiceProviderMock.SetupService<SVsSolution, IVsSolution>();
+            RunPackageInitalize();
+
+            IVsSolution service = _objectUnderTest.GetService<SVsSolution, IVsSolution>();
+
+            Assert.AreEqual(solutionMock.Object, service);
+        }
+
+        [TestMethod]
+        public void TestGetServicesT_GetsService()
+        {
+            RunPackageInitalize();
+
+            var service = _objectUnderTest.GetService<DTE>();
+
+            Assert.AreEqual(DteMock.Object, service);
+        }
+
+        [TestMethod]
+        public void TestGetServicesT_GetsServiceFromMef()
+        {
+            Mock<IComponentModel> serviceMock = ServiceProviderMock.SetupService<SComponentModel, IComponentModel>();
+            var mockedFileSystemService = Mock.Of<IFileSystem>();
+            serviceMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
+            RunPackageInitalize();
+
+            var service = _objectUnderTest.GetService<IFileSystem>();
+
+            Assert.AreEqual(mockedFileSystemService, service);
+        }
+
+        [TestMethod]
+        public void TestShowOptionPage_OptionPage()
+        {
+            RunPackageInitalize();
+
+            _objectUnderTest.ShowOptionPage<AnalyticsOptions>();
         }
 
         private static string GetVsixManifestVersion()
