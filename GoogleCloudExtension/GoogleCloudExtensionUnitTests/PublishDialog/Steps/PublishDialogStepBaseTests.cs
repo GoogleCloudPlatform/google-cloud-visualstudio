@@ -18,6 +18,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -65,7 +66,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             protected override void ClearLoadedProjectData() => ClearLoadedProjectDataCallCount++;
 
-            public int ClearLoadedProjectDataCallCount { get; private set; } = 0;
+            public int ClearLoadedProjectDataCallCount { get; set; } = 0;
 
             protected override async Task LoadAnyProjectDataAsync()
             {
@@ -93,26 +94,21 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             public new bool IsValidGcpProject
             {
-                get { return base.IsValidGcpProject; }
-                set { base.IsValidGcpProject = value; }
+                get => base.IsValidGcpProject;
+                set => base.IsValidGcpProject = value;
             }
 
             public override IProtectedCommand PublishCommand { get; }
 
-            protected override async Task InitializeDialogAsync()
-            {
-                InitializeDialogAsyncCallCount++;
-                await InitializeDialogAsyncResult.Task;
-                InitializeDialogAsyncResult = new TaskCompletionSource<object>();
-            }
-
-            public TaskCompletionSource<object> InitializeDialogAsyncResult { get; private set; } = new TaskCompletionSource<object>();
-
-            public int InitializeDialogAsyncCallCount { get; private set; } = 0;
-
-            public async Task InitializeDialogAsyncBase() => await base.InitializeDialogAsync();
-
             protected internal override void OnFlowFinished() => OnFlowFinishedCallCount++;
+
+            protected override void LoadProjectProperties() => LoadPropertiesCallCount++;
+
+            public int LoadPropertiesCallCount { get; private set; }
+
+            protected override void SaveProjectProperties() => SavePropertiesCallCount++;
+
+            public int SavePropertiesCallCount { get; private set; }
 
             public void OnFlowFinishedBase() => base.OnFlowFinished();
 
@@ -129,12 +125,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             public Task ValidateProjectAsyncBase() => base.ValidateProjectAsync();
 
-            protected override void OnIsValidGcpProjectChanged()
-            {
-                OnIsValidGcpProjectChangedCallCount++;
-            }
+            protected override void OnIsValidGcpProjectChanged() => OnIsValidGcpProjectChangedCallCount++;
 
             public int OnIsValidGcpProjectChangedCallCount { get; set; }
+
+            public Task LoadProjectAsync()
+            {
+                LoadProject();
+                return LoadProjectTask.SafeTask;
+            }
         }
 
         protected override void BeforeEach()
@@ -173,21 +172,43 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public async Task TestOnVisible_Initializes()
+        public void TestOnVisible_EnablesSelectProjectCommand()
         {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
 
-            Assert.AreEqual(_mockedPublishDialog, _objectUnderTest.PublishDialog);
             Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
-            Assert.AreEqual(1, _objectUnderTest.InitializeDialogAsyncCallCount);
         }
 
         [TestMethod]
-        public async Task TestOnVisible_AddsFlowFinishedHandler()
+        public void TestOnVisible_RaisesGcpProjectIdPropertyChanged()
         {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
+
+            CollectionAssert.Contains(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
+        }
+
+        [TestMethod]
+        public void TestOnVisible_StartsProjectLoad()
+        {
+            AsyncProperty originalLoadProjectTask = _objectUnderTest.LoadProjectTask;
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreNotEqual(originalLoadProjectTask, _objectUnderTest.LoadProjectTask);
+        }
+
+        [TestMethod]
+        public void TestOnVisible_LoadsProperties()
+        {
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(1, _objectUnderTest.LoadPropertiesCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnVisible_AddsFlowFinishedHandler()
+        {
+            _objectUnderTest.OnVisible();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
             CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
 
@@ -195,10 +216,17 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public async Task TestOnNotVisible_RemovesOldFlowFinishedHandler()
+        public void TestOnNotVisible_SavesProperties()
         {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnNotVisible();
+
+            Assert.AreEqual(1, _objectUnderTest.SavePropertiesCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnNotVisible_RemovesOldFlowFinishedHandler()
+        {
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.OnNotVisible();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
@@ -330,17 +358,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public void TestInitializeDialogAsync_RaisesGcpProjectIdPropertyChanged()
-        {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-
-            Task initTask = _objectUnderTest.InitializeDialogAsyncBase();
-
-            Assert.IsFalse(initTask.IsCompleted);
-            CollectionAssert.Contains(_changedProperties, nameof(PublishDialogStepBase.GcpProjectId));
-        }
-
-        [TestMethod]
         public void TestEnableApisCommand_CallsEnableServices()
         {
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
@@ -373,10 +390,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_ResetsProperties()
+        public void TestOnFlowFinished_ResetsProperties()
         {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ClearLoadedProjectDataCallCount = 0;
 
             _objectUnderTest.OnFlowFinishedBase();
 
@@ -389,10 +406,17 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
-        public async Task TestOnFlowFinished_RemovesHandlers()
+        public void TestOnFlowFinished_SavesProjectProperties()
         {
-            _objectUnderTest.InitializeDialogAsyncResult.SetResult(null);
-            await _objectUnderTest.OnVisibleAsync();
+            _objectUnderTest.OnFlowFinishedBase();
+
+            Assert.AreEqual(1, _objectUnderTest.SavePropertiesCallCount);
+        }
+
+        [TestMethod]
+        public void TestOnFlowFinished_RemovesHandlers()
+        {
+            _objectUnderTest.OnVisible();
 
             _objectUnderTest.OnFlowFinishedBase();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);

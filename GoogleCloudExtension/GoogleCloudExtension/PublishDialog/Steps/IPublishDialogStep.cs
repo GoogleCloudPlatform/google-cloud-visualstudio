@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils;
 using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog.Steps
 {
@@ -28,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        Task OnVisibleAsync();
+        void OnVisible();
 
         void OnNotVisible();
     }

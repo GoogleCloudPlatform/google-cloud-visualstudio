@@ -18,4 +18,9 @@ using System.Diagnostics.CodeAnalysis;
     "Style",
     "VSTHRD200:Use \"Async\" suffix for async methods",
     Justification = "Test naming conventions are different.")]
+[assembly: SuppressMessage(
+    "Usage",
+    "VSTHRD010:Invoke single-threaded types on Main thread",
+    Justification = "Many false positives due to mock setups.")]
+
 

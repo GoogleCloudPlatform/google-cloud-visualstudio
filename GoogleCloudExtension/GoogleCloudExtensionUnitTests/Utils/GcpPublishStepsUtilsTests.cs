@@ -21,6 +21,12 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class GcpPublishStepsUtilsTests
     {
+        [TestCleanup]
+        public void AfterEach()
+        {
+            GcpPublishStepsUtils.NowOverride = null;
+        }
+
         [TestMethod]
         [DataRow(null)]
         [DataRow("")]
