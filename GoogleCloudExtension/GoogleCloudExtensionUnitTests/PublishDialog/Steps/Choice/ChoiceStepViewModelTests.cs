@@ -211,7 +211,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
                     _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
-                    ChoiceStepViewModel.GaeChoiceId));
+                    ChoiceType.Gae.ToString()));
         }
 
         [TestMethod]
@@ -238,7 +238,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
                     _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
-                    ChoiceStepViewModel.GkeChoiceId));
+                    ChoiceType.Gke.ToString()));
         }
 
         [TestMethod]
@@ -265,7 +265,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
                     _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
-                    ChoiceStepViewModel.GceChoiceId));
+                    ChoiceType.Gce.ToString()));
         }
 
         [TestMethod]
@@ -294,12 +294,27 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         }
 
         [TestMethod]
+        public void TestExecutePreviousChoice_DoesNothingForPreviousChoiceNone()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(
+                        _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns(ChoiceType.None.ToString());
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExecutePreviousChoice();
+
+            Mock.Get(_mockedPublishDialog).Verify(
+                pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()), Times.Never);
+        }
+
+        [TestMethod]
         public void TestExecutePreviousChoice_ExecutesPreviousValidChoice()
         {
             _propertyServiceMock.Setup(
                     s => s.GetUserProperty(
                         _parsedProject.Project, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
-                .Returns(ChoiceStepViewModel.GkeChoiceId);
+                .Returns(ChoiceType.Gke.ToString());
 
             _objectUnderTest.OnVisible();
             _objectUnderTest.ExecutePreviousChoice();

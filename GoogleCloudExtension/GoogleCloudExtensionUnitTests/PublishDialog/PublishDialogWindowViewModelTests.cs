@@ -86,7 +86,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
                 .Setup(
                     s => s.GetUserProperty(
                         It.IsAny<Project>(), ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
-                .Returns(ChoiceStepViewModel.GkeChoiceId);
+                .Returns(ChoiceType.Gke.ToString);
 
             var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
 

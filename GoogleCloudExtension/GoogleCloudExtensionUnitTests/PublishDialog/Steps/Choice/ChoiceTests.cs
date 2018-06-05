@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Windows.Input;
@@ -25,8 +26,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         [TestMethod]
         public void TestConstructor_SetsId()
         {
-            const string id = "Test Id";
 
+            const ChoiceType id = ChoiceType.Gce;
             var objectUnderTest = new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(id, null, null, null, null);
 
             Assert.AreEqual(id, objectUnderTest.Id);
@@ -38,7 +39,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             const string name = "Test Name";
 
             var objectUnderTest =
-                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(null, name, null, null, null);
+                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(ChoiceType.None, name, null, null, null);
 
             Assert.AreEqual(name, objectUnderTest.Name);
         }
@@ -49,7 +50,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             const string toolTip = "Test ToolTip";
 
             var objectUnderTest =
-                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(null, null, toolTip, null, null);
+                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(ChoiceType.None, null, toolTip, null, null);
 
             Assert.AreEqual(toolTip, objectUnderTest.ToolTip);
         }
@@ -60,7 +61,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             var icon = new BitmapImage();
 
             var objectUnderTest =
-                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(null, null, null, icon, null);
+                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(ChoiceType.None, null, null, icon, null);
 
             Assert.AreEqual(icon, objectUnderTest.Icon);
         }
@@ -71,7 +72,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             var command = Mock.Of<ICommand>();
 
             var objectUnderTest =
-                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(null, null, null, null, command);
+                new GoogleCloudExtension.PublishDialog.Steps.Choice.Choice(ChoiceType.None, null, null, null, command);
 
             Assert.AreEqual(command, objectUnderTest.Command);
         }
