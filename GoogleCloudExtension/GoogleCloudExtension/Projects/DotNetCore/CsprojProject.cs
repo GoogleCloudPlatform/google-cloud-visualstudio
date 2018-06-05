@@ -14,7 +14,6 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Utils;
 using System.IO;
 
 namespace GoogleCloudExtension.Projects.DotNetCore
@@ -39,8 +38,6 @@ namespace GoogleCloudExtension.Projects.DotNetCore
 
         public CsprojProject(Project project, string targetFramework)
         {
-            GcpOutputWindow.OutputDebugLine($"Found project {project.FullName} targeting {targetFramework}");
-
             Project = project;
             switch (targetFramework)
             {
@@ -57,7 +54,6 @@ namespace GoogleCloudExtension.Projects.DotNetCore
                     break;
 
                 default:
-                    GcpOutputWindow.OutputDebugLine($"Unsupported target framework {targetFramework}");
                     ProjectType = KnownProjectTypes.None;
                     break;
             }

@@ -79,8 +79,6 @@ namespace GoogleCloudExtension.Projects
 
         private static IParsedDteProject ParseCsprojProject(Project project)
         {
-            GcpOutputWindow.OutputDebugLine($"Parsing .csproj {project.FullName}");
-
             try
             {
                 var fileSystem = GoogleCloudExtensionPackage.Instance.GetService<IFileSystem>();
@@ -88,7 +86,6 @@ namespace GoogleCloudExtension.Projects
                 XAttribute sdk = dom.Root?.Attribute(SdkAttributeName);
                 if (sdk != null)
                 {
-                    GcpOutputWindow.OutputDebugLine($"Found a .NET Core style .csproj {sdk.Value}");
                     if (sdk.Value == AspNetCoreSdk)
                     {
                         string targetFramework = dom.Root
@@ -119,7 +116,6 @@ namespace GoogleCloudExtension.Projects
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputDebugLine($"Invalid project file {project.FullName}");
             }
             return null;
         }

@@ -14,13 +14,13 @@
 
 using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Deployment.UnitTests;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -41,16 +41,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
 
         protected override void BeforeEach()
         {
-
-            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
+            _parsedProject = new FakeParsedProject
+            {
+                Name = VisualStudioProjectName,
+                ProjectType = KnownProjectTypes.WebApplication
+            };
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
-            _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
-        }
 
-        protected override void AfterEach()
-        {
-            Mock.Get(_mockedPublishDialog).Raise(d => d.FlowFinished += null, EventArgs.Empty);
+            _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
         }
 
         [TestMethod]
