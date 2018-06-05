@@ -21,6 +21,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -36,6 +37,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
     /// </summary>
     public class GceStepViewModel : PublishDialogStepBase
     {
+        public const string InstanceNameProjectPropertyName = "GoogleComputeEnginePublishInstanceName";
+        public const string InstanceZoneProjectPropertyName = "GoogleComputeEnginePublishInstanceZone";
+        public const string InstanceUserNameProjectPropertyName = "GoogleComputeEnginePublishInstanceUserName";
+        public const string OpenWebsiteProjectPropertyName = "GoogleComputeEnginePublishOpenWebsite";
+        public const string LaunchRemoteDebuggerProjectPropertyName = "GoogleComputeEnginePublishLaunchRemoteDebugger";
+
         // The list of APIs that are required for a succesful deployment to GCE.
         private static readonly IList<string> s_requiredApis = new List<string>
         {
@@ -52,6 +59,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         private bool _openWebsite = true;
         private bool _launchRemoteDebugger = false;
         private IEnumerable<Instance> _instances = Enumerable.Empty<Instance>();
+        private string _lastInstanceNameProperty;
+        private string _lastInstanceZoneNameProperty;
+        private string _lastInstanceUserNameProperty;
 
         /// <summary>
         /// List of APIs required for publishing to the current project.
@@ -64,11 +74,13 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public IEnumerable<Instance> Instances
         {
-            get { return _instances; }
+            get => _instances;
             private set
             {
+                SelectedInstance = value?.FirstOrDefault(i => i.Name == SelectedInstance?.Name && i.GetZoneName() == SelectedInstance?.GetZoneName()) ??
+                    value?.FirstOrDefault(i => i.Name == _lastInstanceNameProperty && i.GetZoneName() == _lastInstanceZoneNameProperty) ??
+                    value?.FirstOrDefault();
                 SetValueAndRaise(ref _instances, value);
-                SelectedInstance = value?.FirstOrDefault();
             }
         }
 
@@ -91,11 +103,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         /// </summary>
         public IEnumerable<WindowsInstanceCredentials> Credentials
         {
-            get { return _credentials; }
+            get => _credentials;
             private set
             {
+                SelectedCredentials = value?.FirstOrDefault(c => c.User == SelectedCredentials?.User) ??
+                    value?.FirstOrDefault(c => c.User == _lastInstanceUserNameProperty) ?? value?.FirstOrDefault();
                 SetValueAndRaise(ref _credentials, value);
-                SelectedCredentials = value?.FirstOrDefault();
             }
         }
 
@@ -282,10 +295,32 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
         protected override void LoadProjectProperties()
         {
+            _lastInstanceNameProperty = PublishDialog.Project.GetUserProperty(InstanceNameProjectPropertyName);
+            _lastInstanceZoneNameProperty = PublishDialog.Project.GetUserProperty(InstanceZoneProjectPropertyName);
+            _lastInstanceUserNameProperty =
+                PublishDialog.Project.GetUserProperty(InstanceUserNameProjectPropertyName);
+            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(OpenWebsiteProjectPropertyName);
+            if (bool.TryParse(openWebsiteProperty, out bool openWebsite))
+            {
+                OpenWebsite = openWebsite;
+            }
+
+            string launchRemoteDebuggerProperty =
+                PublishDialog.Project.GetUserProperty(LaunchRemoteDebuggerProjectPropertyName);
+            if (bool.TryParse(launchRemoteDebuggerProperty, out bool launchRemoteDebugger))
+            {
+                LaunchRemoteDebugger = launchRemoteDebugger;
+            }
         }
 
         protected override void SaveProjectProperties()
         {
+            PublishDialog.Project.SaveUserProperty(InstanceNameProjectPropertyName, SelectedInstance?.Name);
+            PublishDialog.Project.SaveUserProperty(
+                InstanceZoneProjectPropertyName, SelectedInstance?.GetZoneName());
+            PublishDialog.Project.SaveUserProperty(InstanceUserNameProjectPropertyName, SelectedCredentials?.User);
+            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
+            PublishDialog.Project.SaveUserProperty(LaunchRemoteDebuggerProjectPropertyName, LaunchRemoteDebugger.ToString());
         }
 
         #endregion

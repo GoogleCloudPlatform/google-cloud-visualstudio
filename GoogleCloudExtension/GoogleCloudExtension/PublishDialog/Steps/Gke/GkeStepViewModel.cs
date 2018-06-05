@@ -21,6 +21,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -37,7 +38,17 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
-        internal static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+        public const string ClusterIdProjectPropertyName = "GoogleKubernetesEnginePublishClusterId";
+        public const string DeploymentProjectPropertyName = "GoogleKubernetesEnginePublishDeploymentName";
+        public const string VersionProjectPropertyName = "GoogleKubernetesEnginePublishVersion";
+        public const string ReplicasProjectPropertyName = "GoogleKubernetesEnginePublishReplicas";
+        public const string ExposeServiceProjectPropertyName = "GoogleKubernetesEnginePublishExposeService";
+        public const string ExposePublicServiceProjectPropertyName = "GoogleKubernetesEnginePublishExposePublicService";
+        public const string OpenWebsiteProjectPropertyName = "GoogleKubernetesEnginePublishOpenWebsite";
+
+        internal static readonly Cluster s_placeholderCluster =
+            new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+
         internal static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
         internal const string ReplicasDefaultValue = "3";
         internal const string GkeAddClusterUrlFormat = "https://console.cloud.google.com/kubernetes/add?project={0}";
@@ -63,6 +74,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private string _replicas = ReplicasDefaultValue;
         private Func<string, Process> StartProcess => _startProcessOverride ?? Process.Start;
         internal Func<string, Process> _startProcessOverride;
+        private string _lastClusterPropertyId;
 
         /// <summary>
         /// List of APIs required for publishing to the current project.
@@ -74,11 +86,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// </summary>
         public IEnumerable<Cluster> Clusters
         {
-            get { return _clusters; }
+            get => _clusters;
             private set
             {
+                SelectedCluster = value?.FirstOrDefault(c => c.SelfLink == SelectedCluster?.SelfLink) ??
+                    value?.FirstOrDefault(c => c.SelfLink == _lastClusterPropertyId) ?? value?.FirstOrDefault();
                 SetValueAndRaise(ref _clusters, value);
-                SelectedCluster = value?.FirstOrDefault();
             }
         }
 
@@ -252,11 +265,72 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         protected override void LoadProjectProperties()
         {
-            DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
+            _lastClusterPropertyId = PublishDialog.Project.GetUserProperty(ClusterIdProjectPropertyName);
+
+            string deploymentName = PublishDialog.Project.GetUserProperty(DeploymentProjectPropertyName);
+            if (string.IsNullOrWhiteSpace(deploymentName))
+            {
+                DeploymentName = GcpPublishStepsUtils.ToValidName(PublishDialog.Project.Name);
+            }
+            else
+            {
+                DeploymentName = deploymentName;
+            }
+
+            string version = PublishDialog.Project.GetUserProperty(VersionProjectPropertyName);
+            if (!string.IsNullOrWhiteSpace(version))
+            {
+                DeploymentVersion = version;
+            }
+
+            string replicas = PublishDialog.Project.GetUserProperty(ReplicasProjectPropertyName);
+            if (!string.IsNullOrWhiteSpace(replicas))
+            {
+                Replicas = replicas;
+            }
+
+            string exposeServiceProperty = PublishDialog.Project.GetUserProperty(ExposeServiceProjectPropertyName);
+            if (bool.TryParse(exposeServiceProperty, out bool exposeService))
+            {
+                ExposeService = exposeService;
+            }
+
+            string exposePublicServiceProperty =
+                PublishDialog.Project.GetUserProperty(ExposePublicServiceProjectPropertyName);
+            if (bool.TryParse(exposePublicServiceProperty, out bool exposePublicService))
+            {
+                ExposePublicService = exposePublicService;
+            }
+
+            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(OpenWebsiteProjectPropertyName);
+            if (bool.TryParse(openWebsiteProperty, out bool openWebsite))
+            {
+                OpenWebsite = openWebsite;
+            }
         }
 
         protected override void SaveProjectProperties()
         {
+            PublishDialog.Project.SaveUserProperty(ClusterIdProjectPropertyName, SelectedCluster?.SelfLink);
+            if (!PropertyHasErrors(nameof(DeploymentName)))
+            {
+                PublishDialog.Project.SaveUserProperty(DeploymentProjectPropertyName, DeploymentName);
+            }
+
+            if (!PropertyHasErrors(nameof(DeploymentVersion)))
+            {
+                PublishDialog.Project.SaveUserProperty(VersionProjectPropertyName, DeploymentVersion);
+            }
+
+            if (!PropertyHasErrors(nameof(Replicas)))
+            {
+                PublishDialog.Project.SaveUserProperty(ReplicasProjectPropertyName, Replicas);
+            }
+
+            PublishDialog.Project.SaveUserProperty(ExposeServiceProjectPropertyName, ExposeService.ToString());
+            PublishDialog.Project.SaveUserProperty(
+                ExposePublicServiceProjectPropertyName, ExposePublicService.ToString());
+            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
         }
 
         /// <summary>
@@ -314,13 +388,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         DeploymentName = DeploymentName,
                         DeploymentVersion = DeploymentVersion,
                         ExposeService = ExposeService,
-                        ExposePublicService = ExposePublicService,
+                        ExposePublicService = ExposeService && ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),
                         WaitingForServiceIpCallback = () =>
                             GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
                     };
+
+                    DeploymentVersion = GcpPublishStepsUtils.IncrementVersion(DeploymentVersion);
 
                     GcpOutputWindow.Activate();
                     GcpOutputWindow.Clear();

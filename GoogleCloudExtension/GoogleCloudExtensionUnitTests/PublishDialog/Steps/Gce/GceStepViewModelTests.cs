@@ -396,5 +396,154 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
         }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsInstanceProperties()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName))
+                .Returns(targetInstance.Name);
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName))
+                .Returns(targetInstance.GetZoneName());
+
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(targetInstance, _objectUnderTest.SelectedInstance);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsCredentialProperty()
+        {
+            var targetCredentials = new WindowsInstanceCredentials("user2", "passwrod");
+            _windowsCredentialStoreMock.Setup(s => s.GetCredentialsForInstance(It.IsAny<Instance>())).Returns(
+                new[]
+                {
+                    new WindowsInstanceCredentials("user1", "password"),
+                    targetCredentials,
+                    new WindowsInstanceCredentials("user3", "passwrod")
+                });
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName))
+                .Returns(targetCredentials.User);
+            _getInstanceListTaskSource.SetResult(s_allInstances);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(targetCredentials, _objectUnderTest.SelectedCredentials);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(bool.FalseString);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_HandlesNonBoolOpenWebsiteProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns("unparseable");
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsLaunchRemoteDebuggerProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Returns(bool.TrueString);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.LaunchRemoteDebugger);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_HandlesNonBoolLaunchRemoteDebuggerProperty()
+        {
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Returns("unparseable");
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.LaunchRemoteDebugger);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceNameProperty()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _objectUnderTest.SelectedInstance = targetInstance;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName, targetInstance.Name));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceZoneProperty()
+        {
+            Instance targetInstance = s_windows2012Instance;
+            _objectUnderTest.SelectedInstance = targetInstance;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName, targetInstance.GetZoneName()));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesInstanceUserNameProperty()
+        {
+            const string userName = "testUserName";
+            _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials(userName, "password");
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName, userName));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesOpenWebsiteProperty()
+        {
+            _objectUnderTest.OpenWebsite = false;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName, bool.FalseString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesLaunchRemoteDebuggerProperty()
+        {
+            _objectUnderTest.LaunchRemoteDebugger = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName, bool.TrueString));
+        }
     }
 }

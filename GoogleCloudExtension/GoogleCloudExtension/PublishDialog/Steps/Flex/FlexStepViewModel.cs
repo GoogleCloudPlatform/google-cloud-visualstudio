@@ -20,6 +20,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -35,6 +36,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
     /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
+        public const string PromoteProjectPropertyName = "GoogleAppEnginePublishPromote";
+        public const string OpenWebsiteProjectPropertyName = "GoogleAppEnginePublishOpenWebsite";
+        public const string NextVersionProjectPropertyName = "GoogleAppEnginePublishNextVersion";
+
         // The list of APIs that are required for a successful deployment to App Engine Flex.
         private static readonly IList<string> s_requiredApis = new List<string>
         {
@@ -214,6 +219,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                     Context = context
                 };
 
+                Version = GcpPublishStepsUtils.IncrementVersion(Version);
+
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
                 GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
@@ -273,10 +280,41 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         protected override void LoadProjectProperties()
         {
+            string promoteProperty = PublishDialog.Project.GetUserProperty(PromoteProjectPropertyName);
+            if (bool.TryParse(promoteProperty, out bool promote))
+            {
+                Promote = promote;
+            }
+
+            string openWebsiteProperty = PublishDialog.Project.GetUserProperty(OpenWebsiteProjectPropertyName);
+            if (bool.TryParse(openWebsiteProperty, out bool openWebSite))
+            {
+                OpenWebsite = openWebSite;
+            }
+
+            string nextVersionProperty = PublishDialog.Project.GetUserProperty(NextVersionProjectPropertyName);
+            if (!string.IsNullOrWhiteSpace(nextVersionProperty))
+            {
+                Version = nextVersionProperty;
+            }
+            else
+            {
+                Version = GcpPublishStepsUtils.GetDefaultVersion();
+            }
         }
 
         protected override void SaveProjectProperties()
         {
+            PublishDialog.Project.SaveUserProperty(PromoteProjectPropertyName, Promote.ToString());
+            PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
+            if (string.IsNullOrWhiteSpace(Version) || GcpPublishStepsUtils.IsDefaultVersion(Version))
+            {
+                PublishDialog.Project.DeleteUserProperty(NextVersionProjectPropertyName);
+            }
+            else
+            {
+                PublishDialog.Project.SaveUserProperty(NextVersionProjectPropertyName, Version);
+            }
         }
 
         #endregion
