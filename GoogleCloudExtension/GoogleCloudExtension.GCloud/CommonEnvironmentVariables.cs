@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.GCloud
     /// <summary>
     /// This class contains defintions for the environment variables used by the various wrappers.
     /// </summary>
-    internal static class CommonEnvironmentVariables
+    public static class CommonEnvironmentVariables
     {
         // This variables is used to force gcloud to use application default credentials when generating
         // the cluster information for the cluster.

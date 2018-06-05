@@ -4472,11 +4472,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service:.
+        /// </summary>
+        public static string PublishDialogFlexServiceCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select app region.
         /// </summary>
         public static string PublishDialogFlexSetAppRegionCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexSetAppRegionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update app.yaml.
+        /// </summary>
+        public static string PublishDialogFlexUpdateAppYamlCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexUpdateAppYamlCaption", resourceCulture);
             }
         }
         

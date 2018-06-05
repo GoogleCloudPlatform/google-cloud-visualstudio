@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.GCloud.Models
     /// <summary>
     /// Defines the JSON shape of a cloud SDK component.
     /// </summary>
-    internal sealed class CloudSdkComponent
+    public sealed class CloudSdkComponent
     {
         [JsonProperty("id")]
         public string Id { get; set; }

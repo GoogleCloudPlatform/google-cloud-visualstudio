@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class contains common utils methods shared between the deployments.
     /// </summary>
-    internal static class CommonUtils
+    public static class CommonUtils
     {
         // This pattern is to be used to find all of  the .deps.json in the stage directory.
         private const string DepsFilePattern = "*.deps.json";
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.Deployment
         /// is determined by looking for the .deps.json that defines the app's structure.
         /// </summary>
         /// <param name="stageDirectory">The directory where the app is being staged.</param>
-        internal static string GetEntrypointName(string stageDirectory)
+        public static string GetEntrypointName(string stageDirectory)
         {
             var depsFile = Directory.GetFiles(stageDirectory, DepsFilePattern).FirstOrDefault();
             if (depsFile == null)
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.Deployment
         /// Deletes the given directory in a safe way.
         /// </summary>
         /// <param name="dir">The path to the directory to delete.</param>
-        internal static void Cleanup(string dir)
+        public static void Cleanup(string dir)
         {
             try
             {

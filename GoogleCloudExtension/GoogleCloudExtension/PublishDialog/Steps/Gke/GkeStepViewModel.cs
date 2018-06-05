@@ -362,13 +362,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     return;
                 }
 
-                var gcloudContext = new GCloudContext
-                {
-                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                    ProjectId = CredentialsStore.Default.CurrentProjectId,
-                    AppName = GoogleCloudExtensionPackage.Instance.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion
-                };
+                var gcloudContext = new GCloudContext();
 
                 Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
                     cluster: SelectedCluster.Name,

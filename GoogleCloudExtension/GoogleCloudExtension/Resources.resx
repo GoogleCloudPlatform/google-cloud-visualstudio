@@ -2476,4 +2476,12 @@ Delete corrupted file?</value>
     <value>Project</value>
     <comment>The caption of the root node fo the Project cloud console link group.</comment>
   </data>
+  <data name="PublishDialogFlexServiceCaption" xml:space="preserve">
+    <value>Service:</value>
+    <comment>The label of the Service text box in the App Engine publish dialog.</comment>
+  </data>
+  <data name="PublishDialogFlexUpdateAppYamlCaption" xml:space="preserve">
+    <value>Update app.yaml</value>
+    <comment>Caption for the "Update app.yaml" checkbox in the Publish App Engine dialog.</comment>
+  </data>
 </root>

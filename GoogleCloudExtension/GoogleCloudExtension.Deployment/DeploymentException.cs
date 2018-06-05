@@ -21,16 +21,8 @@ namespace GoogleCloudExtension.Deployment
     /// Exception thrown from the methods implemented in this project.
     /// </summary>
     [Serializable]
-    internal class DeploymentException : Exception
+    public class DeploymentException : Exception
     {
-        public DeploymentException()
-        {
-        }
-
-        public DeploymentException(string message) : base(message)
-        {
-        }
-
         public DeploymentException(string message, Exception innerException) : base(message, innerException)
         {
         }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.Accounts;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
@@ -26,6 +27,8 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EnvDTE;
+using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 {
@@ -83,12 +86,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _objectUnderTest = new FlexStepViewModel(
                 _gaeDataSourceMock.Object, _apiManagerMock.Object, _pickProjectPromptMock.Object,
                 _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
-            _objectUnderTest.MillisecondsDelay = 0;
-        }
-
-        protected override void AfterEach()
-        {
-            _objectUnderTest.OnFlowFinished();
         }
 
         [TestMethod]
@@ -362,6 +359,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _objectUnderTest.OnVisible();
 
             Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.Version);
+        }
+
+        [TestMethod]
+        public void TestService_LoadsFromAppYaml()
+        {
+            Mock.Get(_mockedProject).Setup(p => p.ProjectItems.Item("app.yaml").Properties.Item("FullPath").Value)
+                .Returns(@"c:\path\to\app.yaml");
         }
     }
 }

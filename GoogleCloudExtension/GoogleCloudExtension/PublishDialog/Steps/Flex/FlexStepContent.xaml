@@ -40,11 +40,28 @@
 
         <!-- The information to deploy to flex. -->
         <StackPanel Margin="0,5,0,0" Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
+            <DockPanel>
+                <Label DockPanel.Dock="Top"
+                       Content="{x:Static ext:Resources.PublishDialogFlexServiceCaption}"
+                       Target="{Binding ElementName=_service}"/>
+                <CheckBox DockPanel.Dock ="Right"
+                          Content="{x:Static ext:Resources.PublishDialogFlexUpdateAppYamlCaption}"
+                          IsChecked="{Binding UpdateAppYamlService}"
+                          IsEnabled="{Binding UpdateAppYamlServiceEnabled}"
+                          VerticalAlignment="Center" />
+                <ComboBox x:Name="_service"
+                          ItemsSource="{Binding Services}"
+                          SelectedItem="{Binding Service}"
+                          VerticalContentAlignment="Center">
+                    <ComboBox.Resources>
+                    </ComboBox.Resources>
+                </ComboBox>
+            </DockPanel>
             <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
                    Target="{Binding ElementName=_version}"
                    Style="{StaticResource CommonLabelStyle}"/>
             <TextBox x:Name="_version"
-                     Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                     Text="{Binding Version, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                      Style="{StaticResource CommonTextBoxStyle}"/>
 
             <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"
@@ -94,3 +111,4 @@
                    Style="{StaticResource CommonTextStyle}" />
     </StackPanel>
 </UserControl>
+

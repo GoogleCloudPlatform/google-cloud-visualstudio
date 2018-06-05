@@ -98,15 +98,12 @@
     <Compile Include="CloudBuilderUtils.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="DeploymentException.cs" />
-    <Compile Include="GkeDeployment.cs" />
     <Compile Include="GkeDeploymentResult.cs" />
     <Compile Include="IParsedProject.cs" />
     <Compile Include="IParsedProjectExtensions.cs" />
     <Compile Include="IToolsPathProvider.cs" />
     <Compile Include="KnownProjectTypes.cs" />
-    <Compile Include="NetCoreAppUtils.cs" />
     <Compile Include="ProjectConfigurationStatus.cs" />
-    <Compile Include="WindowsVmDeployment.cs" />
     <Compile Include="AppEngineFlexDeploymentResult.cs" />
     <Compile Include="ProgressHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
