@@ -274,12 +274,22 @@ namespace GoogleCloudExtension
             return base.GetService(serviceType) ?? ServiceProvider.GlobalProvider.GetService(serviceType);
         }
 
+        /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns></returns>
         public I GetService<S, I>()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             return (I)GetService(typeof(S));
         }
 
+        /// <summary>
+        /// Gets a service registered and used as one type.
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
         public T GetService<T>() where T : class
         {
             ThreadHelper.ThrowIfNotOnUIThread();
