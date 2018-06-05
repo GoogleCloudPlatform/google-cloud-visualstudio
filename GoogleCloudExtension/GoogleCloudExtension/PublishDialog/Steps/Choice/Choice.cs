@@ -18,6 +18,9 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 {
+    /// <summary>
+    /// The enum of IDs for the choices.
+    /// </summary>
     public enum ChoiceType
     {
         None = 0,
