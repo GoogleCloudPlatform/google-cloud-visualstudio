@@ -78,7 +78,9 @@ namespace GoogleCloudExtension.PublishDialog
 
             PrevCommand = new ProtectedCommand(OnPrevCommand);
 
-            PushStep(new ChoiceStepContent(this));
+            var initialStep = new ChoiceStepContent(this);
+            PushStep(initialStep);
+            initialStep.ViewModel.ExecutePreviousChoice();
         }
 
         private void OnPrevCommand()

@@ -17,6 +17,7 @@ using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
+using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -76,6 +77,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
 
             Assert.IsInstanceOfType(objectUnderTest.Content, typeof(ChoiceStepContent));
+        }
+
+        [TestMethod]
+        public void TestConstructor_NavigatesToPreviousChoice()
+        {
+            _propertyServiceMock
+                .Setup(
+                    s => s.GetUserProperty(
+                        It.IsAny<Project>(), ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns(ChoiceType.Gke.ToString);
+
+            var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
+
+            Assert.IsInstanceOfType(objectUnderTest.Content, typeof(GkeStepContent));
         }
 
         [TestMethod]

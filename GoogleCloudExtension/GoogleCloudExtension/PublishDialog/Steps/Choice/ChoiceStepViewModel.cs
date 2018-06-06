@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
@@ -35,6 +36,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         private const string AppEngineIconPath = "PublishDialog/Steps/Choice/Resources/AppEngine_128px_Retina.png";
         private const string GceIconPath = "PublishDialog/Steps/Choice/Resources/ComputeEngine_128px_Retina.png";
         private const string GkeIconPath = "PublishDialog/Steps/Choice/Resources/ContainerEngine_128px_Retina.png";
+        public const string GoogleCloudPublishChoicePropertyName = "GoogleCloudPublishChoice";
 
         private static readonly Lazy<ImageSource> s_appEngineIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AppEngineIconPath));
         private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(GceIconPath));
@@ -75,60 +77,65 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// </summary>
         public void OnNotVisible() => RemoveHandlers();
 
-        private IEnumerable<Choice> GetChoicesForCurrentProject()
+        /// <summary>
+        /// Called when the dialog first loads to move past this step to the prevously chosen step, if it exists.
+        /// </summary>
+        public void ExecutePreviousChoice()
         {
-            return new List<Choice>
+            string previousChoiceId = PublishDialog.Project.GetUserProperty(GoogleCloudPublishChoicePropertyName);
+            if (Enum.TryParse(previousChoiceId, out ChoiceType previousChoiceType))
             {
-                new Choice
-                {
-                    Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
-                    Command = new ProtectedCommand(
-                        OnAppEngineChoiceCommand,
-                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
-                    Icon = s_appEngineIcon.Value,
-                    ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
-                },
-                new Choice
-                {
-                    Name = Resources.PublishDialogChoiceStepGkeName,
-                    Command = new ProtectedCommand(
-                        OnGkeChoiceCommand,
-                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
-                    Icon = s_gkeIcon.Value,
-                    ToolTip = Resources.PublishDialogChoiceStepGkeToolTip
-                },
-                new Choice
-                {
-                    Name = Resources.PublishDialogChoiceStepGceName,
-                    Command = new ProtectedCommand(
-                        OnGceChoiceCommand,
-                        canExecuteCommand: PublishDialog.Project.ProjectType == KnownProjectTypes.WebApplication),
-                    Icon = s_gceIcon.Value,
-                    ToolTip = Resources.PublishDialogChoiceStepGceToolTip
-                },
-            };
+                Choices.FirstOrDefault(c => c.Id == previousChoiceType)?.Command.Execute(null);
+            }
         }
+
+        private IEnumerable<Choice> GetChoicesForCurrentProject() =>
+            new List<Choice>
+            {
+                new Choice(
+                    ChoiceType.Gae,
+                    Resources.PublishDialogChoiceStepAppEngineFlexName,
+                    Resources.PublishDialogChoiceStepAppEngineToolTip,
+                    s_appEngineIcon.Value,
+                    new ProtectedCommand(OnAppEngineChoiceCommand, PublishDialog.Project.IsAspNetCoreProject())),
+                new Choice(
+                    ChoiceType.Gke,
+                    Resources.PublishDialogChoiceStepGkeName,
+                    Resources.PublishDialogChoiceStepGkeToolTip,
+                    s_gkeIcon.Value,
+                    new ProtectedCommand(OnGkeChoiceCommand, PublishDialog.Project.IsAspNetCoreProject())),
+                new Choice(
+                    ChoiceType.Gce,
+                    Resources.PublishDialogChoiceStepGceName,
+                    Resources.PublishDialogChoiceStepGceToolTip,
+                    s_gceIcon.Value,
+                    new ProtectedCommand(
+                        OnGceChoiceCommand, PublishDialog.Project.ProjectType == KnownProjectTypes.WebApplication))
+            };
 
         private void OnGkeChoiceCommand()
         {
-            var nextStep = new GkeStepContent(PublishDialog);
-            PublishDialog.NavigateToStep(nextStep);
+            PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gke.ToString());
+            PublishDialog.NavigateToStep(new GkeStepContent(PublishDialog));
         }
 
         private void OnAppEngineChoiceCommand()
         {
+            PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gae.ToString());
             var nextStep = new FlexStepContent(PublishDialog);
             PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnGceChoiceCommand()
         {
+            PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gce.ToString());
             var nextStep = new GceStepContent(PublishDialog);
             PublishDialog.NavigateToStep(nextStep);
         }
 
         private void OnFlowFinished(object sender, EventArgs e)
         {
+            PublishDialog.Project.DeleteUserProperty(GoogleCloudPublishChoicePropertyName);
             RemoveHandlers();
         }
 

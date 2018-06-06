@@ -234,5 +234,142 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             Assert.AreEqual(ValidVersion, _objectUnderTest.Version);
             Assert.IsFalse(_objectUnderTest.HasErrors);
         }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesPromoteProperty()
+        {
+            _objectUnderTest.Promote = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName, bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesOpenWebsiteProperty()
+        {
+            _objectUnderTest.OpenWebsite = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName, bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesNextVersionPropertyForNonStandard()
+        {
+            const string versionString = "version-string-2";
+            _objectUnderTest.Version = versionString;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _mockedProject, FlexStepViewModel.NextVersionProjectPropertyName, versionString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForDefaultProperty()
+        {
+            _objectUnderTest.Version = "12345678t123456";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_DeletesNextVersionPropertyForEmptyProperty()
+        {
+            _objectUnderTest.Version = "   ";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.DeleteUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName));
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsPromoteProperty()
+        {
+            string promoteProperty = bool.FalseString;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.Promote);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SkipLoadOfUnparsablePromoteProperty()
+        {
+            const string promoteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.PromoteProjectPropertyName))
+                .Returns(promoteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.Promote);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
+        {
+            string openWebsiteProperty = bool.FalseString;
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SkipLoadOfUnparsableOpenWebSiteProperty()
+        {
+            const string openWebsiteProperty = "unparsable as bool";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(openWebsiteProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsNextVersionProperty()
+        {
+            const string nextVersionProperty = "NextVersion";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(nextVersionProperty, _objectUnderTest.Version);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_SetsVersionToDefaultOnEmptyNextVersionProperty()
+        {
+            GcpPublishStepsUtils.NowOverride = DateTime.Parse("2008-08-08 08:08:08");
+            const string nextVersionProperty = " ";
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_mockedProject, FlexStepViewModel.NextVersionProjectPropertyName))
+                .Returns(nextVersionProperty);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(GcpPublishStepsUtils.GetDefaultVersion(), _objectUnderTest.Version);
+        }
     }
 }

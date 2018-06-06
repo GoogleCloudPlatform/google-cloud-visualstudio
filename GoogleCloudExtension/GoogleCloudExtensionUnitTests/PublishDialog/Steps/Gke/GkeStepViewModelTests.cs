@@ -258,17 +258,67 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetExposePublicService()
+        public void TestExposePublicService_HiddenByExposeService()
         {
+            _objectUnderTest.ExposeService = false;
             _objectUnderTest.ExposePublicService = true;
 
-            Assert.IsTrue(_objectUnderTest.ExposePublicService);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.ExposePublicService));
+            Assert.IsFalse(_objectUnderTest.ExposePublicService);
         }
 
         [TestMethod]
-        public void TestSetOpenWebsite()
+        public void TestExposePublicService_FalseIndependentOfExposeService()
         {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = false;
+
+            Assert.IsFalse(_objectUnderTest.ExposePublicService);
+        }
+
+        [TestMethod]
+        public void TestExposePublicService_True()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+
+            Assert.IsTrue(_objectUnderTest.ExposePublicService);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_HiddenByExposeService()
+        {
+            _objectUnderTest.ExposeService = false;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = true;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_HiddenByExposePublicService()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = false;
+            _objectUnderTest.OpenWebsite = true;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_FalseIndependently()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = false;
+
+            Assert.IsFalse(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestOpenWebsite_True()
+        {
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
             _objectUnderTest.OpenWebsite = true;
 
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
@@ -402,6 +452,230 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             Assert.AreEqual(GkeStepViewModel.ReplicasDefaultValue, _objectUnderTest.Replicas);
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public async Task TestLoadProjectProperties_LoadsClusterIdProperty()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.ClusterIdProjectPropertyName))
+                .Returns(ClusterCId);
+            _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+
+            _objectUnderTest.OnVisible();
+            await _objectUnderTest.LoadProjectTask.SafeTask;
+
+            Assert.AreEqual(s_cCluster, _objectUnderTest.SelectedCluster);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsDeploymentName()
+        {
+            const string expectedDeploymentName = "DeploymentName";
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.DeploymentProjectPropertyName))
+                .Returns(expectedDeploymentName);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(expectedDeploymentName, _objectUnderTest.DeploymentName);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsVersion()
+        {
+            const string expectedVersion = "ExpectedVersion";
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.VersionProjectPropertyName))
+                .Returns(expectedVersion);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(expectedVersion, _objectUnderTest.DeploymentVersion);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsReplicas()
+        {
+            const string expectedReplicas = "47";
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.ReplicasProjectPropertyName))
+                .Returns(expectedReplicas);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(expectedReplicas, _objectUnderTest.Replicas);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsExposeService()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.ExposeServiceProjectPropertyName))
+                .Returns(bool.TrueString);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.IsTrue(_objectUnderTest.ExposeService);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsExposePublicService()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.ExposePublicServiceProjectPropertyName))
+                .Returns(bool.TrueString);
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExposeService = true;
+
+            Assert.IsTrue(_objectUnderTest.ExposePublicService);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsOpenWebsite()
+        {
+            _propertyServiceMock.Setup(
+                    s => s.GetUserProperty(_parsedProject.Project, GkeStepViewModel.OpenWebsiteProjectPropertyName))
+                .Returns(bool.TrueString);
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+
+            Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesClusterIdProperty()
+        {
+            _objectUnderTest.SelectedCluster = s_bCluster;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(s => s.SaveUserProperty(_parsedProject.Project, GkeStepViewModel.ClusterIdProjectPropertyName,
+                s_bCluster.SelfLink));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesDeploymentName()
+        {
+            const string expectedDeploymentName = "deployment-name";
+            _objectUnderTest.DeploymentName = expectedDeploymentName;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.DeploymentProjectPropertyName,
+                    expectedDeploymentName));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SkipsSaveOfInvalidDeploymentName()
+        {
+            _objectUnderTest.DeploymentName = "!Invalid Deployment Name!";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.DeploymentProjectPropertyName,
+                    It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesVersion()
+        {
+            const string deploymentVersion = "123456";
+            _objectUnderTest.DeploymentVersion = deploymentVersion;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.VersionProjectPropertyName,
+                    deploymentVersion));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SkipsSaveOfInvalidVersion()
+        {
+            _objectUnderTest.DeploymentVersion = "!Invalid Deployment Version!";
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.VersionProjectPropertyName,
+                    It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesReplicas()
+        {
+            const string replicas = "47";
+            _objectUnderTest.Replicas = replicas;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.ReplicasProjectPropertyName,
+                    replicas));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SkipsSaveOfInvalidReplicas()
+        {
+            const string replicas = " not valid replicas int ";
+            _objectUnderTest.Replicas = replicas;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.ReplicasProjectPropertyName,
+                    It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesExposeService()
+        {
+            _objectUnderTest.ExposeService = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.ExposeServiceProjectPropertyName,
+                    bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesExposePublicService()
+        {
+            _objectUnderTest.ExposePublicService = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.ExposePublicServiceProjectPropertyName,
+                    bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesOpenWebsite()
+        {
+            _objectUnderTest.OpenWebsite = true;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project, GkeStepViewModel.OpenWebsiteProjectPropertyName,
+                    bool.TrueString));
         }
     }
 }

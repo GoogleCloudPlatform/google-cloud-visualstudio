@@ -7,6 +7,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:gwpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:GkeStepViewModel}">
 
@@ -133,10 +134,9 @@
                 Style="{StaticResource CommonGroupBoxStyle}">
                 
                 <StackPanel>
-                    <RadioButton GroupName="password"
-                             Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
+                    <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
                              IsChecked="{Binding ExposeService}"
-                             Style="{StaticResource CommonRadioButton}"
+                             Style="{StaticResource CommonTextStyleBase}"
                              Margin="{StaticResource CommonRadioButtonMargin}" />
 
                     <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
@@ -144,10 +144,11 @@
                           IsChecked="{Binding ExposePublicService}"
                           Style="{StaticResource CommonTextStyleBase}" />
                     <CheckBox IsChecked="{Binding OpenWebsite}"
-                          Margin="0,5,0,0"
-                          IsEnabled="{Binding ExposePublicService}"
-                          Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                          Style="{StaticResource CommonTextStyleBase}"/>
+                              Margin="0,5,0,0"
+                              Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                              IsEnabled="{Binding ExposePublicService}"
+                              Style="{StaticResource CommonTextStyleBase}">
+                    </CheckBox>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
