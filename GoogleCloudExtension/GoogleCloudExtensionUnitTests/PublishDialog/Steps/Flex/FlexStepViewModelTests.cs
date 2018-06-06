@@ -18,6 +18,8 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.Services.VsProject;
@@ -40,19 +42,26 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private const string InvalidVersion = "-Invalid Version Name!";
         private const string ValidVersion = "valid-version-name";
 
+        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
+        private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = "AccountName" };
+        private static readonly GCloudValidationResult s_validGCloudValidationResult =
+            new GCloudValidationResult(true, true, true);
+        private static readonly GCloudValidationResult s_invalidGCloudValidationResult =
+            new GCloudValidationResult(true);
+
         private FlexStepViewModel _objectUnderTest;
-        private Mock<IApiManager> _apiManagerMock;
         private Mock<IGaeDataSource> _gaeDataSourceMock;
         private TaskCompletionSource<Application> _getApplicationTaskSource;
-        private Application _mockedApplication;
         private Mock<Func<Task<bool>>> _setAppRegionAsyncFuncMock;
         private TaskCompletionSource<bool> _setAppRegionTaskSource;
         private IPublishDialog _mockedPublishDialog;
-        private Mock<Func<Project>> _pickProjectPromptMock;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private EnvDTE.Project _mockedProject;
-        private IAppEngineFlexDeployment _mockedAppEngineFlexDeployment;
         private List<string> _propertiesChanges;
+        private TaskCompletionSource<GCloudValidationResult> _validateGCloudSource;
+        private Mock<IAppEngineFlexDeployment> _appEngineDeploymentMock;
+        private Task _trackedTask;
+        private TaskCompletionSource<object> _publishSource;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -63,36 +72,46 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
         protected override void BeforeEach()
         {
+            CredentialsStore.Default.UpdateCurrentAccount(s_defaultUserAccount);
             CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
+            _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
+            GCloudWrapperUtils.ValidateGCloudAsyncOverride =
+                Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
+                    f => f(It.IsAny<GCloudComponent>()) == _validateGCloudSource.Task);
+
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            _mockedAppEngineFlexDeployment = Mock.Of<IAppEngineFlexDeployment>();
+            _appEngineDeploymentMock = new Mock<IAppEngineFlexDeployment>();
+            _publishSource = new TaskCompletionSource<object>();
+            _appEngineDeploymentMock.Setup(
+                    d => d.PublishProjectAsync(
+                        It.IsAny<IParsedProject>(), It.IsAny<AppEngineFlexDeployment.DeploymentOptions>()))
+                .Returns(() => _publishSource.Task);
 
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
-            PackageMock.Setup(p => p.GetService<IAppEngineFlexDeployment>()).Returns(_mockedAppEngineFlexDeployment);
-
-            _getApplicationTaskSource = new TaskCompletionSource<Application>();
-            _setAppRegionTaskSource = new TaskCompletionSource<bool>();
+            PackageMock.Setup(p => p.GetService<IAppEngineFlexDeployment>()).Returns(_appEngineDeploymentMock.Object);
 
             _mockedProject = Mock.Of<EnvDTE.Project>();
             _mockedPublishDialog = Mock.Of<IPublishDialog>(
                 pd => pd.Project.Name == VisualStudioProjectName && pd.Project.Project == _mockedProject);
 
-            _pickProjectPromptMock = new Mock<Func<Project>>();
+            _trackedTask = null;
+            Mock.Get(_mockedPublishDialog).Setup(pd => pd.TrackTask(It.IsAny<Task>()))
+                .Callback((Task t) => _trackedTask = t);
 
-            _apiManagerMock = new Mock<IApiManager>();
-            _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
-                .Returns(Task.FromResult(true));
+            var mockedApiManager = Mock.Of<IApiManager>(
+                m => m.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true));
 
             _gaeDataSourceMock = new Mock<IGaeDataSource>();
+            _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _gaeDataSourceMock.Setup(x => x.GetApplicationAsync()).Returns(() => _getApplicationTaskSource.Task);
-            _mockedApplication = Mock.Of<Application>();
 
             _setAppRegionAsyncFuncMock = new Mock<Func<Task<bool>>>();
+            _setAppRegionTaskSource = new TaskCompletionSource<bool>();
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = new FlexStepViewModel(
-                _gaeDataSourceMock.Object, _apiManagerMock.Object, _pickProjectPromptMock.Object,
+                _gaeDataSourceMock.Object, mockedApiManager, Mock.Of<Func<Project>>(),
                 _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _propertiesChanges = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);
@@ -150,7 +169,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestValidateProjectAsync_Succeeds()
         {
             _objectUnderTest.NeedsAppCreated = true;
-            _getApplicationTaskSource.SetResult(_mockedApplication);
+            _getApplicationTaskSource.SetResult(Mock.Of<Application>());
 
             _objectUnderTest.OnVisible();
 
@@ -374,7 +393,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         [TestMethod]
         public async Task TestLoadValidProjectDataAsync_SetsServices()
         {
-            _getApplicationTaskSource.SetResult(_mockedApplication);
+            _getApplicationTaskSource.SetResult(Mock.Of<Application>());
             IList<Service> services =
                 new List<Service> { new Service { Id = "default" }, new Service { Id = "service-name" } };
             _gaeDataSourceMock.Setup(ds => ds.GetServiceListAsync()).Returns(Task.FromResult(services));
@@ -418,7 +437,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestSetServices_SetsServiceFromAppYaml()
         {
             const string secondServiceId = "service-2";
-            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns(secondServiceId);
             string[] services = { "service-1", secondServiceId };
 
@@ -449,7 +468,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestSetService_MatchingAppYamlDisablesUpdateAppYamlService()
         {
             const string serviceId = "service-id";
-            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns(serviceId);
 
             _objectUnderTest.Service = serviceId;
@@ -460,7 +479,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         [TestMethod]
         public void TestSetService_DifferentFromAppYamlEnablesUpdateAppYamlService()
         {
-            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns("service-in-app-yaml");
 
             _objectUnderTest.Service = "some-other-service";
@@ -537,7 +556,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             _objectUnderTest.OnNotVisible();
 
-            Mock.Get(_mockedAppEngineFlexDeployment).Verify(
+            _appEngineDeploymentMock.Verify(
                 s => s.SaveServiceToAppYaml(_objectUnderTest.PublishDialog.Project, serviceId));
         }
 
@@ -550,8 +569,168 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             _objectUnderTest.OnNotVisible();
 
-            Mock.Get(_mockedAppEngineFlexDeployment).Verify(
-                s => s.SaveServiceToAppYaml(_objectUnderTest.PublishDialog.Project, serviceId), Times.Never);
+            _appEngineDeploymentMock.Verify(
+                s => s.SaveServiceToAppYaml(It.IsAny<IParsedDteProject>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestPublishCommand_DelegatesToPublishCommandAsync()
+        {
+            Assert.AreEqual(_objectUnderTest.PublishCommandAsync, _objectUnderTest.PublishCommand);
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommandAsync_TracksVerifyGCloudDependenciesTask()
+        {
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            Assert.IsFalse(_trackedTask.IsCompleted);
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+            await _trackedTask;
+            Assert.IsTrue(_trackedTask.IsCompleted);
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommandAsync_SkipsPublishForInvalidGCloud()
+        {
+            _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
+            const string expectedVersion = "expected-version";
+            _objectUnderTest.Version = expectedVersion;
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    It.IsAny<IParsedDteProject>(), It.IsAny<AppEngineFlexDeployment.DeploymentOptions>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_PublishesProject()
+        {
+            const string expectedVersion = "expected-options-version";
+            _objectUnderTest.Version = expectedVersion;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    _mockedPublishDialog.Project,
+                    It.IsAny<AppEngineFlexDeployment.DeploymentOptions>()));
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_PublishesProjectToVersion()
+        {
+            const string expectedVersion = "expected-options-version";
+            _objectUnderTest.Version = expectedVersion;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    It.IsAny<IParsedProject>(),
+                    It.Is<AppEngineFlexDeployment.DeploymentOptions>(
+                        options => options.Version == expectedVersion)));
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_PublishesProjectToService()
+        {
+            const string expectedService = "expected-service";
+            _objectUnderTest.Service = expectedService;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    It.IsAny<IParsedProject>(),
+                    It.Is<AppEngineFlexDeployment.DeploymentOptions>(
+                        options => options.Service == expectedService)));
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_PublishesProjectWithPromoteOption()
+        {
+            _objectUnderTest.Promote = false;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    It.IsAny<IParsedProject>(),
+                    It.Is<AppEngineFlexDeployment.DeploymentOptions>(
+                        options => options.Promote == false)));
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_PublishesProjectWithOpenWebsiteOption()
+        {
+            _objectUnderTest.OpenWebsite = false;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            _appEngineDeploymentMock.Verify(
+                d => d.PublishProjectAsync(
+                    It.IsAny<IParsedProject>(),
+                    It.Is<AppEngineFlexDeployment.DeploymentOptions>(
+                        options => !options.OpenWebsite)));
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_UpdatesVersionBeforeFinishFlow()
+        {
+            const string initalVersion = "initial-version";
+            _objectUnderTest.Version = initalVersion;
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+            string versionWhenFinishFlow = null;
+            Mock.Get(_mockedPublishDialog).Setup(pd => pd.FinishFlow())
+                .Callback(() => versionWhenFinishFlow = _objectUnderTest.Version);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            Assert.AreNotEqual(initalVersion, _objectUnderTest.Version);
+            Assert.AreEqual(versionWhenFinishFlow, _objectUnderTest.Version);
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommandAsync_SkipsUpdateVersionForInvalidGCloud()
+        {
+            _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
+            const string expectedVersion = "expected-version";
+            _objectUnderTest.Version = expectedVersion;
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            Assert.AreEqual(expectedVersion, _objectUnderTest.Version);
+        }
+
+        [TestMethod]
+        public void TestPublishCommandAsync_FinishesFlowRegardlessOfPublishCompleting()
+        {
+            _validateGCloudSource.SetResult(s_validGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.FinishFlow());
+            Assert.IsTrue(_objectUnderTest.PublishCommandAsync.LatestExecution.IsPending);
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommandAsync_SkipsFinishFlowForInvalidGCloud()
+        {
+            _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            Mock.Get(_mockedPublishDialog).Verify(pd => pd.FinishFlow(), Times.Never);
         }
     }
 }

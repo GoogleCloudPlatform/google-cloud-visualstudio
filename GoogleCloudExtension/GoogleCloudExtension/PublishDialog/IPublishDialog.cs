@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -26,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// The publishing dialog is logically defined as a navigation stack of steps, which allows the user to go back
     /// to the previous step.
     /// </summary>
-    public interface IPublishDialog
+    public interface IPublishDialog : INotifyDataErrorInfo
     {
         /// <summary>
         /// Returns the the VS project selected by the user.

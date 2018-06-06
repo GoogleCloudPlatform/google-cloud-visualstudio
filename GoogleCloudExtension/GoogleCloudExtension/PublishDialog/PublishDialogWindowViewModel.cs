@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// The view model for the <seealso cref="PublishDialogWindowContent"/> control. Implements all of the interaction
     /// logic for the UI.
     /// </summary>
-    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, INotifyDataErrorInfo
+    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
     {
         private readonly Stack<IStepContent<IPublishDialogStep>> _stack = new Stack<IStepContent<IPublishDialogStep>>();
         private IStepContent<IPublishDialogStep> _content;
