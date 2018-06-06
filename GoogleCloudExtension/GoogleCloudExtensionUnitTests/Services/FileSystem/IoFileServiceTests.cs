@@ -14,7 +14,9 @@
 
 using GoogleCloudExtension.Services.FileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 {
@@ -22,8 +24,9 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
     [DeploymentItem(TestResourcesPath, TestResourcesPath)]
     public class IoFileServiceTests
     {
-        private const string TestXmlFileName = @"TestXmlFile.xml";
+        private const string TestXmlFilePath = @"Services\FileSystem\Resources\TestXmlFile.xml";
         private const string TestResourcesPath = @"Services\FileSystem\Resources";
+        private const string TargetFilePath = @"Services\FileSystem\Resources\TargetFile.txt";
         private IoFileService _objectUnderTest;
 
         [TestInitialize]
@@ -32,12 +35,56 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
             _objectUnderTest = new IoFileService();
         }
 
-        [TestMethod]
-        [DataRow(TestResourcesPath + @"\" + TestXmlFileName)]
-        [DataRow(TestResourcesPath + @"\NonExistantFile.xml")]
-        public void TestExists_MatchesIOFileExists(string testFilePath)
+        [TestCleanup]
+        public void AfterEach()
         {
-            Assert.AreEqual(File.Exists(testFilePath), _objectUnderTest.Exists(testFilePath));
+            if (File.Exists(TargetFilePath))
+            {
+                File.Delete(TargetFilePath);
+            }
+        }
+
+        [TestMethod]
+        public void TestExists_True()
+        {
+            Assert.IsTrue(_objectUnderTest.Exists(TestXmlFilePath));
+        }
+
+        [TestMethod]
+        public void TestExists_False()
+        {
+            Assert.IsFalse(_objectUnderTest.Exists(@"Services\FileSystem\Resources\NonExistantFile.xml"));
+        }
+
+        [TestMethod]
+        public void TestWriteAllText()
+        {
+            const string fileContents = "This is the contents written to the file!";
+
+            _objectUnderTest.WriteAllText(TargetFilePath, fileContents);
+
+            Assert.AreEqual(File.ReadAllText(TargetFilePath), fileContents);
+        }
+
+        [TestMethod]
+        public void TestReadLines()
+        {
+            string[] expectedLines = { "Line 1!", "Line2?" };
+            File.WriteAllLines(TargetFilePath, expectedLines);
+
+            IEnumerable<string> result = _objectUnderTest.ReadLines(TargetFilePath);
+
+            CollectionAssert.AreEqual(expectedLines, result.ToList());
+        }
+
+        [TestMethod]
+        public void TestCopy()
+        {
+            _objectUnderTest.Copy(TestXmlFilePath, TargetFilePath, true);
+
+            Assert.IsTrue(File.Exists(TargetFilePath));
+            Assert.AreEqual(File.ReadAllText(TestXmlFilePath), File.ReadAllText(TargetFilePath));
+
         }
     }
 }
