@@ -12,12 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace GoogleCloudExtension.Deployment
 {
@@ -25,7 +33,8 @@ namespace GoogleCloudExtension.Deployment
     /// This class implements all of the necessary details to deploy an ASP.NET Core application
     /// to the App Engine Flex environment.
     /// </summary>
-    public static class AppEngineFlexDeployment
+    [Export(typeof(IAppEngineFlexDeployment))]
+    public class AppEngineFlexDeployment : IAppEngineFlexDeployment
     {
         public const string AppYamlName = "app.yaml";
         public const string DockerfileName = NetCoreAppUtils.DockerfileName;
@@ -34,33 +43,156 @@ namespace GoogleCloudExtension.Deployment
             "runtime: aspnetcore\n" +
             "env: flex\n";
 
-        private const string DefaultServiceName = "default";
+        private const string AppYamlDefaultServiceFormat =
+            "runtime: aspnetcore\n" +
+            "env: flex\n" +
+            "service: {0}\n";
+
+        public const string DefaultServiceName = "default";
         private const string ServiceYamlProperty = "service";
         private const string RuntimeYamlProperty = "runtime";
 
         private const string AspNetCoreRuntime = "aspnetcore";
         private const string CustomRuntime = "custom";
 
+        private readonly Lazy<IFileSystem> _fileSystem;
+        private readonly Deserializer _yamlDeserializer = new Deserializer();
+        private readonly Serializer _yamlSerializer = new Serializer();
+
+        private IFileSystem FileSystem => _fileSystem.Value;
+
         /// <summary>
         /// The options for the deployment operation.
         /// </summary>
         public class DeploymentOptions
         {
+            public DeploymentOptions(string service, string version, bool promote, bool openWebsite)
+            {
+                Service = service;
+                Version = version;
+                Promote = promote;
+                OpenWebsite = openWebsite;
+                Context = new GCloudContext();
+            }
+
+            /// <summary>
+            /// The App Engine service to deploy.
+            /// </summary>
+            public string Service { get; }
+
             /// <summary>
             /// What version name to use when deploying. If null a default version name based on current time and
             /// date will be used.
             /// </summary>
-            public string Version { get; set; }
+            public string Version { get; }
 
             /// <summary>
             /// Whether to promote the new version to receive 100% of the traffic or not.
             /// </summary>
-            public bool Promote { get; set; }
+            public bool Promote { get; }
 
             /// <summary>
             /// The context on which to execute the underlying gcloud command.
             /// </summary>
-            public GCloudContext Context { get; set; }
+            public GCloudContext Context { get; }
+
+            /// <summary>
+            /// Whether to open the website after deployment.
+            /// </summary>
+            public bool OpenWebsite { get; }
+        }
+
+        [ImportingConstructor]
+        public AppEngineFlexDeployment(Lazy<IFileSystem> fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
+
+        /// <summary>
+        /// Publishes the ASP.NET Core project to App Engine Flex and reports progress to the UI.
+        /// </summary>
+        /// <param name="project">The project to deploy.</param>
+        /// <param name="options">The <see cref="AppEngineFlexDeployment.DeploymentOptions"/> to use.</param>
+        public async Task PublishProjectAsync(IParsedProject project, DeploymentOptions options)
+        {
+            try
+            {
+                ShellUtils.SaveAllFiles();
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
+
+                TimeSpan deploymentDuration;
+                AppEngineFlexDeploymentResult result;
+                using (StatusbarHelper.Freeze())
+                using (StatusbarHelper.ShowDeployAnimation())
+                using (ProgressBarHelper progress =
+                    StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
+                using (ShellUtils.SetShellUIBusy())
+                {
+                    DateTime startDeploymentTime = DateTime.Now;
+                    result = await PublishProjectAsync(
+                        project,
+                        options,
+                        progress,
+                        VsVersionUtils.ToolsPathProvider,
+                        GcpOutputWindow.OutputLine);
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
+                }
+
+                if (result != null)
+                {
+                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    string url = result.GetDeploymentUrl();
+                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    if (options.OpenWebsite)
+                    {
+                        Process.Start(url);
+                    }
+
+                    EventsReporterWrapper.ReportEvent(
+                        GaeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+                }
+                else
+                {
+                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure, deploymentDuration));
+                }
+            }
+            catch (Exception)
+            {
+                EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
+                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+            }
+        }
+
+        public void SaveServiceToAppYaml(IParsedDteProject publishDialogProject, string service)
+        {
+            string appYamlPath = GetAppYamlPath(publishDialogProject);
+            if (FileSystem.File.Exists(appYamlPath))
+            {
+                var yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(File.OpenText(appYamlPath));
+                if (service != DefaultServiceName)
+                {
+                    yamlObject[ServiceYamlProperty] = service;
+                }
+                else if (yamlObject.ContainsKey(ServiceYamlProperty))
+                {
+                    yamlObject.Remove(ServiceYamlProperty);
+                }
+                _yamlSerializer.Serialize(File.CreateText(appYamlPath), yamlObject);
+            }
+            else
+            {
+                GenerateAppYaml(publishDialogProject, service);
+            }
         }
 
         /// <summary>
@@ -71,31 +203,29 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="progress">The progress indicator.</param>
         /// <param name="toolsPathProvider">The tools path provider to use.</param>
         /// <param name="outputAction">The action to call with lines from the command output.</param>
-        public static async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
+        private async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
             IParsedProject project,
             DeploymentOptions options,
             IProgress<double> progress,
             IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)
         {
-            var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
 
-            using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
+            using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
-                if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction),
-                        progress,
-                        from: 0.1, to: 0.3))
+                Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction);
+                if (!await ProgressHelper.UpdateProgress(createAppBundleTask, progress, from: 0.1, to: 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
                     return null;
                 }
 
                 var runtime = GetAppEngineRuntime(project);
-                CopyOrCreateAppYaml(project, stageDirectory);
+                CopyOrCreateAppYaml(project, stageDirectory, options);
                 if (runtime == CustomRuntime)
                 {
                     Debug.WriteLine($"Copying Docker file to {stageDirectory} with custom runtime.");
@@ -136,36 +266,18 @@ namespace GoogleCloudExtension.Deployment
         /// Generates the app.yaml for the given project.
         /// </summary>
         /// <param name="project">The project.</param>
-        public static bool GenerateAppYaml(IParsedProject project)
+        /// <param name="service"></param>
+        public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
         {
-            try
+            string targetAppYaml = GetAppYamlPath(project);
+            if (service == DefaultServiceName)
             {
-                var targetAppYaml = Path.Combine(project.DirectoryPath, AppYamlName);
-                File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
-                return true;
+                FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
             }
-            catch (IOException ex)
+            else
             {
-                Debug.WriteLine($"Failed to generate app.yaml: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Generates the Dockerfile for the given project.
-        /// </summary>
-        /// <param name="project">The project.</param>
-        public static bool GenerateDockerfile(IParsedProject project)
-        {
-            try
-            {
-                NetCoreAppUtils.GenerateDockerfile(project);
-                return true;
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to generate Dockerfile: {ex.Message}");
-                return false;
+                FileSystem.File.WriteAllText(
+                    targetAppYaml, string.Format(AppYamlDefaultServiceFormat, service));
             }
         }
 
@@ -174,11 +286,11 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project.</param>
         /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
-        public static ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
+        public ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
         {
             var projectDirectory = project.DirectoryPath;
             var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
-            var hasAppYaml = File.Exists(targetAppYaml);
+            var hasAppYaml = FileSystem.File.Exists(targetAppYaml);
             var hasDockefile = NetCoreAppUtils.CheckDockerfile(project);
 
             return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
@@ -189,38 +301,37 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project.</param>
         /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
-        private static string GetAppEngineService(IParsedProject project)
+        public string GetAppEngineService(IParsedProject project)
         {
-            string appYaml = GetAppYamlPath(project);
-            return GetYamlProperty(yamlPath: appYaml, property: ServiceYamlProperty, defaultValue: DefaultServiceName);
+            string appYamlPath = GetAppYamlPath(project);
+            return GetYamlProperty(appYamlPath, ServiceYamlProperty, DefaultServiceName);
         }
 
-        private static string GetAppEngineRuntime(IParsedProject project)
+        private string GetAppEngineRuntime(IParsedProject project)
         {
             string appYaml = GetAppYamlPath(project);
-            if (!File.Exists(appYaml))
+            if (FileSystem.File.Exists(appYaml))
+            {
+                return GetYamlProperty(appYaml, RuntimeYamlProperty);
+            }
+            else
             {
                 return AspNetCoreRuntime;
             }
-            return GetYamlProperty(appYaml, RuntimeYamlProperty);
         }
 
-        private static string GetAppYamlPath(IParsedProject project)
-        {
-            var appYaml = Path.Combine(project.DirectoryPath, AppYamlName);
-            return appYaml;
-        }
+        private string GetAppYamlPath(IParsedProject project) => Path.Combine(project.DirectoryPath, AppYamlName);
 
-        private static string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
+        private string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
         {
             string result = defaultValue;
             var propertyName = $"{property}:";
 
-            if (File.Exists(yamlPath))
+            if (FileSystem.File.Exists(yamlPath))
             {
                 try
                 {
-                    var lines = File.ReadLines(yamlPath);
+                    var lines = FileSystem.File.ReadLines(yamlPath);
                     foreach (var line in lines)
                     {
                         if (line.StartsWith(propertyName))
@@ -240,7 +351,7 @@ namespace GoogleCloudExtension.Deployment
             return result;
         }
 
-        private static string GetDefaultVersion()
+        private string GetDefaultVersion()
         {
             var now = DateTime.Now;
             return String.Format(
@@ -249,22 +360,39 @@ namespace GoogleCloudExtension.Deployment
                 now.Hour, now.Minute, now.Second);
         }
 
-        private static void CopyOrCreateAppYaml(IParsedProject project, string stageDirectory)
+        private void CopyOrCreateAppYaml(IParsedProject project, string stageDirectory, DeploymentOptions options)
         {
-            var sourceAppYaml = Path.Combine(project.DirectoryPath, AppYamlName);
-            var targetAppYaml = Path.Combine(stageDirectory, AppYamlName);
+            string sourceAppYaml = GetAppYamlPath(project);
+            string targetAppYaml = Path.Combine(stageDirectory, AppYamlName);
 
-            if (File.Exists(sourceAppYaml))
+            if (FileSystem.File.Exists(sourceAppYaml))
             {
-                File.Copy(sourceAppYaml, targetAppYaml, overwrite: true);
+                if (options.Service != GetAppEngineService(project))
+                {
+                    StreamReader sourceReader = File.OpenText(sourceAppYaml);
+                    var appYamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(sourceReader);
+                    appYamlObject[ServiceYamlProperty] = options.Service;
+                    _yamlSerializer.Serialize(File.CreateText(targetAppYaml), appYamlObject);
+                }
+                else
+                {
+                    FileSystem.File.Copy(sourceAppYaml, targetAppYaml, overwrite: true);
+                }
             }
             else
             {
-                File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+                if (string.IsNullOrWhiteSpace(options.Service) || options.Service == DefaultServiceName)
+                {
+                    FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+                }
+                else
+                {
+                    FileSystem.File.WriteAllText(targetAppYaml, string.Format(AppYamlDefaultServiceFormat, options.Service));
+                }
             }
         }
 
-        private static Task<bool> DeployAppBundleAsync(
+        private Task<bool> DeployAppBundleAsync(
             string stageDirectory,
             string version,
             bool promote,

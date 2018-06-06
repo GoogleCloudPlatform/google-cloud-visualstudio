@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.Services.VsProject;
@@ -26,8 +27,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using EnvDTE;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
@@ -50,6 +51,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private Mock<Func<Project>> _pickProjectPromptMock;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private EnvDTE.Project _mockedProject;
+        private IAppEngineFlexDeployment _mockedAppEngineFlexDeployment;
+        private List<string> _propertiesChanges;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -60,8 +63,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
         protected override void BeforeEach()
         {
+            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            _mockedAppEngineFlexDeployment = Mock.Of<IAppEngineFlexDeployment>();
+
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetService<IAppEngineFlexDeployment>()).Returns(_mockedAppEngineFlexDeployment);
 
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
             _setAppRegionTaskSource = new TaskCompletionSource<bool>();
@@ -86,6 +94,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _objectUnderTest = new FlexStepViewModel(
                 _gaeDataSourceMock.Object, _apiManagerMock.Object, _pickProjectPromptMock.Object,
                 _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
+            _propertiesChanges = new List<string>();
+            _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);
         }
 
         [TestMethod]
@@ -362,10 +372,186 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestService_LoadsFromAppYaml()
+        public async Task TestLoadValidProjectDataAsync_SetsServices()
         {
-            Mock.Get(_mockedProject).Setup(p => p.ProjectItems.Item("app.yaml").Properties.Item("FullPath").Value)
-                .Returns(@"c:\path\to\app.yaml");
+            _getApplicationTaskSource.SetResult(_mockedApplication);
+            IList<Service> services =
+                new List<Service> { new Service { Id = "default" }, new Service { Id = "service-name" } };
+            _gaeDataSourceMock.Setup(ds => ds.GetServiceListAsync()).Returns(Task.FromResult(services));
+
+            _objectUnderTest.OnVisible();
+            await _objectUnderTest.LoadProjectTask.SafeTask;
+
+            CollectionAssert.AreEqual(services.Select(s => s.Id).ToList(), _objectUnderTest.Services.ToList());
+        }
+
+        [TestMethod]
+        public void TestSetServices_SetsProperty()
+        {
+            var services = new[] { "service-1", "service-2" };
+
+            _objectUnderTest.Services = services;
+
+            CollectionAssert.AreEqual(services, _objectUnderTest.Services.ToList());
+        }
+
+        [TestMethod]
+        public void TestSetServices_Notifies()
+        {
+            _objectUnderTest.Services = new[] { "service-1", "service-2" };
+
+            CollectionAssert.Contains(_propertiesChanges, nameof(_objectUnderTest.Services));
+        }
+
+        [TestMethod]
+        public void TestSetServices_SetsServiceToFirst()
+        {
+            const string firstServiceId = "service-1";
+            string[] services = { firstServiceId, "service-2" };
+
+            _objectUnderTest.Services = services;
+
+            Assert.AreEqual(firstServiceId, _objectUnderTest.Service);
+        }
+
+        [TestMethod]
+        public void TestSetServices_SetsServiceFromAppYaml()
+        {
+            const string secondServiceId = "service-2";
+            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+                .Returns(secondServiceId);
+            string[] services = { "service-1", secondServiceId };
+
+            _objectUnderTest.Services = services;
+
+            Assert.AreEqual(secondServiceId, _objectUnderTest.Service);
+        }
+
+        [TestMethod]
+        public void TestSetService_SetsService()
+        {
+            const string serviceId = "service-id";
+
+            _objectUnderTest.Service = serviceId;
+
+            Assert.AreEqual(serviceId, _objectUnderTest.Service);
+        }
+
+        [TestMethod]
+        public void TestSetService_Notifies()
+        {
+            _objectUnderTest.Service = "service-id";
+
+            CollectionAssert.Contains(_propertiesChanges, nameof(_objectUnderTest.Service));
+        }
+
+        [TestMethod]
+        public void TestSetService_MatchingAppYamlDisablesUpdateAppYamlService()
+        {
+            const string serviceId = "service-id";
+            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+                .Returns(serviceId);
+
+            _objectUnderTest.Service = serviceId;
+
+            Assert.IsFalse(_objectUnderTest.UpdateAppYamlServiceEnabled);
+        }
+
+        [TestMethod]
+        public void TestSetService_DifferentFromAppYamlEnablesUpdateAppYamlService()
+        {
+            Mock.Get(_mockedAppEngineFlexDeployment).Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+                .Returns("service-in-app-yaml");
+
+            _objectUnderTest.Service = "some-other-service";
+
+            Assert.IsTrue(_objectUnderTest.UpdateAppYamlServiceEnabled);
+        }
+
+        [TestMethod]
+        public void TestSetUpdateAppYamlServiceEnabled_SetsProperty()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = true;
+
+            Assert.IsTrue(_objectUnderTest.UpdateAppYamlServiceEnabled);
+        }
+
+        [TestMethod]
+        public void TestSetUpdateAppYamlServiceEnabled_Notifies()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = true;
+
+            CollectionAssert.Contains(_propertiesChanges, nameof(_objectUnderTest.UpdateAppYamlServiceEnabled));
+        }
+
+        [TestMethod]
+        public void TestUpdateAppYamlServiceEnabled_HidesUpdateAppYamlService()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = false;
+            _objectUnderTest.UpdateAppYamlService = true;
+
+            Assert.IsFalse(_objectUnderTest.UpdateAppYamlService);
+        }
+
+        [TestMethod]
+        public void TestUpdateAppYamlServiceEnabled_NotifiesOfUpdateAppYamlService()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = false;
+
+            CollectionAssert.Contains(_propertiesChanges, nameof(_objectUnderTest.UpdateAppYamlService));
+        }
+
+        [TestMethod]
+        public void TestUpdateAppYamlService_IndependentlyFalse()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = true;
+            _objectUnderTest.UpdateAppYamlService = false;
+
+            Assert.IsFalse(_objectUnderTest.UpdateAppYamlService);
+        }
+
+        [TestMethod]
+        public void TestUpdateAppYamlService_TrueWhenNotHidden()
+        {
+            _objectUnderTest.UpdateAppYamlServiceEnabled = true;
+            _objectUnderTest.UpdateAppYamlService = true;
+
+            Assert.IsTrue(_objectUnderTest.UpdateAppYamlService);
+        }
+
+        [TestMethod]
+        public void TestUpdateAppYamlService_Notifies()
+        {
+            _objectUnderTest.UpdateAppYamlService = true;
+
+            CollectionAssert.Contains(_propertiesChanges, nameof(_objectUnderTest.UpdateAppYamlService));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_UpdatesAppYaml()
+        {
+            const string serviceId = "service-id";
+            _objectUnderTest.UpdateAppYamlServiceEnabled = true;
+            _objectUnderTest.UpdateAppYamlService = true;
+            _objectUnderTest.Service = serviceId;
+
+            _objectUnderTest.OnNotVisible();
+
+            Mock.Get(_mockedAppEngineFlexDeployment).Verify(
+                s => s.SaveServiceToAppYaml(_objectUnderTest.PublishDialog.Project, serviceId));
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SkipsUpdateAppYamlWhenDisabled()
+        {
+            const string serviceId = "service-id";
+            _objectUnderTest.UpdateAppYamlService = false;
+            _objectUnderTest.Service = serviceId;
+
+            _objectUnderTest.OnNotVisible();
+
+            Mock.Get(_mockedAppEngineFlexDeployment).Verify(
+                s => s.SaveServiceToAppYaml(_objectUnderTest.PublishDialog.Project, serviceId), Times.Never);
         }
     }
 }

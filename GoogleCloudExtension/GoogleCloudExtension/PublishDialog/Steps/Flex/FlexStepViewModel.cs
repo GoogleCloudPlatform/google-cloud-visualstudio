@@ -254,8 +254,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         private async Task PublishAsync()
         {
-            ShellUtils.SaveAllFiles();
-
             Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
             PublishDialog.TrackTask(verifyGcloudTask);
             if (!await verifyGcloudTask)
