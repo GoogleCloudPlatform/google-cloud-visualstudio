@@ -37,12 +37,14 @@ namespace GoogleCloudExtension.ManageAccounts
 
             AccountName = userAccount.AccountName;
 
-            var dataSource = new GPlusDataSource(userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
+            var dataSource = new GPlusDataSource(
+                userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             var personTask = dataSource.GetProfileAsync();
 
             // TODO: Show the default image while it is being loaded.
             ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x?.Image.Url);
-            NameAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x?.DisplayName, Resources.CloudExplorerLoadingMessage);
+            NameAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                personTask, x => x?.DisplayName, Resources.CloudExplorerLoadingMessage);
         }
     }
 }

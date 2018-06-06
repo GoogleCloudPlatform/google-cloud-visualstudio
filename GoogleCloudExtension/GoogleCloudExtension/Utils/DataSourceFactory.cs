@@ -24,7 +24,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class DataSourceFactory : IDataSourceFactory
     {
-        private static readonly Lazy<DataSourceFactory> s_lazyDefault = new Lazy<DataSourceFactory>(() => new DataSourceFactory());
+        private static readonly Lazy<DataSourceFactory> s_lazyDefault =
+            new Lazy<DataSourceFactory>(() => new DataSourceFactory());
+
         internal static IDataSourceFactory DefaultOverride { private get; set; } = null;
         public static IDataSourceFactory Default => DefaultOverride ?? s_lazyDefault.Value;
 
@@ -49,7 +51,8 @@ namespace GoogleCloudExtension.Utils
             GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
             if (currentCredential != null)
             {
-                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
+                return new GPlusDataSource(
+                    currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {

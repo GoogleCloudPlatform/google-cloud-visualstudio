@@ -28,8 +28,8 @@ namespace GoogleCloudExtension.GCloud
         {
             CredentialsPath = CredentialsStore.Default.CurrentAccountPath;
             ProjectId = CredentialsStore.Default.CurrentProjectId;
-            AppName = GoogleCloudExtensionPackage.ApplicationName;
-            AppVersion = GoogleCloudExtensionPackage.ApplicationVersion;
+            AppName = GoogleCloudExtensionPackage.Instance.ApplicationName;
+            AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion;
         }
 
         /// <summary>
