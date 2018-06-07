@@ -209,8 +209,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         public void TestOnVisible_AddsFlowFinishedHandler()
         {
             _objectUnderTest.OnVisible();
+
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
 
             Assert.AreEqual(1, _objectUnderTest.OnFlowFinishedCallCount);
         }
@@ -230,6 +230,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             _objectUnderTest.OnNotVisible();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
+            Mock.Get(CredentialsStore.Default).Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(0, _objectUnderTest.OnFlowFinishedCallCount);
         }
@@ -237,7 +239,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_EmptyProjectIsInvalid()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
 
             await _objectUnderTest.ValidateProjectAsyncBase();
 
@@ -248,7 +250,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithNoRequiredApis()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _objectUnderTest.RequiredApisOverride = new List<string>();
 
             await _objectUnderTest.ValidateProjectAsyncBase();
@@ -260,7 +262,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public void TestValidateProject_ValidProjectWithRequiredApisLoading()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
 
             Task validateProjectTask = _objectUnderTest.ValidateProjectAsyncBase();
@@ -273,7 +275,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithRequiredApisNotEnabled()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(false);
 
@@ -286,7 +288,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithRequiredApisEnabled()
         {
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(true);
 
@@ -420,7 +422,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             _objectUnderTest.OnFlowFinishedBase();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
-            CredentialsStore.Default.UpdateCurrentProject(s_targetProject);
+            Mock.Get(CredentialsStore.Default).Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(0, _objectUnderTest.OnFlowFinishedCallCount);
         }

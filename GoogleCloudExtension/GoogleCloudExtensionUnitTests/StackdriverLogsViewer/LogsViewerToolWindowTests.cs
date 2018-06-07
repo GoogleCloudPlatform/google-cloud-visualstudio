@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.Frame = _frameMock.Object;
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+            Mock.Get(CredentialsStore.Default).Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreNotEqual(oldViewModel, _objectUnderTest.ViewModel);
         }
@@ -55,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.Frame = _frameMock.Object;
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
-            CredentialsStore.Default.ResetCredentials(null, null);
+            Mock.Get(CredentialsStore.Default).Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.AreNotEqual(oldViewModel, _objectUnderTest.ViewModel);
         }

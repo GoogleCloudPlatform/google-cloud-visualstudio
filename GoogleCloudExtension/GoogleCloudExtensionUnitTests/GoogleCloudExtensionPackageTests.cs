@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services.FileSystem;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -181,9 +180,8 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestGetServicesT_GetsServiceFromMef()
         {
-            Mock<IComponentModel> serviceMock = ServiceProviderMock.SetupService<SComponentModel, IComponentModel>();
             var mockedFileSystemService = Mock.Of<IFileSystem>();
-            serviceMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
+            ComponentModelMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
             RunPackageInitalize();
 
             var service = _objectUnderTest.GetService<IFileSystem>();

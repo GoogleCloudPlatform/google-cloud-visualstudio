@@ -42,8 +42,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         private const string WindowsServer2016License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc";
         private const string AnyOtherLicense = "https://www.googleapis.com/fake/license/for/tests";
 
-        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
-
         private static readonly Instance s_windows2008RunningInstance = new Instance
         {
             Name = "AInstace",
@@ -126,10 +124,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
         protected override void BeforeEach()
         {
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
@@ -378,9 +376,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _objectUnderTest.OnVisible();
-            CredentialsStore.Default.UpdateCurrentProject(null);
 
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            Mock.Get(CredentialsStore.Default).Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
         }
@@ -390,9 +388,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _objectUnderTest.OnVisible();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
+            Mock.Get(CredentialsStore.Default).Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
         }

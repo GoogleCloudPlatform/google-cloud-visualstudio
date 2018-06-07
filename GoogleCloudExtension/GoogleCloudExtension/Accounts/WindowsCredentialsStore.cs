@@ -192,7 +192,7 @@ namespace GoogleCloudExtension.Accounts
 
         private string GetInstancePath(Instance instance)
         {
-            CredentialsStore credentials = CredentialsStore.Default;
+            ICredentialsStore credentials = CredentialsStore.Default;
             return $@"{ToValidPathName(credentials.CurrentProjectId)}\{ToValidPathName(instance.GetZoneName())}\{ToValidPathName(instance.Name)}";
         }
 

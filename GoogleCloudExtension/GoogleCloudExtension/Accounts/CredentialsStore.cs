@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,8 @@ namespace GoogleCloudExtension.Accounts
     /// doesn't specify credentials, or when Visual Studio is freshly opened. This default credentials is the last
     /// set of credentials used by the extension.
     /// </summary>
-    public class CredentialsStore
+    [Export(typeof(ICredentialsStore))]
+    public class CredentialsStore : ICredentialsStore
     {
         /// <summary>
         /// Remembers the file name used to serialize a particular <see cref="UserAccount"/>.
@@ -50,12 +52,10 @@ namespace GoogleCloudExtension.Accounts
         private const string DefaultCredentialsFileName = "default_credentials";
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
-        private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
-        private static CredentialsStore s_credentialsStoreOverride;
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
 
-        public static CredentialsStore Default => s_credentialsStoreOverride ?? s_defaultCredentialsStore.Value;
+        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.GetService<ICredentialsStore>();
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
@@ -236,24 +236,6 @@ namespace GoogleCloudExtension.Accounts
             StoredUserAccount result = null;
             _cachedCredentials.TryGetValue(accountName, out result);
             return result?.UserAccount;
-        }
-
-        /// <summary>
-        /// For testing.
-        /// Sets a new credential store as default.
-        /// </summary>
-        internal static void CreateNewOverride()
-        {
-            s_credentialsStoreOverride = new CredentialsStore();
-        }
-
-        /// <summary>
-        /// For testing.
-        /// Returns the default credential store to its original value.
-        /// </summary>
-        internal static void ClearOverride()
-        {
-            s_credentialsStoreOverride = null;
         }
 
         private void InvalidateProjectList()

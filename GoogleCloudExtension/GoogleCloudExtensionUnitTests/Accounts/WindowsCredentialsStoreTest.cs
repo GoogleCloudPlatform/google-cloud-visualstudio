@@ -52,8 +52,8 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(
-                new Project { Name = "DefaultProjectName", ProjectId = "DefaultProjectId" });
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("DefaultProjectId");
+
             _directoryExistsMock = new Mock<Func<string, bool>>();
             _fileExistsMock = new Mock<Func<string, bool>>();
             _enumerateFilesMock = new Mock<Func<string, IEnumerable<string>>>();
@@ -224,7 +224,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestAddCredentialsToInstance_CreatesMissingDirectory()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "TestProject" });
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("TestProject");
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
             var instance = new Instance

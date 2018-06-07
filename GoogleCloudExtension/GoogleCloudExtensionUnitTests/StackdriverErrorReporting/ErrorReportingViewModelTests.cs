@@ -121,7 +121,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestIsGridVisibleProperty()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new project id" });
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("new project id");
+            Mock.Get(CredentialsStore.Default).Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsGridVisible);
             CollectionAssert.Contains(_propertiesChanged, nameof(_objectUnderTest.IsGridVisible));

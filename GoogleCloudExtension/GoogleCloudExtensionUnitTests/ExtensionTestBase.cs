@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
@@ -34,8 +33,7 @@ namespace GoogleCloudExtensionUnitTests
         [TestInitialize]
         public void IntializeGlobalsForTest()
         {
-            CredentialsStore.CreateNewOverride();
-            PackageMock = new Mock<IGoogleCloudExtensionPackage>(MockBehavior.Strict);
+            PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
@@ -57,7 +55,6 @@ namespace GoogleCloudExtensionUnitTests
             UserPromptUtils.PromptUserOverride = null;
             GoogleCloudExtensionPackage.Instance = null;
             DataSourceFactory.DefaultOverride = null;
-            CredentialsStore.ClearOverride();
         }
 
         protected virtual void AfterEach() { }

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
@@ -53,7 +52,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             Caption = MockErrorPlaceholderCaption,
             IsError = true
         };
-        private static readonly Project s_project = new Project { ProjectId = MockProjectId };
         private static readonly UserAccount s_userAccount = new UserAccount { AccountName = MockAccountName };
         private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
 
@@ -64,8 +62,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(s_userAccount);
-            CredentialsStore.Default.UpdateCurrentProject(s_project);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(s_userAccount);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(MockProjectId);
 
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
@@ -134,7 +132,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoCredentials()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
@@ -152,7 +150,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoProject()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;

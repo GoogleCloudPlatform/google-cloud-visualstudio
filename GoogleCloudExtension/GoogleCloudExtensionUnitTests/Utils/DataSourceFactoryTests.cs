@@ -19,6 +19,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -33,7 +34,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestCreateResourceManagerDataSource_ReturnsNullForNoCredentials()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
             ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
 
@@ -43,7 +44,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestCreatePlusDataSource_ReturnsNullForNoCredentials()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
             IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
 
@@ -60,7 +61,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 ClientSecret = "TestClientSecret",
                 RefreshToken = "TestRefreshToken"
             };
-            CredentialsStore.Default.UpdateCurrentAccount(userAccount);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential)
+                .Returns(userAccount.GetGoogleCredential());
 
             ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
 
@@ -83,8 +85,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 ClientSecret = "TestClientSecret",
                 RefreshToken = "TestRefreshToken"
             };
-            CredentialsStore.Default.UpdateCurrentAccount(
-                userAccount);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(userAccount.GetGoogleCredential());
 
             IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
 
