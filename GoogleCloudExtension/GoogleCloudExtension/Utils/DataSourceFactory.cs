@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.Utils
         {
             if (credential != null)
             {
-                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
+                return new GPlusDataSource(credential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {

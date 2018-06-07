@@ -97,7 +97,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.AreEqual(userAccount.ClientSecret, flow.ClientSecrets.ClientSecret);
             Assert.AreEqual(userAccount.ClientId, flow.ClientSecrets.ClientId);
             Assert.AreEqual(userAccount.RefreshToken, userCredential.Token.RefreshToken);
-            Assert.AreEqual(GoogleCloudExtensionPackage.VersionedApplicationName, dataSource.Service.ApplicationName);
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.VersionedApplicationName, dataSource.Service.ApplicationName);
         }
 
         [TestMethod]

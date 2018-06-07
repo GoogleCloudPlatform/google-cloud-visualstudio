@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.Accounts
         /// This method will also invalidate the project.
         /// It is up to the caller to select an appropriate one.
         /// </summary>
-        public void UpdateCurrentAccount(UserAccount account)
+        public void UpdateCurrentAccount(IUserAccount account)
         {
             if (CurrentAccount?.AccountName != account?.AccountName)
             {
