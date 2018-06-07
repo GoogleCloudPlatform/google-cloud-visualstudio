@@ -88,7 +88,6 @@ namespace GoogleCloudExtension
         private const int MaximumConcurrentConnections = 10;
 
         private const string OptionsCategoryName = "Google Cloud Tools";
-        internal const string ExtensionApplicationName = "google-cloud-visualstudio";
 
         // The properties that are stored in the .suo file.
         private static readonly List<SolutionUserOptions> s_userSettings = new List<SolutionUserOptions>
@@ -346,15 +345,15 @@ namespace GoogleCloudExtension
                 Debug.WriteLine("New installation detected.");
                 EventsReporterWrapper.ReportEvent(NewInstallEvent.Create());
             }
-            else if (settings.InstalledVersion != Instance.ApplicationVersion)
+            else if (settings.InstalledVersion != ApplicationVersion)
             {
                 // This is an upgrade (or different version installed).
-                Debug.WriteLine($"Found new version {settings.InstalledVersion} different than current {Instance.ApplicationVersion}");
+                Debug.WriteLine($"Found new version {settings.InstalledVersion} different than current {ApplicationVersion}");
 
                 Version current, installed;
-                if (!Version.TryParse(Instance.ApplicationVersion, out current))
+                if (!Version.TryParse(ApplicationVersion, out current))
                 {
-                    Debug.WriteLine($"Invalid application version: {Instance.ApplicationVersion}");
+                    Debug.WriteLine($"Invalid application version: {ApplicationVersion}");
                     return;
                 }
                 if (!Version.TryParse(settings.InstalledVersion, out installed))
@@ -365,7 +364,7 @@ namespace GoogleCloudExtension
 
                 if (installed < current)
                 {
-                    Debug.WriteLine($"Upgrade to version {Instance.ApplicationVersion} detected.");
+                    Debug.WriteLine($"Upgrade to version {ApplicationVersion} detected.");
                     EventsReporterWrapper.ReportEvent(UpgradeEvent.Create());
                 }
             }
