@@ -144,7 +144,7 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
             var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
 
             _getProfileTaskSource.SetResult(new Person { DisplayName = profileDisplayName });
-            await objectUnderTest.ProfilePictureAsync.SafeTask;
+            await objectUnderTest.NameAsync.SafeTask;
 
             Assert.AreEqual(profileDisplayName, objectUnderTest.NameAsync.Value);
         }
