@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// The publishing dialog is logically defined as a navigation stack of steps, which allows the user to go back
     /// to the previous step.
     /// </summary>
-    public interface IPublishDialog : INotifyDataErrorInfo
+    public interface IPublishDialog
     {
         /// <summary>
         /// Returns the the VS project selected by the user.
