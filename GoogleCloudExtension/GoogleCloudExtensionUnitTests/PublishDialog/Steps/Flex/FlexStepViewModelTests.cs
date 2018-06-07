@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.Accounts;
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
@@ -42,7 +40,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private const string InvalidVersion = "-Invalid Version Name!";
         private const string ValidVersion = "valid-version-name";
 
-        private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = "AccountName" };
         private static readonly GCloudValidationResult s_validGCloudValidationResult =
             new GCloudValidationResult(true, true, true);
         private static readonly GCloudValidationResult s_invalidGCloudValidationResult =
@@ -71,9 +68,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
         protected override void BeforeEach()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(s_defaultUserAccount);
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
-
             _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
             GCloudWrapperUtils.ValidateGCloudAsyncOverride =
                 Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
