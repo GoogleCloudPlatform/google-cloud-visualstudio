@@ -30,7 +30,7 @@ namespace GoogleCloudExtensionUnitTests
         protected Mock<Func<UserPromptWindow.Options, bool>> PromptUserMock { get; private set; }
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
-        protected static Mock<ICredentialsStore> CredentialStoreMock => Mock.Get(CredentialsStore.Default);
+        protected static Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
 
         [TestInitialize]
         public void IntializeGlobalsForTest()
@@ -38,6 +38,7 @@ namespace GoogleCloudExtensionUnitTests
             PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
+            CredentialStoreMock = Mock.Get(CredentialsStore.Default);
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("DefaultProjectId");
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
                 .Returns(new UserAccount { AccountName = "DefaultAccountName" });

@@ -37,8 +37,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private static readonly Instance s_defaultInstance = new Instance
         {
             Name = "DefaultInstanceName",
-            Zone = "https://www.googleapis.com/compute/v1/projects/deploy-from-visual-studio-dev/zones/default-zone"
+            Zone = "https://uri/zones/default-zone"
         };
+
+        private static readonly WindowsInstanceCredentials s_defaultWindowsInstanceCredentials =
+            new WindowsInstanceCredentials("DefaultUser", "DefaultPassword");
 
         private WindowsCredentialsStore _objectUnderTest;
         private Mock<Func<string, bool>> _directoryExistsMock;
@@ -221,18 +224,20 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestAddCredentialsToInstance_CreatesMissingDirectory()
         {
-            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("TestProject");
+            const string testProject = "test-project";
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProject);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
+            const string testZone = "test-zone";
             var instance = new Instance
             {
                 Name = "TestInstance",
-                Zone = "https://www.googleapis.com/compute/v1/projects/deploy-from-visual-studio-dev/zones/testzone"
+                Zone = $"https://uri/zones/{testZone}"
             };
-            _objectUnderTest.AddCredentialsToInstance(instance, new WindowsInstanceCredentials("user", "password"));
+            _objectUnderTest.AddCredentialsToInstance(instance, s_defaultWindowsInstanceCredentials);
 
             string expectedPath = Path.Combine(
-                WindowsCredentialsStore.s_credentialsStoreRoot, @"TestProject\testzone\TestInstance");
+                WindowsCredentialsStore.s_credentialsStoreRoot, testProject, testZone, "TestInstance");
             _createDirectoryMock.Verify(f => f(expectedPath), Times.Once);
         }
 
@@ -240,14 +245,16 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         public void TestAddCredentialsToInstance_WritesEncryptedPasswordToFile()
         {
             const string password = "testPassword";
-            const string user = "testUser";
-            var credentials = new WindowsInstanceCredentials(user, password);
+            const string testUserName = "testUser";
+            var credentials = new WindowsInstanceCredentials(testUserName, password);
 
             _objectUnderTest.AddCredentialsToInstance(s_defaultInstance, credentials);
 
             _writeAllBytesMock.Verify(
                 f => f(
-                    It.Is<string>(s => Path.GetFileName(s) == "testUser.data"),
+                    It.Is<string>(
+                        s => Path.GetFileNameWithoutExtension(s) == testUserName &&
+                            Path.GetExtension(s) == WindowsCredentialsStore.PasswordFileExtension),
                     It.Is<byte[]>(
                         bytes => Encoding.UTF8.GetString(
                             ProtectedData.Unprotect(bytes, null, DataProtectionScope.CurrentUser)) == password)),
@@ -260,7 +267,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
             _objectUnderTest.DeleteCredentialsForInstance(
-                s_defaultInstance, new WindowsInstanceCredentials("user", "password"));
+                s_defaultInstance, s_defaultWindowsInstanceCredentials);
 
             _deleteFileMock.Verify(f => f(It.IsAny<string>()), Times.Never);
         }
@@ -268,23 +275,40 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestDeleteCredentialsForInstance_DeletesFile()
         {
-            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("test-project-id");
+            const string testUserName = "testUser";
+            const string testProjectId = "test-project-id";
+            const string testZone = "test-zone";
+            string testInstanceZoneUri = $"https://uri/zones/{testZone}";
+            const string testInstanceName = "TestInstanceName";
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
             _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
 
             var testInstance = new Instance
             {
-                Name = "TestInstanceName",
-                Zone = "https://www.googleapis.com/compute/v1/projects/deploy-from-visual-studio-dev/zones/test-zone"
+                Name = testInstanceName,
+                Zone = testInstanceZoneUri
             };
-            _objectUnderTest.DeleteCredentialsForInstance(testInstance, new WindowsInstanceCredentials("testUser", "password"));
+            _objectUnderTest.DeleteCredentialsForInstance(testInstance, new WindowsInstanceCredentials(testUserName, "password"));
 
             _deleteFileMock.Verify(
                 f => f(
                     It.Is<string>(
-                        s => Path.GetFileName(s) == "testUser.data" &&
-                            Path.GetDirectoryName(s).EndsWith(
-                                @"test-project-id/test-zone/TestInstanceName", StringComparison.Ordinal))),
-                Times.Never);
+                        s => Path.GetFileNameWithoutExtension(s) == testUserName &&
+                            Path.GetExtension(s) == WindowsCredentialsStore.PasswordFileExtension &&
+                            GetNameAtDepth(s, 1) == testInstanceName &&
+                            GetNameAtDepth(s, 2) == testZone &&
+                            GetNameAtDepth(s, 3) == testProjectId)));
+        }
+
+        private static string GetNameAtDepth(string path, int depth = 0)
+        {
+            string pathAtDepth = path;
+            for (var i = 0; i < depth; i++)
+            {
+                pathAtDepth = Path.GetDirectoryName(pathAtDepth);
+            }
+
+            return Path.GetFileName(pathAtDepth);
         }
     }
 }
