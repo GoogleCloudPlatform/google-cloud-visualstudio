@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services.FileSystem;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -64,13 +63,13 @@ namespace GoogleCloudExtensionUnitTests
             string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
-            Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.ApplicationName);
-            Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.ApplicationVersion);
+            Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.Instance.ApplicationName);
+            Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.Instance.ApplicationVersion);
             Assert.AreEqual(
                 $"{ExpectedAssemblyName}/{expectedAssemblyVersion}",
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             Assert.IsNull(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.ClientId);
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.DialogShown);
@@ -85,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests
             RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -99,7 +98,7 @@ namespace GoogleCloudExtensionUnitTests
             RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -110,12 +109,13 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestSamePackageVersion()
         {
-            _objectUnderTest.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
+            _objectUnderTest.AnalyticsSettings.InstalledVersion =
+                typeof(GoogleCloudExtensionPackage).Assembly.GetName().Version.ToString();
 
             RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -181,9 +181,8 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestGetServicesT_GetsServiceFromMef()
         {
-            Mock<IComponentModel> serviceMock = ServiceProviderMock.SetupService<SComponentModel, IComponentModel>();
             var mockedFileSystemService = Mock.Of<IFileSystem>();
-            serviceMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
+            ComponentModelMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
             RunPackageInitalize();
 
             var service = _objectUnderTest.GetService<IFileSystem>();

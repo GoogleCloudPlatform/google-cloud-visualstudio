@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -23,7 +22,6 @@ using Moq;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -148,7 +146,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestEnableMenuItemOnValidProjectIdInvalidProjectId()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
             var menuCommand = new OleMenuCommand((sender, args) => { }, (sender, args) => { },
                 (sender, args) => { }, new CommandID(Guid.Empty, 0));
 
@@ -160,8 +158,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestEnableMenuItemOnValidProjectIdValidProjectId()
         {
-            CredentialsStore.Default.UpdateCurrentProject(
-                new Project { ProjectId = "project-id" });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("valid-project-id");
             var menuCommand = new OleMenuCommand(
                 (sender, args) => { }, (sender, args) => { },
                 (sender, args) => { }, new CommandID(Guid.Empty, 0));

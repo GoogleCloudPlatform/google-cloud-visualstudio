@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -27,9 +25,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
     [TestClass]
     public class SourceRootViewModelBaseTests : ExtensionTestBase
     {
-        private const string MockProjectId = "parent.com:mock-project";
         private const string MockExceptionMessage = "MockException";
-        private const string MockAccountName = "MockAccount";
         private const string MockRootCaption = "MockRootCaption";
         private const string MockErrorPlaceholderCaption = "MockErrorPlaceholder";
         private const string MockNoItemsPlaceholderCaption = "MockNoItemsPlaceholder";
@@ -53,8 +49,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             Caption = MockErrorPlaceholderCaption,
             IsError = true
         };
-        private static readonly Project s_project = new Project { ProjectId = MockProjectId };
-        private static readonly UserAccount s_userAccount = new UserAccount { AccountName = MockAccountName };
         private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
 
         private TaskCompletionSource<IList<TreeNode>> _loadDataSource;
@@ -64,12 +58,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(s_userAccount);
-            CredentialsStore.Default.UpdateCurrentProject(s_project);
-
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
-            _mockedContext = Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == MockProjectId);
+            _mockedContext = Mock.Of<ICloudSourceContext>();
             _objectUnderTest = Mock.Of<SourceRootViewModelBase>(
                 o => o.RootCaption == MockRootCaption &&
                 o.ErrorPlaceholder == s_errorPlaceholder &&
@@ -134,7 +125,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoCredentials()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
@@ -152,7 +143,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoProject()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;

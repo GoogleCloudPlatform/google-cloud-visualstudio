@@ -197,8 +197,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
-                    AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                    AppName = GoogleCloudExtensionPackage.Instance.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 };
                 return await GCloudWrapper.ResetWindowsCredentialsAsync(
                     instanceName: _instance.Name,

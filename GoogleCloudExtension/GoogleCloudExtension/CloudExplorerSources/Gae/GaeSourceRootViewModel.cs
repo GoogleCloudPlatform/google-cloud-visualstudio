@@ -159,7 +159,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return new GaeDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.Instance.ApplicationName);
             }
             else
             {

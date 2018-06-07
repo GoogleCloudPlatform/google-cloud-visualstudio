@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
+                GoogleCloudExtensionPackage.Instance.ApplicationName);
             var allInstances = await dataSource.GetInstanceListAsync();
             // Left join instanceIds to allInstances on Id.  
             // Select instance name if id is found in allInstances.

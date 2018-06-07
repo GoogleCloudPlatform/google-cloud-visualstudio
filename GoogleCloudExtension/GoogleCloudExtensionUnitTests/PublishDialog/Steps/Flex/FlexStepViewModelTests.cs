@@ -14,7 +14,6 @@
 
 using Google.Apis.Appengine.v1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
@@ -33,12 +32,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
     [TestClass]
     public class FlexStepViewModelTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "DefaultProjectId";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
         private const string InvalidVersion = "-Invalid Version Name!";
         private const string ValidVersion = "valid-version-name";
-
-        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
 
         private FlexStepViewModel _objectUnderTest;
         private Mock<IApiManager> _apiManagerMock;
@@ -109,7 +105,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         [TestMethod]
         public void TestValidateProjectAsync_NoProjectSetsNeedsAppCreated()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
             _objectUnderTest.NeedsAppCreated = true;
 
             _objectUnderTest.OnVisible();
@@ -122,7 +118,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestValidateProjectAsync_ErrorInApplicationValidation()
         {
             _getApplicationTaskSource.SetException(new DataSourceException());
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _objectUnderTest.OnVisible();
 
@@ -136,7 +131,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestValidateProjectAsync_NeedsAppCreated()
         {
             _getApplicationTaskSource.SetResult(null);
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _objectUnderTest.OnVisible();
 
@@ -150,7 +144,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         {
             _objectUnderTest.NeedsAppCreated = true;
             _getApplicationTaskSource.SetResult(_mockedApplication);
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _objectUnderTest.OnVisible();
 
@@ -171,7 +164,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestSetAppRegionCommand_BeginsReload()
         {
             _setAppRegionTaskSource.SetResult(true);
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _objectUnderTest.OnVisible();
 
             _objectUnderTest.SetAppRegionCommand.Execute(null);

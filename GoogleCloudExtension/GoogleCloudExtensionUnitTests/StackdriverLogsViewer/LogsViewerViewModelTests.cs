@@ -27,7 +27,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Process = System.Diagnostics.Process;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
@@ -47,9 +46,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         {
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 
-            const string defaultAccountName = "default-account";
-            const string defaultProjectId = "default-project";
-            const string defaultProjectName = "default-project";
             _getResourceDescriptorsSource = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
             _listResourceKeysSource = new TaskCompletionSource<IList<ResourceKeys>>();
             _listProjectLogNamesSource = new TaskCompletionSource<IList<string>>();
@@ -64,9 +60,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                             It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
                             It.IsAny<CancellationToken>()) ==
                         _listLogEntriesSource.Task));
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = defaultAccountName });
-            CredentialsStore.Default.UpdateCurrentProject(
-                new Project { Name = defaultProjectName, ProjectId = defaultProjectId });
+
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
@@ -78,9 +72,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             const string testAccountName = "test-account";
             const string testProjectName = "test-project";
             const string testProjectId = "test-project";
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = testAccountName });
-            CredentialsStore.Default.UpdateCurrentProject(
-                new Project { Name = testProjectName, ProjectId = testProjectId });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(new UserAccount { AccountName = testAccountName });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
 
             Assert.IsNull(_objectUnderTest.LogIdList);
             Assert.IsNotNull(_objectUnderTest.DateTimePickerModel);
@@ -374,8 +367,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestInvalidateAllPropertiesEmptyAccountName()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "" });
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "project-id" });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
+                .Returns(new UserAccount { AccountName = "" });
             AsyncProperty oldAction = _objectUnderTest.AsyncAction;
 
             _objectUnderTest.InvalidateAllProperties();
@@ -386,8 +379,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestInvalidateAllPropertiesEmptyProjectId()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "account-name" });
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "" });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("");
             AsyncProperty oldAction = _objectUnderTest.AsyncAction;
 
             _objectUnderTest.InvalidateAllProperties();
@@ -398,8 +390,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestInvalidateAllPropertiesStartsReload()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "account-name" });
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "project-id" });
             AsyncProperty oldAction = _objectUnderTest.AsyncAction;
 
             _objectUnderTest.InvalidateAllProperties();

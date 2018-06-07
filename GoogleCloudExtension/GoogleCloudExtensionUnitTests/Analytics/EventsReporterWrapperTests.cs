@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleAnalyticsUtils;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using GoogleCloudExtension.Options;
@@ -83,9 +81,7 @@ namespace GoogleCloudExtensionUnitTests.Analytics
             const string metadataVal2 = "val 2";
             var eventsReporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => eventsReporterMock.Object);
-            CredentialsStore.Default.UpdateCurrentAccount(new UserAccount { AccountName = "new-account" });
-            CredentialsStore.Default.UpdateCurrentProject(
-                new Project { ProjectId = "new-project-id", ProjectNumber = projectNumber });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectNumericId).Returns(projectNumber.ToString);
 
             EventsReporterWrapper.ReportEvent(new AnalyticsEvent(eventName, metadataKey1, metadataVal1, metadataKey2, metadataVal2));
 

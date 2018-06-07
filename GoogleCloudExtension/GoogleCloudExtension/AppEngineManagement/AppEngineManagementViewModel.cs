@@ -120,6 +120,6 @@ namespace GoogleCloudExtension.AppEngineManagement
             => new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
     }
 }

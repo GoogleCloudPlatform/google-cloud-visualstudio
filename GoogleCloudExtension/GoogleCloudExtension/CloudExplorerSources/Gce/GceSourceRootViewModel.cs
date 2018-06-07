@@ -235,7 +235,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return new GceDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {

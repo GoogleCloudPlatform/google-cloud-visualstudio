@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.ApiManagement
                 return new ServiceManagementDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {
@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.ApiManagement
             return new ServiceManagementDataSource(
                 projectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
         }
     }
 }

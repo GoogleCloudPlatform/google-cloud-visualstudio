@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.Utils
             if (currentCredential != null)
             {
                 return new ResourceManagerDataSource(
-                    currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName);
+                    currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.Utils
             GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
             if (currentCredential != null)
             {
-                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName);
+                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {

@@ -35,14 +35,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
     [TestClass]
     public class GceStepViewModelTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "DefaultProjectId";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
         private const string WindowsServer2008License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2008-r2-dc";
         private const string WindowsServer2012License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
         private const string WindowsServer2016License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc";
         private const string AnyOtherLicense = "https://www.googleapis.com/fake/license/for/tests";
-
-        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
 
         private static readonly Instance s_windows2008RunningInstance = new Instance
         {
@@ -129,7 +126,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
 
@@ -378,9 +374,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _objectUnderTest.OnVisible();
-            CredentialsStore.Default.UpdateCurrentProject(null);
 
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("project-id");
+            CredentialStoreMock.Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
         }
@@ -390,9 +386,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             _getInstanceListTaskSource.SetResult(s_allInstances);
             _objectUnderTest.OnVisible();
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
 
-            CredentialsStore.Default.UpdateCurrentProject(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
         }

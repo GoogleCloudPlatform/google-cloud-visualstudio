@@ -13,8 +13,6 @@
 // limitations under the License.
 
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using GoogleCloudExtension.VsVersion;
@@ -30,7 +28,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     [TestClass]
     public class AspNetCoreTemplateChooserViewModelTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "default-project-id";
         private List<string> _targetSdkVersions;
         private Mock<Action> _closeWindowMock;
 
@@ -40,7 +37,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             // ReSharper disable once PossibleUnintendedReferenceComparison
             VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
                 () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
-            CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
         }

@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.PickProjectDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 {
@@ -47,8 +48,6 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         protected override void BeforeEach()
         {
             _testObject = null;
-            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
             _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
@@ -67,7 +66,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestInitialConditionsWithoutDefaultUser()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
 
             _testObject = BuildTestObject();
 
@@ -81,7 +80,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestInitialConditionsWithDefaultUser()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount);
 
             _testObject = BuildTestObject();
 
@@ -97,10 +96,9 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestChangeUserCommandNoUser()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
             _testObject = BuildTestObject();
 
-            _manageAccoutMock.Setup(f => f()).Callback(() => CredentialsStore.Default.UpdateCurrentAccount(null));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
@@ -108,16 +106,29 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         }
 
         [TestMethod]
-        public void TestChangeUserCommandWithUser()
+        public void TestChangeUserCommand_CallsPromptManageAccount()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
             _testObject = BuildTestObject();
 
             _manageAccoutMock.Setup(f => f())
-                .Callback(() => CredentialsStore.Default.UpdateCurrentAccount(s_defaultAccount));
+                .Callback(() =>
+                    CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
+            Assert.IsTrue(_testObject.HasAccount);
+        }
+
+        [TestMethod]
+        public void TestChangeUserCommand_UpdatesHasAccount()
+        {
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
+            _testObject = BuildTestObject();
+
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount);
+            _testObject.ChangeUserCommand.Execute(null);
+
             Assert.IsTrue(_testObject.HasAccount);
         }
 
@@ -133,7 +144,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
             Assert.AreEqual(TestExceptionMessage, _testObject.LoadTask.ErrorMessage);
-            Assert.IsTrue(_testObject.Projects.Count() == 0);
+            CollectionAssert.That.IsEmpty(_testObject.Projects);
         }
 
         [TestMethod]
@@ -187,7 +198,6 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestLoadProjectsWithIncludedSelectedProject()
         {
-            CredentialsStore.Default.UpdateCurrentProject(null);
             _testObject = BuildTestObject();
 
             _testObject.SelectedProject = s_testProject;

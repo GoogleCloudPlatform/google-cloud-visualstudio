@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -27,13 +25,11 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     [TestClass]
     public class TemplateChooserViewModelBaseTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
         private TemplateChooserViewModelBase _objectUnderTest;
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
             _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
         }
@@ -41,10 +37,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsForAspNet()
         {
-            Assert.AreEqual(AppType.Mvc, _objectUnderTest.AppType);
-            Assert.IsTrue(_objectUnderTest.OkCommand.CanExecuteCommand);
-            Assert.AreEqual(DefaultProjectId, _objectUnderTest.GcpProjectId);
-            Assert.IsNull(_objectUnderTest.Result);
+            const string testProjectId = "test-project-id";
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
+
+            var objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
+
+            Assert.AreEqual(AppType.Mvc, objectUnderTest.AppType);
+            Assert.IsTrue(objectUnderTest.OkCommand.CanExecuteCommand);
+            Assert.AreEqual(testProjectId, objectUnderTest.GcpProjectId);
+            Assert.IsNull(objectUnderTest.Result);
         }
 
         [TestMethod]
