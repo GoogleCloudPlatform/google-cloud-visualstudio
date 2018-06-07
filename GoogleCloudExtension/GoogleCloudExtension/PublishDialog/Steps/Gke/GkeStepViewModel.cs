@@ -200,7 +200,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
             CredentialsStore.Default.CurrentProjectId,
             CredentialsStore.Default.CurrentGoogleCredential,
-            GoogleCloudExtensionPackage.ApplicationName);
+            GoogleCloudExtensionPackage.Instance.ApplicationName);
 
         public GkeStepViewModel(
             IGkeDataSource dataSource,
@@ -366,8 +366,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
-                    AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion
+                    AppName = GoogleCloudExtensionPackage.Instance.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion
                 };
 
                 Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(

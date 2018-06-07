@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.Accounts
 {
@@ -52,8 +51,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
         protected override void BeforeEach()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("DefaultProjectId");
-
             _directoryExistsMock = new Mock<Func<string, bool>>();
             _fileExistsMock = new Mock<Func<string, bool>>();
             _enumerateFilesMock = new Mock<Func<string, IEnumerable<string>>>();
@@ -224,7 +221,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestAddCredentialsToInstance_CreatesMissingDirectory()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("TestProject");
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("TestProject");
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
             var instance = new Instance
@@ -271,7 +268,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestDeleteCredentialsForInstance_DeletesFile()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "test-project-id" });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("test-project-id");
             _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
 
             var testInstance = new Instance

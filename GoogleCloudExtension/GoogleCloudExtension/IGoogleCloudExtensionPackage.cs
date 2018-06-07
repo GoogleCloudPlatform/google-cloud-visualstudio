@@ -29,6 +29,21 @@ namespace GoogleCloudExtension
         AnalyticsOptions AnalyticsSettings { get; }
         string VsVersion { get; }
 
+        /// <summary>
+        /// Returns the versioned application name in the right format for analytics, etc...
+        /// </summary>
+        string VersionedApplicationName { get; }
+
+        /// <summary>
+        /// The version of the extension's main assembly.
+        /// </summary>
+        string ApplicationVersion { get; }
+
+        /// <summary>
+        /// The application name to use everywhere one is needed. Analytics, data sources, etc...
+        /// </summary>
+        string ApplicationName { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;

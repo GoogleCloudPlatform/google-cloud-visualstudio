@@ -30,12 +30,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
     [TestClass]
     public class PublishDialogStepBaseTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "DefaultProjectId";
-        private const string TargetProjectId = "TargetProjectId";
+        private const string ValidProjectId = "valid-project-id";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
 
-        private static readonly Project s_targetProject = new Project { ProjectId = TargetProjectId };
-        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
         private static readonly List<string> s_mockedRequiredApis = new List<string> { "OneRequieredApi", "AnotherRequiredApi" };
 
         private TestPublishDialogStep _objectUnderTest;
@@ -230,7 +227,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             _objectUnderTest.OnNotVisible();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
-            Mock.Get(CredentialsStore.Default).Raise(
+            CredentialStoreMock.Raise(
                 cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(0, _objectUnderTest.OnFlowFinishedCallCount);
@@ -239,7 +236,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_EmptyProjectIsInvalid()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
 
             await _objectUnderTest.ValidateProjectAsyncBase();
 
@@ -250,7 +247,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithNoRequiredApis()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(ValidProjectId);
             _objectUnderTest.RequiredApisOverride = new List<string>();
 
             await _objectUnderTest.ValidateProjectAsyncBase();
@@ -262,7 +259,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public void TestValidateProject_ValidProjectWithRequiredApisLoading()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(ValidProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
 
             Task validateProjectTask = _objectUnderTest.ValidateProjectAsyncBase();
@@ -275,7 +272,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithRequiredApisNotEnabled()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(ValidProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(false);
 
@@ -288,7 +285,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         [TestMethod]
         public async Task TestValidateProject_ValidProjectWithRequiredApisEnabled()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(ValidProjectId);
             _objectUnderTest.RequiredApisOverride = s_mockedRequiredApis;
             _areServicesEnabledTaskSource.SetResult(true);
 
@@ -422,7 +419,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
             _objectUnderTest.OnFlowFinishedBase();
             Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
-            Mock.Get(CredentialsStore.Default).Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
+            CredentialStoreMock.Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(0, _objectUnderTest.OnFlowFinishedCallCount);
         }

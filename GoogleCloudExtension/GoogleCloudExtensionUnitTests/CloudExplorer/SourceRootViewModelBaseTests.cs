@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -26,9 +25,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
     [TestClass]
     public class SourceRootViewModelBaseTests : ExtensionTestBase
     {
-        private const string MockProjectId = "parent.com:mock-project";
         private const string MockExceptionMessage = "MockException";
-        private const string MockAccountName = "MockAccount";
         private const string MockRootCaption = "MockRootCaption";
         private const string MockErrorPlaceholderCaption = "MockErrorPlaceholder";
         private const string MockNoItemsPlaceholderCaption = "MockNoItemsPlaceholder";
@@ -52,7 +49,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             Caption = MockErrorPlaceholderCaption,
             IsError = true
         };
-        private static readonly UserAccount s_userAccount = new UserAccount { AccountName = MockAccountName };
         private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
 
         private TaskCompletionSource<IList<TreeNode>> _loadDataSource;
@@ -62,12 +58,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
         protected override void BeforeEach()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(s_userAccount);
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(MockProjectId);
-
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
-            _mockedContext = Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == MockProjectId);
+            _mockedContext = Mock.Of<ICloudSourceContext>();
             _objectUnderTest = Mock.Of<SourceRootViewModelBase>(
                 o => o.RootCaption == MockRootCaption &&
                 o.ErrorPlaceholder == s_errorPlaceholder &&
@@ -132,7 +125,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoCredentials()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
@@ -150,7 +143,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestLoadingNoProject()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
 
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;

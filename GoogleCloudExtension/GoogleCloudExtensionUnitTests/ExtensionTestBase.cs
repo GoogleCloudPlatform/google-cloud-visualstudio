@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using GoogleCloudExtension;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -30,13 +30,18 @@ namespace GoogleCloudExtensionUnitTests
         protected Mock<Func<UserPromptWindow.Options, bool>> PromptUserMock { get; private set; }
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
+        protected static Mock<ICredentialsStore> CredentialStoreMock => Mock.Get(CredentialsStore.Default);
+
         [TestInitialize]
         public void IntializeGlobalsForTest()
         {
             PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
-            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("DefaultProjectId");
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
+                .Returns(new UserAccount { AccountName = "DefaultAccountName" });
+
             PromptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             UserPromptUtils.PromptUserOverride = PromptUserMock.Object;
 

@@ -19,7 +19,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -34,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestCreateResourceManagerDataSource_ReturnsNullForNoCredentials()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
             ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
 
@@ -44,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestCreatePlusDataSource_ReturnsNullForNoCredentials()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
             IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
 
@@ -61,7 +60,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 ClientSecret = "TestClientSecret",
                 RefreshToken = "TestRefreshToken"
             };
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential)
+            CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential)
                 .Returns(userAccount.GetGoogleCredential());
 
             ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
@@ -72,7 +71,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.AreEqual(userAccount.ClientSecret, flow.ClientSecrets.ClientSecret);
             Assert.AreEqual(userAccount.ClientId, flow.ClientSecrets.ClientId);
             Assert.AreEqual(userAccount.RefreshToken, userCredential.Token.RefreshToken);
-            Assert.AreEqual(GoogleCloudExtensionPackage.VersionedApplicationName, result.Service.ApplicationName);
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.VersionedApplicationName, result.Service.ApplicationName);
         }
 
         [TestMethod]
@@ -85,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 ClientSecret = "TestClientSecret",
                 RefreshToken = "TestRefreshToken"
             };
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentGoogleCredential).Returns(userAccount.GetGoogleCredential());
+            CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(userAccount.GetGoogleCredential());
 
             IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
 
@@ -96,7 +95,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.AreEqual(userAccount.ClientSecret, flow.ClientSecrets.ClientSecret);
             Assert.AreEqual(userAccount.ClientId, flow.ClientSecrets.ClientId);
             Assert.AreEqual(userAccount.RefreshToken, userCredential.Token.RefreshToken);
-            Assert.AreEqual(GoogleCloudExtensionPackage.VersionedApplicationName, dataSource.Service.ApplicationName);
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.VersionedApplicationName, dataSource.Service.ApplicationName);
         }
     }
 }

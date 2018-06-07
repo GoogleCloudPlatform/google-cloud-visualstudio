@@ -97,10 +97,10 @@ namespace GoogleCloudExtension.Analytics
 #if DEBUG
                 var analyticsReporter = new AnalyticsReporter(PropertyId,
                     clientId: settings.ClientId,
-                    appName: GoogleCloudExtensionPackage.ApplicationName,
-                    appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
+                    appName: GoogleCloudExtensionPackage.Instance.ApplicationName,
+                    appVersion: GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                     debug: true,
-                    userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
+                    userAgent: GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
                 return new DebugEventReporter(analyticsReporter);
 
 #else

@@ -1,4 +1,3 @@
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.StackdriverLogsViewer;
@@ -44,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.Frame = _frameMock.Object;
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
-            Mock.Get(CredentialsStore.Default).Raise(
+            CredentialStoreMock.Raise(
                 cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreNotEqual(oldViewModel, _objectUnderTest.ViewModel);
@@ -56,7 +55,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.Frame = _frameMock.Object;
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
-            Mock.Get(CredentialsStore.Default).Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.AreNotEqual(oldViewModel, _objectUnderTest.ViewModel);
         }
@@ -68,7 +67,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
             ((IVsWindowPane)_objectUnderTest).ClosePane();
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(oldViewModel, _objectUnderTest.ViewModel);
         }
@@ -80,7 +80,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
 
             ((IVsWindowPane)_objectUnderTest).ClosePane();
-            CredentialsStore.Default.ResetCredentials(null, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(oldViewModel, _objectUnderTest.ViewModel);
         }

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverErrorReporting;
@@ -448,7 +447,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestUpdatingProjectId()
         {
-            Mock.Get(CredentialsStore.Default).Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsAccountChanged);
         }
@@ -456,7 +456,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestResetProjectId()
         {
-            Mock.Get(CredentialsStore.Default).Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsAccountChanged);
         }
@@ -473,7 +473,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void TestDisposeDisablesUpdatingProjectId()
         {
             _objectUnderTest.Dispose();
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }
@@ -482,7 +483,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void TestDisposeDisablesResetProjectId()
         {
             _objectUnderTest.Dispose();
-            CredentialsStore.Default.ResetCredentials(null, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }

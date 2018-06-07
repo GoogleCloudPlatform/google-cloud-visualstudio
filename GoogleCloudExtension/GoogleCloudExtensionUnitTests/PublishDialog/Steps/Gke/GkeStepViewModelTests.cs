@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
@@ -38,7 +37,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
     {
         private const string VisualStudioProjectName = "VisualStudioProjectName";
         private const string ClusterCId = "id for c";
-        private const string DefaultProjectId = "TestProjectId";
 
         private static readonly Cluster s_aCluster = new Cluster { Name = "Acluster", SelfLink = "id for a" };
         private static readonly Cluster s_bCluster = new Cluster { Name = "Bcluster", SelfLink = "id for b" };
@@ -71,8 +69,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
         protected override void BeforeEach()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
-
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
@@ -329,11 +325,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         [TestMethod]
         public void TestCreateClusterCommand()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            const string projectId = "test-project-id";
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(projectId);
             _objectUnderTest.CreateClusterCommand.Execute(null);
 
             _startProcessMock.Verify(
-                f => f(string.Format(GkeStepViewModel.GkeAddClusterUrlFormat, DefaultProjectId)), Times.Once);
+                f => f(string.Format(GkeStepViewModel.GkeAddClusterUrlFormat, projectId)), Times.Once);
         }
 
         [TestMethod]
@@ -383,7 +380,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         [TestMethod]
         public void TestValidateProjectAsync_MissingProjectDisablesCommands()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = true;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = true;
 
@@ -396,7 +393,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         [TestMethod]
         public void TestValidateProjectAsync_EnablesCommands()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("valid-project-id");
             _objectUnderTest.RefreshClustersListCommand.CanExecuteCommand = false;
             _objectUnderTest.CreateClusterCommand.CanExecuteCommand = false;
             _getClusterListTaskSource.SetResult(null);

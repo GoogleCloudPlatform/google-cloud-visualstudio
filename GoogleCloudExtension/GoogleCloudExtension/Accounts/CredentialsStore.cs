@@ -247,7 +247,7 @@ namespace GoogleCloudExtension.Accounts
             {
                 var dataSource = new ResourceManagerDataSource(
                     CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
                 return await dataSource.GetProjectsListAsync();
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))

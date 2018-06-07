@@ -48,7 +48,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         {
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 
-            const string defaultProjectId = "default-project";
             _getResourceDescriptorsSource = new TaskCompletionSource<IList<MonitoredResourceDescriptor>>();
             _listResourceKeysSource = new TaskCompletionSource<IList<ResourceKeys>>();
             _listProjectLogNamesSource = new TaskCompletionSource<IList<string>>();
@@ -57,15 +56,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 ds =>
                     ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
                     ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
-                    (ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
-                        _listProjectLogNamesSource.Task) &&
-                    (ds.ListLogEntriesAsync(
-                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                            It.IsAny<CancellationToken>()) ==
-                        _listLogEntriesSource.Task));
-
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(defaultProjectId);
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(s_defaultUserAccount);
+                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                    _listProjectLogNamesSource.Task &&
+                    ds.ListLogEntriesAsync(
+                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                        It.IsAny<CancellationToken>()) ==
+                    _listLogEntriesSource.Task);
 
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();
@@ -78,8 +74,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             const string testAccountName = "test-account";
             const string testProjectName = "test-project";
             const string testProjectId = "test-project";
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(new UserAccount { AccountName = testAccountName });
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(new UserAccount { AccountName = testAccountName });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
 
             Assert.IsNull(_objectUnderTest.LogIdList);
             Assert.IsNotNull(_objectUnderTest.DateTimePickerModel);
@@ -373,7 +369,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestInvalidateAllPropertiesEmptyAccountName()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount)
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
                 .Returns(new UserAccount { AccountName = "" });
             AsyncProperty oldAction = _objectUnderTest.AsyncAction;
 
@@ -385,7 +381,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestMethod]
         public void TestInvalidateAllPropertiesEmptyProjectId()
         {
-            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns("");
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("");
             AsyncProperty oldAction = _objectUnderTest.AsyncAction;
 
             _objectUnderTest.InvalidateAllProperties();
