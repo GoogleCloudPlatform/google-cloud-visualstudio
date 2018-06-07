@@ -102,12 +102,12 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
         /// </summary>
-        public static string ApplicationName => "google-cloud-visualstudio";
+        public string ApplicationName { get; } = "google-cloud-visualstudio";
 
         /// <summary>
         /// The version of the extension's main assembly.
         /// </summary>
-        public static string ApplicationVersion => s_appVersion.Value;
+        public string ApplicationVersion => s_appVersion.Value;
 
         /// <summary>
         /// The version of Visual Studio currently running.
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension
         /// <summary>
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
-        public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+        public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
 
         /// <summary>
         /// The initalized instance of the package.
