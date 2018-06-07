@@ -106,10 +106,10 @@ namespace GoogleCloudExtension.Analytics
 #else
                 var analyticsReporter = new AnalyticsReporter(PropertyId,
                     clientId: settings.ClientId,
-                    appName: GoogleCloudExtensionPackage.ApplicationName,
-                    appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
+                    appName: GoogleCloudExtensionPackage.Instance.ApplicationName,
+                    appVersion: GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                     debug: false,
-                    userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
+                    userAgent: GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
                  return new EventsReporter(analyticsReporter);
 #endif
             }
