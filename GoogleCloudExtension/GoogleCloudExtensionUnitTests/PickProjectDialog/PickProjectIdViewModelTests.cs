@@ -108,16 +108,11 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestChangeUserCommand_CallsPromptManageAccount()
         {
-            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
             _testObject = BuildTestObject();
 
-            _manageAccoutMock.Setup(f => f())
-                .Callback(() =>
-                    CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount));
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
-            Assert.IsTrue(_testObject.HasAccount);
         }
 
         [TestMethod]
