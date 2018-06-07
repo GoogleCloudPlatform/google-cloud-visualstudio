@@ -17,6 +17,7 @@ using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -99,6 +100,20 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
 
             Assert.IsTrue(objectUnderTest.NameAsync.IsCompleted);
             Assert.IsNull(objectUnderTest.NameAsync.Value);
+        }
+
+        [TestMethod]
+        public void TestConstructor_LogsToActivityLogForExceptionCreatingDataSource()
+        {
+            var exceptionMessage = "exception message";
+            DataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()))
+                .Throws(new Exception(exceptionMessage));
+
+            _ = new UserAccountViewModel(s_defaultUserAccount);
+
+            Mock.Get(GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>()).Verify(
+                al => al.LogEntry(
+                    (uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, nameof(UserAccountViewModel), exceptionMessage));
         }
 
         [TestMethod]
