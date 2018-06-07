@@ -183,6 +183,7 @@
       <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
     <Compile Include="IGoogleCloudExtensionPackage.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdViewModel.cs" />
     <Compile Include="Projects\IParsedDteProject.cs" />

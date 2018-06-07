@@ -107,7 +107,6 @@
     <Compile Include="NetCoreAppUtils.cs" />
     <Compile Include="ProjectConfigurationStatus.cs" />
     <Compile Include="WindowsVmDeployment.cs" />
-    <Compile Include="AppEngineFlexDeployment.cs" />
     <Compile Include="AppEngineFlexDeploymentResult.cs" />
     <Compile Include="ProgressHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
