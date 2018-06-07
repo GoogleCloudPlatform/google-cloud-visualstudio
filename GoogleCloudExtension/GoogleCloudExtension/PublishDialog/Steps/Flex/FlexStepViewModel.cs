@@ -120,14 +120,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         public IList<string> Services
         {
             get => _services;
-            set
-            {
-                string appYamlService = _deploymentService.GetAppEngineService(PublishDialog.Project);
-                Service = value?.FirstOrDefault(
-                        s => s.Equals(appYamlService, StringComparison.CurrentCultureIgnoreCase)) ??
-                    value?.FirstOrDefault();
-                SetValueAndRaise(ref _services, value);
-            }
+            set => SetValueAndRaise(ref _services, value);
         }
 
         /// <summary>
@@ -138,7 +131,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             get => _service;
             set
             {
-                SetValueAndRaise(ref _service, value);
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateServiceName(value, Resources.PublishDialogFlexServiceName);
+                SetAndRaiseWithValidation(ref _service, value, validations);
                 UpdateAppYamlServiceEnabled =
                     Service != _deploymentService.GetAppEngineService(PublishDialog.Project);
             }
@@ -294,6 +289,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             {
                 Version = GcpPublishStepsUtils.GetDefaultVersion();
             }
+
+            Service = _deploymentService.GetAppEngineService(PublishDialog.Project);
         }
 
         protected override void SaveProjectProperties()

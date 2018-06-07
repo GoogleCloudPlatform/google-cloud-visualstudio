@@ -123,6 +123,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
         protected override void BeforeEach()
         {
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 

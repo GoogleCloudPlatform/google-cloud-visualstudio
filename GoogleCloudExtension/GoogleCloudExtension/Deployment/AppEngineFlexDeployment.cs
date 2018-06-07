@@ -178,20 +178,35 @@ namespace GoogleCloudExtension.Deployment
             string appYamlPath = GetAppYamlPath(publishDialogProject);
             if (FileSystem.File.Exists(appYamlPath))
             {
-                var yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(File.OpenText(appYamlPath));
-                if (service != DefaultServiceName)
-                {
-                    yamlObject[ServiceYamlProperty] = service;
-                }
-                else if (yamlObject.ContainsKey(ServiceYamlProperty))
-                {
-                    yamlObject.Remove(ServiceYamlProperty);
-                }
-                _yamlSerializer.Serialize(File.CreateText(appYamlPath), yamlObject);
+                SetAppYamlService(service, appYamlPath);
             }
             else
             {
                 GenerateAppYaml(publishDialogProject, service);
+            }
+        }
+
+        private void SetAppYamlService(string service, string sourceAppYaml, string targetAppYaml = null)
+        {
+            targetAppYaml = targetAppYaml ?? sourceAppYaml;
+            Dictionary<object, object> yamlObject;
+            using (StreamReader reader = File.OpenText(sourceAppYaml))
+            {
+                yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
+            }
+
+            if (!IsDefaultService(service))
+            {
+                yamlObject[ServiceYamlProperty] = service;
+            }
+            else if (yamlObject.ContainsKey(ServiceYamlProperty))
+            {
+                yamlObject.Remove(ServiceYamlProperty);
+            }
+
+            using (StreamWriter writer = File.CreateText(targetAppYaml))
+            {
+                _yamlSerializer.Serialize(writer, yamlObject);
             }
         }
 
@@ -270,7 +285,7 @@ namespace GoogleCloudExtension.Deployment
         public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
         {
             string targetAppYaml = GetAppYamlPath(project);
-            if (service == DefaultServiceName)
+            if (IsDefaultService(service))
             {
                 FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
             }
@@ -367,29 +382,34 @@ namespace GoogleCloudExtension.Deployment
 
             if (FileSystem.File.Exists(sourceAppYaml))
             {
-                if (options.Service != GetAppEngineService(project))
+                string appYamlService = GetAppEngineService(project);
+                if (options.Service == appYamlService ||
+                    IsDefaultService(options.Service) && IsDefaultService(appYamlService))
                 {
-                    StreamReader sourceReader = File.OpenText(sourceAppYaml);
-                    var appYamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(sourceReader);
-                    appYamlObject[ServiceYamlProperty] = options.Service;
-                    _yamlSerializer.Serialize(File.CreateText(targetAppYaml), appYamlObject);
+                    FileSystem.File.Copy(sourceAppYaml, targetAppYaml, true);
                 }
                 else
                 {
-                    FileSystem.File.Copy(sourceAppYaml, targetAppYaml, overwrite: true);
+                    SetAppYamlService(options.Service, sourceAppYaml, targetAppYaml);
                 }
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(options.Service) || options.Service == DefaultServiceName)
+                if (IsDefaultService(options.Service))
                 {
                     FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
                 }
                 else
                 {
-                    FileSystem.File.WriteAllText(targetAppYaml, string.Format(AppYamlDefaultServiceFormat, options.Service));
+                    FileSystem.File.WriteAllText(
+                        targetAppYaml, string.Format(AppYamlDefaultServiceFormat, options.Service));
                 }
             }
+        }
+
+        private static bool IsDefaultService(string service)
+        {
+            return string.IsNullOrWhiteSpace(service) || service == DefaultServiceName;
         }
 
         private Task<bool> DeployAppBundleAsync(

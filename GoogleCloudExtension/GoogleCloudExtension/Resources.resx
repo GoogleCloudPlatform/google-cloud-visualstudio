@@ -1699,6 +1699,10 @@
     <value>{0} must start with a letter or number.</value>
     <comment>{Field} must start with a letter or number validation message.</comment>
   </data>
+  <data name="ValidationEndLetterOrNumberMessage" xml:space="preserve">
+    <value>{0} must end with a letter or number.</value>
+    <comment>{Field} must end with a letter or number validation message.</comment>
+  </data>
   <data name="ValidationAllLetterNumberOrDashMessage" xml:space="preserve">
     <value>{0} can only contain letters, numbers, and dashes(-).</value>
     <comment>{Field} can only contain letters, numbers and dashes validation message.</comment>
@@ -2480,8 +2484,16 @@ Delete corrupted file?</value>
     <value>Service:</value>
     <comment>The label of the Service text box in the App Engine publish dialog.</comment>
   </data>
+  <data name="PublishDialogFlexServiceName" xml:space="preserve">
+    <value>Service</value>
+    <comment>The name of the Service text box in the App Engine publish dialog.</comment>
+  </data>
   <data name="PublishDialogFlexUpdateAppYamlCaption" xml:space="preserve">
     <value>Update app.yaml</value>
     <comment>Caption for the "Update app.yaml" checkbox in the Publish App Engine dialog.</comment>
+  </data>
+  <data name="PublishDialogFlexUpdateAppYamlToolTip" xml:space="preserve">
+    <value>Update your existing app.yaml to target this service, or create a new one that does so.</value>
+    <comment>The text of the tool tip for the Update app.yaml checkbox on the publish to App Engine dialog.</comment>
   </data>
 </root>

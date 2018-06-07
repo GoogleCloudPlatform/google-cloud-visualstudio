@@ -19,6 +19,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {

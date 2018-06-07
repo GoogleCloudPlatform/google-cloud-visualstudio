@@ -42,7 +42,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private const string InvalidVersion = "-Invalid Version Name!";
         private const string ValidVersion = "valid-version-name";
 
-        private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
         private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = "AccountName" };
         private static readonly GCloudValidationResult s_validGCloudValidationResult =
             new GCloudValidationResult(true, true, true);
@@ -72,8 +71,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentAccount(s_defaultUserAccount);
-            CredentialsStore.Default.UpdateCurrentProject(s_defaultProject);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentAccount).Returns(s_defaultUserAccount);
+            Mock.Get(CredentialsStore.Default).SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
 
             _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
             GCloudWrapperUtils.ValidateGCloudAsyncOverride =
@@ -423,27 +422,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestSetServices_SetsServiceToFirst()
+        public void TestLoadProperties_SetsServiceFromAppYaml()
         {
-            const string firstServiceId = "service-1";
-            string[] services = { firstServiceId, "service-2" };
-
-            _objectUnderTest.Services = services;
-
-            Assert.AreEqual(firstServiceId, _objectUnderTest.Service);
-        }
-
-        [TestMethod]
-        public void TestSetServices_SetsServiceFromAppYaml()
-        {
-            const string secondServiceId = "service-2";
+            var expectedService = "expected-service";
             _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
-                .Returns(secondServiceId);
-            string[] services = { "service-1", secondServiceId };
+                .Returns(expectedService);
 
-            _objectUnderTest.Services = services;
+            _objectUnderTest.OnVisible();
 
-            Assert.AreEqual(secondServiceId, _objectUnderTest.Service);
+            Assert.AreEqual(expectedService, _objectUnderTest.Service);
         }
 
         [TestMethod]

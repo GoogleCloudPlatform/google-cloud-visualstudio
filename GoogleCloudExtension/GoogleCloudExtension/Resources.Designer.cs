@@ -4481,6 +4481,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        public static string PublishDialogFlexServiceName {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexServiceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select app region.
         /// </summary>
         public static string PublishDialogFlexSetAppRegionCaption {
@@ -4495,6 +4504,15 @@ namespace GoogleCloudExtension {
         public static string PublishDialogFlexUpdateAppYamlCaption {
             get {
                 return ResourceManager.GetString("PublishDialogFlexUpdateAppYamlCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update your existing app.yaml to target this service, or create a new one that does so..
+        /// </summary>
+        public static string PublishDialogFlexUpdateAppYamlToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexUpdateAppYamlToolTip", resourceCulture);
             }
         }
         
@@ -5242,6 +5260,15 @@ namespace GoogleCloudExtension {
         public static string ValidationAllLetterNumberOrDashMessage {
             get {
                 return ResourceManager.GetString("ValidationAllLetterNumberOrDashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must end with a letter or number..
+        /// </summary>
+        public static string ValidationEndLetterOrNumberMessage {
+            get {
+                return ResourceManager.GetString("ValidationEndLetterOrNumberMessage", resourceCulture);
             }
         }
         
