@@ -17,10 +17,8 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
@@ -49,10 +47,8 @@ namespace GoogleCloudExtension.ManageAccounts
                 IGPlusDataSource dataSource = dataSourceFactory.CreatePlusDataSource(userAccount.GetGoogleCredential());
                 personTask = dataSource.GetProfileAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>().LogEntry(
-                    (uint)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, nameof(UserAccountViewModel), e.Message);
                 personTask = Task.FromResult<Person>(null);
             }
 
