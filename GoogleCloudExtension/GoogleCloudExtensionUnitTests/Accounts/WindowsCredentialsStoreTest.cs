@@ -278,7 +278,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             const string testUserName = "testUser";
             const string testProjectId = "test-project-id";
             const string testZone = "test-zone";
-            string testInstanceZoneUri = $"https://uri/zones/{testZone}";
             const string testInstanceName = "TestInstanceName";
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
             _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
@@ -286,7 +285,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             var testInstance = new Instance
             {
                 Name = testInstanceName,
-                Zone = testInstanceZoneUri
+                Zone = $"https://uri/zones/{testZone}"
             };
             _objectUnderTest.DeleteCredentialsForInstance(testInstance, new WindowsInstanceCredentials(testUserName, "password"));
 

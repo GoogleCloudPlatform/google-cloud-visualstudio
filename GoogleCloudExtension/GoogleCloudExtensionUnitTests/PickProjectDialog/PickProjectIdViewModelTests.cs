@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 {
@@ -105,7 +106,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         }
 
         [TestMethod]
-        public void TestChangeUserCommandWithUser()
+        public void TestChangeUserCommand_CallsPromptManageAccount()
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
             _testObject = BuildTestObject();
@@ -116,6 +117,18 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
             _testObject.ChangeUserCommand.Execute(null);
 
             _manageAccoutMock.Verify(f => f(), Times.Once);
+            Assert.IsTrue(_testObject.HasAccount);
+        }
+
+        [TestMethod]
+        public void TestChangeUserCommand_UpdatesHasAccount()
+        {
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
+            _testObject = BuildTestObject();
+
+            CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount);
+            _testObject.ChangeUserCommand.Execute(null);
+
             Assert.IsTrue(_testObject.HasAccount);
         }
 
@@ -131,7 +144,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
             Assert.IsFalse(_testObject.LoadTask.IsCanceled);
             Assert.IsFalse(_testObject.LoadTask.IsSuccess);
             Assert.AreEqual(TestExceptionMessage, _testObject.LoadTask.ErrorMessage);
-            Assert.IsTrue(_testObject.Projects.Count() == 0);
+            CollectionAssert.That.IsEmpty(_testObject.Projects);
         }
 
         [TestMethod]

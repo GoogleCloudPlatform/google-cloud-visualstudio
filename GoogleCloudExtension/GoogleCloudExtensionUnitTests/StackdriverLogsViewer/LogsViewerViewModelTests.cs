@@ -34,7 +34,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     [TestClass]
     public class LogsViewerViewModelTests : ExtensionTestBase
     {
-        private const string DefaultAccountName = "default-account";
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
         private TaskCompletionSource<IList<MonitoredResourceDescriptor>> _getResourceDescriptorsSource;
@@ -42,7 +41,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
-        private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = DefaultAccountName };
 
         protected override void BeforeEach()
         {
@@ -56,12 +54,12 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
                 ds =>
                     ds.GetResourceDescriptorsAsync() == _getResourceDescriptorsSource.Task &&
                     ds.ListResourceKeysAsync() == _listResourceKeysSource.Task &&
-                    ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
-                    _listProjectLogNamesSource.Task &&
-                    ds.ListLogEntriesAsync(
-                        It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
-                        It.IsAny<CancellationToken>()) ==
-                    _listLogEntriesSource.Task);
+                    (ds.ListProjectLogNamesAsync(It.IsAny<string>(), It.IsAny<IEnumerable<string>>()) ==
+                        _listProjectLogNamesSource.Task) &&
+                    (ds.ListLogEntriesAsync(
+                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<string>(),
+                            It.IsAny<CancellationToken>()) ==
+                        _listLogEntriesSource.Task));
 
             _objectUnderTest = new LogsViewerViewModel(_mockedLoggingDataSource);
             _propertiesChanged = new List<string>();

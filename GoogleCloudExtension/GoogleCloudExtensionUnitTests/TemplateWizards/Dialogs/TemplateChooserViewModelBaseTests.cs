@@ -25,7 +25,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     [TestClass]
     public class TemplateChooserViewModelBaseTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
         private TemplateChooserViewModelBase _objectUnderTest;
 
@@ -38,13 +37,14 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         [TestMethod]
         public void TestInitialConditionsForAspNet()
         {
-            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(DefaultProjectId);
+            const string testProjectId = "test-project-id";
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(testProjectId);
 
             var objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
 
             Assert.AreEqual(AppType.Mvc, objectUnderTest.AppType);
             Assert.IsTrue(objectUnderTest.OkCommand.CanExecuteCommand);
-            Assert.AreEqual(DefaultProjectId, objectUnderTest.GcpProjectId);
+            Assert.AreEqual(testProjectId, objectUnderTest.GcpProjectId);
             Assert.IsNull(objectUnderTest.Result);
         }
 
