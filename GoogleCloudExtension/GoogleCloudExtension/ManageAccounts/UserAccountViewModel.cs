@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
+using System;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
@@ -37,8 +40,18 @@ namespace GoogleCloudExtension.ManageAccounts
 
             AccountName = userAccount.AccountName;
 
-            var dataSource = new GPlusDataSource(userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.VersionedApplicationName);
-            var personTask = dataSource.GetProfileAsync();
+            Task<Person> personTask;
+            try
+            {
+                var dataSource = new GPlusDataSource(
+                    userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.VersionedApplicationName);
+                personTask = dataSource.GetProfileAsync();
+            }
+            catch (Exception)
+            {
+                personTask = Task.FromResult<Person>(null);
+            }
+
 
             // TODO: Show the default image while it is being loaded.
             ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x?.Image.Url);
