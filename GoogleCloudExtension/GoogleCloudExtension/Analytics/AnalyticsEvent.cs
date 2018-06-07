@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.Analytics
                 }
             }
 
-            result[VersionName] = GoogleCloudExtensionPackage.ApplicationVersion;
+            result[VersionName] = GoogleCloudExtensionPackage.Instance.ApplicationVersion;
             result[VsVersionName] = GoogleCloudExtensionPackage.Instance.VsVersion;
             result[VsEditionName] = GoogleCloudExtensionPackage.VsEdition;
             return result;

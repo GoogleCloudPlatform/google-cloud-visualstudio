@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
+                GoogleCloudExtensionPackage.Instance.ApplicationName);
 
         public FlexStepViewModel(IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, Func<Task<bool>> setAppRegionAsyncFunc, IPublishDialog publishDialog)
             : base(apiManager, pickProjectPrompt, publishDialog)
@@ -209,8 +209,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
-                    AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion
+                    AppName = GoogleCloudExtensionPackage.Instance.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion
                 };
                 var options = new AppEngineFlexDeployment.DeploymentOptions
                 {

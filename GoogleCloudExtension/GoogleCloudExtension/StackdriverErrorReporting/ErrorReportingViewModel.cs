@@ -317,7 +317,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             return new StackdriverErrorReportingDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
         }
     }
 }

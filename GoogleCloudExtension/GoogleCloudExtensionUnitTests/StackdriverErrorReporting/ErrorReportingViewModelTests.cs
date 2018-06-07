@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
@@ -36,7 +35,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project());
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();
             var dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
@@ -58,7 +56,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsTrue(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);
             Assert.IsFalse(_objectUnderTest.IsLoadingNextPage);
-            Assert.IsFalse(_objectUnderTest.IsGridVisible);
             CollectionAssert.AreEqual(TimeRangeItem.CreateTimeRanges(), _objectUnderTest.TimeRangeItemList);
             Assert.AreEqual(_objectUnderTest.TimeRangeItemList.Last(), _objectUnderTest.SelectedTimeRangeItem);
             Assert.AreEqual(0, _objectUnderTest.GroupStatsView.Count);
@@ -121,7 +118,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestIsGridVisibleProperty()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new project id" });
+            CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("new-project-id");
+            CredentialStoreMock.Raise(cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsGridVisible);
             CollectionAssert.Contains(_propertiesChanged, nameof(_objectUnderTest.IsGridVisible));

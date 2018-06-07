@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.Accounts
     internal class WindowsCredentialsStore : IWindowsCredentialsStore
     {
         private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
-        private const string PasswordFileExtension = ".data";
+        public const string PasswordFileExtension = ".data";
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore =
             new Lazy<WindowsCredentialsStore>(() => new WindowsCredentialsStore());
@@ -192,7 +192,7 @@ namespace GoogleCloudExtension.Accounts
 
         private string GetInstancePath(Instance instance)
         {
-            CredentialsStore credentials = CredentialsStore.Default;
+            ICredentialsStore credentials = CredentialsStore.Default;
             return $@"{ToValidPathName(credentials.CurrentProjectId)}\{ToValidPathName(instance.GetZoneName())}\{ToValidPathName(instance.Name)}";
         }
 

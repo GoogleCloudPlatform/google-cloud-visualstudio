@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -24,12 +22,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     [TestClass]
     public class AspNetTemplateChooserViewModelTests : ExtensionTestBase
     {
-        private const string DefaultProjectId = "default-project-id";
         private Mock<Action> _closeWindowMock;
 
         protected override void BeforeEach()
         {
-            CredentialsStore.Default.UpdateCurrentProject(Mock.Of<Project>(p => p.ProjectId == DefaultProjectId));
             _closeWindowMock = new Mock<Action>();
         }
 

@@ -154,7 +154,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
+                GoogleCloudExtensionPackage.Instance.ApplicationName);
 
         private IWindowsCredentialsStore CurrentWindowsCredentialsStore =>
             _currentWindowsCredentialStore ?? WindowsCredentialsStore.Default;

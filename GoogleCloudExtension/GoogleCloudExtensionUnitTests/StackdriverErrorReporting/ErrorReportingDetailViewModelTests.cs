@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverErrorReporting;
@@ -46,15 +44,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private Mock<IStackdriverErrorReportingDataSource> _dataSourceMock;
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
-        private IGoogleCloudExtensionPackage _oldPackage;
-        private Mock<IGoogleCloudExtensionPackage> _packageMock;
 
         protected override void BeforeEach()
         {
-            _oldPackage = GoogleCloudExtensionPackage.Instance;
-            _packageMock = new Mock<IGoogleCloudExtensionPackage>();
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(true);
-            GoogleCloudExtensionPackage.Instance = _packageMock.Object;
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 
             _propertiesChanged = new List<string>();
             _errorFrameToSourceLineMock = new Mock<Action<ErrorGroupItem, StackFrame>>();
@@ -87,12 +80,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                 _defaultTimeRangeItem);
 
             PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            GoogleCloudExtensionPackage.Instance = _oldPackage;
         }
 
         [TestMethod]
@@ -366,7 +353,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void TestAutoReloadCommandWithWindowMinimized()
         {
             CreateErrorScenario();
-            _packageMock.Setup(p => p.IsWindowActive()).Returns(false);
+            PackageMock.Setup(p => p.IsWindowActive()).Returns(false);
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
@@ -460,7 +447,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestUpdatingProjectId()
         {
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsAccountChanged);
         }
@@ -468,7 +456,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         [TestMethod]
         public void TestResetProjectId()
         {
-            CredentialsStore.Default.ResetCredentials(null, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.IsTrue(_objectUnderTest.IsAccountChanged);
         }
@@ -485,7 +473,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void TestDisposeDisablesUpdatingProjectId()
         {
             _objectUnderTest.Dispose();
-            CredentialsStore.Default.UpdateCurrentProject(new Project { ProjectId = "new-project-id" });
+            CredentialStoreMock.Raise(
+                cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }
@@ -494,7 +483,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void TestDisposeDisablesResetProjectId()
         {
             _objectUnderTest.Dispose();
-            CredentialsStore.Default.ResetCredentials(null, null);
+            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }

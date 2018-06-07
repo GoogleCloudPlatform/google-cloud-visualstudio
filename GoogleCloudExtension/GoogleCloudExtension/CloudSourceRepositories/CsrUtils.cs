@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             return new CsrDataSource(
                 projectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
         }
     }
 }
