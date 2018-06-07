@@ -30,11 +30,11 @@ namespace GoogleCloudExtension.ManageAccounts
 
         public string AccountName { get; }
 
-        public UserAccount UserAccount { get; }
+        public IUserAccount UserAccount { get; }
 
         public bool IsCurrentAccount => CredentialsStore.Default.CurrentAccount?.AccountName == UserAccount.AccountName;
 
-        public UserAccountViewModel(UserAccount userAccount)
+        public UserAccountViewModel(IUserAccount userAccount)
         {
             UserAccount = userAccount;
 
@@ -43,8 +43,8 @@ namespace GoogleCloudExtension.ManageAccounts
             Task<Person> personTask;
             try
             {
-                var dataSource = new GPlusDataSource(
-                    userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.VersionedApplicationName);
+                var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetService<IDataSourceFactory>();
+                IGPlusDataSource dataSource = dataSourceFactory.CreatePlusDataSource(userAccount.GetGoogleCredential());
                 personTask = dataSource.GetProfileAsync();
             }
             catch (Exception)

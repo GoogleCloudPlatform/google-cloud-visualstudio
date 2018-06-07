@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
         /// </summary>
-        public UserAccount CurrentAccount { get; private set; }
+        public IUserAccount CurrentAccount { get; private set; }
 
         /// <summary>
         /// Returns the path for the current account.
@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.Accounts
         /// it is up to the caller to select an appropriate one.
         /// </summary>
         /// <param name="account"></param>
-        public void UpdateCurrentAccount(UserAccount account)
+        public void UpdateCurrentAccount(IUserAccount account)
         {
             if (CurrentAccount?.AccountName != account?.AccountName)
             {
@@ -188,7 +188,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="account">The accound to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
-        public void DeleteAccount(UserAccount account)
+        public void DeleteAccount(IUserAccount account)
         {
             var accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
