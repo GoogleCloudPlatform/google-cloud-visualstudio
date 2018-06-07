@@ -59,7 +59,6 @@ namespace GoogleCloudExtension.Accounts
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
-        public event EventHandler CurrentProjectNumericIdChanged;
         public event EventHandler Reset;
 
         /// <summary>
@@ -120,15 +119,14 @@ namespace GoogleCloudExtension.Accounts
 
                 UpdateDefaultCredentials();
                 CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
-                CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         /// <summary>
-        /// Updates the current account for the extension. This method will also invalidate the project
-        /// it is up to the caller to select an appropriate one.
+        /// Updates the current account for the extension.
+        /// This method will also invalidate the project.
+        /// It is up to the caller to select an appropriate one.
         /// </summary>
-        /// <param name="account"></param>
         public void UpdateCurrentAccount(UserAccount account)
         {
             if (CurrentAccount?.AccountName != account?.AccountName)
@@ -209,7 +207,6 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
-        /// <param name="userAccount"></param>
         public void AddAccount(UserAccount userAccount)
         {
             EnsureCredentialsRootExist();
