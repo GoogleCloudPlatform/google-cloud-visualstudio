@@ -15,17 +15,14 @@
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using YamlDotNet.Serialization;
 
 namespace GoogleCloudExtension.Deployment
 {
@@ -36,30 +33,13 @@ namespace GoogleCloudExtension.Deployment
     [Export(typeof(IAppEngineFlexDeployment))]
     public class AppEngineFlexDeployment : IAppEngineFlexDeployment
     {
-        public const string AppYamlName = "app.yaml";
-        public const string DockerfileName = NetCoreAppUtils.DockerfileName;
+        private readonly Lazy<IShellUtils> _shellUtils;
+        private readonly Lazy<IGcpOutputWindow> _gcpOutputWindow;
+        private readonly Lazy<IAppEngineConfiguration> _configurationService;
 
-        private const string AppYamlDefaultContent =
-            "runtime: aspnetcore\n" +
-            "env: flex\n";
-
-        private const string AppYamlDefaultServiceFormat =
-            "runtime: aspnetcore\n" +
-            "env: flex\n" +
-            "service: {0}\n";
-
-        public const string DefaultServiceName = "default";
-        private const string ServiceYamlProperty = "service";
-        private const string RuntimeYamlProperty = "runtime";
-
-        private const string AspNetCoreRuntime = "aspnetcore";
-        private const string CustomRuntime = "custom";
-
-        private readonly Lazy<IFileSystem> _fileSystem;
-        private readonly Deserializer _yamlDeserializer = new Deserializer();
-        private readonly Serializer _yamlSerializer = new Serializer();
-
-        private IFileSystem FileSystem => _fileSystem.Value;
+        private IShellUtils ShellUtils => _shellUtils.Value;
+        private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
+        private IAppEngineConfiguration ConfigurationService => _configurationService.Value;
 
         /// <summary>
         /// The options for the deployment operation.
@@ -103,9 +83,11 @@ namespace GoogleCloudExtension.Deployment
         }
 
         [ImportingConstructor]
-        public AppEngineFlexDeployment(Lazy<IFileSystem> fileSystem)
+        public AppEngineFlexDeployment(Lazy<IShellUtils> shellUtils, Lazy<IGcpOutputWindow> gcpOutputWindow, Lazy<IAppEngineConfiguration> configurationService)
         {
-            _fileSystem = fileSystem;
+            _shellUtils = shellUtils;
+            _gcpOutputWindow = gcpOutputWindow;
+            _configurationService = configurationService;
         }
 
 
@@ -113,7 +95,7 @@ namespace GoogleCloudExtension.Deployment
         /// Publishes the ASP.NET Core project to App Engine Flex and reports progress to the UI.
         /// </summary>
         /// <param name="project">The project to deploy.</param>
-        /// <param name="options">The <see cref="AppEngineFlexDeployment.DeploymentOptions"/> to use.</param>
+        /// <param name="options">The <see cref="DeploymentOptions"/> to use.</param>
         public async Task PublishProjectAsync(IParsedProject project, DeploymentOptions options)
         {
             try
@@ -173,43 +155,6 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        public void SaveServiceToAppYaml(IParsedDteProject publishDialogProject, string service)
-        {
-            string appYamlPath = GetAppYamlPath(publishDialogProject);
-            if (FileSystem.File.Exists(appYamlPath))
-            {
-                SetAppYamlService(service, appYamlPath);
-            }
-            else
-            {
-                GenerateAppYaml(publishDialogProject, service);
-            }
-        }
-
-        private void SetAppYamlService(string service, string sourceAppYaml, string targetAppYaml = null)
-        {
-            targetAppYaml = targetAppYaml ?? sourceAppYaml;
-            Dictionary<object, object> yamlObject;
-            using (StreamReader reader = File.OpenText(sourceAppYaml))
-            {
-                yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
-            }
-
-            if (!IsDefaultService(service))
-            {
-                yamlObject[ServiceYamlProperty] = service;
-            }
-            else if (yamlObject.ContainsKey(ServiceYamlProperty))
-            {
-                yamlObject.Remove(ServiceYamlProperty);
-            }
-
-            using (StreamWriter writer = File.CreateText(targetAppYaml))
-            {
-                _yamlSerializer.Serialize(writer, yamlObject);
-            }
-        }
-
         /// <summary>
         /// Publishes the ASP.NET Core project to App Engine Flex.
         /// </summary>
@@ -239,9 +184,9 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                var runtime = GetAppEngineRuntime(project);
-                CopyOrCreateAppYaml(project, stageDirectory, options);
-                if (runtime == CustomRuntime)
+                var runtime = ConfigurationService.GetAppEngineRuntime(project);
+                ConfigurationService.CopyOrCreateAppYaml(project, stageDirectory, options.Service);
+                if (runtime == AppEngineConfiguration.CustomRuntime)
                 {
                     Debug.WriteLine($"Copying Docker file to {stageDirectory} with custom runtime.");
                     NetCoreAppUtils.CopyOrCreateDockerfile(project, stageDirectory);
@@ -254,7 +199,7 @@ namespace GoogleCloudExtension.Deployment
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
                 // the operation to finish, update the progress as it goes.
-                var effectiveVersion = options.Version ?? GetDefaultVersion();
+                var effectiveVersion = options.Version ?? GcpPublishStepsUtils.GetDefaultVersion();
                 var deployTask = DeployAppBundleAsync(
                     stageDirectory: stageDirectory,
                     version: effectiveVersion,
@@ -268,148 +213,13 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(1.0);
 
-                var service = GetAppEngineService(project);
+                var service = options.Service ?? ConfigurationService.GetAppEngineService(project);
                 return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
                     version: effectiveVersion,
                     promoted: options.Promote);
             }
-        }
-
-        /// <summary>
-        /// Generates the app.yaml for the given project.
-        /// </summary>
-        /// <param name="project">The project.</param>
-        /// <param name="service"></param>
-        public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
-        {
-            string targetAppYaml = GetAppYamlPath(project);
-            if (IsDefaultService(service))
-            {
-                FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
-            }
-            else
-            {
-                FileSystem.File.WriteAllText(
-                    targetAppYaml, string.Format(AppYamlDefaultServiceFormat, service));
-            }
-        }
-
-        /// <summary>
-        /// Checks the project configuration files to see if they exist.
-        /// </summary>
-        /// <param name="project">The project.</param>
-        /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
-        public ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
-        {
-            var projectDirectory = project.DirectoryPath;
-            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
-            var hasAppYaml = FileSystem.File.Exists(targetAppYaml);
-            var hasDockefile = NetCoreAppUtils.CheckDockerfile(project);
-
-            return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
-        }
-
-        /// <summary>
-        /// This methods looks for lines of the form "service: name" in the app.yaml file provided.
-        /// </summary>
-        /// <param name="project">The project.</param>
-        /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
-        public string GetAppEngineService(IParsedProject project)
-        {
-            string appYamlPath = GetAppYamlPath(project);
-            return GetYamlProperty(appYamlPath, ServiceYamlProperty, DefaultServiceName);
-        }
-
-        private string GetAppEngineRuntime(IParsedProject project)
-        {
-            string appYaml = GetAppYamlPath(project);
-            if (FileSystem.File.Exists(appYaml))
-            {
-                return GetYamlProperty(appYaml, RuntimeYamlProperty);
-            }
-            else
-            {
-                return AspNetCoreRuntime;
-            }
-        }
-
-        private string GetAppYamlPath(IParsedProject project) => Path.Combine(project.DirectoryPath, AppYamlName);
-
-        private string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
-        {
-            string result = defaultValue;
-            var propertyName = $"{property}:";
-
-            if (FileSystem.File.Exists(yamlPath))
-            {
-                try
-                {
-                    var lines = FileSystem.File.ReadLines(yamlPath);
-                    foreach (var line in lines)
-                    {
-                        if (line.StartsWith(propertyName))
-                        {
-                            var name = line.Substring(propertyName.Length);
-                            result = name.Trim();
-                            break;
-                        }
-                    }
-                }
-                catch (IOException ex)
-                {
-                    throw new DeploymentException(ex.Message, ex);
-                }
-            }
-
-            return result;
-        }
-
-        private string GetDefaultVersion()
-        {
-            var now = DateTime.Now;
-            return String.Format(
-                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
-                now.Year, now.Month, now.Day,
-                now.Hour, now.Minute, now.Second);
-        }
-
-        private void CopyOrCreateAppYaml(IParsedProject project, string stageDirectory, DeploymentOptions options)
-        {
-            string sourceAppYaml = GetAppYamlPath(project);
-            string targetAppYaml = Path.Combine(stageDirectory, AppYamlName);
-
-            if (FileSystem.File.Exists(sourceAppYaml))
-            {
-                string appYamlService = GetAppEngineService(project);
-                if (options.Service == appYamlService ||
-                    IsDefaultService(options.Service) && IsDefaultService(appYamlService))
-                {
-                    FileSystem.File.Copy(sourceAppYaml, targetAppYaml, true);
-                }
-                else
-                {
-                    SetAppYamlService(options.Service, sourceAppYaml, targetAppYaml);
-                }
-            }
-            else
-            {
-                if (IsDefaultService(options.Service))
-                {
-                    FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
-                }
-                else
-                {
-                    FileSystem.File.WriteAllText(
-                        targetAppYaml, string.Format(AppYamlDefaultServiceFormat, options.Service));
-                }
-            }
-        }
-
-        private static bool IsDefaultService(string service)
-        {
-            return string.IsNullOrWhiteSpace(service) || service == DefaultServiceName;
         }
 
         private Task<bool> DeployAppBundleAsync(
@@ -419,7 +229,7 @@ namespace GoogleCloudExtension.Deployment
             GCloudContext context,
             Action<string> outputAction)
         {
-            var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
+            string appYamlPath = Path.Combine(stageDirectory, AppEngineConfiguration.AppYamlName);
             return GCloudWrapper.DeployAppAsync(
                 appYaml: appYamlPath,
                 version: version,

@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using GoogleCloudExtension.Services.Configuration;
 
 namespace GoogleCloudExtension.GenerateConfigurationCommand
 {
@@ -106,8 +107,8 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         {
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
             Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
-            var appEngineFlexDeployment = GoogleCloudExtensionPackage.Instance.GetService<IAppEngineFlexDeployment>();
-            ProjectConfigurationStatus configurationStatus = appEngineFlexDeployment.CheckProjectConfiguration(selectedProject);
+            var appEngineConfiguration = GoogleCloudExtensionPackage.Instance.GetMefService<IAppEngineConfiguration>();
+            ProjectConfigurationStatus configurationStatus = appEngineConfiguration.CheckProjectConfiguration(selectedProject);
 
             // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
             if (!configurationStatus.HasAppYaml ||
@@ -120,7 +121,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
                 try
                 {
-                    appEngineFlexDeployment.GenerateAppYaml(selectedProject);
+                    appEngineConfiguration.GenerateAppYaml(selectedProject);
                 }
                 catch (Exception error)
 
@@ -128,13 +129,13 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     UserPromptUtils.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
-                            AppEngineFlexDeployment.AppYamlName),
+                            AppEngineConfiguration.AppYamlName),
                         Resources.GenerateConfigurationFileGeneratinErrorTitle,
                         error.Message);
                     return;
                 }
 
-                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
             }
 
             // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
@@ -155,13 +156,13 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     UserPromptUtils.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
-                            AppEngineFlexDeployment.DockerfileName),
+                            AppEngineConfiguration.DockerfileName),
                         Resources.GenerateConfigurationFileGeneratinErrorTitle,
                         exception.Message);
                     return;
                 }
 
-                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
             }
         }
 
@@ -181,7 +182,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             else
             {
                 menuCommand.Visible = true;
-                menuCommand.Enabled = !ShellUtils.IsBusy();
+                menuCommand.Enabled = !ShellUtils.Default.IsBusy();
             }
         }
     }

@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
         {
             var programFilesPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
             var result = Path.Combine(programFilesPath, @"dotnet\dotnet.exe");
-            GcpOutputWindow.OutputDebugLine($"Dotnet path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Dotnet path: {result}");
             return result;
         }
 
@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
             var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\Web\External");
-            GcpOutputWindow.OutputDebugLine($"External tools path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"External tools path: {result}");
             return result;
         }
 
@@ -50,8 +50,8 @@ namespace GoogleCloudExtension.VsVersion.VS15
         {
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\MSBuild\15.0\Bin\MSBuild.exe");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Msbuild V15 Path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Program Files: {programFilesPath}");
+            GcpOutputWindow.Default.OutputDebugLine($"Msbuild V15 Path: {result}");
             return result;
         }
 
@@ -59,8 +59,8 @@ namespace GoogleCloudExtension.VsVersion.VS15
         {
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles");
             var result = Path.Combine(programFilesPath, @"IIS\Microsoft Web Deploy V3\msdeploy.exe");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Msdeploy V15 path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Program Files: {programFilesPath}");
+            GcpOutputWindow.Default.OutputDebugLine($"Msdeploy V15 path: {result}");
             return result;
         }
 
@@ -69,8 +69,8 @@ namespace GoogleCloudExtension.VsVersion.VS15
             var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             // TODO: add x86 support later
             var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\Common7\IDE\Remote Debugger\x64\*");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Debugger remote tools V15 path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Program Files: {programFilesPath}");
+            GcpOutputWindow.Default.OutputDebugLine($"Debugger remote tools V15 path: {result}");
             return result;
         }
     }

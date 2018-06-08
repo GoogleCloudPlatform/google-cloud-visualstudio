@@ -31,6 +31,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -97,6 +98,8 @@ namespace GoogleCloudExtension
         };
 
         private DTE _dteInstance;
+        private Lazy<IShellUtils> _shellUtilsLazy;
+        private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -123,6 +126,9 @@ namespace GoogleCloudExtension
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
+        public IShellUtils ShellUtils => _shellUtilsLazy.Value;
+        public IGcpOutputWindow GcpOutputWindow => _gcpOutputWindowLazy.Value;
 
         /// <summary>
         /// The initalized instance of the package.
@@ -261,6 +267,10 @@ namespace GoogleCloudExtension
             // in the process. This will allow all GCP API services to have more concurrent connections with
             // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
+
+            ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
+            _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
+            _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>
@@ -279,7 +289,7 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
         /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
-        /// <returns></returns>
+        /// <returns>The service.</returns>
         public I GetService<S, I>()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -287,13 +297,25 @@ namespace GoogleCloudExtension
         }
 
         /// <summary>
-        /// Gets a service registered and used as one type.
+        /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
-        /// <typeparam name="T">The type of the service.</typeparam>
-        public T GetService<T>() where T : class
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>The service.</returns>
+        public T GetMefService<T>() where T : class
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            return (T)GetService(typeof(T)) ?? GetService<SComponentModel, IComponentModel>().GetService<T>();
+            return GetService<SComponentModel, IComponentModel>().GetService<T>();
+        }
+
+        /// <summary>
+        /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>The <see cref="Lazy{T}"/> that initalizes the service.</returns>
+        public Lazy<T> GetMefServiceLazy<T>() where T : class
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetService<SComponentModel, IComponentModel>().DefaultExportProvider.GetExport<T>();
         }
 
         #endregion

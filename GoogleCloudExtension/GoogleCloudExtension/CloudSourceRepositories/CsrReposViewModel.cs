@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             string guid = Guid.NewGuid().ToString();
             try
             {
-                ShellUtils.CreateEmptySolution(localPath, guid);
+                ShellUtils.Default.CreateEmptySolution(localPath, guid);
             }
             finally
             {
@@ -345,7 +345,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     command: new ProtectedCommand(() =>
                     {
                         SetRepoActive(repoItem);
-                        ShellUtils.LaunchCreateSolutionDialog(repoItem.LocalPath);
+                        ShellUtils.Default.LaunchCreateSolutionDialog(repoItem.LocalPath);
                         _teamExplorer.ShowHomeSection();
                     }));
             }

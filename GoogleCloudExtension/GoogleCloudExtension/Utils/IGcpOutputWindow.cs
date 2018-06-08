@@ -12,19 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading.Tasks;
-
-namespace GoogleCloudExtension.Deployment
+namespace GoogleCloudExtension.Utils
 {
-    public interface IAppEngineFlexDeployment
+    public interface IGcpOutputWindow
     {
-        /// <summary>
-        /// Publishes the ASP.NET Core project to App Engine Flex and reports progress to the UI.
-        /// </summary>
-        /// <param name="project">The project to deploy.</param>
-        /// <param name="options">The <see cref="AppEngineFlexDeployment.DeploymentOptions"/> to use.</param>
-        Task PublishProjectAsync(
-            IParsedProject project,
-            AppEngineFlexDeployment.DeploymentOptions options);
+        void Activate();
+        void Clear();
+        void OutputDebugLine(string str);
+        void OutputLine(string str);
     }
 }

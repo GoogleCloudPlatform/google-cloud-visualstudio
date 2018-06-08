@@ -19,6 +19,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         private bool _openWebsite = true;
         private bool _needsAppCreated = false;
         private string _service;
-        private readonly IAppEngineFlexDeployment _deploymentService;
+        private readonly Lazy<IAppEngineFlexDeployment> _deploymentService;
+        private readonly Lazy<IAppEngineConfiguration> _configurationService;
         private bool _updateAppYamlService;
         private bool _updateAppYamlServiceEnabled;
         private IList<string> _services = new List<string>();
@@ -135,7 +137,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                     GcpPublishStepsUtils.ValidateServiceName(value, Resources.PublishDialogFlexServiceName);
                 SetAndRaiseWithValidation(ref _service, value, validations);
                 UpdateAppYamlServiceEnabled =
-                    Service != _deploymentService.GetAppEngineService(PublishDialog.Project);
+                    Service != ConfigurationService.GetAppEngineService(PublishDialog.Project);
             }
         }
 
@@ -175,6 +177,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.Instance.ApplicationName);
 
+        private IAppEngineFlexDeployment DeploymentService => _deploymentService.Value;
+        private IAppEngineConfiguration ConfigurationService => _configurationService.Value;
+
         public FlexStepViewModel(
             IGaeDataSource dataSource,
             IApiManager apiManager,
@@ -189,7 +194,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync, false);
 
             PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
-            _deploymentService = GoogleCloudExtensionPackage.Instance.GetService<IAppEngineFlexDeployment>();
+            _deploymentService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineFlexDeployment>();
+            _configurationService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineConfiguration>();
         }
 
         protected internal override void OnFlowFinished()
@@ -263,7 +269,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
             PublishDialog.FinishFlow();
 
-            await _deploymentService.PublishProjectAsync(PublishDialog.Project, options);
+            await DeploymentService.PublishProjectAsync(PublishDialog.Project, options);
         }
 
         protected override void LoadProjectProperties()
@@ -290,7 +296,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                 Version = GcpPublishStepsUtils.GetDefaultVersion();
             }
 
-            Service = _deploymentService.GetAppEngineService(PublishDialog.Project);
+            Service = ConfigurationService.GetAppEngineService(PublishDialog.Project);
         }
 
         protected override void SaveProjectProperties()
@@ -308,7 +314,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
             if (UpdateAppYamlService)
             {
-                _deploymentService.SaveServiceToAppYaml(PublishDialog.Project, Service);
+                ConfigurationService.SaveServiceToAppYaml(PublishDialog.Project, Service);
             }
         }
 

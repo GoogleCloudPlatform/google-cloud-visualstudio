@@ -100,12 +100,12 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private OpenGitFile()
         {
-            ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
+            ShellUtils.Default.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
         private Window OpenDocument(string filePath, string key)
         {
-            var window = ShellUtils.Open(filePath);
+            var window = ShellUtils.Default.Open(filePath);
             window.Document.ReadOnly = true;
             _fileRevisionWindowMap[key] = window;
             _documentWindows[window] = key;

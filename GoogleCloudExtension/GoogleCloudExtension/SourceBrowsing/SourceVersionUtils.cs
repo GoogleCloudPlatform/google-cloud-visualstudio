@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     var locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
                     if (locatedFilePath != null)
                     {
-                        window = ShellUtils.Open(locatedFilePath);
+                        window = ShellUtils.Default.Open(locatedFilePath);
                     }
                 }
             }
@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     title: Resources.UiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
-                ShellUtils.OpenProject();
+                ShellUtils.Default.OpenProject();
             }
             else
             {

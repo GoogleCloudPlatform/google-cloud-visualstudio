@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.IO;
 
 namespace GoogleCloudExtension.Services.FileSystem
 {
@@ -21,16 +22,22 @@ namespace GoogleCloudExtension.Services.FileSystem
     /// </summary>
     public interface IFile
     {
-        /// <inheritdoc cref="System.IO.File.Exists"/>
+        /// <inheritdoc cref="File.Exists(string)"/>
         bool Exists(string path);
 
-        /// <inheritdoc cref="System.IO.File.WriteAllText(string,string)"/>
+        /// <inheritdoc cref="File.WriteAllText(string,string)"/>
         void WriteAllText(string path, string contents);
 
-        /// <inheritdoc cref="System.IO.File.ReadLines(string)"/>
+        /// <inheritdoc cref="File.ReadLines(string)"/>
         IEnumerable<string> ReadLines(string path);
 
-        /// <inheritdoc cref="System.IO.File.Copy(string, string, bool)"/>
+        /// <inheritdoc cref="File.Copy(string, string, bool)"/>
         void Copy(string sourceFileName, string destFileName, bool overwrite);
+
+        /// <inheritdoc cref="File.OpenText(string)"/>
+        TextReader OpenText(string path);
+
+        /// <inheritdoc cref="File.CreateText(string)"/>
+        TextWriter CreateText(string path);
     }
 }

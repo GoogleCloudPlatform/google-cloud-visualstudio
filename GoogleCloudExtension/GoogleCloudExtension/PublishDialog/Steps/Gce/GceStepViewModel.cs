@@ -201,11 +201,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
             try
             {
-                ShellUtils.SaveAllFiles();
+                ShellUtils.Default.SaveAllFiles();
 
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+                GcpOutputWindow.Default.Activate();
+                GcpOutputWindow.Default.Clear();
+                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
 
                 PublishDialog.FinishFlow();
 
@@ -214,7 +214,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 bool result;
                 using (StatusbarHelper.Freeze())
                 using (StatusbarHelper.ShowDeployAnimation())
-                using (ShellUtils.SetShellUIBusy())
+                using (ShellUtils.Default.SetShellUIBusy())
                 using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(progressBarTitle))
                 {
                     DateTime startDeploymentTime = DateTime.Now;
@@ -224,17 +224,17 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                         selectedCredentials,
                         progress,
                         VsVersionUtils.ToolsPathProvider,
-                        GcpOutputWindow.OutputLine);
+                        GcpOutputWindow.Default.OutputLine);
                     deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 
                 if (result)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
+                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
                     StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
                     string url = selectedInstance.GetDestinationAppUri();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
                         Process.Start(url);
@@ -249,7 +249,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 }
                 else
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
@@ -257,7 +257,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                 PublishDialog?.FinishFlow();

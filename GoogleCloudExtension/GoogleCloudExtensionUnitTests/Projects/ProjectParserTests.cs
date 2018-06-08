@@ -35,7 +35,7 @@ namespace GoogleCloudExtensionUnitTests.Projects
         {
             _projectMock = new Mock<Project>();
             _fileSystemMock = new Mock<IFileSystem>();
-            PackageMock.Setup(p => p.GetService<IFileSystem>()).Returns(_fileSystemMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IFileSystem>()).Returns(_fileSystemMock.Object);
         }
 
         [TestMethod]

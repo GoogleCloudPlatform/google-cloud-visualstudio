@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             if (_attachDebuggerCommand != null)
             {
                 _attachDebuggerCommand.CanExecuteCommand =
-                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
+                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.Default.IsBusy();
             }
             base.OnMenuItemOpen();
         }
@@ -199,11 +199,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
-                            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
+                            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
                             break;
 
                         case OperationType.StopInstance:
-                            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
+                            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
                             break;
                     }
 
@@ -310,7 +310,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 userName: credentials.User,
                 password: credentials.Password);
             File.WriteAllText(storePath, profile);
-            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
+            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
         private void OnManageWindowsCredentialsCommand()
@@ -374,8 +374,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
+                GcpOutputWindow.Default.Activate();
+                GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
                 EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
@@ -408,8 +408,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
+                GcpOutputWindow.Default.Activate();
+                GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
 
                 EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Failure));
             }

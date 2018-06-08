@@ -249,6 +249,7 @@
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
@@ -378,6 +379,9 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.7.18\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Deployment\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

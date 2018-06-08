@@ -20,6 +20,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
+using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
@@ -29,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestingHelpers;
 using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
@@ -55,9 +57,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private EnvDTE.Project _mockedProject;
         private List<string> _propertiesChanges;
         private TaskCompletionSource<GCloudValidationResult> _validateGCloudSource;
-        private Mock<IAppEngineFlexDeployment> _appEngineDeploymentMock;
+        private Mock<IAppEngineConfiguration> _appEngineConfigurationMock;
         private Task _trackedTask;
         private TaskCompletionSource<object> _publishSource;
+        private Mock<IAppEngineFlexDeployment> _appEngineDeploymentMock;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -74,15 +77,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
                     f => f(It.IsAny<GCloudComponent>()) == _validateGCloudSource.Task);
 
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+
             _appEngineDeploymentMock = new Mock<IAppEngineFlexDeployment>();
             _publishSource = new TaskCompletionSource<object>();
             _appEngineDeploymentMock.Setup(
                     d => d.PublishProjectAsync(
                         It.IsAny<IParsedProject>(), It.IsAny<AppEngineFlexDeployment.DeploymentOptions>()))
                 .Returns(() => _publishSource.Task);
+            _appEngineConfigurationMock = new Mock<IAppEngineConfiguration>();
 
-            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
-            PackageMock.Setup(p => p.GetService<IAppEngineFlexDeployment>()).Returns(_appEngineDeploymentMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefServiceLazy<IAppEngineFlexDeployment>())
+                .Returns(_appEngineDeploymentMock.ToLazy());
+            PackageMock.Setup(p => p.GetMefServiceLazy<IAppEngineConfiguration>())
+                .Returns(_appEngineConfigurationMock.ToLazy());
 
             _mockedProject = Mock.Of<EnvDTE.Project>();
             _mockedPublishDialog = Mock.Of<IPublishDialog>(
@@ -419,7 +427,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestLoadProperties_SetsServiceFromAppYaml()
         {
             var expectedService = "expected-service";
-            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineConfigurationMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns(expectedService);
 
             _objectUnderTest.OnVisible();
@@ -449,7 +457,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         public void TestSetService_MatchingAppYamlDisablesUpdateAppYamlService()
         {
             const string serviceId = "service-id";
-            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineConfigurationMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns(serviceId);
 
             _objectUnderTest.Service = serviceId;
@@ -460,7 +468,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         [TestMethod]
         public void TestSetService_DifferentFromAppYamlEnablesUpdateAppYamlService()
         {
-            _appEngineDeploymentMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
+            _appEngineConfigurationMock.Setup(aed => aed.GetAppEngineService(It.IsAny<IParsedProject>()))
                 .Returns("service-in-app-yaml");
 
             _objectUnderTest.Service = "some-other-service";
@@ -537,7 +545,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             _objectUnderTest.OnNotVisible();
 
-            _appEngineDeploymentMock.Verify(
+            _appEngineConfigurationMock.Verify(
                 s => s.SaveServiceToAppYaml(_objectUnderTest.PublishDialog.Project, serviceId));
         }
 
@@ -550,7 +558,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             _objectUnderTest.OnNotVisible();
 
-            _appEngineDeploymentMock.Verify(
+            _appEngineConfigurationMock.Verify(
                 s => s.SaveServiceToAppYaml(It.IsAny<IParsedDteProject>(), It.IsAny<string>()), Times.Never);
         }
 
