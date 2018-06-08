@@ -25,9 +25,11 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class DataSourceFactoryTests : ExtensionTestBase
     {
+        private IDataSourceFactory _objectUnderTest;
+
         protected override void BeforeEach()
         {
-            DataSourceFactory.DefaultOverride = null;
+            _objectUnderTest = new DataSourceFactory();
         }
 
         [TestMethod]
@@ -35,17 +37,17 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
-            ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
+            ResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
 
             Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void TestCreatePlusDataSource_ReturnsNullForNoCredentials()
+        public void Test0ArgCreatePlusDataSource_ReturnsNullForNoCredentials()
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
-            IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
+            IGPlusDataSource result = _objectUnderTest.CreatePlusDataSource();
 
             Assert.IsNull(result);
         }
@@ -63,7 +65,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential)
                 .Returns(userAccount.GetGoogleCredential());
 
-            ResourceManagerDataSource result = DataSourceFactory.Default.CreateResourceManagerDataSource();
+            ResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
 
             var googleCredential = (GoogleCredential)result.Service.HttpClientInitializer;
             var userCredential = (UserCredential)googleCredential.UnderlyingCredential;
@@ -75,7 +77,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public void TestCreatePlusDataSource_Returns()
+        public void Test0ArgCreatePlusDataSource_Returns()
         {
             var userAccount = new UserAccount
             {
@@ -86,7 +88,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             };
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(userAccount.GetGoogleCredential());
 
-            IGPlusDataSource result = DataSourceFactory.Default.CreatePlusDataSource();
+            IGPlusDataSource result = _objectUnderTest.CreatePlusDataSource();
 
             var dataSource = (GPlusDataSource)result;
             var googleCredential = (GoogleCredential)dataSource.Service.HttpClientInitializer;
@@ -96,6 +98,37 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.AreEqual(userAccount.ClientId, flow.ClientSecrets.ClientId);
             Assert.AreEqual(userAccount.RefreshToken, userCredential.Token.RefreshToken);
             Assert.AreEqual(GoogleCloudExtensionPackage.Instance.VersionedApplicationName, dataSource.Service.ApplicationName);
+        }
+
+        [TestMethod]
+        public void Test1ArgCreatePlusDataSource_Returns()
+        {
+            var userAccount = new UserAccount
+            {
+                AccountName = "TestAccountName",
+                ClientId = "TestClientId",
+                ClientSecret = "TestClientSecret",
+                RefreshToken = "TestRefreshToken"
+            };
+
+            IGPlusDataSource result = _objectUnderTest.CreatePlusDataSource(userAccount.GetGoogleCredential());
+
+            var dataSource = (GPlusDataSource)result;
+            var googleCredential = (GoogleCredential)dataSource.Service.HttpClientInitializer;
+            var userCredential = (UserCredential)googleCredential.UnderlyingCredential;
+            var flow = (GoogleAuthorizationCodeFlow)userCredential.Flow;
+            Assert.AreEqual(userAccount.ClientSecret, flow.ClientSecrets.ClientSecret);
+            Assert.AreEqual(userAccount.ClientId, flow.ClientSecrets.ClientId);
+            Assert.AreEqual(userAccount.RefreshToken, userCredential.Token.RefreshToken);
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.VersionedApplicationName, dataSource.Service.ApplicationName);
+        }
+
+        [TestMethod]
+        public void Test1ArgCreatePlusDataSource_ReturnsNullForNoCredentials()
+        {
+            IGPlusDataSource result = _objectUnderTest.CreatePlusDataSource(null);
+
+            Assert.IsNull(result);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
         /// </summary>
-        UserAccount CurrentAccount { get; }
+        IUserAccount CurrentAccount { get; }
 
         /// <summary>
         /// Returns the path for the current account.
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="account">The accound to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
-        void DeleteAccount(UserAccount account);
+        void DeleteAccount(IUserAccount account);
 
         /// <summary>
         /// Returns the account given the account name.
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.Accounts
         /// This method will also invalidate the project.
         /// It is up to the caller to select an appropriate one.
         /// </summary>
-        void UpdateCurrentAccount(UserAccount account);
+        void UpdateCurrentAccount(IUserAccount account);
 
         /// <summary>
         /// Updates the current project data from the given <paramref name="project"/>.

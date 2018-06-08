@@ -16,19 +16,18 @@ using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using System;
+using System.ComponentModel.Composition;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     ///  Holder of data source factory methods.
     /// </summary>
+    [Export(typeof(IDataSourceFactory))]
     public class DataSourceFactory : IDataSourceFactory
     {
-        private static readonly Lazy<DataSourceFactory> s_lazyDefault = new Lazy<DataSourceFactory>(() => new DataSourceFactory());
-        internal static IDataSourceFactory DefaultOverride { private get; set; } = null;
-        public static IDataSourceFactory Default => DefaultOverride ?? s_lazyDefault.Value;
-
-        private DataSourceFactory() { }
+        [Obsolete("This makes a call to MEF every time. Instead, import IDataSourceFactory from MEF and save to an instance member.")]
+        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetService<IDataSourceFactory>();
 
         public ResourceManagerDataSource CreateResourceManagerDataSource()
         {
@@ -47,9 +46,14 @@ namespace GoogleCloudExtension.Utils
         public IGPlusDataSource CreatePlusDataSource()
         {
             GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            if (currentCredential != null)
+            return CreatePlusDataSource(currentCredential);
+        }
+
+        public IGPlusDataSource CreatePlusDataSource(GoogleCredential credential)
+        {
+            if (credential != null)
             {
-                return new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
+                return new GPlusDataSource(credential, GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {
