@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class contains helper functions to deal with the Google Cloud Container Builder functionality.
     /// </summary>
-    internal static class CloudBuilderUtils
+    public static class CloudBuilderUtils
     {
         /// <summary>
         /// Creates the Docker image tag with the given parameters.
@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="imageName">The name of the image to build.</param>
         /// <param name="imageVersion">The version tag to use.</param>
         /// <returns>The tag to identify the image to be built.</returns>
-        internal static string GetImageTag(string project, string imageName, string imageVersion)
+        public static string GetImageTag(string project, string imageName, string imageVersion)
             => $"gcr.io/{project}/{imageName}:{imageVersion}";
     }
 }

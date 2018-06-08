@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Appengine.v1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -53,6 +51,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         private bool _promote = true;
         private bool _openWebsite = true;
         private bool _needsAppCreated = false;
+        private string _service;
+        private readonly IAppEngineFlexDeployment _deploymentService;
+        private bool _updateAppYamlService;
+        private bool _updateAppYamlServiceEnabled;
+        private IList<string> _services = new List<string>();
 
         private Func<Task<bool>> SetAppRegionAsyncFunc => _setAppRegionAsyncFunc ??
             (() => GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, CurrentDataSource));
@@ -114,19 +117,70 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public override bool ShowInputControls => base.ShowInputControls && !NeedsAppCreated;
 
+        public IList<string> Services
+        {
+            get => _services;
+            set => SetValueAndRaise(ref _services, value);
+        }
+
+        /// <summary>
+        /// The name of the service to deploy to.
+        /// </summary>
+        public string Service
+        {
+            get => _service;
+            set
+            {
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateServiceName(value, Resources.PublishDialogFlexServiceName);
+                SetAndRaiseWithValidation(ref _service, value, validations);
+                UpdateAppYamlServiceEnabled =
+                    Service != _deploymentService.GetAppEngineService(PublishDialog.Project);
+            }
+        }
+
+        /// <summary>
+        /// If true, will update the Service config in app.yaml.
+        /// </summary>
+        public bool UpdateAppYamlService
+        {
+            get => UpdateAppYamlServiceEnabled && _updateAppYamlService;
+            set => SetValueAndRaise(ref _updateAppYamlService, value);
+        }
+
+        /// <summary>
+        /// Controls whether the Update app.yaml checkbox is enabled.
+        /// </summary>
+        public bool UpdateAppYamlServiceEnabled
+        {
+            get => _updateAppYamlServiceEnabled;
+            set
+            {
+                SetValueAndRaise(ref _updateAppYamlServiceEnabled, value);
+                RaisePropertyChanged(nameof(UpdateAppYamlService));
+            }
+        }
+
         /// <summary>
         /// The command to execute to create the App Engine app and set the region for it.
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
-        public override IProtectedCommand PublishCommand { get; }
+        public override IProtectedCommand PublishCommand => PublishCommandAsync;
+
+        public ProtectedAsyncCommand PublishCommandAsync { get; }
 
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.Instance.ApplicationName);
 
-        public FlexStepViewModel(IGaeDataSource dataSource, IApiManager apiManager, Func<Project> pickProjectPrompt, Func<Task<bool>> setAppRegionAsyncFunc, IPublishDialog publishDialog)
+        public FlexStepViewModel(
+            IGaeDataSource dataSource,
+            IApiManager apiManager,
+            Func<Project> pickProjectPrompt,
+            Func<Task<bool>> setAppRegionAsyncFunc,
+            IPublishDialog publishDialog)
             : base(apiManager, pickProjectPrompt, publishDialog)
         {
             _dataSource = dataSource;
@@ -134,7 +188,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
             SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync, false);
 
-            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
+            PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
+            _deploymentService = GoogleCloudExtensionPackage.Instance.GetService<IAppEngineFlexDeployment>();
         }
 
         protected internal override void OnFlowFinished()
@@ -178,7 +233,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// No project dependent data to load.
         /// </summary>
         /// <returns>A cached completed task.</returns>
-        protected override Task LoadValidProjectDataAsync() => Task.CompletedTask;
+        protected override async Task LoadValidProjectDataAsync()
+        {
+            IList<Service> services = await CurrentDataSource.GetServiceListAsync();
+            Services = services?.Select(s => s.Id).ToList();
+        }
 
         private async Task OnSetAppRegionCommandAsync()
         {
@@ -192,90 +251,19 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         private async Task PublishAsync()
         {
-            IParsedProject project = PublishDialog.Project;
-            try
+            Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
+            PublishDialog.TrackTask(verifyGcloudTask);
+            if (!await verifyGcloudTask)
             {
-                ShellUtils.SaveAllFiles();
-
-                Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
-                PublishDialog.TrackTask(verifyGcloudTask);
-                if (!await verifyGcloudTask)
-                {
-                    Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
-                    return;
-                }
-
-                var context = new GCloudContext
-                {
-                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                    ProjectId = CredentialsStore.Default.CurrentProjectId,
-                    AppName = GoogleCloudExtensionPackage.Instance.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion
-                };
-                var options = new AppEngineFlexDeployment.DeploymentOptions
-                {
-                    Version = Version,
-                    Promote = Promote,
-                    Context = context
-                };
-
-                Version = GcpPublishStepsUtils.IncrementVersion(Version);
-
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
-
-                PublishDialog.FinishFlow();
-
-                TimeSpan deploymentDuration;
-                AppEngineFlexDeploymentResult result;
-                using (StatusbarHelper.Freeze())
-                using (StatusbarHelper.ShowDeployAnimation())
-                using (ProgressBarHelper progress =
-                    StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
-                using (ShellUtils.SetShellUIBusy())
-                {
-                    DateTime startDeploymentTime = DateTime.Now;
-                    result = await AppEngineFlexDeployment.PublishProjectAsync(
-                        project,
-                        options,
-                        progress,
-                        VsVersionUtils.ToolsPathProvider,
-                        GcpOutputWindow.OutputLine);
-                    deploymentDuration = DateTime.Now - startDeploymentTime;
-                }
-
-                if (result != null)
-                {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishSuccessMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                    string url = result.GetDeploymentUrl();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
-                    if (OpenWebsite)
-                    {
-                        Process.Start(url);
-                    }
-
-                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
-                }
-                else
-                {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
-
-                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
-                }
+                return;
             }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
-                PublishDialog?.FinishFlow();
+            var options = new AppEngineFlexDeployment.DeploymentOptions(Service, Version, Promote, OpenWebsite);
+            Version = GcpPublishStepsUtils.IncrementVersion(Version);
 
-                EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
-            }
+            PublishDialog.FinishFlow();
+
+            await _deploymentService.PublishProjectAsync(PublishDialog.Project, options);
         }
 
         protected override void LoadProjectProperties()
@@ -301,6 +289,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             {
                 Version = GcpPublishStepsUtils.GetDefaultVersion();
             }
+
+            Service = _deploymentService.GetAppEngineService(PublishDialog.Project);
         }
 
         protected override void SaveProjectProperties()
@@ -314,6 +304,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             else
             {
                 PublishDialog.Project.SaveUserProperty(NextVersionProjectPropertyName, Version);
+            }
+
+            if (UpdateAppYamlService)
+            {
+                _deploymentService.SaveServiceToAppYaml(PublishDialog.Project, Service);
             }
         }
 

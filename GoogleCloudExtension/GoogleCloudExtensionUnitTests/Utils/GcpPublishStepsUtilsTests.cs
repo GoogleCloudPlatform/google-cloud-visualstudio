@@ -12,16 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
     [TestClass]
     public class GcpPublishStepsUtilsTests
     {
+        private const string FieldName = "fieldName";
+
         [TestCleanup]
         public void AfterEach()
         {
@@ -132,6 +139,91 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestIsDefaultVersion_False(string version)
         {
             Assert.IsFalse(GcpPublishStepsUtils.IsDefaultVersion(version));
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_IsEmptyForEmptyString()
+        {
+            IEnumerable<ValidationResult> results = GcpPublishStepsUtils.ValidateServiceName(null, FieldName);
+
+            CollectionAssert.That.IsEmpty(results);
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_InvalidFirstChar()
+        {
+            IEnumerable<ValidationResult> results = GcpPublishStepsUtils.ValidateServiceName("-invalid-first-char", FieldName);
+
+            var expectedResults = new ValidationResult[]
+            {
+                StringValidationResult.FromResource(nameof(Resources.ValidationStartLetterOrNumberMessage), FieldName)
+            };
+            CollectionAssert.AreEqual(expectedResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_InvalidLastChar()
+        {
+            IEnumerable<ValidationResult> results =
+                GcpPublishStepsUtils.ValidateServiceName("invalid-last-char-", FieldName);
+
+            var expectedResults = new ValidationResult[]
+            {
+                StringValidationResult.FromResource(nameof(Resources.ValidationEndLetterOrNumberMessage), FieldName)
+            };
+            CollectionAssert.AreEqual(expectedResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_InvalidAnyChar()
+        {
+            IEnumerable<ValidationResult> results =
+                GcpPublishStepsUtils.ValidateServiceName("invalid-!middle!-char", FieldName);
+
+            var expectedResults = new ValidationResult[]
+            {
+                StringValidationResult.FromResource(nameof(Resources.ValidationAllLetterNumberOrDashMessage), FieldName)
+            };
+            CollectionAssert.AreEqual(expectedResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_InvalidLength()
+        {
+            string name = string.Join("-", Enumerable.Range(1, 64));
+            IEnumerable<ValidationResult> results =
+                GcpPublishStepsUtils.ValidateServiceName(name, FieldName);
+
+            var expectedResults = new ValidationResult[]
+            {
+                StringValidationResult.FromResource(nameof(Resources.ValidationMaxCharactersMessage), FieldName, 64)
+            };
+            CollectionAssert.AreEqual(expectedResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_AllValidationErrors()
+        {
+            string name = "(" + string.Join(";", Enumerable.Range(1, 64)) + ")";
+            IEnumerable<ValidationResult> results =
+                GcpPublishStepsUtils.ValidateServiceName(name, FieldName);
+
+            var expectedResults = new ValidationResult[]
+            {
+                StringValidationResult.FromResource(nameof(Resources.ValidationStartLetterOrNumberMessage), FieldName),
+                StringValidationResult.FromResource(nameof(Resources.ValidationEndLetterOrNumberMessage), FieldName),
+                StringValidationResult.FromResource(nameof(Resources.ValidationAllLetterNumberOrDashMessage), FieldName),
+                StringValidationResult.FromResource(nameof(Resources.ValidationMaxCharactersMessage), FieldName, 64)
+            };
+            CollectionAssert.AreEqual(expectedResults, results.ToList());
+        }
+
+        [TestMethod]
+        public void TestValidateServiceName_IsEmptyForValidString()
+        {
+            IEnumerable<ValidationResult> results = GcpPublishStepsUtils.ValidateServiceName("valid-service-name", FieldName);
+
+            CollectionAssert.That.IsEmpty(results);
         }
     }
 }

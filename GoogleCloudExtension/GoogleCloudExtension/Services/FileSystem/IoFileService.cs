@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 
@@ -23,7 +24,17 @@ namespace GoogleCloudExtension.Services.FileSystem
     [Export(typeof(IFile))]
     public class IoFileService : IFile
     {
-        /// <inheritdoc cref="File.Exists"/>
+        /// <inheritdoc cref="File.Exists(string)"/>
         public bool Exists(string path) => File.Exists(path);
+
+        /// <inheritdoc cref="File.WriteAllText(string,string)"/>
+        public void WriteAllText(string path, string contents) => File.WriteAllText(path, contents);
+
+        /// <inheritdoc cref="File.ReadLines(string)"/>
+        public IEnumerable<string> ReadLines(string path) => File.ReadLines(path);
+
+        /// <inheritdoc cref="File.Copy(string, string, bool)"/>
+        public void Copy(string sourceFileName, string destFileName, bool overwrite) =>
+            File.Copy(sourceFileName, destFileName, overwrite);
     }
 }

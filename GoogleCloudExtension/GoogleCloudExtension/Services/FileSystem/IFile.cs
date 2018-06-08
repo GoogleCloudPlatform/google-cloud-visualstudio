@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+
 namespace GoogleCloudExtension.Services.FileSystem
 {
     /// <summary>
@@ -21,5 +23,14 @@ namespace GoogleCloudExtension.Services.FileSystem
     {
         /// <inheritdoc cref="System.IO.File.Exists"/>
         bool Exists(string path);
+
+        /// <inheritdoc cref="System.IO.File.WriteAllText(string,string)"/>
+        void WriteAllText(string path, string contents);
+
+        /// <inheritdoc cref="System.IO.File.ReadLines(string)"/>
+        IEnumerable<string> ReadLines(string path);
+
+        /// <inheritdoc cref="System.IO.File.Copy(string, string, bool)"/>
+        void Copy(string sourceFileName, string destFileName, bool overwrite);
     }
 }

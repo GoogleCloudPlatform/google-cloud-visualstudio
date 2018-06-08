@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
+
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
@@ -20,24 +22,35 @@ namespace GoogleCloudExtension.GCloud
     public sealed class GCloudContext
     {
         /// <summary>
+        /// Creates the default GCloud context from the current environment.
+        /// </summary>
+        public GCloudContext()
+        {
+            CredentialsPath = CredentialsStore.Default.CurrentAccountPath;
+            ProjectId = CredentialsStore.Default.CurrentProjectId;
+            AppName = GoogleCloudExtensionPackage.Instance.ApplicationName;
+            AppVersion = GoogleCloudExtensionPackage.Instance.ApplicationVersion;
+        }
+
+        /// <summary>
         /// The path to the credentials .json file to use for the call. The .json file should be a
         /// format accetable by gcloud's --credential-file-override parameter. Typically an authorize_user kind.
         /// </summary>
-        public string CredentialsPath { get; set; }
+        public string CredentialsPath { get; }
 
         /// <summary>
         /// The project id of the project to use for the invokation of gcloud.
         /// </summary>
-        public string ProjectId { get; set; }
+        public string ProjectId { get; }
 
         /// <summary>
         /// The application name to use when reporting metrics to the server side.
         /// </summary>
-        public string AppName { get; set; }
+        public string AppName { get; }
 
         /// <summary>
         /// The application version to use when reporting metrics to the server side.
         /// </summary>
-        public string AppVersion { get; set; }
+        public string AppVersion { get; }
     }
 }

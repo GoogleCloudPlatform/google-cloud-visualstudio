@@ -30,9 +30,9 @@ namespace GoogleCloudExtension
         string VsVersion { get; }
 
         /// <summary>
-        /// Returns the versioned application name in the right format for analytics, etc...
+        /// The application name to use everywhere one is needed. Analytics, data sources, etc...
         /// </summary>
-        string VersionedApplicationName { get; }
+        string ApplicationName { get; }
 
         /// <summary>
         /// The version of the extension's main assembly.
@@ -40,9 +40,9 @@ namespace GoogleCloudExtension
         string ApplicationVersion { get; }
 
         /// <summary>
-        /// The application name to use everywhere one is needed. Analytics, data sources, etc...
+        /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
-        string ApplicationName { get; }
+        string VersionedApplicationName { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();

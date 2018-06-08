@@ -14,7 +14,6 @@
 
 using System;
 using System.Globalization;
-using System.Resources;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Utils.Validation
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.Utils.Validation
         /// <summary>
         /// The error content of the validation result as a string.
         /// </summary>
-        public string Message { get; }
+        public string Message => ErrorContent.ToString();
 
         /// <summary>
         /// Factory method for making a string result using the name of a resource.
@@ -37,31 +36,50 @@ namespace GoogleCloudExtension.Utils.Validation
         /// <returns>The new string validation result.</returns>
         public static StringValidationResult FromResource(string resourceName, params object[] formatParams)
         {
-            ResourceManager resourceManager = Resources.ResourceManager;
             CultureInfo culture = Resources.Culture;
-            string resource = resourceManager.GetString(resourceName, culture);
+            string resource = Resources.ResourceManager.GetString(resourceName, culture);
             if (resource == null)
             {
                 throw new ArgumentException(
-                    String.Format(Resources.Culture, Resources.ExceptionResourceNotFoundMessage, resourceName),
+                    string.Format(Resources.Culture, Resources.ExceptionResourceNotFoundMessage, resourceName),
                     nameof(resourceName));
             }
-            return new StringValidationResult(String.Format(culture, resource, formatParams));
+            return new StringValidationResult(string.Format(culture, resource, formatParams));
         }
 
         /// <summary>
         /// Creates a validation result with IsValid set to false and Message set to errorContent.
         /// </summary>
         /// <param name="errorContent">The Message and error content of the validation result.</param>
-        private StringValidationResult(string errorContent) : base(false, errorContent)
-        {
-            Message = errorContent;
-        }
+        private StringValidationResult(string errorContent) : base(false, errorContent) { }
 
         /// <summary>
         /// Returns the message.
         /// </summary>
         /// <returns>The Message.</returns>
         public override string ToString() => Message;
+
+        /// <summary>Compares the specified instance and the current instance of <see cref="StringValidationResult" /> for value equality.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance of <see cref="StringValidationResult" />.have the same values.</returns>
+        /// <param name="obj">The <see cref="StringValidationResult" /> instance to compare.</param>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(obj, this))
+            {
+                return true;
+            }
+            else if (obj is StringValidationResult stringResult)
+            {
+                return Equals(stringResult.ErrorContent, ErrorContent) && Equals(stringResult.IsValid, IsValid);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>Returns the hash code for this <see cref="StringValidationResult" />.</summary>
+        /// <returns>The hash code for this <see cref="StringValidationResult" />.</returns>
+        public override int GetHashCode() => IsValid.GetHashCode() * 31 + ErrorContent.GetHashCode();
     }
 }

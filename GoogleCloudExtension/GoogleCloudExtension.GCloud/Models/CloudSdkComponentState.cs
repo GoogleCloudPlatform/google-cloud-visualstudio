@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.GCloud.Models
     /// Defines the JSON schema of a component state, which contains the installaion
     /// state of the component.
     /// </summary>
-    internal sealed class CloudSdkComponentState
+    public sealed class CloudSdkComponentState
     {
         public const string InstalledState = "Installed";
         public const string NotInstalledState = "Not Installed";

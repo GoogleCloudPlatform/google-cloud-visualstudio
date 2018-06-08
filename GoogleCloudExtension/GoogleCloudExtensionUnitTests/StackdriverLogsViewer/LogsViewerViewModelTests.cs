@@ -34,6 +34,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     [TestClass]
     public class LogsViewerViewModelTests : ExtensionTestBase
     {
+        private const string DefaultAccountName = "default-account";
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
         private TaskCompletionSource<IList<MonitoredResourceDescriptor>> _getResourceDescriptorsSource;
@@ -41,6 +42,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
+        private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = DefaultAccountName };
 
         protected override void BeforeEach()
         {

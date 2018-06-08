@@ -146,5 +146,37 @@ namespace GoogleCloudExtension.Utils
         /// <param name="version">The version string to test.</param>
         public static bool IsDefaultVersion(string version) =>
             version != null && s_defaultVersionFormatRegex.IsMatch(version);
+
+        public static IEnumerable<ValidationResult> ValidateServiceName(string name, string fieldName)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                yield break;
+            }
+
+            if (!Regex.IsMatch(name, @"^[a-z\dA-Z]"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationStartLetterOrNumberMessage), fieldName);
+            }
+
+            if (!Regex.IsMatch(name, @"[a-z\dA-Z]$"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationEndLetterOrNumberMessage), fieldName);
+            }
+
+            if (Regex.IsMatch(name, @"[^a-z\d\-A-Z]"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationAllLetterNumberOrDashMessage), fieldName);
+            }
+
+            if (name.Length >= 64)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationMaxCharactersMessage), fieldName, 64);
+            }
+        }
     }
 }

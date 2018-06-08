@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
