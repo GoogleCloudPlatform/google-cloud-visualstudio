@@ -1,11 +1,11 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
-//
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,33 +27,59 @@ namespace GoogleCloudExtension.Services.Configuration
     [Export(typeof(IAppEngineConfiguration))]
     public class AppEngineConfiguration : IAppEngineConfiguration
     {
-        private readonly Lazy<IFileSystem> _fileSystem;
-        private readonly Deserializer _yamlDeserializer = new Deserializer();
-        private readonly Serializer _yamlSerializer = new Serializer();
-        public const string AppYamlName = "app.yaml";
-        public const string DockerfileName = NetCoreAppUtils.DockerfileName;
-
+        /// <summary>
+        /// Content of the default app.yaml file.
+        /// </summary>
         public const string AppYamlDefaultContent =
             "runtime: aspnetcore\n" +
             "env: flex\n";
 
+        /// <summary>
+        /// Format string of a service specific default app.yaml file.
+        /// </summary>
         public const string AppYamlServiceSpecificContentFormat =
             "runtime: aspnetcore\n" +
             "env: flex\n" +
             "service: {0}\n";
 
+        /// <summary>
+        /// File name of the App Engine service configuration file.
+        /// </summary>
+        public const string AppYamlName = "app.yaml";
+
+        /// <summary>
+        /// The name of the default App Engine service.
+        /// </summary>
         public const string DefaultServiceName = "default";
-        private const string ServiceYamlProperty = "service";
-        private const string RuntimeYamlProperty = "runtime";
+
+        /// <summary>
+        /// The name of the App Engine runtime for ASP.NET Core.
+        /// </summary>
         public const string AspNetCoreRuntime = "aspnetcore";
+
+        /// <summary>
+        /// The name of the App Engine runtime for a custom dockerfile.
+        /// </summary>
         public const string CustomRuntime = "custom";
 
+        private const string ServiceYamlProperty = "service";
+        private const string RuntimeYamlProperty = "runtime";
+
+        private readonly Deserializer _yamlDeserializer = new Deserializer();
+        private readonly Serializer _yamlSerializer = new Serializer();
+        private readonly Lazy<IFileSystem> _fileSystem;
+
+        private IFileSystem FileSystem => _fileSystem.Value;
+
+        /// <summary>
+        /// Creates a new AppEngineConfiguration service.
+        /// </summary>
+        /// <param name="fileSystem">The <see cref="IFileSystem"/> service to import.</param>
+        [ImportingConstructor]
         public AppEngineConfiguration(Lazy<IFileSystem> fileSystem)
         {
             _fileSystem = fileSystem;
         }
-
-        private IFileSystem FileSystem => _fileSystem.Value;
 
         /// <summary>
         /// Updates or generates tha app.yaml file for the given project with the given servie.
@@ -70,30 +96,6 @@ namespace GoogleCloudExtension.Services.Configuration
             else
             {
                 GenerateAppYaml(project, service);
-            }
-        }
-
-        private void SetAppYamlService(string service, string sourceAppYaml, string targetAppYaml = null)
-        {
-            targetAppYaml = targetAppYaml ?? sourceAppYaml;
-            Dictionary<object, object> yamlObject;
-            using (TextReader reader = FileSystem.File.OpenText(sourceAppYaml))
-            {
-                yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
-            }
-
-            if (!IsDefaultService(service))
-            {
-                yamlObject[ServiceYamlProperty] = service;
-            }
-            else if (yamlObject.ContainsKey(ServiceYamlProperty))
-            {
-                yamlObject.Remove(ServiceYamlProperty);
-            }
-
-            using (TextWriter writer = FileSystem.File.CreateText(targetAppYaml))
-            {
-                _yamlSerializer.Serialize(writer, yamlObject);
             }
         }
 
@@ -142,7 +144,6 @@ namespace GoogleCloudExtension.Services.Configuration
             return GetYamlProperty(appYamlPath, ServiceYamlProperty, DefaultServiceName);
         }
 
-
         /// <summary>
         /// Gets the runtime defined in the app.yaml, or <see cref="AspNetCoreRuntime"/> if there is no app.yaml.
         /// </summary>
@@ -158,33 +159,6 @@ namespace GoogleCloudExtension.Services.Configuration
             else
             {
                 return AspNetCoreRuntime;
-            }
-        }
-
-        private string GetAppYamlPath(IParsedProject project) => Path.Combine(project.DirectoryPath, AppYamlName);
-
-        private string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
-        {
-            if (FileSystem.File.Exists(yamlPath))
-            {
-                Dictionary<object, object> yamlObject;
-                using (TextReader reader = FileSystem.File.OpenText(yamlPath))
-                {
-                    yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
-                }
-
-                if (yamlObject != null && yamlObject.ContainsKey(property))
-                {
-                    return yamlObject[property].ToString();
-                }
-                else
-                {
-                    return defaultValue;
-                }
-            }
-            else
-            {
-                return defaultValue;
             }
         }
 
@@ -228,9 +202,58 @@ namespace GoogleCloudExtension.Services.Configuration
             }
         }
 
-        private static bool IsDefaultService(string service)
+        private void SetAppYamlService(string service, string sourceAppYaml, string targetAppYaml = null)
         {
-            return string.IsNullOrWhiteSpace(service) || service == DefaultServiceName;
+            targetAppYaml = targetAppYaml ?? sourceAppYaml;
+            Dictionary<object, object> yamlObject;
+            using (TextReader reader = FileSystem.File.OpenText(sourceAppYaml))
+            {
+                yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
+            }
+
+            if (!IsDefaultService(service))
+            {
+                yamlObject[ServiceYamlProperty] = service;
+            }
+            else if (yamlObject.ContainsKey(ServiceYamlProperty))
+            {
+                yamlObject.Remove(ServiceYamlProperty);
+            }
+
+            using (TextWriter writer = FileSystem.File.CreateText(targetAppYaml))
+            {
+                _yamlSerializer.Serialize(writer, yamlObject);
+            }
         }
+
+        private string GetAppYamlPath(IParsedProject project) => Path.Combine(project.DirectoryPath, AppYamlName);
+
+        private string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
+        {
+            if (FileSystem.File.Exists(yamlPath))
+            {
+                Dictionary<object, object> yamlObject;
+                using (TextReader reader = FileSystem.File.OpenText(yamlPath))
+                {
+                    yamlObject = _yamlDeserializer.Deserialize<Dictionary<object, object>>(reader);
+                }
+
+                if (yamlObject != null && yamlObject.ContainsKey(property))
+                {
+                    return yamlObject[property].ToString();
+                }
+                else
+                {
+                    return defaultValue;
+                }
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
+        private static bool IsDefaultService(string service) =>
+            string.IsNullOrWhiteSpace(service) || service == DefaultServiceName;
     }
 }

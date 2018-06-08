@@ -13,13 +13,13 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
-using GoogleCloudExtension.Services.Configuration;
 
 namespace GoogleCloudExtension.GenerateConfigurationCommand
 {
@@ -156,7 +156,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     UserPromptUtils.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
-                            AppEngineConfiguration.DockerfileName),
+                            NetCoreAppUtils.DockerfileName),
                         Resources.GenerateConfigurationFileGeneratinErrorTitle,
                         exception.Message);
                     return;

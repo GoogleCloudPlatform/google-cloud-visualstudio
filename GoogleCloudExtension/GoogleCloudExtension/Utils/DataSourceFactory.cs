@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.Utils
     public class DataSourceFactory : IDataSourceFactory
     {
         [Obsolete("This makes a call to MEF every time. Instead, import IDataSourceFactory from MEF and save to an instance member.")]
-        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetService<IDataSourceFactory>();
+        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
 
         public ResourceManagerDataSource CreateResourceManagerDataSource()
         {

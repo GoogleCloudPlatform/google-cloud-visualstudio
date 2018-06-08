@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Task<Person> personTask;
             try
             {
-                var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetService<IDataSourceFactory>();
+                var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
                 IGPlusDataSource dataSource = dataSourceFactory.CreatePlusDataSource(userAccount.GetGoogleCredential());
                 personTask = dataSource.GetProfileAsync();
             }
