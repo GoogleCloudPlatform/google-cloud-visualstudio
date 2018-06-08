@@ -17,6 +17,9 @@ using GoogleCloudExtension.Projects;
 
 namespace GoogleCloudExtension.Services.Configuration
 {
+    /// <summary>
+    /// Service interface for the App Engine configuration of a project.
+    /// </summary>
     public interface IAppEngineConfiguration
     {
         /// <summary>
@@ -47,8 +50,25 @@ namespace GoogleCloudExtension.Services.Configuration
         /// <param name="service">The name of the service to target.</param>
         void SaveServiceToAppYaml(IParsedDteProject project, string service);
 
+        /// <summary>
+        /// Creates an app.yaml in the target directory that targets the given service.
+        /// If the given project contains an app.yaml, it is the source of the new file.
+        /// Otherwise, a defualt app.yaml is created.
+        /// </summary>
+        /// <param name="project">The project that may have a source app.yaml to copy.</param>
+        /// <param name="targetDirectory">The directory to create or copy the app.yaml to.</param>
+        /// <param name="service">The service the new app.yaml will target.</param>
         void CopyOrCreateAppYaml(IParsedProject project, string targetDirectory, string service);
 
+        /// <summary>
+        /// Gets the runtime defined in the app.yaml, or <see cref="AppEngineConfiguration.AspNetCoreRuntime"/>
+        /// if there is no app.yaml.
+        /// </summary>
+        /// <param name="project">The project that contains the app.yaml.</param>
+        /// <returns>
+        /// The runtime in the app.yaml, or <see cref="AppEngineConfiguration.AspNetCoreRuntime"/>
+        /// if there is no app.yaml
+        /// </returns>
         string GetAppEngineRuntime(IParsedProject project);
     }
 }

@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// Service interface for deploying a project to App Engine Flexible Environment.
+    /// </summary>
     public interface IAppEngineFlexDeployment
     {
         /// <summary>

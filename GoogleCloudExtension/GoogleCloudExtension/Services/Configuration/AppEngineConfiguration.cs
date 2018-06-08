@@ -23,7 +23,9 @@ using YamlDotNet.Serialization;
 
 namespace GoogleCloudExtension.Services.Configuration
 {
-
+    /// <summary>
+    /// Service implementation for the App Engine configuration of a project.
+    /// </summary>
     [Export(typeof(IAppEngineConfiguration))]
     public class AppEngineConfiguration : IAppEngineConfiguration
     {
