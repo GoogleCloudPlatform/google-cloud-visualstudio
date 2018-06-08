@@ -72,6 +72,7 @@ namespace GoogleCloudExtension.Accounts
                 var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
                 {
+                    CredentialsStore.Default.UpdateCurrentAccount(credentials);
                     Debug.WriteLine($"Duplicate account {credentials.AccountName}");
                     UserPromptUtils.ErrorPrompt(
                         string.Format(Resources.ManageAccountsAccountAlreadyExistsPromptMessage, credentials.AccountName),
@@ -98,7 +99,7 @@ namespace GoogleCloudExtension.Accounts
         /// Deletes the given <paramref name="userAccount"/> from the store.
         /// </summary>
         /// <param name="userAccount"></param>
-        public static void DeleteAccount(UserAccount userAccount) => CredentialsStore.Default.DeleteAccount(userAccount);
+        public static void DeleteAccount(IUserAccount userAccount) => CredentialsStore.Default.DeleteAccount(userAccount);
 
         private static async Task<UserAccount> GetUserAccountForRefreshToken(string refreshToken)
         {

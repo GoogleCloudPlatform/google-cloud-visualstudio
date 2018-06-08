@@ -252,6 +252,7 @@
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
+    <Compile Include="ManageAccounts\UserAccountViewModelTests.cs" />
     <Compile Include="MockedGlobalServiceProviderTestsBase.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
