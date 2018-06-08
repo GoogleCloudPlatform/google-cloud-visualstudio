@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 {
@@ -85,6 +86,38 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
             Assert.IsTrue(File.Exists(TargetFilePath));
             Assert.AreEqual(File.ReadAllText(TestXmlFilePath), File.ReadAllText(TargetFilePath));
 
+        }
+
+        [TestMethod]
+        public async Task TestOpenText()
+        {
+            string expectedResult;
+            string result;
+            using (TextReader reader = _objectUnderTest.OpenText(TestXmlFilePath))
+            {
+                Task<string> resultTask = reader.ReadToEndAsync();
+                using (TextReader fileReader = File.OpenText(TestXmlFilePath))
+                {
+                    expectedResult = await fileReader.ReadToEndAsync();
+                }
+
+                result = await resultTask;
+            }
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public async Task TestCreateText()
+        {
+            const string fileContents = "File Contents";
+            using (TextWriter writer = _objectUnderTest.CreateText(TargetFilePath))
+            {
+                await writer.WriteAsync(fileContents);
+            }
+
+            Assert.IsTrue(File.Exists(TargetFilePath));
+            Assert.AreEqual(fileContents, File.ReadAllText(TargetFilePath));
         }
     }
 }
