@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.Accounts
         /// Deletes the <paramref name="account"/> from the store. The account must exist in the store
         /// or it will throw.
         /// </summary>
-        /// <param name="account">The accound to delete.</param>
+        /// <param name="account">The account to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
         void DeleteAccount(IUserAccount account);
 
