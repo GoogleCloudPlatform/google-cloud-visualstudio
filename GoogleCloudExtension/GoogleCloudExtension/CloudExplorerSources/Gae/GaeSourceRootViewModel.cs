@@ -209,9 +209,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine(Resources.CloudExplorerGaeFailedServicesMessage);
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
+                GcpOutputWindow.Default.OutputLine(Resources.CloudExplorerGaeFailedServicesMessage);
+                GcpOutputWindow.Default.OutputLine(ex.Message);
+                GcpOutputWindow.Default.Activate();
 
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);

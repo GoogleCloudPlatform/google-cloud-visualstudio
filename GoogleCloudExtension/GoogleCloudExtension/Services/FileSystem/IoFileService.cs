@@ -36,5 +36,11 @@ namespace GoogleCloudExtension.Services.FileSystem
         /// <inheritdoc cref="File.Copy(string, string, bool)"/>
         public void Copy(string sourceFileName, string destFileName, bool overwrite) =>
             File.Copy(sourceFileName, destFileName, overwrite);
+
+        /// <inheritdoc cref="File.OpenText(string)"/>
+        public TextReader OpenText(string path) => File.OpenText(path);
+
+        /// <inheritdoc cref="File.CreateText(string)"/>
+        public TextWriter CreateText(string path) => File.CreateText(path);
     }
 }

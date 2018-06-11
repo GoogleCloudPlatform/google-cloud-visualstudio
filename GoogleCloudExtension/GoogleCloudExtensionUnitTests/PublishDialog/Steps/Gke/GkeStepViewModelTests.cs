@@ -70,7 +70,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         protected override void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);

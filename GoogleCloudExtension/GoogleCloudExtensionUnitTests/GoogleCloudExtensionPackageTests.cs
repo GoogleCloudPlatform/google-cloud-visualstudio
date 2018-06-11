@@ -17,14 +17,21 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
@@ -158,7 +165,7 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestMethod]
-        public void TestGetServicesSI_GetsServiceOfTypeIRegisteredByS()
+        public void TestGetServiceSI_GetsServiceOfTypeIRegisteredByS()
         {
             Mock<IVsSolution> solutionMock = ServiceProviderMock.SetupService<SVsSolution, IVsSolution>();
             RunPackageInitalize();
@@ -169,25 +176,27 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestMethod]
-        public void TestGetServicesT_GetsService()
-        {
-            RunPackageInitalize();
-
-            var service = _objectUnderTest.GetService<DTE>();
-
-            Assert.AreEqual(DteMock.Object, service);
-        }
-
-        [TestMethod]
-        public void TestGetServicesT_GetsServiceFromMef()
+        public void TestGetMefService_GetsServiceFromMef()
         {
             var mockedFileSystemService = Mock.Of<IFileSystem>();
             ComponentModelMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
             RunPackageInitalize();
 
-            var service = _objectUnderTest.GetService<IFileSystem>();
+            var service = _objectUnderTest.GetMefService<IFileSystem>();
 
             Assert.AreEqual(mockedFileSystemService, service);
+        }
+
+        [TestMethod]
+        public void TestGetMefServiceLazy_GetsLazyServiceFromMef()
+        {
+            var exportProvider = new FakeExportProvider<IFileSystem>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+            RunPackageInitalize();
+
+            Lazy<IFileSystem> service = _objectUnderTest.GetMefServiceLazy<IFileSystem>();
+
+            Assert.AreEqual(exportProvider.MockedValue, service.Value);
         }
 
         [TestMethod]
@@ -198,6 +207,104 @@ namespace GoogleCloudExtensionUnitTests
             _objectUnderTest.ShowOptionPage<AnalyticsOptions>();
         }
 
+        [TestMethod]
+        public void TestShellUtils_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IShellUtils>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ShellUtils);
+        }
+
+        [TestMethod]
+        public void TestGcpOutputWindow_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IGcpOutputWindow>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.GcpOutputWindow);
+        }
+
+        [TestMethod]
+        public void TestSubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            RunPackageInitalize();
+
+            _objectUnderTest.SubscribeClosingEvent(new EventHandler(eventHandlerMock.Object));
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()));
+        }
+
+        [TestMethod]
+        public void TestUnsubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            var mockedHandler = new EventHandler(eventHandlerMock.Object);
+            RunPackageInitalize();
+            _objectUnderTest.SubscribeClosingEvent(mockedHandler);
+
+            _objectUnderTest.UnsubscribeClosingEvent(mockedHandler);
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsNullForCreateFalse()
+        {
+            var toolWindow = _objectUnderTest.FindToolWindow<CloudExplorerToolWindow>(false);
+
+            Assert.IsNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsInstanceForCreateTrue()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+
+            Assert.IsNotNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsExistingInstance()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+            var existingWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(false);
+
+            Assert.AreEqual(toolWindow, existingWindow);
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
@@ -206,6 +313,23 @@ namespace GoogleCloudExtensionUnitTests
             XElement metadata = manifestRoot?.Element(ns.GetName("Metadata"));
             XElement identity = metadata?.Element(ns.GetName("Identity"));
             return identity?.Attribute("Version")?.Value;
+        }
+
+        private class FakeExportProvider<T> : ExportProvider where T : class
+        {
+            public readonly T MockedValue = Mock.Of<T>();
+
+            /// <summary>Gets the single export for <typeparamref name="T"/>.</summary>
+            /// <returns>
+            /// An <see cref="Export"/>[] containing a single export that refers to the mocked value.
+            /// </returns>
+            /// <param name="definition">
+            /// The object that defines the conditions of the <see cref="Export" /> objects to return.
+            /// </param>
+            /// <param name="atomicComposition">The transactional container for the composition.</param>
+            protected override IEnumerable<Export> GetExportsCore(
+                ImportDefinition definition,
+                AtomicComposition atomicComposition) => new[] { new Export(nameof(T), () => MockedValue) };
         }
     }
 }

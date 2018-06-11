@@ -352,7 +352,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             IParsedProject project = PublishDialog.Project;
             try
             {
-                ShellUtils.SaveAllFiles();
+                ShellUtils.Default.SaveAllFiles();
 
                 Task<bool> verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
                 PublishDialog.TrackTask(verifyGCloudTask);
@@ -398,14 +398,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),
                         WaitingForServiceIpCallback = () =>
-                            GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
+                            GcpOutputWindow.Default.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
                     };
 
                     DeploymentVersion = GcpPublishStepsUtils.IncrementVersion(DeploymentVersion);
 
-                    GcpOutputWindow.Activate();
-                    GcpOutputWindow.Clear();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+                    GcpOutputWindow.Default.Activate();
+                    GcpOutputWindow.Default.Clear();
+                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
 
                     PublishDialog.FinishFlow();
 
@@ -415,7 +415,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     using (StatusbarHelper.ShowDeployAnimation())
                     using (ProgressBarHelper progress =
                         StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-                    using (ShellUtils.SetShellUIBusy())
+                    using (ShellUtils.Default.SetShellUIBusy())
                     {
                         DateTime deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
@@ -423,7 +423,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                             options,
                             progress,
                             VsVersionUtils.ToolsPathProvider,
-                            GcpOutputWindow.OutputLine);
+                            GcpOutputWindow.Default.OutputLine);
                         deploymentDuration = DateTime.Now - deploymentStartTime;
                     }
 
@@ -443,7 +443,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     }
                     else
                     {
-                        GcpOutputWindow.OutputLine(
+                        GcpOutputWindow.Default.OutputLine(
                             string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                         StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
@@ -453,7 +453,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                 PublishDialog?.FinishFlow();
@@ -469,23 +469,23 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             GkeDeployment.DeploymentOptions options,
             IParsedProject project)
         {
-            GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
+            GcpOutputWindow.Default.OutputLine(string.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
             if (result.DeploymentUpdated)
             {
-                GcpOutputWindow.OutputLine(
+                GcpOutputWindow.Default.OutputLine(
                     string.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
             }
 
             if (result.DeploymentScaled)
             {
-                GcpOutputWindow.OutputLine(
+                GcpOutputWindow.Default.OutputLine(
                     string.Format(
                         Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
             }
 
             if (result.ServiceUpdated)
             {
-                GcpOutputWindow.OutputLine(
+                GcpOutputWindow.Default.OutputLine(
                     string.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
             }
 
@@ -493,7 +493,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             {
                 if (result.PublicServiceIpAddress != null)
                 {
-                    GcpOutputWindow.OutputLine(
+                    GcpOutputWindow.Default.OutputLine(
                         string.Format(
                             Resources.GkePublishServiceIpMessage, options.DeploymentName,
                             result.PublicServiceIpAddress));
@@ -502,11 +502,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 {
                     if (ExposePublicService)
                     {
-                        GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                        GcpOutputWindow.Default.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
                     }
                     else
                     {
-                        GcpOutputWindow.OutputLine(
+                        GcpOutputWindow.Default.OutputLine(
                             string.Format(
                                 Resources.GkePublishServiceClusterIpMessage, options.DeploymentName,
                                 result.ClusterServiceIpAddress));
@@ -516,7 +516,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
             if (result.ServiceDeleted)
             {
-                GcpOutputWindow.OutputLine(
+                GcpOutputWindow.Default.OutputLine(
                     string.Format(Resources.GkePublishServiceDeletedMessage, options.DeploymentName));
             }
         }

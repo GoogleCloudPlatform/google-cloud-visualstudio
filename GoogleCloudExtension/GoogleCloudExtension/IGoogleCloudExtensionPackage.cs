@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -44,6 +45,9 @@ namespace GoogleCloudExtension
         /// </summary>
         string VersionedApplicationName { get; }
 
+        IShellUtils ShellUtils { get; }
+        IGcpOutputWindow GcpOutputWindow { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;
@@ -67,14 +71,22 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
         /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
-        /// <returns></returns>
+        /// <returns>The service.</returns>
         I GetService<S, I>();
 
         /// <summary>
-        /// Gets a service registered and used as one type.
+        /// Gets an exported MEF service.
         /// </summary>
         /// <typeparam name="T">The type of the service.</typeparam>
-        /// <returns></returns>
-        T GetService<T>() where T : class;
+        /// <returns>The service.</returns>
+        T GetMefService<T>() where T : class;
+
+        /// <summary>
+        /// Gets a lazily initialized <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see>
+        /// service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>A <see cref="Lazy{T}"/> that evaluates to the service.</returns>
+        Lazy<T> GetMefServiceLazy<T>() where T : class;
     }
 }

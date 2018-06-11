@@ -46,7 +46,7 @@ namespace GoogleCloudExtensionUnitTests
             PromptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
             UserPromptUtils.PromptUserOverride = PromptUserMock.Object;
 
-            DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetService<IDataSourceFactory>());
+            DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>());
             EventsReporterWrapper.DisableReporting();
             BeforeEach();
         }

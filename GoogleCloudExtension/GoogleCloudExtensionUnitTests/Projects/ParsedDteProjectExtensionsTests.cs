@@ -32,7 +32,7 @@ namespace GoogleCloudExtensionUnitTests.Projects
         protected override void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _mockedProject = Mock.Of<Project>();
             _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.Project == _mockedProject);

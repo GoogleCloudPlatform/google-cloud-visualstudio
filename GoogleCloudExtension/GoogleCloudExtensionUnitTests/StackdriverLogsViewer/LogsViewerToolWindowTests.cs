@@ -17,7 +17,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
         protected override void BeforeEach()
         {
-            _frameMock = VsWindowFrameMocks.GetWindowFrameMock();
+            _frameMock = VsWindowFrameMocks.GetWindowFrameMock(MockBehavior.Loose);
             _objectUnderTest = new LogsViewerToolWindow();
         }
 

@@ -52,7 +52,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
             _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
 
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _objectUnderTest = new ChoiceStepViewModel(_mockedPublishDialog);
         }

@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.Projects
         {
             try
             {
-                var fileSystem = GoogleCloudExtensionPackage.Instance.GetService<IFileSystem>();
+                var fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
                 XDocument dom = fileSystem.XDocument.Load(project.FullName);
                 XAttribute sdk = dom.Root?.Attribute(SdkAttributeName);
                 if (sdk != null)
@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.Projects
             string projectDir = Path.GetDirectoryName(project.FullName);
             string projectJsonPath = Path.Combine(projectDir, ProjectJsonFileName);
 
-            var fileSystem = GoogleCloudExtensionPackage.Instance.GetService<IFileSystem>();
+            var fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
             if (!fileSystem.File.Exists(projectJsonPath))
             {
                 Debug.WriteLine($"Could not find {projectJsonPath}.");

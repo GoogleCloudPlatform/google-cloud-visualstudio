@@ -32,6 +32,14 @@ namespace GoogleCloudExtensionUnitTests
             return serviceMock;
         }
 
+        public static Mock<IVsType> SetupServiceStrict<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock) where IVsType : class
+        {
+            var serviceMock = new Mock<IVsType>(MockBehavior.Strict);
+            serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
+            return serviceMock;
+        }
+
         /// <summary>
         /// Sets up a mocked service object to be provided by a mock service provider.
         /// </summary>
@@ -48,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(serviceMock.Object);
             serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
-                .Returns(0);
+                .Returns(VSConstants.S_OK);
             if (!s_mocks.ContainsKey(serviceProviderMock))
             {
                 s_mocks[serviceProviderMock] = new Dictionary<Type, object>();

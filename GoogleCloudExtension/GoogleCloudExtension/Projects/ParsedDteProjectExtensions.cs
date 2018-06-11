@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Projects
     public static class ParsedDteProjectExtensions
     {
         private static IVsProjectPropertyService ProjectPropertyService =>
-            GoogleCloudExtensionPackage.Instance.GetService<IVsProjectPropertyService>();
+            GoogleCloudExtensionPackage.Instance.GetMefService<IVsProjectPropertyService>();
 
         /// <summary>
         /// Reads a property from the project's .user file.

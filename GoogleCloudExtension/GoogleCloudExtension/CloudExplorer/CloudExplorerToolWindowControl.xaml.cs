@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindowControl(SelectionUtils selectionUtils)
         {
-            this.InitializeComponent();
+            InitializeComponent();
             _selectionUtils = selectionUtils;
         }
 

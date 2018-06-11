@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.PublishDialog
             }
             else
             {
-                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.IsBusy();
+                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.Default.IsBusy();
                 menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, startupProject.Name);
             }
         }

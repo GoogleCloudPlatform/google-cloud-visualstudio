@@ -124,7 +124,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         protected override void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            PackageMock.Setup(p => p.GetService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
 
             _pickProjectPromptMock = new Mock<Func<Project>>();

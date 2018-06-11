@@ -49,7 +49,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             MenuCommand command = null;
             _menuCommandServiceMock.Setup(
                 s => s.AddCommand(It.IsAny<MenuCommand>())).Callback((MenuCommand c) => command = c);
-            Mock<IVsWindowFrame> frameMock = VsWindowFrameMocks.GetWindowFrameMock();
+            Mock<IVsWindowFrame> frameMock = VsWindowFrameMocks.GetWindowFrameMock(MockBehavior.Loose);
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
                 .Returns(() => null);
             var logsViewerToolWindow = Mock.Of<LogsViewerToolWindow>();
