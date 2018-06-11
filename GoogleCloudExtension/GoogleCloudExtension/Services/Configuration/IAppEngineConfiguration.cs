@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.Services.Configuration
         /// <summary>
         /// Creates an app.yaml in the target directory that targets the given service.
         /// If the given project contains an app.yaml, it is the source of the new file.
-        /// Otherwise, a defualt app.yaml is created.
+        /// Otherwise, a default app.yaml is created.
         /// </summary>
         /// <param name="project">The project that may have a source app.yaml to copy.</param>
         /// <param name="targetDirectory">The directory to create or copy the app.yaml to.</param>

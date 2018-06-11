@@ -128,7 +128,7 @@ namespace GoogleCloudExtension
         public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
 
         /// <summary>
-        /// The defualt <see cref="IShellUtils"/> service.
+        /// The default <see cref="IShellUtils"/> service.
         /// </summary>
         public IShellUtils ShellUtils => _shellUtilsLazy.Value;
 
