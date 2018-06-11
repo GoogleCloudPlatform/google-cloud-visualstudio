@@ -121,24 +121,34 @@ namespace GoogleCloudExtension.TemplateWizards
         }
 
         /// <inheritdoc/>
-        public void ProjectFinishedGenerating(Project project) =>
+        public void ProjectFinishedGenerating(Project project)
+        {
             throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
+        }
 
         /// <inheritdoc/>
-        public void ProjectItemFinishedGenerating(ProjectItem projectItem) =>
+        public void ProjectItemFinishedGenerating(ProjectItem projectItem)
+        {
             throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
+        }
 
         /// <inheritdoc/>
-        public bool ShouldAddProjectItem(string filePath) =>
+        public bool ShouldAddProjectItem(string filePath)
+        {
             throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
+        }
 
         /// <inheritdoc/>
-        public void BeforeOpeningFile(ProjectItem projectItem) =>
+        public void BeforeOpeningFile(ProjectItem projectItem)
+        {
             throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
+        }
 
         /// <inheritdoc/>
-        public void RunFinished() =>
+        public void RunFinished()
+        {
             throw new NotSupportedException("This wizard should delegate to another wizard and cancel itself.");
+        }
 
         private static object[] GetNewCustomParams(
             IReadOnlyDictionary<string, string> replacements,
