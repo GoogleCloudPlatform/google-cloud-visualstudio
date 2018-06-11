@@ -32,7 +32,10 @@ namespace GoogleCloudExtension.Projects.DotNetCore
 
         public string Name => Path.GetFileName(Path.GetDirectoryName(_projectJsonPath));
 
-        public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication1_0;
+        public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
+
+        /// <summary>The version of the framework used by the project.</summary>
+        public string FrameworkVersion { get; } = "1.0.0-preview";
 
         #endregion
 

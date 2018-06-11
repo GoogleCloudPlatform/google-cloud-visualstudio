@@ -94,7 +94,6 @@
     <Compile Include="GkeDeployment.cs" />
     <Compile Include="GkeDeploymentResult.cs" />
     <Compile Include="IParsedProject.cs" />
-    <Compile Include="IParsedProjectExtensions.cs" />
     <Compile Include="IToolsPathProvider.cs" />
     <Compile Include="KnownProjectTypes.cs" />
     <Compile Include="NetCoreAppUtils.cs" />

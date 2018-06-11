@@ -258,12 +258,16 @@
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
     <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdWindowContentTests.cs" />
+    <Compile Include="Projects\DotNet4\CsprojProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\CsprojProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GceStep\GceStepViewModelTests.cs" />
     <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModelTests.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBaseTests.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindowTests.cs" />
     <Compile Include="ServiceProviderMockExtensions.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
@@ -279,6 +283,7 @@
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
+    <Compile Include="TemplateWizards\Dialogs\AspNetVersionTests.cs" />
     <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />

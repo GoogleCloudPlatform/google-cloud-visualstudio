@@ -101,6 +101,10 @@
     <Content Include="Core\MVC\1.1.csproj">
       <SubType>Designer</SubType>
     </Content>
+    <VSTemplate Include="Core\MVC\2.1.vstemplate">
+      <OutputSubPath>MVC</OutputSubPath>
+    </VSTemplate>
+    <Content Include="Core\MVC\2.1.csproj" />
     <Content Include="Core\MVC\2.0.csproj" />
     <Content Include="Core\MVC\1.0.csproj" />
     <Content Include="Core\MVC\1.0-preview.xproj" />
@@ -118,6 +122,11 @@
       <OutputSubPath>WebAPI</OutputSubPath>
     </VSTemplate>
     <Content Include="Core\WebAPI\1.0.csproj" />
+    <Content Include="Core\WebAPI\2.1.csproj" />
+    <VSTemplate Include="Core\WebAPI\2.1.vstemplate">
+      <SubType>Designer</SubType>
+      <OutputSubPath>WebAPI</OutputSubPath>
+    </VSTemplate>
     <Content Include="Core\WebAPI\2.0.csproj" />
     <Content Include="Core\WebAPI\1.0-preview.xproj" />
     <Content Include="Core\WebAPI\Project_Readme.html" />
@@ -352,7 +361,9 @@
   <ItemGroup>
     <None Include="Framework\MVC\Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Core\MVC\Startup.2.1.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Framework\WebAPI\App_Start\BundleConfig.cs" />
   </ItemGroup>
