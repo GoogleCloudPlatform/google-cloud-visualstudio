@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.Utils
         });
 
         /// <summary>
-        /// Outputs a line to the GCP output window.
+        /// Outputs a line to the GCP output window pane.
         /// </summary>
         /// <param name="str">The line of text to output.</param>
         public void OutputLine(string str)
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Activates the GCP output window, making sure it is visible for the user.
+        /// Activates the GCP output window pane, making sure it is visible for the user.
         /// </summary>
         public void Activate()
         {
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Clears all of the content from the GCP window.
+        /// Clears all of the content from the GCP window pane.
         /// </summary>
         public void Clear()
         {

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.IO;
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.Services.FileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
+using System.IO;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Services.Configuration
@@ -26,14 +27,21 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
     [TestClass]
     public class AppEngineConfigurationTests : ExtensionTestBase
     {
-        private const string Service = "new-service";
+        private const string NewService = "new-service";
+        private const string ProjectDirectory = @"c:\Project\Directory";
+        private const string ProjectAppYaml = @"c:\Project\Directory\app.yaml";
+        private const string TargetDirectory = @"c:\Target\Directory";
+        private const string TargetAppYaml = @"c:\Target\Directory\app.yaml";
+        private const string NewRuntime = "new-runtime";
+        private const string OldService = "old-service";
+
         private AppEngineConfiguration _objectUnderTest;
         private Mock<IFileSystem> _fileSystemMock;
-        private Mock<IParsedDteProject> _parsedProjectMock;
+        private IParsedDteProject _mockedParsedProject;
 
         protected override void BeforeEach()
         {
-            _parsedProjectMock = new Mock<IParsedDteProject>();
+            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.DirectoryPath == ProjectDirectory);
             _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
             _objectUnderTest = new AppEngineConfiguration(_fileSystemMock.ToLazy());
         }
@@ -44,30 +52,24 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [DataRow(AppEngineConfiguration.DefaultServiceName)]
         public void TestSaveServiceToAppYaml_GeneratesNewDefaultFile(string defaultServiceName)
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(false);
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
 
-            _objectUnderTest.SaveServiceToAppYaml(_parsedProjectMock.Object, defaultServiceName);
+            _objectUnderTest.SaveServiceToAppYaml(_mockedParsedProject, defaultServiceName);
 
             _fileSystemMock.Verify(
-                fs => fs.File.WriteAllText(targetAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
+                fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
         }
 
         [TestMethod]
         public void TestSaveServiceToAppYaml_GeneratesNewServiceSpecificFile()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(false);
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
 
-            _objectUnderTest.SaveServiceToAppYaml(_parsedProjectMock.Object, Service);
+            _objectUnderTest.SaveServiceToAppYaml(_mockedParsedProject, NewService);
 
             string exptectedContents = string.Format(
-                AppEngineConfiguration.AppYamlServiceSpecificContentFormat, Service);
-            _fileSystemMock.Verify(fs => fs.File.WriteAllText(targetAppYaml, exptectedContents));
+                AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService);
+            _fileSystemMock.Verify(fs => fs.File.WriteAllText(ProjectAppYaml, exptectedContents));
         }
 
         [TestMethod]
@@ -76,36 +78,61 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [DataRow(AppEngineConfiguration.DefaultServiceName)]
         public void TestSaveServiceToAppYaml_RemovesServiceFromExistingAppYaml(string defaultServiceName)
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            string existingContents = string.Format(
-                AppEngineConfiguration.AppYamlServiceSpecificContentFormat, Service);
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml)).Returns(
+                new StringReader(string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(ProjectAppYaml)).Returns(resultsWriter);
 
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml))
-                .Returns(new StringReader(existingContents));
-            var resultWriter = new StringWriter();
-            _fileSystemMock.Setup(fs => fs.File.CreateText(targetAppYaml)).Returns(resultWriter);
-
-            _objectUnderTest.SaveServiceToAppYaml(_parsedProjectMock.Object, defaultServiceName);
+            _objectUnderTest.SaveServiceToAppYaml(_mockedParsedProject, defaultServiceName);
 
             Assert.AreEqual(
-                resultWriter.ToString(),
+                resultsWriter.ToString(),
                 AppEngineConfiguration.AppYamlDefaultContent.Replace("\n", Environment.NewLine));
+        }
+
+        [TestMethod]
+        public void TestSaveServiceToAppYaml_AddsServiceToExistingAppYaml()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader(AppEngineConfiguration.AppYamlDefaultContent));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(ProjectAppYaml)).Returns(resultsWriter);
+
+            _objectUnderTest.SaveServiceToAppYaml(_mockedParsedProject, NewService);
+
+            Assert.AreEqual(
+                resultsWriter.ToString(),
+                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)
+                    .Replace("\n", Environment.NewLine));
+        }
+
+        [TestMethod]
+        public void TestSaveServiceToAppYaml_UpdatesServiceInExistingAppYaml()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader(
+                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, OldService)));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(ProjectAppYaml)).Returns(resultsWriter);
+
+            _objectUnderTest.SaveServiceToAppYaml(_mockedParsedProject, NewService);
+
+            Assert.AreEqual(
+                resultsWriter.ToString(),
+                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)
+                    .Replace("\n", Environment.NewLine));
         }
 
         [TestMethod]
         public void Test1ArgGenerateAppYaml_GeneratesDefaultContent()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-
-            _objectUnderTest.GenerateAppYaml(_parsedProjectMock.Object);
+            _objectUnderTest.GenerateAppYaml(_mockedParsedProject);
 
             _fileSystemMock.Verify(
-                fs => fs.File.WriteAllText(targetAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
+                fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
         }
 
         [TestMethod]
@@ -114,40 +141,29 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [DataRow(AppEngineConfiguration.DefaultServiceName)]
         public void Test1ArgGenerateAppYaml_GeneratesDefaultContentForDefaultService(string defaultServiceName)
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-
-            _objectUnderTest.GenerateAppYaml(_parsedProjectMock.Object, defaultServiceName);
+            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, defaultServiceName);
 
             _fileSystemMock.Verify(
-                fs => fs.File.WriteAllText(targetAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
+                fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
         }
 
         [TestMethod]
         public void Test1ArgGenerateAppYaml_GeneratesSpecificContentForNonDefaultService()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-
-            _objectUnderTest.GenerateAppYaml(_parsedProjectMock.Object, Service);
+            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, NewService);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(
-                    targetAppYaml,
-                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, Service)));
+                    ProjectAppYaml,
+                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
         }
 
         [TestMethod]
         public void TestGetAppEngineService_GetsDefaultFromMissingAppYaml()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(false);
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
 
-            string service = _objectUnderTest.GetAppEngineService(_parsedProjectMock.Object);
+            string service = _objectUnderTest.GetAppEngineService(_mockedParsedProject);
 
             Assert.AreEqual(AppEngineConfiguration.DefaultServiceName, service);
         }
@@ -155,56 +171,44 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [TestMethod]
         public void TestGetAppEngineService_GetsDefaultFromAppYamlMissingService()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml)).Returns(new StringReader(""));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml)).Returns(new StringReader(""));
 
-            string service = _objectUnderTest.GetAppEngineService(_parsedProjectMock.Object);
+            string service = _objectUnderTest.GetAppEngineService(_mockedParsedProject);
 
             Assert.AreEqual(AppEngineConfiguration.DefaultServiceName, service);
         }
 
         [TestMethod]
-        public void TestGetAppEngineService_GetsSpecificServiceFromAppYaml()
+        public void TestGetAppEngineService_GetsSpecificServiceFromApp()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml)).Returns(new StringReader(
-                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, Service)));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml)).Returns(new StringReader(
+                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
 
-            string service = _objectUnderTest.GetAppEngineService(_parsedProjectMock.Object);
+            string service = _objectUnderTest.GetAppEngineService(_mockedParsedProject);
 
-            Assert.AreEqual(Service, service);
+            Assert.AreEqual(NewService, service);
         }
 
         [TestMethod]
         public void TestGetAppEngineService_GetsSpecificServiceFromJsonLikeAppYaml()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml))
-                .Returns(new StringReader($"{{\"service\": \"{Service}\"}}"));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader($"{{\"service\": \"{NewService}\"}}"));
 
-            string service = _objectUnderTest.GetAppEngineService(_parsedProjectMock.Object);
+            string service = _objectUnderTest.GetAppEngineService(_mockedParsedProject);
 
-            Assert.AreEqual(Service, service);
+            Assert.AreEqual(NewService, service);
         }
 
         [TestMethod]
         public void TestGetAppEngineRuntime_GetsAspNetCoreFromMissingAppYaml()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(false);
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
 
-            string runtime = _objectUnderTest.GetAppEngineRuntime(_parsedProjectMock.Object);
+            string runtime = _objectUnderTest.GetAppEngineRuntime(_mockedParsedProject);
 
             Assert.AreEqual(AppEngineConfiguration.AspNetCoreRuntime, runtime);
         }
@@ -212,13 +216,10 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [TestMethod]
         public void TestGetAppEngineRuntime_GetsNullFromAppYamlMissingRuntime()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml)).Returns(new StringReader(""));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml)).Returns(new StringReader(""));
 
-            string runtime = _objectUnderTest.GetAppEngineRuntime(_parsedProjectMock.Object);
+            string runtime = _objectUnderTest.GetAppEngineRuntime(_mockedParsedProject);
 
             Assert.IsNull(runtime);
         }
@@ -226,30 +227,149 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [TestMethod]
         public void TestGetAppEngineRuntime_GetsSpecificRuntimeFromAppYaml()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml)).Returns(new StringReader("runtime: new-runtime"));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader($"runtime: {NewRuntime}"));
 
-            string runtime = _objectUnderTest.GetAppEngineRuntime(_parsedProjectMock.Object);
+            string runtime = _objectUnderTest.GetAppEngineRuntime(_mockedParsedProject);
 
-            Assert.AreEqual("new-runtime", runtime);
+            Assert.AreEqual(NewRuntime, runtime);
         }
 
         [TestMethod]
         public void TestGetAppEngineRuntime_GetsSpecificRuntimeFromJsonLikeAppYaml()
         {
-            const string projectDirectory = @"c:\Project\Directory";
-            const string targetAppYaml = @"c:\Project\Directory\app.yaml";
-            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(projectDirectory);
-            _fileSystemMock.Setup(fs => fs.File.Exists(targetAppYaml)).Returns(true);
-            _fileSystemMock.Setup(fs => fs.File.OpenText(targetAppYaml))
-                .Returns(new StringReader("{\"runtime\": \"new-runtime\"}"));
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader($"{{\"runtime\": \"{NewRuntime}\"}}"));
 
-            string runtime = _objectUnderTest.GetAppEngineRuntime(_parsedProjectMock.Object);
+            string runtime = _objectUnderTest.GetAppEngineRuntime(_mockedParsedProject);
 
-            Assert.AreEqual("new-runtime", runtime);
+            Assert.AreEqual(NewRuntime, runtime);
+        }
+
+        [TestMethod]
+        public void TestCheckProjectConfiguration_AppYamlExists()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+
+            ProjectConfigurationStatus configStatus = _objectUnderTest.CheckProjectConfiguration(_mockedParsedProject);
+
+            Assert.IsTrue(configStatus.HasAppYaml);
+        }
+
+        [TestMethod]
+        public void TestCheckProjectConfiguration_AppYamlMissing()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
+
+            ProjectConfigurationStatus configStatus = _objectUnderTest.CheckProjectConfiguration(_mockedParsedProject);
+
+            Assert.IsFalse(configStatus.HasAppYaml);
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_CopiesExistingWithCorrectService()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader($"{{\"service\": \"{NewService}\"}}"));
+
+            _objectUnderTest.CopyOrCreateAppYaml(_mockedParsedProject, TargetDirectory, NewService);
+
+            _fileSystemMock.Verify(fs => fs.File.Copy(ProjectAppYaml, TargetAppYaml, true));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_CopiesExistingWithDefaultService()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(new StringReader(""));
+
+            _objectUnderTest.CopyOrCreateAppYaml(
+                _mockedParsedProject, TargetDirectory, AppEngineConfiguration.DefaultServiceName);
+
+            _fileSystemMock.Verify(fs => fs.File.Copy(ProjectAppYaml, TargetAppYaml, true));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_WritesUpdatedWithDefaultService()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml)).Returns(
+                () => new StringReader(
+                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(TargetAppYaml)).Returns(resultsWriter);
+
+            _objectUnderTest.CopyOrCreateAppYaml(
+                _mockedParsedProject, TargetDirectory, AppEngineConfiguration.DefaultServiceName);
+
+            Assert.AreEqual(
+                resultsWriter.ToString(),
+                AppEngineConfiguration.AppYamlDefaultContent.Replace("\n", Environment.NewLine));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_WritesUpdatedWithService()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(() => new StringReader(AppEngineConfiguration.AppYamlDefaultContent));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(TargetAppYaml)).Returns(resultsWriter);
+
+            _objectUnderTest.CopyOrCreateAppYaml(_mockedParsedProject, TargetDirectory, NewService);
+
+            Assert.AreEqual(
+                resultsWriter.ToString(),
+                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)
+                    .Replace("\n", Environment.NewLine));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_WritesUpdatedWithNewService()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.File.OpenText(ProjectAppYaml))
+                .Returns(() => new StringReader(
+                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, OldService)));
+            var resultsWriter = new StringWriter();
+            _fileSystemMock.Setup(fs => fs.File.CreateText(TargetAppYaml)).Returns(resultsWriter);
+
+            _objectUnderTest.CopyOrCreateAppYaml(_mockedParsedProject, TargetDirectory, NewService);
+
+            Assert.AreEqual(
+                resultsWriter.ToString(),
+                string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)
+                    .Replace("\n", Environment.NewLine));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_GeneratesNewDefault()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
+
+            _objectUnderTest.CopyOrCreateAppYaml(
+                _mockedParsedProject, TargetDirectory, AppEngineConfiguration.DefaultServiceName);
+
+            _fileSystemMock.Verify(
+                fs => fs.File.WriteAllText(TargetAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
+        }
+
+        [TestMethod]
+        public void TestCopyOrCreateAppYaml_GeneratesNewServiceSpecific()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(ProjectAppYaml)).Returns(false);
+
+            _objectUnderTest.CopyOrCreateAppYaml(
+                _mockedParsedProject, TargetDirectory, NewService);
+
+            _fileSystemMock.Verify(
+                fs => fs.File.WriteAllText(
+                    TargetAppYaml,
+                    string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
         }
     }
 }

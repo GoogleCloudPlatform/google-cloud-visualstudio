@@ -109,6 +109,11 @@ namespace GoogleCloudExtension.Services.Configuration
         public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
         {
             string targetAppYaml = GetAppYamlPath(project);
+            GenerateAppYaml(targetAppYaml, service);
+        }
+
+        private void GenerateAppYaml(string targetAppYaml, string service)
+        {
             if (IsDefaultService(service))
             {
                 FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
@@ -127,12 +132,11 @@ namespace GoogleCloudExtension.Services.Configuration
         /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
         public ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
         {
-            string projectDirectory = project.DirectoryPath;
-            string targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+            string targetAppYaml = GetAppYamlPath(project);
             bool hasAppYaml = FileSystem.File.Exists(targetAppYaml);
             bool hasDockefile = NetCoreAppUtils.CheckDockerfile(project);
 
-            return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
+            return new ProjectConfigurationStatus(hasAppYaml, hasDockefile);
         }
 
         /// <summary>
@@ -192,15 +196,7 @@ namespace GoogleCloudExtension.Services.Configuration
             }
             else
             {
-                if (IsDefaultService(service))
-                {
-                    FileSystem.File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
-                }
-                else
-                {
-                    FileSystem.File.WriteAllText(
-                        targetAppYaml, string.Format(AppYamlServiceSpecificContentFormat, service));
-                }
+                GenerateAppYaml(targetAppYaml, service);
             }
         }
 

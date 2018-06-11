@@ -721,5 +721,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             Mock.Get(_mockedPublishDialog).Verify(pd => pd.FinishFlow(), Times.Never);
         }
+
+        [TestMethod]
+        public void TestOnFlowFinished_ResetsNeedsAppCreated()
+        {
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.NeedsAppCreated = true;
+
+            Mock.Get(_mockedPublishDialog).Raise(pd => pd.FlowFinished += null, _mockedPublishDialog, null);
+
+            Assert.IsFalse(_objectUnderTest.NeedsAppCreated);
+        }
     }
 }

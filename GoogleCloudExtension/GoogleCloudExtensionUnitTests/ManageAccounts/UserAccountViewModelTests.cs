@@ -148,5 +148,36 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
 
             Assert.AreEqual(profileDisplayName, objectUnderTest.NameAsync.Value);
         }
+
+        [TestMethod]
+        public void TestIsCurrentAccount_True()
+        {
+            CredentialStoreMock.Setup(cs => cs.CurrentAccount).Returns(s_defaultUserAccount);
+
+            var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
+
+            Assert.IsTrue(objectUnderTest.IsCurrentAccount);
+        }
+
+        [TestMethod]
+        public void TestIsCurrentAccount_FalseForNoCurrentAccount()
+        {
+            CredentialStoreMock.Setup(cs => cs.CurrentAccount).Returns(() => null);
+
+            var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
+
+            Assert.IsFalse(objectUnderTest.IsCurrentAccount);
+        }
+
+        [TestMethod]
+        public void TestIsCurrentAccount_FalseForDifferentCurrentAccount()
+        {
+            CredentialStoreMock.Setup(cs => cs.CurrentAccount)
+                .Returns(new UserAccount { AccountName = "different account" });
+
+            var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
+
+            Assert.IsFalse(objectUnderTest.IsCurrentAccount);
+        }
     }
 }

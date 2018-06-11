@@ -17,8 +17,12 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -27,6 +31,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
@@ -200,6 +205,104 @@ namespace GoogleCloudExtensionUnitTests
             RunPackageInitalize();
 
             _objectUnderTest.ShowOptionPage<AnalyticsOptions>();
+        }
+
+        [TestMethod]
+        public void TestShellUtils_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IShellUtils>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ShellUtils);
+        }
+
+        [TestMethod]
+        public void TestGcpOutputWindow_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IGcpOutputWindow>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.GcpOutputWindow);
+        }
+
+        [TestMethod]
+        public void TestSubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            RunPackageInitalize();
+
+            _objectUnderTest.SubscribeClosingEvent(new EventHandler(eventHandlerMock.Object));
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()));
+        }
+
+        [TestMethod]
+        public void TestUnsubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            var mockedHandler = new EventHandler(eventHandlerMock.Object);
+            RunPackageInitalize();
+            _objectUnderTest.SubscribeClosingEvent(mockedHandler);
+
+            _objectUnderTest.UnsubscribeClosingEvent(mockedHandler);
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsNullForCreateFalse()
+        {
+            var toolWindow = _objectUnderTest.FindToolWindow<CloudExplorerToolWindow>(false);
+
+            Assert.IsNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsInstanceForCreateTrue()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+
+            Assert.IsNotNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsExistingInstance()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+            var existingWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(false);
+
+            Assert.AreEqual(toolWindow, existingWindow);
         }
 
         private static string GetVsixManifestVersion()

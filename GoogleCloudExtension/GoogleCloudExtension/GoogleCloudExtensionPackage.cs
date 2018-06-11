@@ -127,7 +127,14 @@ namespace GoogleCloudExtension
         /// </summary>
         public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
 
+        /// <summary>
+        /// The defualt <see cref="IShellUtils"/> service.
+        /// </summary>
         public IShellUtils ShellUtils => _shellUtilsLazy.Value;
+
+        /// <summary>
+        /// The default <see cref="IGcpOutputWindow"/> service.
+        /// </summary>
         public IGcpOutputWindow GcpOutputWindow => _gcpOutputWindowLazy.Value;
 
         /// <summary>

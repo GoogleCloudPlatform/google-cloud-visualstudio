@@ -14,11 +14,31 @@
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Service interface for controling the Google Cloud Tools output window pane.
+    /// </summary>
     public interface IGcpOutputWindow
     {
+        /// <summary>
+        /// Activates the GCP output window pane, making sure it is visible for the user.
+        /// </summary>
         void Activate();
+
+        /// <summary>
+        /// Clears all of the content from the GCP window pane.
+        /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Outputs debug information to the Visual Studio output window as well as to the
+        /// debug output.
+        /// </summary>
         void OutputDebugLine(string str);
+
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="str">The line of text to output.</param>
         void OutputLine(string str);
     }
 }
