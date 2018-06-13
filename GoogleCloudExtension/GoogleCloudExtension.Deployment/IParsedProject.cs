@@ -32,8 +32,11 @@ namespace GoogleCloudExtension.Deployment
         string DirectoryPath { get; }
 
         /// <summary>
-        /// The type of the project.
+        /// The type (framework) of the project.
         /// </summary>
         KnownProjectTypes ProjectType { get; }
+
+        /// <summary>The version of the framework used by the project.</summary>
+        string FrameworkVersion { get; }
     }
 }

@@ -90,7 +90,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void TestInitialConditionsVs2017WithNetCoreSdk10()
         {
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
-            _targetSdkVersions.Add("1.0.0");
+            _targetSdkVersions.Add(AspNetVersion.s_firstSdkVersionWith11Runtime.ToString());
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
 
@@ -127,7 +127,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         {
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
             _targetSdkVersions.Add("2.0.0");
-            _targetSdkVersions.Add("1.0.0");
+            _targetSdkVersions.Add(AspNetVersion.s_firstSdkVersionWith11Runtime.ToString());
 
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
 
@@ -155,7 +155,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         public void TestSetSelectedFrameworkKeepSelectedVersion()
         {
             _targetSdkVersions.Add("2.0.0");
-            _targetSdkVersions.Add("1.0.0");
+            _targetSdkVersions.Add(AspNetVersion.s_firstSdkVersionWith11Runtime.ToString());
             var objectUnderTest = new AspNetCoreTemplateChooserViewModel(_closeWindowMock.Object);
             objectUnderTest.SelectedFramework = FrameworkType.NetFramework;
 

@@ -14,8 +14,8 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Utils;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Projects.DotNetCore
 {
@@ -24,6 +24,7 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// </summary>
     internal class CsprojProject : IParsedProject
     {
+        private static readonly Regex s_frameworkVersionRegex = new Regex(@"(?<=^netcoreapp)[\d.]+$");
         private readonly Project _project;
 
         #region IParsedProject
@@ -34,34 +35,17 @@ namespace GoogleCloudExtension.Projects.DotNetCore
 
         public string Name => _project.Name;
 
-        public KnownProjectTypes ProjectType { get; }
+        public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
+
+        /// <summary>The version of the framework used by the project.</summary>
+        public string FrameworkVersion { get; }
 
         #endregion
 
         public CsprojProject(Project project, string targetFramework)
         {
-            GcpOutputWindow.OutputDebugLine($"Found project {project.FullName} targeting {targetFramework}");
-
             _project = project;
-            switch (targetFramework)
-            {
-                case "netcoreapp1.0":
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-                    break;
-
-                case "netcoreapp1.1":
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_1;
-                    break;
-
-                case "netcoreapp2.0":
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication2_0;
-                    break;
-
-                default:
-                    GcpOutputWindow.OutputDebugLine($"Unsopported target framework {targetFramework}");
-                    ProjectType = KnownProjectTypes.None;
-                    break;
-            }
+            FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;
         }
     }
 }

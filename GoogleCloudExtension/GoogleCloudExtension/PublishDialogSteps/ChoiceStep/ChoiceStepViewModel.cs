@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Command = new ProtectedCommand(
                         OnAppEngineChoiceCommand,
-                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
+                        PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication),
                     Icon = s_appEngineIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
                 },
@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepGkeName,
                     Command = new ProtectedCommand(
                         OnGkeChoiceCommand,
-                        canExecuteCommand: PublishDialog.Project.IsAspNetCoreProject()),
+                        PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication),
                     Icon = s_gkeIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepGkeToolTip
                 },
@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepGceName,
                     Command = new ProtectedCommand(
                         OnGceChoiceCommand,
-                        canExecuteCommand: projectType == KnownProjectTypes.WebApplication),
+                        projectType == KnownProjectTypes.WebApplication),
                     Icon = s_gceIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepGceToolTip
                 },

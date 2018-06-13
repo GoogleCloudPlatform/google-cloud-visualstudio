@@ -28,14 +28,7 @@ namespace GoogleCloudExtension.Deployment
     internal static class NetCoreAppUtils
     {
         internal const string DockerfileName = "Dockerfile";
-
-        // The mapping of supported .NET Core versions to the base images to use for the Docker image.
-        private static readonly Dictionary<KnownProjectTypes, string> s_knownRuntimeImages = new Dictionary<KnownProjectTypes, string>
-        {
-            [KnownProjectTypes.NetCoreWebApplication1_0] = "gcr.io/google-appengine/aspnetcore:1.0",
-            [KnownProjectTypes.NetCoreWebApplication1_1] = "gcr.io/google-appengine/aspnetcore:1.1",
-            [KnownProjectTypes.NetCoreWebApplication2_0] = "gcr.io/google-appengine/aspnetcore:2.0"
-        };
+        private const string RuntimeImageFormat = "gcr.io/google-appengine/aspnetcore:{0}";
 
         /// <summary>
         /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
@@ -63,12 +56,12 @@ namespace GoogleCloudExtension.Deployment
             IToolsPathProvider pathsProvider,
             Action<string> outputAction)
         {
-            var arguments = $"publish -o \"{stageDirectory}\" -c Release";
-            var externalTools = pathsProvider.GetExternalToolsPath();
-            var workingDir = project.DirectoryPath;
+            string arguments = $"publish -o \"{stageDirectory}\" -c Release";
+            string externalTools = pathsProvider.GetExternalToolsPath();
+            string workingDir = project.DirectoryPath;
             var env = new Dictionary<string, string>
             {
-                { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" },
+                { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" }
             };
 
             Debug.WriteLine($"Using tools from {externalTools}");
@@ -93,10 +86,10 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="stageDirectory">The directory where to save the Dockerfile.</param>
         internal static void CopyOrCreateDockerfile(IParsedProject project, string stageDirectory)
         {
-            var sourceDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
-            var targetDockerfile = Path.Combine(stageDirectory, DockerfileName);
-            var entryPointName = CommonUtils.GetEntrypointName(stageDirectory) ?? project.Name;
-            var baseImage = s_knownRuntimeImages[project.ProjectType];
+            string sourceDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
+            string targetDockerfile = Path.Combine(stageDirectory, DockerfileName);
+            string entryPointName = CommonUtils.GetEntrypointName(stageDirectory) ?? project.Name;
+            string baseImage = string.Format(RuntimeImageFormat, project.FrameworkVersion);
 
             if (File.Exists(sourceDockerfile))
             {
@@ -104,7 +97,7 @@ namespace GoogleCloudExtension.Deployment
             }
             else
             {
-                var content = String.Format(DockerfileDefaultContent, baseImage, entryPointName);
+                string content = string.Format(DockerfileDefaultContent, baseImage, entryPointName);
                 File.WriteAllText(targetDockerfile, content);
             }
         }
@@ -115,9 +108,9 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="project">The project.</param>
         internal static void GenerateDockerfile(IParsedProject project)
         {
-            var targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
-            var baseImage = s_knownRuntimeImages[project.ProjectType];
-            var content = String.Format(DockerfileDefaultContent, baseImage, project.Name);
+            string targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
+            string baseImage = string.Format(RuntimeImageFormat, project.FrameworkVersion);
+            string content = string.Format(DockerfileDefaultContent, baseImage, project.Name);
             File.WriteAllText(targetDockerfile, content);
         }
 
@@ -128,7 +121,7 @@ namespace GoogleCloudExtension.Deployment
         /// <returns>True if the Dockerfile exists, false otherwise.</returns>
         internal static bool CheckDockerfile(IParsedProject project)
         {
-            var targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
+            string targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
             return File.Exists(targetDockerfile);
         }
     }

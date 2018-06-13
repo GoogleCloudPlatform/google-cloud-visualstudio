@@ -91,7 +91,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         [TestMethod]
         public void TestChoices_DotnetCore()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
+            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication;
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
             CollectionAssert.AreEqual(
@@ -177,7 +177,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         [TestMethod]
         public void TestOnAppEngineChoiceCommand()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
+            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication;
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepAppEngineFlexName).Command
@@ -190,7 +190,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialogSteps.ChoiceStep
         public void TestOnGkeChoiceCommand()
 
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
+            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication;
             _objectUnderTest.OnVisible(_mockedPublishDialog);
 
             _objectUnderTest.Choices.Single(c => c.Name == Resources.PublishDialogChoiceStepGkeName).Command

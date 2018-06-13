@@ -15,6 +15,7 @@
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Projects.DotNet4
 {
@@ -23,6 +24,7 @@ namespace GoogleCloudExtension.Projects.DotNet4
     /// </summary>
     internal class CsprojProject : IParsedProject
     {
+        private static readonly Regex s_frameworkVersionRegex = new Regex("(?<=Version=v)[\\d.]+");
         private readonly Project _project;
 
         #region IParsedProject
@@ -35,11 +37,16 @@ namespace GoogleCloudExtension.Projects.DotNet4
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
 
+        /// <summary>The version of the framework used by the project.</summary>
+        public string FrameworkVersion { get; }
+
         #endregion
 
         public CsprojProject(Project project)
         {
             _project = project;
+            string targetFramework = project.Properties.Item("TargetFrameworkMoniker").Value.ToString();
+            FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;
         }
     }
 }

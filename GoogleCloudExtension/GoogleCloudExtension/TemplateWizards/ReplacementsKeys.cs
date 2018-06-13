@@ -28,5 +28,6 @@ namespace GoogleCloudExtension.TemplateWizards
         public const string TemplateChooserResultKey = "$templateChooserResult$";
         public const string SafeProjectNameKey = "$safeprojectname$";
         public const string EmbeddableSafeProjectNameKey = "_safe_project_name_";
+        public const string WizardDataKey = "$wizarddata$";
     }
 }

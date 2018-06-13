@@ -19,7 +19,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -41,10 +40,7 @@ namespace GoogleCloudExtension.TemplateWizards
         {
             var provider = (IServiceProvider)automationObject;
             var model = (IComponentModel)provider.QueryService<SComponentModel>();
-            using (var container = new CompositionContainer(model.DefaultExportProvider))
-            {
-                container.ComposeParts(this);
-            }
+            _wizard = model.DefaultExportProvider.GetExportedValue<T>();
             _wizard.RunStarted(automationObject, replacementsDictionary, runKind, customParams);
         }
 

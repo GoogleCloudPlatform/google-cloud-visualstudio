@@ -1,7 +1,7 @@
 # Configuration for the build for the Visual Studio extension for Google Cloud.
 
 # Version for the build.
-version: 1.0.{build}-{branch}
+version: 1.4.0-{build}.{branch}
 
 # We're using Visual Studio 2015
 image: Visual Studio 2015

@@ -35,5 +35,8 @@ namespace GoogleCloudExtension.Deployment.UnitTests
         /// The type of the project.
         /// </summary>
         public KnownProjectTypes ProjectType { get; set; }
+
+        /// <summary>The version of the framework used by the project.</summary>
+        public string FrameworkVersion { get; set; }
     }
 }

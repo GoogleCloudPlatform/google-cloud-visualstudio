@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -54,9 +53,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             var projectType = project.ProjectType;
             return projectType == KnownProjectTypes.WebApplication ||
-                projectType == KnownProjectTypes.NetCoreWebApplication1_0 ||
-                projectType == KnownProjectTypes.NetCoreWebApplication1_1 ||
-                projectType == KnownProjectTypes.NetCoreWebApplication2_0;
+                projectType == KnownProjectTypes.NetCoreWebApplication;
         }
     }
 }
