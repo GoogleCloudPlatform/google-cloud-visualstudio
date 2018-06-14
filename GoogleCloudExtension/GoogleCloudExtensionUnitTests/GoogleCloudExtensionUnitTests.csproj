@@ -249,6 +249,9 @@
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="Deployment\MSBuildPropertyTests.cs" />
+    <Compile Include="Deployment\MSBuildTargetTests.cs" />
+    <Compile Include="Deployment\WindowsVmDeploymentTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -294,9 +297,11 @@
     <Compile Include="Utils\DataSourceFactoryTests.cs" />
     <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
     <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
+    <Compile Include="Utils\ProcessUtilsTests.cs" />
     <Compile Include="Utils\ProtectedAsyncCommandTests.cs" />
     <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
     <Compile Include="Utils\ProtectedCommandTests.cs" />
+    <Compile Include="Utils\StatusbarHelperTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />
@@ -355,6 +360,10 @@
       <Project>{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}</Project>
       <Name>TestingHelpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestProjects\EchoApp\EchoApp.csproj">
+      <Project>{108901a6-861d-4021-a2c9-ce93554a26f5}</Project>
+      <Name>EchoApp</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -380,9 +389,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.7.18\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Deployment\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

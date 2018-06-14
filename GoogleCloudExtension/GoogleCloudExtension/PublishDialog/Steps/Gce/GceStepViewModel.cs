@@ -23,7 +23,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,9 +38,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
     {
         public const string InstanceNameProjectPropertyName = "GoogleComputeEnginePublishInstanceName";
         public const string InstanceZoneProjectPropertyName = "GoogleComputeEnginePublishInstanceZone";
+        public const string SiteNameProjectPropertyName = "GoogleComputeEnginePublishSiteName";
         public const string InstanceUserNameProjectPropertyName = "GoogleComputeEnginePublishInstanceUserName";
         public const string OpenWebsiteProjectPropertyName = "GoogleComputeEnginePublishOpenWebsite";
         public const string LaunchRemoteDebuggerProjectPropertyName = "GoogleComputeEnginePublishLaunchRemoteDebugger";
+        public const string DefaultSiteName = "Default Web Site";
 
         // The list of APIs that are required for a succesful deployment to GCE.
         private static readonly IList<string> s_requiredApis = new List<string>
@@ -54,6 +55,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         private readonly IWindowsCredentialsStore _currentWindowsCredentialStore;
         private readonly Action<Instance> _manageCredentialsPrompt;
         private Instance _selectedInstance = null;
+        private string _siteName = DefaultSiteName;
         private IEnumerable<WindowsInstanceCredentials> _credentials = Enumerable.Empty<WindowsInstanceCredentials>();
         private WindowsInstanceCredentials _selectedCredentials = null;
         private bool _openWebsite = true;
@@ -62,6 +64,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         private string _lastInstanceNameProperty;
         private string _lastInstanceZoneNameProperty;
         private string _lastInstanceUserNameProperty;
+        private readonly Lazy<IWindowsVmDeployment> _deploymentService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IWindowsVmDeployment>();
 
         /// <summary>
         /// List of APIs required for publishing to the current project.
@@ -77,8 +80,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             get => _instances;
             private set
             {
-                SelectedInstance = value?.FirstOrDefault(i => i.Name == SelectedInstance?.Name && i.GetZoneName() == SelectedInstance?.GetZoneName()) ??
-                    value?.FirstOrDefault(i => i.Name == _lastInstanceNameProperty && i.GetZoneName() == _lastInstanceZoneNameProperty) ??
+                SelectedInstance = value?.FirstOrDefault(
+                        i => i.Name == SelectedInstance?.Name && i.GetZoneName() == SelectedInstance?.GetZoneName()) ??
+                    value?.FirstOrDefault(
+                        i => i.Name == _lastInstanceNameProperty && i.GetZoneName() == _lastInstanceZoneNameProperty) ??
                     value?.FirstOrDefault();
                 SetValueAndRaise(ref _instances, value);
             }
@@ -123,6 +128,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 SetValueAndRaise(ref _selectedCredentials, value);
                 RefreshCanPublish();
             }
+        }
+
+        /// <summary>
+        /// The name of the website on IIS to target.
+        /// </summary>
+        public string SiteName
+        {
+            get => _siteName;
+            set => SetValueAndRaise(ref _siteName, value);
         }
 
         /// <summary>
@@ -195,9 +209,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
         private async Task PublishAsync()
         {
-            IParsedProject project = PublishDialog.Project;
+            IParsedDteProject project = PublishDialog.Project;
             Instance selectedInstance = SelectedInstance;
+            string targetDeployPath = SiteName;
             WindowsInstanceCredentials selectedCredentials = SelectedCredentials;
+
+            PublishDialog.FinishFlow();
 
             try
             {
@@ -207,45 +224,17 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 GcpOutputWindow.Default.Clear();
                 GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-                PublishDialog.FinishFlow();
-
-                string progressBarTitle = string.Format(Resources.GcePublishProgressMessage, selectedInstance.Name);
-                TimeSpan deploymentDuration;
-                bool result;
-                using (StatusbarHelper.Freeze())
-                using (StatusbarHelper.ShowDeployAnimation())
-                using (ShellUtils.Default.SetShellUIBusy())
-                using (ProgressBarHelper progress = StatusbarHelper.ShowProgressBar(progressBarTitle))
-                {
-                    DateTime startDeploymentTime = DateTime.Now;
-                    result = await WindowsVmDeployment.PublishProjectAsync(
-                        project,
-                        selectedInstance,
-                        selectedCredentials,
-                        progress,
-                        VsVersionUtils.ToolsPathProvider,
-                        GcpOutputWindow.Default.OutputLine);
-                    deploymentDuration = DateTime.Now - startDeploymentTime;
-                }
+                DateTime startDeploymentTime = DateTime.Now;
+                bool result = await _deploymentService.Value.PublishProjectAsync(
+                    project,
+                    selectedInstance,
+                    selectedCredentials,
+                    targetDeployPath);
+                TimeSpan deploymentDuration = DateTime.Now - startDeploymentTime;
 
                 if (result)
                 {
-                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
-                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                    string url = selectedInstance.GetDestinationAppUri();
-                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.PublishUrlMessage, url));
-                    if (OpenWebsite)
-                    {
-                        Process.Start(url);
-                    }
-
-                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
-
-                    if (LaunchRemoteDebugger)
-                    {
-                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(selectedInstance);
-                    }
+                    ExecutePostDeployTasks(project, selectedInstance, deploymentDuration);
                 }
                 else
                 {
@@ -260,9 +249,29 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
-                PublishDialog?.FinishFlow();
-
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
+            }
+        }
+
+        private void ExecutePostDeployTasks(IParsedDteProject project, Instance selectedInstance, TimeSpan deploymentDuration)
+        {
+            GcpOutputWindow.Default.OutputLine(
+                string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
+            StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+            string url = selectedInstance.GetDestinationAppUri();
+            GcpOutputWindow.Default.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+            if (OpenWebsite)
+            {
+                Process.Start(url);
+            }
+
+            EventsReporterWrapper.ReportEvent(
+                GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+
+            if (LaunchRemoteDebugger)
+            {
+                AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(selectedInstance);
             }
         }
 
@@ -311,16 +320,21 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             {
                 LaunchRemoteDebugger = launchRemoteDebugger;
             }
+
+            string siteNamePropertyValue = PublishDialog.Project.GetUserProperty(SiteNameProjectPropertyName);
+            SiteName = string.IsNullOrWhiteSpace(siteNamePropertyValue) ? DefaultSiteName : siteNamePropertyValue;
         }
 
         protected override void SaveProjectProperties()
         {
             PublishDialog.Project.SaveUserProperty(InstanceNameProjectPropertyName, SelectedInstance?.Name);
-            PublishDialog.Project.SaveUserProperty(
-                InstanceZoneProjectPropertyName, SelectedInstance?.GetZoneName());
+            PublishDialog.Project.SaveUserProperty(InstanceZoneProjectPropertyName, SelectedInstance?.GetZoneName());
             PublishDialog.Project.SaveUserProperty(InstanceUserNameProjectPropertyName, SelectedCredentials?.User);
             PublishDialog.Project.SaveUserProperty(OpenWebsiteProjectPropertyName, OpenWebsite.ToString());
-            PublishDialog.Project.SaveUserProperty(LaunchRemoteDebuggerProjectPropertyName, LaunchRemoteDebugger.ToString());
+            PublishDialog.Project.SaveUserProperty(
+                LaunchRemoteDebuggerProjectPropertyName,
+                LaunchRemoteDebugger.ToString());
+            PublishDialog.Project.SaveUserProperty(SiteNameProjectPropertyName, SiteName);
         }
 
         #endregion

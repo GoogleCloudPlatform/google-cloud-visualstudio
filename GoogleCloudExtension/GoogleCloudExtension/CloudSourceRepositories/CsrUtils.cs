@@ -15,7 +15,7 @@
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;

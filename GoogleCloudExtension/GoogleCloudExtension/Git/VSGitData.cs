@@ -19,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Security;
 
-namespace GoogleCloudExtension.GitUtils
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
     /// Get or set Visual Studio git related data.

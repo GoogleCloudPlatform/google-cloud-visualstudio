@@ -17,7 +17,7 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;

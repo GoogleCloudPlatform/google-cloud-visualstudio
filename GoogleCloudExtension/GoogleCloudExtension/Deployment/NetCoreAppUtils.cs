@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.Deployment
             Debug.WriteLine($"Setting working directory to {workingDir}");
             Directory.CreateDirectory(stageDirectory);
             outputAction($"dotnet {arguments}");
-            bool result = await ProcessUtils.RunCommandAsync(
+            bool result = await ProcessUtils.Default.RunCommandAsync(
                 file: pathsProvider.GetDotnetPath(),
                 args: arguments,
                 workingDir: workingDir,

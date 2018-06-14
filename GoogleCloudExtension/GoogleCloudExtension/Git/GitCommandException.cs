@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Utils
+using System;
+
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
-    /// Define the interface for protected action that handles escaped exceptions.
+    /// Exception if git command fails
     /// </summary>
-    public interface IProtectedAction
+    public class GitCommandException : Exception
     {
-        /// <summary>
-        /// Execute the action
-        /// </summary>
-        void Invoke();
+        public GitCommandException()
+        { }
     }
 }

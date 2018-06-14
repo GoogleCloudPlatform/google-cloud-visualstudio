@@ -49,23 +49,31 @@
         <!-- The controls to select the VM. -->
         <StackPanel Margin="0,5,0,0"
                     Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
-                   Target="{Binding ElementName=_instances}"
-                   Style="{StaticResource CommonLabelStyle}"/>
             <DockPanel Margin="0,0,0,15">
+                <Label DockPanel.Dock="Top"
+                       Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+                       Target="{Binding ElementName=_instances}"
+                       Style="{StaticResource CommonLabelStyle}"/>
                 <Button DockPanel.Dock="Right"
                         Command="{Binding RefreshInstancesCommand}"
                         Style="{StaticResource CommonButtonDynamicStyle}">
-                    <Image Source="{extensions:ImageResource Theming/Resources/refresh.png}" />
+                    <Image Source="{extensions:ImageResource /Theming/Resources/refresh.png}" />
                 </Button>
                 <ComboBox x:Name="_instances"
-                      ItemsSource="{Binding Instances}"
-                      DisplayMemberPath="Name"
-                      IsSynchronizedWithCurrentItem="True"
-                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                          ItemsSource="{Binding Instances}"
+                          DisplayMemberPath="Name"
+                          IsSynchronizedWithCurrentItem="True"
+                          SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
                           Margin="0,0,5,0"/>
             </DockPanel>
 
+            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSiteNameMessage}"
+                   Target="{Binding ElementName=_siteName}"
+                   Style="{StaticResource CommonLabelStyle}"/>
+            <TextBox x:Name="_siteName"
+                     Text="{Binding SiteName}"
+                     Style="{StaticResource CommonTextBoxStyle}"
+                     Margin="0,5,0,5"/>
             <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
                    Target="{Binding ElementName=_credentials}"
                    Style="{StaticResource CommonLabelStyle}"/>

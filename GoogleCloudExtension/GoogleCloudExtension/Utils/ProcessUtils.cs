@@ -15,6 +15,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -78,8 +79,14 @@ namespace GoogleCloudExtension.Utils
     /// This class defines helper methods for starting sub-processes and getting the output from
     /// the processes, including a helper to parse the output as json.
     /// </summary>
-    public static class ProcessUtils
+    [Export(typeof(IProcessService))]
+    public class ProcessUtils : IProcessService
     {
+        /// <summary>
+        /// The default <see cref="IProcessService"/>.
+        /// </summary>
+        public static IProcessService Default => GoogleCloudExtensionPackage.Instance.ProcessService;
+
         /// <summary>
         /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
         /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
@@ -92,7 +99,7 @@ namespace GoogleCloudExtension.Utils
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
-        public static Task<bool> RunCommandAsync(
+        public Task<bool> RunCommandAsync(
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
@@ -120,7 +127,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
-        public static Task<ProcessOutput> GetCommandOutputAsync(
+        public Task<ProcessOutput> GetCommandOutputAsync(
             string file,
             string args,
             string workingDir = null,
@@ -155,7 +162,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment to use for the executable.</param>
-        public static async Task<T> GetJsonOutputAsync<T>(
+        public async Task<T> GetJsonOutputAsync<T>(
             string file,
             string args,
             string workingDir = null,

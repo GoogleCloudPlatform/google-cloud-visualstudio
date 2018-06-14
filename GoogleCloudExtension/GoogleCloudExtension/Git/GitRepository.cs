@@ -19,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GitUtils
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
     /// A wrapper for executing git commands on a local git repository root.
@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.GitUtils
                 return null;
             }
             List<string> output = new List<string>();
-            bool commandResult = await ProcessUtils.RunCommandAsync(
+            bool commandResult = await ProcessUtils.Default.RunCommandAsync(
                 file: GitPath,
                 args: command,
                 handler: (o, e) => output.Add(e.Line),
