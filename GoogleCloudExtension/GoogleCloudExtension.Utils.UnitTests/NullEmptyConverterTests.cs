@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,22 +15,24 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Windows;
 
 namespace GoogleCloudExtension.Utils.UnitTests
 {
     /// <summary>
-    /// Test class for the <see cref="NullEmptyInvisibleConverter"/>.
+    /// Test class for the <see cref="NullEmptyConverter{T}"/>.
     /// </summary>
     [TestClass]
-    public class NullEmptyInvisibleConverterTests
+    public class NullEmptyConverterTests
     {
-        private NullEmptyInvisibleConverter _objectUnderTest;
+        private const string WhiteSpaceString = " \t\n\f\r";
+        private NullEmptyConverter<object> _objectUnderTest;
+        private static readonly object s_emptyResult = TestNullEmptyConverter.EmptyResult;
+        private static readonly object s_notEmptyResult = TestNullEmptyConverter.NotEmptyResult;
 
         [TestInitialize]
         public void BeforeEachTest()
         {
-            _objectUnderTest = new NullEmptyInvisibleConverter();
+            _objectUnderTest = new TestNullEmptyConverter();
         }
 
         [TestMethod]
@@ -38,7 +40,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         {
             object val = _objectUnderTest.Convert(null, null, null, null);
 
-            Assert.AreEqual(Visibility.Collapsed, val);
+            Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
@@ -46,7 +48,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         {
             object val = _objectUnderTest.Convert(new object(), null, null, null);
 
-            Assert.AreEqual(Visibility.Visible, val);
+            Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
@@ -54,15 +56,15 @@ namespace GoogleCloudExtension.Utils.UnitTests
         {
             object val = _objectUnderTest.Convert("", null, null, null);
 
-            Assert.AreEqual(Visibility.Collapsed, val);
+            Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
         public void TestConvertWhitespace()
         {
-            object val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
+            object val = _objectUnderTest.Convert(WhiteSpaceString, null, null, null);
 
-            Assert.AreEqual(Visibility.Collapsed, val);
+            Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
@@ -70,7 +72,30 @@ namespace GoogleCloudExtension.Utils.UnitTests
         {
             object val = _objectUnderTest.Convert("not an empty string", null, null, null);
 
-            Assert.AreEqual(Visibility.Visible, val);
+            Assert.AreEqual(s_notEmptyResult, val);
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(WhiteSpaceString)]
+        public void TestConvert_ConvertableEmpty(string convertResult)
+        {
+            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == convertResult);
+
+            object val = _objectUnderTest.Convert(convertible, null, null, null);
+
+            Assert.AreEqual(s_emptyResult, val);
+        }
+
+        [TestMethod]
+        public void TestConvert_ConvertableNotEmpty()
+        {
+            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == "Not Empty");
+
+            object val = _objectUnderTest.Convert(convertible, null, null, null);
+
+            Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
@@ -79,7 +104,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
             _objectUnderTest.Invert = true;
             object val = _objectUnderTest.Convert(null, null, null, null);
 
-            Assert.AreEqual(Visibility.Visible, val);
+            Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
@@ -88,7 +113,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
             _objectUnderTest.Invert = true;
             object val = _objectUnderTest.Convert(new object(), null, null, null);
 
-            Assert.AreEqual(Visibility.Collapsed, val);
+            Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
@@ -97,16 +122,16 @@ namespace GoogleCloudExtension.Utils.UnitTests
             _objectUnderTest.Invert = true;
             object val = _objectUnderTest.Convert("", null, null, null);
 
-            Assert.AreEqual(Visibility.Visible, val);
+            Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
         public void TestConvertWhitespaceInvert()
         {
             _objectUnderTest.Invert = true;
-            object val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
+            object val = _objectUnderTest.Convert(WhiteSpaceString, null, null, null);
 
-            Assert.AreEqual(Visibility.Visible, val);
+            Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
@@ -115,7 +140,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
             _objectUnderTest.Invert = true;
             object val = _objectUnderTest.Convert("not an empty string", null, null, null);
 
-            Assert.AreEqual(Visibility.Collapsed, val);
+            Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
@@ -131,5 +156,14 @@ namespace GoogleCloudExtension.Utils.UnitTests
 
             Assert.AreEqual(_objectUnderTest, val);
         }
+
+        private class TestNullEmptyConverter : NullEmptyConverter<object>
+        {
+            public static readonly object NotEmptyResult = new object();
+            public static readonly object EmptyResult = new object();
+            protected override object NotEmptyValue { get; } = NotEmptyResult;
+            protected override object EmptyValue { get; } = EmptyResult;
+        }
     }
+
 }

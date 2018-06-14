@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.Gce.GceInputsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gce"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:extensions="clr-namespace:GoogleCloudExtension.Extensions"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:GceStepViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
+    </UserControl.Resources>
+    <!-- The controls to select the VM. -->
+    <StackPanel>
+        <!-- VM Instance -->
+        <DockPanel>
+            <Label DockPanel.Dock="Top"
+                   Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+                   Target="{Binding ElementName=_instances}"
+                   HorizontalContentAlignment="Left"
+                   HorizontalAlignment="Left"
+                   Margin="0,0,0,3" />
+            <Button DockPanel.Dock="Right"
+                    Command="{Binding RefreshInstancesCommand}"
+                    Margin="6,0,0,0">
+                <Image Source="{extensions:ImageResource /Theming/Resources/refresh.png}" Stretch="None"/>
+            </Button>
+            <ComboBox x:Name="_instances"
+                      ItemsSource="{Binding Instances}"
+                      DisplayMemberPath="Name"
+                      IsSynchronizedWithCurrentItem="True"
+                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                      Margin="0"/>
+        </DockPanel>
+
+        <!-- IIS Site Name -->
+        <DockPanel Margin="0,5,0,0">
+            <Label DockPanel.Dock="Top"
+                   Content="{x:Static ext:Resources.PublishDialogGceStepSiteNameMessage}"
+                   Target="{Binding ElementName=_siteName}"
+                   Margin="0,0,0,3" />
+            <TextBox x:Name="_siteName"
+                     Text="{Binding SiteName}" />
+        </DockPanel>
+
+        <!-- VM Connection User Account -->
+        <DockPanel Margin="0,5,0,0">
+            <Label DockPanel.Dock="Top"
+                   Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
+                   Target="{Binding ElementName=_credentials}"
+                   Margin="0,0,0,3" />
+
+            <TextBlock DockPanel.Dock="Bottom" Margin="0,5,0,0">
+                <Hyperlink Command="{Binding ManageCredentialsCommand}">
+                    <Run Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <ComboBox x:Name="_credentials"
+                      ItemsSource="{Binding Credentials}"
+                      IsSynchronizedWithCurrentItem="True"
+                      DisplayMemberPath="User"
+                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
+        </DockPanel>
+
+        <!-- Open Website -->
+        <CheckBox Margin="0,9,0,0"
+                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}" />
+
+        <!-- Start Debugger -->
+        <CheckBox Margin="0,9,0,0"
+                  Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
+                  IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}" />
+    </StackPanel>
+</UserControl>

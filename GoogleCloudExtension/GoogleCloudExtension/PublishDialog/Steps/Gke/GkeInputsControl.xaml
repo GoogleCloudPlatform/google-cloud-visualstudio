@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.Gke.GkeInputsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gke"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:GkeStepViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
+    </UserControl.Resources>
+    <StackPanel >
+        <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
+               Target="{Binding ElementName=_clusters}"
+               Style="{StaticResource CommonLabelStyle}"
+               Margin="0"/>
+
+        <ComboBox x:Name="_clusters"
+                  ItemsSource="{Binding Clusters}"
+                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                  DisplayMemberPath="Name"
+                  IsSynchronizedWithCurrentItem="True"
+                  Margin="0,3,0,0"
+                  Style="{StaticResource CommonComboBoxStyle}"/>
+
+        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+            <TextBlock>
+                <Hyperlink Command="{Binding CreateClusterCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <Run Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="9,0,0,0">
+                <Hyperlink Command="{Binding RefreshClustersListCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <Run Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
+               Target="{Binding ElementName=_deploymentName}"
+               Style="{StaticResource CommonLabelStyle}"
+               Margin="0,5,0,0"/>
+        <TextBox x:Name="_deploymentName"
+                 Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                 Margin="0,3,0,0"/>
+
+        <DockPanel Margin="0,5,0,0">
+            <DockPanel DockPanel.Dock="Right" Margin="12,0,0,0">
+                <!-- TODO: Use an up/down textbox control. -->
+                <Label DockPanel.Dock="Top"
+                       Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
+                       Target="{Binding ElementName=_replicas}"
+                       Margin="0,0,0,3"/>
+                <TextBox x:Name="_replicas"
+                         Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label DockPanel.Dock="Top"
+                       Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
+                       Target="{Binding ElementName=_deploymentVersion}"
+                       Margin="0,0,0,3" />
+                <TextBox x:Name="_deploymentVersion"
+                         Text="{Binding Path=DeploymentVersion, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
+                </TextBox>
+            </DockPanel>
+
+        </DockPanel>
+
+        <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}"
+                  Style="{StaticResource CommonGroupBoxStyle}"
+                  Margin="0,20,0,0">
+            <StackPanel>
+                <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
+                          IsChecked="{Binding ExposeService}"/>
+                <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
+                          IsChecked="{Binding ExposePublicService}"
+                          IsEnabled="{Binding ExposeService}"
+                          Margin="0,9,0,0"/>
+                <CheckBox Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                          IsChecked="{Binding OpenWebsite}"
+                          IsEnabled="{Binding ExposePublicService}"
+                          Margin="0,9,0,0" />
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>

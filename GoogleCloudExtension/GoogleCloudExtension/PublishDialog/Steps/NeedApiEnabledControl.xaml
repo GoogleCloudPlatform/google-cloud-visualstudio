@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.NeedApiEnabledControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:PublishDialogStepBase}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
+    </UserControl.Resources>
+    <!-- Message shown when the API needs to be enabled. -->
+    <TextBlock>
+        <Run Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}"/>
+        <Hyperlink>
+            <Run Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
+        </Hyperlink>
+    </TextBlock>
+</UserControl>

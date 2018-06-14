@@ -63,20 +63,23 @@ limitations under the License.
                                 ItemsSource="{Binding AvailableFrameworks}"
                                 SelectedValue="{Binding SelectedFramework}"
                                 ItemTemplate="{StaticResource FrameworkTypeTemplate}"
-                                MinWidth="150px"/>
+                                MinWidth="150px"
+                                Margin="0,3,0,0"/>
                         </StackPanel>
-                        <StackPanel>
+                        <StackPanel Margin="9,0,0,0">
                             <Label
                                 Content="{x:Static ext:Resources.WizardTemplateChooserTargetAspFrameworkLabel}"
-                                Target="{Binding ElementName=_targetAspNetFramework}" />
+                                Target="{Binding ElementName=_targetAspNetFramework}"
+                                Margin="0"/>
                             <ComboBox
                                 x:Name="_targetAspNetFramework"
                                 ItemsSource="{Binding AvailableVersions}"
                                 SelectedItem="{Binding SelectedVersion}"
-                                MinWidth="180px" />
+                                MinWidth="180px"
+                                Margin="0,3,0,0"/>
                         </StackPanel>
                     </StackPanel>
-                    <local:AppTypeSelectorControl/>
+                    <local:AppTypeSelectorControl Margin="0,5,0,0"/>
                 </StackPanel>
                 <StackPanel x:Key="ErrorPanel">
                     <TextBlock Text="{x:Static ext:Resources.NoDotNetCorePreviewFoundError}"/>

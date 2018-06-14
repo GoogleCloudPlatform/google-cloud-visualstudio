@@ -227,7 +227,7 @@
     <Style x:Key="CommonGroupBoxStyle" TargetType="{x:Type GroupBox}">
         <Setter Property="BorderBrush" Value="#FFE0E0E0" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="12,9,12,9" />
+        <Setter Property="Padding" Value="9" />
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>

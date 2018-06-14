@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.PublishDialogStepHeaderContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:PublishDialogStepBase}}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
+    </UserControl.Resources>
+    <DockPanel HorizontalAlignment="Left">
+        <Label DockPanel.Dock="Top"
+               Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
+               Margin="0,0,0,3" />
+        <Button DockPanel.Dock="Right"
+                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
+                Command="{Binding SelectProjectCommand}"
+                Margin="6,0,0,0" />
+        <TextBox Text="{Binding GcpProjectId, Mode=OneWay}"
+                 Width="200"
+                 IsReadOnly="True"
+                 Height="30"
+                 Margin="0" />
+    </DockPanel>
+</UserControl>

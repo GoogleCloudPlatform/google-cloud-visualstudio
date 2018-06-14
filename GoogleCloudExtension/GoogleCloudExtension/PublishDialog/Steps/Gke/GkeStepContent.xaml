@@ -6,169 +6,33 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gke"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
-             xmlns:gwpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
+             xmlns:steps="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:GkeStepViewModel}">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../../Theming/CommonResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
 
     <StackPanel>
-        <DockPanel HorizontalAlignment="Left">
-            <Label
-                DockPanel.Dock="Top"
-                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-                Style="{StaticResource CommonLabelStyle}" />
-            <Button
-                DockPanel.Dock="Right"
-                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
-                Style="{StaticResource CommonButtonDynamicStyle}"
-                Command="{Binding SelectProjectCommand}" />
-            <TextBox
-                Text="{Binding GcpProjectId, Mode=OneWay}"
-                Width="200"
-                Margin="0,0,5,0"
-                IsReadOnly="True"
-                Style="{StaticResource CommonTextBoxStyle}" />
-        </DockPanel>
+        <steps:PublishDialogStepHeaderContent/>
 
         <!-- The message that the project is being validated. -->
-        <StackPanel Margin="0,5,0,0"
-                    Orientation="Horizontal"
-                    Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}">
-            <controls:ProgressIndicator  />
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
-        </StackPanel>
+        <steps:LoadingProjectDataControl
+            Margin="0,5,0,0"
+            Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}" />
 
         <!-- The input controls for the information to deploy to GKE. -->
-        <StackPanel Margin="0,5,0,0" Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
-               Target="{Binding ElementName=_clusters}"
-               Style="{StaticResource CommonLabelStyle}"/>
-
-            <ComboBox x:Name="_clusters"
-                  ItemsSource="{Binding Clusters}"
-                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
-                  DisplayMemberPath="Name"
-                  IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,5"
-                  Style="{StaticResource CommonComboBoxStyle}"/>
-
-            <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
-                <TextBlock Margin="0,0,5,0"
-                           Style="{StaticResource CommonTextStyle}">
-                    <Hyperlink Command="{Binding CreateClusterCommand}"
-                               Style="{StaticResource CommonHyperlinkStyle}">
-                        <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
-                    </Hyperlink>
-                </TextBlock>
-
-                <TextBlock Margin="5,0,0,0"
-                           Style="{StaticResource CommonTextStyle}">
-                    <Hyperlink Command="{Binding RefreshClustersListCommand}"
-                               Style="{StaticResource CommonHyperlinkStyle}">
-                        <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
-
-            <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
-               Target="{Binding ElementName=_deploymentName}"
-               Style="{StaticResource CommonLabelStyle}" />
-            <TextBox x:Name="_deploymentName"
-                 Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                 Margin="0,0,0,15"
-                 Style="{StaticResource CommonTextBoxStyle}" />
-
-            <Grid Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <Label Grid.Row="0"
-                   Grid.Column="0"
-                   Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
-                   Target="{Binding ElementName=_deploymentVersion}"
-                   Style="{StaticResource CommonLabelStyle}" />
-                <TextBox x:Name="_deploymentVersion"
-                     Grid.Row="1"
-                     Grid.Column="0"
-                     Style="{StaticResource CommonTextBoxStyle}">
-                    <TextBox.Text>
-                        <Binding
-                        Path="DeploymentVersion"
-                        UpdateSourceTrigger="PropertyChanged"
-                        ValidatesOnNotifyDataErrors="True"/>
-                    </TextBox.Text>
-                </TextBox>
-
-                <!-- TODO: Use an up/down textbox control. -->
-                <Label Grid.Row="0"
-                   Grid.Column="1"
-                   Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
-                   Target="{Binding ElementName=_replicas}"
-                   Margin="5,0,0,0"
-                   Style="{StaticResource CommonLabelStyle}" />
-                <TextBox x:Name="_replicas"
-                     Grid.Row="1"
-                     Grid.Column="1"
-                     Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Margin="5,0,0,0"
-                     Style="{StaticResource CommonTextBoxStyle}" />
-            </Grid>
-
-            <GroupBox
-                Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}"
-                Style="{StaticResource CommonGroupBoxStyle}">
-                
-                <StackPanel>
-                    <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
-                             IsChecked="{Binding ExposeService}"
-                             Style="{StaticResource CommonTextStyleBase}"
-                             Margin="{StaticResource CommonRadioButtonMargin}" />
-
-                    <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
-                          IsEnabled="{Binding ExposeService}"
-                          IsChecked="{Binding ExposePublicService}"
-                          Style="{StaticResource CommonTextStyleBase}" />
-                    <CheckBox IsChecked="{Binding OpenWebsite}"
-                              Margin="0,5,0,0"
-                              Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                              IsEnabled="{Binding ExposePublicService}"
-                              Style="{StaticResource CommonTextStyleBase}">
-                    </CheckBox>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
+        <local:GkeInputsControl Margin="0,5,0,0"
+                                Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}"/>
 
         <!-- Message shown when the API needs to be enabled. -->
-        <TextBlock Margin="0,5,0,0"
-                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                       Command="{Binding EnableApiCommand}">
-                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
-            </Hyperlink>
-        </TextBlock>
+        <steps:NeedApiEnabledControl Margin="0,5,0,0"
+                                     Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}" />
 
         <!-- Message shwon when there is a general error. -->
-        <TextBlock Margin="0,5,0,0"
-                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}" />
+        <steps:GeneralErrorControl Margin="0,5,0,0"
+                                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}" />
 
     </StackPanel>
 </UserControl>

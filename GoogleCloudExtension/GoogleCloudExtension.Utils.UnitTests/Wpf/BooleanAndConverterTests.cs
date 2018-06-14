@@ -16,6 +16,7 @@ using GoogleCloudExtension.Utils.Wpf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Globalization;
+using System.Windows;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Wpf
 {
@@ -38,7 +39,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         public void TestConvert_ArrayOfBools(object[] values, bool expectedResult)
         {
             object result = _objectUnderTest.Convert(
-                values, typeof(bool), null, CultureInfo.CurrentUICulture);
+                values, typeof(bool), null, CultureInfo.InvariantCulture);
 
             Assert.AreEqual(expectedResult, result);
         }
@@ -51,17 +52,20 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         public void TestConvert_ArrayOfBoolsToString(object[] values, bool expectedResult)
         {
             object result = _objectUnderTest.Convert(
-                values, typeof(string), null, CultureInfo.CurrentUICulture);
+                values, typeof(string), null, CultureInfo.InvariantCulture);
 
-            Assert.AreEqual(expectedResult.ToString(CultureInfo.CurrentUICulture), result);
+            Assert.AreEqual(expectedResult.ToString(CultureInfo.InvariantCulture), result);
         }
 
         [TestMethod]
-        public void TestConvert_UnconvertableValueThrows()
+        public void TestConvert_UnconvertableValueUnsetsValue()
         {
-            Assert.ThrowsException<InvalidCastException>(
-                () => _objectUnderTest.Convert(
-                    new[] { new object() }, typeof(bool), null, CultureInfo.CurrentUICulture));
+            object result = _objectUnderTest.Convert(
+                new[] { new object() },
+                typeof(bool),
+                null,
+                CultureInfo.InvariantCulture);
+            Assert.AreEqual(DependencyProperty.UnsetValue, result);
         }
 
         [TestMethod]
