@@ -28,6 +28,16 @@ namespace GoogleCloudExtensionUnitTests.Utils
     }
 
     [TestClass]
+    public class ProcessUtilsStaticTests : ExtensionTestBase
+    {
+        [TestMethod]
+        public void TestDefault_DelegatesToPackage()
+        {
+            Assert.AreEqual(PackageMock.Object.ProcessService, ProcessUtils.Default);
+        }
+    }
+
+    [TestClass]
     [DeploymentItem(EchoAppName)]
     public class ProcessUtilsTests
     {
