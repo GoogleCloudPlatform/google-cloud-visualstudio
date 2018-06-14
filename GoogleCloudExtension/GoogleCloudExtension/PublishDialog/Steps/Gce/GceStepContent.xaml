@@ -19,23 +19,25 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
+    <StackPanel Margin="12">
         <DockPanel HorizontalAlignment="Left">
             <Label
                 DockPanel.Dock="Top"
                 Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-                Style="{StaticResource CommonLabelStyle}" />
+                Style="{StaticResource CommonLabelStyle}" 
+                Margin="0,0,0,3"/>
             <Button
                 DockPanel.Dock="Right"
                 Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
                 Style="{StaticResource CommonButtonDynamicStyle}"
-                Command="{Binding SelectProjectCommand}" />
+                Command="{Binding SelectProjectCommand}"
+                Margin="6,0,0,0" />
             <TextBox
                 Text="{Binding GcpProjectId, Mode=OneWay}"
                 Width="200"
-                Margin="0,0,5,0"
                 IsReadOnly="True"
-                Style="{StaticResource CommonTextBoxStyle}" />
+                Style="{StaticResource CommonTextBoxStyle}"
+                Margin="0"/>
         </DockPanel>
 
         <!-- The message that the project is being validated. -->
@@ -49,31 +51,44 @@
         <!-- The controls to select the VM. -->
         <StackPanel Margin="0,5,0,0"
                     Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
-                   Target="{Binding ElementName=_instances}"
-                   Style="{StaticResource CommonLabelStyle}"/>
-            <DockPanel Margin="0,0,0,15">
+            <DockPanel>
+                <Label DockPanel.Dock="Top"
+                       Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+                       Target="{Binding ElementName=_instances}"
+                       Style="{StaticResource CommonLabelStyle}"
+                       Margin="0,0,0,3"/>
                 <Button DockPanel.Dock="Right"
                         Command="{Binding RefreshInstancesCommand}"
-                        Style="{StaticResource CommonButtonDynamicStyle}">
-                    <Image Source="{extensions:ImageResource Theming/Resources/refresh.png}" />
+                        Style="{StaticResource CommonButtonDynamicStyle}"
+                        Margin="6,0,0,0">
+                    <Image Source="{extensions:ImageResource /Theming/Resources/refresh.png}" />
                 </Button>
                 <ComboBox x:Name="_instances"
-                      ItemsSource="{Binding Instances}"
-                      DisplayMemberPath="Name"
-                      IsSynchronizedWithCurrentItem="True"
-                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
-                          Margin="0,0,5,0"/>
+                          ItemsSource="{Binding Instances}"
+                          DisplayMemberPath="Name"
+                          IsSynchronizedWithCurrentItem="True"
+                          SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
+                          Margin="0"/>
             </DockPanel>
 
+            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSiteNameMessage}"
+                   Target="{Binding ElementName=_siteName}"
+                   Style="{StaticResource CommonLabelStyle}"
+                   Margin="0,5,0,0"/>
+            <TextBox x:Name="_siteName"
+                     Text="{Binding SiteName}"
+                     Style="{StaticResource CommonTextBoxStyle}"
+                     Margin="0,3,0,0"/>
             <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
                    Target="{Binding ElementName=_credentials}"
-                   Style="{StaticResource CommonLabelStyle}"/>
+                   Style="{StaticResource CommonLabelStyle}"
+                   Margin="0,5,0,0"/>
             <ComboBox x:Name="_credentials"
                       ItemsSource="{Binding Credentials}"
                       IsSynchronizedWithCurrentItem="True"
                       DisplayMemberPath="User"
-                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
+                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" 
+                      Margin="0,3,0,0"/>
 
             <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
                 <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
@@ -81,12 +96,12 @@
                 </Hyperlink>
             </TextBlock>
 
-            <CheckBox Margin="0,8,0,0"
+            <CheckBox Margin="0,9,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}"/>
 
-            <CheckBox Margin="0,8,0,0"
+            <CheckBox Margin="0,9,0,0"
                   Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
                   IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}" />

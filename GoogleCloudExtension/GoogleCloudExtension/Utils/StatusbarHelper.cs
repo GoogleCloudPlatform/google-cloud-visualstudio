@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
@@ -23,8 +22,8 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class StatusbarHelper
     {
-        private readonly static Lazy<IVsStatusbar> s_statusbar = new Lazy<IVsStatusbar>(
-            () => Package.GetGlobalService(typeof(SVsStatusbar)) as IVsStatusbar);
+        internal static Lazy<IVsStatusbar> s_statusbar = new Lazy<IVsStatusbar>(
+            GoogleCloudExtensionPackage.Instance.GetService<SVsStatusbar, IVsStatusbar>);
 
         private static IVsStatusbar Statusbar => s_statusbar.Value;
 
@@ -36,18 +35,48 @@ namespace GoogleCloudExtension.Utils
         {
             try
             {
-                int frozen;
-                Statusbar.IsFrozen(out frozen);
-                if (frozen != 0)
+                Statusbar.IsFrozen(out int frozen);
+                if (!Convert.ToBoolean(frozen))
                 {
-                    return;
+                    Statusbar.SetText(text);
                 }
-                Statusbar.SetText(text);
             }
             catch (Exception ex)
             {
                 ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
+        public static IDisposable FreezeText(string text)
+        {
+            try
+            {
+                Statusbar.IsFrozen(out int frozen);
+                if (!Convert.ToBoolean(frozen))
+                {
+                    Statusbar.GetText(out string existingText);
+                    Statusbar.SetText(text);
+                    Statusbar.FreezeOutput(Convert.ToInt32(true));
+
+                    void UnfreezeText()
+                    {
+                        Statusbar.FreezeOutput(Convert.ToInt32(false));
+                        Statusbar.SetText(existingText);
+                    }
+
+                    return new Disposable(UnfreezeText);
+                }
+            }
+            catch (Exception ex)
+            {
+                ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
+            }
+
+            return new Disposable();
         }
 
         /// <summary>

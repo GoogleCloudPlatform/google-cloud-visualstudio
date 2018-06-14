@@ -58,7 +58,6 @@
     <Compile Include="Models\CloudSdkVersions.cs" />
     <Compile Include="Models\GkeDeployment.cs" />
     <Compile Include="KubectlContext.cs" />
-    <Compile Include="KubectlWrapper.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />
     <Compile Include="Models\CloudSdkComponentState.cs" />
     <Compile Include="GCloudException.cs" />

@@ -184,6 +184,15 @@
       <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="Deployment\IWindowsVmDeployment.cs" />
+    <Compile Include="Deployment\MSBuildProperty.cs" />
+    <Compile Include="Deployment\MSBuildTarget.cs" />
+    <Compile Include="GCloud\KubectlWrapper.cs" />
+    <Compile Include="Git\CsrGitUtils.cs" />
+    <Compile Include="Git\GitCommandException.cs" />
+    <Compile Include="Git\GitCommit.cs" />
+    <Compile Include="Git\GitRepository.cs" />
+    <Compile Include="Git\VSGitData.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
     <Compile Include="Deployment\GkeDeployment.cs" />
@@ -240,6 +249,7 @@
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
+    <Compile Include="Utils\IProcessService.cs" />
     <Compile Include="Utils\IProtectedCommand.cs" />
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />
@@ -391,6 +401,7 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="Utils\ProcessUtils.cs" />
     <Compile Include="Utils\ProtectedAsyncCommand.cs" />
     <Compile Include="Utils\ProtectedCommandBase.cs" />
     <Compile Include="Utils\StringUtils.cs" />
@@ -1152,10 +1163,6 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
-      <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
-      <Name>GoogleCloudExtension.GitUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
       <Project>{856B9F2E-441F-405A-9D5C-AF5DC5653902}</Project>

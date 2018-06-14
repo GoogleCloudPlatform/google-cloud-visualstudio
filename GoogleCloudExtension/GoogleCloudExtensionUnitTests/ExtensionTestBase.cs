@@ -15,22 +15,28 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests
 {
     public abstract class ExtensionTestBase
     {
+        private Lazy<IToolsPathProvider> _oldToolsPathLazy;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         protected Mock<Func<UserPromptWindow.Options, bool>> PromptUserMock { get; private set; }
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
         protected static Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
+
+        protected Mock<IToolsPathProvider> ToolsPathProviderMock { get; private set; }
 
         [TestInitialize]
         public void IntializeGlobalsForTest()
@@ -48,6 +54,11 @@ namespace GoogleCloudExtensionUnitTests
 
             DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>());
             EventsReporterWrapper.DisableReporting();
+
+            ToolsPathProviderMock = new Mock<IToolsPathProvider>();
+            _oldToolsPathLazy = VsVersionUtils.s_toolsPathProvider;
+            VsVersionUtils.s_toolsPathProvider = ToolsPathProviderMock.ToLazy();
+
             BeforeEach();
         }
 
@@ -57,6 +68,7 @@ namespace GoogleCloudExtensionUnitTests
         public void CleanupGlobalsForTest()
         {
             AfterEach();
+            VsVersionUtils.s_toolsPathProvider = _oldToolsPathLazy;
             UserPromptUtils.PromptUserOverride = null;
             GoogleCloudExtensionPackage.Instance = null;
         }
