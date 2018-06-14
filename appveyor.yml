@@ -17,6 +17,11 @@ install:
   - choco install opencover.portable
   - choco install codecov
 
+init:
+  # This change was recommended by the AppVeyor team to save space.
+  - rmdir C:\cygwin /s /q
+  - rmdir C:\QT /s /q
+
 before_build:
   - bash -c ./tools/ensure_strings_extracted.sh
   - bash -c ./tools/ensure_no_unused_strings.sh
