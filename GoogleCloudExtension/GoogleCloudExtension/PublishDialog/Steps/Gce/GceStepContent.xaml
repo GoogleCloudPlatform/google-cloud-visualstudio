@@ -14,7 +14,7 @@
     </UserControl.Resources>
 
     <StackPanel Margin="12">
-        <steps:PublishDialogStepHeaderContent/>
+        <steps:PublishDialogStepHeaderControl/>
         <ContentControl Margin="0,5,0,0"
                         Visibility="{Binding GcpProjectId, Converter={utils:NullEmptyInvisibleConverter}}">
             <ContentControl.Resources>
