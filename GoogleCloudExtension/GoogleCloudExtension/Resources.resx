@@ -2500,4 +2500,8 @@ Delete corrupted file?</value>
     <value>_Site Name:</value>
     <comment>The label for the site name text box on the Publish Google Compute Engine dialog.</comment>
   </data>
+  <data name="PublishDialogStepHeaderConfigurationLabel" xml:space="preserve">
+    <value>Configuration:</value>
+    <comment>The label of the configuration ComboBox in the publish dialog step header control.</comment>
+  </data>
 </root>

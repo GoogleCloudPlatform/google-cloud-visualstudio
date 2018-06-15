@@ -15,7 +15,7 @@
         <!-- Build Configuration input -->
         <DockPanel DockPanel.Dock="Left" Margin="0,0,12,0">
             <Label DockPanel.Dock="Top"
-                   Content="Configuration:"
+                   Content="{x:Static ext:Resources.PublishDialogStepHeaderConfigurationLabel}"
                    Target="{Binding ElementName=_configurationBox}"
                    Margin="0,0,0,3"/>
             <ComboBox x:Name="_configurationBox"
