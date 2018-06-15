@@ -257,7 +257,7 @@ namespace GoogleCloudExtension.GCloud
 
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>(file: "cmd.exe", args: $"/c {actualCommand}", environment: environment);
+                return await ProcessUtils.Default.GetJsonOutputAsync<T>(file: "cmd.exe", args: $"/c {actualCommand}", environment: environment);
             }
             catch (JsonOutputException ex)
             {
@@ -276,7 +276,7 @@ namespace GoogleCloudExtension.GCloud
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
-            return ProcessUtils.RunCommandAsync(
+            return ProcessUtils.Default.RunCommandAsync(
                 file: "cmd.exe",
                 args: $"/c {actualCommand}",
                 handler: (o, e) => outputAction?.Invoke(e.Line),

@@ -305,6 +305,17 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(toolWindow, existingWindow);
         }
 
+        [TestMethod]
+        public void TestProcessService_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IProcessService>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ProcessService);
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);

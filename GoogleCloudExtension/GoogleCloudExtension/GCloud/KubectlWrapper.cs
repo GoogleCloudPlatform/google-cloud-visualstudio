@@ -171,7 +171,7 @@ namespace GoogleCloudExtension.GCloud
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
             Dictionary<string, string> environment = GetEnvironmentForContext(context);
 
-            return ProcessUtils.RunCommandAsync(
+            return ProcessUtils.Default.RunCommandAsync(
                 "kubectl",
                 actualCommand,
                 (o, e) => outputAction(e.Line),
@@ -185,7 +185,7 @@ namespace GoogleCloudExtension.GCloud
             {
                 Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
                 var environment = GetEnvironmentForContext(context);
-                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand, environment: environment);
+                return await ProcessUtils.Default.GetJsonOutputAsync<T>("kubectl", actualCommand, environment: environment);
             }
             catch (JsonOutputException ex)
             {

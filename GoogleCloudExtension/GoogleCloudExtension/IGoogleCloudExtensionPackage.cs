@@ -45,8 +45,20 @@ namespace GoogleCloudExtension
         /// </summary>
         string VersionedApplicationName { get; }
 
+        /// <summary>
+        /// The default <see cref="IShellUtils"/> service.
+        /// </summary>
         IShellUtils ShellUtils { get; }
+
+        /// <summary>
+        /// The default <see cref="IGcpOutputWindow"/> service.
+        /// </summary>
         IGcpOutputWindow GcpOutputWindow { get; }
+
+        /// <summary>
+        /// The default <see cref="IProcessService"/>.
+        /// </summary>
+        IProcessService ProcessService { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
