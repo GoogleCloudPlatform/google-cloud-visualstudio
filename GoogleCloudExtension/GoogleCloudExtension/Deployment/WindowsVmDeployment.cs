@@ -15,10 +15,11 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using System;
-using System.Diagnostics;
-using System.IO;
+using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
@@ -26,130 +27,74 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class offers services to perform deployments for ASP.NET 4.x applications to a GCE VM.
     /// </summary>
-    public static class WindowsVmDeployment
+    [Export(typeof(IWindowsVmDeployment))]
+    public class WindowsVmDeployment : IWindowsVmDeployment
     {
+        private readonly Lazy<IProcessService> _processService;
+        private readonly Lazy<IShellUtils> _shellUtils;
+        private readonly Lazy<IStatusbarService> _statusbarService;
+        private readonly Lazy<IGcpOutputWindow> _gcpOutputWindow;
+
+        private IProcessService ProcessService => _processService.Value;
+
+        private IStatusbarService StatusbarHelper => _statusbarService.Value;
+
+        private IShellUtils ShellUtils => _shellUtils.Value;
+        private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
+
+        [ImportingConstructor]
+        public WindowsVmDeployment(
+            Lazy<IProcessService> processService,
+            Lazy<IShellUtils> shellUtils,
+            Lazy<IStatusbarService> statusbarService,
+            Lazy<IGcpOutputWindow> gcpOutputWindow)
+        {
+            _processService = processService;
+            _shellUtils = shellUtils;
+            _statusbarService = statusbarService;
+            _gcpOutputWindow = gcpOutputWindow;
+        }
+
         /// <summary>
         /// Publishes an ASP.NET 4.x project to the given GCE <seealso cref="Instance"/>.
         /// </summary>
         /// <param name="project">The project to deploy.</param>
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
-        /// <param name="progress">The progress indicator.</param>
-        /// <param name="toolsPathProvider">Povides the path to the publishing tools.</param>
-        /// <param name="outputAction">The action to call with lines of output.</param>
-        public static async Task<bool> PublishProjectAsync(
-            IParsedProject project,
+        /// <param name="targetDeployPath">The Name or Path of the Website or App to publish</param>
+        public async Task<bool> PublishProjectAsync(
+            IParsedDteProject project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
-            IProgress<double> progress,
-            IToolsPathProvider toolsPathProvider,
-            Action<string> outputAction)
+            string targetDeployPath)
         {
-            var stagingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(stagingDirectory);
-            progress.Report(0.1);
+            // Ensure NuGet packages are restored.
+            project.Project.DTE.Solution.SolutionBuild.BuildProject("Release", project.Project.UniqueName, true);
 
-            var publishSettingsPath = Path.GetTempFileName();
-            var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
-            File.WriteAllText(publishSettingsPath, publishSettingsContent);
-
-            using (var cleanup = new Disposable(() => Cleanup(publishSettingsPath, stagingDirectory)))
+            string msbuildPath = VsVersionUtils.ToolsPathProvider.GetMsbuildPath();
+            var parameters = new object[]
             {
-                // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
-                if (!await ProgressHelper.UpdateProgress(
-                        CreateAppBundleAsync(project, stagingDirectory, toolsPathProvider, outputAction),
-                        progress,
-                        from: 0.1, to: 0.5))
-                {
-                    return false;
-                }
-                progress.Report(0.6);
-
-                // Update for the deploy operation to finish and update the progress as it goes.
-                if (!await ProgressHelper.UpdateProgress(
-                        DeployAppAsync(stagingDirectory, publishSettingsPath, toolsPathProvider, outputAction),
-                        progress,
-                        from: 0.6, to: 0.9))
-                {
-                    return false;
-                }
-                progress.Report(1);
-            }
-
-            return true;
-        }
-
-        private static void Cleanup(string publishSettings, string stagingDirectory)
-        {
-            try
+                '"' + project.FullPath + '"',
+                new MSBuildTarget("WebPublish"),
+                new MSBuildProperty("Configuration", "Release"),
+                new MSBuildProperty("WebPublishMethod", "MSDeploy"),
+                new MSBuildProperty("MSDeployPublishMethod", "WMSVC"),
+                new MSBuildProperty("MSDeployServiceURL",targetInstance.GetPublishUrl()),
+                new MSBuildProperty("DeployIisAppPath", targetDeployPath),
+                new MSBuildProperty("UserName", credentials.User),
+                new MSBuildProperty("Password", credentials.Password),
+                new MSBuildProperty("AllowUntrustedCertificate", "True")
+            };
+            string publishMessage = string.Format(Resources.GcePublishProgressMessage, targetInstance.Name);
+            using (StatusbarHelper.FreezeText(publishMessage))
+            using (StatusbarHelper.ShowDeployAnimation())
+            using (ShellUtils.SetShellUIBusy())
             {
-                if (File.Exists(publishSettings))
-                {
-                    File.Delete(publishSettings);
-                }
-
-                if (Directory.Exists(stagingDirectory))
-                {
-                    Directory.Delete(stagingDirectory, recursive: true);
-                }
+                return await ProcessService.RunCommandAsync(
+                    msbuildPath,
+                    string.Join(" ", parameters),
+                    GcpOutputWindow.OutputLine);
             }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// This method publishes the app to the VM using the <paramref name="publishSettingsPath"/> to find the publish
-        /// settings to use to do so.
-        /// </summary>
-        private static Task<bool> DeployAppAsync(
-            string stageDirectory,
-            string publishSettingsPath,
-            IToolsPathProvider toolsPathProvider,
-            Action<string> outputAction)
-        {
-            var arguments = "-verb:sync " +
-                $@"-source:contentPath=""{stageDirectory}"" " +
-                $@"-dest:contentPath=""Default Web Site"",publishSettings=""{publishSettingsPath}"" " +
-                "-allowUntrusted";
-
-            outputAction($"msdeploy.exe {arguments}");
-            return ProcessUtils.Default.RunCommandAsync(toolsPathProvider.GetMsdeployPath(), arguments, (o, e) => outputAction(e.Line));
-        }
-
-        /// <summary>
-        /// This method stages the application into the <paramref name="stageDirectory"/> by invoking the WebPublish target
-        /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
-        /// </summary>
-        private static async Task<bool> CreateAppBundleAsync(
-            IParsedProject project,
-            string stageDirectory,
-            IToolsPathProvider toolsPathProvider,
-            Action<string> outputAction)
-        {
-            var arguments = $@"""{project.FullPath}""" + " " +
-                "/p:Configuration=Release " +
-                "/p:Platform=AnyCPU " +
-                "/t:WebPublish " +
-                "/p:WebPublishMethod=FileSystem " +
-                "/p:DeleteExistingFiles=True " +
-                $@"/p:publishUrl=""{stageDirectory}""";
-
-            outputAction($"msbuild.exe {arguments}");
-            bool result = await ProcessUtils.Default.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
-
-            // We perform this check here because it is not required to have gcloud installed in order to deploy
-            // ASP.NET 4.x apps to GCE VMs. Therefore nothing would have checked for the presence of gcloud before
-            // getting here.
-            var gcloudValidation = await GCloudWrapper.ValidateGCloudAsync();
-            Debug.WriteLineIf(!gcloudValidation.IsValid, "Skipping creating context, gcloud is not installed.");
-            if (gcloudValidation.IsValid)
-            {
-                await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
-            }
-
-            return result;
         }
     }
 }
