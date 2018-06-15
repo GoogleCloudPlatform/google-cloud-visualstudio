@@ -24,6 +24,16 @@ using TestingHelpers;
 namespace GoogleCloudExtensionUnitTests.Utils
 {
     [TestClass]
+    public class StatusbarHelperStaticTests : ExtensionTestBase
+    {
+        [TestMethod]
+        public void TestDefault_DelegatesToPackage()
+        {
+            Assert.AreEqual(PackageMock.Object.StatusbarHelper, StatusbarHelper.Default);
+        }
+    }
+
+    [TestClass]
     public class StatusbarHelperTests
     {
         private const string StatusbarMessage = "Message On Statusbar";
