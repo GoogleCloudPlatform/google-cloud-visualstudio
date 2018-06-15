@@ -4553,6 +4553,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Site Name:.
+        /// </summary>
+        public static string PublishDialogGceStepSiteNameMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepSiteNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Cloud Project ID:.
         /// </summary>
         public static string PublishDialogGcpProjectIdLabel {

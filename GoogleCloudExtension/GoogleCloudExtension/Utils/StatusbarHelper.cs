@@ -15,34 +15,47 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.ComponentModel.Composition;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     /// This class contains helpers to manage the status bar for the Visual Studio shell.
     /// </summary>
-    public static class StatusbarHelper
+    [Export(typeof(IStatusbarService))]
+    public class StatusbarHelper : IStatusbarService
     {
-        private readonly static Lazy<IVsStatusbar> s_statusbar = new Lazy<IVsStatusbar>(
-            () => Package.GetGlobalService(typeof(SVsStatusbar)) as IVsStatusbar);
+        private readonly Lazy<IVsStatusbar> _statusbar;
 
-        private static IVsStatusbar Statusbar => s_statusbar.Value;
+        private IVsStatusbar Statusbar => _statusbar.Value;
+
+        public static IStatusbarService Default => GoogleCloudExtensionPackage.Instance.StatusbarHelper;
+
+        [ImportingConstructor]
+        public StatusbarHelper(Lazy<SVsServiceProvider> serviceProvider)
+        {
+            _statusbar = new Lazy<IVsStatusbar>(
+                () =>
+                {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+                    return (IVsStatusbar)serviceProvider.Value.GetService(typeof(SVsStatusbar));
+                });
+        }
 
         /// <summary>
         /// Change the text in the status bar. If the status bar is frozen no change is made.
         /// </summary>
         /// <param name="text">The text to display.</param>
-        public static void SetText(string text)
+        public void SetText(string text)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                int frozen;
-                Statusbar.IsFrozen(out frozen);
-                if (frozen != 0)
+                Statusbar.IsFrozen(out int frozen);
+                if (!Convert.ToBoolean(frozen))
                 {
-                    return;
+                    Statusbar.SetText(text);
                 }
-                Statusbar.SetText(text);
             }
             catch (Exception ex)
             {
@@ -51,13 +64,47 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
+        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
+        public IDisposable FreezeText(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            try
+            {
+                Statusbar.IsFrozen(out int frozen);
+                if (!Convert.ToBoolean(frozen))
+                {
+                    Statusbar.GetText(out string existingText);
+                    Statusbar.SetText(text);
+                    Statusbar.FreezeOutput(Convert.ToInt32(true));
+
+                    void UnfreezeText()
+                    {
+                        Statusbar.FreezeOutput(Convert.ToInt32(false));
+                        Statusbar.SetText(existingText);
+                    }
+
+                    return new Disposable(UnfreezeText);
+                }
+            }
+            catch (Exception ex)
+            {
+                ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
+            }
+
+            return new Disposable();
+        }
+
+        /// <summary>
         /// Shows an animation to show that a deploy action is being executed. This animation will only show
-        /// if VS is showing all of the visual effects. The result of the method should stored in a variable in a 
+        /// if VS is showing all of the visual effects. The result of the method should stored in a variable in a
         /// using statement.
         /// </summary>
         /// <returns>An implementation of <seealso cref="IDisposable"/> that will stop the animation on dispose.</returns>
-        public static IDisposable ShowDeployAnimation()
+        public IDisposable ShowDeployAnimation()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 object animation = (short)Constants.SBAI_Deploy;
@@ -79,13 +126,14 @@ namespace GoogleCloudExtension.Utils
         /// An instance of <seealso cref="ProgressBarHelper"/> which can be used to both update the progress bar
         /// and perform cleanup.
         /// </returns>
-        public static ProgressBarHelper ShowProgressBar(string label)
+        public ProgressBarHelper ShowProgressBar(string label)
         {
             return new ProgressBarHelper(Statusbar, label);
         }
 
-        private static void HideDeployAnimation()
+        private void HideDeployAnimation()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 object animation = (short)Constants.SBAI_Deploy;
@@ -101,8 +149,9 @@ namespace GoogleCloudExtension.Utils
         /// Freezes the status bar, which prevents updates from other parts of the VS shell.
         /// </summary>
         /// <returns>An implementation of <seealso cref="IDisposable"/> that will unfreeze the status bar on dispose.</returns>
-        public static IDisposable Freeze()
+        public IDisposable Freeze()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 Statusbar.FreezeOutput(1);
@@ -115,8 +164,9 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        private static void UnFreeze()
+        private void UnFreeze()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 Statusbar.FreezeOutput(0);

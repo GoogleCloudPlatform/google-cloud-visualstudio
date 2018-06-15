@@ -40,5 +40,12 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="str">The line of text to output.</param>
         void OutputLine(string str);
+
+        /// <summary>
+        /// Outputs the line from the given OutputEventArg to the GCP output window pane.
+        /// </summary>
+        /// <param name="sender">The sender this event comes from.</param>
+        /// <param name="args">The <see cref="OutputHandlerEventArgs"/> for the event.</param>
+        void OutputLine(object sender, OutputHandlerEventArgs args);
     }
 }

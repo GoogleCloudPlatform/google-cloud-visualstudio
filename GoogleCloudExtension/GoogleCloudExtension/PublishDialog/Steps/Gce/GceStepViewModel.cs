@@ -230,8 +230,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
                 if (result)
                 {
-                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
-                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+                    GcpOutputWindow.Default.OutputLine(
+                        string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
+                    StatusbarHelper.Default.SetText(Resources.PublishSuccessStatusMessage);
 
                     string url = selectedInstance.GetDestinationAppUri();
                     GcpOutputWindow.Default.OutputLine(string.Format(Resources.PublishUrlMessage, url));
@@ -250,7 +251,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 else
                 {
                     GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                    StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
                 }
@@ -258,9 +259,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                 PublishDialog?.FinishFlow();
+                StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
 
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }

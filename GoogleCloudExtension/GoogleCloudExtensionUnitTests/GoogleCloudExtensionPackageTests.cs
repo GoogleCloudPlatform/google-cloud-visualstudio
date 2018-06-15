@@ -23,11 +23,13 @@ using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
@@ -52,6 +54,14 @@ namespace GoogleCloudExtensionUnitTests
         [TestInitialize]
         public void BeforeEach()
         {
+            // Initalize the export provider to get types exported in GoogleCloudExtension.dll.
+            DelegatingServiceProvider.Delegate = _objectUnderTest;
+            var container = new CompositionContainer(
+                new AggregateCatalog(
+                    new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
+                    new TypeCatalog(typeof(DelegatingServiceProvider))));
+            ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
+
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
             _objectUnderTest = new GoogleCloudExtensionPackage();
@@ -269,6 +279,7 @@ namespace GoogleCloudExtensionUnitTests
             Guid clsid = Guid.Empty;
             Guid activate = Guid.Empty;
             Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            // ReSharper disable once RedundantAssignment
             IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
             uiShellMock.Setup(
                 shell => shell.CreateToolWindow(
@@ -290,6 +301,7 @@ namespace GoogleCloudExtensionUnitTests
             Guid clsid = Guid.Empty;
             Guid activate = Guid.Empty;
             Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            // ReSharper disable once RedundantAssignment
             IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
             uiShellMock.Setup(
                 shell => shell.CreateToolWindow(
@@ -316,6 +328,17 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ProcessService);
         }
 
+        [TestMethod]
+        public void TestStatusbarHelper_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IStatusbarService>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.StatusbarHelper);
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
@@ -340,7 +363,23 @@ namespace GoogleCloudExtensionUnitTests
             /// <param name="atomicComposition">The transactional container for the composition.</param>
             protected override IEnumerable<Export> GetExportsCore(
                 ImportDefinition definition,
-                AtomicComposition atomicComposition) => new[] { new Export(nameof(T), () => MockedValue) };
+                AtomicComposition atomicComposition) => new[]
+            {
+                new Export(
+                    definition.ContractName,
+                    () => definition.ContractName == typeof(T).FullName ? MockedValue : null)
+            };
+        }
+
+        [Export(typeof(SVsServiceProvider))]
+        public class DelegatingServiceProvider : SVsServiceProvider
+        {
+            public static System.IServiceProvider Delegate { get; set; }
+
+            /// <summary>Gets the service object of the specified type.</summary>
+            /// <returns>A service object of type <paramref name="serviceType" />.-or- null if there is no service object of type <paramref name="serviceType" />.</returns>
+            /// <param name="serviceType">An object that specifies the type of service object to get. </param>
+            public object GetService(Type serviceType) => Delegate.GetService(serviceType);
         }
     }
 }
