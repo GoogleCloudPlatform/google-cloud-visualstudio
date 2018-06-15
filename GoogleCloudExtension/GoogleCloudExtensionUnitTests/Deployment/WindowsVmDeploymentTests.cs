@@ -322,7 +322,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 new Instance { Name = expectedName },
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _statusbarServiceMock.Verify(
                 sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)));
@@ -337,7 +338,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 new Instance { Name = expectedName },
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _statusbarServiceMock.Verify(
                 sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)).Dispose());
@@ -353,7 +355,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation());
         }
@@ -365,7 +368,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation().Dispose());
         }
@@ -380,7 +384,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _shellUtilsMock.Verify(s => s.SetShellUIBusy());
         }
@@ -392,7 +397,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfiguration);
 
             _shellUtilsMock.Verify(s => s.SetShellUIBusy().Dispose());
         }
