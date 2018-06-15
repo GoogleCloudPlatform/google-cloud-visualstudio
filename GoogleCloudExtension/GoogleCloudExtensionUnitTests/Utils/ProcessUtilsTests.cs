@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Utils.UnitTests
+namespace GoogleCloudExtensionUnitTests.Utils
 {
     [SuppressMessage("ReSharper", "UnassignedField.Global")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
@@ -27,9 +28,20 @@ namespace GoogleCloudExtension.Utils.UnitTests
     }
 
     [TestClass]
+    public class ProcessUtilsStaticTests : ExtensionTestBase
+    {
+        [TestMethod]
+        public void TestDefault_DelegatesToPackage()
+        {
+            Assert.AreEqual(PackageMock.Object.ProcessService, ProcessUtils.Default);
+        }
+    }
+
+    [TestClass]
     [DeploymentItem(EchoAppName)]
     public class ProcessUtilsTests
     {
+        private ProcessUtils _objectUnderTest;
         private const string ProcessOutput = "ProcessOutput";
         private const string StdOutArgs = "-out " + ProcessOutput;
         private const string StdErrArgs = "-err " + ProcessOutput;
@@ -37,17 +49,23 @@ namespace GoogleCloudExtension.Utils.UnitTests
         private const string JsonArgs = "-out \"{\"" + nameof(JsonDataClass.Var) + "\":'" + ProcessOutput + "'}\"";
         private const string EchoAppName = "EchoApp.exe";
 
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _objectUnderTest = new ProcessUtils();
+        }
+
         [TestMethod]
         [ExpectedException(typeof(Win32Exception))]
         public async Task GetCommandOutputAsync_TargetInvalid()
         {
-            await ProcessUtils.GetCommandOutputAsync("BadCommand.exe", StdOutArgs);
+            await _objectUnderTest.GetCommandOutputAsync("BadCommand.exe", StdOutArgs);
         }
 
         [TestMethod]
         public async Task GetCommandOutputAsync_StandardOutput()
         {
-            ProcessOutput output = await ProcessUtils.GetCommandOutputAsync(EchoAppName, StdOutArgs);
+            ProcessOutput output = await _objectUnderTest.GetCommandOutputAsync(EchoAppName, StdOutArgs);
 
             Assert.IsTrue(output.Succeeded);
             Assert.AreEqual(ProcessOutput, output.StandardOutput);
@@ -57,7 +75,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public async Task GetCommandOutputAsync_StdErr()
         {
-            ProcessOutput output = await ProcessUtils.GetCommandOutputAsync(EchoAppName, StdErrArgs);
+            ProcessOutput output = await _objectUnderTest.GetCommandOutputAsync(EchoAppName, StdErrArgs);
 
             Assert.IsTrue(output.Succeeded);
             Assert.AreEqual(string.Empty, output.StandardOutput);
@@ -67,7 +85,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public async Task GetCommandOutputAsync_Exp()
         {
-            ProcessOutput output = await ProcessUtils.GetCommandOutputAsync(EchoAppName, ExpArgs);
+            ProcessOutput output = await _objectUnderTest.GetCommandOutputAsync(EchoAppName, ExpArgs);
 
             Assert.IsFalse(output.Succeeded);
             Assert.AreEqual(ProcessOutput, output.StandardOutput);
@@ -78,27 +96,27 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [ExpectedException(typeof(Win32Exception))]
         public async Task GetJsonOutputAsync_InvalidTarget()
         {
-            await ProcessUtils.GetJsonOutputAsync<string>("BadTarget.exe", StdOutArgs);
+            await _objectUnderTest.GetJsonOutputAsync<string>("BadTarget.exe", StdOutArgs);
         }
 
         [TestMethod]
         [ExpectedException(typeof(JsonOutputException))]
         public async Task GetJsonOutputAsync_ProcessError()
         {
-            await ProcessUtils.GetJsonOutputAsync<string>(EchoAppName, ExpArgs);
+            await _objectUnderTest.GetJsonOutputAsync<string>(EchoAppName, ExpArgs);
         }
 
         [TestMethod]
         [ExpectedException(typeof(JsonOutputException))]
         public async Task GetJsonOutputAsync_InvalidJson()
         {
-            await ProcessUtils.GetJsonOutputAsync<string>(EchoAppName, StdOutArgs);
+            await _objectUnderTest.GetJsonOutputAsync<string>(EchoAppName, StdOutArgs);
         }
 
         [TestMethod]
         public async Task GetJsonOutputAsync_Success()
         {
-            JsonDataClass output = await ProcessUtils.GetJsonOutputAsync<JsonDataClass>(EchoAppName, JsonArgs);
+            JsonDataClass output = await _objectUnderTest.GetJsonOutputAsync<JsonDataClass>(EchoAppName, JsonArgs);
 
             Assert.IsNotNull(output);
             Assert.IsNotNull(output.Var);

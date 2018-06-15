@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.Deployment
                 "-allowUntrusted";
 
             outputAction($"msdeploy.exe {arguments}");
-            return ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsdeployPath(), arguments, (o, e) => outputAction(e.Line));
+            return ProcessUtils.Default.RunCommandAsync(toolsPathProvider.GetMsdeployPath(), arguments, (o, e) => outputAction(e.Line));
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.Deployment
                 $@"/p:publishUrl=""{stageDirectory}""";
 
             outputAction($"msbuild.exe {arguments}");
-            bool result = await ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
+            bool result = await ProcessUtils.Default.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
 
             // We perform this check here because it is not required to have gcloud installed in order to deploy
             // ASP.NET 4.x apps to GCE VMs. Therefore nothing would have checked for the presence of gcloud before

@@ -100,6 +100,7 @@ namespace GoogleCloudExtension
         private DTE _dteInstance;
         private Lazy<IShellUtils> _shellUtilsLazy;
         private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
+        private Lazy<IProcessService> _processService;
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -136,6 +137,11 @@ namespace GoogleCloudExtension
         /// The default <see cref="IGcpOutputWindow"/> service.
         /// </summary>
         public IGcpOutputWindow GcpOutputWindow => _gcpOutputWindowLazy.Value;
+
+        /// <summary>
+        /// The default <see cref="IProcessService"/>
+        /// </summary>
+        public IProcessService ProcessService => _processService.Value;
 
         /// <summary>
         /// The initalized instance of the package.
@@ -278,6 +284,7 @@ namespace GoogleCloudExtension
             ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
             _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
             _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
+            _processService = mefExportProvider.GetExport<IProcessService>();
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

@@ -294,6 +294,7 @@
     <Compile Include="Utils\DataSourceFactoryTests.cs" />
     <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
     <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
+    <Compile Include="Utils\ProcessUtilsTests.cs" />
     <Compile Include="Utils\ProtectedAsyncCommandTests.cs" />
     <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
     <Compile Include="Utils\ProtectedCommandTests.cs" />
@@ -354,6 +355,10 @@
     <ProjectReference Include="..\TestingHelpers\TestingHelpers.csproj">
       <Project>{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}</Project>
       <Name>TestingHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestProjects\EchoApp\EchoApp.csproj">
+      <Project>{108901a6-861d-4021-a2c9-ce93554a26f5}</Project>
+      <Name>EchoApp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

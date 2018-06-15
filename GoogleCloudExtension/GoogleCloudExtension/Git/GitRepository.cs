@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.Git
                 return null;
             }
             List<string> output = new List<string>();
-            bool commandResult = await ProcessUtils.RunCommandAsync(
+            bool commandResult = await ProcessUtils.Default.RunCommandAsync(
                 file: GitPath,
                 args: command,
                 handler: (o, e) => output.Add(e.Line),

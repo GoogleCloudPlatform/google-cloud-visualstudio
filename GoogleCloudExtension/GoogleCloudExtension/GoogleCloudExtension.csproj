@@ -184,6 +184,7 @@
       <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="GCloud\KubectlWrapper.cs" />
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
+    <Compile Include="Utils\IProcessService.cs" />
     <Compile Include="Utils\IProtectedCommand.cs" />
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />
@@ -396,6 +398,7 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="Utils\ProcessUtils.cs" />
     <Compile Include="Utils\ProtectedAsyncCommand.cs" />
     <Compile Include="Utils\ProtectedCommandBase.cs" />
     <Compile Include="Utils\StringUtils.cs" />
