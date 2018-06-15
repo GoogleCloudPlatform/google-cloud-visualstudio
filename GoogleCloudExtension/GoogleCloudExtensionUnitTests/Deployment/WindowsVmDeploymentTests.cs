@@ -29,7 +29,7 @@ using TestingHelpers;
 namespace GoogleCloudExtensionUnitTests.Deployment
 {
     [TestClass]
-    public class WindowsVmDeploymentTests
+    public class WindowsVmDeploymentTests : ExtensionTestBase
     {
         private const string DefaultUser = "DefaultUser";
         private const string DefaultPassword = "DefaultPassword";
