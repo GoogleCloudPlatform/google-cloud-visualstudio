@@ -214,8 +214,8 @@
     <Compile Include="PublishDialog\Steps\NeedApiEnabledControl.xaml.cs">
       <DependentUpon>NeedApiEnabledControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PublishDialog\Steps\PublishDialogStepHeaderContent.xaml.cs">
-      <DependentUpon>PublishDialogStepHeaderContent.xaml</DependentUpon>
+    <Compile Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml.cs">
+      <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
@@ -1079,7 +1079,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PublishDialog\Steps\PublishDialogStepHeaderContent.xaml">
+    <Page Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

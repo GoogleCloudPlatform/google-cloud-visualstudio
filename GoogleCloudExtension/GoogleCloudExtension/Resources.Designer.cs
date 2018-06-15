@@ -4670,6 +4670,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration:.
+        /// </summary>
+        public static string PublishDialogStepHeaderConfigurationLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogStepHeaderConfigurationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deployment failed.
         /// </summary>
         public static string PublishFailureStatusMessage {

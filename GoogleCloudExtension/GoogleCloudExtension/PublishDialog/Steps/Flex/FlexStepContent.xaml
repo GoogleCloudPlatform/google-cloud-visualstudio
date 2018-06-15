@@ -13,7 +13,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <steps:PublishDialogStepHeaderContent />
+        <steps:PublishDialogStepHeaderControl />
 
         <!-- The information to deploy to flex. -->
         <local:GaeInputsControl 

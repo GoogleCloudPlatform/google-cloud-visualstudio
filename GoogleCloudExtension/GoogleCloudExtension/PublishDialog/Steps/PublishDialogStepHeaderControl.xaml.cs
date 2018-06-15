@@ -14,14 +14,14 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.PublishDialog.Steps.Flex
+namespace GoogleCloudExtension.PublishDialog.Steps
 {
     /// <summary>
-    /// Interaction logic for NeedAppCreatedControl.xaml
+    /// Interaction logic for PublishDialogStepHeaderContent.xaml
     /// </summary>
-    public partial class NeedAppCreatedControl : UserControl
+    public partial class PublishDialogStepHeaderControl : UserControl
     {
-        public NeedAppCreatedControl()
+        public PublishDialogStepHeaderControl()
         {
             InitializeComponent();
         }
