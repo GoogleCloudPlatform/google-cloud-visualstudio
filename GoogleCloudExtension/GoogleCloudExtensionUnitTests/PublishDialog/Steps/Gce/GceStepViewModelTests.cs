@@ -20,7 +20,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.Services.VsProject;
-using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -28,7 +27,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
+using DteProject = EnvDTE.Project;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 {
@@ -102,7 +102,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             s_windows2012Instance
         };
 
-        private static readonly WindowsInstanceCredentials s_credentials = new WindowsInstanceCredentials("User1", "Password1");
+        private static readonly WindowsInstanceCredentials s_credentials =
+            new WindowsInstanceCredentials("User1", "Password1");
 
         private static readonly List<WindowsInstanceCredentials> s_credentialsList =
             new List<WindowsInstanceCredentials>
@@ -115,19 +116,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         private TaskCompletionSource<IList<Instance>> _getInstanceListTaskSource;
         private Mock<IWindowsCredentialsStore> _windowsCredentialStoreMock;
         private Mock<Action<Instance>> _manageCredentialsPromptMock;
-        private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
-        private int _canPublishChangedCount = 0;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
-        private FakeParsedProject _parsedProject;
+        private DteProject _mockedProject;
 
         protected override void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
-
-
-            _pickProjectPromptMock = new Mock<Func<Project>>();
 
             var mockedApiManager = Mock.Of<IApiManager>(m =>
                m.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true) &&
@@ -141,14 +137,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _windowsCredentialStoreMock = new Mock<IWindowsCredentialsStore>();
             _manageCredentialsPromptMock = new Mock<Action<Instance>>();
 
-            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
+            _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
             _objectUnderTest = new GceStepViewModel(
-                mockedDataSource, mockedApiManager, _pickProjectPromptMock.Object, _windowsCredentialStoreMock.Object,
-                _manageCredentialsPromptMock.Object, Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject));
+                mockedDataSource,
+                mockedApiManager,
+                Mock.Of<Func<GcpProject>>(),
+                _windowsCredentialStoreMock.Object,
+                _manageCredentialsPromptMock.Object,
+                Mock.Of<IPublishDialog>(
+                    pd => pd.Project.Name == VisualStudioProjectName && pd.Project.Project == _mockedProject));
 
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-            _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
         }
 
         protected override void AfterEach()
@@ -238,12 +238,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCredentials =
                 new WindowsInstanceCredentials("User2", "Password2");
-            _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCredentials = null;
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
-            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
@@ -254,12 +252,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
                 .Returns(s_credentialsList);
             _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCredentials = null;
-            _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCredentials = new WindowsInstanceCredentials("User2", "Password2");
 
             Assert.IsTrue(_objectUnderTest.CanPublish);
-            Assert.AreEqual(1, _canPublishChangedCount);
         }
 
         [TestMethod]
@@ -399,10 +395,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         {
             Instance targetInstance = s_windows2012Instance;
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.InstanceNameProjectPropertyName))
                 .Returns(targetInstance.Name);
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.InstanceZoneProjectPropertyName))
                 .Returns(targetInstance.GetZoneName());
 
             _getInstanceListTaskSource.SetResult(s_allInstances);
@@ -423,7 +419,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
                     new WindowsInstanceCredentials("user3", "passwrod")
                 });
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.InstanceUserNameProjectPropertyName))
                 .Returns(targetCredentials.User);
             _getInstanceListTaskSource.SetResult(s_allInstances);
 
@@ -436,7 +432,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         public void TestLoadProjectProperties_LoadsOpenWebsiteProperty()
         {
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.OpenWebsiteProjectPropertyName))
                 .Returns(bool.FalseString);
 
             _objectUnderTest.OnVisible();
@@ -448,7 +444,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         public void TestLoadProjectProperties_HandlesNonBoolOpenWebsiteProperty()
         {
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.OpenWebsiteProjectPropertyName))
                 .Returns("unparseable");
 
             _objectUnderTest.OnVisible();
@@ -460,7 +456,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         public void TestLoadProjectProperties_LoadsLaunchRemoteDebuggerProperty()
         {
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
                 .Returns(bool.TrueString);
 
             _objectUnderTest.OnVisible();
@@ -472,7 +468,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         public void TestLoadProjectProperties_HandlesNonBoolLaunchRemoteDebuggerProperty()
         {
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName))
                 .Returns("unparseable");
 
             _objectUnderTest.OnVisible();
@@ -490,7 +486,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project, GceStepViewModel.InstanceNameProjectPropertyName, targetInstance.Name));
+                    _mockedProject, GceStepViewModel.InstanceNameProjectPropertyName, targetInstance.Name));
         }
 
         [TestMethod]
@@ -503,7 +499,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project, GceStepViewModel.InstanceZoneProjectPropertyName, targetInstance.GetZoneName()));
+                    _mockedProject, GceStepViewModel.InstanceZoneProjectPropertyName, targetInstance.GetZoneName()));
         }
 
         [TestMethod]
@@ -516,7 +512,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project, GceStepViewModel.InstanceUserNameProjectPropertyName, userName));
+                    _mockedProject, GceStepViewModel.InstanceUserNameProjectPropertyName, userName));
         }
 
         [TestMethod]
@@ -528,7 +524,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project, GceStepViewModel.OpenWebsiteProjectPropertyName, bool.FalseString));
+                    _mockedProject, GceStepViewModel.OpenWebsiteProjectPropertyName, bool.FalseString));
         }
 
         [TestMethod]
@@ -540,7 +536,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName, bool.TrueString));
+                    _mockedProject, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName, bool.TrueString));
         }
 
         [TestMethod]
@@ -573,7 +569,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             const string expectedSiteName = "New Site Name";
 
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.SiteNameProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.SiteNameProjectPropertyName))
                 .Returns(expectedSiteName);
 
             _objectUnderTest.OnVisible();
@@ -587,7 +583,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _objectUnderTest.SiteName = "New Site Name";
 
             _propertyServiceMock
-                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.SiteNameProjectPropertyName))
+                .Setup(s => s.GetUserProperty(_mockedProject, GceStepViewModel.SiteNameProjectPropertyName))
                 .Returns(() => null);
 
             _objectUnderTest.OnVisible();
@@ -605,7 +601,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    _parsedProject.Project,
+                    _mockedProject,
                     GceStepViewModel.SiteNameProjectPropertyName,
                     expectedSiteName));
         }

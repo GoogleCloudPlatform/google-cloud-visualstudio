@@ -41,6 +41,8 @@ namespace GoogleCloudExtensionUnitTests.Projects
         /// </summary>
         public KnownProjectTypes ProjectType { get; set; }
 
-        public Project Project { get; } = Mock.Of<Project>();
+        public Project Project => ProjectMock.Object;
+
+        public Mock<Project> ProjectMock { get; } = new Mock<Project>();
     }
 }

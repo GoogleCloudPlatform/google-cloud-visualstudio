@@ -12,18 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
+using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DteProject = EnvDTE.Project;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 {
@@ -32,6 +35,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
     {
         private const string ValidProjectId = "valid-project-id";
         private const string VisualStudioProjectName = "VisualStudioProjectName";
+        private const string SavedConfiguration = "SavedConfiguration";
+        private const string Configuration = "SomeConfiguration";
 
         private static readonly List<string> s_mockedRequiredApis = new List<string> { "OneRequieredApi", "AnotherRequiredApi" };
 
@@ -40,8 +45,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
         private TaskCompletionSource<object> _enableServicesTaskSource;
         private IPublishDialog _mockedPublishDialog;
-        private Mock<Func<Project>> _pickProjectPromptMock;
+        private Mock<Func<GcpProject>> _pickProjectPromptMock;
         private List<string> _changedProperties;
+        private static readonly List<string> s_configurations = new List<string> { "Debug", "Release" };
+        private DteProject _mockedProject;
+        private Mock<IVsProjectPropertyService> _propertyServiceMock;
 
         /// <summary>
         /// A minimal implementation of PublishDialogStepBase. Most functions faked with counter to record call counts.
@@ -50,7 +58,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         {
             public TestPublishDialogStep(
                 IApiManager apiManager,
-                Func<Project> pickProjectPrompt,
+                Func<GcpProject> pickProjectPrompt,
                 IPublishDialog publishDialog) : base(
                 apiManager, pickProjectPrompt,
                 publishDialog)
@@ -135,12 +143,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
         protected override void BeforeEach()
         {
+            _propertyServiceMock = Mock.Get(PackageMock.Object.GetMefService<IVsProjectPropertyService>());
+
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _enableServicesTaskSource = new TaskCompletionSource<object>();
 
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(d => d.Project.Name == VisualStudioProjectName);
+            _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(
+                d => d.Project.Name == VisualStudioProjectName && d.Project.Project == _mockedProject);
 
-            _pickProjectPromptMock = new Mock<Func<Project>>();
+            _pickProjectPromptMock = new Mock<Func<GcpProject>>();
             _changedProperties = new List<string>();
 
             _apiManagerMock = new Mock<IApiManager>();
@@ -442,6 +454,145 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.IsValidGcpProject = true;
 
             Assert.AreEqual(0, _objectUnderTest.OnIsValidGcpProjectChangedCallCount);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsProperty()
+        {
+            _objectUnderTest.Configurations = s_configurations;
+
+            CollectionAssert.AreEqual(s_configurations, _objectUnderTest.Configurations.ToList());
+        }
+
+        [TestMethod]
+        public void TestConfigurations_RaisesPropertyChanged()
+        {
+            _objectUnderTest.Configurations = s_configurations;
+
+            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.Configurations));
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsSelectedConfigurationToNullWhenNull()
+        {
+            _objectUnderTest.Configurations = null;
+
+            Assert.AreEqual(null, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsSelectedConfigurationToNullWhenEmpty()
+        {
+            _objectUnderTest.Configurations = new List<string>();
+
+            Assert.AreEqual(null, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsSelectedConfigurationToFirstElement()
+        {
+            const string expectedConfiguration = Configuration;
+
+            _objectUnderTest.Configurations = new List<string> { expectedConfiguration };
+
+            Assert.AreEqual(expectedConfiguration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsSelectedConfigurationToDefault()
+        {
+            _objectUnderTest.Configurations = new List<string> { PublishDialogStepBase.DefaultConfiguration };
+
+            Assert.AreEqual(PublishDialogStepBase.DefaultConfiguration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_SetsSelectedConfigurationToSavedConfiguration()
+        {
+            _propertyServiceMock
+                .Setup(ps => ps.GetUserProperty(_mockedProject, PublishDialogStepBase.ConfigurationPropertyName))
+                .Returns(SavedConfiguration);
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.Configurations = new List<string> { PublishDialogStepBase.DefaultConfiguration, SavedConfiguration };
+
+            Assert.AreEqual(SavedConfiguration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestConfigurations_LeavesSelectedConfigurationUnchangedWhenAvailable()
+        {
+            _propertyServiceMock
+                .Setup(ps => ps.GetUserProperty(_mockedProject, PublishDialogStepBase.ConfigurationPropertyName))
+                .Returns(SavedConfiguration);
+
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.SelectedConfiguration = Configuration;
+            _objectUnderTest.Configurations = new List<string>
+            {
+                PublishDialogStepBase.DefaultConfiguration,
+                SavedConfiguration,
+                Configuration
+            };
+
+            Assert.AreEqual(Configuration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestSelectedConfiguration_SetsProperty()
+        {
+            _objectUnderTest.SelectedConfiguration = Configuration;
+
+            Assert.AreEqual(Configuration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestSelectedConfiguration_RaisesPropertyChanged()
+        {
+            _objectUnderTest.SelectedConfiguration = Configuration;
+
+            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.SelectedConfiguration));
+        }
+
+        [TestMethod]
+        public void TestOnVisible_LoadsConfigurationsFromProject()
+        {
+            Mock.Get(_mockedProject)
+                .Setup(p => p.ConfigurationManager.ConfigurationRowNames)
+                .Returns(s_configurations);
+
+            _objectUnderTest.OnVisible();
+
+            CollectionAssert.AreEqual(s_configurations, _objectUnderTest.Configurations.ToList());
+        }
+
+        [TestMethod]
+        public void TestOnVisible_LoadsConfigurationProperty()
+        {
+            _propertyServiceMock
+                .Setup(ps => ps.GetUserProperty(_mockedProject, PublishDialogStepBase.ConfigurationPropertyName))
+                .Returns(SavedConfiguration);
+            Mock.Get(_mockedProject)
+                .Setup(p => p.ConfigurationManager.ConfigurationRowNames)
+                .Returns(new[] { PublishDialogStepBase.DefaultConfiguration, SavedConfiguration, Configuration });
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(SavedConfiguration, _objectUnderTest.SelectedConfiguration);
+        }
+
+        [TestMethod]
+        public void TestOnNotVisible_SavesConfigurationProperty()
+        {
+            _objectUnderTest.SelectedConfiguration = Configuration;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                ps => ps.SaveUserProperty(
+                    _mockedProject,
+                    PublishDialogStepBase.ConfigurationPropertyName,
+                    Configuration));
         }
     }
 }

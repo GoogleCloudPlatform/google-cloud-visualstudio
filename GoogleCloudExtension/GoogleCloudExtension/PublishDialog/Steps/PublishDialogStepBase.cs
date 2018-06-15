@@ -16,6 +16,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
@@ -23,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog.Steps
@@ -33,11 +35,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps
     /// </summary>
     public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
+        public const string ConfigurationPropertyName = "GoogleCloudPublishConfiguration";
+        public const string DefaultConfiguration = "Release";
         private readonly IApiManager _apiManager;
         private bool _needsApiEnabled = false;
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
         private AsyncProperty _loadProjectTask;
+        private IEnumerable<string> _configurations;
+        private string _selectedConfiguration;
+        private string _lastConfiguration;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
@@ -97,6 +104,19 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             && LoadProjectTask.IsSuccess
             && !NeedsApiEnabled;
 
+        public IEnumerable<string> Configurations
+        {
+            get => _configurations;
+            set
+            {
+                SelectedConfiguration = value?.FirstOrDefault(c => c == SelectedConfiguration) ??
+                    value?.FirstOrDefault(c => c == _lastConfiguration) ??
+                    value?.FirstOrDefault(c => c == DefaultConfiguration) ??
+                    value?.FirstOrDefault();
+                SetValueAndRaise(ref _configurations, value);
+            }
+        }
+
         /// <summary>
         /// Returns the <seealso cref="IApiManager"/> instance to use.
         /// </summary>
@@ -127,6 +147,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         }
 
         public abstract IProtectedCommand PublishCommand { get; }
+
+        public string SelectedConfiguration
+        {
+            get => _selectedConfiguration;
+            set => SetValueAndRaise(ref _selectedConfiguration, value);
+        }
 
         protected PublishDialogStepBase(
             IApiManager apiManager,
@@ -159,15 +185,30 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         public virtual void OnVisible()
         {
             AddHandlers();
+            LoadProjectPropertiesBase();
             LoadProjectProperties();
             OnProjectChanged();
             SelectProjectCommand.CanExecuteCommand = true;
         }
 
+        private void LoadProjectPropertiesBase()
+        {
+            _lastConfiguration = PublishDialog.Project.GetUserProperty(ConfigurationPropertyName);
+
+            Configurations =
+                (IEnumerable<string>)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
+        }
+
         public virtual void OnNotVisible()
         {
+            SaveProjectPropertiesBase();
             SaveProjectProperties();
             RemoveHandlers();
+        }
+
+        private void SaveProjectPropertiesBase()
+        {
+            PublishDialog.Project.SaveUserProperty(ConfigurationPropertyName, SelectedConfiguration);
         }
 
         /// <summary>

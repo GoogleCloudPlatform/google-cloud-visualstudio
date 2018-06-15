@@ -30,11 +30,13 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="project">The project to deploy.</param>
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
-        /// <param name="targetDeployPath"></param>
+        /// <param name="targetDeployPath">The name/path of the IIS website or application to publish to.</param>
+        /// <param name="configuration">The name of the configuration to publish.</param>
         Task<bool> PublishProjectAsync(
             IParsedDteProject project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
-            string targetDeployPath);
+            string targetDeployPath,
+            string configuration);
     }
 }

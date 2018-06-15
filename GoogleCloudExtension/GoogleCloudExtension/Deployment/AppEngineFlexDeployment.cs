@@ -49,12 +49,13 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         public class DeploymentOptions
         {
-            public DeploymentOptions(string service, string version, bool promote, bool openWebsite)
+            public DeploymentOptions(string service, string version, bool promote, bool openWebsite, string configuration)
             {
                 Service = service;
                 Version = version;
                 Promote = promote;
                 OpenWebsite = openWebsite;
+                Configuration = configuration;
                 Context = new GCloudContext();
             }
 
@@ -83,6 +84,11 @@ namespace GoogleCloudExtension.Deployment
             /// Whether to open the website after deployment.
             /// </summary>
             public bool OpenWebsite { get; }
+
+            /// <summary>
+            /// The name of the Configuration to publish.
+            /// </summary>
+            public string Configuration { get; }
         }
 
         [ImportingConstructor]
@@ -185,7 +191,7 @@ namespace GoogleCloudExtension.Deployment
             using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
-                Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction);
+                Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction, options.Configuration);
                 if (!await ProgressHelper.UpdateProgress(createAppBundleTask, progress, from: 0.1, to: 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");

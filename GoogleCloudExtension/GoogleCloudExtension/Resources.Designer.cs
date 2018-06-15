@@ -4373,6 +4373,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string PublishDialogBackButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogBackButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish {0}.
         /// </summary>
         public static string PublishDialogCaption {
@@ -4603,15 +4612,6 @@ namespace GoogleCloudExtension {
         public static string PublishDialogPickProjectHelpMessage {
             get {
                 return ResourceManager.GetString("PublishDialogPickProjectHelpMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Prev.
-        /// </summary>
-        public static string PublishDialogPrevButtonCaption {
-            get {
-                return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
             }
         }
         
