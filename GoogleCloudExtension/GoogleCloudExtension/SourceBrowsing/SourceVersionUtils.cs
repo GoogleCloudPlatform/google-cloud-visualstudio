@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverLogsViewer;

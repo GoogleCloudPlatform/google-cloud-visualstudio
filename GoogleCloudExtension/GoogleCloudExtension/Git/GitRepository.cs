@@ -19,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GitUtils
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
     /// A wrapper for executing git commands on a local git repository root.
