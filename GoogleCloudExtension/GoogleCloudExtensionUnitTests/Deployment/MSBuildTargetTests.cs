@@ -14,28 +14,36 @@
 
 using GoogleCloudExtension.Deployment;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace GoogleCloudExtensionUnitTests.Deployment
 {
     [TestClass]
     public class MSBuildTargetTests
     {
-        private const string ExpectedTarget = "ExpectedTarget";
-
         [TestMethod]
         public void TestConstructor_SetsTarget()
         {
-            var objectUnderTest = new MSBuildTarget(ExpectedTarget);
+            const string expectedTarget = "ExpectedTarget";
+            var objectUnderTest = new MSBuildTarget(expectedTarget);
 
-            Assert.AreEqual(ExpectedTarget, objectUnderTest.Target);
+            Assert.AreEqual(expectedTarget, objectUnderTest.Target);
         }
 
         [TestMethod]
         public void TestToString_ReturnsMSBuildCliArgument()
         {
-            var objectUnderTest = new MSBuildTarget(ExpectedTarget);
+            var objectUnderTest = new MSBuildTarget("ExpectedTarget");
 
             Assert.AreEqual("/t:ExpectedTarget", objectUnderTest.ToString());
+        }
+
+        [TestMethod]
+        public void TestConstructor_ThrowsForNullTarget()
+        {
+            var e = Assert.ThrowsException<ArgumentNullException>(() => new MSBuildTarget(null));
+
+            Assert.AreEqual("target", e.ParamName);
         }
     }
 }

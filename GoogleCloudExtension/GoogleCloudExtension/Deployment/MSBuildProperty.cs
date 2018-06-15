@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.Deployment
 {
     /// <summary>
@@ -36,8 +38,8 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="propertyValue">The value of the MSBuild property.</param>
         public MSBuildProperty(string propertyName, string propertyValue)
         {
-            PropertyName = propertyName;
-            PropertyValue = propertyValue;
+            PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            PropertyValue = propertyValue ?? "";
         }
 
         /// <summary>Returns the property argument.</summary>

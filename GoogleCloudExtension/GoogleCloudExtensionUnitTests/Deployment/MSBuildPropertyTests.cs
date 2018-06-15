@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Deployment;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace GoogleCloudExtensionUnitTests.Deployment
 {
@@ -47,6 +48,21 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             var objectUnderTest = new MSBuildProperty(ExpectedPropertyName, ExpectedPropertyValue);
 
             Assert.AreEqual("/p:ExpectedPropertyName=\"Expected Property Value\"", objectUnderTest.ToString());
+        }
+
+        [TestMethod]
+        public void TestConstructor_ThrowsForNullPropertyName()
+        {
+            var e = Assert.ThrowsException<ArgumentNullException>(() => new MSBuildProperty(null, DefaultPropertyValue));
+            Assert.AreEqual("propertyName", e.ParamName);
+        }
+
+        [TestMethod]
+        public void TestConstructor_GivenNullValueSetsValueToEmpty()
+        {
+            var objectUnderTest = new MSBuildProperty(DefaultPropertyName, null);
+
+            Assert.AreEqual("", objectUnderTest.PropertyValue);
         }
     }
 }

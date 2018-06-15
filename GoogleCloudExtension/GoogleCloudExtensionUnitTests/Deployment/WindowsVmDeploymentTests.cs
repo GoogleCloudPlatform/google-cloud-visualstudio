@@ -36,13 +36,24 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private const string DefaultWebSite = "Default Web Site";
         private const string DefaultUniqueName = "DefaultUniqueName";
         private const string DefaultConfigurationName = "Default Configuration Name";
+
+        private static readonly WindowsInstanceCredentials s_defaultCredentials =
+            new WindowsInstanceCredentials(DefaultUser, DefaultPassword);
+
+        private static readonly Instance s_defaultInstance = new Instance
+        {
+            NetworkInterfaces = new[]
+            {
+                new NetworkInterface {AccessConfigs = new[] {new AccessConfig {NatIP = "DefaultIp"}}}
+            }
+        };
+
         private WindowsVmDeployment _objectUnderTest;
         private Mock<IProcessService> _processServiceMock;
         private Mock<IParsedDteProject> _dteProjectMock;
         private Mock<Configuration> _activeConfigMock;
         private Mock<SolutionBuild> _solutionBuildMock;
-        private static readonly WindowsInstanceCredentials s_defaultCredentials = new WindowsInstanceCredentials(DefaultUser, DefaultPassword);
-        private static readonly Instance s_defaultInstance = new Instance();
+
         private Task<bool> _runCommandTask;
         private string _path;
         private string _parameters;

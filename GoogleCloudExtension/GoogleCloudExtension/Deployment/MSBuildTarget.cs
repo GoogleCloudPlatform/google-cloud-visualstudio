@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.Deployment
 {
     /// <summary>
@@ -30,7 +32,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="target">The name of the MSBuild target to run.</param>
         public MSBuildTarget(string target)
         {
-            Target = target;
+            Target = target ?? throw new ArgumentNullException(nameof(target));
         }
 
         /// <summary>Returns the target argument.</summary>
