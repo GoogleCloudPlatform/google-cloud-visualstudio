@@ -264,7 +264,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
                 return;
             }
 
-            var options = new AppEngineFlexDeployment.DeploymentOptions(Service, Version, Promote, OpenWebsite);
+            var options = new AppEngineFlexDeployment.DeploymentOptions(
+                Service,
+                Version,
+                Promote,
+                OpenWebsite,
+                SelectedConfiguration);
             Version = GcpPublishStepsUtils.IncrementVersion(Version);
 
             PublishDialog.FinishFlow();

@@ -89,6 +89,11 @@ namespace GoogleCloudExtension.Deployment
             /// Callback to be invoked when waiting for a public IP for a service.
             /// </summary>
             public Action WaitingForServiceIpCallback { get; set; }
+
+            /// <summary>
+            /// The name of the configuration to publish.
+            /// </summary>
+            public string Configuration { get; set; }
         }
 
         /// <summary>
@@ -115,7 +120,7 @@ namespace GoogleCloudExtension.Deployment
             using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction, options.Configuration),
                         progress,
                         from: 0.1, to: 0.3))
                 {

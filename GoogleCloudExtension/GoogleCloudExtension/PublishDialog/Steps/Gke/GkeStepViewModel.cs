@@ -396,6 +396,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         ExposePublicService = ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
+                        Configuration = SelectedConfiguration,
                         Replicas = int.Parse(Replicas),
                         WaitingForServiceIpCallback = () =>
                             GcpOutputWindow.Default.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)

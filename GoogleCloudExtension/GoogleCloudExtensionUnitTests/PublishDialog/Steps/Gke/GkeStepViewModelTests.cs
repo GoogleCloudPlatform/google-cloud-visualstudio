@@ -52,7 +52,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
         private GkeStepViewModel _objectUnderTest;
         private TaskCompletionSource<IList<Cluster>> _getClusterListTaskSource;
-        private IPublishDialog _mockedPublishDialog;
         private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
         private int _canPublishChangedCount;
@@ -73,7 +72,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
             _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject);
+            _parsedProject.ProjectMock.Setup(p => p.ConfigurationManager.ConfigurationRowNames).Returns(new string[0]);
 
             _pickProjectPromptMock = new Mock<Func<Project>>();
             _changedProperties = new List<string>();
@@ -85,8 +84,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             var mockedDataSource = Mock.Of<IGkeDataSource>(ds => ds.GetClusterListAsync() == _getClusterListTaskSource.Task);
 
             _objectUnderTest = new GkeStepViewModel(
-                mockedDataSource, mockedApiManager, _pickProjectPromptMock.Object, _mockedPublishDialog);
-            _objectUnderTest.MillisecondsDelay = 0;
+                mockedDataSource,
+                mockedApiManager,
+                _pickProjectPromptMock.Object,
+                Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject));
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
             _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
             _startProcessMock = new Mock<Func<string, Process>>();
@@ -369,7 +370,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         [TestMethod]
         public void TestInitializeDialogAsync_SetsValidDeploymentName()
         {
-            Mock.Get(_mockedPublishDialog).Setup(pd => pd.Project.Name).Returns("VisualStudioProjectName");
+            _parsedProject.Name = "VisualStudioProjectName";
             _getClusterListTaskSource.SetResult(null);
 
             _objectUnderTest.OnVisible();
