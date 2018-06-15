@@ -13,13 +13,14 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GitUtils
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
     /// Represent a local git commit on a given git SHA.
@@ -28,7 +29,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private readonly GitRepository _repo;
 
-        private readonly Lazy<Task<Dictionary<string, string>>> _fileTree;
+        private readonly AsyncLazy<Dictionary<string, string>> _fileTree;
 
         /// <summary>
         /// The git sha.
@@ -44,7 +45,7 @@ namespace GoogleCloudExtension.GitUtils
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
             Sha = sha.ThrowIfNullOrEmpty(nameof(sha));
-            _fileTree = new Lazy<Task<Dictionary<string, string>>>(GetFileTreeAsync);
+            _fileTree = new AsyncLazy<Dictionary<string, string>>(GetFileTreeAsync);
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace GoogleCloudExtension.GitUtils
         /// <returns>File path relative to git root. </returns>
         public async Task<IEnumerable<string>> FindMatchingEntryAsync(string filePath)
         {
-            Dictionary<string, string> fileTree = await _fileTree.Value;
+            Dictionary<string, string> fileTree = await _fileTree.GetValueAsync();
             return SubPaths(filePath)
                 .Select(x =>
                 {

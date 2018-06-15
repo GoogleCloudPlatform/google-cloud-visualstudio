@@ -19,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GitUtils
+namespace GoogleCloudExtension.Git
 {
     /// <summary>
     /// Helper methods for clone, create Google Cloud Source Repositories.
