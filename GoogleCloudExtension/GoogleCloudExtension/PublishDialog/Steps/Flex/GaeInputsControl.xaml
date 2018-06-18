@@ -15,7 +15,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel >
+
+    <StackPanel>
         <DockPanel>
             <Label DockPanel.Dock="Top"
                    Content="{x:Static ext:Resources.PublishDialogFlexServiceCaption}"
@@ -36,6 +37,7 @@
                       Validation.ErrorTemplate="{StaticResource ValidationErrorAdornerTemplate}"
                       Margin="0"/>
         </DockPanel>
+
         <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
                Target="{Binding ElementName=_version}"
                Margin="0,5,0,0"/>
@@ -49,5 +51,5 @@
                   Margin="0,9,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"/>
     </StackPanel>
-
 </UserControl>
+

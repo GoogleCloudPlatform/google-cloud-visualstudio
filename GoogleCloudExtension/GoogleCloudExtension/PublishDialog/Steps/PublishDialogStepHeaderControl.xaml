@@ -19,9 +19,7 @@
                 Command="{Binding SelectProjectCommand}"
                 Margin="6,0,0,0" />
         <TextBox Text="{Binding GcpProjectId, Mode=OneWay}"
-                 Width="200"
                  IsReadOnly="True"
-                 Height="30"
-                 Margin="0" />
+                 MinWidth="200"/>
     </DockPanel>
 </UserControl>

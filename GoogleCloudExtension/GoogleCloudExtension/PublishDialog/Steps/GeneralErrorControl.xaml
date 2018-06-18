@@ -10,5 +10,6 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
+
     <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}" />
 </UserControl>

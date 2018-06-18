@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-    
+
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="ThemingResources.xaml"/>
         <ResourceDictionary Source="CommonResources.xaml"/>
@@ -41,6 +41,7 @@
     
     <Style TargetType="Label" BasedOn="{StaticResource CommonLabelStyle}">
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0"/>
     </Style>
 
     <Style TargetType="CheckBox" BasedOn="{StaticResource CommonTextStyleBase}">
@@ -48,4 +49,6 @@
     </Style>
 
     <Style TargetType="GroupBox" BasedOn="{StaticResource CommonGroupBoxStyle}"/>
+
+    <Style TargetType="Hyperlink" BasedOn="{StaticResource CommonHyperlinkStyle}"/>
 </ResourceDictionary>

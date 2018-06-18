@@ -12,29 +12,24 @@
     </UserControl.Resources>
     <StackPanel >
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
-               Target="{Binding ElementName=_clusters}"
-               Style="{StaticResource CommonLabelStyle}"
-               Margin="0"/>
+               Target="{Binding ElementName=_clusters}"/>
 
         <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters}"
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
-                  Margin="0,3,0,0"
-                  Style="{StaticResource CommonComboBoxStyle}"/>
+                  Margin="0,3,0,0"/>
 
         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
             <TextBlock>
-                <Hyperlink Command="{Binding CreateClusterCommand}"
-                           Style="{StaticResource CommonHyperlinkStyle}">
+                <Hyperlink Command="{Binding CreateClusterCommand}">
                     <Run Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
                 </Hyperlink>
             </TextBlock>
 
             <TextBlock Margin="9,0,0,0">
-                <Hyperlink Command="{Binding RefreshClustersListCommand}"
-                           Style="{StaticResource CommonHyperlinkStyle}">
+                <Hyperlink Command="{Binding RefreshClustersListCommand}">
                     <Run Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
                 </Hyperlink>
             </TextBlock>
@@ -42,7 +37,6 @@
 
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
-               Style="{StaticResource CommonLabelStyle}"
                Margin="0,5,0,0"/>
         <TextBox x:Name="_deploymentName"
                  Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
@@ -72,7 +66,6 @@
         </DockPanel>
 
         <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}"
-                  Style="{StaticResource CommonGroupBoxStyle}"
                   Margin="0,20,0,0">
             <StackPanel>
                 <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
