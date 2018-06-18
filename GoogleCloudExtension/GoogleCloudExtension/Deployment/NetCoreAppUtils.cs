@@ -51,19 +51,21 @@ namespace GoogleCloudExtension.Deployment
             "ENTRYPOINT [\"dotnet\", \"{1}.dll\"]\n";
 
         /// <summary>
-        /// Creates an app bundle by publishing it to the given directory. It only publishes the release configuration.
+        /// Creates an app bundle by publishing it to the given directory.
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="stageDirectory">The directory to which to publish.</param>
         /// <param name="pathsProvider">The provider for paths.</param>
         /// <param name="outputAction">The callback to call with output from the command.</param>
+        /// <param name="configuration">The name of the configuration to publish.</param>
         public static async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
             IToolsPathProvider pathsProvider,
-            Action<string> outputAction)
+            Action<string> outputAction,
+            string configuration)
         {
-            var arguments = $"publish -o \"{stageDirectory}\" -c Release";
+            var arguments = $"publish -o \"{stageDirectory}\" -c {configuration}";
             var externalTools = pathsProvider.GetExternalToolsPath();
             var workingDir = project.DirectoryPath;
             var env = new Dictionary<string, string>

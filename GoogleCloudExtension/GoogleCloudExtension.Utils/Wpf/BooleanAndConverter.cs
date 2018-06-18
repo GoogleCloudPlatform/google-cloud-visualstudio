@@ -14,7 +14,7 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
@@ -27,8 +27,22 @@ namespace GoogleCloudExtension.Utils.Wpf
         /// <summary>Conversts the source values to booleans and Ands them together.</summary>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            bool andValue = values.Select(v => System.Convert.ToBoolean(v, culture)).All(b => b);
-            return System.Convert.ChangeType(andValue, targetType, culture);
+            foreach (object value in values)
+            {
+                if (value is IConvertible convertible)
+                {
+                    if (!convertible.ToBoolean(culture))
+                    {
+                        return System.Convert.ChangeType(false, targetType, culture);
+                    }
+                }
+                else
+                {
+                    return DependencyProperty.UnsetValue;
+                }
+            }
+
+            return System.Convert.ChangeType(true, targetType, culture);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>

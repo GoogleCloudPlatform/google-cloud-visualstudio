@@ -4,113 +4,42 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Flex"
-             xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:steps="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500"
              d:DataContext="{d:DesignInstance local:FlexStepViewModel}">
-
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../../Theming/CommonResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
 
     <StackPanel>
-        <DockPanel HorizontalAlignment="Left">
-            <Label
-                DockPanel.Dock="Top"
-                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-                Style="{StaticResource CommonLabelStyle}"/>
-            <Button
-                DockPanel.Dock="Right"
-                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
-                Style="{StaticResource CommonButtonDynamicStyle}"
-                Command="{Binding SelectProjectCommand}"
-                Margin="5,0"/>
-            <TextBox
-                Text="{Binding GcpProjectId, Mode=OneWay}"
-                Width="200"
-                IsReadOnly="True"
-                Style="{StaticResource CommonTextBoxStyle}"/>
-        </DockPanel>
+        <steps:PublishDialogStepHeaderControl />
 
         <!-- The information to deploy to flex. -->
-        <StackPanel Margin="0,5" Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <DockPanel>
-                <Label DockPanel.Dock="Top"
-                       Content="{x:Static ext:Resources.PublishDialogFlexServiceCaption}"
-                       Target="{Binding ElementName=_service}"/>
-                <CheckBox DockPanel.Dock ="Right"
-                          Content="{x:Static ext:Resources.PublishDialogFlexUpdateAppYamlCaption}"
-                          IsChecked="{Binding UpdateAppYamlService}"
-                          IsEnabled="{Binding UpdateAppYamlServiceEnabled}"
-                          VerticalAlignment="Center"
-                          ToolTip="{x:Static ext:Resources.PublishDialogFlexUpdateAppYamlToolTip}"
-                          Margin="6,0"/>
-                <ComboBox x:Name="_service"
-                          ItemsSource="{Binding Services}"
-                          Text="{Binding Service, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                          VerticalContentAlignment="Center"
-                          IsEditable="True"
-                          Validation.ErrorTemplate="{StaticResource ValidationErrorAdornerTemplate}"/>
-            </DockPanel>
-            <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
-                   Target="{Binding ElementName=_version}"
-                   Style="{StaticResource CommonLabelStyle}"
-                   Margin="0,5"/>
-            <TextBox x:Name="_version"
-                     Text="{Binding Version, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Style="{StaticResource CommonTextBoxStyle}"/>
-
-            <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"
-                      Margin="0,5"
-                      Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}"
-                      Style="{StaticResource CommonTextStyleBase}"/>
-            <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                      Margin="0,5"
-                      Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                      Style="{StaticResource CommonTextStyleBase}"/>
-        </StackPanel>
+        <local:GaeInputsControl 
+            Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}"
+            Margin="0,5,0,0"/>
 
         <!-- The message that the project is being loaded. -->
-        <StackPanel Margin="0,5"
-                    Orientation="Horizontal"
-                    Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}">
-            <controls:ProgressIndicator  />
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
-        </StackPanel>
+        <steps:LoadingProjectDataControl 
+            Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}"
+            Margin="0,5,0,0"/>
 
         <!-- Message shown when the API needs to be enabled. -->
-        <TextBlock Margin="0,5"
-                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap"/>
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                       Command="{Binding EnableApiCommand}">
-                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
-            </Hyperlink>
-        </TextBlock>
+        <steps:NeedApiEnabledControl
+            Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+            Margin="0,5,0,0"
+            />
 
         <!-- Message shown when the app needs to be created. -->
-        <TextBlock Margin="0,5"
-                   Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexNeedToSetRegionMessage}" TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                       Command="{Binding SetAppRegionCommand}">
-                <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexSetAppRegionCaption}" />
-            </Hyperlink>
-        </TextBlock>
+        <local:NeedAppCreatedControl
+            Visibility="{Binding NeedsAppCreated, Converter={utils:VisibilityConverter}}"
+            Margin="0,5,0,0"/>
 
         <!-- Message shwon when there is a general error. -->
-        <TextBlock Margin="0,5"
-                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}" />
+        <steps:GeneralErrorControl
+            Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
+            Margin="0,5,0,0"/>
     </StackPanel>
 </UserControl>
 

@@ -4373,6 +4373,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string PublishDialogBackButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogBackButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish {0}.
         /// </summary>
         public static string PublishDialogCaption {
@@ -4607,15 +4616,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Prev.
-        /// </summary>
-        public static string PublishDialogPrevButtonCaption {
-            get {
-                return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not determine if the selected GCP project is ready to deploy, please close the dialog and try again..
         /// </summary>
         public static string PublishDialogProjectLoadErrorMessage {
@@ -4666,6 +4666,15 @@ namespace GoogleCloudExtension {
         public static string PublishDialogSelectGcpProjectTitle {
             get {
                 return ResourceManager.GetString("PublishDialogSelectGcpProjectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration:.
+        /// </summary>
+        public static string PublishDialogStepHeaderConfigurationLabel {
+            get {
+                return ResourceManager.GetString("PublishDialogStepHeaderConfigurationLabel", resourceCulture);
             }
         }
         

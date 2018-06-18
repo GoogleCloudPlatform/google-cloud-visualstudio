@@ -71,6 +71,8 @@
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="NotConverter.cs" />
+    <Compile Include="NullEmptyBoolConverter.cs" />
+    <Compile Include="NullEmptyConverter.cs" />
     <Compile Include="NullEmptyInvisibleConverter.cs" />
     <Compile Include="PathUtils.cs" />
     <Compile Include="PlaceholderMessage.cs" />

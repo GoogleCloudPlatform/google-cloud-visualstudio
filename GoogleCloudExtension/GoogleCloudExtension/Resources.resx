@@ -629,8 +629,8 @@
     <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
-  <data name="PublishDialogPrevButtonCaption" xml:space="preserve">
-    <value>_Prev</value>
+  <data name="PublishDialogBackButtonCaption" xml:space="preserve">
+    <value>Back</value>
     <comment>The caption for the prev button.</comment>
   </data>
   <data name="PublishDialogPublishButtonCaption" xml:space="preserve">
@@ -2499,5 +2499,9 @@ Delete corrupted file?</value>
   <data name="PublishDialogGceStepSiteNameMessage" xml:space="preserve">
     <value>_Site Name:</value>
     <comment>The label for the site name text box on the Publish Google Compute Engine dialog.</comment>
+  </data>
+  <data name="PublishDialogStepHeaderConfigurationLabel" xml:space="preserve">
+    <value>Configuration:</value>
+    <comment>The label of the configuration ComboBox in the publish dialog step header control.</comment>
   </data>
 </root>
