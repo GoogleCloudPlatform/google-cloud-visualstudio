@@ -542,5 +542,72 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
                 s => s.SaveUserProperty(
                     _parsedProject.Project, GceStepViewModel.LaunchRemoteDebuggerProjectPropertyName, bool.TrueString));
         }
+
+        [TestMethod]
+        public void TestConstructor_SetSiteName()
+        {
+            Assert.AreEqual(GceStepViewModel.DefaultSiteName, _objectUnderTest.SiteName);
+        }
+
+        [TestMethod]
+        public void TestSetSiteName_SetsProperty()
+        {
+            const string expectedSiteName = "New Site Name";
+
+            _objectUnderTest.SiteName = expectedSiteName;
+
+            Assert.AreEqual(expectedSiteName, _objectUnderTest.SiteName);
+        }
+
+        [TestMethod]
+        public void TestSetSiteName_Raises()
+        {
+            _objectUnderTest.SiteName = "New Site Name";
+
+            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.SiteName));
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_LoadsSiteName()
+        {
+            const string expectedSiteName = "New Site Name";
+
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.SiteNameProjectPropertyName))
+                .Returns(expectedSiteName);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(expectedSiteName, _objectUnderTest.SiteName);
+        }
+
+        [TestMethod]
+        public void TestLoadProjectProperties_ResetsSiteNameToDefaultWhenMissing()
+        {
+            _objectUnderTest.SiteName = "New Site Name";
+
+            _propertyServiceMock
+                .Setup(s => s.GetUserProperty(_parsedProject.Project, GceStepViewModel.SiteNameProjectPropertyName))
+                .Returns(() => null);
+
+            _objectUnderTest.OnVisible();
+
+            Assert.AreEqual(GceStepViewModel.DefaultSiteName, _objectUnderTest.SiteName);
+        }
+
+        [TestMethod]
+        public void TestSaveProjectProperties_SavesSiteNameProperty()
+        {
+            const string expectedSiteName = "New Site Name";
+            _objectUnderTest.SiteName = expectedSiteName;
+
+            _objectUnderTest.OnNotVisible();
+
+            _propertyServiceMock.Verify(
+                s => s.SaveUserProperty(
+                    _parsedProject.Project,
+                    GceStepViewModel.SiteNameProjectPropertyName,
+                    expectedSiteName));
+        }
     }
 }

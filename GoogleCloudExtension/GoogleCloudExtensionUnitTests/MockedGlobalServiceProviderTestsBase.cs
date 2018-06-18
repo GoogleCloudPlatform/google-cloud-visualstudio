@@ -15,11 +15,14 @@
 using EnvDTE;
 using GoogleCloudExtension;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -44,10 +47,6 @@ namespace GoogleCloudExtensionUnitTests
             ServiceProviderMock.SetupService<DTE, DTE>(DteMock);
             ComponentModelMock = ServiceProviderMock.SetupService<SComponentModel, IComponentModel>();
             ComponentModelMock.DefaultValueProvider = DefaultValueProvider.Mock;
-
-            // Initalize the export provider to get types exported in GoogleCloudExtension.dll.
-            ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(
-                new CompositionContainer(new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly)));
             ServiceProviderMock.SetupDefaultServices();
         }
 

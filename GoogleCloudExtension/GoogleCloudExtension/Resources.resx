@@ -2496,4 +2496,8 @@ Delete corrupted file?</value>
     <value>Update your existing app.yaml to target this service, or create a new one that does so.</value>
     <comment>The text of the tool tip for the Update app.yaml checkbox on the publish to App Engine dialog.</comment>
   </data>
+  <data name="PublishDialogGceStepSiteNameMessage" xml:space="preserve">
+    <value>_Site Name:</value>
+    <comment>The label for the site name text box on the Publish Google Compute Engine dialog.</comment>
+  </data>
 </root>

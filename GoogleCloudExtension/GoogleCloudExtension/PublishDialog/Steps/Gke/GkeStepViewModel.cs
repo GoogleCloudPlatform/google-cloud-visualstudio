@@ -411,10 +411,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
                     TimeSpan deploymentDuration;
                     GkeDeploymentResult result;
-                    using (StatusbarHelper.Freeze())
-                    using (StatusbarHelper.ShowDeployAnimation())
+                    using (StatusbarHelper.Default.Freeze())
+                    using (StatusbarHelper.Default.ShowDeployAnimation())
                     using (ProgressBarHelper progress =
-                        StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
+                        StatusbarHelper.Default.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (ShellUtils.Default.SetShellUIBusy())
                     {
                         DateTime deploymentStartTime = DateTime.Now;
@@ -431,7 +431,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     {
                         OutputResultData(result, options, project);
 
-                        StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+                        StatusbarHelper.Default.SetText(Resources.PublishSuccessStatusMessage);
 
                         if (OpenWebsite && result.ServiceExposed && result.PublicServiceIpAddress != null)
                         {
@@ -445,7 +445,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     {
                         GcpOutputWindow.Default.OutputLine(
                             string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
-                        StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                        StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
 
                         EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
                     }
@@ -454,7 +454,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.Default.OutputLine(string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
 
                 PublishDialog?.FinishFlow();
 

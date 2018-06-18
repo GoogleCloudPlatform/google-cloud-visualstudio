@@ -60,6 +60,11 @@ namespace GoogleCloudExtension
         /// </summary>
         IProcessService ProcessService { get; }
 
+        /// <summary>
+        /// The default <see cref="IStatusbarService"/>.
+        /// </summary>
+        IStatusbarService StatusbarHelper { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;

@@ -36,10 +36,13 @@ namespace GoogleCloudExtension.Deployment
         private readonly Lazy<IShellUtils> _shellUtils;
         private readonly Lazy<IGcpOutputWindow> _gcpOutputWindow;
         private readonly Lazy<IAppEngineConfiguration> _configurationService;
+        private readonly Lazy<IStatusbarService> _statusbarService;
 
         private IShellUtils ShellUtils => _shellUtils.Value;
         private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
         private IAppEngineConfiguration ConfigurationService => _configurationService.Value;
+
+        public IStatusbarService StatusbarHelper => _statusbarService.Value;
 
         /// <summary>
         /// The options for the deployment operation.
@@ -83,11 +86,16 @@ namespace GoogleCloudExtension.Deployment
         }
 
         [ImportingConstructor]
-        public AppEngineFlexDeployment(Lazy<IShellUtils> shellUtils, Lazy<IGcpOutputWindow> gcpOutputWindow, Lazy<IAppEngineConfiguration> configurationService)
+        public AppEngineFlexDeployment(
+            Lazy<IShellUtils> shellUtils,
+            Lazy<IGcpOutputWindow> gcpOutputWindow,
+            Lazy<IAppEngineConfiguration> configurationService,
+            Lazy<IStatusbarService> statusbarService)
         {
             _shellUtils = shellUtils;
             _gcpOutputWindow = gcpOutputWindow;
             _configurationService = configurationService;
+            _statusbarService = statusbarService;
         }
 
 
@@ -184,7 +192,7 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                var runtime = ConfigurationService.GetAppEngineRuntime(project);
+                string runtime = ConfigurationService.GetAppEngineRuntime(project);
                 ConfigurationService.CopyOrCreateAppYaml(project, stageDirectory, options.Service);
                 if (runtime == AppEngineConfiguration.CustomRuntime)
                 {
@@ -199,8 +207,8 @@ namespace GoogleCloudExtension.Deployment
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
                 // the operation to finish, update the progress as it goes.
-                var effectiveVersion = options.Version ?? GcpPublishStepsUtils.GetDefaultVersion();
-                var deployTask = DeployAppBundleAsync(
+                string effectiveVersion = options.Version ?? GcpPublishStepsUtils.GetDefaultVersion();
+                Task<bool> deployTask = DeployAppBundleAsync(
                     stageDirectory: stageDirectory,
                     version: effectiveVersion,
                     promote: options.Promote,
@@ -213,7 +221,7 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(1.0);
 
-                var service = options.Service ?? ConfigurationService.GetAppEngineService(project);
+                string service = options.Service ?? ConfigurationService.GetAppEngineService(project);
                 return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
