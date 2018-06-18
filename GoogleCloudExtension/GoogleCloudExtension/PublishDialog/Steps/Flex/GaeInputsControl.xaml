@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
+
     <StackPanel>
         <DockPanel>
             <Label DockPanel.Dock="Top"
@@ -29,6 +30,7 @@
                       VerticalContentAlignment="Center"
                       IsEditable="True"/>
         </DockPanel>
+
         <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
                Target="{Binding ElementName=_version}"
                Margin="0,5,0,0"/>
@@ -42,5 +44,5 @@
                   Margin="0,9,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"/>
     </StackPanel>
-
 </UserControl>
+

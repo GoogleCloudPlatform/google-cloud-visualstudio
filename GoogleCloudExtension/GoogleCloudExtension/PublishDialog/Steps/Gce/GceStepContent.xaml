@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gce"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:steps="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
-             xmlns:wpfutils="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:GceStepViewModel}">
     <UserControl.Resources>
@@ -32,29 +31,23 @@
                             <Setter Property="Content" Value="{StaticResource LoadingProjectDataControl}"/>
                         </DataTrigger>
 
-                        <DataTrigger Value="True">
-                            <DataTrigger.Binding>
-                                <MultiBinding Converter="{wpfutils:BooleanAndConverter}">
-                                    <MultiBinding.Bindings>
-                                        <Binding Path="LoadProjectTask.IsSuccess"/>
-                                        <Binding Path="NeedsApiEnabled"/>
-                                    </MultiBinding.Bindings>
-                                </MultiBinding>
-                            </DataTrigger.Binding>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding LoadProjectTask.IsSuccess}" Value="True"/>
+                                <Condition Binding="{Binding NeedsApiEnabled}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
                             
                             <Setter Property="Content" Value="{StaticResource NeedApiEnabledControl}"/>
-                        </DataTrigger>
+                        </MultiDataTrigger>
 
-                        <DataTrigger Value="True">
-                            <DataTrigger.Binding>
-                                <MultiBinding Converter="{wpfutils:BooleanAndConverter}">
-                                    <Binding Path="LoadProjectTask.IsSuccess"/>
-                                    <Binding Path="NeedsApiEnabled" Converter="{utils:NotConverter}"/>
-                                </MultiBinding>
-                            </DataTrigger.Binding>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding LoadProjectTask.IsSuccess}" Value="True"/>
+                                <Condition Binding="{Binding NeedsApiEnabled}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
 
                             <Setter Property="Content" Value="{StaticResource InputsControl}"/>
-                        </DataTrigger>
+                        </MultiDataTrigger>
 
                         <DataTrigger Binding="{Binding LoadProjectTask.IsError}" Value="True">
                             <Setter Property="Content" Value="{StaticResource GeneralErrorControl}"/>

@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
-    <!-- The controls to select the VM. -->
+
     <StackPanel>
         <!-- VM Instance -->
         <DockPanel>
@@ -26,6 +26,7 @@
                     Margin="6,0,0,0">
                 <Image Source="{extensions:ImageResource /Theming/Resources/refresh.png}" Stretch="None"/>
             </Button>
+
             <ComboBox x:Name="_instances"
                       ItemsSource="{Binding Instances}"
                       DisplayMemberPath="Name"

@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
-    <!-- Message shown when the API needs to be enabled. -->
+
     <TextBlock>
         <Run Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}"/>
         <Hyperlink>

@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
+
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
         <controls:ProgressIndicator />
         <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Margin="6,0,0,0"/>
