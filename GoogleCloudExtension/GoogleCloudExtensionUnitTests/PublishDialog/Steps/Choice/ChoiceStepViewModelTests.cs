@@ -110,7 +110,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
                     Tuple.Create(
                         Resources.PublishDialogChoiceStepGceName,
                         Resources.PublishDialogChoiceStepGceToolTip,
-                        false)
+                        true)
                 },
                 _objectUnderTest.Choices.Select(c => Tuple.Create(c.Name, c.ToolTip, c.Command.CanExecute(null)))
                     .ToList());

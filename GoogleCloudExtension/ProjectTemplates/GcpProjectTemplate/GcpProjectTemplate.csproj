@@ -116,6 +116,7 @@
       <SubType>Designer</SubType>
       <OutputSubPath>WebAPI</OutputSubPath>
     </VSTemplate>
+    <Content Include="Core\MVC\app_offline.htm" />
     <Content Include="Core\MVC\__TemplateIcon.png" />
     <VSTemplate Include="Core\WebAPI\1.1.vstemplate">
       <SubType>Designer</SubType>
@@ -124,6 +125,7 @@
     <Content Include="Core\WebAPI\1.0.csproj" />
     <Content Include="Core\WebAPI\2.0.csproj" />
     <Content Include="Core\WebAPI\1.0-preview.xproj" />
+    <Content Include="Core\WebAPI\app_offline.htm" />
     <Content Include="Core\WebAPI\Project_Readme.html" />
     <Content Include="Core\WebAPI\1.1.csproj">
       <SubType>Designer</SubType>

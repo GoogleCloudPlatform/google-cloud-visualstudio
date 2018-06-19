@@ -109,7 +109,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
                     Resources.PublishDialogChoiceStepGceName,
                     Resources.PublishDialogChoiceStepGceToolTip,
                     s_gceIcon.Value,
-                    new ProtectedCommand(OnGceChoiceCommand))
+                    new ProtectedCommand(
+                        OnGceChoiceCommand,
+                        PublishDialog.Project.ProjectType != KnownProjectTypes.None))
             };
 
         private void OnGkeChoiceCommand()
