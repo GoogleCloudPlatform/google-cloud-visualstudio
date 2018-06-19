@@ -105,9 +105,9 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         /// </summary>
         private static IList<AspNetVersion> GetVs2017AspNetCoreVersions()
         {
-            ILookup<int, Version> sdkVersions = GetParsedSdkVersions().ToLookup(v => v.Major);
-            List<Version> majorVersion1Versions = sdkVersions[1].ToList();
-            List<Version> majorVersion2Versions = sdkVersions[2].ToList();
+            List<Version> sdkVersions = GetParsedSdkVersions().ToList();
+            List<Version> majorVersion1Versions = sdkVersions.Where(v => v.Major == 1).ToList();
+            List<Version> majorVersion2Versions = sdkVersions.Where(v => v.Major == 2).ToList();
             var aspNetVersions = new List<AspNetVersion>();
             if (majorVersion1Versions.Count > 0)
             {

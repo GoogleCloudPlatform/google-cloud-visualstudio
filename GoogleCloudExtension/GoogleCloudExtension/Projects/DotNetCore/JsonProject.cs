@@ -23,6 +23,11 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// </summary>
     internal class JsonProject : IParsedDteProject
     {
+        /// <summary>
+        /// The Version of project.json style projects.
+        /// </summary>
+        public const string PreviewVersion = "1.0.0-preview";
+
         public Project Project { get; }
 
         public string DirectoryPath => Path.GetDirectoryName(FullPath);
@@ -34,7 +39,7 @@ namespace GoogleCloudExtension.Projects.DotNetCore
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
 
         /// <summary>The version of the framework used by the project.</summary>
-        public string FrameworkVersion { get; } = "1.0.0-preview";
+        public string FrameworkVersion { get; } = PreviewVersion;
 
         public JsonProject(Project project)
         {

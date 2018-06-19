@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.Projects.DotNet4
     /// </summary>
     internal class CsprojProject : IParsedDteProject
     {
+        /// <summary>
+        /// Matches the '4.6' of '.NETFramework,Version=v4.6'.
+        /// </summary>
         private static readonly Regex s_frameworkVersionRegex = new Regex("(?<=Version=v)[\\d.]+");
         public Project Project { get; }
 

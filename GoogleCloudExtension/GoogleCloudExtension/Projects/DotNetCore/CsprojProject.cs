@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// </summary>
     public class CsprojProject : IParsedDteProject
     {
+        /// <summary>
+        /// Matches the '2.1' of 'netcoreapp2.1'.
+        /// </summary>
         private static readonly Regex s_frameworkVersionRegex = new Regex(@"(?<=^netcoreapp)[\d.]+$");
         public Project Project { get; }
 
