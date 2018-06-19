@@ -10,6 +10,8 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
+    
+    <!-- Google Cloud Project input -->
     <DockPanel HorizontalAlignment="Left">
         <Label DockPanel.Dock="Top"
                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"

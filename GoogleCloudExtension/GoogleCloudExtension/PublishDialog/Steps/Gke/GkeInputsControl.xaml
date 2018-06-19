@@ -12,6 +12,7 @@
     </UserControl.Resources>
 
     <StackPanel>
+        <!-- Cluster input -->
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"/>
         <ComboBox x:Name="_clusters"
@@ -35,6 +36,7 @@
             </TextBlock>
         </StackPanel>
 
+        <!-- Deployment Name input -->
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
                Margin="0,5,0,0"/>
@@ -43,6 +45,7 @@
                  Margin="0,3,0,0"/>
 
         <DockPanel Margin="0,5,0,0">
+             <!-- Replicas input -->
             <DockPanel DockPanel.Dock="Right" Margin="12,0,0,0">
                 <!-- TODO: Use an up/down textbox control. -->
                 <Label DockPanel.Dock="Top"
@@ -53,6 +56,7 @@
                          Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
             </DockPanel>
 
+            <!-- Version input -->
             <DockPanel>
                 <Label DockPanel.Dock="Top"
                        Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
@@ -62,7 +66,6 @@
                          Text="{Binding Path=DeploymentVersion, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}">
                 </TextBox>
             </DockPanel>
-
         </DockPanel>
 
         <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}"

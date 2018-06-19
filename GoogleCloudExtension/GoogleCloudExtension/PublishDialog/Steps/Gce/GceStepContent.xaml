@@ -14,8 +14,10 @@
 
     <StackPanel Margin="12">
         <steps:PublishDialogStepHeaderControl/>
+
         <ContentControl Margin="0,5,0,0"
                         Visibility="{Binding GcpProjectId, Converter={utils:NullEmptyInvisibleConverter}}">
+            <!-- Show Exactly one of these sub controls -->
             <ContentControl.Resources>
                 <steps:LoadingProjectDataControl x:Key="LoadingProjectDataControl"/>
                 <local:GceInputsControl x:Key="InputsControl"/>
@@ -26,6 +28,7 @@
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Setter Property="Content" Value="{StaticResource InputsControl}"/>
+
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding LoadProjectTask.IsPending}" Value="True">
                             <Setter Property="Content" Value="{StaticResource LoadingProjectDataControl}"/>

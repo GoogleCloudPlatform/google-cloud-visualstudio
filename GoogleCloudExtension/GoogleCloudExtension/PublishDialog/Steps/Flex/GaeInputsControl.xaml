@@ -12,6 +12,7 @@
     </UserControl.Resources>
 
     <StackPanel>
+        <!-- Service input -->
         <DockPanel>
             <Label DockPanel.Dock="Top"
                    Content="{x:Static ext:Resources.PublishDialogFlexServiceCaption}"
@@ -24,6 +25,7 @@
                       VerticalAlignment="Center"
                       ToolTip="{x:Static ext:Resources.PublishDialogFlexUpdateAppYamlToolTip}"
                       Margin="6,0,0,0"/>
+            <!-- Update service in App.yaml -->
             <ComboBox x:Name="_service"
                       ItemsSource="{Binding Services}"
                       Text="{Binding Service, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
@@ -31,18 +33,21 @@
                       IsEditable="True"/>
         </DockPanel>
 
+        <!-- Version Name input -->
         <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
                Target="{Binding ElementName=_version}"
                Margin="0,5,0,0"/>
         <TextBox x:Name="_version"
                  Text="{Binding Version, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                  Margin="0,3,0,0"/>
-        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"
-                  Margin="0,9,0,0"
-                  Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}"/>
-        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                  Margin="0,9,0,0"
-                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"/>
+        <!-- Promote -->
+        <CheckBox Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}"
+                  IsChecked="{Binding Promote, Mode=TwoWay}"
+                  Margin="0,9,0,0"/>
+        <!-- Open WebSite -->
+        <CheckBox Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                  Margin="0,9,0,0"/>
     </StackPanel>
 </UserControl>
 
