@@ -84,6 +84,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
+        /// <summary>
+        /// Tracks the load project task.
+        /// </summary>
         public AsyncProperty LoadProjectTask
         {
             get => _loadProjectTask;
@@ -104,6 +107,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             && LoadProjectTask.IsSuccess
             && !NeedsApiEnabled;
 
+        /// <summary>
+        /// The list of available build configurations.
+        /// </summary>
         public IEnumerable<string> Configurations
         {
             get => _configurations;
@@ -148,6 +154,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
         public abstract IProtectedCommand PublishCommand { get; }
 
+        /// <summary>
+        /// The build configuration to publish.
+        /// </summary>
         public string SelectedConfiguration
         {
             get => _selectedConfiguration;
@@ -180,9 +189,13 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         protected virtual void OnIsValidGcpProjectChanged() { }
 
         /// <summary>
-        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
-        public virtual void OnVisible()
+        /// <remarks>
+        /// This method adds event handlers for <see cref="IPublishDialog.FlowFinished"/> and <see cref="ICredentialsStore.CurrentProjectIdChanged"/>,
+        /// and Loads properties from the project file.
+        /// </remarks>
+        public void OnVisible()
         {
             AddHandlers();
             LoadProjectPropertiesBase();
@@ -199,7 +212,13 @@ namespace GoogleCloudExtension.PublishDialog.Steps
                 (IEnumerable<string>)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
         }
 
-        public virtual void OnNotVisible()
+        /// <summary>
+        /// Called every time this step moves off the top of the navigation stack.
+        /// </summary>
+        /// <remarks>
+        /// This method removes event handlers added by <see cref="OnVisible"/> and saves project properties.
+        /// </remarks>
+        public void OnNotVisible()
         {
             SaveProjectPropertiesBase();
             SaveProjectProperties();
@@ -221,6 +240,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             LoadProject();
         }
 
+        /// <summary>
+        /// Starts a new load project task, tracked by <see cref="LoadProjectTask"/>.
+        /// </summary>
         public void LoadProject()
         {
             LoadProjectTask = new AsyncProperty(LoadProjectTaskAsync());
@@ -243,6 +265,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
+        /// <summary>
+        /// Checks to see if the given project is valid, and has required APIs enabled.
+        /// Once complete, this task will have set <see cref="IsValidGcpProject"/> and <see cref="NeedsApiEnabled"/>.
+        /// </summary>
         protected virtual async Task ValidateProjectAsync()
         {
             // Reset UI State
@@ -284,6 +310,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         protected abstract Task LoadValidProjectDataAsync();
 
+        /// <summary>
+        /// Callback function for when HasErrors may have changed.
+        /// </summary>
         protected override void HasErrorsChanged()
         {
             base.HasErrorsChanged();
@@ -353,8 +382,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
         }
 
+        /// <summary>
+        /// Loads the step specific properties from the project file.
+        /// </summary>
         protected abstract void LoadProjectProperties();
 
+        /// <summary>
+        /// Saves the step specific properties to the project file.
+        /// </summary>
         protected abstract void SaveProjectProperties();
     }
 }

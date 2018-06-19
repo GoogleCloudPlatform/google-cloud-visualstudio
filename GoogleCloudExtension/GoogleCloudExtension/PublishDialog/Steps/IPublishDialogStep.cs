@@ -25,10 +25,13 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         IProtectedCommand PublishCommand { get; }
 
         /// <summary>
-        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
         void OnVisible();
 
+        /// <summary>
+        /// Called every time this step moves off the top of the navigation stack.
+        /// </summary>
         void OnNotVisible();
     }
 }
