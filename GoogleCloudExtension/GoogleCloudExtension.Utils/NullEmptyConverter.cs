@@ -47,7 +47,12 @@ namespace GoogleCloudExtension.Utils
                 stringValue = value?.ToString();
             }
 
-            return string.IsNullOrWhiteSpace(stringValue) ^ Invert ? EmptyValue : NotEmptyValue;
+            bool isEmpty = string.IsNullOrWhiteSpace(stringValue);
+            if (Invert)
+            {
+                isEmpty = !isEmpty;
+            }
+            return isEmpty ? EmptyValue : NotEmptyValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
