@@ -18,6 +18,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 
@@ -26,13 +27,16 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class contains utilities to manage the UI state of the Visual Studio shell.
     /// </summary>
-    public static class ShellUtils
+    [Export(typeof(IShellUtils))]
+    public class ShellUtils : IShellUtils
     {
+        public static IShellUtils Default => GoogleCloudExtensionPackage.Instance.ShellUtils;
+
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
         /// <returns>True if the shell is in the debugger state, false otherwise.</returns>
-        public static bool IsDebugging()
+        public bool IsDebugging()
         {
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.Debugging_guid);
@@ -42,7 +46,7 @@ namespace GoogleCloudExtension.Utils
         /// Returns whether the shell is in the buliding state. This will happen if the user is building the app.
         /// </summary>
         /// <returns>True if the shell is in the building state, false otherwise.</returns>
-        public static bool IsBuilding()
+        public bool IsBuilding()
         {
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionBuilding_guid);
@@ -51,14 +55,14 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Returns true if the shell is in a busy state.
         /// </summary>
-        public static bool IsBusy() => IsDebugging() || IsBuilding();
+        public bool IsBusy() => IsDebugging() || IsBuilding();
 
         /// <summary>
         /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
         /// to a variable in a using statement.
         /// </summary>
         /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
-        public static IDisposable SetShellUIBusy()
+        public IDisposable SetShellUIBusy()
         {
             IVsMonitorSelection monitorSelection = GetMonitorSelectionService();
 
@@ -76,7 +80,7 @@ namespace GoogleCloudExtension.Utils
         /// In essence this method will cause the <seealso cref="OleMenuCommand.BeforeQueryStatus"/> event in all commands to be
         /// triggered again.
         /// </summary>
-        public static void InvalidateCommandsState()
+        public void InvalidateCommandsState()
         {
             var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null)
@@ -92,7 +96,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Attempts to move the VS window to the foreground.
         /// </summary>
-        public static void SetForegroundWindow()
+        public void SetForegroundWindow()
         {
             var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null)
@@ -110,7 +114,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Executes the "File.OpenProject" command in the shell.
         /// </summary>
-        public static void OpenProject()
+        public void OpenProject()
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.OpenProject");
@@ -121,7 +125,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="sourceFile">Source file path</param>
         /// <returns>The Window that displays the project item.</returns>
-        public static Window Open(string sourceFile)
+        public Window Open(string sourceFile)
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             Window window = dte.ItemOperations.OpenFile(sourceFile);
@@ -135,7 +139,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Get Visual Studio <seealso cref="IServiceProvider"/>.
         /// </summary>
-        public static ServiceProvider GetGloblalServiceProvider()
+        public ServiceProvider GetGloblalServiceProvider()
         {
             var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
             VSOLEInterop.IServiceProvider sp = (VSOLEInterop.IServiceProvider)dte2;
@@ -145,7 +149,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Executes the "File.SaveAll" command in the shell, which will save all currently dirty files.
         /// </summary>
-        public static void SaveAllFiles()
+        public void SaveAllFiles()
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.SaveAll");
@@ -155,7 +159,7 @@ namespace GoogleCloudExtension.Utils
         /// Register a Visual Studio Window close event handler.
         /// </summary>
         /// <param name="onWindowCloseEventHandler">The event handler.</param>
-        public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
+        public void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
         {
             var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
@@ -166,7 +170,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="localPath">Create the solution at the path.</param>
         /// <param name="name">The solution name.</param>
-        public static void CreateEmptySolution(string localPath, string name)
+        public void CreateEmptySolution(string localPath, string name)
         {
             localPath.ThrowIfNullOrEmpty(nameof(localPath));
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
@@ -183,7 +187,7 @@ namespace GoogleCloudExtension.Utils
         /// Open a create solution dialog on the given path.
         /// </summary>
         /// <param name="path">The initial path in the create solution dialog.</param>
-        public static void LaunchCreateSolutionDialog(string path)
+        public void LaunchCreateSolutionDialog(string path)
         {
             path.ThrowIfNullOrEmpty(nameof(path));
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
@@ -200,7 +204,7 @@ namespace GoogleCloudExtension.Utils
             solution?.CreateNewProjectViaDlg(null, null, 0);
         }
 
-        private static void SetShellNormal()
+        private void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();
             var isDebugging = IsDebugging();
@@ -210,7 +214,7 @@ namespace GoogleCloudExtension.Utils
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_guid, isDebugging);
         }
 
-        private static IVsMonitorSelection GetMonitorSelectionService()
+        private IVsMonitorSelection GetMonitorSelectionService()
         {
             var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
             if (monitorSelection == null)
@@ -222,7 +226,7 @@ namespace GoogleCloudExtension.Utils
             return monitorSelection;
         }
 
-        private static void SetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid, bool value)
+        private void SetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid, bool value)
         {
             uint cookie = 0;
 
@@ -233,7 +237,7 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        private static bool GetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid)
+        private bool GetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid)
         {
             uint cookie = 0;
             int isActive = 0;

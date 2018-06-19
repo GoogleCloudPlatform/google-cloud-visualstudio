@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Accounts
     /// The serialize form can also be consumed as the "application default credentials" by apps using
     /// Google's client NuGet packages.
     /// </summary>
-    public class UserAccount
+    public class UserAccount : IUserAccount
     {
         [JsonProperty("account")]
         public string AccountName { get; set; }

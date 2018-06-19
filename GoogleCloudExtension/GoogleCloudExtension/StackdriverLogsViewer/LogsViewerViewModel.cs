@@ -644,7 +644,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return new LoggingDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             }
             else
             {

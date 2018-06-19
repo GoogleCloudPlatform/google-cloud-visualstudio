@@ -190,7 +190,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             _groupStatsCollection.Clear();
             _nextPageToken = null;
-            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             return new StackdriverErrorReportingDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
         }
     }
 }

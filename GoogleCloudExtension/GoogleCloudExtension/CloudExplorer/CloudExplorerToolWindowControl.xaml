@@ -3,18 +3,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:CloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
+             xmlns:cloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
-             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
-             xmlns:crm="clr-namespace:Google.Apis.CloudResourceManager.v1.Data;assembly=Google.Apis.CloudResourceManager.v1"
+             x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             xmlns:sample="clr-namespace:GoogleCloudExtension.CloudExplorer.SampleData"
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
+             xmlns:consoleLinks="clr-namespace:GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks"
+             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance sample:LoadingState, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance cloudExplorer:CloudExplorerViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,18 +29,18 @@
             <!-- Data templates for the various data sources shown in the Cloud Explorer. -->
 
             <!-- Common node template, defines the UI for all nodes. -->
-            <DataTemplate x:Key="nodeTemplate">
+            <DataTemplate x:Key="nodeTemplate" DataType="{x:Type cloudExplorer:TreeNode}">
                 <Grid>
                     <StackPanel Orientation="Horizontal">
                         <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
 
                         <!-- Message icons, warning and error. -->
-                        <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
+                        <Image Source="{x:Static cloudExplorer:TreeNode.ErrorIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
-                        <Image Source="{x:Static CloudExplorer:TreeNode.WarningIcon}"
+                        <Image Source="{x:Static cloudExplorer:TreeNode.WarningIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsWarning, Converter={StaticResource visibilityConverter}}"
@@ -61,23 +60,39 @@
                 </Grid>
             </DataTemplate>
 
+            <HierarchicalDataTemplate DataType="{x:Type consoleLinks:ConsoleLinksRoot}" ItemsSource="{Binding Children}">
+                <TextBlock Focusable="False">
+                    <Hyperlink Focusable="False"
+                               Command="{Binding NavigateCommand}"
+                               Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogHyperlinkStyleKey}}">
+                        <TextBlock Focusable="False" Text="{Binding Caption}" />
+                    </Hyperlink>
+                </TextBlock>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate DataType="{x:Type consoleLinks:ConsoleLinkGroup}" ItemsSource="{Binding Children}">
+                <TextBlock Focusable="False" Text="{Binding Caption}"/>
+            </HierarchicalDataTemplate>
+
             <!-- Data template to be applied to the TreeHierarchy, which are the nodes that have children. -->
-            <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
+            <HierarchicalDataTemplate DataType="{x:Type cloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
             </HierarchicalDataTemplate>
 
             <!-- Data template to be applied to the TreeLeaf, which terminate the hierarchy as they don't have children. -->
-            <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
+            <DataTemplate DataType="{x:Type cloudExplorer:TreeLeaf}">
                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
             </DataTemplate>
 
             <!-- Data template to be applied to the link leaf, which terminate the nodes and shows a link. -->
-            <DataTemplate DataType="{x:Type CloudExplorer:TreeLeafLink}">
+            <DataTemplate DataType="{x:Type consoleLinks:ConsoleLink}">
                 <TextBlock Focusable="False">
-                <Hyperlink Focusable="False" Command="{Binding NavigateCommand}" Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Focusable="False" Text="{Binding Caption}" />
-                </Hyperlink>
-            </TextBlock>
+                    <Hyperlink Focusable="False"
+                               Command="{Binding NavigateCommand}"
+                               Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogHyperlinkStyleKey}}">
+                        <TextBlock Focusable="False" Text="{Binding Caption}" />
+                    </Hyperlink>
+                </TextBlock>
             </DataTemplate>
 
             <!-- Data template for a placeholder message. -->
@@ -145,7 +160,7 @@
             <!-- The styles for the TreeViewItem. -->
 
             <!-- Referenced by the modified TreeViewItem template, it is unmodifed from the one generated by the VS tooling. -->
-            <Style x:Key="TreeViewItemToggleButton_Style" TargetType="{x:Type ToggleButton}">
+            <Style x:Key="TreeViewItemToggleButtonStyle" TargetType="{x:Type ToggleButton}">
                 <Setter Property="Focusable" Value="False"/>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -167,11 +182,12 @@
 
             <!-- TreeItemView style used to set the binding property and replace the colors to use the themed ones. -->
             <Style x:Key="CloudExlorerTreeItemViewStyle" TargetType="{x:Type TreeViewItem}">
+                <d:Style.DataContext><x:Type Type="cloudExplorer:TreeHierarchy"></x:Type></d:Style.DataContext>
                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                 <Setter Property="Foreground" Value="{DynamicResource VsBrush.WindowText}"/>
                 <Setter Property="ContextMenu" Value="{Binding Header.ContextMenu, RelativeSource={RelativeSource Self}}" />
-                <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown" />
-                <EventSetter Event="TreeViewItem.ContextMenuOpening" Handler="TreeViewItem_ContextMenuOpening" />
+                <EventSetter Event="PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown" />
+                <EventSetter Event="ContextMenuOpening" Handler="TreeViewItem_ContextMenuOpening" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -188,7 +204,7 @@
                                 <Border x:Name="Bd" Grid.Column="1" Margin="{TemplateBinding Padding}">
                                     <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
                                 </Border>
-                                <ToggleButton x:Name="Expander" ClickMode="Press" Foreground="{TemplateBinding Foreground}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource TreeViewItemToggleButton_Style}"/>
+                                <ToggleButton x:Name="Expander" ClickMode="Press" Foreground="{TemplateBinding Foreground}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource TreeViewItemToggleButtonStyle}"/>
                                 <ItemsPresenter x:Name="ItemsHost" Grid.Column="1" Grid.Row="1" Visibility="Collapsed"/>
                             </Grid>
                             <ControlTemplate.Triggers>
@@ -247,11 +263,11 @@
 
             <!-- Style of the TreeView used in the Cloud Explorer. -->
             <Style x:Key="CloudExplorerTreeViewStyle" TargetType="{x:Type TreeView}">
-                <Setter Property="Background" Value="{DynamicResource VsBrush.Window}"/>
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelBorderKey}}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="Padding" Value="1"/>
-                <Setter Property="Foreground" Value="{DynamicResource VsBrush.WindowText}"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
                 <Setter Property="ItemContainerStyle" Value="{StaticResource CloudExlorerTreeItemViewStyle}" />
             </Style>
 
@@ -286,8 +302,7 @@
 
             <!-- First the buttons instantiated from the sources -->
             <ItemsControl ItemsSource="{Binding Buttons}"
-                          Focusable="False"
-                          Visibility="{Binding IsValidInstallation, Converter={StaticResource visibilityConverter}}">
+                          Focusable="False">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Style="{StaticResource CommandBarStyle}" />

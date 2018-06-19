@@ -20,44 +20,119 @@ namespace GoogleCloudExtension.Utils.Async
     /// <summary>
     /// Base class for modeling a task. Implementations should NotifyAllPropertyChanged when the task completes.
     /// </summary>
-    public abstract class AsyncPropertyBase : Model
+    public abstract class AsyncPropertyBase<T> : Model where T : Task
     {
         /// <summary>
-        /// The task to trigger a nodify on completion.
+        /// A task that succeeds when the actual task completes. This task will never throw.
         /// </summary>
-        public abstract Task Task { get; }
+        public Task SafeTask { get; }
 
         /// <summary>
-        /// Returns true if the wrapped task is in error.
+        /// The actual task sent to the property.
         /// </summary>
-        public bool IsError => Task?.IsFaulted ?? false;
-
-        /// <summary>
-        /// Gets the relevant exception, if it exists.
-        /// </summary>
-        public string ErrorMessage =>
-            Task.Exception?.InnerException?.Message ??
-            Task.Exception?.InnerExceptions?.FirstOrDefault()?.Message ??
-            Task.Exception?.Message;
-
-        /// <summary>
-        /// True if the task ended execution due to being canceled.
-        /// </summary>
-        public bool IsCanceled => Task?.IsCanceled ?? false;
-
-        /// <summary>
-        /// Returns true if the wrapped task is completed.
-        /// </summary>
-        public bool IsCompleted => Task?.IsCompleted ?? true;
+        public T ActualTask { get; }
 
         /// <summary>
         /// Returns whether the wrapped task is still pending.
         /// </summary>
-        public bool IsPending => !Task?.IsCompleted ?? false;
+        public bool IsPending => !ActualTask?.IsCompleted ?? false;
+
+        /// <summary>
+        /// Returns true if the wrapped task is completed.
+        /// </summary>
+        public bool IsCompleted => ActualTask?.IsCompleted ?? false;
 
         /// <summary>
         /// True if the task completed without cancelation or exception.
         /// </summary>
         public bool IsSuccess => IsCompleted && !IsCanceled && !IsError;
+
+        /// <summary>
+        /// True if the task ended execution due to being canceled.
+        /// </summary>
+        public bool IsCanceled => ActualTask?.IsCanceled ?? false;
+
+
+        /// <summary>
+        /// Returns true if the wrapped task is in error.
+        /// </summary>
+        public bool IsError => ActualTask?.IsFaulted ?? false;
+
+        /// <summary>
+        /// Gets the relevant exception, if it exists.
+        /// </summary>
+        public string ErrorMessage =>
+            ActualTask?.Exception?.InnerException?.Message ??
+            ActualTask?.Exception?.InnerExceptions?.Select(e => e?.Message)
+                .FirstOrDefault(m => !string.IsNullOrEmpty(m)) ??
+            ActualTask?.Exception?.Message;
+
+        protected AsyncPropertyBase(T task)
+        {
+            ActualTask = task;
+            SafeTask = WaitTask();
+        }
+
+        private async Task WaitTask()
+        {
+            if (ActualTask != null)
+            {
+                try
+                {
+                    await ActualTask;
+                }
+                catch
+                {
+                    // Check exceptions using task.
+                }
+
+                OnTaskComplete();
+                RaiseTaskCompletedPropertiesChanged();
+            }
+        }
+
+        private void RaiseTaskCompletedPropertiesChanged()
+        {
+            SafeRaisePropertyChanged(nameof(IsPending));
+            SafeRaisePropertyChanged(nameof(IsCompleted));
+            if (IsSuccess)
+            {
+                SafeRaisePropertyChanged(nameof(IsSuccess));
+            }
+
+            if (IsCanceled)
+            {
+                SafeRaisePropertyChanged(nameof(IsCanceled));
+            }
+
+            if (IsError)
+            {
+                SafeRaisePropertyChanged(nameof(IsError));
+            }
+
+            if (ErrorMessage != null)
+            {
+                SafeRaisePropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        private void SafeRaisePropertyChanged(string propertyName)
+        {
+            try
+            {
+                RaisePropertyChanged(propertyName);
+            }
+            catch
+            {
+                // Keep SafeTask safe. Ignore event handler exceptions.
+            }
+        }
+
+        /// <summary>
+        /// Called when the actual task completes.
+        /// </summary>
+        protected virtual void OnTaskComplete()
+        {
+        }
     }
 }

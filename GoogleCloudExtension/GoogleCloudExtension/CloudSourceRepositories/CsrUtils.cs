@@ -15,7 +15,7 @@
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             return new CsrDataSource(
                 projectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
         }
     }
 }

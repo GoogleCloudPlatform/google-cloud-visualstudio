@@ -22,30 +22,26 @@ namespace GoogleCloudExtension.Projects.DotNet4
     /// <summary>
     /// This class represents .NET 4.x .csproj based project.
     /// </summary>
-    internal class CsprojProject : IParsedProject
+    internal class CsprojProject : IParsedDteProject
     {
         private static readonly Regex s_frameworkVersionRegex = new Regex("(?<=Version=v)[\\d.]+");
-        private readonly Project _project;
+        public Project Project { get; }
 
-        #region IParsedProject
+        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
 
-        public string DirectoryPath => Path.GetDirectoryName(_project.FullName);
+        public string FullPath => Project.FullName;
 
-        public string FullPath => _project.FullName;
-
-        public string Name => _project.Name;
+        public string Name => Project.Name;
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
 
         /// <summary>The version of the framework used by the project.</summary>
         public string FrameworkVersion { get; }
 
-        #endregion
-
         public CsprojProject(Project project)
         {
-            _project = project;
-            string targetFramework = project.Properties.Item("TargetFrameworkMoniker").Value.ToString();
+            Project = project;
+            string targetFramework = Project.Properties.Item("TargetFrameworkMoniker").Value.ToString();
             FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;
         }
     }

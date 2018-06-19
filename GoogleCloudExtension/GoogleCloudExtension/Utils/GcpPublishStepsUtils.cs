@@ -25,6 +25,8 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class GcpPublishStepsUtils
     {
+        private static readonly Regex s_defaultVersionFormatRegex = new Regex("^[0-9]{8}t[0-9]{6}");
+
         // Static properties for unit testing.
         internal static DateTime? NowOverride { private get; set; }
         private static DateTime Now => NowOverride ?? DateTime.Now;
@@ -92,16 +94,88 @@ namespace GoogleCloudExtension.Utils
 
         public static IEnumerable<ValidationResult> ValidatePositiveNonZeroInteger(string value, string fieldName)
         {
-            int intValue;
-            if (!int.TryParse(value, out intValue))
+            if (!int.TryParse(value, out int intValue) || intValue <= 0)
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
             }
-            else if (intValue <= 0)
+        }
+
+        /// <summary>
+        /// Increments or updates a version string.
+        /// </summary>
+        /// <remarks>
+        /// If the input is null or whitespace, returns the default version.
+        /// If the version string matches a default version, the new version is a default version with the new time.
+        /// If the version string contains exactly one integer, increment the integer and return the new string.
+        /// If the version string ends with an integer, increment the integer and return the new string.
+        /// Otherwise, append "2" to the string and return.
+        /// </remarks>
+        /// <param name="version">The version to increment.</param>
+        /// <returns>The incremented version.</returns>
+        public static string IncrementVersion(string version)
+        {
+            var singleIntegerRegex = new Regex("^[^0-9]*[0-9]+[^0-9]*$");
+            var captureSingleIntRegex = new Regex("[0-9]+");
+            var captureTraingIntRegex = new Regex("[0-9]+$");
+            if (string.IsNullOrWhiteSpace(version) || IsDefaultVersion(version))
+            {
+                return GetDefaultVersion();
+            }
+            else if (singleIntegerRegex.IsMatch(version) &&
+                int.TryParse(captureSingleIntRegex.Match(version).Value, out int capturedInt))
+            {
+                capturedInt++;
+                return captureSingleIntRegex.Replace(version, capturedInt.ToString());
+            }
+            else if (captureTraingIntRegex.IsMatch(version) && int.TryParse(
+              captureTraingIntRegex.Match(version).Value, out capturedInt))
+            {
+                capturedInt++;
+                return captureTraingIntRegex.Replace(version, capturedInt.ToString());
+            }
+            else
+            {
+                return version + "2";
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the given version string matches the default version regex.
+        /// </summary>
+        /// <param name="version">The version string to test.</param>
+        public static bool IsDefaultVersion(string version) =>
+            version != null && s_defaultVersionFormatRegex.IsMatch(version);
+
+        public static IEnumerable<ValidationResult> ValidateServiceName(string name, string fieldName)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                yield break;
+            }
+
+            if (!Regex.IsMatch(name, @"^[a-z\dA-Z]"))
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationPositiveNonZeroMessage), fieldName);
+                    nameof(Resources.ValidationStartLetterOrNumberMessage), fieldName);
+            }
+
+            if (!Regex.IsMatch(name, @"[a-z\dA-Z]$"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationEndLetterOrNumberMessage), fieldName);
+            }
+
+            if (Regex.IsMatch(name, @"[^a-z\d\-A-Z]"))
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationAllLetterNumberOrDashMessage), fieldName);
+            }
+
+            if (name.Length >= 64)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationMaxCharactersMessage), fieldName, 64);
             }
         }
     }

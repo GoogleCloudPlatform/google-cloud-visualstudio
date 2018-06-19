@@ -22,29 +22,25 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// <summary>
     /// This class represents a .NET Core project based on .csproj.
     /// </summary>
-    internal class CsprojProject : IParsedProject
+    public class CsprojProject : IParsedDteProject
     {
         private static readonly Regex s_frameworkVersionRegex = new Regex(@"(?<=^netcoreapp)[\d.]+$");
-        private readonly Project _project;
+        public Project Project { get; }
 
-        #region IParsedProject
+        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
 
-        public string DirectoryPath => Path.GetDirectoryName(_project.FullName);
+        public string FullPath => Project.FullName;
 
-        public string FullPath => _project.FullName;
-
-        public string Name => _project.Name;
+        public string Name => Project.Name;
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
 
         /// <summary>The version of the framework used by the project.</summary>
         public string FrameworkVersion { get; }
 
-        #endregion
-
         public CsprojProject(Project project, string targetFramework)
         {
-            _project = project;
+            Project = project;
             FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;
         }
     }

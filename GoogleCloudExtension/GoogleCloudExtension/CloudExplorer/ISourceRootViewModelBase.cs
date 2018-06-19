@@ -18,16 +18,6 @@ namespace GoogleCloudExtension.CloudExplorer
     public interface ISourceRootViewModelBase : ITreeHierarchy
     {
         /// <summary>
-        /// Returns the context in which this source root view model is working.
-        /// </summary>
-        ICloudSourceContext Context { get; }
-
-        /// <summary>
-        /// Initialize the view model using the given context.
-        /// </summary>
-        void Initialize(ICloudSourceContext context);
-
-        /// <summary>
         /// Refresh the state of the view model from external data sources.
         /// </summary>
         void Refresh();

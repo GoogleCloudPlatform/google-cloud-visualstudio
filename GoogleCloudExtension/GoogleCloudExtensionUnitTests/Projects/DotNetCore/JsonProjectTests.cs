@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects.DotNetCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
 {
@@ -22,11 +24,57 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
     public class JsonProjectTests
     {
         [TestMethod]
+        public void TestConstructor_SetsProject()
+        {
+            var mockedProject = Mock.Of<Project>();
+            var objectUnderTest = new JsonProject(mockedProject);
+
+            Assert.AreEqual(mockedProject, objectUnderTest.Project);
+        }
+
+        [TestMethod]
         public void TestProjectType_IsNetCore()
         {
-            var objectUnderTest = new JsonProject("");
+            var objectUnderTest = new JsonProject(Mock.Of<Project>());
 
             Assert.AreEqual(KnownProjectTypes.NetCoreWebApplication, objectUnderTest.ProjectType);
+        }
+
+        [TestMethod]
+        public void TestFrameworkVersion_IsPreview()
+        {
+            var objectUnderTest = new JsonProject(Mock.Of<Project>());
+
+            Assert.AreEqual(JsonProject.PreviewVersion, objectUnderTest.FrameworkVersion);
+        }
+
+        [TestMethod]
+        public void TestName_ComesFromProject()
+        {
+            const string testProjectName = @"c:\Full\TestProject\Name";
+            var mockedProject = Mock.Of<Project>(p => p.FullName == testProjectName);
+            var objectUnderTest = new JsonProject(mockedProject);
+
+            Assert.AreEqual("TestProject", objectUnderTest.Name);
+        }
+
+        [TestMethod]
+        public void TestFullPath_ComesFromProject()
+        {
+            const string testProjectName = @"c:\Full\Project\Name";
+            var mockedProject = Mock.Of<Project>(p => p.FullName == testProjectName);
+            var objectUnderTest = new JsonProject(mockedProject);
+
+            Assert.AreEqual(testProjectName, objectUnderTest.FullPath);
+        }
+
+        [TestMethod]
+        public void TestDirectoryPath_ComesFromProject()
+        {
+            var mockedProject = Mock.Of<Project>(p => p.FullName == @"c:\Full\Project\Path");
+            var objectUnderTest = new JsonProject(mockedProject);
+
+            Assert.AreEqual(@"c:\Full\Project", objectUnderTest.DirectoryPath);
         }
     }
 }

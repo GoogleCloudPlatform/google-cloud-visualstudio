@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.DataSources
     /// This class wraps a PlusService API service, which can be used to find information
     /// from the user's profile.
     /// </summary>
-    public class GPlusDataSource : DataSourceBase<PlusService>
+    public class GPlusDataSource : DataSourceBase<PlusService>, IGPlusDataSource
     {
         public GPlusDataSource(GoogleCredential credential, string appName)
             : base(credential, init => new PlusService(init), appName)

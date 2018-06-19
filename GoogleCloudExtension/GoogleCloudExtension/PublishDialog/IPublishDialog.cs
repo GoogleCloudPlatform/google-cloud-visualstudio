@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.PublishDialog.Steps;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -30,14 +32,14 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Returns the the VS project selected by the user.
         /// </summary>
-        IParsedProject Project { get; }
+        IParsedDteProject Project { get; }
 
         /// <summary>
         /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and sets the step
         /// as the current displayed step in the dialog.
         /// </summary>
         /// <param name="step">The step to navigate to.</param>
-        void NavigateToStep(IPublishDialogStep step);
+        void NavigateToStep(IStepContent<IPublishDialogStep> step);
 
         /// <summary>
         /// Called from a step that wants to finish the flow. In essence closes the dialog.
@@ -52,9 +54,9 @@ namespace GoogleCloudExtension.PublishDialog
         event EventHandler FlowFinished;
 
         /// <summary>
-        /// Makes the dialog look "busy" as long as <paramref name="task"/> is not completed.
+        /// Makes the dialog look "busy" as long as the <paramref name="task"/> is running.
         /// </summary>
-        /// <param name="task">The task.</param>
+        /// <param name="task">The task to track.</param>
         void TrackTask(Task task);
     }
 }

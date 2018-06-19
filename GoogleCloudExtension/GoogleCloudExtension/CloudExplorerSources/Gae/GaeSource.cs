@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// Google App Engine source for the Cloud Explorer.
     /// </summary>
-    internal class GaeSource : CloudExplorerSourceBase<GaeSourceRootViewModel>
+    internal class GaeSource : DynamicCloudExplorerSourceBase<GaeSourceRootViewModel>
     {
         public GaeSource(ICloudSourceContext context) : base(context)
         { }

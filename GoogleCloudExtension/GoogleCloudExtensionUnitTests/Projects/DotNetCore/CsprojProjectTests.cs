@@ -24,6 +24,15 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
     public class CsprojProjectTests
     {
         [TestMethod]
+        public void TestConstructor_SetsProject()
+        {
+            var mockedProject = Mock.Of<Project>();
+            var objectUnderTest = new CsprojProject(mockedProject, "");
+
+            Assert.AreEqual(mockedProject, objectUnderTest.Project);
+        }
+
+        [TestMethod]
         public void TestConstructor_SetsFrameworkVersion()
         {
             var objectUnderTest = new CsprojProject(Mock.Of<Project>(), "netcoreapp1.7");
@@ -37,6 +46,35 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
             var objectUnderTest = new CsprojProject(Mock.Of<Project>(), "netcoreapp1.7");
 
             Assert.AreEqual(KnownProjectTypes.NetCoreWebApplication, objectUnderTest.ProjectType);
+        }
+
+        [TestMethod]
+        public void TestName_ComesFromProject()
+        {
+            const string testProjectName = "TestProjectName";
+            var mockedProject = Mock.Of<Project>(p => p.Name == testProjectName);
+            var objectUnderTest = new CsprojProject(mockedProject, "");
+
+            Assert.AreEqual(testProjectName, objectUnderTest.Name);
+        }
+
+        [TestMethod]
+        public void TestFullPath_ComesFromProject()
+        {
+            const string testProjectName = @"c:\Full\Project\Name";
+            var mockedProject = Mock.Of<Project>(p => p.FullName == testProjectName);
+            var objectUnderTest = new CsprojProject(mockedProject, "");
+
+            Assert.AreEqual(testProjectName, objectUnderTest.FullPath);
+        }
+
+        [TestMethod]
+        public void TestDirectoryPath_ComesFromProject()
+        {
+            var mockedProject = Mock.Of<Project>(p => p.FullName == @"c:\Full\Project\Path");
+            var objectUnderTest = new CsprojProject(mockedProject, "");
+
+            Assert.AreEqual(@"c:\Full\Project", objectUnderTest.DirectoryPath);
         }
     }
 }

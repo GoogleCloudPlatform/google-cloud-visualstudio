@@ -18,7 +18,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorer.Options;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Options;
@@ -27,10 +26,12 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -69,8 +70,6 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
-    [ProvideOptionPage(typeof(CloudExplorerOptions), OptionsCategoryName, "Cloud Explorer", 0, 0, true, Sort = 1)]
-    [ProvideToolWindow(typeof(GcsFileBrowser.GcsFileBrowserWindow), MultiInstances = true, Transient = true, DocumentLikeTool = true)]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -99,17 +98,21 @@ namespace GoogleCloudExtension
         };
 
         private DTE _dteInstance;
+        private Lazy<IShellUtils> _shellUtilsLazy;
+        private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
+        private Lazy<IProcessService> _processService;
+        private Lazy<IStatusbarService> _statusbarService;
         private event EventHandler ClosingEvent;
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
         /// </summary>
-        public static string ApplicationName => "google-cloud-visualstudio";
+        public string ApplicationName { get; } = "google-cloud-visualstudio";
 
         /// <summary>
         /// The version of the extension's main assembly.
         /// </summary>
-        public static string ApplicationVersion => s_appVersion.Value;
+        public string ApplicationVersion => s_appVersion.Value;
 
         /// <summary>
         /// The version of Visual Studio currently running.
@@ -124,7 +127,32 @@ namespace GoogleCloudExtension
         /// <summary>
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
-        public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+        public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
+        /// <summary>
+        /// The default <see cref="IShellUtils"/> service.
+        /// </summary>
+        public IShellUtils ShellUtils => _shellUtilsLazy.Value;
+
+        /// <summary>
+        /// The default <see cref="IGcpOutputWindow"/> service.
+        /// </summary>
+        public IGcpOutputWindow GcpOutputWindow => _gcpOutputWindowLazy.Value;
+
+        /// <summary>
+        /// The default <see cref="IProcessService"/>
+        /// </summary>
+        public IProcessService ProcessService => _processService.Value;
+
+        /// <summary>
+        /// The default <see cref="IStatusbarService"/>.
+        /// </summary>
+        public IStatusbarService StatusbarHelper => _statusbarService.Value;
+
+        /// <summary>
+        /// The initalized instance of the package.
+        /// </summary>
+        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
         public GoogleCloudExtensionPackage()
         {
@@ -258,9 +286,58 @@ namespace GoogleCloudExtension
             // in the process. This will allow all GCP API services to have more concurrent connections with
             // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
+
+            ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
+            _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
+            _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
+            _processService = mefExportProvider.GetExport<IProcessService>();
+            _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
         }
 
-        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
+        /// <summary>Gets type-based services from the VSPackage service container.</summary>
+        /// <param name="serviceType">The type of service to retrieve.</param>
+        /// <returns>An instance of the requested service, or null if the service could not be found.</returns>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="serviceType" /> is null.</exception>
+        protected override object GetService(Type serviceType)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return base.GetService(serviceType) ?? ServiceProvider.GlobalProvider.GetService(serviceType);
+        }
+
+        /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns>The service.</returns>
+        public I GetService<S, I>()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return (I)GetService(typeof(S));
+        }
+
+        /// <summary>
+        /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>The service.</returns>
+        public T GetMefService<T>() where T : class
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetService<SComponentModel, IComponentModel>().GetService<T>();
+        }
+
+        /// <summary>
+        /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>The <see cref="Lazy{T}"/> that initalizes the service.</returns>
+        public Lazy<T> GetMefServiceLazy<T>() where T : class
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return GetService<SComponentModel, IComponentModel>().DefaultExportProvider.GetExport<T>();
+        }
 
         #endregion
 
@@ -273,19 +350,15 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage
-        {
-            return (T)GetDialogPage(typeof(T));
-        }
+        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
 
         /// <summary>
         /// Displays the options page of the given type.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to display.</typeparam>
-        public void ShowOptionPage<T>() where T : DialogPage
-        {
-            ShowOptionPage(typeof(T));
-        }
+        public void ShowOptionPage<T>() where T : DialogPage => ShowOptionPage(typeof(T));
+
+        #endregion
 
         /// <summary>
         /// Finds and returns an instance of the given tool window.
@@ -300,8 +373,6 @@ namespace GoogleCloudExtension
         {
             return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
         }
-
-        #endregion
 
         /// <summary>
         /// Checks the installed version vs the version that is running, and will report either a new install

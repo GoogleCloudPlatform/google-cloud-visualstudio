@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,10 +42,11 @@ namespace GoogleCloudExtension.Utils.Validation
             new Dictionary<string, IList<ValidationResult>>();
 
         /// <summary>
-        /// The map of validation errors.
+        /// The map of validation errors. Any updates to this map should raise  <see cref="HasErrors"/> property changed.
         /// </summary>
         private readonly Dictionary<string, IList<ValidationResult>> _pendingResultsMap =
             new Dictionary<string, IList<ValidationResult>>();
+
 
         /// <summary>
         /// True if any of the pending validations are not valid.
@@ -59,14 +59,34 @@ namespace GoogleCloudExtension.Utils.Validation
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         /// <summary>
-        /// Exposes the validation delay task for testing purposes given that the
-        /// validation method is (needs to be) async void.
+        /// Exposes the delayed validation task for testing.
         /// </summary>
-        internal Task ValidationDelayTask { get; private set; }
+        internal Task LatestDelayedValidationUpdateTask { get; private set; }
 
         protected ValidatingViewModelBase()
         {
-            ValidationDelayTask = TplExtensions.CompletedTask;
+            LatestDelayedValidationUpdateTask = Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Returns the equivlent of <see cref="HasErrors"/> for the given individual property.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to check for errors.</param>
+        /// <returns>True if the given property has errors, pending or not.</returns>
+        public bool PropertyHasErrors(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                return HasErrors;
+            }
+            else if (_pendingResultsMap.ContainsKey(propertyName))
+            {
+                return _pendingResultsMap[propertyName].Any(v => !v.IsValid);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -90,6 +110,14 @@ namespace GoogleCloudExtension.Utils.Validation
             }
         }
 
+        /// <summary>
+        /// Sets a storage location to a value and sets validation results.
+        /// </summary>
+        /// <typeparam name="T">The type being stored.</typeparam>
+        /// <param name="storage">The reference location to set.</param>
+        /// <param name="value">The value the storage is set to.</param>
+        /// <param name="validations">The validation results.</param>
+        /// <param name="propertyName">The name of the property.</param>
         protected void SetAndRaiseWithValidation<T>(
             ref T storage,
             T value,
@@ -120,28 +148,25 @@ namespace GoogleCloudExtension.Utils.Validation
                 validationResults = validations.ToList();
             }
             _pendingResultsMap[property] = validationResults;
-            HasErrorsChangedInternal();
-            ScheduleUpdateErrors(property, validationResults);
+            RaisePropertyChanged(nameof(HasErrors));
+            HasErrorsChanged();
+            LatestDelayedValidationUpdateTask = ScheduleUpdateErrorsAsync(property, validationResults);
         }
 
-        private async void ScheduleUpdateErrors(string property, List<ValidationResult> validationResults)
+        private async Task ScheduleUpdateErrorsAsync(
+            string property,
+            IReadOnlyCollection<ValidationResult> validationResults)
         {
             if (validationResults.Any(r => !r.IsValid))
             {
-                ValidationDelayTask = Task.Delay(MillisecondsDelay);
-                await ValidationDelayTask;
+                await Task.Delay(MillisecondsDelay);
             }
+
             if (validationResults.Equals(_pendingResultsMap[property]))
             {
                 _validationsMap[property] = _pendingResultsMap[property];
                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(property));
             }
-        }
-
-        private void HasErrorsChangedInternal()
-        {
-            RaisePropertyChanged(nameof(HasErrors));
-            HasErrorsChanged();
         }
 
         /// <summary>
@@ -150,9 +175,6 @@ namespace GoogleCloudExtension.Utils.Validation
         protected virtual void HasErrorsChanged() { }
 
         /// <inheritdoc />
-        IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
-        {
-            return GetErrors(propertyName);
-        }
+        IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName) => GetErrors(propertyName);
     }
 }

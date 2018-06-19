@@ -369,58 +369,6 @@
     <value>The status of the zone.</value>
     <comment>The description of the status property of a GCE zone.</comment>
   </data>
-  <data name="CloudExplorerGcsBucketCategory" xml:space="preserve">
-    <value>Bucket Properties</value>
-    <comment>The category for GCS bucket properties.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketCreatedDescription" xml:space="preserve">
-    <value>The creation time stamp for the bucket</value>
-    <comment>The description of the created property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketModifiedDescription" xml:space="preserve">
-    <value>The modification time stamp for the bucket</value>
-    <comment>The description of the updated property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketNameDescription" xml:space="preserve">
-    <value>The name of the bucket</value>
-    <comment>The description of the name property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketStorageClassDescription" xml:space="preserve">
-    <value>The storage class for the bucket</value>
-    <comment>The description of the storage class property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketStorageClassDisplayName" xml:space="preserve">
-    <value>Storage Class</value>
-    <comment>The display name of the storage class property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketVersioningEnabledDescription" xml:space="preserve">
-    <value>Whether versioning is enabled for the bucket</value>
-    <comment>The description of the versioning enabled property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketVersioningEnabledDisplayName" xml:space="preserve">
-    <value>Is Versioning Enabled</value>
-    <comment>The display name of the versioning enabled property of a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsFailedToListBucketsCaption" xml:space="preserve">
-    <value>Failed to list buckets.</value>
-    <comment>Caption shown when failed to load GCS buckets.</comment>
-  </data>
-  <data name="CloudExplorerGcsLoadingBucketsCaption" xml:space="preserve">
-    <value>Loading buckets...</value>
-    <comment>Caption shown while loading the GCS buckets.</comment>
-  </data>
-  <data name="CloudExplorerGcsNoBucketsFoundCaption" xml:space="preserve">
-    <value>No buckets found.</value>
-    <comment>Caption shown when no GCS buckets are found.</comment>
-  </data>
-  <data name="CloudExplorerGcsRootNodeCaption" xml:space="preserve">
-    <value>Google Cloud Storage</value>
-    <comment>The caption for the root node of the GCS source.</comment>
-  </data>
-  <data name="CloudExplorerGcsSourceApiDisabledMessage" xml:space="preserve">
-    <value>The Google Cloud Storage API is not enabled for this project.</value>
-    <comment>Message shown when the GCS API is disabled.</comment>
-  </data>
   <data name="CloudExplorerLoadingMessage" xml:space="preserve">
     <value>Loading...</value>
     <comment>General loading message.</comment>
@@ -437,50 +385,6 @@
     <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
-  <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
-    <value>No projects found</value>
-    <comment>Message for the placeholder element displayed when no projects are found.</comment>
-  </data>
-  <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
-    <value>Failed to load Topics</value>
-    <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>
-  </data>
-  <data name="CloudExplorerPubSubLoadingTopicsCaption" xml:space="preserve">
-    <value>Loading Topics...</value>
-    <comment>Caption shown when loading Pub/Sub topics.</comment>
-  </data>
-  <data name="CloudExplorerPubSubNewTopicMenuHeader" xml:space="preserve">
-    <value>New Topic</value>
-    <comment>Header for menu item to create a new Pub/Sub topic.</comment>
-  </data>
-  <data name="CloudExplorerPubSubNoTopicsFoundCaption" xml:space="preserve">
-    <value>No Topics Found</value>
-    <comment>Caption shown when no Pub/Sub topics are found.</comment>
-  </data>
-  <data name="CloudExplorerPubSubRootCaption" xml:space="preserve">
-    <value>Google Cloud Pub/Sub</value>
-    <comment>Root caption for Google Cloud Pub/Sub.</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionCategory" xml:space="preserve">
-    <value>Subscription Properties</value>
-    <comment>The category for PubSub subscription properties.</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionNameDescription" xml:space="preserve">
-    <value>The Name of the Subscription</value>
-    <comment>The description of the name property of a PubSub subscription.</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionTopicDescription" xml:space="preserve">
-    <value>The Topic the Subscription reads from</value>
-    <comment>The description of the topic property of a PubSub subscription.</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicCategory" xml:space="preserve">
-    <value>Topic Properties</value>
-    <comment>The category for PubSub topic properties.</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicNameDescription" xml:space="preserve">
-    <value>The Name of the Topic</value>
-    <comment>The description of the name property of a PubSub topic.</comment>
-  </data>
   <data name="CloudExplorerRefreshButtonToolTip" xml:space="preserve">
     <value>Refresh</value>
     <comment>The tooltip for the refresh button.</comment>
@@ -488,62 +392,6 @@
   <data name="CloudExplorerSelectAccountMessage" xml:space="preserve">
     <value>Select _account...</value>
     <comment>General select account message.</comment>
-  </data>
-  <data name="CloudExplorerSqlBackendTypeDisplayName" xml:space="preserve">
-    <value>Backend Type</value>
-    <comment>The display name for the backend type property for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlDatabaseVersionDisplayName" xml:space="preserve">
-    <value>Database Version</value>
-    <comment>The display name for the database version proeprty for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlFailedMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud SQL instances.</value>
-    <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlUpdateAthorizedNetworksErrorMessage" xml:space="preserve">
-    <value>Failed to updated authorized networks.</value>
-    <comment>Message shown when an attempt to updated authorized networks fails.</comment>
-  </data>
-  <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to list instances.</value>
-    <comment>Caption shown when failed to load SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceCategory" xml:space="preserve">
-    <value>Instance Properties</value>
-    <comment>Category for the SQL instance properties.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceIpAddressDisplayName" xml:space="preserve">
-    <value>IP Address</value>
-    <comment>The display name for the instance IP address.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceTypeDisplayName" xml:space="preserve">
-    <value>Instance Type</value>
-    <comment>The display name for the instance type property for SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading SQL instances.</comment>
-  </data>
-  <data name="CloudExplorerSqlNoInstancesFoundCaption" xml:space="preserve">
-    <value>No instances found.</value>
-    <comment>Caption shown when no SQL instances are found.</comment>
-  </data>
-  <data name="CloudExplorerSqlUpdatedAthorizedNetworksCaption" xml:space="preserve">
-    <value>Updating authorized networks...</value>
-    <comment>Caption shown when the authorized networks are being updated.</comment>
-  </data>
-  <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection...</value>
-    <comment>Menu header for the open add data connection dialog menu item.</comment>
-  </data>
-  <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
-    <value>Manage authorized networks...</value>
-    <comment>Menu header for the option to manage authorized networks.</comment>
-  </data>
-  <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
-    <value>Google Cloud SQL</value>
-    <comment>Caption for the root node in the SQL source.</comment>
   </data>
   <data name="CloudExplorerStatusMenuHeader" xml:space="preserve">
     <value>Status</value>
@@ -593,18 +441,6 @@
     <value>Manage Accounts</value>
     <comment>The title for the manage accounts window.</comment>
   </data>
-  <data name="MySqlInstallerWindowBottomMessage" xml:space="preserve">
-    <value>Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio.</value>
-    <comment>Bottom message for the MySql installer window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTitle" xml:space="preserve">
-    <value>Download MySQL for Visual Studio</value>
-    <comment>Title for the MySql isntaller window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTopMessage" xml:space="preserve">
-    <value>To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed. It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.</value>
-    <comment>Top message for the MySql installer window.</comment>
-  </data>
   <data name="OAuthFlowWindowMessage" xml:space="preserve">
     <value>A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically.</value>
     <comment>OAUTH flow window message.</comment>
@@ -620,34 +456,6 @@
   <data name="PortManagerWindowMessage" xml:space="preserve">
     <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
-    <value>Manage Authorized Networks</value>
-    <comment>Caption for the manage authorized networks dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowMessage" xml:space="preserve">
-    <value>Manage authorized networks that can connect to your instance.</value>
-    <comment>Main message in the authorized networks dialog.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowNameTextBoxTitle" xml:space="preserve">
-    <value>Name (Optional):</value>
-    <comment>Title for the name text box use to create new authorized networks.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowValueTextBoxTitle" xml:space="preserve">
-    <value>Network (CIDR Notation):</value>
-    <comment>Title for the value text box use to create new authorized networks.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowAddNetworkButton" xml:space="preserve">
-    <value>Add Authorized Network</value>
-    <comment>Title for the button to create a new authorized network.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorTitle" xml:space="preserve">
-    <value>Invalid Subnet.</value>
-    <comment>Title for an error message in the authorized networks dialog for an ipv4 address.</comment>
-  </data>
-  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorMessage" xml:space="preserve">
-    <value>Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24).</value>
-    <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
     <value>Reset the password for {0} on instance {1}?</value>
@@ -697,10 +505,6 @@
     <value>Close</value>
     <comment>Caption for the close window button.</comment>
   </data>
-  <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>_Download</value>
-    <comment>The caption for the general download button.</comment>
-  </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
     <value>OK</value>
     <comment>Caption for Ok buttons.</comment>
@@ -713,10 +517,6 @@
     <value>_Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
-  <data name="UiUndoButtonCaption" xml:space="preserve">
-    <value>_Undo</value>
-    <comment>Caption for Undo buttons.</comment>
-  </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
     <value>Open on Cloud Platform Console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
@@ -724,22 +524,6 @@
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
     <value>Properties</value>
     <comment>Header for the generic properties menu item, to show the properties window.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationDescription" xml:space="preserve">
-    <value>The location where the bucket resides.</value>
-    <comment>The description of the location property in a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationDisplayName" xml:space="preserve">
-    <value>Location</value>
-    <comment>The display name for the location property in a GCS bucket.</comment>
-  </data>
-  <data name="CloudExplorerGcsShowBucketsCommand" xml:space="preserve">
-    <value>Show Buckets</value>
-    <comment>The command to show the buckets in a flat list.</comment>
-  </data>
-  <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
-    <value>Show Locations</value>
-    <comment>The command to use use to show the buckets per location.</comment>
   </data>
   <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
     <value>_Add credentials</value>
@@ -1211,10 +995,6 @@
     <value>Click to hide all log item details</value>
     <comment>Tool tip to toggle expand all button when it is expanded.</comment>
   </data>
-  <data name="AuthorizedNetworksNetworkHeader" xml:space="preserve">
-    <value>Network</value>
-    <comment>Header for the control groupin.</comment>
-  </data>
   <data name="LogViewerExpandAllTip" xml:space="preserve">
     <value>Click to see all log item details</value>
     <comment>Tool tip to toggle expand all button when it is collapsed.</comment>
@@ -1226,10 +1006,6 @@
   <data name="LogViewerRefreshButtonToolTip" xml:space="preserve">
     <value>Get newest log (in descending order)</value>
     <comment>Log viewer window referesh image button tool tip.</comment>
-  </data>
-  <data name="CloudExplorerGcsBucketLocationCaption" xml:space="preserve">
-    <value>{0} ({1})</value>
-    <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
   </data>
   <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
     <value>Click to select different timezone</value>
@@ -1255,85 +1031,9 @@
     <value>Error Updating Firewall</value>
     <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
-  <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
-    <value>Type</value>
-    <comment>The header for the Content Type column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
-    <value>Failed to list objects to delete.</value>
-    <comment>Error message shown when failed to list all the files to be deleted.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletePromptMessage" xml:space="preserve">
-    <value>Are you sure you want to delete these files?</value>
-    <comment>Message for the delete confirmation prompt for GCS files.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingProgressCaption" xml:space="preserve">
-    <value>Deleting Files</value>
-    <comment>Caption for the progress dialog for the delete file operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingProgressMessage" xml:space="preserve">
-    <value>Files being deleted</value>
-    <comment>Message for the progress dialog for the delete file operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDonwloadHeader" xml:space="preserve">
-    <value>Download...</value>
-    <comment>Header for the Download option in the context menu.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingProgressCaption" xml:space="preserve">
-    <value>Downloading Files</value>
-    <comment>Caption for the progress dialog for the download operations.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingProgressMessage" xml:space="preserve">
-    <value>Files being downloaded:</value>
-    <comment>Message for the prgoress dialog for the download operations.</comment>
-  </data>
-  <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
-    <value>Unable to load {0}. Try refreshing.</value>
-    <comment>Error message shown when failed to load a directory.</comment>
-  </data>
-  <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
-    <value>Failed to create directories for download.</value>
-    <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
-  </data>
-  <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
-    <value>Download files</value>
-    <comment>Messagefor the dialog used to select a target folder.</comment>
-  </data>
-  <data name="GcsFileBrowserLastModifiedHeader" xml:space="preserve">
-    <value>Last Modified</value>
-    <comment>The header for the Last Modified column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserNameHeader" xml:space="preserve">
-    <value>Name</value>
-    <comment>The header for the Name column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
-    <value>New Folder...</value>
-    <comment>Header for the New Folder option in the context menu.</comment>
-  </data>
-  <data name="GcsFileBrowserSizeHeader" xml:space="preserve">
-    <value>Size</value>
-    <comment>The header for the Size column in the data grid.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
-    <value>Uploading Files</value>
-    <comment>Caption for the progress dialog for the upload operations.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
-    <value>_Files being uploaded:</value>
-    <comment>Message for the progress dialog for the upload operations.</comment>
-  </data>
   <data name="LogViewerLogItemDateFormat" xml:space="preserve">
     <value>MM-dd-yyyy</value>
     <comment>Log item date format.</comment>
-  </data>
-  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
-    <value>IPv6 Address (First Gen)</value>
-    <comment>The display name for the IP v6 address.</comment>
-  </data>
-  <data name="UiBrowseMenuHeader" xml:space="preserve">
-    <value>Browse</value>
-    <comment>Header for a browse menu item.</comment>
   </data>
   <data name="UiErrorCaption" xml:space="preserve">
     <value>Error</value>
@@ -1354,70 +1054,6 @@
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
     <value>Report _Usage Statistics.</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
-    <value>Directory</value>
-    <comment>The category for the directory properties.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryNameDescription" xml:space="preserve">
-    <value>The name of the directory.</value>
-    <comment>The description for the directory name property.</comment>
-  </data>
-  <data name="GcsFileBrowserFileCategory" xml:space="preserve">
-    <value>File</value>
-    <comment>The category for the file properties.</comment>
-  </data>
-  <data name="GcsFileBrowserFileContentTypeDescription" xml:space="preserve">
-    <value>The type of the file.</value>
-    <comment>The description of the content type of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
-    <value>Type</value>
-    <comment>The display name for the content type property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
-    <value>The full path to the blob.</value>
-    <comment>Description for the file full path for the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFullPathDisplayName" xml:space="preserve">
-    <value>GCS Path</value>
-    <comment>The display name for the full path for the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileLastModifiedDescription" xml:space="preserve">
-    <value>The last modified time stamp of the blob.</value>
-    <comment>The description for the last modified property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileLastModifiedDisplayName" xml:space="preserve">
-    <value>Last Modified</value>
-    <comment>The display name for the LastModified property of the file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileNameDescription" xml:space="preserve">
-    <value>Name of the blob.</value>
-    <comment>The description for the file name.</comment>
-  </data>
-  <data name="GcsFileBrowserFileSizeDescription" xml:space="preserve">
-    <value>Size of the blob in bytes.</value>
-    <comment>The description for the size property of a file.</comment>
-  </data>
-  <data name="GcsFileBrowserFileSizeDisplayName" xml:space="preserve">
-    <value>Size</value>
-    <comment>The display name for the size property of a file.</comment>
-  </data>
-  <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The display name for the name of the item.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryFullPathDescription" xml:space="preserve">
-    <value>The full path to the directory.</value>
-    <comment>Description of the GcsPath property of the directory.</comment>
-  </data>
-  <data name="GcsFileBrowserDirectoryItemDisplayName" xml:space="preserve">
-    <value>Cloud Storage Directory</value>
-    <comment>Display name for a directory item.</comment>
-  </data>
-  <data name="GcsFileBrowserFileItemDisplayName" xml:space="preserve">
-    <value>Cloud Storage File</value>
-    <comment>Display name for a file item.</comment>
   </data>
   <data name="NamePromptCaption" xml:space="preserve">
     <value>Enter name</value>
@@ -1947,10 +1583,6 @@
     <value>Migrating all traffic to {0}</value>
     <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
   </data>
-  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
-    <value>Don't expose a service</value>
-    <comment>Caption for the option of not exposing the service.</comment>
-  </data>
   <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
     <value>Make service public</value>
     <comment>Caption for the checkbox to make a service public.</comment>
@@ -2023,177 +1655,9 @@
     <value>AUTO RELOAD</value>
     <comment>Caption for auto reload button.</comment>
   </data>
-  <data name="CloudExplorerPubSubTopicFullNameDescription" xml:space="preserve">
-    <value>The Full Name of the Topic</value>
-    <comment>The description of the full name property of a PubSub topic.</comment>
-  </data>
-  <data name="CloudExplorerPubSubDeleteTopicMenuHeader" xml:space="preserve">
-    <value>Delete Topic</value>
-    <comment>Header for the delete topic menu item.s</comment>
-  </data>
-  <data name="CloudExplorerPubSubNewSubscriptionMenuHeader" xml:space="preserve">
-    <value>New Subscription</value>
-    <comment>Header for menu item to create a new Pub/Sub subscription.</comment>
-  </data>
-  <data name="PubSubDeleteTopicErrorHeader" xml:space="preserve">
-    <value>Error in delete topic</value>
-    <comment>Header of the message window displayed when there is an error deleting a topic.</comment>
-  </data>
-  <data name="PubSubDeleteTopicErrorMessage" xml:space="preserve">
-    <value>Error deleting topic.</value>
-    <comment>Message diplayed when there is an error deleting a topic.</comment>
-  </data>
-  <data name="PubSubDeleteTopicWindowHeader" xml:space="preserve">
-    <value>Delete Topic</value>
-    <comment>Header of the delete Pub/Sub topic window.</comment>
-  </data>
-  <data name="PubSubDeleteTopicWindowMessage" xml:space="preserve">
-    <value>Are you sure you wish to delete topic {0}?</value>
-    <comment>Message of the delete Pub/Sub topic window.</comment>
-  </data>
-  <data name="PubSubNewTopicErrorHeader" xml:space="preserve">
-    <value>Error in new topic</value>
-    <comment>Header of the message window displayed when there is an error creating a new topic.</comment>
-  </data>
-  <data name="PubSubNewTopicErrorMessage" xml:space="preserve">
-    <value>Error creating new topic.</value>
-    <comment>Message diplayed when there is an error creating a new topic.</comment>
-  </data>
-  <data name="CloudExplorerPubSubDeleteSubscriptionMenuHeader" xml:space="preserve">
-    <value>Delete Subscription</value>
-    <comment>Header for the delete pub/sub subscription menu item.</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionFullNameDescription" xml:space="preserve">
-    <value>The Full Name of the Subscription</value>
-    <comment>The description of the full name property of a PubSub subscription.</comment>
-  </data>
-  <data name="PubSubDeleteSubscriptionErrorHeader" xml:space="preserve">
-    <value>Error in delete subscription</value>
-    <comment>Header of the message window displayed when there is an error deleting a PubSub subscription.</comment>
-  </data>
-  <data name="PubSubDeleteSubscriptionErrorMessage" xml:space="preserve">
-    <value>Error deleting subscription</value>
-    <comment>Message diplayed when there is an error deleting a PubSub subscription.</comment>
-  </data>
-  <data name="PubSubDeleteSubscriptionWindowHeader" xml:space="preserve">
-    <value>Delete Subscription</value>
-    <comment>Header of the delete Pub/Sub subscription window.</comment>
-  </data>
-  <data name="PubSubDeleteSubscriptionWindowMessage" xml:space="preserve">
-    <value>Are you sure you wish to delete subscription {0}?</value>
-    <comment>Message of the delete Pub/Sub subscription window.</comment>
-  </data>
-  <data name="NewSubscriptionWindowHeader" xml:space="preserve">
-    <value>New Subscription for Topic {0}</value>
-    <comment>Text at the top of the NewSubscriptionWindow</comment>
-  </data>
-  <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
-    <value>{0} can not start with "goog".</value>
-    <comment>Message displayed by a validator disallowing input that starts with "goog". Takes the display name of the field.</comment>
-  </data>
-  <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
-    <value>{0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
-    <comment>Message displayed by validator limiting characters allowed in Pub/Sub names. Takes the display name of the field being validated.</comment>
-  </data>
-  <data name="ValidationStartWithLetterMessage" xml:space="preserve">
-    <value>{0} must start with a letter.</value>
-    <comment>{Field} must start with a letter validation message.</comment>
-  </data>
-  <data name="ValidationMinCharactersMessage" xml:space="preserve">
-    <value>{0} must have at least {1} characters.</value>
-    <comment>{Field} must have at least {N} characters validation message.</comment>
-  </data>
-  <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
-    <value>_Acknowledgement deadline (seconds):</value>
-    <comment>The acknowledgement label of the new pub/sub subscription window.</comment>
-  </data>
-  <data name="NewSubscriptionWindowDeliveryType" xml:space="preserve">
-    <value>Delivery type:</value>
-    <comment>The delivery type label in the new pub/sub subscription window.</comment>
-  </data>
-  <data name="NewSubscriptionWindowNameLabel" xml:space="preserve">
-    <value>_Name:</value>
-    <comment>The name label in the new pub/sub subscription window.</comment>
-  </data>
-  <data name="NewSubscriptionWindowPullLabel" xml:space="preserve">
-    <value>Pu_ll</value>
-    <comment>The pull label for the new pub/sub subscription window.</comment>
-  </data>
-  <data name="NewSubscriptionWindowPushLabel" xml:space="preserve">
-    <value>Push to _URL:</value>
-    <comment>The push label of the new pub/sub subscritpion window.</comment>
-  </data>
-  <data name="NewTopicWindowNameLabel" xml:space="preserve">
-    <value>Topic _name:</value>
-    <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
-  </data>
-  <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
-    <value>Error in new subscription</value>
-    <comment>Header of the message window displayed when there is an error creating a new subscription.</comment>
-  </data>
-  <data name="PubSubNewSubscriptionErrorMessage" xml:space="preserve">
-    <value>Error creating new subscription.</value>
-    <comment>Message diplayed when there is an error creating a new subscription.</comment>
-  </data>
-  <data name="NewTopicWindowHeader" xml:space="preserve">
-    <value>New Topic in Project {0}</value>
-    <comment>Text at the top of the NewTopicWindow</comment>
-  </data>
-  <data name="CloudExplorerPubSubListSubscriptionsErrorCaption" xml:space="preserve">
-    <value>Failed to load Subscriptions</value>
-    <comment>Caption shown when there is an error loading Pub/Sub subscriptions.</comment>
-  </data>
-  <data name="CloudExplorerPubSubLoadingSubscriptionsCaption" xml:space="preserve">
-    <value>Loading Subscriptions...</value>
-    <comment>Caption shown when loading Pub/Sub subscriptions.</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionFullNameDisplayName" xml:space="preserve">
-    <value>Full Name</value>
-    <comment>The DisplayName of the FullName property of a SubscriptionItem</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The DisplayName of the Name property of a SubscriptionItem</comment>
-  </data>
-  <data name="CloudExplorerPubSubSubscriptionTopicDisplayName" xml:space="preserve">
-    <value>Topic</value>
-    <comment>The DisplayName of the Topic property of a SubscriptionItem</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicFullNameDisplayName" xml:space="preserve">
-    <value>Full Name</value>
-    <comment>The DisplayName of the FullName property of a TopicItem</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The DisplayName of the Name property of a TopicItem</comment>
-  </data>
-  <data name="PubSubNewSubscriptionNameInvalidMessage" xml:space="preserve">
-    <value>{0} is not a valid subscription name</value>
-    <comment>The message displayed when there is a validation error with a new subscription name.</comment>
-  </data>
-  <data name="PubSubNewSubscriptionNameInvalidTitle" xml:space="preserve">
-    <value>Invalid Subscription Name</value>
-    <comment>Header of the message window displayed when there is a validation error with a new subscription name.</comment>
-  </data>
-  <data name="PubSubNewTopicNameInvalidMessage" xml:space="preserve">
-    <value>{0} is not a valid topic name</value>
-    <comment>The message displayed when there is a validation error with a new topic name.</comment>
-  </data>
-  <data name="PubSubNewTopicNameInvalidTitle" xml:space="preserve">
-    <value>Invalid Topic Name</value>
-    <comment>Header of the message window displayed when there is a validation error with a new topic name.</comment>
-  </data>
-  <data name="NewSubscriptionWindowAckDeadlineTooltip" xml:space="preserve">
-    <value>How long Pub/Sub waits for the subscriber to acknowledge receipt before resending the message</value>
-    <comment>The tooltip text for the acknowledgment deadline.</comment>
-  </data>
   <data name="SourceVersionPickFileDialogCaption" xml:space="preserve">
     <value>Select File</value>
     <comment>The caption of dialog for picking the right file from a list of matching suffixes.</comment>
-  </data>
-  <data name="PubSubOrphanedSubscriptionsItemName" xml:space="preserve">
-    <value>Orphaned Subscriptions</value>
-    <comment>Text displayed on the Pub/Sub Orphaned Subscriptions item of the cloud explorer</comment>
   </data>
   <data name="SourceVersionUtilsFailedToLocateFileInRepoMessage" xml:space="preserve">
     <value>Unable to locate file {0} of commit sha {1} at local repo {2} </value>
@@ -2223,121 +1687,9 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
-  <data name="GcsFileBrowserFailedToCreateRemoteFolder" xml:space="preserve">
-    <value>Failed to create folder {0}.</value>
-    <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
-  </data>
-  <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
-    <value>Error</value>
-    <comment>Message shown when an operation is in the error state.</comment>
-  </data>
-  <data name="GcsFileProgressDialogFailedToEnumerateFiles" xml:space="preserve">
-    <value>Failed to enumerate files.</value>
-    <comment>Error message shown when failed to enumerate files while uploading them.</comment>
-  </data>
-  <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
-    <value>File</value>
-    <comment>Header used in the file name column in the data grid for the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogPendingState" xml:space="preserve">
-    <value>Pending</value>
-    <comment>Message shown when an operation is still in the pending state.</comment>
-  </data>
-  <data name="GcsFileProgressDialogProgressHeader" xml:space="preserve">
-    <value>Progress</value>
-    <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserDeletingOverallProgressMessage" xml:space="preserve">
-    <value>Files deleted {0} of {1}</value>
-    <comment>Message shown while delete files. {0} is the count of files deleted, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileBrowserDownloadingOverallProgressMessage" xml:space="preserve">
-    <value>Files downloaded {0} of {1}</value>
-    <comment>Message shown while downloading files. {0} is the count of files downloaded, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadingOverallProgressMessage" xml:space="preserve">
-    <value>Files uploaded {0} of {1}</value>
-    <comment>Message shown while uploading files. {0} is the count of files uploaded, {1} is the total of files.</comment>
-  </data>
-  <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
-    <value>Operation cancelled</value>
-    <comment>Message shown when the operation is cancelled.</comment>
-  </data>
-  <data name="GcsFileProgressDialogCancellingOperationMessage" xml:space="preserve">
-    <value>Cancelling operation</value>
-    <comment>Message shown while the operation is being cancelled.</comment>
-  </data>
-  <data name="GcsFileProgressDialogHideDetailsCaption" xml:space="preserve">
-    <value>Hide details</value>
-    <comment>Caption for the action hyperlink in the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogShowDetailsCaption" xml:space="preserve">
-    <value>Show details</value>
-    <comment>Caption for the action hyperlink in the progress dialog.</comment>
-  </data>
-  <data name="GcsFileProgressDialogStartingOperation" xml:space="preserve">
-    <value>Operation starting</value>
-    <comment>Message shown when the operation is started.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
-    <value>Failed to rename {0}.</value>
-    <comment>Message shown when the rename operation fails. {0} is the name of the file or directory.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
-    <value>Rename file...</value>
-    <comment>Header for the Rename File menu entry.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingProgressMessage" xml:space="preserve">
-    <value>Renaming file.</value>
-    <comment>Message shown while the rename operation is in flight.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFolderHeader" xml:space="preserve">
-    <value>Rename folder...</value>
-    <comment>Header used for the rename directory menu option.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
-    <value>Renaming files</value>
-    <comment>Caption for the progress dialog when renaming multiple files.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesMessage" xml:space="preserve">
-    <value>Files being renamed</value>
-    <comment>Message displayed when renaming multiple files.</comment>
-  </data>
-  <data name="GcsFileBrowserRenamingFilesProgressMessage" xml:space="preserve">
-    <value>Files renamed {0} of {1}</value>
-    <comment>Message displayed to show the progress of renaming multiple files. {0} is the current count of completed operations, {1} is the total count of operations</comment>
-  </data>
-  <data name="GcsFileBrowserFailedLoadRootDirectoryMessage" xml:space="preserve">
-    <value>Failed to load directory.</value>
-    <comment>Message shown when there's a failure loading the root directory.</comment>
-  </data>
-  <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
-    <value>Upload a file or drop one here from Windows Explorer.</value>
-    <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
-  </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
     <value>Refresh</value>
     <comment>Caption for Refresh buttons.</comment>
-  </data>
-  <data name="UiSelectAllHeader" xml:space="preserve">
-    <value>Select all</value>
-    <comment>Header to be used in menus for select all operations.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderTitle" xml:space="preserve">
-    <value>New folder</value>
-    <comment>Title for the new folder dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserNewFolderTooltip" xml:space="preserve">
-    <value>New folder</value>
-    <comment>Tooltip to be shown in the new folder button.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFileTitle" xml:space="preserve">
-    <value>Rename file</value>
-    <comment>Title for the rename file dialog.</comment>
-  </data>
-  <data name="GcsFileBrowserRenameFolderTitle" xml:space="preserve">
-    <value>Rename folder</value>
-    <comment>Title for the rename folder dialog.</comment>
   </data>
   <data name="ValdiationNotEmptyMessage" xml:space="preserve">
     <value>{0} can not be empty.</value>
@@ -2346,6 +1698,10 @@
   <data name="ValidationStartLetterOrNumberMessage" xml:space="preserve">
     <value>{0} must start with a letter or number.</value>
     <comment>{Field} must start with a letter or number validation message.</comment>
+  </data>
+  <data name="ValidationEndLetterOrNumberMessage" xml:space="preserve">
+    <value>{0} must end with a letter or number.</value>
+    <comment>{Field} must end with a letter or number validation message.</comment>
   </data>
   <data name="ValidationAllLetterNumberOrDashMessage" xml:space="preserve">
     <value>{0} can only contain letters, numbers, and dashes(-).</value>
@@ -2371,29 +1727,9 @@
     <value>Replicas</value>
     <comment>Field display name of the replicas control. Should match GkePublishReplicasCaption.</comment>
   </data>
-  <data name="NewSubscriptionWindowNameFieldName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The field display name of the name textbox in the new pub/sub subscription window. Shoud match NewSubscriptionWindowNameLabel.</comment>
-  </data>
-  <data name="NewTopicWindowNameFieldName" xml:space="preserve">
-    <value>Topic name</value>
-    <comment>Field display name for the topic name text box in the new pub/sub topic window. Should match NewTopicWindowNameLabel.</comment>
-  </data>
   <data name="PublishDialogFlexVersionNameFieldName" xml:space="preserve">
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadFilesButtonCaption" xml:space="preserve">
-    <value>_Upload files</value>
-    <comment>Caption for the upload button.</comment>
-  </data>
-  <data name="GcsFileBrowserUploadFilesToolTip" xml:space="preserve">
-    <value>Upload files</value>
-    <comment>Toolstip shown on the upload files button.</comment>
-  </data>
-  <data name="UiDeleteToolTip" xml:space="preserve">
-    <value>Delete</value>
-    <comment>Tooltip show on delete buttons.</comment>
   </data>
   <data name="GitUtilsGitInstallLinkCaption" xml:space="preserve">
     <value>Install Git for Windows</value>
@@ -2777,7 +2113,7 @@
   </data>
   <data name="CloudExplorerGaeEnableApiMenuHeader" xml:space="preserve">
     <value>Enable the App Engine Admin API</value>
-    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
+    <comment>Header for the menu item to enable the App Engine Admin API.</comment>
   </data>
   <data name="CloudExplorerGaeNoAppFoundCaption" xml:space="preserve">
     <value>No App Engine app found.</value>
@@ -2790,30 +2126,6 @@
   <data name="CloudExplorerGceEnableApiMenuHeader" xml:space="preserve">
     <value>Enable the Compute Engine API</value>
     <comment>Header for the menu item to enable the GCE API.</comment>
-  </data>
-  <data name="CloudExplorerGcsApiNotEnabledCaption" xml:space="preserve">
-    <value>The Cloud Storage API is not enabled.</value>
-    <comment>Caption shown in the placeholder displayed when the GCS API is not enabled.</comment>
-  </data>
-  <data name="CloudExplorerGcsEnableApiMenuHeader" xml:space="preserve">
-    <value>Enable the Cloud Storage API</value>
-    <comment>Header for the menu item to enable the GCS API.</comment>
-  </data>
-  <data name="CloudExplorerPubSubApiNotEnabledCaption" xml:space="preserve">
-    <value>The Pub/Sub API is not enabled.</value>
-    <comment>Caption shown in the placeholder displayed when the Pub/Sub API is not enabled.</comment>
-  </data>
-  <data name="CloudExplorerPubSubEnableApiMenuHeader" xml:space="preserve">
-    <value>Enable the Pub/Sub API</value>
-    <comment>Header for the menu item to enable the Pub/Sub API.</comment>
-  </data>
-  <data name="CloudExplorerSqlApiNotEnabledCaption" xml:space="preserve">
-    <value>The Cloud SQL API is not enabled.</value>
-    <comment>Caption shown in the placeholder displayed when the Cloud SQL API is not enabled.</comment>
-  </data>
-  <data name="CloudExplorerSqlEnableApiMenuHeader" xml:space="preserve">
-    <value>Enable the Cloud SQL API</value>
-    <comment>Header for the menu item to enable the Cloud SQL API.</comment>
   </data>
   <data name="UiEnableButtonCaption" xml:space="preserve">
     <value>Enable</value>
@@ -2914,30 +2226,6 @@
     <value>Refresh the projects list.</value>
     <comment>Text for the refresh button's tooltip.</comment>
   </data>
-  <data name="CloudExplorerOptionsPubSubTopicsLabel" xml:space="preserve">
-    <value>Pub/Sub Topics to hide:</value>
-  </data>
-  <data name="CloudExplorerOptionsPubSubTopicsLabelHelp" xml:space="preserve">
-    <value>Topics with a full name (e.g. projects/project-id/topics/topic-name) that matches one of these regex patters will be hidden in the Cloud Explorer.</value>
-  </data>
-  <data name="CloudExplorerOptionsPubSubTopicsFilterColumHeader" xml:space="preserve">
-    <value>Regex Patterns</value>
-  </data>
-  <data name="CloudExplorerOptionsResetToDefaultsButton" xml:space="preserve">
-    <value>Reset to defaults</value>
-  </data>
-  <data name="CloudExplorerPubSubChangeFiltersMenuHeader" xml:space="preserve">
-    <value>Set Topic Filters...</value>
-    <comment>The label for the menu item to open the topic filters options page.</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicProjectDescription" xml:space="preserve">
-    <value>The Google Cloud Project Id of the Topic</value>
-    <comment>The description of the Project property of a PubSub topic.</comment>
-  </data>
-  <data name="CloudExplorerPubSubTopicProjectDisplayName" xml:space="preserve">
-    <value>Project Id</value>
-    <comment>The display name of the Project property of a PubSub topic.</comment>
-  </data>
   <data name="AnalyticsPromptDescription" xml:space="preserve">
     <value>This information will be collected anonymously.</value>
     <comment>Smaller text on the Analytics Opt In Prompt.</comment>
@@ -2991,5 +2279,225 @@ Delete corrupted file?</value>
   <data name="WindowsCredentialsStoreCredentialFileLoadErrorTitle" xml:space="preserve">
     <value>Load failed</value>
     <comment>The title of the error dialog box when loading a windows credential file failed.</comment>
+  </data>
+  <data name="CloudLinkGettingStartedCaption" xml:space="preserve">
+    <value>Getting started</value>
+    <comment>Caption for the cloud console link to Getting started</comment>
+  </data>
+  <data name="CloudLinkAppEngineCaption" xml:space="preserve">
+    <value>App Engine</value>
+    <comment>Caption for the cloud console link to App Engine</comment>
+  </data>
+  <data name="CloudLinkComputeEngineCaption" xml:space="preserve">
+    <value>Compute Engine</value>
+    <comment>Caption for the cloud console link to Compute Engine</comment>
+  </data>
+  <data name="CloudLinkKubernetesEngineCaption" xml:space="preserve">
+    <value>Kubernetes Engine</value>
+    <comment>Caption for the cloud console link to Kubernetes Engine</comment>
+  </data>
+  <data name="CloudLinkContainerRegistryCaption" xml:space="preserve">
+    <value>Container Registry</value>
+    <comment>Caption for the cloud console link to Container Registry</comment>
+  </data>
+  <data name="CloudLinkDeploymentManagerCaption" xml:space="preserve">
+    <value>Deployment Manager</value>
+    <comment>Caption for the cloud console link to Deployment Manager</comment>
+  </data>
+  <data name="CloudLinkCloudLauncherCaption" xml:space="preserve">
+    <value>Cloud Launcher</value>
+    <comment>Caption for the cloud console link to Cloud Launcher</comment>
+  </data>
+  <data name="CloudLinkIAmCaption" xml:space="preserve">
+    <value>IAM &amp; admin</value>
+    <comment>Caption for the cloud console link to IAM &amp; admin</comment>
+  </data>
+  <data name="CloudLinkBillingCaption" xml:space="preserve">
+    <value>Billing</value>
+    <comment>Caption for the cloud console link to Billing</comment>
+  </data>
+  <data name="CloudLinkApisAndServicesCaption" xml:space="preserve">
+    <value>Apis &amp; Services</value>
+    <comment>Caption for the cloud console link to Apis &amp; Services</comment>
+  </data>
+  <data name="CloudLinkSupportCaption" xml:space="preserve">
+    <value>Support</value>
+    <comment>Caption for the cloud console link to Support</comment>
+  </data>
+  <data name="CloudLinkSecurityCenterCaption" xml:space="preserve">
+    <value>Security</value>
+    <comment>Caption for the cloud console link to Security</comment>
+  </data>
+  <data name="CloudLinkCloudFunctionsCaption" xml:space="preserve">
+    <value>Cloud Functions</value>
+    <comment>Caption for the cloud console link to Cloud Functions</comment>
+  </data>
+  <data name="CloudLinkCloudTasksCaption" xml:space="preserve">
+    <value>Cloud Tasks</value>
+    <comment>Caption for the cloud console link to Cloud Tasks</comment>
+  </data>
+  <data name="CloudLinkBigtableCaption" xml:space="preserve">
+    <value>Bigtable</value>
+    <comment>Caption for the cloud console link to Bigtable</comment>
+  </data>
+  <data name="CloudLinkDatastoreCaption" xml:space="preserve">
+    <value>Datastore</value>
+    <comment>Caption for the cloud console link to Datastore</comment>
+  </data>
+  <data name="CloudLinkCloudStorageCaption" xml:space="preserve">
+    <value>Storage</value>
+    <comment>Caption for the cloud console link to Storage</comment>
+  </data>
+  <data name="CloudLinkCloudSqlCaption" xml:space="preserve">
+    <value>SQL</value>
+    <comment>Caption for the cloud console link to SQL</comment>
+  </data>
+  <data name="CloudLinkSpannerCaption" xml:space="preserve">
+    <value>Spanner</value>
+    <comment>Caption for the cloud console link to Spanner</comment>
+  </data>
+  <data name="CloudLinkMemoryStoreCaption" xml:space="preserve">
+    <value>Memorystore</value>
+    <comment>Caption for the cloud console link to Memorystore</comment>
+  </data>
+  <data name="CloudLinkFileStoreCaption" xml:space="preserve">
+    <value>Filestore</value>
+    <comment>Caption for the cloud console link to Filestore</comment>
+  </data>
+  <data name="CloudLinkVpcNetworkCaption" xml:space="preserve">
+    <value>VPC network</value>
+    <comment>Caption for the cloud console link to VPC network</comment>
+  </data>
+  <data name="CloudLinkNetworkServicesCaption" xml:space="preserve">
+    <value>Network services</value>
+    <comment>Caption for the cloud console link to Network services</comment>
+  </data>
+  <data name="CloudLinkHybridConnectivityCaption" xml:space="preserve">
+    <value>Hybrid Connectivity</value>
+    <comment>Caption for the cloud console link to Hybrid Connectivity</comment>
+  </data>
+  <data name="CloudLinkNetworkServiceTierCaption" xml:space="preserve">
+    <value>Network Service Tier</value>
+    <comment>Caption for the cloud console link to Network Service Tier</comment>
+  </data>
+  <data name="CloudLinkNetworkSecurityCaption" xml:space="preserve">
+    <value>Network Security</value>
+    <comment>Caption for the cloud console link to Network Security</comment>
+  </data>
+  <data name="CloudLinkStackDriverMonitoringCaption" xml:space="preserve">
+    <value>Monitoring</value>
+    <comment>Caption for the cloud console link to StackDriver Monitoring</comment>
+  </data>
+  <data name="CloudLinkStackDriverDebugCaption" xml:space="preserve">
+    <value>Debug</value>
+    <comment>Caption for the cloud console link to StackDriver Debug</comment>
+  </data>
+  <data name="CloudLinkStackDriverTraceCaption" xml:space="preserve">
+    <value>Trace</value>
+    <comment>Caption for the cloud console link to StackDriver Trace</comment>
+  </data>
+  <data name="CloudLinkStackDriverLoggingCaption" xml:space="preserve">
+    <value>Logging</value>
+    <comment>Caption for the cloud console link to StackDriver Logging</comment>
+  </data>
+  <data name="CloudLinkStackDriverErrorReportingCaption" xml:space="preserve">
+    <value>Error Reporting</value>
+    <comment>Caption for the cloud console link to StackDriver Error Reporting</comment>
+  </data>
+  <data name="CloudLinkStackDriverProfilerCaption" xml:space="preserve">
+    <value>Profiler</value>
+    <comment>Caption for the cloud console link to StackDriver Profiler</comment>
+  </data>
+  <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
+    <value>Source Repositories</value>
+    <comment>Caption for the cloud console link to Source Repositories</comment>
+  </data>
+  <data name="CloudLinkEndpointsCaption" xml:space="preserve">
+    <value>Endpoints</value>
+    <comment>Caption for the cloud console link to Endpoints</comment>
+  </data>
+  <data name="CloudLinkBigQueryCaption" xml:space="preserve">
+    <value>BigQuery</value>
+    <comment>Caption for the cloud console link to BigQuery</comment>
+  </data>
+  <data name="CloudLinkPubSubCaption" xml:space="preserve">
+    <value>Pub/Sub</value>
+    <comment>Caption for the cloud console link to Pub/Sub</comment>
+  </data>
+  <data name="CloudLinkDataprocCaption" xml:space="preserve">
+    <value>Dataproc</value>
+    <comment>Caption for the cloud console link to Dataproc</comment>
+  </data>
+  <data name="CloudLinkDataflowCaption" xml:space="preserve">
+    <value>Dataflow</value>
+    <comment>Caption for the cloud console link to Dataflow</comment>
+  </data>
+  <data name="CloudLinkMachineLearningEngineCaption" xml:space="preserve">
+    <value>ML Engine</value>
+    <comment>Caption for the cloud console link to ML Engine</comment>
+  </data>
+  <data name="CloudLinkIoTCoreCaption" xml:space="preserve">
+    <value>IoT Core</value>
+    <comment>Caption for the cloud console link to IoT Core</comment>
+  </data>
+  <data name="CloudLinkComposerCaption" xml:space="preserve">
+    <value>Composer</value>
+    <comment>Caption for the cloud console link to Composer</comment>
+  </data>
+  <data name="CloudLinkGenomicsCaption" xml:space="preserve">
+    <value>Genomics</value>
+    <comment>Caption for the cloud console link to Genomics</comment>
+  </data>
+  <data name="CloudLinkDataprepCaption" xml:space="preserve">
+    <value>Dataprep</value>
+    <comment>Caption for the cloud console link to Dataprep</comment>
+  </data>
+  <data name="ConsoleLinkComputeGroupCaption" xml:space="preserve">
+    <value>Compute</value>
+    <comment>The caption of the root node fo the Compute cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkStorageGroupCaption" xml:space="preserve">
+    <value>Storage</value>
+    <comment>The caption of the root node fo the Storage cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkNetworkingGroupCaption" xml:space="preserve">
+    <value>Networking</value>
+    <comment>The caption of the root node fo the Networking cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkStackDriverGroupCaption" xml:space="preserve">
+    <value>StackDriver</value>
+    <comment>The caption of the root node fo the StackDriver cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkToolsGroupCaption" xml:space="preserve">
+    <value>Tools</value>
+    <comment>The caption of the root node fo the Tools cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkBigDataGroupCaption" xml:space="preserve">
+    <value>Big Data</value>
+    <comment>The caption of the root node fo the Big Data cloud console link group.</comment>
+  </data>
+  <data name="ConsoleLinkProjectGroupCaption" xml:space="preserve">
+    <value>Project</value>
+    <comment>The caption of the root node fo the Project cloud console link group.</comment>
+  </data>
+  <data name="PublishDialogFlexServiceCaption" xml:space="preserve">
+    <value>Service:</value>
+    <comment>The label of the Service text box in the App Engine publish dialog.</comment>
+  </data>
+  <data name="PublishDialogFlexServiceName" xml:space="preserve">
+    <value>Service</value>
+    <comment>The name of the Service text box in the App Engine publish dialog.</comment>
+  </data>
+  <data name="PublishDialogFlexUpdateAppYamlCaption" xml:space="preserve">
+    <value>Update app.yaml</value>
+    <comment>Caption for the "Update app.yaml" checkbox in the Publish App Engine dialog.</comment>
+  </data>
+  <data name="PublishDialogFlexUpdateAppYamlToolTip" xml:space="preserve">
+    <value>Update your existing app.yaml to target this service, or create a new one that does so.</value>
+    <comment>The text of the tool tip for the Update app.yaml checkbox on the publish to App Engine dialog.</comment>
+  </data>
+  <data name="PublishDialogGceStepSiteNameMessage" xml:space="preserve">
+    <value>_Site Name:</value>
+    <comment>The label for the site name text box on the Publish Google Compute Engine dialog.</comment>
   </data>
 </root>

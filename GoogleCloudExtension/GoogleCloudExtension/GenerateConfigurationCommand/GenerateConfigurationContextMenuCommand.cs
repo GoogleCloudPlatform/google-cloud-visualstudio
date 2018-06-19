@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -50,15 +51,9 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// <param name="package">Owner package, not null.</param>
         private GenerateConfigurationContextMenuCommand(Package package)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
+            _package = package ?? throw new ArgumentNullException(nameof(package));
 
-            _package = package;
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
+            if (ServiceProvider.GetService(typeof(IMenuCommandService)) is IMenuCommandService commandService)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(OnGenerateConfiguration, menuCommandID);
@@ -103,58 +98,77 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void OnGenerateConfiguration(object sender, EventArgs e)
+        private void OnGenerateConfiguration(object sender, EventArgs e) => ErrorHandlerUtils.HandleExceptions(GenerateConfiguration);
+
+        /// <summary>
+        /// Queries the user and generates an app.yaml and Docker file.
+        /// </summary>
+        private void GenerateConfiguration()
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
+            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
+            Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
+            var appEngineConfiguration = GoogleCloudExtensionPackage.Instance.GetMefService<IAppEngineConfiguration>();
+            ProjectConfigurationStatus configurationStatus = appEngineConfiguration.CheckProjectConfiguration(selectedProject);
+
+            // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
+            if (!configurationStatus.HasAppYaml ||
+                UserPromptUtils.ActionPrompt(
+                    prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
+                    title: Resources.GenerateConfigurationOverwritePromptTitle,
+                    actionCaption: Resources.UiOverwriteButtonCaption,
+                    cancelCaption: Resources.UiSkipFileButtonCaption))
             {
-                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
-                Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
-                var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject);
-
-                // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
-                if (!configurationStatus.HasAppYaml ||
-                    UserPromptUtils.ActionPrompt(
-                        prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
-                        title: Resources.GenerateConfigurationOverwritePromptTitle,
-                        actionCaption: Resources.UiOverwriteButtonCaption,
-                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
+                try
                 {
-                    Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
-                    if (!AppEngineFlexDeployment.GenerateAppYaml(selectedProject))
-                    {
-                        UserPromptUtils.ErrorPrompt(
-                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.AppYamlName),
-                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
-                        return;
-                    }
-                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                    appEngineConfiguration.GenerateAppYaml(selectedProject);
+                }
+                catch (Exception error)
+
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        string.Format(
+                            Resources.GenerateConfigurationFileGenerationErrorMessage,
+                            AppEngineConfiguration.AppYamlName),
+                        Resources.GenerateConfigurationFileGeneratinErrorTitle,
+                        error.Message);
+                    return;
                 }
 
-                // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
-                if (!configurationStatus.HasDockerfile ||
-                    UserPromptUtils.ActionPrompt(
-                        prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
-                        title: Resources.GenerateConfigurationOverwritePromptTitle,
-                        actionCaption: Resources.UiOverwriteButtonCaption,
-                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+            }
+
+            // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
+            if (!configurationStatus.HasDockerfile ||
+                UserPromptUtils.ActionPrompt(
+                    prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
+                    title: Resources.GenerateConfigurationOverwritePromptTitle,
+                    actionCaption: Resources.UiOverwriteButtonCaption,
+                    cancelCaption: Resources.UiSkipFileButtonCaption))
+            {
+                Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
+                try
                 {
-                    Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
-                    if (!AppEngineFlexDeployment.GenerateDockerfile(selectedProject))
-                    {
-                        UserPromptUtils.ErrorPrompt(
-                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.DockerfileName),
-                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
-                        return;
-                    }
-                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                    NetCoreAppUtils.GenerateDockerfile(selectedProject);
                 }
-            });
+                catch (Exception exception)
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        string.Format(
+                            Resources.GenerateConfigurationFileGenerationErrorMessage,
+                            NetCoreAppUtils.DockerfileName),
+                        Resources.GenerateConfigurationFileGeneratinErrorTitle,
+                        exception.Message);
+                    return;
+                }
+
+                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+            }
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)
         {
-            var menuCommand = sender as OleMenuCommand;
-            if (menuCommand == null)
+            if (!(sender is OleMenuCommand menuCommand))
             {
                 return;
             }
@@ -168,7 +182,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             else
             {
                 menuCommand.Visible = true;
-                menuCommand.Enabled = !ShellUtils.IsBusy();
+                menuCommand.Enabled = !ShellUtils.Default.IsBusy();
             }
         }
     }

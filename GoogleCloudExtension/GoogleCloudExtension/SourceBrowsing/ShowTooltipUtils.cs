@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return;
             }
 
-            var window = ShellUtils.Open(projectFile.FullName);
+            var window = ShellUtils.Default.Open(projectFile.FullName);
             if (window == null)
             {
                 FailedToOpenFilePrompt(stackFrame.SourceFile);
@@ -198,7 +198,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <returns>The IVsTextView for this file if it is open. Returns null otherwise.</returns>
         private static IVsTextView GetIVsTextView(string filePath)
         {
-            var sp = ShellUtils.GetGloblalServiceProvider();
+            var sp = ShellUtils.Default.GetGloblalServiceProvider();
             IVsUIHierarchy uiHierarchy;
             uint itemID;
             IVsWindowFrame windowFrame;

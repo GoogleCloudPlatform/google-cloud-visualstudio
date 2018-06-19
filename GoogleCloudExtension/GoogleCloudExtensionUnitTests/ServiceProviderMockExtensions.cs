@@ -32,6 +32,14 @@ namespace GoogleCloudExtensionUnitTests
             return serviceMock;
         }
 
+        public static Mock<IVsType> SetupServiceStrict<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock) where IVsType : class
+        {
+            var serviceMock = new Mock<IVsType>(MockBehavior.Strict);
+            serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
+            return serviceMock;
+        }
+
         /// <summary>
         /// Sets up a mocked service object to be provided by a mock service provider.
         /// </summary>
@@ -48,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(serviceMock.Object);
             serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
-                .Returns(0);
+                .Returns(VSConstants.S_OK);
             if (!s_mocks.ContainsKey(serviceProviderMock))
             {
                 s_mocks[serviceProviderMock] = new Dictionary<Type, object>();
@@ -65,19 +73,6 @@ namespace GoogleCloudExtensionUnitTests
             Mock<IVsActivityLog> activityLogMock = serviceProviderMock.SetupService<SVsActivityLog, IVsActivityLog>();
             activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(VSConstants.S_OK);
-        }
-
-        /// <summary>
-        /// Sets the mock of the given service provider to be the global service provider.
-        /// </summary>
-        /// <param name="serviceProviderMock">The mock of the service provider.</param>
-        public static void SetAsGlobalProvider(this Mock<IServiceProvider> serviceProviderMock)
-        {
-            // Remove the old GlobalProvider if it exists.
-            ServiceProvider.GlobalProvider?.Dispose();
-            // This sets the ServiceProvider.GlobalProvider
-            // and causes it to use the mocked IServiceProvider.
-            ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
         }
 
         /// <summary>

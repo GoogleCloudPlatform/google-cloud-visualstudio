@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,8 @@ namespace GoogleCloudExtension.Accounts
     /// doesn't specify credentials, or when Visual Studio is freshly opened. This default credentials is the last
     /// set of credentials used by the extension.
     /// </summary>
-    public class CredentialsStore
+    [Export(typeof(ICredentialsStore))]
+    public class CredentialsStore : ICredentialsStore
     {
         /// <summary>
         /// Remembers the file name used to serialize a particular <see cref="UserAccount"/>.
@@ -50,22 +52,19 @@ namespace GoogleCloudExtension.Accounts
         private const string DefaultCredentialsFileName = "default_credentials";
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
-        private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
-        private static CredentialsStore s_credentialsStoreOverride;
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
 
-        public static CredentialsStore Default => s_credentialsStoreOverride ?? s_defaultCredentialsStore.Value;
+        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>();
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
-        public event EventHandler CurrentProjectNumericIdChanged;
         public event EventHandler Reset;
 
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
         /// </summary>
-        public UserAccount CurrentAccount { get; private set; }
+        public IUserAccount CurrentAccount { get; private set; }
 
         /// <summary>
         /// Returns the path for the current account.
@@ -120,16 +119,15 @@ namespace GoogleCloudExtension.Accounts
 
                 UpdateDefaultCredentials();
                 CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
-                CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         /// <summary>
-        /// Updates the current account for the extension. This method will also invalidate the project
-        /// it is up to the caller to select an appropriate one.
+        /// Updates the current account for the extension.
+        /// This method will also invalidate the project.
+        /// It is up to the caller to select an appropriate one.
         /// </summary>
-        /// <param name="account"></param>
-        public void UpdateCurrentAccount(UserAccount account)
+        public void UpdateCurrentAccount(IUserAccount account)
         {
             if (CurrentAccount?.AccountName != account?.AccountName)
             {
@@ -188,7 +186,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="account">The accound to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
-        public void DeleteAccount(UserAccount account)
+        public void DeleteAccount(IUserAccount account)
         {
             var accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
@@ -209,7 +207,6 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
-        /// <param name="userAccount"></param>
         public void AddAccount(UserAccount userAccount)
         {
             EnsureCredentialsRootExist();
@@ -238,24 +235,6 @@ namespace GoogleCloudExtension.Accounts
             return result?.UserAccount;
         }
 
-        /// <summary>
-        /// For testing.
-        /// Sets a new credential store as default.
-        /// </summary>
-        internal static void CreateNewOverride()
-        {
-            s_credentialsStoreOverride = new CredentialsStore();
-        }
-
-        /// <summary>
-        /// For testing.
-        /// Returns the default credential store to its original value.
-        /// </summary>
-        internal static void ClearOverride()
-        {
-            s_credentialsStoreOverride = null;
-        }
-
         private void InvalidateProjectList()
         {
             Debug.WriteLine("Starting to load projects.");
@@ -268,7 +247,7 @@ namespace GoogleCloudExtension.Accounts
             {
                 var dataSource = new ResourceManagerDataSource(
                     CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
+                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
                 return await dataSource.GetProjectsListAsync();
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))

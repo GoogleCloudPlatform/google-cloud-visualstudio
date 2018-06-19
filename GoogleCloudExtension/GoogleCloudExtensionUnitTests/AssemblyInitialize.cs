@@ -14,7 +14,9 @@
 
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -28,6 +30,11 @@ namespace GoogleCloudExtensionUnitTests
         [AssemblyInitialize]
         public static void InitializeAssembly(TestContext context)
         {
+            // This fixes some odd unit test errors loading Microsoft.VisualStudio.Utilities
+            // see: https://ci.appveyor.com/project/GoogleCloudPlatform/google-cloud-visualstudio/build/2.0.0-dev.135/tests
+            new Mock<ISettingsManager>().Setup(m => m.GetSubset(It.IsAny<string>()))
+                .Returns(Mock.Of<ISettingsSubset>());
+
             EventsReporterWrapper.DisableReporting();
             s_packageToRestore = GoogleCloudExtensionPackage.Instance;
             GoogleCloudExtensionPackage.Instance = null;

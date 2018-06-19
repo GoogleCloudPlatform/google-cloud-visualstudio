@@ -17,12 +17,21 @@ using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Window = EnvDTE.Window;
@@ -34,31 +43,28 @@ namespace GoogleCloudExtensionUnitTests
     /// </summary>
     [TestClass]
     [DeploymentItem(VsixManifestFileName)]
-    public class GoogleCloudExtensionPackageTests
+    public class GoogleCloudExtensionPackageTests : MockedGlobalServiceProviderTestsBase
     {
         private Mock<IEventsReporter> _reporterMock;
         private GoogleCloudExtensionPackage _objectUnderTest;
-        private Mock<DTE> _dteMock;
-        private Mock<IServiceProvider> _serviceProviderMock;
+        protected override IVsPackage Package => _objectUnderTest;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
         [TestInitialize]
         public void BeforeEach()
         {
+            // Initalize the export provider to get types exported in GoogleCloudExtension.dll.
+            DelegatingServiceProvider.Delegate = _objectUnderTest;
+            var container = new CompositionContainer(
+                new AggregateCatalog(
+                    new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
+                    new TypeCatalog(typeof(DelegatingServiceProvider))));
+            ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
+
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
-            _dteMock = new Mock<DTE>();
-            _serviceProviderMock = _dteMock.As<IServiceProvider>();
             _objectUnderTest = new GoogleCloudExtensionPackage();
-        }
-
-        [TestCleanup]
-        public void AfterEach()
-        {
-            GoogleCloudExtensionPackage.Instance = null;
-            ServiceProvider.GlobalProvider?.Dispose();
-            _serviceProviderMock.Dispose();
         }
 
         [TestMethod]
@@ -66,21 +72,21 @@ namespace GoogleCloudExtensionUnitTests
         {
             const string mockedVersion = "MockVsVersion";
             const string mockedEdition = "MockedEdition";
-            _dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-            _dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
+            DteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+            DteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
-            Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.ApplicationName);
-            Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.ApplicationVersion);
+            Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.Instance.ApplicationName);
+            Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.Instance.ApplicationVersion);
             Assert.AreEqual(
                 $"{ExpectedAssemblyName}/{expectedAssemblyVersion}",
-                GoogleCloudExtensionPackage.VersionedApplicationName);
+                GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             Assert.IsNull(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.ClientId);
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.DialogShown);
@@ -92,10 +98,10 @@ namespace GoogleCloudExtensionUnitTests
         {
             _objectUnderTest.AnalyticsSettings.InstalledVersion = "0.1.0.0";
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -106,10 +112,10 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestNewPackageInstallation()
         {
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -120,12 +126,13 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestSamePackageVersion()
         {
-            _objectUnderTest.AnalyticsSettings.InstalledVersion = GoogleCloudExtensionPackage.ApplicationVersion;
+            _objectUnderTest.AnalyticsSettings.InstalledVersion =
+                typeof(GoogleCloudExtensionPackage).Assembly.GetName().Version.ToString();
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.ApplicationVersion,
+                GoogleCloudExtensionPackage.Instance.ApplicationVersion,
                 GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
@@ -140,9 +147,9 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenNormalState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -150,9 +157,9 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenMaximizedState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -160,11 +167,176 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestWindowActiveWhenMinimizedState()
         {
-            _dteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
+            DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
 
-            InitPackageMock();
+            RunPackageInitalize();
 
             Assert.IsFalse(_objectUnderTest.IsWindowActive());
+        }
+
+        [TestMethod]
+        public void TestGetServiceSI_GetsServiceOfTypeIRegisteredByS()
+        {
+            Mock<IVsSolution> solutionMock = ServiceProviderMock.SetupService<SVsSolution, IVsSolution>();
+            RunPackageInitalize();
+
+            IVsSolution service = _objectUnderTest.GetService<SVsSolution, IVsSolution>();
+
+            Assert.AreEqual(solutionMock.Object, service);
+        }
+
+        [TestMethod]
+        public void TestGetMefService_GetsServiceFromMef()
+        {
+            var mockedFileSystemService = Mock.Of<IFileSystem>();
+            ComponentModelMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
+            RunPackageInitalize();
+
+            var service = _objectUnderTest.GetMefService<IFileSystem>();
+
+            Assert.AreEqual(mockedFileSystemService, service);
+        }
+
+        [TestMethod]
+        public void TestGetMefServiceLazy_GetsLazyServiceFromMef()
+        {
+            var exportProvider = new FakeExportProvider<IFileSystem>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+            RunPackageInitalize();
+
+            Lazy<IFileSystem> service = _objectUnderTest.GetMefServiceLazy<IFileSystem>();
+
+            Assert.AreEqual(exportProvider.MockedValue, service.Value);
+        }
+
+        [TestMethod]
+        public void TestShowOptionPage_OptionPage()
+        {
+            RunPackageInitalize();
+
+            _objectUnderTest.ShowOptionPage<AnalyticsOptions>();
+        }
+
+        [TestMethod]
+        public void TestShellUtils_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IShellUtils>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ShellUtils);
+        }
+
+        [TestMethod]
+        public void TestGcpOutputWindow_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IGcpOutputWindow>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.GcpOutputWindow);
+        }
+
+        [TestMethod]
+        public void TestSubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            RunPackageInitalize();
+
+            _objectUnderTest.SubscribeClosingEvent(new EventHandler(eventHandlerMock.Object));
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()));
+        }
+
+        [TestMethod]
+        public void TestUnsubscribeClosingEvent()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            var mockedHandler = new EventHandler(eventHandlerMock.Object);
+            RunPackageInitalize();
+            _objectUnderTest.SubscribeClosingEvent(mockedHandler);
+
+            _objectUnderTest.UnsubscribeClosingEvent(mockedHandler);
+            ((IVsPackage)_objectUnderTest).QueryClose(out _);
+
+            eventHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsNullForCreateFalse()
+        {
+            var toolWindow = _objectUnderTest.FindToolWindow<CloudExplorerToolWindow>(false);
+
+            Assert.IsNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsInstanceForCreateTrue()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            // ReSharper disable once RedundantAssignment
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+
+            Assert.IsNotNull(toolWindow);
+        }
+
+        [TestMethod]
+        public void TestFindToolWindow_ReturnsExistingInstance()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid clsid = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            // ReSharper disable once RedundantAssignment
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                shell => shell.CreateToolWindow(
+                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
+                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
+                    It.IsAny<int[]>(),
+                    out frame)).Returns(VSConstants.S_OK);
+
+            RunPackageInitalize();
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+            var existingWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(false);
+
+            Assert.AreEqual(toolWindow, existingWindow);
+        }
+
+        [TestMethod]
+        public void TestProcessService_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IProcessService>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ProcessService);
+        }
+
+        [TestMethod]
+        public void TestStatusbarHelper_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IStatusbarService>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.StatusbarHelper);
         }
 
         private static string GetVsixManifestVersion()
@@ -177,14 +349,37 @@ namespace GoogleCloudExtensionUnitTests
             return identity?.Attribute("Version")?.Value;
         }
 
-        private void InitPackageMock()
+        private class FakeExportProvider<T> : ExportProvider where T : class
         {
-            _serviceProviderMock.SetupService<DTE, DTE>(_dteMock);
-            _serviceProviderMock.SetupDefaultServices();
-            _serviceProviderMock.SetAsGlobalProvider();
+            public readonly T MockedValue = Mock.Of<T>();
 
-            // This runs the Initialize() method.
-            ((IVsPackage)_objectUnderTest).SetSite(_serviceProviderMock.Object);
+            /// <summary>Gets the single export for <typeparamref name="T"/>.</summary>
+            /// <returns>
+            /// An <see cref="Export"/>[] containing a single export that refers to the mocked value.
+            /// </returns>
+            /// <param name="definition">
+            /// The object that defines the conditions of the <see cref="Export" /> objects to return.
+            /// </param>
+            /// <param name="atomicComposition">The transactional container for the composition.</param>
+            protected override IEnumerable<Export> GetExportsCore(
+                ImportDefinition definition,
+                AtomicComposition atomicComposition) => new[]
+            {
+                new Export(
+                    definition.ContractName,
+                    () => definition.ContractName == typeof(T).FullName ? MockedValue : null)
+            };
+        }
+
+        [Export(typeof(SVsServiceProvider))]
+        public class DelegatingServiceProvider : SVsServiceProvider
+        {
+            public static System.IServiceProvider Delegate { get; set; }
+
+            /// <summary>Gets the service object of the specified type.</summary>
+            /// <returns>A service object of type <paramref name="serviceType" />.-or- null if there is no service object of type <paramref name="serviceType" />.</returns>
+            /// <param name="serviceType">An object that specifies the type of service object to get. </param>
+            public object GetService(Type serviceType) => Delegate.GetService(serviceType);
         }
     }
 }

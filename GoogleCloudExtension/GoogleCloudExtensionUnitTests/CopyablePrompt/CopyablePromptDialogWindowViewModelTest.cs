@@ -40,7 +40,7 @@ namespace GoogleCloudExtensionUnitTests.CopyablePrompt
 
             objectUnderTest.CopyCommand.Execute(null);
 
-            Assert.AreEqual(CopyableText, Clipboard.GetText());
+            Assert.AreEqual(CopyableText, Clipboard.GetDataObject()?.GetData(typeof(string)));
         }
     }
 }

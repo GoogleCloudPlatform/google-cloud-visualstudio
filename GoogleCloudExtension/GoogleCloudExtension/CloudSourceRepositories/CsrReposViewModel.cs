@@ -17,7 +17,7 @@ using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public void Refresh()
         {
-            ErrorHandlerUtils.HandleAsyncExceptions(ListRepositoryAsync);
+            ErrorHandlerUtils.HandleExceptionsAsync(ListRepositoryAsync);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             string guid = Guid.NewGuid().ToString();
             try
             {
-                ShellUtils.CreateEmptySolution(localPath, guid);
+                ShellUtils.Default.CreateEmptySolution(localPath, guid);
             }
             finally
             {
@@ -342,10 +342,10 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
                 _teamExplorer.ShowMessage(msg,
-                    command: new ProtectedCommand(handler: () =>
+                    command: new ProtectedCommand(() =>
                     {
                         SetRepoActive(repoItem);
-                        ShellUtils.LaunchCreateSolutionDialog(repoItem.LocalPath);
+                        ShellUtils.Default.LaunchCreateSolutionDialog(repoItem.LocalPath);
                         _teamExplorer.ShowHomeSection();
                     }));
             }
@@ -353,7 +353,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var msg = String.Format(Resources.CsrCloneRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
                 _teamExplorer.ShowMessage(msg,
-                    command: new ProtectedCommand(handler: () =>
+                    command: new ProtectedCommand(() =>
                     {
                         SetRepoActive(repoItem);
                         _teamExplorer.ShowHomeSection();
@@ -366,7 +366,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task<IList<Project>> GetProjectsAsync()
         {
-            ResourceManagerDataSource resourceManager = DataSourceFactories.CreateResourceManagerDataSource();
+            ResourceManagerDataSource resourceManager = DataSourceFactory.Default.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
                 return new List<Project>();

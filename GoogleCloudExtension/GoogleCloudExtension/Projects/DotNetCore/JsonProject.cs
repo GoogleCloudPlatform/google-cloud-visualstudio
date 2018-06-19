@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using System.IO;
 
@@ -20,28 +21,24 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// <summary>
     /// This class represents a project.json based .NET Core project.
     /// </summary>
-    internal class JsonProject : IParsedProject
+    internal class JsonProject : IParsedDteProject
     {
-        private readonly string _projectJsonPath;
+        public Project Project { get; }
 
-        #region IParsedProject
+        public string DirectoryPath => Path.GetDirectoryName(FullPath);
 
-        public string DirectoryPath => Path.GetDirectoryName(_projectJsonPath);
+        public string FullPath => Project.FullName;
 
-        public string FullPath => _projectJsonPath;
-
-        public string Name => Path.GetFileName(Path.GetDirectoryName(_projectJsonPath));
+        public string Name => Path.GetFileName(Path.GetDirectoryName(FullPath));
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
 
         /// <summary>The version of the framework used by the project.</summary>
         public string FrameworkVersion { get; } = "1.0.0-preview";
 
-        #endregion
-
-        public JsonProject(string projectJsonPath)
+        public JsonProject(Project project)
         {
-            _projectJsonPath = projectJsonPath;
+            Project = project;
         }
     }
 }

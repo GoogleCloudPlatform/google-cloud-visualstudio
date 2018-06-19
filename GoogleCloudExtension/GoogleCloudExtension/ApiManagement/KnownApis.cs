@@ -30,11 +30,6 @@ namespace GoogleCloudExtension.ApiManagement
         public const string ComputeEngineApiName = "compute.googleapis.com";
 
         /// <summary>
-        /// The API necessary to use GCS.
-        /// </summary>
-        public const string CloudStorageApiName = "storage-api.googleapis.com";
-
-        /// <summary>
         /// The API necessary to use GKS.
         /// </summary>
         public const string ContainerEngineApiName = "container.googleapis.com";
@@ -43,16 +38,6 @@ namespace GoogleCloudExtension.ApiManagement
         /// The API necessary to use the Cloud Builder.
         /// </summary>
         public const string CloudBuildApiName = "cloudbuild.googleapis.com";
-
-        /// <summary>
-        /// The API necessary to manage Cloud SQL instances.
-        /// </summary>
-        public const string CloudSQLApiName = "sqladmin.googleapis.com";
-
-        /// <summary>
-        /// The API necessary to manage Pub/Sub subscriptions.
-        /// </summary>
-        public const string PubSubApiName = "pubsub.googleapis.com";
 
         /// <summary>
         /// The API necessary to clone/create Google Cloud Source Repositories.

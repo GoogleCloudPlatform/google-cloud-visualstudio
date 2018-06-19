@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
             var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Web\External");
-            GcpOutputWindow.OutputDebugLine($"External tools path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"External tools path: {result}");
             return result;
         }
 
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
         {
             var programFilesPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
             var result = Path.Combine(programFilesPath, @"dotnet\dotnet.exe");
-            GcpOutputWindow.OutputDebugLine($"Dotnet path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Dotnet path: {result}");
             return result;
         }
 
@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
             var result = Path.Combine(programFilesPath, @"MSBuild\14.0\Bin\MSBuild.exe");
-            GcpOutputWindow.OutputDebugLine($"Msbuild path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Msbuild path: {result}");
             return result;
         }
 
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             var result = Path.Combine(programFilesPath, @"IIS\Microsoft Web Deploy V3\msdeploy.exe");
-            GcpOutputWindow.OutputDebugLine($"Msdeploy path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Msdeploy path: {result}");
             return result;
         }
 
@@ -60,8 +60,8 @@ namespace GoogleCloudExtension.VsVersion.VS14
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
             // TODO: add x86 support later
             var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Debugger remote tools V14 path: {result}");
+            GcpOutputWindow.Default.OutputDebugLine($"Program Files: {programFilesPath}");
+            GcpOutputWindow.Default.OutputDebugLine($"Debugger remote tools V14 path: {result}");
             return result;
         }
     }

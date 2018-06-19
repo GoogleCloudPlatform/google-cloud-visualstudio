@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -28,6 +29,41 @@ namespace GoogleCloudExtension
     {
         AnalyticsOptions AnalyticsSettings { get; }
         string VsVersion { get; }
+
+        /// <summary>
+        /// The application name to use everywhere one is needed. Analytics, data sources, etc...
+        /// </summary>
+        string ApplicationName { get; }
+
+        /// <summary>
+        /// The version of the extension's main assembly.
+        /// </summary>
+        string ApplicationVersion { get; }
+
+        /// <summary>
+        /// Returns the versioned application name in the right format for analytics, etc...
+        /// </summary>
+        string VersionedApplicationName { get; }
+
+        /// <summary>
+        /// The default <see cref="IShellUtils"/> service.
+        /// </summary>
+        IShellUtils ShellUtils { get; }
+
+        /// <summary>
+        /// The default <see cref="IGcpOutputWindow"/> service.
+        /// </summary>
+        IGcpOutputWindow GcpOutputWindow { get; }
+
+        /// <summary>
+        /// The default <see cref="IProcessService"/>.
+        /// </summary>
+        IProcessService ProcessService { get; }
+
+        /// <summary>
+        /// The default <see cref="IStatusbarService"/>.
+        /// </summary>
+        IStatusbarService StatusbarHelper { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
@@ -46,5 +82,28 @@ namespace GoogleCloudExtension
         /// The tool window instance, or null if the given id does not already exist and create was false.
         /// </returns>
         TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane;
+
+        /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns>The service.</returns>
+        I GetService<S, I>();
+
+        /// <summary>
+        /// Gets an exported MEF service.
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
+        /// <returns>The service.</returns>
+        T GetMefService<T>() where T : class;
+
+        /// <summary>
+        /// Gets a lazily initialized <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see>
+        /// service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>A <see cref="Lazy{T}"/> that evaluates to the service.</returns>
+        Lazy<T> GetMefServiceLazy<T>() where T : class;
     }
 }

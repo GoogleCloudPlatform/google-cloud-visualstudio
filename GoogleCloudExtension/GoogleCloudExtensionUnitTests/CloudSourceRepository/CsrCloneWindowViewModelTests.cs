@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 {
     [TestClass]
-    public class CsrCloneWindowViewModelTests
+    public class CsrCloneWindowViewModelTests : ExtensionTestBase
     {
         private CsrCloneWindowViewModel _cloneWindowViewModel;
         private Mock<Project> _testProjectMock;

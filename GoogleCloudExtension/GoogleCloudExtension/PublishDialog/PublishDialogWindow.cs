@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -25,20 +25,19 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private PublishDialogWindowViewModel ViewModel { get; }
 
-        private PublishDialogWindow(IParsedProject project) :
+        private PublishDialogWindow(IParsedDteProject project) :
             base(string.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name))
         {
-            var initialStep = ChoiceStepViewModel.CreateStep();
-
-            ViewModel = new PublishDialogWindowViewModel(project, initialStep, this);
+            ViewModel = new PublishDialogWindowViewModel(project, Close);
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
+            Closed += (sender, args) => ViewModel.FinishFlow();
         }
 
         /// <summary>
         /// Starts the publish wizard for the given <paramref name="project"/>.
         /// </summary>
         /// <param name="project">The project to publish.</param>
-        public static void PromptUser(IParsedProject project)
+        public static void PromptUser(IParsedDteProject project)
         {
             var dialog = new PublishDialogWindow(project);
             dialog.ShowModal();
@@ -51,7 +50,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <returns>True if the project is supported by this wizard, false otherwise.</returns>
         public static bool CanPublish(IParsedProject project)
         {
-            var projectType = project.ProjectType;
+            KnownProjectTypes projectType = project.ProjectType;
             return projectType == KnownProjectTypes.WebApplication ||
                 projectType == KnownProjectTypes.NetCoreWebApplication;
         }

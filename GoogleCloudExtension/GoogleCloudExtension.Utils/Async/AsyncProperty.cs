@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.Async
@@ -20,28 +19,14 @@ namespace GoogleCloudExtension.Utils.Async
     /// <summary>
     /// This class is an INotifyPropertyChanged for an async task.
     /// </summary>
-    public class AsyncProperty : AsyncPropertyBase
+    public class AsyncProperty : AsyncPropertyBase<Task>
     {
-        public override Task Task { get; }
+        public AsyncProperty(Task task) : base(task) { }
 
-        public AsyncProperty(Task task)
-        {
-            Task = task;
-            WaitTask(task);
-        }
-
-        private async void WaitTask(Task task)
-        {
-            try
-            {
-                await task;
-            }
-            catch
-            {
-                // Check exceptions using task.
-            }
-            RaiseAllPropertyChanged();
-        }
+        /// <summary>
+        /// Creates an <see cref="AsyncProperty"/> with an already completed task.
+        /// </summary>
+        public AsyncProperty() : base(Task.CompletedTask) { }
     }
 
     /// <summary>
@@ -49,47 +34,40 @@ namespace GoogleCloudExtension.Utils.Async
     /// be set to the result of the Task once it is completed.
     /// </summary>
     /// <typeparam name="T">The type of the property</typeparam>
-    public class AsyncProperty<T> : AsyncPropertyBase
+    public class AsyncProperty<T> : AsyncPropertyBase<Task<T>>
     {
-        private readonly Task<T> _valueSource;
-        private readonly Lazy<TaskCompletionSource<bool>> _completionSource = new Lazy<TaskCompletionSource<bool>>();
+        private T _value;
 
         /// <summary>
         /// The value of the property, which will be set once Task where the value comes from
         /// is completed.
         /// </summary>
-        public T Value { get; private set; }
-
-        /// <summary>
-        /// Returns a task that will be completed once the wrapped task is completed. This task is
-        /// not directly connected to the wrapped task and will never throw and error.
-        /// </summary>
-        public Task ValueTask => _completionSource.Value.Task;
-
-        public override Task Task => _valueSource;
-
-        public AsyncProperty(Task<T> valueSource, T defaultValue = default(T))
+        public T Value
         {
-            _valueSource = valueSource;
-            Value = defaultValue;
-            AwaitForValue();
-        }
-
-        public AsyncProperty(T value)
-        {
-            Value = value;
-            _completionSource.Value.SetResult(true);
-        }
-
-        private void AwaitForValue()
-        {
-            _valueSource.ContinueWith(t =>
+            get => _value;
+            private set
             {
-                // Value is initiated with defaultValue at constructor.
-                Value = AsyncPropertyUtils.GetTaskResultSafe(t, defaultValue: Value);
-                _completionSource.Value.SetResult(true);
-                RaiseAllPropertyChanged();
-            });
+                if (!Equals(_value, value))
+                {
+                    SetValueAndRaise(ref _value, value);
+                }
+            }
+        }
+
+        public AsyncProperty(Task<T> valueSource, T defaultValue = default(T)) : base(valueSource)
+        {
+            Value = ActualTask.IsCompleted ?
+                AsyncPropertyUtils.GetTaskResultSafe(ActualTask, defaultValue) :
+                defaultValue;
+        }
+
+        public AsyncProperty(T value) : this(Task.FromResult(value), value)
+        {
+        }
+
+        protected override void OnTaskComplete()
+        {
+            Value = AsyncPropertyUtils.GetTaskResultSafe(ActualTask, Value);
         }
     }
 }

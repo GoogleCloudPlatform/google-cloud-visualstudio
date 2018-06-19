@@ -35,8 +35,8 @@ using System.Runtime.InteropServices;
 
 // This version number matches the version in the .vsixmanifest. Please update both versions at the
 // same time.
-[assembly: AssemblyVersion("1.4.0.0")]
-[assembly: AssemblyFileVersion("1.4.0.0")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]
 [assembly: InternalsVisibleTo(
     "GoogleCloudExtensionUnitTests," +
     "PublicKey=0024000004800000940000000602000000240000525341310004000001000" +

@@ -39,11 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAnalyticsUtilsTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtensionUnitTests", "GoogleCloudExtensionUnitTests\GoogleCloudExtensionUnitTests.csproj", "{0CD177FD-16EE-4DE7-B013-5C26348A4AB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GitUtils", "GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj", "{66B55AAF-8237-45CF-8462-6359318795AB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils.UnitTests", "GoogleCloudExtension.Utils.UnitTests\GoogleCloudExtension.Utils.UnitTests.csproj", "{8F5877B1-4E7C-4427-A37F-C037A5D08B64}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GcsUtils", "GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj", "{0C891356-CCD7-4A10-BA27-C4A4359EA825}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TemplateWizards", "GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj", "{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}"
 EndProject
@@ -64,8 +60,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EchoApp", "TestProjects\EchoApp\EchoApp.csproj", "{108901A6-861D-4021-A2C9-CE93554A26F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GcpProjectTemplate", "ProjectTemplates\GcpProjectTemplate\GcpProjectTemplate.csproj", "{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Deployment.UnitTests", "GoogleCloudExtension.Deployment.UnitTests\GoogleCloudExtension.Deployment.UnitTests.csproj", "{85D0CAAD-A3E0-4A3B-B107-500CAA2A5994}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingHelpers", "TestingHelpers\TestingHelpers.csproj", "{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}"
 EndProject
@@ -113,18 +107,10 @@ Global
 		{0CD177FD-16EE-4DE7-B013-5C26348A4AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CD177FD-16EE-4DE7-B013-5C26348A4AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CD177FD-16EE-4DE7-B013-5C26348A4AB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66B55AAF-8237-45CF-8462-6359318795AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66B55AAF-8237-45CF-8462-6359318795AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66B55AAF-8237-45CF-8462-6359318795AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66B55AAF-8237-45CF-8462-6359318795AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C891356-CCD7-4A10-BA27-C4A4359EA825}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -165,10 +151,6 @@ Global
 		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85D0CAAD-A3E0-4A3B-B107-500CAA2A5994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85D0CAAD-A3E0-4A3B-B107-500CAA2A5994}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85D0CAAD-A3E0-4A3B-B107-500CAA2A5994}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85D0CAAD-A3E0-4A3B-B107-500CAA2A5994}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}.Release|Any CPU.ActiveCfg = Release|Any CPU

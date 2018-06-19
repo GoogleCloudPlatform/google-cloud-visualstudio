@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.PublishDialog
             else
             {
                 menuCommand.Visible = true;
-                menuCommand.Enabled = !ShellUtils.IsBusy();
+                menuCommand.Enabled = !ShellUtils.Default.IsBusy();
             }
         }
     }

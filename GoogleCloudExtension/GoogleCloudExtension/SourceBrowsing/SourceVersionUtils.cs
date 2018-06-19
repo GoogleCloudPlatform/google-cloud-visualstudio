@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GitUtils;
+using GoogleCloudExtension.Git;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverLogsViewer;
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     var locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
                     if (locatedFilePath != null)
                     {
-                        window = ShellUtils.Open(locatedFilePath);
+                        window = ShellUtils.Default.Open(locatedFilePath);
                     }
                 }
             }
@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     title: Resources.UiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
-                ShellUtils.OpenProject();
+                ShellUtils.Default.OpenProject();
             }
             else
             {
