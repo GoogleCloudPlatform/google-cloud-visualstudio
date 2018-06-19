@@ -72,10 +72,20 @@ namespace GoogleCloudExtension.Deployment
             project.Project.DTE.Solution.SolutionBuild.BuildProject("Release", project.Project.UniqueName, true);
 
             string msbuildPath = VsVersionUtils.ToolsPathProvider.GetMsbuildPath();
+            MSBuildTarget target;
+            switch (project.ProjectType)
+            {
+                case KnownProjectTypes.WebApplication:
+                    target = new MSBuildTarget("WebPublish");
+                    break;
+                default:
+                    target = new MSBuildTarget("Publish");
+                    break;
+            }
             var parameters = new object[]
             {
                 '"' + project.FullPath + '"',
-                new MSBuildTarget("WebPublish"),
+                target,
                 new MSBuildProperty("Configuration", "Release"),
                 new MSBuildProperty("WebPublishMethod", "MSDeploy"),
                 new MSBuildProperty("MSDeployPublishMethod", "WMSVC"),
