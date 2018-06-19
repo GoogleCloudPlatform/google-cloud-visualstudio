@@ -10,10 +10,10 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
-    <StackPanel >
+
+    <StackPanel>
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"/>
-
         <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters}"
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
