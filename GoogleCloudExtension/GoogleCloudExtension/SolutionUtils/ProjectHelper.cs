@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.SolutionUtils
     /// <summary>
     /// An wrapper on top of Visual Studio extenstion API Project interface. 
     /// </summary>
-    internal class ProjectHelper
+    public class ProjectHelper
     {
         private const string AssemblyVersionProperty = "AssemblyVersion";
         private const string AssemblyNameProperty = "AssemblyName";

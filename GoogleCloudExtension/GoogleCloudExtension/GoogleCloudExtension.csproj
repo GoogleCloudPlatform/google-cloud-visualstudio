@@ -193,6 +193,7 @@
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="Projects\ProjectPropertyConstants.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
     <Compile Include="Deployment\GkeDeployment.cs" />

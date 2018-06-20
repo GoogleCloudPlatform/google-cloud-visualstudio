@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
                 try
                 {
-                    appEngineConfiguration.GenerateAppYaml(selectedProject);
+                    appEngineConfiguration.AddAppYamlItem(selectedProject);
                 }
                 catch (Exception error)
 
