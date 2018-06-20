@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
@@ -23,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using GoogleCloudExtension.Deployment;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 {
@@ -97,13 +97,17 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
                     Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Resources.PublishDialogChoiceStepAppEngineToolTip,
                     s_appEngineIcon.Value,
-                    new ProtectedCommand(OnAppEngineChoiceCommand, PublishDialog.Project.IsAspNetCoreProject())),
+                    new ProtectedCommand(
+                        OnAppEngineChoiceCommand,
+                        PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication)),
                 new Choice(
                     ChoiceType.Gke,
                     Resources.PublishDialogChoiceStepGkeName,
                     Resources.PublishDialogChoiceStepGkeToolTip,
                     s_gkeIcon.Value,
-                    new ProtectedCommand(OnGkeChoiceCommand, PublishDialog.Project.IsAspNetCoreProject())),
+                    new ProtectedCommand(
+                        OnGkeChoiceCommand,
+                        PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication)),
                 new Choice(
                     ChoiceType.Gce,
                     Resources.PublishDialogChoiceStepGceName,

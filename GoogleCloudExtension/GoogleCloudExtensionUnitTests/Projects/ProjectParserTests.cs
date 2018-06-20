@@ -156,6 +156,8 @@ namespace GoogleCloudExtensionUnitTests.Projects
 
             const string projectFilePath = @"c:\path\to\project.csproj";
             _projectMock.Setup(p => p.FullName).Returns(projectFilePath);
+            _projectMock.Setup(p => p.Properties.Item("TargetFrameworkMoniker").Value)
+                .Returns(".NETFramework,Version=v4.4.4");
             _fileSystemMock.Setup(fs => fs.XDocument.Load(projectFilePath)).Returns(projectXDocument);
 
             IParsedDteProject result = ProjectParser.ParseProject(_projectMock.Object);

@@ -52,9 +52,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             KnownProjectTypes projectType = project.ProjectType;
             return projectType == KnownProjectTypes.WebApplication ||
-                projectType == KnownProjectTypes.NetCoreWebApplication1_0 ||
-                projectType == KnownProjectTypes.NetCoreWebApplication1_1 ||
-                projectType == KnownProjectTypes.NetCoreWebApplication2_0;
+                projectType == KnownProjectTypes.NetCoreWebApplication;
         }
     }
 }

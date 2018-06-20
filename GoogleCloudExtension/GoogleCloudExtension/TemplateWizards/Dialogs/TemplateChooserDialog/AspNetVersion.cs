@@ -46,12 +46,18 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         public static readonly AspNetVersion AspNetCore20 = new AspNetVersion("2.0");
 
         /// <summary>
+        /// ASP.NET Core 2.1.
+        /// </summary>
+        public static readonly AspNetVersion AspNetCore21 = new AspNetVersion("2.1");
+
+        /// <summary>
         /// ASP.NET 4.
         /// </summary>
         public static readonly AspNetVersion AspNet4 = new AspNetVersion("4", false);
 
-        private static readonly Version s_sdkVersion1_0 = new Version(1, 0);
-        private static readonly Version s_sdkVersion2_0 = new Version(2, 0);
+        // Find these values at https://www.microsoft.com/net/download/all
+        internal static readonly Version s_firstSdkVersionWith11Runtime = new Version(1, 1, 4);
+        internal static readonly Version s_firstSdkVersionWith21Runtime = new Version(2, 1, 300);
 
         /// <summary>
         /// The version number of ASP.NET. This corresponds to the version of .NET Core used as well.
@@ -100,16 +106,27 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
         private static IList<AspNetVersion> GetVs2017AspNetCoreVersions()
         {
             List<Version> sdkVersions = GetParsedSdkVersions().ToList();
+            List<Version> majorVersion1Versions = sdkVersions.Where(v => v.Major == 1).ToList();
+            List<Version> majorVersion2Versions = sdkVersions.Where(v => v.Major == 2).ToList();
             var aspNetVersions = new List<AspNetVersion>();
-            if (sdkVersions.Any(version => version >= s_sdkVersion1_0 && version < s_sdkVersion2_0))
+            if (majorVersion1Versions.Count > 0)
             {
                 aspNetVersions.Add(AspNetCore10);
+            }
+
+            if (majorVersion1Versions.Any(version => version >= s_firstSdkVersionWith11Runtime))
+            {
                 aspNetVersions.Add(AspNetCore11);
             }
 
-            if (sdkVersions.Any(version => version >= s_sdkVersion2_0))
+            if (majorVersion2Versions.Count > 0)
             {
                 aspNetVersions.Add(AspNetCore20);
+            }
+
+            if (majorVersion2Versions.Any(version => version >= s_firstSdkVersionWith21Runtime))
+            {
+                aspNetVersions.Add(AspNetCore21);
             }
 
             return aspNetVersions;
