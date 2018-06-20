@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void TestConvertNull()
         {
-            var val = _objectUnderTest.Convert(null, null, null, null);
+            object val = _objectUnderTest.Convert(null, null, null, null);
 
             Assert.AreEqual(Visibility.Collapsed, val);
         }
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void TestConvertNotNull()
         {
-            var val = _objectUnderTest.Convert(new Object(), null, null, null);
+            object val = _objectUnderTest.Convert(new object(), null, null, null);
 
             Assert.AreEqual(Visibility.Visible, val);
         }
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void TestConvertEmpty()
         {
-            var val = _objectUnderTest.Convert("", null, null, null);
+            object val = _objectUnderTest.Convert("", null, null, null);
 
             Assert.AreEqual(Visibility.Collapsed, val);
         }
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void TestConvertWhitespace()
         {
-            var val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
+            object val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
 
             Assert.AreEqual(Visibility.Collapsed, val);
         }
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void TestConvertString()
         {
-            var val = _objectUnderTest.Convert("not an empty string", null, null, null);
+            object val = _objectUnderTest.Convert("not an empty string", null, null, null);
 
             Assert.AreEqual(Visibility.Visible, val);
         }
@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         public void TestConvertNullInvert()
         {
             _objectUnderTest.Invert = true;
-            var val = _objectUnderTest.Convert(null, null, null, null);
+            object val = _objectUnderTest.Convert(null, null, null, null);
 
             Assert.AreEqual(Visibility.Visible, val);
         }
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         public void TestConvertNotNullInvert()
         {
             _objectUnderTest.Invert = true;
-            var val = _objectUnderTest.Convert(new Object(), null, null, null);
+            object val = _objectUnderTest.Convert(new object(), null, null, null);
 
             Assert.AreEqual(Visibility.Collapsed, val);
         }
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         public void TestConvertEmptyInvert()
         {
             _objectUnderTest.Invert = true;
-            var val = _objectUnderTest.Convert("", null, null, null);
+            object val = _objectUnderTest.Convert("", null, null, null);
 
             Assert.AreEqual(Visibility.Visible, val);
         }
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         public void TestConvertWhitespaceInvert()
         {
             _objectUnderTest.Invert = true;
-            var val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
+            object val = _objectUnderTest.Convert(" \t\n\f\r", null, null, null);
 
             Assert.AreEqual(Visibility.Visible, val);
         }
@@ -113,23 +113,21 @@ namespace GoogleCloudExtension.Utils.UnitTests
         public void TestConvertStringInvert()
         {
             _objectUnderTest.Invert = true;
-            var val = _objectUnderTest.Convert("not an empty string", null, null, null);
+            object val = _objectUnderTest.Convert("not an empty string", null, null, null);
 
             Assert.AreEqual(Visibility.Collapsed, val);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
         public void TestConvertBack()
         {
-            _objectUnderTest.ConvertBack(null, null, null, null);
-            Assert.Fail();
+            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.ConvertBack(null, null, null, null));
         }
 
         [TestMethod]
         public void TestProvideValue()
         {
-            var val = _objectUnderTest.ProvideValue(Mock.Of<IServiceProvider>());
+            object val = _objectUnderTest.ProvideValue(Mock.Of<IServiceProvider>());
 
             Assert.AreEqual(_objectUnderTest, val);
         }

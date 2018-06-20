@@ -193,6 +193,30 @@
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
+      <DependentUpon>GaeInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Flex\NeedAppCreatedControl.xaml.cs">
+      <DependentUpon>NeedAppCreatedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gce\GceInputsControl.xaml.cs">
+      <DependentUpon>GceInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\GeneralErrorControl.xaml.cs">
+      <DependentUpon>GeneralErrorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gke\GkeInputsControl.xaml.cs">
+      <DependentUpon>GkeInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\LoadingProjectDataControl.xaml.cs">
+      <DependentUpon>LoadingProjectDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\NeedApiEnabledControl.xaml.cs">
+      <DependentUpon>NeedApiEnabledControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml.cs">
+      <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Projects\ProjectPropertyConstants.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
@@ -1016,7 +1040,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Flex\NeedAppCreatedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gce\GceInputsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PublishDialog\Steps\Gce\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\GeneralErrorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gke\GkeInputsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1025,6 +1069,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\LoadingProjectDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\NeedApiEnabledControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -26,44 +22,10 @@ namespace GoogleCloudExtension.Utils
     /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
-    public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
+    public class NullEmptyInvisibleConverter : NullEmptyConverter<Visibility>
     {
-        /// <summary>
-        /// If true, null, empty and whitespace values will return <see cref="Visibility.Visible"/>
-        /// instead of <see cref="Visibility.Collapsed"/>.
-        /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        public bool Invert { get; set; }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var stringValue = value as string;
-            if (stringValue != null)
-            {
-                return (String.IsNullOrWhiteSpace(stringValue) ^ Invert) ? Visibility.Collapsed : Visibility.Visible;
-            }
-            else if ((value == null) ^ Invert)
-            {
-                return Visibility.Collapsed;
-            }
-            else
-            {
-                return Visibility.Visible;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Implement interface MarkupExtension.
-        /// </summary>
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
+        protected override Visibility EmptyValue { get; } = Visibility.Collapsed;
+        protected override Visibility NotEmptyValue { get; } = Visibility.Visible;
     }
 }
 
