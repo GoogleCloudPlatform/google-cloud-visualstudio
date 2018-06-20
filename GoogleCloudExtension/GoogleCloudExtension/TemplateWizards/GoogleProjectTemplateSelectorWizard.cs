@@ -26,7 +26,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards
@@ -37,10 +37,10 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateSelectorWizard))]
     public class GoogleProjectTemplateSelectorWizard : IGoogleProjectTemplateSelectorWizard
     {
-        // Find the AspNet or AspNetCore part of c:\path\to\template\Gcp.AspNet.vstemplate
-        private static readonly Regex s_templateTypeRegex = new Regex(@"(?<=Gcp\.)[^.]*(?=\.vstemplate$)");
         // Mockable static methods for unit testing.
-        internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser = TemplateChooserWindow.PromptUser;
+        internal Func<string, TemplateType, TemplateChooserViewModelResult> PromptUser =
+            TemplateChooserWindow.PromptUser;
+
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
 
         /// <inheritdoc/>
@@ -64,7 +64,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
                 else
                 {
-                    TemplateType templateType = GetTemplateTypeFromPath(thisTemplatePath);
+                    TemplateType templateType = GetTemplateTypeFromWizardData(replacements);
                     result = PromptUser(projectName, templateType);
                 }
                 if (result == null)
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 }
 
                 string thisTemplateDirectory =
-                        Path.GetFullPath(Path.Combine(thisTemplatePath, "..", "..", "..", ".."));
+                    Path.GetFullPath(Path.Combine(thisTemplatePath, "..", "..", "..", ".."));
 
 
                 var serviceProvider = automationObject as IServiceProvider;
@@ -97,52 +97,57 @@ namespace GoogleCloudExtension.TemplateWizards
                 CleanupDirectories(replacements);
                 throw;
             }
+
             // Delegated wizard created the solution. Cancel repeated creation of the solution.
             throw new WizardCancelledException();
         }
 
-        private TemplateType GetTemplateTypeFromPath(string thisTemplatePath)
+        private TemplateType GetTemplateTypeFromWizardData(IReadOnlyDictionary<string, string> replacements)
         {
-            string templateTypeName = s_templateTypeRegex.Match(thisTemplatePath).Value;
-            TemplateType result;
-            if (Enum.TryParse(templateTypeName, out result))
+            string wizardDataXml;
+            if (replacements.TryGetValue(ReplacementsKeys.WizardDataKey, out wizardDataXml))
             {
-                return result;
+                XElement wizardData = XElement.Parse(wizardDataXml);
+                string templateTypeName = wizardData.DescendantsAndSelf()
+                    .SingleOrDefault(n => n.Name.LocalName == "TemplateType")?.Value;
+                TemplateType result;
+                if (Enum.TryParse(templateTypeName, out result))
+                {
+                    return result;
+                }
             }
-            else
-            {
-                return TemplateType.AspNetCore;
-            }
+
+            return TemplateType.AspNetCore;
         }
 
         /// <inheritdoc/>
         public void ProjectFinishedGenerating(Project project)
         {
-            throw new NotImplementedException("This wizard should delegate to another template and cancel itself.");
+            throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
         }
 
         /// <inheritdoc/>
         public void ProjectItemFinishedGenerating(ProjectItem projectItem)
         {
-            throw new NotImplementedException("This wizard should delegate to another template and cancel itself.");
+            throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
         }
 
         /// <inheritdoc/>
         public bool ShouldAddProjectItem(string filePath)
         {
-            throw new NotImplementedException("This wizard should delegate to another template and cancel itself.");
+            throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
         }
 
         /// <inheritdoc/>
         public void BeforeOpeningFile(ProjectItem projectItem)
         {
-            throw new NotImplementedException("This wizard should delegate to another template and cancel itself.");
+            throw new NotSupportedException("This wizard should delegate to another template and cancel itself.");
         }
 
         /// <inheritdoc/>
         public void RunFinished()
         {
-            throw new NotImplementedException("This wizard should delegate to another wizard and cancel itself.");
+            throw new NotSupportedException("This wizard should delegate to another wizard and cancel itself.");
         }
 
         private static object[] GetNewCustomParams(
@@ -183,6 +188,7 @@ namespace GoogleCloudExtension.TemplateWizards
                             $"Invalid {nameof(FrameworkType)}: {result.SelectedFramework}");
                 }
             }
+
             return customParams.Cast<string>().Concat(additionalCustomParams).ToArray<object>();
         }
     }

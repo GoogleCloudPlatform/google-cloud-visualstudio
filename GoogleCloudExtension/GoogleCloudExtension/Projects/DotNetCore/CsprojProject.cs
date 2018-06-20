@@ -15,6 +15,7 @@
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Projects.DotNetCore
 {
@@ -23,9 +24,10 @@ namespace GoogleCloudExtension.Projects.DotNetCore
     /// </summary>
     public class CsprojProject : IParsedDteProject
     {
-        public const string NetCoreApp1_0 = "netcoreapp1.0";
-        public const string NetCoreApp1_1 = "netcoreapp1.1";
-        public const string NetCoreApp2_0 = "netcoreapp2.0";
+        /// <summary>
+        /// Matches the '2.1' of 'netcoreapp2.1'.
+        /// </summary>
+        private static readonly Regex s_frameworkVersionRegex = new Regex(@"(?<=^netcoreapp)[\d.]+$");
         public Project Project { get; }
 
         public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
@@ -34,29 +36,15 @@ namespace GoogleCloudExtension.Projects.DotNetCore
 
         public string Name => Project.Name;
 
-        public KnownProjectTypes ProjectType { get; }
+        public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
+
+        /// <summary>The version of the framework used by the project.</summary>
+        public string FrameworkVersion { get; }
 
         public CsprojProject(Project project, string targetFramework)
         {
             Project = project;
-            switch (targetFramework)
-            {
-                case NetCoreApp1_0:
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
-                    break;
-
-                case NetCoreApp1_1:
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_1;
-                    break;
-
-                case NetCoreApp2_0:
-                    ProjectType = KnownProjectTypes.NetCoreWebApplication2_0;
-                    break;
-
-                default:
-                    ProjectType = KnownProjectTypes.None;
-                    break;
-            }
+            FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;
         }
     }
 }

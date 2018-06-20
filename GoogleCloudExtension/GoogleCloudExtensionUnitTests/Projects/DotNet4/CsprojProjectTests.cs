@@ -26,16 +26,32 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNet4
         [TestMethod]
         public void TestConstructor_SetsProject()
         {
-            var mockedProject = Mock.Of<Project>();
+            var mockedProject = Mock.Of<Project>(
+                p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                    ".NETFramework,Version=v4.4.4");
             var objectUnderTest = new CsprojProject(mockedProject);
 
             Assert.AreEqual(mockedProject, objectUnderTest.Project);
         }
 
         [TestMethod]
+        public void TestConstructor_SetsFrameworkVersion()
+        {
+            var mockedProject = Mock.Of<Project>(
+                p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                    ".NETFramework,Version=v4.4.4");
+            var objectUnderTest = new CsprojProject(mockedProject);
+
+            Assert.AreEqual("4.4.4", objectUnderTest.FrameworkVersion);
+        }
+
+        [TestMethod]
         public void TestProjectType_IsExpectedConstant()
         {
-            var objectUnderTest = new CsprojProject(Mock.Of<Project>());
+            var objectUnderTest = new CsprojProject(
+                Mock.Of<Project>(
+                    p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                        ".NETFramework,Version=v4.4.4"));
 
             Assert.AreEqual(KnownProjectTypes.WebApplication, objectUnderTest.ProjectType);
         }
@@ -44,7 +60,10 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNet4
         public void TestName_ComesFromProject()
         {
             const string testProjectName = "TestProjectName";
-            var mockedProject = Mock.Of<Project>(p => p.Name == testProjectName);
+            var mockedProject = Mock.Of<Project>(
+                p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                    ".NETFramework,Version=v4.4.4" &&
+                    p.Name == testProjectName);
             var objectUnderTest = new CsprojProject(mockedProject);
 
             Assert.AreEqual(testProjectName, objectUnderTest.Name);
@@ -54,7 +73,10 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNet4
         public void TestFullPath_ComesFromProject()
         {
             const string testProjectName = @"c:\Full\Project\Name";
-            var mockedProject = Mock.Of<Project>(p => p.FullName == testProjectName);
+            var mockedProject = Mock.Of<Project>(
+                p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                    ".NETFramework,Version=v4.4.4" &&
+                    p.FullName == testProjectName);
             var objectUnderTest = new CsprojProject(mockedProject);
 
             Assert.AreEqual(testProjectName, objectUnderTest.FullPath);
@@ -63,7 +85,10 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNet4
         [TestMethod]
         public void TestDirectoryPath_ComesFromProject()
         {
-            var mockedProject = Mock.Of<Project>(p => p.FullName == @"c:\Full\Project\Path");
+            var mockedProject = Mock.Of<Project>(
+                p => p.Properties.Item("TargetFrameworkMoniker").Value.ToString() ==
+                    ".NETFramework,Version=v4.4.4" &&
+                    p.FullName == @"c:\Full\Project\Path");
             var objectUnderTest = new CsprojProject(mockedProject);
 
             Assert.AreEqual(@"c:\Full\Project", objectUnderTest.DirectoryPath);

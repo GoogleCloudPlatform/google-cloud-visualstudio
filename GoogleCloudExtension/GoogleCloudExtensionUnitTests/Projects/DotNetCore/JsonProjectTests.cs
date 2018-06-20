@@ -33,11 +33,19 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
         }
 
         [TestMethod]
-        public void TestProjectType_IsConstant()
+        public void TestProjectType_IsNetCore()
         {
             var objectUnderTest = new JsonProject(Mock.Of<Project>());
 
-            Assert.AreEqual(KnownProjectTypes.NetCoreWebApplication1_0, objectUnderTest.ProjectType);
+            Assert.AreEqual(KnownProjectTypes.NetCoreWebApplication, objectUnderTest.ProjectType);
+        }
+
+        [TestMethod]
+        public void TestFrameworkVersion_IsPreview()
+        {
+            var objectUnderTest = new JsonProject(Mock.Of<Project>());
+
+            Assert.AreEqual(JsonProject.PreviewVersion, objectUnderTest.FrameworkVersion);
         }
 
         [TestMethod]

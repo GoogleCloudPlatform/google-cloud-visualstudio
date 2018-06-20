@@ -53,6 +53,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         private const string DefaultProjectName = "DefaultProjectName";
         private const string DefaultProjectId = "default-project-id";
         private const FrameworkType DefaultFrameworkType = FrameworkType.NetCore;
+        private const string AspNetWizardData = "<TemplateType>AspNet</TemplateType>";
+        private const string AspNetCoreWizardData = "<TemplateType>AspNetCore</TemplateType>";
 
         private GoogleProjectTemplateSelectorWizard _objectUnderTest;
         private Dictionary<string, string> _replacements;
@@ -70,9 +72,10 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         {
             _replacements = new Dictionary<string, string>
             {
-                {ReplacementsKeys.ProjectNameKey, DefaultProjectName},
-                {ReplacementsKeys.DestinationDirectoryKey, DefaultDestinationDirectory},
-                {ReplacementsKeys.SolutionDirectoryKey, DefaultSolutionDirectory }
+                [ReplacementsKeys.ProjectNameKey] = DefaultProjectName,
+                [ReplacementsKeys.DestinationDirectoryKey] = DefaultDestinationDirectory,
+                [ReplacementsKeys.SolutionDirectoryKey] = DefaultSolutionDirectory,
+                [ReplacementsKeys.WizardDataKey] = AspNetWizardData
             };
             _customParams = new object[]
             {
@@ -115,47 +118,48 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         }
 
         [TestMethod]
-        [ExpectedException(typeof(WizardCancelledException))]
-        public void TestPromptForAspDotNet()
+        public void TestWizardData_AspNetPromptsForAspDotNet()
         {
             const string newProjectName = "AspNetProjectName";
             _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
-            try
-            {
-                string templateFilePath = DefaultAspDotNetTemplatePath;
-                _objectUnderTest.RunStarted(
-                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
-                        new object[] { templateFilePath });
-            }
-            catch (WizardCancelledException)
-            {
-                _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNet), Times.Once);
-                throw;
-            }
+            _replacements[ReplacementsKeys.WizardDataKey] = AspNetWizardData;
+
+            Assert.ThrowsException<WizardCancelledException>(
+                () => _objectUnderTest.RunStarted(
+                    _dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams));
+
+            _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNet), Times.Once);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(WizardCancelledException))]
-        public void TestPromptForAspDotNetCore()
+        public void TestWizardData_AspNetCorePromptsForAspDotNetCore()
         {
             const string newProjectName = "AspNetCoreProjectName";
             _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
-            try
-            {
-                string templateFilePath = DefaultAspDotNetCoreTemplatePath;
-                _objectUnderTest.RunStarted(
-                        _dteMock.Object, _replacements, WizardRunKind.AsNewProject,
-                        new object[] { templateFilePath });
-            }
-            catch (WizardCancelledException)
-            {
-                _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNetCore), Times.Once);
-                throw;
-            }
+            _replacements[ReplacementsKeys.WizardDataKey] = AspNetCoreWizardData;
+
+            Assert.ThrowsException<WizardCancelledException>(
+                () => _objectUnderTest.RunStarted(
+                    _dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams));
+
+            _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNetCore), Times.Once);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(WizardCancelledException))]
+        public void TestWizardData_MissingPromptsForAspDotNetCore()
+        {
+            const string newProjectName = "AspNetCoreProjectName";
+            _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
+            _replacements.Remove(ReplacementsKeys.WizardDataKey);
+
+            Assert.ThrowsException<WizardCancelledException>(
+                () => _objectUnderTest.RunStarted(
+                    _dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams));
+
+            _promptUserMock.Verify(p => p(newProjectName, TemplateType.AspNetCore), Times.Once);
+        }
+
+        [TestMethod]
         public void TestAddTemplateCallWithSameDestinationDirectory()
         {
             const string newProjectName = "SameDirectoryProject";
@@ -165,21 +169,18 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
             _replacements[ReplacementsKeys.ProjectNameKey] = newProjectName;
             _replacements[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
             _replacements[ReplacementsKeys.DestinationDirectoryKey] = targetDirectory;
-            try
-            {
-                _objectUnderTest.RunStarted(_dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams);
-            }
-            catch (WizardCancelledException)
-            {
-                _expectedCustomParams[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
-                _expectedCustomParams[ReplacementsKeys.PackagesPathKey] = packagesPath;
-                _solutionMock.Verify(
-                    s => s.AddNewProjectFromTemplate(
-                        It.IsAny<string>(), It.Is<Array>(a => AreExpectedCustomParams(a)), It.IsAny<string>(),
-                        targetDirectory, newProjectName, null, out _newHierarchy),
-                    Times.Once);
-                throw;
-            }
+
+            Assert.ThrowsException<WizardCancelledException>(
+                () => _objectUnderTest.RunStarted(
+                    _dteMock.Object, _replacements, WizardRunKind.AsNewProject, _customParams));
+
+            _expectedCustomParams[ReplacementsKeys.SolutionDirectoryKey] = targetDirectory;
+            _expectedCustomParams[ReplacementsKeys.PackagesPathKey] = packagesPath;
+            _solutionMock.Verify(
+                s => s.AddNewProjectFromTemplate(
+                    It.IsAny<string>(), It.Is<Array>(a => AreExpectedCustomParams(a)), It.IsAny<string>(),
+                    targetDirectory, newProjectName, null, out _newHierarchy),
+                Times.Once);
         }
 
         [TestMethod]
@@ -383,38 +384,25 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TestProjectFinishedGenerating()
-        {
-            _objectUnderTest.ProjectFinishedGenerating(Mock.Of<Project>());
-        }
+        public void TestProjectFinishedGenerating() =>
+            Assert.ThrowsException<NotSupportedException>(
+                () => _objectUnderTest.ProjectFinishedGenerating(Mock.Of<Project>()));
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TestProjectItemFinishedGenerating()
-        {
-            _objectUnderTest.ProjectItemFinishedGenerating(Mock.Of<ProjectItem>());
-        }
+        public void TestProjectItemFinishedGenerating() => Assert.ThrowsException<NotSupportedException>(
+            () => _objectUnderTest.ProjectItemFinishedGenerating(Mock.Of<ProjectItem>()));
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TestShouldAddProjectItem()
-        {
-            _objectUnderTest.ShouldAddProjectItem("");
-        }
+        public void TestShouldAddProjectItem() =>
+            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.ShouldAddProjectItem(""));
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TestBeforeOpeningFile()
-        {
-            _objectUnderTest.BeforeOpeningFile(Mock.Of<ProjectItem>());
-        }
+        public void TestBeforeOpeningFile() =>
+            Assert.ThrowsException<NotSupportedException>(
+                () => _objectUnderTest.BeforeOpeningFile(Mock.Of<ProjectItem>()));
 
         [TestMethod]
-        [ExpectedException(typeof(NotImplementedException))]
-        public void TestRunFinished()
-        {
-            _objectUnderTest.RunFinished();
-        }
+        public void TestRunFinished() =>
+            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.RunFinished());
     }
 }

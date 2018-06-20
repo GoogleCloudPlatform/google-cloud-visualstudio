@@ -33,15 +33,19 @@ namespace GoogleCloudExtensionUnitTests.Projects.DotNetCore
         }
 
         [TestMethod]
-        [DataRow(CsprojProject.NetCoreApp1_0, KnownProjectTypes.NetCoreWebApplication1_0)]
-        [DataRow(CsprojProject.NetCoreApp1_1, KnownProjectTypes.NetCoreWebApplication1_1)]
-        [DataRow(CsprojProject.NetCoreApp2_0, KnownProjectTypes.NetCoreWebApplication2_0)]
-        [DataRow("", KnownProjectTypes.None)]
-        public void TestProjectType_IsExpected(string targetFramework, KnownProjectTypes expectedProjectType)
+        public void TestConstructor_SetsFrameworkVersion()
         {
-            var objectUnderTest = new CsprojProject(Mock.Of<Project>(), targetFramework);
+            var objectUnderTest = new CsprojProject(Mock.Of<Project>(), "netcoreapp1.7");
 
-            Assert.AreEqual(expectedProjectType, objectUnderTest.ProjectType);
+            Assert.AreEqual("1.7", objectUnderTest.FrameworkVersion);
+        }
+
+        [TestMethod]
+        public void TestProjectType_IsNetCore()
+        {
+            var objectUnderTest = new CsprojProject(Mock.Of<Project>(), "netcoreapp1.7");
+
+            Assert.AreEqual(KnownProjectTypes.NetCoreWebApplication, objectUnderTest.ProjectType);
         }
 
         [TestMethod]

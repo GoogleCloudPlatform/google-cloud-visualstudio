@@ -93,7 +93,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         [TestMethod]
         public void TestChoices_DotnetCore()
         {
-            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
+            _parsedProject.ProjectType = KnownProjectTypes.NetCoreWebApplication;
             _objectUnderTest.OnVisible();
 
             CollectionAssert.AreEqual(
