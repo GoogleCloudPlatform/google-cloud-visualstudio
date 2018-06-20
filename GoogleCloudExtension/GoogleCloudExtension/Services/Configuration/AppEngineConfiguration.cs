@@ -106,11 +106,10 @@ namespace GoogleCloudExtension.Services.Configuration
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="service">The service the new app.yaml will target. Defaults to the default service.</param>
-        public void AddAppYamlItem(IParsedDteProject project, string service = DefaultServiceName)
+        public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
         {
             string targetAppYaml = GetAppYamlPath(project);
             GenerateAppYaml(targetAppYaml, service);
-            project.Project.ProjectItems.AddFromFile(targetAppYaml).Properties.Item();
         }
 
         private void GenerateAppYaml(string targetAppYaml, string service)
