@@ -122,6 +122,8 @@ namespace ProjectTemplate.Tests
         [DataRow("1.1", "WebApi")]
         [DataRow("2.0", "Mvc")]
         [DataRow("2.0", "WebApi")]
+        [DataRow("2.1", "Mvc")]
+        [DataRow("2.1", "WebApi")]
 #endif
         public void TestCompileAspNetCore(string version, string appType)
         {

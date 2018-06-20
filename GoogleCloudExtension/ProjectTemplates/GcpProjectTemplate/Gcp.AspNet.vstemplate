@@ -23,4 +23,7 @@
     <Assembly>GoogleCloudExtension.TemplateWizards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=919919421783e38f</Assembly>
     <FullClassName>GoogleCloudExtension.TemplateWizards.GoogleProjectTemplateSelectorWizard</FullClassName>
   </WizardExtension>
+  <WizardData>
+    <TemplateType>AspNet</TemplateType>
+  </WizardData>
 </VSTemplate>
