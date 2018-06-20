@@ -60,7 +60,6 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="bundleconfig.json">bundleconfig.json</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="Project_Readme.html" OpenInWebBrowser="true">Project_Readme.html</ProjectItem>
-      <ProjectItem ReplaceParameters="true" TargetFileName="Startup.cs">Startup.2.1.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="web.config">web.config</ProjectItem>
     </Project>
   </TemplateContent>
