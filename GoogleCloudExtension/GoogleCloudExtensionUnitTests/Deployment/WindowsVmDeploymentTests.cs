@@ -153,8 +153,10 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         }
 
         [TestMethod]
-        public async Task TestPublishProjectAsync_ParametersIncludeWebPublishTarget()
+        public async Task TestPublishProjectAsync_ParametersIncludeWebPublishTargetForAspNetApp()
         {
+            _dteProjectMock.Setup(p => p.ProjectType).Returns(KnownProjectTypes.WebApplication);
+
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
                 s_defaultInstance,
@@ -163,6 +165,20 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/t:WebPublish");
+        }
+
+        [TestMethod]
+        public async Task TestPublishProjectAsync_ParametersIncludePublishTargetForAspNetCoreApp()
+        {
+            _dteProjectMock.Setup(p => p.ProjectType).Returns(KnownProjectTypes.NetCoreWebApplication);
+
+            await _objectUnderTest.PublishProjectAsync(
+                _dteProjectMock.Object,
+                s_defaultInstance,
+                s_defaultCredentials,
+                DefaultWebSite);
+
+            StringAssert.Contains(_parameters, "/t:Publish");
         }
 
         [TestMethod]

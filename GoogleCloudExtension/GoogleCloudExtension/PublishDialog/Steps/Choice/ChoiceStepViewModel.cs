@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
                     s_gceIcon.Value,
                     new ProtectedCommand(
                         OnGceChoiceCommand,
-                        PublishDialog.Project.ProjectType == KnownProjectTypes.WebApplication))
+                        PublishDialog.Project.ProjectType != KnownProjectTypes.None))
             };
 
         private void OnGkeChoiceCommand()
