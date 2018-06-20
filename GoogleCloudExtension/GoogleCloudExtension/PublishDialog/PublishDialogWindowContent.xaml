@@ -35,7 +35,7 @@
 
     <theming:CommonDialogWindowBaseContent Content="{Binding Content}" HasBanner="True" IsEnabled="{Binding AsyncAction.IsCompleted}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogBackButtonCaption}"
                                       Command="{Binding PrevCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}"
                                       Command="{Binding PublishCommand}"/>

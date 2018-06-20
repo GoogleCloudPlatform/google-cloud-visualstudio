@@ -31,7 +31,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
-using Project = Google.Apis.CloudResourceManager.v1.Data.Project;
+using DteProject = EnvDTE.Project;
+using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 {
@@ -54,7 +55,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private TaskCompletionSource<bool> _setAppRegionTaskSource;
         private IPublishDialog _mockedPublishDialog;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
-        private EnvDTE.Project _mockedProject;
+        private DteProject _mockedProject;
         private List<string> _propertiesChanges;
         private TaskCompletionSource<GCloudValidationResult> _validateGCloudSource;
         private Mock<IAppEngineConfiguration> _appEngineConfigurationMock;
@@ -92,7 +93,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             PackageMock.Setup(p => p.GetMefServiceLazy<IAppEngineConfiguration>())
                 .Returns(_appEngineConfigurationMock.ToLazy());
 
-            _mockedProject = Mock.Of<EnvDTE.Project>();
+            _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
             _mockedPublishDialog = Mock.Of<IPublishDialog>(
                 pd => pd.Project.Name == VisualStudioProjectName && pd.Project.Project == _mockedProject);
 
@@ -112,7 +113,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = new FlexStepViewModel(
-                _gaeDataSourceMock.Object, mockedApiManager, Mock.Of<Func<Project>>(),
+                _gaeDataSourceMock.Object, mockedApiManager, Mock.Of<Func<GcpProject>>(),
                 _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _propertiesChanges = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);

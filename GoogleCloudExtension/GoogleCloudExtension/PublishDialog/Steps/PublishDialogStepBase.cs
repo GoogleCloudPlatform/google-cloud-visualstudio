@@ -16,6 +16,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
@@ -23,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog.Steps
@@ -33,11 +35,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps
     /// </summary>
     public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
+        public const string ConfigurationPropertyName = "GoogleCloudPublishConfiguration";
+        public const string DefaultConfiguration = "Release";
         private readonly IApiManager _apiManager;
         private bool _needsApiEnabled = false;
         private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
         private AsyncProperty _loadProjectTask;
+        private IEnumerable<string> _configurations;
+        private string _selectedConfiguration;
+        private string _lastConfiguration;
 
         private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
             (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
@@ -77,6 +84,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
+        /// <summary>
+        /// Tracks the load project task.
+        /// </summary>
         public AsyncProperty LoadProjectTask
         {
             get => _loadProjectTask;
@@ -96,6 +106,22 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             !string.IsNullOrWhiteSpace(GcpProjectId)
             && LoadProjectTask.IsSuccess
             && !NeedsApiEnabled;
+
+        /// <summary>
+        /// The list of available build configurations.
+        /// </summary>
+        public IEnumerable<string> Configurations
+        {
+            get => _configurations;
+            set
+            {
+                SelectedConfiguration = value?.FirstOrDefault(c => c == SelectedConfiguration) ??
+                    value?.FirstOrDefault(c => c == _lastConfiguration) ??
+                    value?.FirstOrDefault(c => c == DefaultConfiguration) ??
+                    value?.FirstOrDefault();
+                SetValueAndRaise(ref _configurations, value);
+            }
+        }
 
         /// <summary>
         /// Returns the <seealso cref="IApiManager"/> instance to use.
@@ -128,6 +154,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
         public abstract IProtectedCommand PublishCommand { get; }
 
+        /// <summary>
+        /// The build configuration to publish.
+        /// </summary>
+        public string SelectedConfiguration
+        {
+            get => _selectedConfiguration;
+            set => SetValueAndRaise(ref _selectedConfiguration, value);
+        }
+
         protected PublishDialogStepBase(
             IApiManager apiManager,
             Func<Project> pickProjectPrompt,
@@ -154,20 +189,45 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         protected virtual void OnIsValidGcpProjectChanged() { }
 
         /// <summary>
-        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
-        public virtual void OnVisible()
+        /// <remarks>
+        /// This method adds event handlers for <see cref="IPublishDialog.FlowFinished"/> and <see cref="ICredentialsStore.CurrentProjectIdChanged"/>,
+        /// and Loads properties from the project file.
+        /// </remarks>
+        public void OnVisible()
         {
             AddHandlers();
+            LoadProjectPropertiesBase();
             LoadProjectProperties();
             OnProjectChanged();
             SelectProjectCommand.CanExecuteCommand = true;
         }
 
-        public virtual void OnNotVisible()
+        private void LoadProjectPropertiesBase()
         {
+            _lastConfiguration = PublishDialog.Project.GetUserProperty(ConfigurationPropertyName);
+
+            Configurations =
+                (IEnumerable<string>)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
+        }
+
+        /// <summary>
+        /// Called every time this step moves off the top of the navigation stack.
+        /// </summary>
+        /// <remarks>
+        /// This method removes event handlers added by <see cref="OnVisible"/> and saves project properties.
+        /// </remarks>
+        public void OnNotVisible()
+        {
+            SaveProjectPropertiesBase();
             SaveProjectProperties();
             RemoveHandlers();
+        }
+
+        private void SaveProjectPropertiesBase()
+        {
+            PublishDialog.Project.SaveUserProperty(ConfigurationPropertyName, SelectedConfiguration);
         }
 
         /// <summary>
@@ -180,6 +240,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             LoadProject();
         }
 
+        /// <summary>
+        /// Starts a new load project task, tracked by <see cref="LoadProjectTask"/>.
+        /// </summary>
         public void LoadProject()
         {
             LoadProjectTask = new AsyncProperty(LoadProjectTaskAsync());
@@ -202,6 +265,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
+        /// <summary>
+        /// Checks to see if the given project is valid, and has required APIs enabled.
+        /// Once complete, this task will have set <see cref="IsValidGcpProject"/> and <see cref="NeedsApiEnabled"/>.
+        /// </summary>
         protected virtual async Task ValidateProjectAsync()
         {
             // Reset UI State
@@ -243,6 +310,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         protected abstract Task LoadValidProjectDataAsync();
 
+        /// <summary>
+        /// Callback function for when HasErrors may have changed.
+        /// </summary>
         protected override void HasErrorsChanged()
         {
             base.HasErrorsChanged();
@@ -312,8 +382,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectChanged;
         }
 
+        /// <summary>
+        /// Loads the step specific properties from the project file.
+        /// </summary>
         protected abstract void LoadProjectProperties();
 
+        /// <summary>
+        /// Saves the step specific properties to the project file.
+        /// </summary>
         protected abstract void SaveProjectProperties();
     }
 }

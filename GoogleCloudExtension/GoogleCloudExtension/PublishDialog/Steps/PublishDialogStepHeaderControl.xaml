@@ -27,17 +27,32 @@
         <ResourceDictionary Source="../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
     
-    <!-- Google Cloud Project input -->
-    <DockPanel HorizontalAlignment="Left">
-        <Label DockPanel.Dock="Top"
-               Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-               Margin="0,0,0,3" />
-        <Button DockPanel.Dock="Right"
-                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
-                Command="{Binding SelectProjectCommand}"
-                Margin="6,0,0,0" />
-        <TextBox Text="{Binding GcpProjectId, Mode=OneWay}"
-                 IsReadOnly="True"
-                 MinWidth="200"/>
+    <DockPanel>
+        <!-- Build Configuration input -->
+        <DockPanel DockPanel.Dock="Left" Margin="0,0,12,0">
+            <Label DockPanel.Dock="Top"
+                   Content="{x:Static ext:Resources.PublishDialogStepHeaderConfigurationLabel}"
+                   Target="{Binding ElementName=_configurationBox}"
+                   Margin="0,0,0,3"/>
+            <ComboBox x:Name="_configurationBox"
+                      ItemsSource="{Binding Configurations}"
+                      SelectedItem="{Binding SelectedConfiguration}"
+                      MinWidth="100"/>
+        </DockPanel>
+
+        <!-- Google Cloud Project input -->
+        <DockPanel>
+            <Label DockPanel.Dock="Top"
+                   Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
+                   Margin="0,0,0,3" />
+            <Button DockPanel.Dock="Right"
+                    Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
+                    Command="{Binding SelectProjectCommand}"
+                    Padding="5"
+                    Margin="6,0,0,0" />
+            <TextBox Text="{Binding GcpProjectId, Mode=OneWay}"
+                     IsReadOnly="True"
+                     MinWidth="200"/>
+        </DockPanel>
     </DockPanel>
 </UserControl>

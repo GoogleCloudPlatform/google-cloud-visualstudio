@@ -231,7 +231,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                     project,
                     selectedInstance,
                     selectedCredentials,
-                    targetDeployPath);
+                    targetDeployPath,
+                    SelectedConfiguration);
                 TimeSpan deploymentDuration = DateTime.Now - startDeploymentTime;
 
                 if (result)

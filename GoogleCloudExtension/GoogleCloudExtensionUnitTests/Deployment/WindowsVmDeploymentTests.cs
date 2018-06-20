@@ -103,18 +103,20 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         }
 
         [TestMethod]
-        public async Task TestPublishProjectAsync_RunsBuildForProject()
+        public async Task TestPublishProjectAsync_RunsProjectBuildForGivenConfiguration()
         {
             const string uniqueProjectName = "Unique Project Name";
+            const string expectedConfiguration = "ExpectedConfiguration";
             _dteProjectMock.Setup(p => p.Project.UniqueName).Returns(uniqueProjectName);
 
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                expectedConfiguration);
 
-            _solutionBuildMock.Verify(sb => sb.BuildProject("Release", uniqueProjectName, true));
+            _solutionBuildMock.Verify(sb => sb.BuildProject(expectedConfiguration, uniqueProjectName, true));
         }
 
         [TestMethod]
@@ -128,7 +130,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             Assert.AreEqual(expectedMSBuildPath, _path);
         }
@@ -143,7 +146,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.StartsWith(_parameters, '"' + expectedProjectPath + '"');
         }
@@ -157,7 +161,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/t:WebPublish");
         }
@@ -171,7 +176,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/t:Publish");
         }
@@ -183,7 +189,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/p:WebPublishMethod=\"MSDeploy\"");
         }
@@ -195,7 +202,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/p:MSDeployPublishMethod=\"WMSVC\"");
         }
@@ -203,13 +211,17 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         [TestMethod]
         public async Task TestPublishProjectAsync_ParametersIncludeConfigurationProperty()
         {
+            const string expectedConfiguration = "ExpectedConfiguration";
+            const string expectedConfigurationArgument = "/p:Configuration=\"ExpectedConfiguration\"";
+
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                expectedConfiguration);
 
-            StringAssert.Contains(_parameters, "/p:Configuration=\"Release\"");
+            StringAssert.Contains(_parameters, expectedConfigurationArgument);
         }
 
         [TestMethod]
@@ -226,7 +238,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     }
                 },
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, $"/p:MSDeployServiceURL=\"{expectedPublicIp}\"");
         }
@@ -239,7 +252,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                expectedTargetWebSite);
+                expectedTargetWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, $"/p:DeployIisAppPath=\"{expectedTargetWebSite}\"");
         }
@@ -252,7 +266,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 new WindowsInstanceCredentials(expectedUserName, DefaultPassword),
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, $"/p:UserName=\"{expectedUserName}\"");
         }
@@ -265,7 +280,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 new WindowsInstanceCredentials(DefaultUser, expectedPassword),
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, $"/p:Password=\"{expectedPassword}\"");
         }
@@ -277,7 +293,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/p:AllowUntrustedCertificate=\"True\"");
         }
@@ -289,7 +306,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             Assert.AreEqual(_handler.Target, _gcpOutputWindowMock.Object);
         }
@@ -304,7 +322,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             Assert.IsFalse(t.IsCompleted);
         }
@@ -320,7 +339,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 new Instance { Name = expectedName },
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _statusbarServiceMock.Verify(
                 sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)));
@@ -335,7 +355,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 new Instance { Name = expectedName },
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _statusbarServiceMock.Verify(
                 sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)).Dispose());
@@ -351,7 +372,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation());
         }
@@ -363,7 +385,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation().Dispose());
         }
@@ -378,7 +401,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _shellUtilsMock.Verify(s => s.SetShellUIBusy());
         }
@@ -390,7 +414,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             _shellUtilsMock.Verify(s => s.SetShellUIBusy().Dispose());
         }
@@ -407,7 +432,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             taskSource.SetResult(result);
 

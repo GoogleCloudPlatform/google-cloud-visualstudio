@@ -62,14 +62,16 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="targetDeployPath">The Name or Path of the Website or App to publish</param>
+        /// <param name="configuration">The name of the configuration to publish.</param>
         public async Task<bool> PublishProjectAsync(
             IParsedDteProject project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
-            string targetDeployPath)
+            string targetDeployPath,
+            string configuration)
         {
             // Ensure NuGet packages are restored.
-            project.Project.DTE.Solution.SolutionBuild.BuildProject("Release", project.Project.UniqueName, true);
+            project.Project.DTE.Solution.SolutionBuild.BuildProject(configuration, project.Project.UniqueName, true);
 
             string msbuildPath = VsVersionUtils.ToolsPathProvider.GetMsbuildPath();
             MSBuildTarget target;
@@ -86,7 +88,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 '"' + project.FullPath + '"',
                 target,
-                new MSBuildProperty("Configuration", "Release"),
+                new MSBuildProperty("Configuration", configuration),
                 new MSBuildProperty("WebPublishMethod", "MSDeploy"),
                 new MSBuildProperty("MSDeployPublishMethod", "WMSVC"),
                 new MSBuildProperty("MSDeployServiceURL",targetInstance.GetPublishUrl()),

@@ -44,6 +44,8 @@ namespace GoogleCloudExtensionUnitTests.Projects
         /// <summary>The version of the framework used by the project.</summary>
         public string FrameworkVersion { get; set; }
 
-        public Project Project { get; } = Mock.Of<Project>();
+        public Project Project => ProjectMock.Object;
+
+        public Mock<Project> ProjectMock { get; } = new Mock<Project>();
     }
 }
