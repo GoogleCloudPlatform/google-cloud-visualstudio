@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.SolutionUtils
     /// This class represents a project source file. 
     /// Typlically .cs file.
     /// </summary>
-    public class ProjectSourceFile
+    internal class ProjectSourceFile
     {
         private static readonly string[] s_supportedFileExtension = { ".cs" };
 
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="projectItem">A <seealso cref="ProjectItem"/> object.</param>
         public static bool IsValidSupportedItem(ProjectItem projectItem)
         {
-            if (Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
+            if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
                 !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
             {
                 return false;
