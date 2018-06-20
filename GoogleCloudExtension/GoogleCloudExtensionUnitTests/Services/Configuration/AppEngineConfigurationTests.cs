@@ -129,7 +129,7 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [TestMethod]
         public void Test1ArgGenerateAppYaml_GeneratesDefaultContent()
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
@@ -141,7 +141,7 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [DataRow(AppEngineConfiguration.DefaultServiceName)]
         public void Test1ArgGenerateAppYaml_GeneratesDefaultContentForDefaultService(string defaultServiceName)
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, defaultServiceName);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject, defaultServiceName);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
@@ -150,7 +150,7 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [TestMethod]
         public void Test1ArgGenerateAppYaml_GeneratesSpecificContentForNonDefaultService()
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, NewService);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject, NewService);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(

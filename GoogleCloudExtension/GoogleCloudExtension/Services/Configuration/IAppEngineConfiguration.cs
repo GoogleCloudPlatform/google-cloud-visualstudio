@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.Services.Configuration
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="service">The name of the service the new app.yaml should target, if any.</param>
-        void GenerateAppYaml(IParsedProject project, string service = AppEngineConfiguration.DefaultServiceName);
+        void AddAppYamlItem(IParsedProject project, string service = AppEngineConfiguration.DefaultServiceName);
 
         /// <summary>
         /// Checks the project configuration files to see if they exist.
