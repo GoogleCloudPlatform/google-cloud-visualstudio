@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.Services.Configuration
             }
             else
             {
-                GenerateAppYaml(appYamlPath, service);
+                GenerateAppYaml(project, service);
             }
         }
 
