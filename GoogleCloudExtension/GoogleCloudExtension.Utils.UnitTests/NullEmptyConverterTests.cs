@@ -15,6 +15,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Globalization;
 
 namespace GoogleCloudExtension.Utils.UnitTests
 {
@@ -24,7 +25,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
     [TestClass]
     public class NullEmptyConverterTests
     {
-        private const string WhiteSpaceString = " \t\n\f\r";
+        private const string NotEmptyString = "not an empty string";
         private NullEmptyConverter<object> _objectUnderTest;
         private static readonly object s_emptyResult = TestNullEmptyConverter.EmptyResult;
         private static readonly object s_notEmptyResult = TestNullEmptyConverter.NotEmptyResult;
@@ -35,53 +36,46 @@ namespace GoogleCloudExtension.Utils.UnitTests
             _objectUnderTest = new TestNullEmptyConverter();
         }
 
-        [TestMethod]
-        public void TestConvertNull()
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        private static object[][] EmptyStringData { get; } =
         {
-            object val = _objectUnderTest.Convert(null, null, null, null);
+            new object[] {null},
+            new object[] {""},
+            new object[] {" \t\n\f\r"}
+        };
+
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        private static object[][] NotEmptyData { get; } =
+        {
+            new object[] {NotEmptyString},
+            new[] {new object()}
+        };
+
+        [TestMethod]
+        [DynamicData(nameof(EmptyStringData))]
+        public void TestConvert_EmptyStringInput(string emptyString)
+        {
+            object val = _objectUnderTest.Convert(emptyString, null, null, null);
 
             Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
-        public void TestConvertNotNull()
+        public void TestConvert_ConvertableConvertsUsingGivenCultureInfo()
         {
-            object val = _objectUnderTest.Convert(new object(), null, null, null);
+            var convertableMock = new Mock<IConvertible>();
+            CultureInfo mockedCultureInfo = new Mock<CultureInfo>("").Object;
 
-            Assert.AreEqual(s_notEmptyResult, val);
+            _objectUnderTest.Convert(convertableMock.Object, null, null, mockedCultureInfo);
+
+            convertableMock.Verify(c => c.ToString(mockedCultureInfo));
         }
 
         [TestMethod]
-        public void TestConvertEmpty()
+        [DynamicData(nameof(EmptyStringData))]
+        public void TestConvert_ConvertableToEmptyStringInput(string emptyString)
         {
-            object val = _objectUnderTest.Convert("", null, null, null);
-
-            Assert.AreEqual(s_emptyResult, val);
-        }
-
-        [TestMethod]
-        public void TestConvertWhitespace()
-        {
-            object val = _objectUnderTest.Convert(WhiteSpaceString, null, null, null);
-
-            Assert.AreEqual(s_emptyResult, val);
-        }
-
-        [TestMethod]
-        public void TestConvertString()
-        {
-            object val = _objectUnderTest.Convert("not an empty string", null, null, null);
-
-            Assert.AreEqual(s_notEmptyResult, val);
-        }
-
-        [TestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(WhiteSpaceString)]
-        public void TestConvert_ConvertableEmpty(string convertResult)
-        {
-            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == convertResult);
+            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == emptyString);
 
             object val = _objectUnderTest.Convert(convertible, null, null, null);
 
@@ -89,9 +83,18 @@ namespace GoogleCloudExtension.Utils.UnitTests
         }
 
         [TestMethod]
-        public void TestConvert_ConvertableNotEmpty()
+        [DynamicData(nameof(NotEmptyData))]
+        public void TestConvert_NotNullObjectInput(object notEmpty)
         {
-            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == "Not Empty");
+            object val = _objectUnderTest.Convert(notEmpty, null, null, null);
+
+            Assert.AreEqual(s_notEmptyResult, val);
+        }
+
+        [TestMethod]
+        public void TestConvert_ConvertableToNotEmptyInput()
+        {
+            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == NotEmptyString);
 
             object val = _objectUnderTest.Convert(convertible, null, null, null);
 
@@ -99,7 +102,8 @@ namespace GoogleCloudExtension.Utils.UnitTests
         }
 
         [TestMethod]
-        public void TestConvertNullInvert()
+        [DynamicData(nameof(EmptyStringData))]
+        public void TestConvert_InvertEmptyInput(string emptyString)
         {
             _objectUnderTest.Invert = true;
             object val = _objectUnderTest.Convert(null, null, null, null);
@@ -108,49 +112,46 @@ namespace GoogleCloudExtension.Utils.UnitTests
         }
 
         [TestMethod]
-        public void TestConvertNotNullInvert()
+        [DynamicData(nameof(EmptyStringData))]
+        public void TestConvert_InvertConvertableToEmptyStringInput(string emptyString)
         {
-            _objectUnderTest.Invert = true;
-            object val = _objectUnderTest.Convert(new object(), null, null, null);
+            var convertible = Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == emptyString);
 
-            Assert.AreEqual(s_emptyResult, val);
-        }
-
-        [TestMethod]
-        public void TestConvertEmptyInvert()
-        {
             _objectUnderTest.Invert = true;
-            object val = _objectUnderTest.Convert("", null, null, null);
+            object val = _objectUnderTest.Convert(convertible, null, null, null);
 
             Assert.AreEqual(s_notEmptyResult, val);
         }
 
         [TestMethod]
-        public void TestConvertWhitespaceInvert()
+        [DynamicData(nameof(NotEmptyData))]
+        public void TestConvert_InvertNotEmptyInput(object notEmpty)
         {
             _objectUnderTest.Invert = true;
-            object val = _objectUnderTest.Convert(WhiteSpaceString, null, null, null);
-
-            Assert.AreEqual(s_notEmptyResult, val);
-        }
-
-        [TestMethod]
-        public void TestConvertStringInvert()
-        {
-            _objectUnderTest.Invert = true;
-            object val = _objectUnderTest.Convert("not an empty string", null, null, null);
+            object val = _objectUnderTest.Convert(notEmpty, null, null, null);
 
             Assert.AreEqual(s_emptyResult, val);
         }
 
         [TestMethod]
-        public void TestConvertBack()
+        public void TestConvert_InvertConvertableToNotEmptyInput()
+        {
+            var convertible =
+                Mock.Of<IConvertible>(c => c.ToString(It.IsAny<IFormatProvider>()) == NotEmptyString);
+
+            object val = _objectUnderTest.Convert(convertible, null, null, null);
+
+            Assert.AreEqual(s_notEmptyResult, val);
+        }
+
+        [TestMethod]
+        public void TestConvertBack_ThrowsNotSupportedException()
         {
             Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.ConvertBack(null, null, null, null));
         }
 
         [TestMethod]
-        public void TestProvideValue()
+        public void TestProvideValue_ReturnsSelf()
         {
             object val = _objectUnderTest.ProvideValue(Mock.Of<IServiceProvider>());
 
