@@ -165,7 +165,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         [TestMethod]
         public async Task TestPublishProjectAsync_ParametersIncludePublishTargetForAspNetCoreApp()
         {
-            _dteProjectMock.Setup(p => p.ProjectType).Returns(KnownProjectTypes.NetCoreWebApplication1_0);
+            _dteProjectMock.Setup(p => p.ProjectType).Returns(KnownProjectTypes.NetCoreWebApplication);
 
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
