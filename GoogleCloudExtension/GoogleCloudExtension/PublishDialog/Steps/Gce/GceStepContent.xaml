@@ -1,128 +1,80 @@
-﻿<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.Gce.GceStepContent"
+﻿<!--
+    Copyright 2018 Google Inc. All Rights Reserved.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<UserControl x:Class="GoogleCloudExtension.PublishDialog.Steps.Gce.GceStepContent"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gce"
-             xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
-             xmlns:extensions="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:steps="clr-namespace:GoogleCloudExtension.PublishDialog.Steps"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:GceStepViewModel}">
-
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../../Theming/CommonResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml" />
     </UserControl.Resources>
 
     <StackPanel Margin="12">
-        <DockPanel HorizontalAlignment="Left">
-            <Label
-                DockPanel.Dock="Top"
-                Content="{x:Static ext:Resources.PublishDialogGcpProjectIdLabel}"
-                Style="{StaticResource CommonLabelStyle}" 
-                Margin="0,0,0,3"/>
-            <Button
-                DockPanel.Dock="Right"
-                Content="{x:Static ext:Resources.PublishDialogSelectGcpProjectButtonLabel}"
-                Style="{StaticResource CommonButtonDynamicStyle}"
-                Command="{Binding SelectProjectCommand}"
-                Margin="6,0,0,0" />
-            <TextBox
-                Text="{Binding GcpProjectId, Mode=OneWay}"
-                Width="200"
-                IsReadOnly="True"
-                Style="{StaticResource CommonTextBoxStyle}"
-                Margin="0"/>
-        </DockPanel>
+        <steps:PublishDialogStepHeaderControl/>
 
-        <!-- The message that the project is being validated. -->
-        <StackPanel Margin="0,5,0,0"
-                    Orientation="Horizontal"
-                    Visibility="{Binding LoadProjectTask.IsPending, Converter={utils:VisibilityConverter}}">
-            <controls:ProgressIndicator  />
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogLoadingProjectMessage}" Style="{StaticResource CommonTextStyle}" />
-        </StackPanel>
+        <ContentControl Margin="0,5,0,0"
+                        Visibility="{Binding GcpProjectId, Converter={utils:NullEmptyInvisibleConverter}}">
+            <!-- Show Exactly one of these sub controls -->
+            <ContentControl.Resources>
+                <steps:LoadingProjectDataControl x:Key="LoadingProjectDataControl"/>
+                <local:GceInputsControl x:Key="InputsControl"/>
+                <steps:NeedApiEnabledControl x:Key="NeedApiEnabledControl"/>
+                <steps:GeneralErrorControl x:Key="GeneralErrorControl"/>
+            </ContentControl.Resources>
 
-        <!-- The controls to select the VM. -->
-        <StackPanel Margin="0,5,0,0"
-                    Visibility="{Binding ShowInputControls, Converter={utils:VisibilityConverter}}">
-            <DockPanel>
-                <Label DockPanel.Dock="Top"
-                       Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
-                       Target="{Binding ElementName=_instances}"
-                       Style="{StaticResource CommonLabelStyle}"
-                       Margin="0,0,0,3"/>
-                <Button DockPanel.Dock="Right"
-                        Command="{Binding RefreshInstancesCommand}"
-                        Style="{StaticResource CommonButtonDynamicStyle}"
-                        Margin="6,0,0,0">
-                    <Image Source="{extensions:ImageResource /Theming/Resources/refresh.png}" />
-                </Button>
-                <ComboBox x:Name="_instances"
-                          ItemsSource="{Binding Instances}"
-                          DisplayMemberPath="Name"
-                          IsSynchronizedWithCurrentItem="True"
-                          SelectedItem="{Binding SelectedInstance, Mode=TwoWay}"
-                          Margin="0"/>
-            </DockPanel>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Content" Value="{StaticResource InputsControl}"/>
 
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSiteNameMessage}"
-                   Target="{Binding ElementName=_siteName}"
-                   Style="{StaticResource CommonLabelStyle}"
-                   Margin="0,5,0,0"/>
-            <TextBox x:Name="_siteName"
-                     Text="{Binding SiteName}"
-                     Style="{StaticResource CommonTextBoxStyle}"
-                     Margin="0,3,0,0"/>
-            <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
-                   Target="{Binding ElementName=_credentials}"
-                   Style="{StaticResource CommonLabelStyle}"
-                   Margin="0,5,0,0"/>
-            <ComboBox x:Name="_credentials"
-                      ItemsSource="{Binding Credentials}"
-                      IsSynchronizedWithCurrentItem="True"
-                      DisplayMemberPath="User"
-                      SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" 
-                      Margin="0,3,0,0"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding LoadProjectTask.IsPending}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource LoadingProjectDataControl}"/>
+                        </DataTrigger>
 
-            <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
-                <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
-                </Hyperlink>
-            </TextBlock>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding LoadProjectTask.IsSuccess}" Value="True"/>
+                                <Condition Binding="{Binding NeedsApiEnabled}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            
+                            <Setter Property="Content" Value="{StaticResource NeedApiEnabledControl}"/>
+                        </MultiDataTrigger>
 
-            <CheckBox Margin="0,9,0,0"
-                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                  Style="{StaticResource CommonTextStyleBase}"/>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding LoadProjectTask.IsSuccess}" Value="True"/>
+                                <Condition Binding="{Binding NeedsApiEnabled}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
 
-            <CheckBox Margin="0,9,0,0"
-                  Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
-                  IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
-                  Style="{StaticResource CommonTextStyleBase}" />
-        </StackPanel>
+                            <Setter Property="Content" Value="{StaticResource InputsControl}"/>
+                        </MultiDataTrigger>
 
-        <!-- Message shown when the API needs to be enabled. -->
-        <TextBlock Margin="0,5,0,0"
-                   Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}">
-            <TextBlock Text="{x:Static ext:Resources.PublishDialogProjectNeedsApiMessage}" TextWrapping="Wrap" />
-            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
-                <TextBlock Text="{x:Static ext:Resources.PublishDialogEnableApiCaption}" />
-            </Hyperlink>
-        </TextBlock>
-
-        <!-- Message shwon when there is a general error. -->
-        <TextBlock Margin="0,5,0,0"
-                   Text="{x:Static ext:Resources.PublishDialogProjectLoadErrorMessage}"
-                   Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}" />
-
+                        <DataTrigger Binding="{Binding LoadProjectTask.IsError}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource GeneralErrorControl}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </StackPanel>
 </UserControl>
 
