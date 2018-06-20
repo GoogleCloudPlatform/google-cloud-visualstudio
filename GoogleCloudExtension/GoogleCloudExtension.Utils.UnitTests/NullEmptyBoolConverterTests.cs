@@ -28,14 +28,14 @@ namespace GoogleCloudExtension.Utils.UnitTests
         }
 
         [TestMethod]
-        public void TestConvert_EmptyReturnsTrue()
+        public void TestEmptyValue_True()
         {
             object result = _objectUnderTest.Convert("", null, null, null);
             Assert.AreEqual(true, result);
         }
 
         [TestMethod]
-        public void TestConvert_NotEmptyReturnsFalse()
+        public void TestNotEmptyValue_False()
         {
             _objectUnderTest.Invert = true;
             object result = _objectUnderTest.Convert("", null, null, null);
