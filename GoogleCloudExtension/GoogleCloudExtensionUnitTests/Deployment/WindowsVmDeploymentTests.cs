@@ -176,7 +176,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _dteProjectMock.Object,
                 s_defaultInstance,
                 s_defaultCredentials,
-                DefaultWebSite);
+                DefaultWebSite,
+                DefaultConfigurationName);
 
             StringAssert.Contains(_parameters, "/t:Publish");
         }
