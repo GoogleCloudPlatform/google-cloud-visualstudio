@@ -22,6 +22,9 @@ namespace GoogleCloudExtension.Projects
         /// <summary>
         /// Constants for the CopyToOutputDirectory project item property.
         /// </summary>
+        /// <seealso href="https://docs.microsoft.com/dotnet/api/vslangproj80.fileproperties2.copytooutputdirectory">
+        /// FileProperties2.CopyToOutputDirectory Property
+        /// </seealso>
         public static class CopyToOutputDirectory
         {
             /// <summary>
@@ -32,11 +35,17 @@ namespace GoogleCloudExtension.Projects
             /// <summary>
             /// The "Do not copy" value.
             /// </summary>
+            /// <seealso href="https://docs.microsoft.com/dotnet/api/vslangproj80.__copytooutputstate">
+            /// __COPYTOOUTPUTSTATE enum
+            /// </seealso>
             public const uint DoNotCopyValue = 0;
 
             /// <summary>
             /// The "Copy if newer" value.
             /// </summary>
+            /// <seealso href="https://docs.microsoft.com/dotnet/api/vslangproj80.__copytooutputstate">
+            /// __COPYTOOUTPUTSTATE enum
+            /// </seealso>
             public const uint CopyIfNewerValue = 2;
         }
     }
