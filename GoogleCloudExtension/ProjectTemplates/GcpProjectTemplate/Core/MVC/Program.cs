@@ -25,12 +25,13 @@ namespace _safe_project_name_
                 .UseIISIntegration()
                 .ConfigureAppConfiguration((context, configBuilder) =>
                 {
+                    HostingEnvironment = context.HostingEnvironment;
+
                     configBuilder.SetBasePath(HostingEnvironment.ContentRootPath)
                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                         .AddJsonFile($"appsettings.{HostingEnvironment.EnvironmentName}.json", optional: true)
                         .AddEnvironmentVariables();
 
-                    HostingEnvironment = context.HostingEnvironment;
                     Configuration = configBuilder.Build();
                     GcpProjectId = GetProjectId(Configuration);
                 })
@@ -53,7 +54,6 @@ namespace _safe_project_name_
                             });
                         services.AddSingleton<ILoggerProvider>(sp => GoogleLoggerProvider.Create(GcpProjectId));
                     }
-
                 })
                 .ConfigureLogging(loggingBuilder =>
                 {
@@ -82,7 +82,6 @@ namespace _safe_project_name_
                             "Stackdriver Error Reporting enabled: https://console.cloud.google.com/errors/");
                         logger.LogInformation(
                             "Stackdriver Trace enabled: https://console.cloud.google.com/traces/");
-
                     }
                     else
                     {
