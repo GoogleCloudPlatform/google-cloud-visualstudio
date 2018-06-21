@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.FileSystem;
@@ -97,7 +98,7 @@ namespace GoogleCloudExtension.Services.Configuration
             }
             else
             {
-                GenerateAppYaml(project, service);
+                GenerateAppYaml(appYamlPath, service);
             }
         }
 
@@ -106,10 +107,15 @@ namespace GoogleCloudExtension.Services.Configuration
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="service">The service the new app.yaml will target. Defaults to the default service.</param>
-        public void GenerateAppYaml(IParsedProject project, string service = DefaultServiceName)
+        public void AddAppYamlItem(IParsedDteProject project, string service = DefaultServiceName)
         {
             string targetAppYaml = GetAppYamlPath(project);
             GenerateAppYaml(targetAppYaml, service);
+            ProjectItem appYamlItem = project.Project.ProjectItems.AddFromFile(targetAppYaml);
+
+            // Set "Copy To Output Directory" to "Copy if newer".
+            appYamlItem.Properties.Item(ProjectPropertyConstants.CopyToOutputDirectory.Name).Value =
+                ProjectPropertyConstants.CopyToOutputDirectory.CopyIfNewerValue;
         }
 
         private void GenerateAppYaml(string targetAppYaml, string service)

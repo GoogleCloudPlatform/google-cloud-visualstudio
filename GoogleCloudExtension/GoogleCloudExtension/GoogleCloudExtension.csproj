@@ -217,6 +217,7 @@
     <Compile Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml.cs">
       <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Projects\ProjectPropertyConstants.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
     <Compile Include="Deployment\GkeDeployment.cs" />

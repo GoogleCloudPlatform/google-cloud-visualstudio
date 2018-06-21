@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.Configuration;
@@ -38,10 +39,13 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         private AppEngineConfiguration _objectUnderTest;
         private Mock<IFileSystem> _fileSystemMock;
         private IParsedDteProject _mockedParsedProject;
+        private Mock<IParsedDteProject> _parsedProjectMock;
 
         protected override void BeforeEach()
         {
-            _mockedParsedProject = Mock.Of<IParsedDteProject>(p => p.DirectoryPath == ProjectDirectory);
+            _parsedProjectMock = new Mock<IParsedDteProject> { DefaultValue = DefaultValue.Mock };
+            _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(ProjectDirectory);
+            _mockedParsedProject = _parsedProjectMock.Object;
             _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
             _objectUnderTest = new AppEngineConfiguration(_fileSystemMock.ToLazy());
         }
@@ -127,9 +131,9 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         }
 
         [TestMethod]
-        public void Test1ArgGenerateAppYaml_GeneratesDefaultContent()
+        public void TestAddAppYamlItem_GeneratesDefaultContent()
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
@@ -139,23 +143,45 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         [DataRow(null)]
         [DataRow("")]
         [DataRow(AppEngineConfiguration.DefaultServiceName)]
-        public void Test1ArgGenerateAppYaml_GeneratesDefaultContentForDefaultService(string defaultServiceName)
+        public void TestAddAppYamlItem_GeneratesDefaultContentForDefaultService(string defaultServiceName)
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, defaultServiceName);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject, defaultServiceName);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(ProjectAppYaml, AppEngineConfiguration.AppYamlDefaultContent));
         }
 
         [TestMethod]
-        public void Test1ArgGenerateAppYaml_GeneratesSpecificContentForNonDefaultService()
+        public void TestAddAppYamlItem_GeneratesSpecificContentForNonDefaultService()
         {
-            _objectUnderTest.GenerateAppYaml(_mockedParsedProject, NewService);
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject, NewService);
 
             _fileSystemMock.Verify(
                 fs => fs.File.WriteAllText(
                     ProjectAppYaml,
                     string.Format(AppEngineConfiguration.AppYamlServiceSpecificContentFormat, NewService)));
+        }
+
+        [TestMethod]
+        public void TestAddAppYamlItem_AddsGeneratedFileToProject()
+        {
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject);
+
+            _parsedProjectMock.Verify(p => p.Project.ProjectItems.AddFromFile(ProjectAppYaml));
+        }
+
+        [TestMethod]
+        public void TestAddAppYamlItem_SetProjectItemToCopyIfNewer()
+        {
+            var projectItemMock = new Mock<ProjectItem> { DefaultValue = DefaultValue.Mock };
+            _parsedProjectMock.Setup(p => p.Project.ProjectItems.AddFromFile(ProjectAppYaml))
+                .Returns(projectItemMock.Object);
+
+            _objectUnderTest.AddAppYamlItem(_mockedParsedProject);
+
+            projectItemMock.VerifySet(
+                i => i.Properties.Item(ProjectPropertyConstants.CopyToOutputDirectory.Name).Value =
+                    ProjectPropertyConstants.CopyToOutputDirectory.CopyIfNewerValue);
         }
 
         [TestMethod]
