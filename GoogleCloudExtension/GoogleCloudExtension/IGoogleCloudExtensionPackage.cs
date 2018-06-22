@@ -65,6 +65,11 @@ namespace GoogleCloudExtension
         /// </summary>
         IStatusbarService StatusbarHelper { get; }
 
+        /// <summary>
+        /// The default <see cref="IUserPromptService"/>.
+        /// </summary>
+        IUserPromptService UserPromptService { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;

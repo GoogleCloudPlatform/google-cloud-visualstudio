@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.ShowPassword
             catch
             {
                 Debug.WriteLine("Failed to copy the string to the clipboard.");
-                UserPromptUtils.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
+                UserPromptUtils.Default.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
             }
         }
     }

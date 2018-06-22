@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     RemoteDebuggerAttachedEvent.Create(CommandStatus.Failure));
 
                 Debug.WriteLine($"Attach debugger got exception. {ex}");
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.UiDefaultPromptTitle);
                 ResetDefaultSelection();
@@ -262,7 +262,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             if (_allProcesses.Count == 0)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.AttachDebuggerListProcessEmptyResultErrorMessage,
                     title: Resources.UiDefaultPromptTitle);
                 return false;

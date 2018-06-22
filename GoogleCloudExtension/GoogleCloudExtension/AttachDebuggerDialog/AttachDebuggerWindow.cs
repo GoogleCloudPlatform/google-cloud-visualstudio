@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             if (String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
             {
-                UserPromptUtils.OkPrompt(
+                UserPromptUtils.Default.OkPrompt(
                     message: StringResources.AttachDebuggerAddPublicIpAddressMessage,
                     title: StringResources.UiDefaultPromptTitle);
                 return;

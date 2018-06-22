@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
-                UserPromptUtils.ExceptionPrompt(ex);
+                UserPromptUtils.Default.ExceptionPrompt(ex);
             }
         }
 
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
-                UserPromptUtils.ExceptionPrompt(ex);
+                UserPromptUtils.Default.ExceptionPrompt(ex);
             }
         }
     }

@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.AppEngineManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.ExceptionPrompt(ex);
+                UserPromptUtils.Default.ExceptionPrompt(ex);
                 _owner.Close();
                 return Enumerable.Empty<string>();
             }

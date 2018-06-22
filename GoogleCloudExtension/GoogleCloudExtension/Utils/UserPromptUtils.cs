@@ -14,6 +14,8 @@
 
 using GoogleCloudExtension.UserPrompt;
 using System;
+using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.Utils
@@ -21,7 +23,8 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class provides helpers to show messages to the user in a uniform way.
     /// </summary>
-    internal static class UserPromptUtils
+    [Export(typeof(IUserPromptService))]
+    internal class UserPromptUtils : IUserPromptService
     {
         private const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
         private const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";
@@ -29,11 +32,7 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
         private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
 
-        // Mockable static method for testing.
-        internal static Func<UserPromptWindow.Options, bool> PromptUserOverride { private get; set; } = null;
-
-        private static Func<UserPromptWindow.Options, bool> PromptUser =>
-            PromptUserOverride ?? UserPromptWindow.PromptUser;
+        public static IUserPromptService Default => GoogleCloudExtensionPackage.Instance.UserPromptService;
 
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
@@ -45,7 +44,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="cancelCaption">The caption for the cancel button, it will be "Cancel" by default.</param>
         /// <param name="isWarning">If true, the prompt will include a warning icon.</param>
         /// <returns>Returns true if the user pressed the action button, false if the user pressed the cancel button or closed the dialog.</returns>
-        public static bool ActionPrompt(
+        public bool ActionPrompt(
             string prompt,
             string title,
             string message = null,
@@ -53,17 +52,14 @@ namespace GoogleCloudExtension.Utils
             string cancelCaption = null,
             bool isWarning = false)
         {
-            actionCaption = actionCaption ?? Resources.UiYesButtonCaption;
-            cancelCaption = cancelCaption ?? Resources.UiCancelButtonCaption;
-
-            return PromptUser(
+            return UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
                     Prompt = prompt,
                     Message = message,
-                    ActionButtonCaption = actionCaption,
-                    CancelButtonCaption = cancelCaption,
+                    ActionButtonCaption = actionCaption ?? Resources.UiYesButtonCaption,
+                    CancelButtonCaption = cancelCaption ?? Resources.UiCancelButtonCaption,
                     Icon = isWarning ? s_warningIcon.Value : null
                 });
         }
@@ -73,9 +69,9 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="message">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
-        public static void OkPrompt(string message, string title)
+        public void OkPrompt(string message, string title)
         {
-            PromptUser(
+            UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -90,9 +86,9 @@ namespace GoogleCloudExtension.Utils
         /// <param name="message">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
         /// <param name="errorDetails">The error details for the dialog, optional.</param>
-        public static void ErrorPrompt(string message, string title, string errorDetails = null)
+        public void ErrorPrompt(string message, string title, string errorDetails = null)
         {
-            PromptUser(
+            UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -110,8 +106,8 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         /// <param name="errorDetails">The error details for the dialog, optional.</param>
         /// <returns>Returns true if the user pressed the yes button, false if the user pressed the no button or closed the dialog.</returns>
-        public static bool ErrorActionPrompt(string message, string title, string errorDetails = null) =>
-            PromptUser(
+        public bool ErrorActionPrompt(string message, string title, string errorDetails = null) =>
+            UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
@@ -126,19 +122,25 @@ namespace GoogleCloudExtension.Utils
         /// Shows an error message for the given exception.
         /// </summary>
         /// <param name="ex">The exception to show.</param>
-        public static void ExceptionPrompt(Exception ex)
+        public void ExceptionPrompt(Exception ex)
         {
-            if (ex is AggregateException)
+            ErrorPrompt(
+                title: Resources.ExceptionPromptTitle,
+                message: string.Format(Resources.ExceptionPromptMessage, GetExceptionMessage(ex)),
+                errorDetails: ex.StackTrace);
+        }
+
+        private static string GetExceptionMessage(Exception ex)
+        {
+            if (ex is AggregateException aggregateException)
             {
-                ErrorPrompt(
-                    title: Resources.ExceptionPromptTitle,
-                    message: String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
+                return GetExceptionMessage(ex.InnerException) ??
+                    aggregateException.InnerExceptions?.Select(GetExceptionMessage)
+                        .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
             }
             else
             {
-                ErrorPrompt(
-                    title: Resources.ExceptionPromptTitle,
-                    message: String.Format(Resources.ExceptionPromptMessage, ex.Message));
+                return ex.Message;
             }
         }
     }

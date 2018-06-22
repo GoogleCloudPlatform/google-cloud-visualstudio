@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.Utils
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.ExceptionPrompt(ex);
+                UserPromptUtils.Default.ExceptionPrompt(ex);
                 return false;
             }
         }

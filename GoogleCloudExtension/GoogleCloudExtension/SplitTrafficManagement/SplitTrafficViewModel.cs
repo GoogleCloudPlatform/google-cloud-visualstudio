@@ -219,7 +219,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
                 int percent = allocation.TrafficAllocation;
                 if (percent <= 0 || percent > 100)
                 {
-                    UserPromptUtils.ErrorPrompt(
+                    UserPromptUtils.Default.ErrorPrompt(
                         message: String.Format(Resources.SplitTrafficWindowInvalidPercentRangeErrorMessage, allocation.VersionId),
                         title: Resources.SplitTrafficWindowInvalidPercentTitle);
                     return;
@@ -233,7 +233,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             // Ensure that 100% of traffic is allocated.
             if (sum != 100)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     Resources.SplitTrafficWindowInvalidPercentSumErrorMessage,
                     Resources.SplitTrafficWindowInvalidPercentTitle);
                 return;

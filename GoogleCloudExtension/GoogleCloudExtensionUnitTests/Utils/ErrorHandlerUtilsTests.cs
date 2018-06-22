@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -24,20 +23,30 @@ namespace GoogleCloudExtensionUnitTests.Utils
     [TestClass]
     public class ErrorHandlerUtilsTests : ExtensionTestBase
     {
+        private Mock<IUserPromptService> _promptUserMock;
+
+        protected override void BeforeEach()
+        {
+            _promptUserMock = new Mock<IUserPromptService>();
+            PackageMock.Setup(p => p.UserPromptService).Returns(_promptUserMock.Object);
+        }
+
         [TestMethod]
         public void TestHandleExceptions_DoesNotPromptForSuccess()
         {
             ErrorHandlerUtils.HandleExceptions(() => { });
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
+            _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]
         public void TestHandleExceptions_PromptsForNormalException()
         {
-            ErrorHandlerUtils.HandleExceptions(() => throw new Exception());
+            var thrownException = new Exception();
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Once);
+            ErrorHandlerUtils.HandleExceptions(() => throw thrownException);
+
+            _promptUserMock.Verify(p => p.ExceptionPrompt(thrownException), Times.Once);
         }
 
         [TestMethod]
@@ -46,7 +55,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             Assert.ThrowsException<AccessViolationException>(
                 () => ErrorHandlerUtils.HandleExceptions(() => throw new AccessViolationException()));
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
+            _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]
@@ -54,15 +63,16 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.CompletedTask);
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
+            _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]
         public async Task TestHandleExceptionsAsync_PromptsForNormalExceptionAsync()
         {
-            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.FromException(new Exception()));
+            var thrownException = new Exception();
+            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.FromException(thrownException));
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Once);
+            _promptUserMock.Verify(p => p.ExceptionPrompt(thrownException), Times.Once);
         }
 
         [TestMethod]
@@ -72,7 +82,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 async () => await ErrorHandlerUtils.HandleExceptionsAsync(
                     () => Task.FromException(new AccessViolationException())));
 
-            PromptUserMock.Verify(f => f(It.IsAny<UserPromptWindow.Options>()), Times.Never);
+            _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]

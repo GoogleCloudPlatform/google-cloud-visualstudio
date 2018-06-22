@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         {
             if (String.IsNullOrEmpty(UserName))
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyUser,
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
@@ -167,7 +167,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             var invalidChars = UserName.Intersect(UserNameInvalidChars).ToArray();
             if (invalidChars.Length > 0)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     String.Format(Resources.AddWindowsCredentialValidationInvalidChars, new string(invalidChars)),
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
@@ -175,7 +175,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
 
             if (ManualPassword && String.IsNullOrEmpty(Password))
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyPassword,
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;

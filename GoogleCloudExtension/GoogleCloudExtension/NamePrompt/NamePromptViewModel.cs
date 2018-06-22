@@ -79,13 +79,13 @@ namespace GoogleCloudExtension.NamePrompt
         {
             if (String.IsNullOrEmpty(Name))
             {
-                UserPromptUtils.ErrorPrompt(Resources.NamePromptEmptyNameMessage, Resources.UiErrorCaption);
+                UserPromptUtils.Default.ErrorPrompt(Resources.NamePromptEmptyNameMessage, Resources.UiErrorCaption);
                 return false;
             }
 
             if (Name.Contains('/'))
             {
-                UserPromptUtils.ErrorPrompt(Resources.NamePromptInvalidCharsMessage, Resources.UiErrorCaption);
+                UserPromptUtils.Default.ErrorPrompt(Resources.NamePromptInvalidCharsMessage, Resources.UiErrorCaption);
                 return false;
             }
 

@@ -118,7 +118,7 @@ namespace GoogleCloudExtension.ApiManagement
 
                 // Need to enable the services, prompt the user.
                 Debug.WriteLine($"Need to enable the services: {string.Join(",", servicesToEnable)}.");
-                if (!UserPromptUtils.ActionPrompt(
+                if (!UserPromptUtils.Default.ActionPrompt(
                         prompt: prompt,
                         title: Resources.ApiManagerEnableServicesTitle,
                         actionCaption: Resources.UiEnableButtonCaption))
@@ -139,7 +139,7 @@ namespace GoogleCloudExtension.ApiManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.ApiManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);

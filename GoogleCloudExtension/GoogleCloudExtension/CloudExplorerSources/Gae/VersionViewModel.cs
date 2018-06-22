@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             string confirmationMessage = String.Format(
                 Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, _version.Id);
-            if (!UserPromptUtils.ActionPrompt(
+            if (!UserPromptUtils.Default.ActionPrompt(
                 confirmationMessage,
                 Resources.CloudExplorerGaeDeleteVersion,
                 actionCaption: Resources.UiYesButtonCaption,

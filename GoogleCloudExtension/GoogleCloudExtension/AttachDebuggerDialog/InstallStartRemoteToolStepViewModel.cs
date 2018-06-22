@@ -67,14 +67,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             catch (PowerShellFailedToConnectException)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.AttachDebuggerConnectionFailedMessage,
                     title: Resources.UiDefaultPromptTitle);
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 Debug.WriteLine($"{ex}");
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.AttachDebuggerInstallerError,
                     title: Resources.UiDefaultPromptTitle,
                     errorDetails: ex.Message);

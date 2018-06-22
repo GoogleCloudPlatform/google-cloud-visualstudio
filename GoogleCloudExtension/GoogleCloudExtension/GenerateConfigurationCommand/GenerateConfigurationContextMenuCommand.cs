@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
 
             // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
             if (!configurationStatus.HasAppYaml ||
-                UserPromptUtils.ActionPrompt(
+                UserPromptUtils.Default.ActionPrompt(
                     prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
                     title: Resources.GenerateConfigurationOverwritePromptTitle,
                     actionCaption: Resources.UiOverwriteButtonCaption,
@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 catch (Exception error)
 
                 {
-                    UserPromptUtils.ErrorPrompt(
+                    UserPromptUtils.Default.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
                             AppEngineConfiguration.AppYamlName),
@@ -140,7 +140,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
 
             // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
             if (!configurationStatus.HasDockerfile ||
-                UserPromptUtils.ActionPrompt(
+                UserPromptUtils.Default.ActionPrompt(
                     prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
                     title: Resources.GenerateConfigurationOverwritePromptTitle,
                     actionCaption: Resources.UiOverwriteButtonCaption,
@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 }
                 catch (Exception exception)
                 {
-                    UserPromptUtils.ErrorPrompt(
+                    UserPromptUtils.Default.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
                             NetCoreAppUtils.DockerfileName),

@@ -16,7 +16,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -51,6 +51,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private Mock<Action<string, byte[]>> _writeAllBytesMock;
         private Mock<Func<string, DirectoryInfo>> _createDirectoryMock;
         private Mock<Action<string>> _deleteFileMock;
+        private Mock<IUserPromptService> _promptUserMock;
 
         protected override void BeforeEach()
         {
@@ -61,6 +62,8 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _writeAllBytesMock = new Mock<Action<string, byte[]>>();
             _createDirectoryMock = new Mock<Func<string, DirectoryInfo>>();
             _deleteFileMock = new Mock<Action<string>>();
+            _promptUserMock = new Mock<IUserPromptService>();
+            PackageMock.Setup(p => p.UserPromptService).Returns(_promptUserMock.Object);
 
             _objectUnderTest = new WindowsCredentialsStore
             {
@@ -148,10 +151,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
             var expected = new WindowsInstanceCredentials[] { };
             CollectionAssert.AreEqual(expected, result);
-            PromptUserMock.Verify(
-                f => f(
-                    It.Is<UserPromptWindow.Options>(
-                        o => o.Title == Resources.WindowsCredentialsStoreCredentialFileLoadErrorTitle)),
+            _promptUserMock.Verify(
+                p => p.ErrorPrompt(
+                    It.IsAny<string>(),
+                    Resources.WindowsCredentialsStoreCredentialFileLoadErrorTitle,
+                    It.IsAny<string>()),
                 Times.Once);
         }
 
@@ -159,11 +163,12 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         public void TestGetCredentialsForInstance_HandleDecryptionExceptionWithDeleteFile()
         {
             const string corruptedFilePath = @"c:\corrupted.data";
-            PromptUserMock.Setup(
-                    f => f(
-                        It.Is<UserPromptWindow.Options>(
-                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
-                .Returns(true);
+            _promptUserMock.Setup(
+                    p => p.ErrorActionPrompt(
+                        It.IsAny<string>(),
+                        Resources.WindowsCredentialsStoreDecryptionErrorTitle,
+                        It.IsAny<string>()))
+                .Returns(true).Verifiable();
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
             _readAllBytesMock.Setup(f => f(It.IsAny<string>())).Returns(new byte[] { 1, 2, 3 });
@@ -180,10 +185,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         public void TestGetCredentialsForInstance_HandleDecryptionExceptionSkipDeleteFile()
         {
             const string corruptedFilePath = @"c:\corrupted.data";
-            PromptUserMock.Setup(
-                    f => f(
-                        It.Is<UserPromptWindow.Options>(
-                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
+            _promptUserMock.Setup(
+                    p => p.ErrorActionPrompt(
+                        It.IsAny<string>(),
+                        Resources.WindowsCredentialsStoreDecryptionErrorTitle,
+                        It.IsAny<string>()))
                 .Returns(false);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
@@ -200,10 +206,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         public void TestGetCredentialsForInstance_PromptsOnDeleteException()
         {
             const string corruptedFilePath = @"c:\corrupted.data";
-            PromptUserMock.Setup(
-                    f => f(
-                        It.Is<UserPromptWindow.Options>(
-                            o => o.Title == Resources.WindowsCredentialsStoreDecryptionErrorTitle)))
+            _promptUserMock.Setup(
+                    p => p.ErrorActionPrompt(
+                        It.IsAny<string>(),
+                        Resources.WindowsCredentialsStoreDecryptionErrorTitle,
+                        It.IsAny<string>()))
                 .Returns(true);
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(true);
             _enumerateFilesMock.Setup(f => f(It.IsAny<string>())).Returns(new[] { corruptedFilePath });
@@ -214,10 +221,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                 _objectUnderTest.GetCredentialsForInstance(s_defaultInstance).ToList();
 
             CollectionAssert.AreEqual(new WindowsInstanceCredentials[] { }, result);
-            PromptUserMock.Verify(
-                f => f(
-                    It.Is<UserPromptWindow.Options>(
-                        o => o.Title == Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle)),
+            _promptUserMock.Verify(
+                p => p.ErrorPrompt(
+                    It.IsAny<string>(),
+                    Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle,
+                    It.IsAny<string>()),
                 Times.Once);
         }
 

@@ -255,7 +255,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             string confirmationMessage = String.Format(
                Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, Service.Id);
-            if (!UserPromptUtils.ActionPrompt(
+            if (!UserPromptUtils.Default.ActionPrompt(
                 prompt: confirmationMessage,
                 title: Resources.CloudExplorerGaeDeleteService,
                 actionCaption: Resources.UiYesButtonCaption,
