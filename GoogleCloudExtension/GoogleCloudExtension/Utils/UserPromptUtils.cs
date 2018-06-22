@@ -32,6 +32,9 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
         private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
 
+        /// <summary>
+        /// The default <see cref="IUserPromptService"/>.
+        /// </summary>
         public static IUserPromptService Default => GoogleCloudExtensionPackage.Instance.UserPromptService;
 
         /// <summary>

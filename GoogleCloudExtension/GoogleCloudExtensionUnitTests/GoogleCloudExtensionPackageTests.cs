@@ -339,6 +339,17 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.StatusbarHelper);
         }
 
+        [TestMethod]
+        public void TestUserPromptService_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IUserPromptService>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.UserPromptService);
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);

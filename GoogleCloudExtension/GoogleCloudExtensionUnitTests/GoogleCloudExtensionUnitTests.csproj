@@ -304,6 +304,7 @@
     <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
     <Compile Include="Utils\ProtectedCommandTests.cs" />
     <Compile Include="Utils\StatusbarHelperTests.cs" />
+    <Compile Include="Utils\UserPromptUtilsTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />
     <Compile Include="SolutionUserOptionsTests.cs" />
