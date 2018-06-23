@@ -81,6 +81,10 @@
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestingHelpers\TestingHelpers.csproj">
+      <Project>{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}</Project>
+      <Name>TestingHelpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TestProjects\EchoApp\EchoApp.csproj">
       <Project>{108901a6-861d-4021-a2c9-ce93554a26f5}</Project>
       <Name>EchoApp</Name>

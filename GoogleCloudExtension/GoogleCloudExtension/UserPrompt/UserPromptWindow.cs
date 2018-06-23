@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
+using System;
+using System.Diagnostics;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.UserPrompt
@@ -23,6 +25,11 @@ namespace GoogleCloudExtension.UserPrompt
     /// </summary>
     public class UserPromptWindow : CommonDialogWindowBase
     {
+        /// <summary>
+        /// Internal hook for unit testing.
+        /// </summary>
+        internal static event EventHandler UserPromptInitialized;
+
         /// <summary>
         /// This class contains the options for the dialog being shown.
         /// </summary>
@@ -65,7 +72,7 @@ namespace GoogleCloudExtension.UserPrompt
             public string CancelButtonCaption { get; set; } = GoogleCloudExtension.Resources.UiCancelButtonCaption;
         }
 
-        private UserPromptWindowViewModel ViewModel { get; }
+        public UserPromptWindowViewModel ViewModel { get; }
 
         private UserPromptWindow(Options options) : base(options.Title)
         {
@@ -81,8 +88,24 @@ namespace GoogleCloudExtension.UserPrompt
         public static bool PromptUser(Options options)
         {
             var dialog = new UserPromptWindow(options);
-            dialog.ShowModal();
+            dialog.Activated += DialogActivated;
+            try
+            {
+                dialog.ShowModal();
+            }
+            finally
+            {
+                dialog.Activated -= DialogActivated;
+            }
+
             return dialog.ViewModel.Result;
+        }
+
+        private static void DialogActivated(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Dialog Activiated!");
+            UserPromptInitialized?.Invoke(sender, e);
+            UserPromptInitialized = null;
         }
     }
 }

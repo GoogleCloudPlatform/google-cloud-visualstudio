@@ -329,6 +329,7 @@
     <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdViewModelTests.cs" />
     <Compile Include="VsVersion\ToolsPathProviderBaseTests.cs" />
+    <Compile Include="WpfTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">

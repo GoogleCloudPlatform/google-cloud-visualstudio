@@ -15,13 +15,9 @@
 using EnvDTE;
 using GoogleCloudExtension;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtensionUnitTests

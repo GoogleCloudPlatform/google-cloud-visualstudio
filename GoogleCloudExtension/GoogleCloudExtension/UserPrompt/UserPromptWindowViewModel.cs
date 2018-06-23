@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.UserPrompt
         /// <summary>
         /// Returns whether there is an action button.
         /// </summary>
-        public bool HasActionButton => !String.IsNullOrEmpty(_options.ActionButtonCaption);
+        public bool HasActionButton => !string.IsNullOrEmpty(_options.ActionButtonCaption);
 
         /// <summary>
         /// Negation of <seealso cref="HasActionButton"/> which helps with bindings in the Xaml.

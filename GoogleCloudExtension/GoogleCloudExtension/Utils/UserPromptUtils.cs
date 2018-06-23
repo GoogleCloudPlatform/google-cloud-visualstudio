@@ -26,8 +26,8 @@ namespace GoogleCloudExtension.Utils
     [Export(typeof(IUserPromptService))]
     internal class UserPromptUtils : IUserPromptService
     {
-        private const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
-        private const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";
+        public const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
+        public const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";
 
         private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
         private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
@@ -139,11 +139,12 @@ namespace GoogleCloudExtension.Utils
             {
                 return GetExceptionMessage(ex.InnerException) ??
                     aggregateException.InnerExceptions?.Select(GetExceptionMessage)
-                        .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m));
+                        .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m)) ??
+                    aggregateException.Message;
             }
             else
             {
-                return ex.Message;
+                return ex?.Message;
             }
         }
     }
