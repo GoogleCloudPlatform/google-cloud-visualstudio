@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.ManageAccounts
         private void OnDeleteAccountCommand()
         {
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.ActionPrompt(
+            if (!UserPromptUtils.Default.ActionPrompt(
                 String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
                 Resources.ManageAccountsDeleteAccountPromptTitle,
                 actionCaption: Resources.UiDeleteButtonCaption))

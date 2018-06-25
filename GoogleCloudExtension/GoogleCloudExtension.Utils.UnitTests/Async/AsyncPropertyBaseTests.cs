@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
 {
@@ -317,11 +318,5 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
 
             await objectUnderTest.SafeTask;
         }
-
-        private class ExceptionWithNullMessage : Exception
-        {
-            public override string Message => null;
-        }
-
     }
 }

@@ -102,6 +102,7 @@ namespace GoogleCloudExtension
         private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
+        private Lazy<IUserPromptService> _userPromptService;
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -148,6 +149,11 @@ namespace GoogleCloudExtension
         /// The default <see cref="IStatusbarService"/>.
         /// </summary>
         public IStatusbarService StatusbarHelper => _statusbarService.Value;
+
+        /// <summary>
+        /// The default <see cref="IUserPromptService"/>.
+        /// </summary>
+        public IUserPromptService UserPromptService => _userPromptService.Value;
 
         /// <summary>
         /// The initalized instance of the package.
@@ -292,6 +298,7 @@ namespace GoogleCloudExtension
             _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
             _processService = mefExportProvider.GetExport<IProcessService>();
             _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
+            _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

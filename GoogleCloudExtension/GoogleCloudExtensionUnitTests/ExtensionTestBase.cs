@@ -16,7 +16,6 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +30,6 @@ namespace GoogleCloudExtensionUnitTests
         private Lazy<IToolsPathProvider> _oldToolsPathLazy;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
-        protected Mock<Func<UserPromptWindow.Options, bool>> PromptUserMock { get; private set; }
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
         protected static Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
@@ -48,9 +46,6 @@ namespace GoogleCloudExtensionUnitTests
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns("DefaultProjectId");
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
                 .Returns(new UserAccount { AccountName = "DefaultAccountName" });
-
-            PromptUserMock = new Mock<Func<UserPromptWindow.Options, bool>>();
-            UserPromptUtils.PromptUserOverride = PromptUserMock.Object;
 
             DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>());
             EventsReporterWrapper.DisableReporting();
@@ -69,7 +64,6 @@ namespace GoogleCloudExtensionUnitTests
         {
             AfterEach();
             VsVersionUtils.s_toolsPathProvider = _oldToolsPathLazy;
-            UserPromptUtils.PromptUserOverride = null;
             GoogleCloudExtensionPackage.Instance = null;
         }
 

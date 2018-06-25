@@ -22,7 +22,6 @@ using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Services.VsProject;
-using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -147,7 +146,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         {
             _objectUnderTest.PublishCommand.Execute(null);
 
-            PromptUserMock.Verify(p => p(It.IsAny<UserPromptWindow.Options>()));
+            PackageMock.Verify(p => p.UserPromptService.ExceptionPrompt(It.IsAny<NotSupportedException>()));
         }
 
         [TestMethod]

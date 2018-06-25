@@ -377,7 +377,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     PublishDialog.TrackTask(deploymentExistsTask);
                     if (await deploymentExistsTask)
                     {
-                        if (!UserPromptUtils.ActionPrompt(
+                        if (!UserPromptUtils.Default.ActionPrompt(
                             string.Format(Resources.GkePublishDeploymentAlreadyExistsMessage, DeploymentName),
                             Resources.GkePublishDeploymentAlreadyExistsTitle,
                             actionCaption: Resources.UiUpdateButtonCaption))

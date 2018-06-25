@@ -350,7 +350,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException)
             {
                 EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Failure));
-                UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
+                UserPromptUtils.Default.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
         }
 
@@ -358,7 +358,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.ActionPrompt(
+                if (!UserPromptUtils.Default.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStopButtonCaption))
@@ -383,7 +383,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static void ShowOAuthErrorDialog(OAuthException ex)
         {
             Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
-            UserPromptUtils.OkPrompt(
+            UserPromptUtils.Default.OkPrompt(
                 String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, CredentialsStore.Default.CurrentAccount.AccountName),
                 Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
         }
@@ -392,7 +392,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.ActionPrompt(
+                if (!UserPromptUtils.Default.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStartButtonCaption))

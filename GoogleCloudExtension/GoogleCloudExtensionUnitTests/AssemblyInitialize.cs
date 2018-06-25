@@ -39,7 +39,7 @@ namespace GoogleCloudExtensionUnitTests
             s_packageToRestore = GoogleCloudExtensionPackage.Instance;
             GoogleCloudExtensionPackage.Instance = null;
             // Enable pack URIs.
-            Assert.AreEqual(new Application(), Application.Current);
+            Assert.AreEqual(new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown }, Application.Current);
         }
 
         [AssemblyCleanup]

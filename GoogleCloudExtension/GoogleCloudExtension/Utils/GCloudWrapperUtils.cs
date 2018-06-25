@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.Utils
             }
             else if (!result.IsCloudSdkUpdated)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: string.Format(
                         Resources.GCloudWrapperUtilsOldCloudSdkMessage,
                         result.CloudSdkVersion,

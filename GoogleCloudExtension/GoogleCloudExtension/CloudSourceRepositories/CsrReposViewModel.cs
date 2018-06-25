@@ -262,7 +262,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             if (dataSourceErrorProjects.Any())
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: String.Format(
                         Resources.CsrFetchReposErrorMessage, String.Join(", ", dataSourceErrorProjects)),
                     title: Resources.CsrConnectSectionTitle);
@@ -378,7 +378,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var projects = await resourceManager.GetProjectsListAsync();
                 if (!projects.Any())
                 {
-                    UserPromptUtils.OkPrompt(
+                    UserPromptUtils.Default.OkPrompt(
                         message: Resources.CsrNoProjectMessage,
                         title: Resources.CsrConnectSectionTitle);
                 }

@@ -279,6 +279,7 @@
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />
     <Compile Include="Utils\IStatusbarService.cs" />
+    <Compile Include="Utils\IUserPromptService.cs" />
     <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />

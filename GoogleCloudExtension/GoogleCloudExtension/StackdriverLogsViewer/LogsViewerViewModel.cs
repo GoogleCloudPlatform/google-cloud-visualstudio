@@ -557,7 +557,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (_logs.Count >= MaxLogEntriesCount)
             {
-                UserPromptUtils.ErrorPrompt(
+                UserPromptUtils.Default.ErrorPrompt(
                     message: Resources.LogViewerResultSetTooLargeMessage,
                     title: Resources.UiDefaultPromptTitle);
                 CancellationTokenSource?.Cancel();

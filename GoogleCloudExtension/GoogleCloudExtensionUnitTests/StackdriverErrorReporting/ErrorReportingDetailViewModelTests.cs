@@ -16,7 +16,6 @@ using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverErrorReporting;
-using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -79,7 +78,15 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
                 new ErrorGroupStats { Group = new ErrorGroup { GroupId = "" }, TimedCounts = new List<TimedCount>() },
                 _defaultTimeRangeItem);
 
-            PromptUserMock.Setup(f => f(It.IsAny<UserPromptWindow.Options>())).Returns(true);
+            PackageMock.Setup(
+                    p => p.UserPromptService.ActionPrompt(
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<bool>()))
+                .Returns(true);
         }
 
         [TestMethod]
