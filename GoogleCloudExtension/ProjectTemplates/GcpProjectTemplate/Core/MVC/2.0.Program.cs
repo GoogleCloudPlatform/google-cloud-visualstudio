@@ -71,10 +71,10 @@ namespace _safe_project_name_
                     var logger = app.ApplicationServices.GetService<ILoggerFactory>().CreateLogger("Startup");
                     if (HasGcpProjectId)
                     {
-                        // Sends logs to Stackdriver Trace.
-                        app.UseGoogleTrace();
                         // Sends logs to Stackdriver Error Reporting.
                         app.UseGoogleExceptionLogging();
+                        // Sends logs to Stackdriver Trace.
+                        app.UseGoogleTrace();
 
                         logger.LogInformation(
                             "Stackdriver Logging enabled: https://console.cloud.google.com/logs/");
@@ -153,7 +153,7 @@ namespace _safe_project_name_
             if (string.IsNullOrEmpty(serviceName))
             {
                 throw new InvalidOperationException(
-                    "The error reporting library needs a service name. " +
+                    "The error reporting library requires a service name. " +
                     "Update appsettings.json by setting the Google:ErrorReporting:ServiceName property with your " +
                     "Service Id, then recompile.");
             }
@@ -176,7 +176,7 @@ namespace _safe_project_name_
             if (string.IsNullOrEmpty(versionId))
             {
                 throw new InvalidOperationException(
-                    "The error reporting library needs a version id. " +
+                    "The error reporting library requires a version id. " +
                     "Update appsettings.json by setting the Google:ErrorReporting:Version property with your " +
                     "service version id, then recompile.");
             }
