@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
+using System;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
@@ -22,11 +23,16 @@ namespace GoogleCloudExtension.FirewallManagement
     /// </summary>
     public class PortManagerWindow : CommonDialogWindowBase
     {
-        private PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
+        internal PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
+
+        /// <summary>
+        /// Internal hook for unit testing.
+        /// </summary>
+        internal static event EventHandler WindowActivated;
 
         private PortManagerWindow(Instance instance) : base(GoogleCloudExtension.Resources.PortManagerWindowCaption)
         {
-            var viewModel = new PortManagerViewModel(this, instance);
+            var viewModel = new PortManagerViewModel(Close, instance);
             Content = new PortManagerWindowContent
             {
                 DataContext = viewModel,
@@ -40,8 +46,12 @@ namespace GoogleCloudExtension.FirewallManagement
         public static PortChanges PromptUser(Instance instance)
         {
             var window = new PortManagerWindow(instance);
+            window.Activated += OnWindowActiviated;
             window.ShowModal();
+            window.Activated -= OnWindowActiviated;
             return window.ViewModel.Result;
         }
+
+        private static void OnWindowActiviated(object sender, EventArgs e) => WindowActivated?.Invoke(sender, e);
     }
 }

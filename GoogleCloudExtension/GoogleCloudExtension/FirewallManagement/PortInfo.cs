@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-
 namespace GoogleCloudExtension.FirewallManagement
 {
     /// <summary>
@@ -44,9 +42,9 @@ namespace GoogleCloudExtension.FirewallManagement
         }
 
         /// <summary>
-        /// Returns the tag to be used for the port for the given <paramref name="instance"/>.
+        /// Returns the tag to be used for the port for the given <paramref name="instanceName"/>.
         /// </summary>
-        /// <param name="instance">The instance that is going to be affected by the port.</param>
-        public string GetTag(Instance instance) => $"{instance.Name}-tcp-{Port}";
+        /// <param name="instanceName"></param>
+        public string GetTag(string instanceName) => $"{instanceName}-tcp-{Port}";
     }
 }

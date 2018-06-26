@@ -33,9 +33,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private static readonly TimeSpan s_connectivityTestTimeout = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan s_firewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
-        private readonly Lazy<GceDataSource> _lazyDataSource;
+        private readonly Lazy<IGceDataSource> _lazyDataSource;
         private Instance _gceInstance;
-        private GceDataSource _dataSource => _lazyDataSource.Value;
+        private IGceDataSource DataSource => _lazyDataSource.Value;
         private DateTime _portEnabledTime = DateTime.MinValue;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             PortInfo portInfo,
             string description,
             Instance gceInstance,
-            Lazy<GceDataSource> lazyDataSource)
+            Lazy<IGceDataSource> lazyDataSource)
         {
             PortInfo = portInfo.ThrowIfNull(nameof(portInfo));
             Description = description.ThrowIfNullOrEmpty(nameof(description));
@@ -75,11 +75,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             // Get a refreshed list of firewall rules. 
             // If not refreshed, UpdateInstancePorts may fail. 
-            _gceInstance = await _dataSource.RefreshInstance(_gceInstance);
-            string portTag = PortInfo.GetTag(_gceInstance);
+            _gceInstance = await DataSource.RefreshInstance(_gceInstance);
+            string portTag = PortInfo.GetTag(_gceInstance.Name);
 
-            List<FirewallPort> toEnable = new List<FirewallPort>() { new FirewallPort(portTag, PortInfo.Port) };
-            var operation = _dataSource.UpdateInstancePorts(
+            var toEnable = new List<FirewallPort> { new FirewallPort(portTag, PortInfo.Port) };
+            GceOperation operation = DataSource.UpdateInstancePorts(
                 _gceInstance,
                 portsToEnable: toEnable,
                 portsToDisable: new List<FirewallPort>());
@@ -107,14 +107,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public async Task<bool> IsPortEnabled()
         {
-            string portTag = PortInfo.GetTag(_gceInstance);
+            string portTag = PortInfo.GetTag(_gceInstance.Name);
 
             // If the instance does not contain the tag, the firewall rule is not set.
             if (_gceInstance.Tags?.Items?.Contains(portTag) != true)
             {
                 return false;
             }
-            var rules = await _dataSource.GetFirewallListAsync();
+            var rules = await DataSource.GetFirewallListAsync();
 
             var query = rules
                 // x is FireWall, test if the rule contains the tag

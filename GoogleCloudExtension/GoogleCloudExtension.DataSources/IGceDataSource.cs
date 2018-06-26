@@ -96,5 +96,10 @@ namespace GoogleCloudExtension.DataSources
             Instance instance,
             IList<FirewallPort> portsToEnable,
             IList<FirewallPort> portsToDisable);
+
+        /// <summary>
+        /// Returns the list of all firewall rules for the current project.
+        /// </summary>
+        Task<IList<Firewall>> GetFirewallListAsync();
     }
 }

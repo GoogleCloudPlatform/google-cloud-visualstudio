@@ -19,11 +19,17 @@ using Moq;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace GoogleCloudExtensionUnitTests
 {
-    public class WpfTestBase : MockedGlobalServiceProviderTestsBase
+
+    /// <summary>
+    /// Base class for testing WPF windows.
+    /// </summary>
+    /// <typeparam name="TWindow">The type of window being tested.</typeparam>
+    public abstract class WpfTestBase<TWindow> : MockedGlobalServiceProviderTestsBase where TWindow : Window
     {
         protected override IVsPackage Package => _packageMock.Object;
         private Mock<Package> _packageMock;
@@ -58,5 +64,77 @@ namespace GoogleCloudExtensionUnitTests
             // Set the global service provider.
             RunPackageInitalize();
         }
+
+        /// <summary>
+        /// Gets the window.
+        /// </summary>
+        /// <param name="promptAction">The action used to bring up the window.</param>
+        /// <returns>The window brought up.</returns>
+        /// <remarks>
+        /// If this method returns null and the window is visible, it is likely because the event handlers have not
+        /// been set up properly.
+        /// </remarks>
+        protected TWindow GetWindow(Action promptAction) => Dispatcher.CurrentDispatcher.Invoke(
+            () =>
+            {
+                TWindow window = null;
+
+                void OnPromptInitialized(object sender, EventArgs args)
+                {
+                    window = (TWindow)sender;
+                    window.Close();
+                }
+
+                RegisterActivatedEvent(OnPromptInitialized);
+                try
+                {
+                    promptAction();
+                    return window;
+                }
+                finally
+                {
+                    UnregisterActivatedEvent(OnPromptInitialized);
+                }
+            });
+
+        /// <summary>
+        /// Gets the result of the prompt action.
+        /// </summary>
+        /// <param name="closeAction">The action used to close the window.</param>
+        /// <param name="promptAction">The action used to bring up the window.</param>
+        /// <returns>The result of the prompt action.</returns>
+        /// <remarks>
+        /// If this method returns null and the window is visible, it is likely because the event handlers have not
+        /// been set up properly.
+        /// </remarks>
+        protected TResult GetResult<TResult>(Action<TWindow> closeAction, Func<TResult> promptAction) =>
+            Dispatcher.CurrentDispatcher.Invoke(
+                () =>
+                {
+                    void OnPromptInitialized(object sender, EventArgs args) => closeAction((TWindow)sender);
+
+                    RegisterActivatedEvent(OnPromptInitialized);
+                    try
+                    {
+                        return promptAction();
+                    }
+                    finally
+                    {
+                        UnregisterActivatedEvent(OnPromptInitialized);
+                    }
+                });
+
+        /// <summary>
+        /// Implementers must register the given handler to an event that is fired when the window to test is activated.
+        /// </summary>
+        /// <param name="handler">The event handler that will close the window.</param>
+        protected abstract void RegisterActivatedEvent(EventHandler handler);
+
+        /// <summary>
+        /// Implementers must use this to unregister the given handler from the event registered in
+        /// <see cref="RegisterActivatedEvent"/>.
+        /// </summary>
+        /// <param name="handler">The event handler to unregister from the event.</param>
+        protected abstract void UnregisterActivatedEvent(EventHandler handler);
     }
 }

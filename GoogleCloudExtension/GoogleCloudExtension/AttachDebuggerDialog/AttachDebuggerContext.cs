@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class AttachDebuggerContext
     {
-        private readonly Lazy<GceDataSource> _lazyDataSource = new Lazy<GceDataSource>(CreateDataSource);
+        private readonly Lazy<IGceDataSource> _lazyDataSource = new Lazy<IGceDataSource>(CreateDataSource);
 
         /// <summary>
         /// The <seealso cref="PortInfo"/> for remote PowerShell HTTPs port.
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Gets the <seealso cref="DataSource"/> object.
         /// </summary>
-        public GceDataSource DataSource => _lazyDataSource.Value;
+        public IGceDataSource DataSource => _lazyDataSource.Value;
 
         /// <summary>
         /// The attaching dialog window that is the container of all steps.

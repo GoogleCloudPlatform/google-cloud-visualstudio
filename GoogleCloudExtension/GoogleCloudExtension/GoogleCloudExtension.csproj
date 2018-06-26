@@ -218,6 +218,7 @@
       <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Projects\ProjectPropertyConstants.cs" />
+    <Compile Include="Services\BrowserService.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
     <Compile Include="Deployment\GkeDeployment.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Services\FileSystem\IoFileService.cs" />
     <Compile Include="Services\FileSystem\IXDocument.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
+    <Compile Include="Services\IBrowserService.cs" />
     <Compile Include="Services\VsProject\IVsProjectPropertyService.cs" />
     <Compile Include="Services\VsProject\VsProjectPropertyService.cs" />
     <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
