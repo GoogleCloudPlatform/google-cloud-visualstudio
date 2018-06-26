@@ -18,6 +18,7 @@ using GoogleCloudExtension.PowerShellUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
+using System.Management.Automation;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
@@ -65,19 +66,20 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 installed = await _installer.Install(CancelToken);
             }
-            catch (PowerShellFailedToConnectException)
+            catch (ActionPreferenceStopException e)
             {
                 UserPromptUtils.Default.ErrorPrompt(
-                    message: Resources.AttachDebuggerConnectionFailedMessage,
-                    title: Resources.UiDefaultPromptTitle);
+                    Resources.AttachDebuggerConnectionFailedMessage,
+                    Resources.UiDefaultPromptTitle,
+                    e.ErrorRecord.InvocationInfo.Line + Environment.NewLine + Environment.NewLine + e.ErrorRecord);
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 Debug.WriteLine($"{ex}");
                 UserPromptUtils.Default.ErrorPrompt(
-                    message: Resources.AttachDebuggerInstallerError,
-                    title: Resources.UiDefaultPromptTitle,
-                    errorDetails: ex.Message);
+                    Resources.AttachDebuggerInstallerError,
+                    Resources.UiDefaultPromptTitle,
+                    ex.Message);
             }
 
             if (installed)
