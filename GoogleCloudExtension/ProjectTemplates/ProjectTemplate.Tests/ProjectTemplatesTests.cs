@@ -41,11 +41,7 @@ namespace ProjectTemplate.Tests
     {
         private const string SolutionName = "TestSolution";
         private const string SolutionFileName = SolutionName + ".sln";
-#if VS2015
-        private const string VsVersion = "14.0";
-#elif VS2017
         private const string VsVersion = "15.0";
-#endif
 
         private static VisualStudioWrapper s_visualStudio;
 
@@ -112,10 +108,6 @@ namespace ProjectTemplate.Tests
         }
 
         [TestMethod]
-#if VS2015
-        [DataRow("1.0-preview", "Mvc")]
-        [DataRow("1.0-preview", "WebApi")]
-#elif VS2017
         [DataRow("1.0", "Mvc")]
         [DataRow("1.0", "WebApi")]
         [DataRow("1.1", "Mvc")]
@@ -124,7 +116,6 @@ namespace ProjectTemplate.Tests
         [DataRow("2.0", "WebApi")]
         [DataRow("2.1", "Mvc")]
         [DataRow("2.1", "WebApi")]
-#endif
         public void TestCompileAspNetCore(string version, string appType)
         {
             string projectName = $"TestGcpAspNetCore{appType}{version.Replace(".", "").Replace("-", "")}";
@@ -145,8 +136,12 @@ namespace ProjectTemplate.Tests
 
         private static void RestorePackages(string projectDirectory)
         {
-            var dotNetRestoreInfo =
-                new ProcessStartInfo("dotnet", "restore") { WorkingDirectory = projectDirectory, CreateNoWindow = true, UseShellExecute = false };
+            var dotNetRestoreInfo = new ProcessStartInfo("dotnet", "restore")
+            {
+                WorkingDirectory = projectDirectory,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
             Process.Start(dotNetRestoreInfo)?.WaitForExit();
         }
 
@@ -173,15 +168,6 @@ namespace ProjectTemplate.Tests
             }
         }
 
-        private static void KillMsBuild()
-        {
-            Process[] msBuildProcesses = Process.GetProcessesByName("MSBuild");
-            foreach (Process msBuildProcess in msBuildProcesses)
-            {
-                msBuildProcess.KillProcessTreeAndWait(TimeSpan.FromSeconds(30));
-            }
-        }
-
         private static string GetBuildOutput()
         {
             OutputWindowPane buildWindow = Dte.ToolWindows.OutputWindow.OutputWindowPanes.Item("Build");
@@ -201,7 +187,7 @@ namespace ProjectTemplate.Tests
             Directory.CreateDirectory(projectPath);
             string templatePath = Solution.GetProjectTemplate(choserTemplateName, "CSharp");
             var serviceProvider = Dte as IServiceProvider;
-            var vsSolution = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
+            var vsSolution6 = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
             var resultObject = new JObject
             {
                 ["GcpProjectId"] = "fake-gcp-project-id",
@@ -213,15 +199,14 @@ namespace ProjectTemplate.Tests
             {
                 $"$templateChooserResult$={resultObject}"
             };
-            IVsHierarchy newProject;
-            int hResult = vsSolution.AddNewProjectFromTemplate(
+            int hResult = vsSolution6.AddNewProjectFromTemplate(
                 templatePath,
                 customParams,
                 "",
                 projectPath,
                 projectName,
                 null,
-                out newProject);
+                out _);
             ErrorHandler.ThrowOnFailure(hResult, -2147221492);
             Project project = Solution.Projects.OfType<Project>().First(p => p.Name == projectName);
             project.Save();
