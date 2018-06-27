@@ -55,7 +55,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public void TestConstructor_InitalizesCommands()
         {
             Assert.IsTrue(_objectUnderTest.RefreshCommand.CanExecuteCommand);
-            Assert.IsTrue(_objectUnderTest.ManageAccountsCommand.CanExecuteCommand);
+            Assert.IsTrue(_objectUnderTest.UserProject.ManageAccountsCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.DoubleClickCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.SelectProjectCommand.CanExecuteCommand);
         }
@@ -85,7 +85,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
 
             CollectionAssert.Contains(_propertiesChanged, "ProfileNameAsync");
-            Assert.AreEqual(profileName, _objectUnderTest.ProfileNameAsync.Value);
+            Assert.AreEqual(profileName, _objectUnderTest.UserProject.ProfileNameAsync.Value);
         }
     }
 }

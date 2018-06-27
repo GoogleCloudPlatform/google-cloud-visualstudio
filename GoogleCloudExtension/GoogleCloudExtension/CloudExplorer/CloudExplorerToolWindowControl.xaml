@@ -312,7 +312,6 @@
                     <DataTemplate>
                         <controls:PressButton Content="{Binding Icon}"
                                               Command="{Binding Command}"
-                                              VerticalAlignment="Center"
                                               ToolTip="{Binding ToolTip}"
                                               IsChecked="{Binding IsChecked}"
                                               IsEnabled="{Binding IsEnabled}"
@@ -323,9 +322,9 @@
 
             <!-- The profile button -->
             <controls:PressButton Grid.Column="1"
-                                  Content="{Binding ProfilePictureAsync.Value}"
-                                  Command="{Binding ManageAccountsCommand}"
-                                  ToolTip="{Binding ProfileNameAsync.Value}"
+                                  Content="{Binding UserProject.ProfilePictureAsync.Value}"
+                                  Command="{Binding UserProject.ManageAccountsCommand}"
+                                  ToolTip="{Binding UserProject.ProfileNameAsync.Value}"
                                   Style="{StaticResource CommandBarButtonStyle}"
                                   HorizontalAlignment="Right"
                                   Margin="5,0">
@@ -344,7 +343,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
-            <TextBox Text="{Binding ProjectDisplayString, Mode=OneWay}"
+            <TextBox Text="{Binding UserProject.ProjectDisplayString, Mode=OneWay}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
             <Button Content="{x:Static ext:Resources.CloudExplorerSelectProjectCaption}"

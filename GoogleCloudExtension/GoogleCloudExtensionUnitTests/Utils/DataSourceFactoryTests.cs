@@ -19,7 +19,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -30,7 +29,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
 
         protected override void BeforeEach()
         {
-            _objectUnderTest = new DataSourceFactory();
+            _objectUnderTest = new DataSourceFactory(CredentialStoreMock.Object);
         }
 
         [TestMethod]

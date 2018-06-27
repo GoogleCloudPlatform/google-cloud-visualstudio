@@ -20,6 +20,7 @@ using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.MenuBarControls;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Services;
@@ -104,6 +105,7 @@ namespace GoogleCloudExtension
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
+        private Lazy<IDataSourceFactory> _dataSourceFactory;
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -155,6 +157,11 @@ namespace GoogleCloudExtension
         /// The default <see cref="IUserPromptService"/>.
         /// </summary>
         public IUserPromptService UserPromptService => _userPromptService.Value;
+
+        /// <summary>
+        /// The default <see cref="IDataSourceFactory"/> service.
+        /// </summary>
+        public IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
 
         /// <summary>
         /// The initalized instance of the package.
@@ -300,6 +307,9 @@ namespace GoogleCloudExtension
             _processService = mefExportProvider.GetExport<IProcessService>();
             _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
             _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
+            _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
+
+            GetMefService<MenuBarUserControlManager>().ShowGcpInfo();
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

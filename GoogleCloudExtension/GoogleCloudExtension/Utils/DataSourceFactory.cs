@@ -26,12 +26,31 @@ namespace GoogleCloudExtension.Utils
     [Export(typeof(IDataSourceFactory))]
     public class DataSourceFactory : IDataSourceFactory
     {
-        [Obsolete("This makes a call to MEF every time. Instead, import IDataSourceFactory from MEF and save to an instance member.")]
-        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
+        private Lazy<IResourceManagerDataSource> _resourceManagerDataSource;
+        private Lazy<IGPlusDataSource> _gPlusDataSource;
+        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.DataSourceFactory;
+
+        private ICredentialsStore CredentialsStore { get; }
+
+        public IResourceManagerDataSource ResourceManagerDataSource => _resourceManagerDataSource.Value;
+        public IGPlusDataSource GPlusDataSource => _gPlusDataSource.Value;
+
+        public DataSourceFactory(ICredentialsStore credentialsStore)
+        {
+            CredentialsStore = credentialsStore;
+            SetupLazyDataSources();
+            CredentialsStore.CurrentAccountChanged += (sender, args) => SetupLazyDataSources();
+        }
+
+        private void SetupLazyDataSources()
+        {
+            _resourceManagerDataSource = new Lazy<IResourceManagerDataSource>(CreateResourceManagerDataSource);
+            _gPlusDataSource = new Lazy<IGPlusDataSource>(CreatePlusDataSource);
+        }
 
         public ResourceManagerDataSource CreateResourceManagerDataSource()
         {
-            GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            GoogleCredential currentCredential = CredentialsStore.CurrentGoogleCredential;
             if (currentCredential != null)
             {
                 return new ResourceManagerDataSource(
@@ -45,7 +64,7 @@ namespace GoogleCloudExtension.Utils
 
         public IGPlusDataSource CreatePlusDataSource()
         {
-            GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            GoogleCredential currentCredential = CredentialsStore.CurrentGoogleCredential;
             return CreatePlusDataSource(currentCredential);
         }
 

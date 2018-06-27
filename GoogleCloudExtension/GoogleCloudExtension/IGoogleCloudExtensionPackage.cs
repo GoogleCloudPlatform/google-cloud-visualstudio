@@ -71,6 +71,11 @@ namespace GoogleCloudExtension
         /// </summary>
         IUserPromptService UserPromptService { get; }
 
+        /// <summary>
+        /// The default <see cref="IDataSourceFactory"/> service.
+        /// </summary>
+        IDataSourceFactory DataSourceFactory { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
         void ShowOptionPage<T>() where T : DialogPage;

@@ -1,0 +1,42 @@
+﻿<!--
+    Copyright 2018 Google Inc. All Rights Reserved.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<UserControl x:Class="GoogleCloudExtension.MenuBarControls.GcpMenuBarControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.MenuBarControls"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:wpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:IGcpUserProjectViewModel}">
+    <StackPanel Orientation="Horizontal">
+        <TextBox Text="{Binding ProjectDisplayString, Mode=OneWay}"
+                 IsReadOnly="True"/>
+
+        <controls:PressButton Content="{Binding ProfilePictureAsync.Value}"
+                              Command="{Binding ManageAccountsCommand}"
+                              ToolTip="{Binding ProfileNameAsync.Value}">
+            <controls:PressButton.ContentTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding}" Width="25px" Height="25px" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />
+                </DataTemplate>
+            </controls:PressButton.ContentTemplate>
+        </controls:PressButton>
+    </StackPanel>
+</UserControl>

@@ -80,6 +80,7 @@
     <Compile Include="VisibilityConverter.cs" />
     <Compile Include="WindowsCredentialManager.cs" />
     <Compile Include="Wpf\BooleanAndConverter.cs" />
+    <Compile Include="Wpf\EventCommandBindingExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
