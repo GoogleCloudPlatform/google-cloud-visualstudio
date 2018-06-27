@@ -59,23 +59,14 @@ namespace GoogleCloudExtension.PowerShellUtils
             string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
             _closingEventHandler = (se, e) => Stop();
             subscribeClosingEvent(_closingEventHandler);
-            _powerShellTask = Task.Run(() =>
-            {
-                try
-                {
-                    target.EnterSessionExecute(script, _cancelTokenSource.Token);
-                }
-                finally
-                {
-                    unsubscribeClosingEvent(_closingEventHandler);
-                }
-            });
+
+            _powerShellTask = ExecuteScript(target, script, unsubscribeClosingEvent);
         }
 
         /// <summary>
         /// Stop the session at VS shutting down event.
         /// </summary>
-        public void Stop()
+        private void Stop()
         {
             if (!IsStopped)
             {
@@ -85,6 +76,19 @@ namespace GoogleCloudExtension.PowerShellUtils
             Debug.WriteLine($"_powerShellTask.Wait() ");
             _powerShellTask.Wait();
             Debug.WriteLine($"_powerShellTask.Wait() complete.");
+        }
+
+
+        private async Task ExecuteScript(RemoteTarget target, string script, Action<EventHandler> unsubscribeClosingEvent)
+        {
+            try
+            {
+                await target.EnterSessionExecute(script, _cancelTokenSource.Token);
+            }
+            finally
+            {
+                unsubscribeClosingEvent(_closingEventHandler);
+            }
         }
     }
 }

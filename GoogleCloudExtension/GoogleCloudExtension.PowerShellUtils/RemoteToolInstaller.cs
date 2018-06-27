@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <summary>
         /// The resource name for embedded script file Resources\InstallRemoteTool.ps1
         /// </summary>
-        private const string InstallerPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.InstallRemoteTool.ps1";
+        public const string InstallerPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.InstallRemoteTool.ps1";
 
         /// <summary>
         /// The credential variable name used at <seealso cref="AddInstallCommands"/>.
@@ -74,20 +74,22 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </summary>
         public async Task<bool> Install(CancellationToken cancelToken)
         {
-            var target = new RemoteTarget(_computerName, _credential);
-            return await target.ExecuteAsync(AddInstallCommands, cancelToken);
+            using (PowerShell powerShell = PowerShell.Create())
+            {
+                AddInstallCommands(powerShell);
+                await powerShell.InvokeAsync(cancelToken);
+                return !powerShell.HadErrors;
+            }
         }
 
         private void AddInstallCommands(PowerShell powerShell)
         {
-            string setupScript = RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath);
-
             powerShell.AddVariable(CredentialVariablename, _credential);
             powerShell.AddVariable(RemoteToolSourcePath, _debuggerToolLocalPath);
             powerShell.AddScript("$ErrorActionPreference = \"Stop\"");
             powerShell.AddScript("$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
             powerShell.AddScript($"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
-            powerShell.AddScript(setupScript);
+            powerShell.AddScript(RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath));
             powerShell.AddScript("Remove-PSSession -Session $session");
         }
     }

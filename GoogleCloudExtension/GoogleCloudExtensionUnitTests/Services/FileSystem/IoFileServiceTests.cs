@@ -23,17 +23,17 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 {
     [TestClass]
     [DeploymentItem(TestResourcesPath, TestResourcesPath)]
-    public class IoFileServiceTests
+    public class IOFileServiceTests
     {
         private const string TestXmlFilePath = @"Services\FileSystem\Resources\TestXmlFile.xml";
         private const string TestResourcesPath = @"Services\FileSystem\Resources";
         private const string TargetFilePath = @"Services\FileSystem\Resources\TargetFile.txt";
-        private IoFileService _objectUnderTest;
+        private IOFileService _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _objectUnderTest = new IoFileService();
+            _objectUnderTest = new IOFileService();
         }
 
         [TestCleanup]

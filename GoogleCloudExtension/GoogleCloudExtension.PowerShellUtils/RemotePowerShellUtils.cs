@@ -14,10 +14,11 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Management.Automation;
 using System.Reflection;
 using System.Security;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PowerShellUtils
 {
@@ -37,14 +38,14 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <exception cref="FileNotFoundException">The file of <paramref name="resourceName"/> is not found.</exception>
         public static string GetEmbeddedFile(string resourceName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)
                 {
                     throw new FileNotFoundException(resourceName);
                 }
-                using (StreamReader reader = new StreamReader(stream))
+                using (var reader = new StreamReader(stream))
                 {
                     return reader.ReadToEnd();
                 }
@@ -75,13 +76,48 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </summary>
         private static SecureString ConvertToSecureString(string input)
         {
-            if (String.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(input))
             {
                 throw new ArgumentException(nameof(input));
             }
-            SecureString output = new SecureString();
-            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
+            var output = new SecureString();
+            foreach (char p in input)
+            {
+                output.AppendChar(p);
+            }
+
             return output;
+        }
+
+        /// <summary>
+        /// Executes the PowerShell commands and waits utill it is complete 
+        /// or cancelled by <paramref name="cancelToken"/>.
+        /// </summary>
+        /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
+        /// <param name="cancelToken">Cancel a long running command.</param>
+        /// <returns>
+        /// True: successfully completed the script execution.
+        /// False: Received some error in script execution or the execution is cancelled.
+        /// </returns>
+        public static async Task<PSDataCollection<PSObject>> InvokeAsync(
+            this PowerShell powerShell,
+            CancellationToken cancelToken = default(CancellationToken))
+        {
+            cancelToken.ThrowIfCancellationRequested();
+            Task<PSDataCollection<PSObject>> powershellTask = Task.Factory.FromAsync(
+                powerShell.BeginInvoke(),
+                powerShell.EndInvoke);
+            var cancelTaskSource = new TaskCompletionSource<PSDataCollection<PSObject>>();
+            cancelToken.Register(() => powerShell.BeginStop(state => cancelTaskSource.TrySetCanceled(), null));
+
+            Task<PSDataCollection<PSObject>> cancelTask = cancelTaskSource.Task;
+            Task<PSDataCollection<PSObject>> completedTask = await Task.WhenAny(powershellTask, cancelTask);
+            // Prevent a race condition where powershell task faults with PipelineStoppedException before cancelTask is canceled.
+            if (completedTask == powershellTask && completedTask.IsFaulted && cancelToken.IsCancellationRequested)
+            {
+                await cancelTask;
+            }
+            return await completedTask;
         }
     }
 }
