@@ -14,6 +14,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace GoogleCloudExtension.GCloud.UnitTests
@@ -21,14 +22,53 @@ namespace GoogleCloudExtension.GCloud.UnitTests
     [TestClass]
     public class WindowsInstanceCredentialsTests
     {
+        private const string DefaultPassword = "DefaultPassword";
+        private const string DefaultUser = "DefaultUser";
+
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private static object[][] NotEqualObjects { get; } =
         {
             new object[] {null},
             new object[] {"UserNameAndPassword"},
-            new object[] {new WindowsInstanceCredentials("DifferentUser", "Password")},
-            new object[] {new WindowsInstanceCredentials("User", "DifferentPassword")}
+            new object[] {new WindowsInstanceCredentials("DifferentUser", DefaultPassword)},
+            new object[] {new WindowsInstanceCredentials(DefaultUser, "DifferentPassword")},
+            new object[] {new WindowsInstanceCredentials(DefaultUser, null)}
         };
+
+        [TestMethod]
+        public void TestConstructor_ThrowsFOrNullUser()
+        {
+            var exception = Assert.ThrowsException<ArgumentNullException>(
+                () => new WindowsInstanceCredentials(null, DefaultPassword));
+
+            Assert.AreEqual("user", exception.ParamName);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetUser()
+        {
+            const string exptectedUser = "ExpectedUser";
+            var objectUnderTest = new WindowsInstanceCredentials(exptectedUser, DefaultPassword);
+
+            Assert.AreEqual(exptectedUser, objectUnderTest.User);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetPassword()
+        {
+            const string exptectedPassword = "ExpectedPassword";
+            var objectUnderTest = new WindowsInstanceCredentials(DefaultUser, exptectedPassword);
+
+            Assert.AreEqual(exptectedPassword, objectUnderTest.Password);
+        }
+
+        [TestMethod]
+        public void TestConstructor_AcceptsNullPassword()
+        {
+            var objectUnderTest = new WindowsInstanceCredentials(DefaultUser, null);
+
+            Assert.IsNull(objectUnderTest.Password);
+        }
 
         [TestMethod]
         public void TestJsonSerialization()
@@ -43,7 +83,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [TestMethod]
         public void TestJsonDeserialization()
         {
-            var json = @"{""username"":""UserString"",""password"":""PasswordString""}";
+            const string json = @"{""username"":""UserString"",""password"":""PasswordString""}";
 
             var result = JsonConvert.DeserializeObject<WindowsInstanceCredentials>(json);
 
@@ -55,7 +95,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [DynamicData(nameof(NotEqualObjects))]
         public void TestEqualsFalse(object notEqualObject)
         {
-            var sourceObject = new WindowsInstanceCredentials("User", "Password");
+            var sourceObject = new WindowsInstanceCredentials(DefaultUser, DefaultPassword);
             Assert.IsFalse(sourceObject.Equals(notEqualObject));
         }
 
@@ -63,7 +103,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [DynamicData(nameof(NotEqualObjects))]
         public void TestHashCodeNotEqual(object notEqualObject)
         {
-            var sourceObject = new WindowsInstanceCredentials("User", "Password");
+            var sourceObject = new WindowsInstanceCredentials(DefaultUser, DefaultPassword);
             Assert.AreNotEqual(sourceObject.GetHashCode(), notEqualObject?.GetHashCode());
         }
 
@@ -71,8 +111,8 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [SuppressMessage("ReSharper", "EqualExpressionComparison")]
         public void TestEqualsTrue()
         {
-            const string user = "User";
-            const string password = "Password";
+            const string user = DefaultUser;
+            const string password = DefaultPassword;
             var source = new WindowsInstanceCredentials(user, password);
             var target = new WindowsInstanceCredentials(user, password);
             Assert.IsTrue(source.Equals(source));
@@ -82,8 +122,8 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [TestMethod]
         public void TestGetHashCodeEqual()
         {
-            const string user = "User";
-            const string password = "Password";
+            const string user = DefaultUser;
+            const string password = DefaultPassword;
             Assert.AreEqual(
                 new WindowsInstanceCredentials(user, password).GetHashCode(),
                 new WindowsInstanceCredentials(user, password).GetHashCode());

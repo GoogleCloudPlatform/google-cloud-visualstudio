@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.GCloud
         {
             int hashCode = -1879510246;
             hashCode = hashCode * -1521134295 + User.GetHashCode();
-            hashCode = hashCode * -1521134295 + Password.GetHashCode();
+            hashCode = hashCode * -1521134295 + (Password?.GetHashCode() ?? 0);
             return hashCode;
         }
     }

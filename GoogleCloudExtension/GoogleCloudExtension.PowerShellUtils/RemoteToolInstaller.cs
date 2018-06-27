@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Management.Automation;
 using System.Threading;
 using System.Threading.Tasks;
@@ -75,29 +74,21 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </summary>
         public async Task<bool> Install(CancellationToken cancelToken)
         {
-            try
-            {
-                var target = new RemoteTarget(_computerName, _credential);
-                return await target.ExecuteAsync(AddInstallCommands, cancelToken);
-            }
-            catch (Exception ex) when (
-                ex is ParameterBindingException &&
-                ex.Message.Contains(PowerShellFailedToConnectException.SessionEmptyErrorMessage))
-            {
-                throw new PowerShellFailedToConnectException(ex);
-            }
+            var target = new RemoteTarget(_computerName, _credential);
+            return await target.ExecuteAsync(AddInstallCommands, cancelToken);
         }
 
         private void AddInstallCommands(PowerShell powerShell)
         {
-            var setupScript = RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath);
+            string setupScript = RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath);
 
             powerShell.AddVariable(CredentialVariablename, _credential);
             powerShell.AddVariable(RemoteToolSourcePath, _debuggerToolLocalPath);
-            powerShell.AddScript(@"$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
-            powerShell.AddScript($@"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
+            powerShell.AddScript("$ErrorActionPreference = \"Stop\"");
+            powerShell.AddScript("$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
+            powerShell.AddScript($"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
             powerShell.AddScript(setupScript);
-            powerShell.AddScript(@"Remove-PSSession -Session $session");
+            powerShell.AddScript("Remove-PSSession -Session $session");
         }
     }
 }
