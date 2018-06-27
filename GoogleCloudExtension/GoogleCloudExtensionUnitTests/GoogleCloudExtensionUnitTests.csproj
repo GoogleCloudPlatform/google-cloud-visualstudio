@@ -232,6 +232,7 @@
     <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPortTests.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSourceTests.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroupTests.cs" />
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRootTests.cs" />
@@ -252,6 +253,12 @@
     <Compile Include="Deployment\MSBuildPropertyTests.cs" />
     <Compile Include="Deployment\MSBuildTargetTests.cs" />
     <Compile Include="Deployment\WindowsVmDeploymentTests.cs" />
+    <Compile Include="FirewallManagement\PortChangesTests.cs" />
+    <Compile Include="FirewallManagement\PortInfoTests.cs" />
+    <Compile Include="FirewallManagement\PortManagerViewModelTests.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindowTests.cs" />
+    <Compile Include="FirewallManagement\PortModelTests.cs" />
+    <Compile Include="FirewallManagement\PortTestHelpers.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />

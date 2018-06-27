@@ -4274,6 +4274,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud Console Firewall Rules.
+        /// </summary>
+        public static string PortManagerConsoleLinkText {
+            get {
+                return ResourceManager.GetString("PortManagerConsoleLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1} {2}).
         /// </summary>
         public static string PortManagerDisplayStringFormat {

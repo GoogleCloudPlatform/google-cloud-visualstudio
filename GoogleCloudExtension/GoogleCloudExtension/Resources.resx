@@ -2504,4 +2504,7 @@ Delete corrupted file?</value>
     <value>Configuration:</value>
     <comment>The label of the configuration ComboBox in the publish dialog step header control.</comment>
   </data>
+  <data name="PortManagerConsoleLinkText" xml:space="preserve">
+    <value>Cloud Console Firewall Rules</value>
+  </data>
 </root>

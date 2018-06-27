@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Theming;
 using System;
-using System.Diagnostics;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.UserPrompt
@@ -28,7 +27,7 @@ namespace GoogleCloudExtension.UserPrompt
         /// <summary>
         /// Internal hook for unit testing.
         /// </summary>
-        internal static event EventHandler UserPromptInitialized;
+        internal static event EventHandler UserPromptActivated;
 
         /// <summary>
         /// This class contains the options for the dialog being shown.
@@ -89,23 +88,12 @@ namespace GoogleCloudExtension.UserPrompt
         {
             var dialog = new UserPromptWindow(options);
             dialog.Activated += DialogActivated;
-            try
-            {
-                dialog.ShowModal();
-            }
-            finally
-            {
-                dialog.Activated -= DialogActivated;
-            }
+            dialog.ShowModal();
+            dialog.Activated -= DialogActivated;
 
             return dialog.ViewModel.Result;
         }
 
-        private static void DialogActivated(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Dialog Activiated!");
-            UserPromptInitialized?.Invoke(sender, e);
-            UserPromptInitialized = null;
-        }
+        private static void DialogActivated(object sender, EventArgs e) => UserPromptActivated?.Invoke(sender, e);
     }
 }

@@ -13,9 +13,12 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -42,10 +45,23 @@ namespace GoogleCloudExtension.FirewallManagement
         /// </summary>
         public bool HasChanges => PortsToEnable.Count != 0 || PortsToDisable.Count != 0;
 
-        public PortChanges(IList<FirewallPort> portsToEnable, IList<FirewallPort> portsToDisable)
+        public PortChanges(IEnumerable<PortModel> changedPorts)
         {
-            PortsToEnable = portsToEnable;
-            PortsToDisable = portsToDisable;
+            PortsToEnable = new List<FirewallPort>();
+            PortsToDisable = new List<FirewallPort>();
+
+            foreach (PortModel entry in changedPorts ?? Enumerable.Empty<PortModel>())
+            {
+                var firewallPort = new FirewallPort(entry.GetPortInfoTag(), entry.PortInfo.Port);
+                if (entry.IsEnabled)
+                {
+                    PortsToEnable.Add(firewallPort);
+                }
+                else
+                {
+                    PortsToDisable.Add(firewallPort);
+                }
+            }
         }
     }
 
@@ -54,22 +70,25 @@ namespace GoogleCloudExtension.FirewallManagement
     /// </summary>
     public class PortManagerViewModel : ViewModelBase
     {
+        public const string ConsoleFirewallsUrlFormat = "https://console.cloud.google.com/networking/firewalls?project={0}";
+
         /// <summary>
         /// The list of supported ports in the dialog, in the same order that they will be
         /// offered to the user.
         /// </summary>
-        private static readonly IList<PortInfo> s_supportedPorts = new List<PortInfo>
+        internal static readonly IList<PortInfo> s_supportedPorts = new List<PortInfo>
         {
-            new PortInfo("HTTP", 80, description: Resources.PortManagerHttpDescription),
-            new PortInfo("HTTPS", 443, description: Resources.PortManagerHttpsDescription),
-            new PortInfo("RDP", 3389, description: Resources.PortManagerRdpDescription),
-            new PortInfo("WebDeploy", 8172, description: Resources.PortManagerWebDeployDescription),
+            new PortInfo("HTTP", 80, Resources.PortManagerHttpDescription),
+            new PortInfo("HTTPS", 443, Resources.PortManagerHttpsDescription),
+            new PortInfo("RDP", 3389, Resources.PortManagerRdpDescription),
+            new PortInfo("WebDeploy", 8172, Resources.PortManagerWebDeployDescription),
             AttachDebuggerContext.DebuggerPortInfo,
             AttachDebuggerContext.RemotePowerShellPortInfo,
         };
 
-        private readonly PortManagerWindow _owner;
-        private readonly Instance _instance;
+        private readonly Action _close;
+        private readonly Lazy<IBrowserService> _browserService;
+        private readonly Lazy<ICredentialsStore> _credentialsStore;
 
         /// <summary>
         /// The list of ports.
@@ -81,45 +100,38 @@ namespace GoogleCloudExtension.FirewallManagement
         /// </summary>
         public ICommand OkCommand { get; }
 
+        public ICommand NavigateToCloudConsoleCommand { get; }
+
         /// <summary>
         /// The changes that were selected by the user. This property will be null if the user
         /// cancelled the operation.
         /// </summary>
         public PortChanges Result { get; private set; }
 
-        public PortManagerViewModel(PortManagerWindow owner, Instance instance)
+        public PortManagerViewModel(Action close, Instance instance)
         {
-            _owner = owner;
-            _instance = instance;
+            _close = close;
 
-            Ports = CreatePortModels();
+            Ports = s_supportedPorts.Select(x => new PortModel(x, instance)).ToList();
+
             OkCommand = new ProtectedCommand(OnOkCommand);
+            NavigateToCloudConsoleCommand = new ProtectedCommand(NavigateToCloudConsoleFirewalls);
+
+            _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
+            _credentialsStore = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<ICredentialsStore>();
+        }
+
+        private void NavigateToCloudConsoleFirewalls()
+        {
+            string url = string.Format(ConsoleFirewallsUrlFormat, _credentialsStore.Value.CurrentProjectId);
+            _browserService.Value.OpenBrowser(url);
         }
 
         private void OnOkCommand()
         {
-            var portsToEnable = new List<FirewallPort>();
-            var portsToDisable = new List<FirewallPort>();
 
-            foreach (var entry in Ports.Where(x => x.Changed))
-            {
-                var firewallPort = new FirewallPort(entry.PortInfo.GetTag(_instance), entry.PortInfo.Port);
-                if (entry.IsEnabled)
-                {
-                    portsToEnable.Add(firewallPort);
-                }
-                else
-                {
-                    portsToDisable.Add(firewallPort);
-                }
-            }
-
-            Result = new PortChanges(portsToEnable: portsToEnable, portsToDisable: portsToDisable);
-
-            _owner.Close();
+            Result = new PortChanges(Ports.Where(x => x.Changed));
+            _close();
         }
-
-        private IList<PortModel> CreatePortModels() =>
-            s_supportedPorts.Select((x) => new PortModel(x, _instance.Tags?.Items?.Contains(x.GetTag(_instance)) ?? false)).ToList();
     }
 }

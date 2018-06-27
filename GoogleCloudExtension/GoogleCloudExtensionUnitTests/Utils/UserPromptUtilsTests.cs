@@ -18,7 +18,6 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Utils
@@ -34,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
     }
 
     [TestClass]
-    public class UserPromptUtilsTests : WpfTestBase
+    public class UserPromptUtilsTests : WpfTestBase<UserPromptWindow>
     {
         private const string DefaultPrompt = "Default Prompt";
         private const string DefaultTitle = "Default Title";
@@ -45,8 +44,9 @@ namespace GoogleCloudExtensionUnitTests.Utils
         private const string ExpectedMessage = "Expected Message";
         private UserPromptUtils _objectUnderTest;
 
-        private readonly Action<UserPromptWindow> _defaultCloseAction = userPrompt => userPrompt.Close();
-        private static readonly string s_expectedErrorPrompt = string.Format(Resources.ExceptionPromptMessage, ExpectedPrompt);
+        private static readonly string s_expectedErrorPrompt = string.Format(
+            Resources.ExceptionPromptMessage,
+            ExpectedPrompt);
 
         [TestInitialize]
         public void BeforeEach() => _objectUnderTest = new UserPromptUtils();
@@ -55,7 +55,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestActionPrompt_PromptsWithTitle()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, ExpectedTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, ExpectedTitle));
             string titleResult = userPrompt.Title;
             Assert.AreEqual(ExpectedTitle, titleResult);
         }
@@ -64,7 +64,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestActionPrompt_PromptsWithGivenPrompt()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(ExpectedPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(ExpectedPrompt, DefaultTitle));
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
@@ -72,14 +72,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestActionPrompt_PromptsWithNullMessageByDefault()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsNull(userPrompt.ViewModel.Message);
         }
 
         [TestMethod]
         public void TestActionPrompt_PromptsWithGivenMessage()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, ExpectedMessage));
             Assert.AreEqual(ExpectedMessage, userPrompt.ViewModel.Message);
         }
@@ -89,14 +89,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             string defaultActionCaption = Resources.UiYesButtonCaption;
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(defaultActionCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
 
         [TestMethod]
         public void TestActionPrompt_PromptsWithGivenActionCaption()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, actionCaption: ExpectedActionCaption));
             Assert.AreEqual(ExpectedActionCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
@@ -105,14 +105,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestActionPrompt_PromptsWithDefaultCancelCaption()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(Resources.UiCancelButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
         public void TestActionPrompt_PromptsWithGivenCancelCaption()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, cancelCaption: ExpectedCancelCaption));
             Assert.AreEqual(ExpectedCancelCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
@@ -121,14 +121,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestActionPrompt_PromptsWithNoIconByDefault()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsNull(userPrompt.ViewModel.Icon);
         }
 
         [TestMethod]
         public void TestActionPrompt_PromptsWithWariningIcon()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, isWarning: true));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
@@ -138,48 +138,46 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestActionPrompt_ReturnsFalseWhenClosed()
         {
-            bool result = GetUserPromptResult(
+            bool result = GetResult(
                 userPrompt => userPrompt.Close(),
-                () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle)
-            );
+                () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void TestActionPrompt_ReturnsTrueOnOkCommand()
         {
-            bool result = GetUserPromptResult(
+            bool result = GetResult(
                 userPrompt => userPrompt.ViewModel.ActionCommand.Execute(null),
-                () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle)
-            );
+                () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void TestOkPrompt_PromptsWithTitle()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, ExpectedTitle));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
         [TestMethod]
         public void TestOkPrompt_PromptsWithGivenPrompt()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.OkPrompt(ExpectedPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(ExpectedPrompt, DefaultTitle));
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
         public void TestOkPrompt_SetsCancelCaptionToOk()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
         public void TestOkPrompt_HasActionButtonFalse()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
 
@@ -187,7 +185,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_PromptsWithGivenTitle()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, ExpectedTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
@@ -195,7 +193,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_PromptsWithGivenPrompt()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(ExpectedPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(ExpectedPrompt, DefaultTitle));
 
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
@@ -204,7 +202,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_ErrorDetailsNullByDefault()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsNull(userPrompt.ViewModel.ErrorDetails);
         }
@@ -214,7 +212,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             const string expectedErrorDetails = "Expected Error Details";
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
 
             Assert.AreEqual(expectedErrorDetails, userPrompt.ViewModel.ErrorDetails);
         }
@@ -223,7 +221,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_SetsCancelCaptionToOk()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
@@ -232,7 +230,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_HasActionButtonFalse()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
@@ -241,7 +239,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorPrompt_SetsIconToErrorIcon()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
@@ -251,7 +249,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_PromptsWithGivenTitle()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, ExpectedTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
@@ -259,7 +257,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_PromptsWithGivenPrompt()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(ExpectedPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(ExpectedPrompt, DefaultTitle));
 
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
@@ -268,7 +266,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_ErrorDetailsNullByDefault()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsNull(userPrompt.ViewModel.ErrorDetails);
         }
@@ -278,7 +276,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             const string expectedErrorDetails = "Expected Error Details";
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
 
             Assert.AreEqual(expectedErrorDetails, userPrompt.ViewModel.ErrorDetails);
         }
@@ -287,7 +285,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_SetsCancelCaptionToNo()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiNoButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
@@ -296,7 +294,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_SetsActionCaptionToYes()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiYesButtonCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
@@ -305,7 +303,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestErrorActionPrompt_SetsIconToErrorIcon()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
@@ -314,20 +312,18 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestErrorActionPrompt_ReturnsFalseWhenClosed()
         {
-            bool result = GetUserPromptResult(
+            bool result = GetResult(
                 userPrompt => userPrompt.Close(),
-                () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle)
-            );
+                () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void TestErrorActionPrompt_ReturnsTrueOnOkCommand()
         {
-            bool result = GetUserPromptResult(
+            bool result = GetResult(
                 userPrompt => userPrompt.ViewModel.ActionCommand.Execute(null),
-                () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle)
-            );
+                () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsTrue(result);
         }
 
@@ -335,7 +331,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestExceptionPrompt_PromptsWithConstantTitle()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+                GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
             Assert.AreEqual(Resources.ExceptionPromptTitle, userPrompt.Title);
         }
 
@@ -343,7 +339,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestExceptionPrompt_PromptsWithGivenExceptionMessage()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new Exception(ExpectedPrompt)));
+                GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception(ExpectedPrompt)));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
         }
@@ -351,7 +347,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestExceptionPrompt_PromptsWithAggregateInnerExceptionMessage()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ExceptionPrompt(new AggregateException(new Exception(ExpectedPrompt))));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
@@ -360,7 +356,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestExceptionPrompt_PromptsAggregateExceptionFirstInnerExceptionMessage()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(
+            UserPromptWindow userPrompt = GetWindow(
                 () => _objectUnderTest.ExceptionPrompt(
                     new AggregateException(new ExceptionWithNullMessage(), new Exception(ExpectedPrompt))));
 
@@ -371,7 +367,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestExceptionPrompt_PromptsWithAggregateMessageWhenNoInnerExceptions()
         {
             UserPromptWindow userPrompt =
-                GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new AggregateException(ExpectedPrompt)));
+                GetWindow(() => _objectUnderTest.ExceptionPrompt(new AggregateException(ExpectedPrompt)));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
         }
@@ -380,7 +376,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void TestExceptionPrompt_ShowsStacktraceAsErrorDetails()
         {
             var exception = new Exception();
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(exception));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(exception));
 
             Assert.AreEqual(exception.StackTrace, userPrompt.ViewModel.ErrorDetails);
         }
@@ -388,7 +384,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestExceptionPrompt_SetsCancelCaptionToOk()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
@@ -396,7 +392,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestExceptionPrompt_HasActionButtonFalse()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
@@ -404,53 +400,20 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestExceptionPrompt_SetsIconToErrorIcon()
         {
-            UserPromptWindow userPrompt = GetUserPromptWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
         }
 
-        private bool GetUserPromptResult(Action<UserPromptWindow> closeAction, Func<bool> promptAction) =>
-            Dispatcher.CurrentDispatcher.Invoke(
-                () =>
-                {
-                    void OnPromptInitialized(object sender, EventArgs args)
-                    {
-                        closeAction((UserPromptWindow)sender);
-                    }
+        protected override void RegisterActivatedEvent(EventHandler handler)
+        {
+            UserPromptWindow.UserPromptActivated += handler;
+        }
 
-                    UserPromptWindow.UserPromptInitialized += OnPromptInitialized;
-                    try
-                    {
-                        return promptAction();
-                    }
-                    finally
-                    {
-                        UserPromptWindow.UserPromptInitialized -= OnPromptInitialized;
-                    }
-                });
-
-        private UserPromptWindow GetUserPromptWindow(Action promptAction) => Dispatcher.CurrentDispatcher.Invoke(
-            () =>
-            {
-                UserPromptWindow currentUserPrompt = null;
-
-                void OnPromptInitialized(object sender, EventArgs args)
-                {
-                    currentUserPrompt = (UserPromptWindow)sender;
-                    _defaultCloseAction(currentUserPrompt);
-                }
-
-                UserPromptWindow.UserPromptInitialized += OnPromptInitialized;
-                try
-                {
-                    promptAction();
-                    return currentUserPrompt;
-                }
-                finally
-                {
-                    UserPromptWindow.UserPromptInitialized -= OnPromptInitialized;
-                }
-            });
+        protected override void UnregisterActivatedEvent(EventHandler handler)
+        {
+            UserPromptWindow.UserPromptActivated -= handler;
+        }
     }
 }
