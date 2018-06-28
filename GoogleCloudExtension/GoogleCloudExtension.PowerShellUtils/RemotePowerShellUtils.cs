@@ -90,14 +90,12 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Executes the PowerShell commands and waits utill it is complete 
-        /// or cancelled by <paramref name="cancelToken"/>.
+        /// Asyncronously executes the PowerShell commands.
         /// </summary>
         /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
-        /// <param name="cancelToken">Cancel a long running command.</param>
+        /// <param name="cancelToken">When cancelation is requested, this method stops the execution and throws.</param>
         /// <returns>
-        /// True: successfully completed the script execution.
-        /// False: Received some error in script execution or the execution is cancelled.
+        /// The <see cref="PSDataCollection{T}"/> returned by the powershell execution.
         /// </returns>
         public static async Task<PSDataCollection<PSObject>> InvokeAsync(
             this PowerShell powerShell,
