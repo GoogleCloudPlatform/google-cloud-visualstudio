@@ -13,7 +13,7 @@ init:
   # This change was recommended by the AppVeyor team to save space.
   - rmdir C:\cygwin /s /q
   # This was taking up to nine minutes. Make it a job to run it behind the scenes and let the build start immediatly.
-  - ps: Start-Job {Remove-Item "C:\QT" -Recurse -Force}
+  - ps: Start-Job {Remove-Item "C:\QT" -Recurse -Force} | Out-Null
 
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
