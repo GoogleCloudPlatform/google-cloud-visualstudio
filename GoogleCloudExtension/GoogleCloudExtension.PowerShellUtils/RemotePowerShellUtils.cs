@@ -107,6 +107,10 @@ namespace GoogleCloudExtension.PowerShellUtils
                 powerShell.EndInvoke);
             var cancelTaskSource = new TaskCompletionSource<PSDataCollection<PSObject>>();
             cancelToken.Register(() => powerShell.BeginStop(state => cancelTaskSource.TrySetCanceled(), null));
+            if (cancelToken.IsCancellationRequested)
+            {
+                powerShell.BeginStop(state => cancelTaskSource.TrySetCanceled(), null);
+            }
 
             Task<PSDataCollection<PSObject>> cancelTask = cancelTaskSource.Task;
             Task<PSDataCollection<PSObject>> completedTask = await Task.WhenAny(powershellTask, cancelTask);
