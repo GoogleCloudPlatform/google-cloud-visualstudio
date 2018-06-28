@@ -8,6 +8,13 @@ image: Visual Studio 2017
 
 configuration: Release
 
+
+init:
+  # This change was recommended by the AppVeyor team to save space.
+  - rmdir C:\cygwin /s /q
+  # This was taking up to nine minutes. Make it a job to run it behind the scenes and let the build start immediatly.
+  - ps: Start-Job {Remove-Item "C:\QT" -Recurse -Force}
+
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
@@ -17,11 +24,6 @@ install:
   - choco install opencover.portable
   - choco install codecov
 
-init:
-  # This change was recommended by the AppVeyor team to save space.
-  - rmdir C:\cygwin /s /q
-  - rmdir C:\QT /s /q
-
 before_build:
   - bash -c ./tools/ensure_strings_extracted.sh
   - bash -c ./tools/ensure_no_unused_strings.sh
@@ -29,7 +31,7 @@ before_build:
 
 build:
   project: GoogleCloudExtension\GoogleCloudExtension.sln
-  verbosity: normal
+  verbosity: minimal
 
 # Defines the artifacts to be saved.
 artifacts:
