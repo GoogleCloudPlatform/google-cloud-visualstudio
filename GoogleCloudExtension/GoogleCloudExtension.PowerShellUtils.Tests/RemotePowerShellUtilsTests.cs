@@ -88,12 +88,12 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
-        [Timeout(500)]
+        [Timeout(5000)]
         public async Task TestInvokeAsync_ThrowsTaskCanceledExceptionWhenTokenCanceled()
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
-                powerShell.AddScript("Start-Sleep 3000");
+                powerShell.AddScript("Start-Sleep -Seconds 30");
 
                 await Assert.ThrowsExceptionAsync<TaskCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationTokenSource(16).Token));
@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
-        [Timeout(500)]
+        [Timeout(5000)]
         public async Task TestInvokeAsync_StopsPowershellWhenTokenCanceled()
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
-                powerShell.AddScript("Start-Sleep 3000");
+                powerShell.AddScript("Start-Sleep -Seconds 30");
 
                 await Assert.ThrowsExceptionAsync<TaskCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationTokenSource(16).Token));

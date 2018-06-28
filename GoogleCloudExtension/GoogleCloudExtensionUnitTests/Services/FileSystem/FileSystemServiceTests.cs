@@ -49,7 +49,7 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 
             var objectUnderTest = new FileSystemService(null, null, new Lazy<IDirectory>(() => expectedDirectory));
 
-            Assert.AreEqual(expectedDirectory, objectUnderTest.XDocument);
+            Assert.AreEqual(expectedDirectory, objectUnderTest.Directory);
         }
     }
 }

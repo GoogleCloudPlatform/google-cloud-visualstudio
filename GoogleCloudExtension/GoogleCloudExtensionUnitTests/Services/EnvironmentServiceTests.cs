@@ -40,5 +40,15 @@ namespace GoogleCloudExtensionUnitTests.Services
 
             Assert.AreEqual(expectedEnvVarValue, result);
         }
+
+        [TestMethod]
+        public void TestGetFolderPath()
+        {
+            string expectedResult = Environment.GetEnvironmentVariable("ProgramFiles");
+
+            string result = _objectUnderTest.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
