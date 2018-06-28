@@ -210,6 +210,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             _lastConfiguration = PublishDialog.Project.GetUserProperty(ConfigurationPropertyName);
 
             var rowNames = (IEnumerable)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
+            // ConfigurationRowNames might be object[], which is not IEnumerable<string>.
             Configurations = rowNames.OfType<string>();
         }
 
