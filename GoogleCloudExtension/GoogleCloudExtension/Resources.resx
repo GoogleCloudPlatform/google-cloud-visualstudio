@@ -1903,10 +1903,6 @@
     <value>Project Name</value>
     <comment>Project Name column header for a GCP Project data grid.</comment>
   </data>
-  <data name="AttachDebuggerConnectionFailedMessage" xml:space="preserve">
-    <value>Failed to establish Remote PowerShell connection.</value>
-    <comment>Error message indicates it failed to establish Remote Powershell connection.</comment>
-  </data>
   <data name="AttachDebuggerInstallerError" xml:space="preserve">
     <value>Remote PowerShell error.</value>
     <comment>Generic error message on executing Remote PowerShell commands.</comment>

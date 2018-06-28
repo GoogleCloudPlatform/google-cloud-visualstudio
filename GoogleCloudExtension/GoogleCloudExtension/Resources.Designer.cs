@@ -430,15 +430,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to establish Remote PowerShell connection..
-        /// </summary>
-        public static string AttachDebuggerConnectionFailedMessage {
-            get {
-                return ResourceManager.GetString("AttachDebuggerConnectionFailedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Or create a new account.
         /// </summary>
         public static string AttachDebuggerCreateManageAccountLinkCaption {
