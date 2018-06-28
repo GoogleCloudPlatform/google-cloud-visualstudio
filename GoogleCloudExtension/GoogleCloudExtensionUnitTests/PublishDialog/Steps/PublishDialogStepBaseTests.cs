@@ -567,6 +567,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         }
 
         [TestMethod]
+        public void TestOnVisible_LoadsConfigurationsFromProjectObjectArray()
+        {
+            Mock.Get(_mockedProject)
+                .Setup(p => p.ConfigurationManager.ConfigurationRowNames)
+                .Returns(s_configurations.ToArray<object>);
+
+            _objectUnderTest.OnVisible();
+
+            CollectionAssert.AreEqual(s_configurations, _objectUnderTest.Configurations.ToList());
+        }
+
+        [TestMethod]
         public void TestOnVisible_LoadsConfigurationProperty()
         {
             _propertyServiceMock
