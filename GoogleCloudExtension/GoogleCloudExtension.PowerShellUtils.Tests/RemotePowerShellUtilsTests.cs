@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
             {
                 powerShell.AddScript("Start-Sleep -Seconds 30");
 
-                await Assert.ThrowsExceptionAsync<TaskCanceledException>(
+                await Assert.ThrowsExceptionAsync<OperationCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationTokenSource(16).Token));
             }
         }
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
             {
                 powerShell.AddScript("Start-Sleep -Seconds 30");
 
-                await Assert.ThrowsExceptionAsync<TaskCanceledException>(
+                await Assert.ThrowsExceptionAsync<OperationCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationTokenSource(16).Token));
 
                 Assert.AreEqual(PSInvocationState.Stopped, powerShell.InvocationStateInfo.State);

@@ -102,24 +102,22 @@ namespace GoogleCloudExtension.PowerShellUtils
             CancellationToken cancelToken = default(CancellationToken))
         {
             cancelToken.ThrowIfCancellationRequested();
-            Task<PSDataCollection<PSObject>> powershellTask = Task.Factory.FromAsync(
-                powerShell.BeginInvoke(),
-                powerShell.EndInvoke);
-            var cancelTaskSource = new TaskCompletionSource<PSDataCollection<PSObject>>();
-            cancelToken.Register(() => powerShell.BeginStop(state => cancelTaskSource.TrySetCanceled(), null));
-            if (cancelToken.IsCancellationRequested)
-            {
-                powerShell.BeginStop(state => cancelTaskSource.TrySetCanceled(), null);
-            }
+            Task<PSDataCollection<PSObject>> powershellTask =
+                Task.Factory.FromAsync(powerShell.BeginInvoke(), powerShell.EndInvoke);
+            cancelToken.Register(powerShell.Stop);
 
-            Task<PSDataCollection<PSObject>> cancelTask = cancelTaskSource.Task;
-            Task<PSDataCollection<PSObject>> completedTask = await Task.WhenAny(powershellTask, cancelTask);
-            // Prevent a race condition where powershell task faults with PipelineStoppedException before cancelTask is canceled.
-            if (completedTask == powershellTask && completedTask.IsFaulted && cancelToken.IsCancellationRequested)
+            PSDataCollection<PSObject> output;
+            try
             {
-                await cancelTask;
+                output = await powershellTask;
             }
-            return await completedTask;
+            catch (Exception e) when (cancelToken.IsCancellationRequested)
+            {
+                throw new OperationCanceledException("PowerShell operation canceled", e, cancelToken);
+            }
+            // PowerShell can sometimes complete without error if the cancellation happend quickly enough.
+            cancelToken.ThrowIfCancellationRequested();
+            return output;
         }
     }
 }
