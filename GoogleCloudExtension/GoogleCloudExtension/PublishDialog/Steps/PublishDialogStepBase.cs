@@ -21,6 +21,7 @@ using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -208,8 +209,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         {
             _lastConfiguration = PublishDialog.Project.GetUserProperty(ConfigurationPropertyName);
 
-            Configurations =
-                (IEnumerable<string>)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
+            var rowNames = (IEnumerable)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;
+            // ConfigurationRowNames might be object[], which is not IEnumerable<string>.
+            Configurations = rowNames.OfType<string>();
         }
 
         /// <summary>
