@@ -41,9 +41,29 @@ namespace GoogleCloudExtension.VsVersion
 
         private readonly Lazy<DTE> _dte = new Lazy<DTE>(GoogleCloudExtensionPackage.Instance.GetService<SDTE, DTE>);
 
-        private IFileSystem FileSystem => _fileSystem.Value;
+        /// <summary>
+        /// The <see cref="IEnvironment"/> service.
+        /// </summary>
         protected IEnvironment Environment => _environment.Value;
-        protected DTE Dte => _dte.Value;
+
+        /// <summary>
+        /// The root directory of the current Visual Studio installation.
+        /// </summary>
+        protected string VsRootDirectoryPath
+        {
+            get
+            {
+                string devenvPath = Dte.FullName;
+                string ideDirectoryPath = Path.GetDirectoryName(devenvPath);
+                string common7DirectoryPath = Path.GetDirectoryName(ideDirectoryPath);
+                string vsRootDirectoryPath = Path.GetDirectoryName(common7DirectoryPath);
+                Debug.Assert(vsRootDirectoryPath != null);
+                return vsRootDirectoryPath;
+            }
+        }
+
+        private IFileSystem FileSystem => _fileSystem.Value;
+        private DTE Dte => _dte.Value;
 
         /// <inheritdoc />
         public abstract string GetMsbuildPath();
@@ -70,22 +90,17 @@ namespace GoogleCloudExtension.VsVersion
         public string GetRemoteDebuggerToolsPath()
         {
             string devenvPath = Dte.FullName;
-            string ideDirctoryPath = Path.GetDirectoryName(devenvPath);
-            Debug.Assert(ideDirctoryPath != null);
+            string ideDirectoryPath = Path.GetDirectoryName(devenvPath);
+            Debug.Assert(ideDirectoryPath != null);
             // TODO: add x86 support later
-            string result = Path.Combine(ideDirctoryPath, "Remote Debugger", "x64", "*");
+            string result = Path.Combine(ideDirectoryPath, "Remote Debugger", "x64", "*");
             GcpOutputWindow.Default.OutputDebugLine($"Debugger remote tools path: {result}");
             return result;
         }
 
         public string GetExternalToolsPath()
         {
-            string devenvPath = Dte.FullName;
-            string ideDirectoryPath = Path.GetDirectoryName(devenvPath);
-            string common7DirectoryPath = Path.GetDirectoryName(ideDirectoryPath);
-            string vsRootDirectoryPath = Path.GetDirectoryName(common7DirectoryPath);
-            Debug.Assert(vsRootDirectoryPath != null);
-            string result = Path.Combine(vsRootDirectoryPath, "Web", "External");
+            string result = Path.Combine(VsRootDirectoryPath, "Web", "External");
             GcpOutputWindow.Default.OutputDebugLine($"External tools path: {result}");
             return result;
         }

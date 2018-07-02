@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Diagnostics;
 using System.IO;
 
 namespace GoogleCloudExtension.VsVersion.VS15
@@ -27,12 +26,7 @@ namespace GoogleCloudExtension.VsVersion.VS15
 
         public override string GetMsbuildPath()
         {
-            string devenvPath = Dte.FullName;
-            string ideDirectoryPath = Path.GetDirectoryName(devenvPath);
-            string common7DirectoryPath = Path.GetDirectoryName(ideDirectoryPath);
-            string vsRootDirectoryPath = Path.GetDirectoryName(common7DirectoryPath);
-            Debug.Assert(vsRootDirectoryPath != null);
-            string result = Path.Combine(vsRootDirectoryPath, MSBuildSubPath);
+            string result = Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
             GcpOutputWindow.Default.OutputDebugLine($"Msbuild V15 Path: {result}");
             return result;
         }

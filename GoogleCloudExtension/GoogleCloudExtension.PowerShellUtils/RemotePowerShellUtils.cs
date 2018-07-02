@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.PowerShellUtils
             {
                 throw new OperationCanceledException("PowerShell operation canceled", e, cancelToken);
             }
-            // PowerShell can sometimes complete without error if the cancellation happend quickly enough.
+            // PowerShell can sometimes complete without error if the cancellation happened quickly enough.
             cancelToken.ThrowIfCancellationRequested();
             return output;
         }
