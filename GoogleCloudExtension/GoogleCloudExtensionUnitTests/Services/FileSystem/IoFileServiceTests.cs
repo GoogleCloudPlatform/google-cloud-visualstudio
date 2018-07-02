@@ -123,9 +123,8 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         [TestMethod]
         public void TestDelete()
         {
-            File.Create(TargetFilePath);
-            _objectUnderTest.Delete(TargetFilePath);
-            Assert.IsFalse(File.Exists(TargetFilePath));
+            _objectUnderTest.Delete(TestXmlFilePath);
+            Assert.IsFalse(File.Exists(TestXmlFilePath));
         }
     }
 }
