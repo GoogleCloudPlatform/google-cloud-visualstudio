@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,28 +59,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Executes a PowerShell script asynchronously.
-        /// </summary>
-        /// <param name="addCommandsCallback">Callback to add the powershell commands.</param>
-        /// <param name="cancelToken">
-        /// Long execution can be terminated by the cancelToken. 
-        /// </param>
-        /// <returns>
-        /// True: successfully completed the script execution.
-        /// False: Received some error in script execution or the execution is cancelled.
-        /// </returns>
-        public async Task<bool> ExecuteAsync(
-            Action<PowerShell> addCommandsCallback,
-            CancellationToken cancelToken)
-        {
-            using (PowerShell powerShell = PowerShell.Create())
-            {
-                addCommandsCallback(powerShell);
-                return await Task.Run(() => WaitComplete(powerShell, cancelToken));
-            }
-        }
-
-        /// <summary>
         /// This method firstly establishes a session to the remote target.
         /// Then executes the <paramref name="script"/>. 
         /// When execution is done, the session is closed.
@@ -93,7 +70,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// Long execution can be terminated by the cancelToken. 
         /// This will also terminate the PSSession.
         /// </param>
-        public void EnterSessionExecute(string script, CancellationToken cancelToken)
+        public async Task EnterSessionExecute(string script, CancellationToken cancelToken)
         {
             if (String.IsNullOrWhiteSpace(script))
             {
@@ -126,44 +103,9 @@ namespace GoogleCloudExtension.PowerShellUtils
                 {
                     powerShell.Runspace = runSpace;
                     powerShell.AddScript(script);
-                    WaitComplete(powerShell, cancelToken);
+                    await powerShell.InvokeAsync(cancelToken);
                 }
             }
-        }
-
-        /// <summary>
-        /// Executes the PowerShell commands and waits utill it is complete 
-        /// or cancelled by <paramref name="cancelToken"/>.
-        /// </summary>
-        /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
-        /// <param name="cancelToken">Cancel a long running command.</param>
-        /// <returns>
-        /// True: successfully completed the script execution.
-        /// False: Received some error in script execution or the execution is cancelled.
-        /// </returns>
-        private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
-        {
-            var iAsyncResult = powerShell.BeginInvoke();
-            int returnIndex = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
-            Debug.WriteLine($"Execution has stopped. The pipeline state: {powerShell.InvocationStateInfo.State}");
-            if (cancelToken.IsCancellationRequested || returnIndex != 0 || !iAsyncResult.IsCompleted)
-            {
-                return false;
-            }
-            var outputCollection = powerShell.EndInvoke(iAsyncResult);
-            PrintOutput(outputCollection);
-            return !powerShell.HadErrors;
-        }
-
-        private void PrintOutput(PSDataCollection<PSObject> outputCollection)
-        {
-            // TODO: Write to Output window
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (PSObject psObject in outputCollection)
-            {
-                stringBuilder.AppendLine(psObject.ToString());
-            }
-            Debug.WriteLine(stringBuilder.ToString());
         }
     }
 }

@@ -27,7 +27,7 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         {
             var file = Mock.Of<IFile>();
 
-            var objectUnderTest = new FileSystemService(new Lazy<IFile>(() => file), null);
+            var objectUnderTest = new FileSystemService(new Lazy<IFile>(() => file), null, null);
 
             Assert.AreEqual(file, objectUnderTest.File);
         }
@@ -37,9 +37,19 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         {
             var expectedXDocument = Mock.Of<IXDocument>();
 
-            var objectUnderTest = new FileSystemService(null, new Lazy<IXDocument>(() => expectedXDocument));
+            var objectUnderTest = new FileSystemService(null, new Lazy<IXDocument>(() => expectedXDocument), null);
 
             Assert.AreEqual(expectedXDocument, objectUnderTest.XDocument);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsDirectory()
+        {
+            var expectedDirectory = Mock.Of<IDirectory>();
+
+            var objectUnderTest = new FileSystemService(null, null, new Lazy<IDirectory>(() => expectedDirectory));
+
+            Assert.AreEqual(expectedDirectory, objectUnderTest.Directory);
         }
     }
 }

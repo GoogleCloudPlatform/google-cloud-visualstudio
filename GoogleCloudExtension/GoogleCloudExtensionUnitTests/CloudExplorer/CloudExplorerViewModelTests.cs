@@ -33,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private ResourceManagerDataSource _mockedResourceManagerDataSource;
         private IGPlusDataSource _mockedGPlusDataSource;
         private Mock<IGPlusDataSource> _gPlusDataSourceMock;
-        private List<string> _propertiesChanged;
+        private SynchronizedCollection<string> _propertiesChanged;
 
         protected override void BeforeEach()
         {
@@ -47,7 +47,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
             _mockedSelectionUtils = Mock.Of<ISelectionUtils>();
             _objectUnderTest = new CloudExplorerViewModel(_mockedSelectionUtils);
-            _propertiesChanged = new List<string>();
+            _propertiesChanged = new SynchronizedCollection<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
         }
 

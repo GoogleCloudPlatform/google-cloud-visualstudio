@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.VsVersion
         public const string VisualStudio2017Version = "15.0";
 
         internal static Lazy<IToolsPathProvider> s_toolsPathProvider =
-            new Lazy<IToolsPathProvider>(GetTooslPathProvider);
+            new Lazy<IToolsPathProvider>(GetToolsPathProvider);
         private static readonly Lazy<int> s_remoteDebuggerPort = new Lazy<int>(GetRemoteDebuggerPort);
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.VsVersion
         /// </summary>
         public static IToolsPathProvider ToolsPathProvider => s_toolsPathProvider.Value;
 
-        private static IToolsPathProvider GetTooslPathProvider()
+        public static IToolsPathProvider GetToolsPathProvider()
         {
             switch (GoogleCloudExtensionPackage.Instance.VsVersion)
             {
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.VsVersion
                     return new VS14.ToolsPathProvider();
 
                 case VisualStudio2017Version:
-                    return new VS15.ToolsPathProvider(GoogleCloudExtensionPackage.VsEdition);
+                    return new VS15.ToolsPathProvider();
 
                 default:
                     throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.Instance.VsVersion} is not supported.");

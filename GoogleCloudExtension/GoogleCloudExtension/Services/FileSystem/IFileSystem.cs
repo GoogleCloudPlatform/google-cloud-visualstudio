@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace GoogleCloudExtension.Services.FileSystem
 {
     /// <summary>
@@ -21,13 +20,18 @@ namespace GoogleCloudExtension.Services.FileSystem
     public interface IFileSystem
     {
         /// <summary>
-        /// File operations. Matches the static members of <see cref="System.IO.File"/>
+        /// File operations. Matches the static members of <see cref="System.IO.File"/>.
         /// </summary>
         IFile File { get; }
 
         /// <summary>
-        /// XDocument load operations. Matches the static methods of <see cref="XDocument"/>
+        /// XDocument load operations. Matches the static methods of <see cref="XDocument"/>.
         /// </summary>
         IXDocument XDocument { get; }
+
+        /// <summary>
+        /// Directory operations. Matches the static members of <see cref="System.IO.Directory"/>.
+        /// </summary>
+        IDirectory Directory { get; }
     }
 }

@@ -66,20 +66,24 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 installed = await _installer.Install(CancelToken);
             }
-            catch (ActionPreferenceStopException e)
+            catch (OperationCanceledException)
+            {
+                // Don't prompt for cancellation.
+            }
+            catch (RuntimeException e)
             {
                 UserPromptUtils.Default.ErrorPrompt(
-                    Resources.AttachDebuggerConnectionFailedMessage,
-                    Resources.UiDefaultPromptTitle,
-                    e.ErrorRecord.InvocationInfo.Line + Environment.NewLine + Environment.NewLine + e.ErrorRecord);
+                    e.ErrorRecord.Exception?.Message ?? e.ErrorRecord.ToString(),
+                    Resources.AttachDebuggerInstallerError,
+                    e.ErrorRecord.InvocationInfo.Line);
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 Debug.WriteLine($"{ex}");
                 UserPromptUtils.Default.ErrorPrompt(
+                    ex.Message,
                     Resources.AttachDebuggerInstallerError,
-                    Resources.UiDefaultPromptTitle,
-                    ex.Message);
+                    ex.StackTrace);
             }
 
             if (installed)

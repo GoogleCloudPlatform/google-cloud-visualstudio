@@ -12,66 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.VsVersion
 {
     [TestClass]
-    public class ToolsPathProviderBaseTests
+    public class ToolsPathProviderBaseTests : ExtensionTestBase
     {
         private const string SdkVersion = "2.0.0";
+        private const string DefaultProgramFilesPath = @"C:\Default Program Files";
+        private const string DefaultDotnetSdkFolderPath = DefaultProgramFilesPath + @"\dotnet\sdk";
+        private const string DevenvPathFromRoot = @"Common7\IDE\devenv.exe";
+        private const string DefaultDevenvPath = @"c:\Default\" + DevenvPathFromRoot;
         private ToolsPathProviderBase _objectUnderTest;
-        private string _dotnetPath;
-        private string _sdkPath;
+        private Mock<IFileSystem> _fileSystemMock;
+        private Mock<IEnvironment> _environmentMock;
+        private Mock<DTE> _dteMock;
 
-        [TestInitialize]
-
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
-            _dotnetPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            _sdkPath = Path.Combine(_dotnetPath, ToolsPathProviderBase.SdkDirectoryName);
-            _objectUnderTest =
-                Mock.Of<ToolsPathProviderBase>(p => p.GetDotnetPath() == Path.Combine(_dotnetPath, "dotnet.exe"));
-        }
+            _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
+            _environmentMock = new Mock<IEnvironment>();
+            _dteMock = new Mock<DTE>();
 
-        [TestCleanup]
-        public void AfterEach()
-        {
-            if (Directory.Exists(_dotnetPath))
-            {
-                Directory.Delete(_dotnetPath, true);
-            }
-        }
+            _dteMock.Setup(dte => dte.FullName).Returns(DefaultDevenvPath);
+            _environmentMock.Setup(e => e.ExpandEnvironmentVariables(ToolsPathProviderBase.ProgramW6432))
+                .Returns(DefaultProgramFilesPath);
 
-        [TestMethod]
-        public void TestGetNetCoreSdkVersionsDotnetAsRoot()
-        {
-            _objectUnderTest = Mock.Of<ToolsPathProviderBase>(p => p.GetDotnetPath() == "c:\\");
+            PackageMock.Setup(p => p.GetMefServiceLazy<IFileSystem>()).Returns(_fileSystemMock.ToLazy());
+            PackageMock.Setup(p => p.GetMefServiceLazy<IEnvironment>()).Returns(_environmentMock.ToLazy());
+            PackageMock.Setup(p => p.GetService<SDTE, DTE>()).Returns(_dteMock.Object);
 
-            IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
-
-            Assert.AreEqual(0, versions.Count());
+            _objectUnderTest = Mock.Of<ToolsPathProviderBase>();
         }
 
 
         [TestMethod]
-        public void TestGetNetCoreSdkVersionsNoDotnetDirectory()
+        public void TestGetNetCoreSdkVersions_NoSdkDirectory()
         {
-            IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
-
-            Assert.AreEqual(0, versions.Count());
-        }
-
-        [TestMethod]
-        public void TestGetNetCoreSdkVersionsNoSdkDirectory()
-        {
-            Directory.CreateDirectory(_dotnetPath);
+            _fileSystemMock.Setup(fs => fs.Directory.Exists(DefaultDotnetSdkFolderPath)).Returns(false);
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
@@ -79,10 +67,11 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
-        public void TestGetNetCoreSdkVersionsEmptyDirectory()
+        public void TestGetNetCoreSdkVersions_EmptySdkDirectory()
         {
-            Directory.CreateDirectory(_dotnetPath);
-            Directory.CreateDirectory(_sdkPath);
+            _fileSystemMock.Setup(fs => fs.Directory.Exists(DefaultDotnetSdkFolderPath)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.Directory.EnumerateDirectories(DefaultDotnetSdkFolderPath))
+                .Returns(Enumerable.Empty<string>());
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
@@ -90,12 +79,11 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
-        public void TestGetNetCoreSdkVersionsSingleSdkDirectory()
+        public void TestGetNetCoreSdkVersions_RetrievesSingleSdkVersion()
         {
-            Directory.CreateDirectory(_dotnetPath);
-            Directory.CreateDirectory(_sdkPath);
-            Directory.CreateDirectory(Path.Combine(_sdkPath, SdkVersion));
-            Thread.Sleep(100);
+            _fileSystemMock.Setup(fs => fs.Directory.Exists(DefaultDotnetSdkFolderPath)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.Directory.EnumerateDirectories(DefaultDotnetSdkFolderPath))
+                .Returns(new[] { SdkVersion });
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
@@ -103,17 +91,75 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
-        public void TestGetNetCoreSdkVersionsWithNugetFallbackDirectory()
+        public void TestGetNetCoreSdkVersions_FiltersOutNugetFallbackDirectory()
         {
-            Directory.CreateDirectory(_dotnetPath);
-            Directory.CreateDirectory(_sdkPath);
-            Directory.CreateDirectory(Path.Combine(_sdkPath, SdkVersion));
-            Directory.CreateDirectory(Path.Combine(_sdkPath, ToolsPathProviderBase.NugetFallbackFolderName));
-            Thread.Sleep(100);
+            _fileSystemMock.Setup(fs => fs.Directory.Exists(DefaultDotnetSdkFolderPath)).Returns(true);
+            _fileSystemMock.Setup(fs => fs.Directory.EnumerateDirectories(DefaultDotnetSdkFolderPath))
+                .Returns(new[] { SdkVersion, ToolsPathProviderBase.NugetFallbackFolderName });
 
             IEnumerable<string> versions = _objectUnderTest.GetNetCoreSdkVersions();
 
             Assert.AreEqual(SdkVersion, versions.Single());
+        }
+
+        [TestMethod]
+        public void TestGetDotnetPath_ReadsEnvironmentVariable()
+        {
+            const string expectedProgramFiles = @"c:\Expected Program Files";
+            _environmentMock.Setup(e => e.ExpandEnvironmentVariables(ToolsPathProviderBase.ProgramW6432))
+                .Returns(expectedProgramFiles);
+
+            string result = _objectUnderTest.GetDotnetPath();
+
+            StringAssert.StartsWith(result, expectedProgramFiles);
+        }
+
+        [TestMethod]
+        public void TestGetDotnetPath_AppendsExpectedConstant()
+        {
+            string result = _objectUnderTest.GetDotnetPath();
+
+            StringAssert.EndsWith(result, ToolsPathProviderBase.DotnetExeSubPath);
+        }
+
+        [TestMethod]
+        public void TestGetExternalToolsPath_CreatesFromDte()
+        {
+            const string expectedVsRoot = @"c:\Path\To\Vs";
+            const string devenvPath = @"c:\Path\To\Vs\Common7\IDE\devenv.exe";
+            _dteMock.Setup(dte => dte.FullName).Returns(devenvPath);
+
+            string result = _objectUnderTest.GetExternalToolsPath();
+
+            StringAssert.StartsWith(result, expectedVsRoot);
+        }
+
+        [TestMethod]
+        public void TestGetExternalToolsPath_AppendsExpectedConstant()
+        {
+            string result = _objectUnderTest.GetExternalToolsPath();
+
+            StringAssert.EndsWith(result, @"Web\External");
+        }
+
+        [TestMethod]
+        public void TestGetRemoteDebuggerToolsPath_CreatesFromDte()
+        {
+            const string ideFolder = @"c:\Path\To\Vs\Common7\IDE";
+            const string devenvPath = @"c:\Path\To\Vs\Common7\IDE\devenv.exe";
+            _dteMock.Setup(dte => dte.FullName).Returns(devenvPath);
+
+            string result = _objectUnderTest.GetRemoteDebuggerToolsPath();
+
+            StringAssert.StartsWith(result, ideFolder);
+        }
+
+        [TestMethod]
+        public void TestGetRemoteDebuggerToolsPath_AppendsExpectedConstant()
+        {
+            string result = _objectUnderTest.GetRemoteDebuggerToolsPath();
+
+            StringAssert.EndsWith(result, @"Remote Debugger\x64\*");
         }
     }
 }

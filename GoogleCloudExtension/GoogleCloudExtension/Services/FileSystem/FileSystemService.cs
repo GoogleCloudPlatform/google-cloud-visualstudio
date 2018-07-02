@@ -23,24 +23,31 @@ namespace GoogleCloudExtension.Services.FileSystem
     [Export(typeof(IFileSystem))]
     public class FileSystemService : IFileSystem
     {
-        private readonly Lazy<IFile> _fileLazy;
-        private readonly Lazy<IXDocument> _xDocumentLazy;
+        private readonly Lazy<IFile> _file;
+        private readonly Lazy<IXDocument> _xDocument;
+        private readonly Lazy<IDirectory> _directory;
 
         [ImportingConstructor]
-        public FileSystemService(Lazy<IFile> fileLazy, Lazy<IXDocument> xDocumentLazy)
+        public FileSystemService(Lazy<IFile> file, Lazy<IXDocument> xDocument, Lazy<IDirectory> directory)
         {
-            _fileLazy = fileLazy;
-            _xDocumentLazy = xDocumentLazy;
+            _file = file;
+            _xDocument = xDocument;
+            _directory = directory;
         }
 
         /// <summary>
         /// Subservice for file operations. Matches the static methods of <see cref="System.IO.File"/>.
         /// </summary>
-        public IFile File => _fileLazy.Value;
+        public IFile File => _file.Value;
 
         /// <summary>
         /// XDocument load operations. Matches the static methods of <see cref="System.Xml.Linq.XDocument"/>.
         /// </summary>
-        public IXDocument XDocument => _xDocumentLazy.Value;
+        public IXDocument XDocument => _xDocument.Value;
+
+        /// <summary>
+        /// Directory operations. Matches the static members of <see cref="System.IO.Directory"/>.
+        /// </summary>
+        public IDirectory Directory => _directory.Value;
     }
 }
