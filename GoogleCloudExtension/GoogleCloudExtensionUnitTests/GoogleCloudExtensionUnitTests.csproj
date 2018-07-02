@@ -259,6 +259,7 @@
     <Compile Include="FirewallManagement\PortManagerWindowTests.cs" />
     <Compile Include="FirewallManagement\PortModelTests.cs" />
     <Compile Include="FirewallManagement\PortTestHelpers.cs" />
+    <Compile Include="GCloud\KubectlContextTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -285,7 +286,7 @@
     <Compile Include="PublishDialog\PublishDialogWindowTests.cs" />
     <Compile Include="ServiceProviderMockExtensions.cs" />
     <Compile Include="Services\FileSystem\FileSystemServiceTests.cs" />
-    <Compile Include="Services\FileSystem\IoFileServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IOFileServiceTests.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
     <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />

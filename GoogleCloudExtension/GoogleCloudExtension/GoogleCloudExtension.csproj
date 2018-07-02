@@ -187,7 +187,7 @@
     <Compile Include="Deployment\IWindowsVmDeployment.cs" />
     <Compile Include="Deployment\MSBuildProperty.cs" />
     <Compile Include="Deployment\MSBuildTarget.cs" />
-    <Compile Include="GCloud\KubectlWrapper.cs" />
+    <Compile Include="GCloud\KubectlContext.cs" />
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
@@ -238,7 +238,7 @@
     <Compile Include="Services\FileSystem\FileSystemService.cs" />
     <Compile Include="Services\FileSystem\IFile.cs" />
     <Compile Include="Services\FileSystem\IFileSystem.cs" />
-    <Compile Include="Services\FileSystem\IoFileService.cs" />
+    <Compile Include="Services\FileSystem\IOFileService.cs" />
     <Compile Include="Services\FileSystem\IXDocument.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
     <Compile Include="Services\IBrowserService.cs" />

@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Services.FileSystem
     /// An <see cref="IFile"/> service implementation that delegates to <see cref="File"/>.
     /// </summary>
     [Export(typeof(IFile))]
-    public class IoFileService : IFile
+    public class IOFileService : IFile
     {
         /// <inheritdoc cref="File.Exists(string)"/>
         public bool Exists(string path) => File.Exists(path);
@@ -42,5 +42,8 @@ namespace GoogleCloudExtension.Services.FileSystem
 
         /// <inheritdoc cref="File.CreateText(string)"/>
         public TextWriter CreateText(string path) => File.CreateText(path);
+
+        /// <inheritdoc cref="File.Delete(string)"/>
+        public void Delete(string path) => File.Delete(path);
     }
 }

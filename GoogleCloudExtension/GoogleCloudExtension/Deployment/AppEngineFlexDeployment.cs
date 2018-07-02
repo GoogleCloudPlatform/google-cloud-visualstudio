@@ -41,8 +41,7 @@ namespace GoogleCloudExtension.Deployment
         private IShellUtils ShellUtils => _shellUtils.Value;
         private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
         private IAppEngineConfiguration ConfigurationService => _configurationService.Value;
-
-        public IStatusbarService StatusbarHelper => _statusbarService.Value;
+        private IStatusbarService StatusbarHelper => _statusbarService.Value;
 
         /// <summary>
         /// The options for the deployment operation.
@@ -52,7 +51,7 @@ namespace GoogleCloudExtension.Deployment
             public DeploymentOptions(string service, string version, bool promote, bool openWebsite, string configuration)
             {
                 Service = service;
-                Version = version;
+                Version = version ?? GcpPublishStepsUtils.GetDefaultVersion();
                 Promote = promote;
                 OpenWebsite = openWebsite;
                 Configuration = configuration;
@@ -213,10 +212,9 @@ namespace GoogleCloudExtension.Deployment
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
                 // the operation to finish, update the progress as it goes.
-                string effectiveVersion = options.Version ?? GcpPublishStepsUtils.GetDefaultVersion();
                 Task<bool> deployTask = DeployAppBundleAsync(
                     stageDirectory: stageDirectory,
-                    version: effectiveVersion,
+                    version: options.Version,
                     promote: options.Promote,
                     context: options.Context,
                     outputAction: outputAction);
@@ -231,7 +229,7 @@ namespace GoogleCloudExtension.Deployment
                 return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
-                    version: effectiveVersion,
+                    version: options.Version,
                     promoted: options.Promote);
             }
         }
@@ -244,12 +242,7 @@ namespace GoogleCloudExtension.Deployment
             Action<string> outputAction)
         {
             string appYamlPath = Path.Combine(stageDirectory, AppEngineConfiguration.AppYamlName);
-            return GCloudWrapper.DeployAppAsync(
-                appYaml: appYamlPath,
-                version: version,
-                promote: promote,
-                outputAction: outputAction,
-                context: context);
+            return context.DeployAppAsync(appYamlPath, version, promote, outputAction);
         }
     }
 }
