@@ -15,17 +15,18 @@
 using Moq;
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace TestingHelpers
 {
-    public static class LazyMock
+    public static class MockHelpers
     {
         /// <summary>
         /// Creates a <see cref="Lazy{T}"/> that creates a mocked <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the mocked value to create.</typeparam>
         /// <returns>The <see cref="Lazy{T}"/> that creates the mocked <typeparamref name="T"/>.</returns>
-        public static Lazy<T> Of<T>() where T : class => new Lazy<T>(Mock.Of<T>);
+        public static Lazy<T> LazyOf<T>() where T : class => new Lazy<T>(Mock.Of<T>);
 
         /// <summary>
         /// Creates a <see cref="Lazy{T}"/> that creates a mocked <typeparamref name="T"/>.
@@ -36,7 +37,7 @@ namespace TestingHelpers
         /// <see cref="Mock.Of{T}(Expression{Func{T,bool}})"/>
         /// </param>
         /// <returns>The <see cref="Lazy{T}"/> that creates the mocked <typeparamref name="T"/>.</returns>
-        public static Lazy<T> Of<T>(Expression<Func<T, bool>> predicate) where T : class => new Lazy<T>(() => Mock.Of(predicate));
+        public static Lazy<T> LazyOf<T>(Expression<Func<T, bool>> predicate) where T : class => new Lazy<T>(() => Mock.Of(predicate));
 
         /// <summary>
         /// Creates a <see cref="Lazy{T}"/> who's <see cref="Lazy{T}.Value"/> returns the <paramref name="mock"/>'s
@@ -49,5 +50,16 @@ namespace TestingHelpers
         /// <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
         /// </returns>
         public static Lazy<T> ToLazy<T>(this Mock<T> mock) where T : class => new Lazy<T>(() => mock.Object);
+
+        /// <summary>
+        /// Creates a <see cref="Task{T}"/> that results in the <paramref name="mock"/>'s
+        /// <see cref="Mock{T}.Object"/>.
+        /// </summary>
+        /// <typeparam name="T">The mocked type.</typeparam>
+        /// <param name="mock">The <see cref="Mock{T}"/> that defines the mocked <typeparamref name="T"/>.</param>
+        /// <returns>
+        /// A <see cref="Task{T}"/> that syncronously results in <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
+        /// </returns>
+        public static Task<T> ToTask<T>(this Mock<T> mock) where T : class => Task.FromResult(mock.Object);
     }
 }
