@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class contains the logic to deploy ASP.NET Core apps to GKE.
     /// </summary>
-    public static class GkeDeployment
+    public static class GkeDeploymentService
     {
         // Wait for up to 5 mins when waiting for a new service's IP address.
         private static readonly TimeSpan s_newServiceIpTimeout = new TimeSpan(0, 5, 0);
@@ -37,9 +37,9 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// The options that define an app's deployment. All options are required.
         /// </summary>
-        public class DeploymentOptions
+        public class Options
         {
-            public DeploymentOptions(
+            public Options(
                 IKubectlContext context,
                 string deploymentName,
                 string deploymentVersion,
@@ -106,7 +106,7 @@ namespace GoogleCloudExtension.Deployment
         /// <returns>Returns a <seealso cref="GkeDeploymentResult"/> if the deployment succeeded null otherwise.</returns>
         public static async Task<GkeDeploymentResult> PublishProjectAsync(
             IParsedProject project,
-            DeploymentOptions options,
+            Options options,
             IProgress<double> progress,
             IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)

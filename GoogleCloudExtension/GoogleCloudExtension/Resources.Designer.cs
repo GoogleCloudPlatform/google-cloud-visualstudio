@@ -4589,6 +4589,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create New Deployment.
+        /// </summary>
+        public static string PublishDialogGkeCreateNewDeploymentMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeCreateNewDeploymentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Deployments.
+        /// </summary>
+        public static string PublishDialogGkeLoadingDeploymentsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeLoadingDeploymentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Existing Deployment.
+        /// </summary>
+        public static string PublishDialogGkeUpdateExistingDeploymentMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeUpdateExistingDeploymentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading project data..
         /// </summary>
         public static string PublishDialogLoadingProjectMessage {

@@ -321,7 +321,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         }
 
         /// <summary>
-        /// This is the base class. By default steps cannot publish.
+        /// Updates <see cref="CanPublish"/> from the step properties.
         /// </summary>
         protected virtual void RefreshCanPublish()
         {

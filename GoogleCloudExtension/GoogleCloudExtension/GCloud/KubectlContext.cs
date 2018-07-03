@@ -230,7 +230,6 @@ namespace GoogleCloudExtension.GCloud
 
         private async Task<T> GetKubectlCommandOutputAsync<T>(string command)
         {
-
             string actualCommand = FormatKubectlOutputCommand(command);
             try
             {

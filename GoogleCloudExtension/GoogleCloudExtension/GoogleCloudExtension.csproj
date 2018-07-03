@@ -225,7 +225,7 @@
     <Compile Include="Services\BrowserService.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
-    <Compile Include="Deployment\GkeDeployment.cs" />
+    <Compile Include="Deployment\GkeDeploymentService.cs" />
     <Compile Include="Services\Configuration\IAppEngineConfiguration.cs" />
     <Compile Include="Deployment\IAppEngineFlexDeployment.cs" />
     <Compile Include="Deployment\NetCoreAppUtils.cs" />

@@ -2503,4 +2503,13 @@ Delete corrupted file?</value>
   <data name="PortManagerConsoleLinkText" xml:space="preserve">
     <value>Cloud Console Firewall Rules</value>
   </data>
+  <data name="PublishDialogGkeLoadingDeploymentsMessage" xml:space="preserve">
+    <value>Loading Deployments</value>
+  </data>
+  <data name="PublishDialogGkeCreateNewDeploymentMessage" xml:space="preserve">
+    <value>Create New Deployment</value>
+  </data>
+  <data name="PublishDialogGkeUpdateExistingDeploymentMessage" xml:space="preserve">
+    <value>Update Existing Deployment</value>
+  </data>
 </root>

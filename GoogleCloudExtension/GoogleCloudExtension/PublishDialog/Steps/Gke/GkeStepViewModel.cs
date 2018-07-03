@@ -20,9 +20,11 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
@@ -72,6 +74,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private bool _openWebsite = false;
         private string _replicas = ReplicasDefaultValue;
         private string _lastClusterPropertyId;
+        private AsyncProperty<IList<GkeDeployment>> _existingDeployments;
+        private Task<KubectlContext> _kubectlContext;
+        private readonly Task<bool> _verifyGCloudTask;
+        private GkeDeployment _selectedDeployment;
         private readonly IKubectlContextProvider _kubectlContextProvider;
         private readonly IBrowserService _browserService;
         private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
@@ -105,7 +111,37 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             {
                 SetValueAndRaise(ref _selectedCluster, value);
                 RefreshCanPublish();
+                if (SelectedCluster != null && SelectedCluster != s_placeholderCluster)
+                {
+                    _kubectlContext = KubectlContext.GetKubectlContextForClusterAsync(
+                        SelectedCluster.Name,
+                        SelectedCluster.Zone);
+                    ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(GetDeploymentsAsync());
+                }
             }
+        }
+
+        /// <summary>
+        /// The list of deployments that already exist on the cluster.
+        /// </summary>
+        public AsyncProperty<IList<GkeDeployment>> ExistingDeployments
+        {
+            get => _existingDeployments;
+            set
+            {
+                SetValueAndRaise(ref _existingDeployments, value);
+                ExistingDeployments.PropertyChanged += (sender, args) => UpdateSelectedDeployment();
+                UpdateSelectedDeployment();
+            }
+        }
+
+        /// <summary>
+        /// The selected existing deployment. Null if a new deployment is specified.
+        /// </summary>
+        public GkeDeployment SelectedDeployment
+        {
+            get => _selectedDeployment;
+            set => SetValueAndRaise(ref _selectedDeployment, value);
         }
 
         /// <summary>
@@ -119,6 +155,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 IEnumerable<ValidationResult> validations =
                     GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentNameFieldName);
                 SetAndRaiseWithValidation(ref _deploymentName, value, validations);
+                UpdateSelectedDeployment();
             }
         }
 
@@ -210,14 +247,33 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, false);
+            _verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
         }
 
+        /// <summary>
+        /// Updates CanPublish from the step properties.
+        /// </summary>
         protected override void RefreshCanPublish()
         {
             base.RefreshCanPublish();
-            CanPublish = CanPublish
-                && SelectedCluster != null
-                && SelectedCluster != s_placeholderCluster;
+            CanPublish = CanPublish &&
+                SelectedCluster != null &&
+                SelectedCluster != s_placeholderCluster;
+        }
+
+        private async Task<IList<GkeDeployment>> GetDeploymentsAsync()
+        {
+            KubectlContext context = await _kubectlContext;
+            return await context.GetDeploymentsAsync();
+        }
+
+        private void UpdateSelectedDeployment()
+        {
+            if (SelectedDeployment?.Metadata.Name != DeploymentName)
+            {
+                SelectedDeployment =
+                    ExistingDeployments?.Value?.FirstOrDefault(d => d.Metadata.Name == DeploymentName);
+            }
         }
 
         private void OnRefreshClustersListCommand() => PublishDialog.TrackTask(RefreshClustersAsync());
@@ -350,19 +406,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             {
                 ShellUtils.Default.SaveAllFiles();
 
-                Task<bool> verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
-                PublishDialog.TrackTask(verifyGCloudTask);
-                if (!await verifyGCloudTask)
+                PublishDialog.TrackTask(_verifyGCloudTask);
+                if (!await _verifyGCloudTask)
                 {
                     Debug.WriteLine("Aborting deployment, no kubectl was found.");
                     return;
                 }
 
-                Task<IKubectlContext> kubectlContextTask =
-                    _kubectlContextProvider.GetKubectlContextForClusterAsync(SelectedCluster);
-                PublishDialog.TrackTask(kubectlContextTask);
+                PublishDialog.TrackTask(_kubectlContext);
 
-                using (IKubectlContext kubectlContext = await kubectlContextTask)
+                using (IKubectlContext kubectlContext = await _kubectlContext)
                 {
                     Task<bool> deploymentExistsTask =
                         kubectlContext.DeploymentExistsAsync(DeploymentName);
@@ -378,7 +431,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         }
                     }
 
-                    var options = new GkeDeployment.DeploymentOptions(
+                    var options = new GkeDeploymentService.Options(
                         kubectlContext,
                         DeploymentName,
                         DeploymentVersion,
@@ -404,7 +457,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     using (ShellUtils.Default.SetShellUIBusy())
                     {
                         DateTime deploymentStartTime = DateTime.Now;
-                        result = await GkeDeployment.PublishProjectAsync(
+                        result = await GkeDeploymentService.PublishProjectAsync(
                             project,
                             options,
                             progress,
@@ -452,7 +505,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         private void OutputResultData(
             GkeDeploymentResult result,
-            GkeDeployment.DeploymentOptions options,
+            GkeDeploymentService.Options options,
             IParsedProject project)
         {
             GcpOutputWindow.Default.OutputLine(string.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
