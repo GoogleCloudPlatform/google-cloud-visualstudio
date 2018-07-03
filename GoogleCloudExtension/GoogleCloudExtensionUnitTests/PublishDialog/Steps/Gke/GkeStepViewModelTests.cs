@@ -675,10 +675,5 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
                     _parsedProject.Project, GkeStepViewModel.OpenWebsiteProjectPropertyName,
                     bool.TrueString));
         }
-
-        [TestMethod]
-        public void TestSetSelectedCluster_UpdatesExistingDeployments()
-        {
-        }
     }
 }
