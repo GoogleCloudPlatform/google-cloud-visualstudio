@@ -362,18 +362,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     return;
                 }
 
-                var gcloudContext = new GCloudContext();
-
-                Task<KubectlContext> kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
-                    cluster: SelectedCluster.Name,
-                    zone: SelectedCluster.Zone,
-                    context: gcloudContext);
+                Task<KubectlContext> kubectlContextTask =
+                    KubectlContext.GetKubectlContextForClusterAsync(SelectedCluster.Name, SelectedCluster.Zone);
                 PublishDialog.TrackTask(kubectlContextTask);
 
                 using (KubectlContext kubectlContext = await kubectlContextTask)
                 {
                     Task<bool> deploymentExistsTask =
-                        KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
+                        kubectlContext.DeploymentExistsAsync(DeploymentName);
                     PublishDialog.TrackTask(deploymentExistsTask);
                     if (await deploymentExistsTask)
                     {
@@ -386,22 +382,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                         }
                     }
 
-                    var options = new GkeDeployment.DeploymentOptions
-                    {
-                        Cluster = SelectedCluster.Name,
-                        Zone = SelectedCluster.Zone,
-                        DeploymentName = DeploymentName,
-                        DeploymentVersion = DeploymentVersion,
-                        ExposeService = ExposeService,
-                        ExposePublicService = ExposePublicService,
-                        GCloudContext = gcloudContext,
-                        KubectlContext = kubectlContext,
-                        Configuration = SelectedConfiguration,
-                        Replicas = int.Parse(Replicas),
-                        WaitingForServiceIpCallback = () =>
-                            GcpOutputWindow.Default.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
-                    };
-
+                    var options = new GkeDeployment.DeploymentOptions(
+                        kubectlContext,
+                        DeploymentName,
+                        DeploymentVersion,
+                        ExposeService,
+                        ExposePublicService,
+                        SelectedConfiguration,
+                        int.Parse(Replicas)
+                    );
                     DeploymentVersion = GcpPublishStepsUtils.IncrementVersion(DeploymentVersion);
 
                     GcpOutputWindow.Default.Activate();

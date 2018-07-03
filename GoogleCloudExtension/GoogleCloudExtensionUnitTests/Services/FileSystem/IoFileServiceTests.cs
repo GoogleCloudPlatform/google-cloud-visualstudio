@@ -119,5 +119,16 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
             Assert.IsTrue(File.Exists(TargetFilePath));
             Assert.AreEqual(fileContents, File.ReadAllText(TargetFilePath));
         }
+
+        [TestMethod]
+        public void TestDelete()
+        {
+            using (TextWriter writer = _objectUnderTest.CreateText(TargetFilePath))
+            {
+                writer.Write("File Contents");
+            }
+            _objectUnderTest.Delete(TargetFilePath);
+            Assert.IsFalse(File.Exists(TargetFilePath));
+        }
     }
 }

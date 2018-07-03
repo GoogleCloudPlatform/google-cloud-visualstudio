@@ -57,10 +57,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public async Task TestMissingComponentPrompt()
         {
-            _validateGCloudAsyncSource.SetResult(new GCloudValidationResult(
-                        isCloudSdkInstalled: true,
-                        isCloudSdkUpdated: true,
-                        isRequiredComponentInstalled: false));
+            _validateGCloudAsyncSource.SetResult(GCloudValidationResult.MissingComponent);
 
             _showCopyablePromptMock
                 .Setup(a => a(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))

@@ -32,30 +32,44 @@ namespace GoogleCloudExtension.GCloud
         public bool IsCloudSdkInstalled { get; }
 
         /// <summary>
-        /// Whether the Cloud SDK is newer or equal than the required version.
+        /// If true, the installed Cloud SDK Version is below the required version.
         /// </summary>
-        public bool IsCloudSdkUpdated { get; }
+        public bool IsObsolete { get; }
 
         /// <summary>
         /// If a required component was detected as installed or not.
         /// </summary>
-        public bool IsRequiredComponentInstalled { get; }
+        private bool IsRequiredComponentInstalled { get; }
 
         /// <summary>
         /// Whether the installation of the Cloud SDK was valid.
         /// </summary>
-        public bool IsValid => IsCloudSdkInstalled && IsCloudSdkUpdated && IsRequiredComponentInstalled;
+        public bool IsValid => IsCloudSdkInstalled && !IsObsolete && IsRequiredComponentInstalled;
 
-        public GCloudValidationResult(
-            bool isCloudSdkInstalled = false,
-            bool isCloudSdkUpdated = false,
-            bool isRequiredComponentInstalled = false,
-            Version cloudSdkVersion = null)
+        private GCloudValidationResult(Version cloudSdkVersion) : this(true, false, false)
         {
-            IsCloudSdkInstalled = isCloudSdkInstalled;
-            IsCloudSdkUpdated = isCloudSdkUpdated;
-            IsRequiredComponentInstalled = isRequiredComponentInstalled;
             CloudSdkVersion = cloudSdkVersion;
         }
+
+        private GCloudValidationResult(
+            bool isCloudSdkInstalled,
+            bool isCloudSdkUpdated,
+            bool isRequiredComponentInstalled)
+        {
+            IsCloudSdkInstalled = isCloudSdkInstalled;
+            IsObsolete = !isCloudSdkUpdated;
+            IsRequiredComponentInstalled = isRequiredComponentInstalled;
+        }
+
+        public static GCloudValidationResult NotInstalled { get; } = new GCloudValidationResult(false, false, false);
+
+        public static GCloudValidationResult GetObsoleteVersion(Version version) =>
+            new GCloudValidationResult(version);
+
+        public static GCloudValidationResult MissingComponent { get; } =
+            new GCloudValidationResult(true, true, false);
+
+        public static GCloudValidationResult Valid { get; } =
+            new GCloudValidationResult(true, true, true);
     }
 }

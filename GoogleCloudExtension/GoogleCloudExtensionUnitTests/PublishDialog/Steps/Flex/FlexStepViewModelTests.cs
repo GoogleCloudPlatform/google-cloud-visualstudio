@@ -44,9 +44,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         private const string ValidVersion = "valid-version-name";
 
         private static readonly GCloudValidationResult s_validGCloudValidationResult =
-            new GCloudValidationResult(true, true, true);
+            GCloudValidationResult.Valid;
+
         private static readonly GCloudValidationResult s_invalidGCloudValidationResult =
-            new GCloudValidationResult(true);
+            GCloudValidationResult.NotInstalled;
 
         private FlexStepViewModel _objectUnderTest;
         private Mock<IGaeDataSource> _gaeDataSourceMock;

@@ -42,5 +42,8 @@ namespace GoogleCloudExtension.Services.FileSystem
 
         /// <inheritdoc cref="File.CreateText(string)"/>
         public TextWriter CreateText(string path) => File.CreateText(path);
+
+        /// <inheritdoc cref="File.Delete(string)"/>
+        public void Delete(string path) => File.Delete(path);
     }
 }

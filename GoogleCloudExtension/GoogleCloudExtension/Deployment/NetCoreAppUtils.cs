@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Deployment
                 workingDir: workingDir,
                 handler: (o, e) => outputAction(e.Line),
                 environment: env);
-            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
+            await GCloudWrapper.GenerateSourceContextAsync(project.DirectoryPath, stageDirectory);
             return result;
         }
 

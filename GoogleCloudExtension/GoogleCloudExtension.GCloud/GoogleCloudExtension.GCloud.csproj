@@ -52,12 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonEnvironmentVariables.cs" />
     <Compile Include="GCloudComponent.cs" />
     <Compile Include="GCloudValidationResult.cs" />
     <Compile Include="Models\CloudSdkVersions.cs" />
     <Compile Include="Models\GkeDeployment.cs" />
-    <Compile Include="KubectlContext.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />
     <Compile Include="Models\CloudSdkComponentState.cs" />
     <Compile Include="GCloudException.cs" />

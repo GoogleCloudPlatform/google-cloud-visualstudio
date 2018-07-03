@@ -194,11 +194,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 }
 
                 var context = new GCloudContext();
-                return await GCloudWrapper.ResetWindowsCredentialsAsync(
-                    instanceName: _instance.Name,
-                    zoneName: _instance.GetZoneName(),
-                    userName: user,
-                    context: context);
+                return await context.ResetWindowsCredentialsAsync(_instance.Name, _instance.GetZoneName(), user);
             }
             catch (GCloudException ex)
             {
