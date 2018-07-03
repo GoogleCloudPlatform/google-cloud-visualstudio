@@ -180,12 +180,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
         public GceStepViewModel(
             IGceDataSource dataSource,
-            IApiManager apiManager,
             Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt,
             IWindowsCredentialsStore currentWindowsCredentialStore,
             Action<Instance> manageCredentialsPrompt,
             IPublishDialog publishDialog)
-            : base(apiManager, pickProjectPrompt, publishDialog)
+            : base(publishDialog, pickProjectPrompt)
         {
             _dataSource = dataSource;
             _currentWindowsCredentialStore = currentWindowsCredentialStore;

@@ -129,6 +129,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
                m.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true) &&
                m.EnableServicesAsync(It.IsAny<IEnumerable<string>>()) == Task.FromResult(true));
 
+            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
 
             _getInstanceListTaskSource = new TaskCompletionSource<IList<Instance>>();
             var mockedDataSource =
@@ -140,7 +141,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
             _objectUnderTest = new GceStepViewModel(
                 mockedDataSource,
-                mockedApiManager,
                 Mock.Of<Func<GcpProject>>(),
                 _windowsCredentialStoreMock.Object,
                 _manageCredentialsPromptMock.Object,

@@ -61,5 +61,10 @@ namespace GoogleCloudExtension.Utils
                 return null;
             }
         }
+
+        public IGkeDataSource CreateGkeDataSource() => new GkeDataSource(
+            CredentialsStore.Default.CurrentProjectId,
+            CredentialsStore.Default.CurrentGoogleCredential,
+            GoogleCloudExtensionPackage.Instance.ApplicationName);
     }
 }

@@ -24,5 +24,7 @@ namespace GoogleCloudExtension.Utils
         IGPlusDataSource CreatePlusDataSource();
 
         IGPlusDataSource CreatePlusDataSource(GoogleCredential credential);
+
+        IGkeDataSource CreateGkeDataSource();
     }
 }

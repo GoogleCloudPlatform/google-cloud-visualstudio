@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GCloud
     /// <summary>
     /// This class holds the credentials used to perform GCloud operations.
     /// </summary>
-    public class GCloudContext
+    public class GCloudContext : IGCloudContext
     {
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
@@ -33,12 +33,12 @@ namespace GoogleCloudExtension.GCloud
         /// The path to the credentials .json file to use for the call. The .json file should be a
         /// format accetable by gcloud's --credential-file-override parameter. Typically an authorize_user kind.
         /// </summary>
-        public readonly string CredentialsPath;
+        public string CredentialsPath { get; }
 
         /// <summary>
         /// The project id of the project to use for the invokation of gcloud.
         /// </summary>
-        public readonly string ProjectId;
+        public string ProjectId { get; }
 
         protected readonly Dictionary<string, string> Environment = new Dictionary<string, string>
         {

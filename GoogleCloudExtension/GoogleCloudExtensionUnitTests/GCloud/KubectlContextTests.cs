@@ -56,14 +56,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     _kubeConfigPath = _kubeConfigPath ??
                         defaultInitKubectlEnvironment[KubectlContext.KubeConfigVariable]);
 
-            _objectUnderTest = await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
             _mockedOutputAction = Mock.Of<Action<string>>();
         }
 
         [TestMethod]
         public async Task TestGetKubectlContextForClusterAsync_RunsGcloudContainerClustersGetCredentials()
         {
-            await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
 
             VerifyCommandArgsContain("gcloud container clusters get-credentials");
         }
@@ -71,7 +71,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedCluster()
         {
-            await KubectlContext.GetKubectlContextForClusterAsync(ExpectedCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultZone);
 
             VerifyCommandArgsContain(ExpectedCluster);
         }
@@ -81,7 +81,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             const string expectedZone = "expected-zone";
 
-            await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, expectedZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedZone);
 
             VerifyCommandArgsContain($"--zone={expectedZone}");
         }
@@ -94,7 +94,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
 
             Assert.AreEqual(expectedCredentialsPath, environment[KubectlContext.GoogleApplicationCredentialsVariable]);
         }
@@ -105,7 +105,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
 
             Assert.AreEqual(
                 KubectlContext.TrueValue,
@@ -118,7 +118,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
 
             Assert.IsTrue(environment.ContainsKey(KubectlContext.KubeConfigVariable));
         }
@@ -129,7 +129,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             SetupRunCommandResult(false);
 
             GCloudException e = await Assert.ThrowsExceptionAsync<GCloudException>(
-                () => KubectlContext.GetKubectlContextForClusterAsync(ExpectedCluster, DefaultZone));
+                () => KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultZone));
 
             StringAssert.Contains(e.Message, ExpectedCluster);
         }
@@ -140,7 +140,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            _objectUnderTest = await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
             _objectUnderTest.Dispose();
 
             string expectedDeletePath = environment[KubectlContext.KubeConfigVariable];
@@ -150,7 +150,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestDispose_NonReentrant()
         {
-            _objectUnderTest = await KubectlContext.GetKubectlContextForClusterAsync(DefaultCluster, DefaultZone);
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
             _objectUnderTest.Dispose();
             _objectUnderTest.Dispose();
 

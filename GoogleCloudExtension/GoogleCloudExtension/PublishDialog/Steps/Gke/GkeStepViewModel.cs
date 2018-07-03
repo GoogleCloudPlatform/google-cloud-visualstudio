@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -22,6 +21,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
@@ -72,9 +72,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private bool _exposePublicService = false;
         private bool _openWebsite = false;
         private string _replicas = ReplicasDefaultValue;
-        private Func<string, Process> StartProcess => _startProcessOverride ?? Process.Start;
-        internal Func<string, Process> _startProcessOverride;
         private string _lastClusterPropertyId;
+        private readonly IKubectlContextProvider _kubectlContextProvider;
+        private readonly IBrowserService _browserService;
+        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
 
         /// <summary>
         /// List of APIs required for publishing to the current project.
@@ -197,19 +198,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
 
-        private IGkeDataSource CurrentDataSource => _dataSource ?? new GkeDataSource(
-            CredentialsStore.Default.CurrentProjectId,
-            CredentialsStore.Default.CurrentGoogleCredential,
-            GoogleCloudExtensionPackage.Instance.ApplicationName);
+        private IGkeDataSource DataSource => _dataSourceFactory.Value.CreateGkeDataSource();
 
-        public GkeStepViewModel(
-            IGkeDataSource dataSource,
-            IApiManager apiManager,
-            Func<Project> pickProjectPrompt,
-            IPublishDialog publishDialog)
-            : base(apiManager, pickProjectPrompt, publishDialog)
+        public GkeStepViewModel(IPublishDialog publishDialog) : base(publishDialog)
         {
-            _dataSource = dataSource;
+            IGoogleCloudExtensionPackage package = GoogleCloudExtensionPackage.Instance;
+
+            _dataSourceFactory = package.GetMefServiceLazy<IDataSourceFactory>();
+            _kubectlContextProvider = package.GetMefService<IKubectlContextProvider>();
+            _browserService = package.GetMefService<IBrowserService>();
 
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, canExecuteCommand: false);
@@ -226,7 +223,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         private void OnRefreshClustersListCommand() => PublishDialog.TrackTask(RefreshClustersAsync());
 
-        private void OnCreateClusterCommand() => StartProcess(
+        private void OnCreateClusterCommand() => _browserService.OpenBrowser(
             string.Format(GkeAddClusterUrlFormat, CredentialsStore.Default.CurrentProjectId));
 
         #region IPublishDialogStep overrides
@@ -362,11 +359,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     return;
                 }
 
-                Task<KubectlContext> kubectlContextTask =
-                    KubectlContext.GetKubectlContextForClusterAsync(SelectedCluster.Name, SelectedCluster.Zone);
+                Task<IKubectlContext> kubectlContextTask = _kubectlContextProvider.GetForClusterAsync(SelectedCluster);
                 PublishDialog.TrackTask(kubectlContextTask);
 
-                using (KubectlContext kubectlContext = await kubectlContextTask)
+                using (IKubectlContext kubectlContext = await kubectlContextTask)
                 {
                     Task<bool> deploymentExistsTask =
                         kubectlContext.DeploymentExistsAsync(DeploymentName);
@@ -513,7 +509,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         private async Task RefreshClustersAsync()
         {
-            IList<Cluster> clusters = await CurrentDataSource.GetClusterListAsync();
+            IList<Cluster> clusters = await DataSource.GetClusterListAsync();
 
             if (clusters == null || clusters.Count == 0)
             {
