@@ -32,9 +32,9 @@ namespace GoogleCloudExtension.GCloud
         public bool IsCloudSdkInstalled { get; }
 
         /// <summary>
-        /// Whether the Cloud SDK is newer or equal than the required version.
+        /// If true, the installed Cloud SDK Version is below the required version.
         /// </summary>
-        public bool IsCloudSdkUpdated { get; }
+        public bool IsObsolete { get; }
 
         /// <summary>
         /// If a required component was detected as installed or not.
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Whether the installation of the Cloud SDK was valid.
         /// </summary>
-        public bool IsValid => IsCloudSdkInstalled && IsCloudSdkUpdated && IsRequiredComponentInstalled;
+        public bool IsValid => IsCloudSdkInstalled && !IsObsolete && IsRequiredComponentInstalled;
 
         private GCloudValidationResult(Version cloudSdkVersion) : this(true, false, false)
         {
@@ -57,13 +57,13 @@ namespace GoogleCloudExtension.GCloud
             bool isRequiredComponentInstalled)
         {
             IsCloudSdkInstalled = isCloudSdkInstalled;
-            IsCloudSdkUpdated = isCloudSdkUpdated;
+            IsObsolete = !isCloudSdkUpdated;
             IsRequiredComponentInstalled = isRequiredComponentInstalled;
         }
 
         public static GCloudValidationResult NotInstalled { get; } = new GCloudValidationResult(false, false, false);
 
-        public static GCloudValidationResult GetNotUpdated(Version version) =>
+        public static GCloudValidationResult GetObsoleteVersion(Version version) =>
             new GCloudValidationResult(version);
 
         public static GCloudValidationResult MissingComponent { get; } =

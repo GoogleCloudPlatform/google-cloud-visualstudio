@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.GCloud
             Version cloudSdkVersion = await GetInstalledCloudSdkVersionAsync();
             if (cloudSdkVersion < s_minimumVersion)
             {
-                return GCloudValidationResult.GetNotUpdated(cloudSdkVersion);
+                return GCloudValidationResult.GetObsoleteVersion(cloudSdkVersion);
             }
 
             if (component != GCloudComponent.None && !await IsComponentInstalledAsync(component))

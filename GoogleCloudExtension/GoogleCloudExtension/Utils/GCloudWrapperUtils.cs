@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Utils
                         Resources.GcloudMissingCloudSdkErrorMessage,
                         new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
             }
-            else if (!result.IsCloudSdkUpdated)
+            else if (result.IsObsolete)
             {
                 UserPromptUtils.Default.ErrorPrompt(
                     message: string.Format(

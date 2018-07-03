@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         public void TestNotInstalled_IsNotUpdated()
         {
             GCloudValidationResult objectUnderTest = GCloudValidationResult.NotInstalled;
-            Assert.IsFalse(objectUnderTest.IsCloudSdkUpdated);
+            Assert.IsTrue(objectUnderTest.IsObsolete);
         }
 
         [TestMethod]
@@ -51,29 +51,29 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         [TestMethod]
         public void TestGetNotUpdated_IsNotValid()
         {
-            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetNotUpdated(null);
+            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetObsoleteVersion(null);
             Assert.IsFalse(objectUnderTest.IsValid);
         }
 
         [TestMethod]
         public void TestGetNotUpdated_IsInstalled()
         {
-            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetNotUpdated(null);
+            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetObsoleteVersion(null);
             Assert.IsTrue(objectUnderTest.IsCloudSdkInstalled);
         }
 
         [TestMethod]
         public void TestGetNotUpdated_IsNotUpdated()
         {
-            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetNotUpdated(null);
-            Assert.IsFalse(objectUnderTest.IsCloudSdkUpdated);
+            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetObsoleteVersion(null);
+            Assert.IsTrue(objectUnderTest.IsObsolete);
         }
 
         [TestMethod]
         public void TestGetNotUpdated_HasExpectedVersion()
         {
             var expectedVersion = new Version(5, 3, 4);
-            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetNotUpdated(expectedVersion);
+            GCloudValidationResult objectUnderTest = GCloudValidationResult.GetObsoleteVersion(expectedVersion);
             Assert.AreEqual(expectedVersion, objectUnderTest.CloudSdkVersion);
         }
 
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         public void TestMissingComponent_IsUpdated()
         {
             GCloudValidationResult objectUnderTest = GCloudValidationResult.MissingComponent;
-            Assert.IsTrue(objectUnderTest.IsCloudSdkUpdated);
+            Assert.IsFalse(objectUnderTest.IsObsolete);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.GCloud.UnitTests
         public void TestValid_IsUpdated()
         {
             GCloudValidationResult objectUnderTest = GCloudValidationResult.Valid;
-            Assert.IsTrue(objectUnderTest.IsCloudSdkUpdated);
+            Assert.IsFalse(objectUnderTest.IsObsolete);
         }
     }
 }
