@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private string _replicas = ReplicasDefaultValue;
         private string _lastClusterPropertyId;
         private AsyncProperty<IList<GkeDeployment>> _existingDeployments;
-        private Task<KubectlContext> _kubectlContext;
+        private Task<IKubectlContext> _kubectlContext;
         private readonly Task<bool> _verifyGCloudTask;
         private GkeDeployment _selectedDeployment;
         private readonly IKubectlContextProvider _kubectlContextProvider;
@@ -113,9 +113,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 RefreshCanPublish();
                 if (SelectedCluster != null && SelectedCluster != s_placeholderCluster)
                 {
-                    _kubectlContext = KubectlContext.GetKubectlContextForClusterAsync(
-                        SelectedCluster.Name,
-                        SelectedCluster.Zone);
+                    _kubectlContext = _kubectlContextProvider.GetForClusterAsync(SelectedCluster);
                     ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(GetDeploymentsAsync());
                 }
             }
@@ -263,7 +261,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         private async Task<IList<GkeDeployment>> GetDeploymentsAsync()
         {
-            KubectlContext context = await _kubectlContext;
+            IKubectlContext context = await _kubectlContext;
             return await context.GetDeploymentsAsync();
         }
 
