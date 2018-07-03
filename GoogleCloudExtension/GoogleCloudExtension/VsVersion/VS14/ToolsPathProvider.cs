@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System;
 using System.IO;
 
 namespace GoogleCloudExtension.VsVersion.VS14
@@ -21,47 +20,15 @@ namespace GoogleCloudExtension.VsVersion.VS14
     /// <summary>
     /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2015 (v14.0).
     /// </summary>
-    internal class ToolsPathProvider : ToolsPathProviderBase
+    public class ToolsPathProvider : ToolsPathProviderBase
     {
-        public override string GetExternalToolsPath()
-        {
-            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Web\External");
-            GcpOutputWindow.Default.OutputDebugLine($"External tools path: {result}");
-            return result;
-        }
-
-        public override string GetDotnetPath()
-        {
-            var programFilesPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
-            var result = Path.Combine(programFilesPath, @"dotnet\dotnet.exe");
-            GcpOutputWindow.Default.OutputDebugLine($"Dotnet path: {result}");
-            return result;
-        }
+        public const string MSBuildSubPath = @"MSBuild\14.0\Bin\MSBuild.exe";
 
         public override string GetMsbuildPath()
         {
-            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            var result = Path.Combine(programFilesPath, @"MSBuild\14.0\Bin\MSBuild.exe");
+            string programFilesPath = Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
+            string result = Path.Combine(programFilesPath, MSBuildSubPath);
             GcpOutputWindow.Default.OutputDebugLine($"Msbuild path: {result}");
-            return result;
-        }
-
-        public override string GetMsdeployPath()
-        {
-            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            var result = Path.Combine(programFilesPath, @"IIS\Microsoft Web Deploy V3\msdeploy.exe");
-            GcpOutputWindow.Default.OutputDebugLine($"Msdeploy path: {result}");
-            return result;
-        }
-
-        public override string GetRemoteDebuggerToolsPath()
-        {
-            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            // TODO: add x86 support later
-            var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*");
-            GcpOutputWindow.Default.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.Default.OutputDebugLine($"Debugger remote tools V14 path: {result}");
             return result;
         }
     }
