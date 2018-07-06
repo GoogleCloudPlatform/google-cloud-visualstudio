@@ -168,9 +168,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
-        public override IProtectedCommand PublishCommand => PublishCommandAsync;
-
-        public ProtectedAsyncCommand PublishCommandAsync { get; }
+        public override ProtectedAsyncCommand PublishCommand { get; }
 
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -192,7 +190,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
             SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync, false);
 
-            PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
+            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
             _deploymentService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineFlexDeployment>();
             _configurationService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineConfiguration>();
         }
@@ -256,7 +254,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         private async Task PublishAsync()
         {
-            Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies();
+            Task<bool> verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependenciesAsync();
             PublishDialog.TrackTask(verifyGcloudTask);
             if (!await verifyGcloudTask)
             {

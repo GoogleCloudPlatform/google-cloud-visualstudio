@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="component">The component to check, optional.</param>
         /// <returns>True if the Cloud SDK installation is valid.</returns>
-        public static async Task<bool> VerifyGCloudDependencies(GCloudComponent component = GCloudComponent.None)
+        public static async Task<bool> VerifyGCloudDependenciesAsync(GCloudComponent component = GCloudComponent.None)
         {
             GCloudValidationResult result = await ValidateGCloudAsync(component);
             if (result.IsValid)

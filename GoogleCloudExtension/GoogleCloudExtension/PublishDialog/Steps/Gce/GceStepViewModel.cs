@@ -196,7 +196,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             PublishCommand = new ProtectedAsyncCommand(PublishAsync);
         }
 
-        public override IProtectedCommand PublishCommand { get; }
+        public override ProtectedAsyncCommand PublishCommand { get; }
 
         protected override void OnIsValidGcpProjectChanged() => RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
 

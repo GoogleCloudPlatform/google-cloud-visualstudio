@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
-        public abstract IProtectedCommand PublishCommand { get; }
+        public abstract ProtectedAsyncCommand PublishCommand { get; }
 
         /// <summary>
         /// The build configuration to publish.

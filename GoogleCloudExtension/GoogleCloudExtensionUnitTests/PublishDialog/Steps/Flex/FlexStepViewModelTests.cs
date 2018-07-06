@@ -566,15 +566,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommand_DelegatesToPublishCommandAsync()
+        public async Task TestPublishCommand_TracksVerifyGCloudDependenciesTask()
         {
-            Assert.AreEqual(_objectUnderTest.PublishCommandAsync, _objectUnderTest.PublishCommand);
-        }
-
-        [TestMethod]
-        public async Task TestPublishCommandAsync_TracksVerifyGCloudDependenciesTask()
-        {
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             Assert.IsFalse(_trackedTask.IsCompleted);
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
@@ -583,14 +577,14 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsPublishForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsPublishForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
             const string expectedVersion = "expected-version";
             _objectUnderTest.Version = expectedVersion;
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
-            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommand.Execute(null);
+            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -598,13 +592,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProject()
+        public void TestPublishCommand_PublishesProject()
         {
             const string expectedVersion = "expected-options-version";
             _objectUnderTest.Version = expectedVersion;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -613,13 +607,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectToVersion()
+        public void TestPublishCommand_PublishesProjectToVersion()
         {
             const string expectedVersion = "expected-options-version";
             _objectUnderTest.Version = expectedVersion;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -629,13 +623,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectToService()
+        public void TestPublishCommand_PublishesProjectToService()
         {
             const string expectedService = "expected-service";
             _objectUnderTest.Service = expectedService;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -645,12 +639,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectWithPromoteOption()
+        public void TestPublishCommand_PublishesProjectWithPromoteOption()
         {
             _objectUnderTest.Promote = false;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -660,12 +654,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectWithOpenWebsiteOption()
+        public void TestPublishCommand_PublishesProjectWithOpenWebsiteOption()
         {
             _objectUnderTest.OpenWebsite = false;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _appEngineDeploymentMock.Verify(
                 d => d.PublishProjectAsync(
@@ -675,7 +669,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_UpdatesVersionBeforeFinishFlow()
+        public void TestPublishCommand_UpdatesVersionBeforeFinishFlow()
         {
             const string initalVersion = "initial-version";
             _objectUnderTest.Version = initalVersion;
@@ -684,43 +678,43 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             Mock.Get(_mockedPublishDialog).Setup(pd => pd.FinishFlow())
                 .Callback(() => versionWhenFinishFlow = _objectUnderTest.Version);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             Assert.AreNotEqual(initalVersion, _objectUnderTest.Version);
             Assert.AreEqual(versionWhenFinishFlow, _objectUnderTest.Version);
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsUpdateVersionForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsUpdateVersionForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
             const string expectedVersion = "expected-version";
             _objectUnderTest.Version = expectedVersion;
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
-            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommand.Execute(null);
+            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
 
             Assert.AreEqual(expectedVersion, _objectUnderTest.Version);
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_FinishesFlowRegardlessOfPublishCompleting()
+        public void TestPublishCommand_FinishesFlowRegardlessOfPublishCompleting()
         {
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             Mock.Get(_mockedPublishDialog).Verify(pd => pd.FinishFlow());
-            Assert.IsTrue(_objectUnderTest.PublishCommandAsync.LatestExecution.IsPending);
+            Assert.IsTrue(_objectUnderTest.PublishCommand.LatestExecution.IsPending);
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsFinishFlowForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsFinishFlowForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
 
-            _objectUnderTest.PublishCommandAsync.Execute(null);
-            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommand.Execute(null);
+            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
 
             Mock.Get(_mockedPublishDialog).Verify(pd => pd.FinishFlow(), Times.Never);
         }

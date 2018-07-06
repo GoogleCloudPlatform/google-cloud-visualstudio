@@ -184,6 +184,7 @@
       <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="Deployment\IGkeDeploymentService.cs" />
     <Compile Include="Deployment\IWindowsVmDeployment.cs" />
     <Compile Include="Deployment\MSBuildProperty.cs" />
     <Compile Include="Deployment\MSBuildTarget.cs" />

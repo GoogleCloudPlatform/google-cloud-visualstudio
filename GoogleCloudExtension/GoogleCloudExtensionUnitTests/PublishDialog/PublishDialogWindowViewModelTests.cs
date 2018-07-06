@@ -123,7 +123,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public void TestNavigateToStep_UpdatesPublishCommand()
         {
-            var mockedPublishCommand = Mock.Of<IProtectedCommand>();
+            var mockedPublishCommand = Mock.Of<ProtectedAsyncCommand>();
             _stepContentMock.SetupGet(c => c.ViewModel.PublishCommand).Returns(mockedPublishCommand);
 
             _objectUnderTest.NavigateToStep(_stepContentMock.Object);
@@ -178,7 +178,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         [TestMethod]
         public void TestPreviousCommand_UpdatesPublishCommand()
         {
-            var mockedPublishCommand = Mock.Of<IProtectedCommand>();
+            var mockedPublishCommand = Mock.Of<ProtectedAsyncCommand>();
             _stepContentMock.SetupGet(c => c.ViewModel.PublishCommand).Returns(mockedPublishCommand);
 
             _objectUnderTest.NavigateToStep(_stepContentMock.Object);

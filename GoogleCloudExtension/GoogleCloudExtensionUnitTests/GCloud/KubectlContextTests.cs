@@ -674,6 +674,170 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             Assert.AreEqual(expectedResult, result);
         }
 
+        [TestMethod]
+        public async Task TestGetServiceClusterIpAsync_ReturnsClusterIpFromService()
+        {
+            const string expectedClusterIP = "expectedClusterIP";
+            SetupGetJsonOutput(new GkeService { Spec = new GkeServiceSpec { ClusterIp = expectedClusterIP } });
+
+            string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
+
+            Assert.AreEqual(expectedClusterIP, result);
+        }
+
+        [TestMethod]
+        public async Task TestGetServiceClusterIpAsync_ReturnsNullForMissingSpec()
+        {
+            SetupGetJsonOutput(new GkeService { Spec = null });
+
+            string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetServiceClusterIpAsync_ReturnsNullForMissingService()
+        {
+            SetupGetJsonOutput<GkeService>(null);
+
+            string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsIpFromServiceLoadBalancerIngress()
+        {
+            const string expectedIpAddress = "expected-ip-address";
+            SetupGetJsonOutput(
+                new GkeService
+                {
+                    Status = new GkeStatus
+                    {
+                        LoadBalancer = new GkeLoadBalancer
+                        {
+                            Ingress = new List<GkeLoadBalancerIngress>
+                            {
+                                new GkeLoadBalancerIngress {Ip = expectedIpAddress}
+                            }
+                        }
+                    }
+                });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.AreEqual(expectedIpAddress, result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsIpFromFirstValidIngress()
+        {
+            const string expectedIpAddress = "expected-ip-address";
+            SetupGetJsonOutput(
+                new GkeService
+                {
+                    Status = new GkeStatus
+                    {
+                        LoadBalancer = new GkeLoadBalancer
+                        {
+                            Ingress = new List<GkeLoadBalancerIngress>
+                            {
+                                new GkeLoadBalancerIngress(),
+                                new GkeLoadBalancerIngress {Ip = expectedIpAddress},
+                                new GkeLoadBalancerIngress {Ip = "SomeOtherIpAddress"}
+                            }
+                        }
+                    }
+                });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.AreEqual(expectedIpAddress, result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForOnlyInvalidIngress()
+        {
+            SetupGetJsonOutput(
+                new GkeService
+                {
+                    Status = new GkeStatus
+                    {
+                        LoadBalancer = new GkeLoadBalancer
+                        {
+                            Ingress = new List<GkeLoadBalancerIngress>
+                            {
+                                new GkeLoadBalancerIngress()
+                            }
+                        }
+                    }
+                });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForEmptyIngressList()
+        {
+            SetupGetJsonOutput(
+                new GkeService
+                {
+                    Status = new GkeStatus
+                    {
+                        LoadBalancer = new GkeLoadBalancer
+                        {
+                            Ingress = new List<GkeLoadBalancerIngress>()
+                        }
+                    }
+                });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullIngressList()
+        {
+            SetupGetJsonOutput(new GkeService { Status = new GkeStatus { LoadBalancer = new GkeLoadBalancer() } });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullLoadBalancer()
+        {
+            SetupGetJsonOutput(new GkeService { Status = new GkeStatus() });
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullStatus()
+        {
+            SetupGetJsonOutput(new GkeService());
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullService()
+        {
+            SetupGetJsonOutput<GkeService>(null);
+
+            string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
+
+            Assert.IsNull(result);
+        }
+
         private void VerifyGetJsonOutputArgsContain<T>(string expectedArg)
         {
             _processServiceMock.Verify(

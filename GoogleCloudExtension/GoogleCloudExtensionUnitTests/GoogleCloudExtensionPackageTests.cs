@@ -33,6 +33,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
+using TestingHelpers;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Window = EnvDTE.Window;
 
@@ -63,7 +64,7 @@ namespace GoogleCloudExtensionUnitTests
             ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
 
             _reporterMock = new Mock<IEventsReporter>();
-            EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => _reporterMock.Object);
+            EventsReporterWrapper.ReporterLazy = _reporterMock.ToLazy();
             _objectUnderTest = new GoogleCloudExtensionPackage();
         }
 

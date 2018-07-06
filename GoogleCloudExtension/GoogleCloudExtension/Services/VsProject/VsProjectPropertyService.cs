@@ -58,7 +58,6 @@ namespace GoogleCloudExtension.Services.VsProject
             ErrorHandler.ThrowOnFailure(
                 propertyStore.GetPropertyValue(propertyName, null, UserFileFlag, out string value), HrPropertyNotFound);
             return value;
-
         }
 
         /// <summary>

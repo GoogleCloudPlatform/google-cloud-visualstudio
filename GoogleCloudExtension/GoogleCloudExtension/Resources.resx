@@ -2512,4 +2512,8 @@ Delete corrupted file?</value>
   <data name="PublishDialogGkeUpdateExistingDeploymentMessage" xml:space="preserve">
     <value>Update Existing Deployment</value>
   </data>
+  <data name="PublishDialogGkeErrorLoadingDeploymentsMessage" xml:space="preserve">
+    <value>Error Loading Deployments</value>
+    <comment>Message shown when loading deployments failed.</comment>
+  </data>
 </root>

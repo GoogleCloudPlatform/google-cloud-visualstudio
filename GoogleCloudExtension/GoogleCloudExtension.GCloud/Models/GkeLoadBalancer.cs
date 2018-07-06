@@ -26,6 +26,21 @@ namespace GoogleCloudExtension.GCloud.Models
         /// The properties of the load balancer.
         /// </summary>
         [JsonProperty("ingress")]
-        public IList<IDictionary<string, string>> Ingress { get; set; }
+        public IList<GkeLoadBalancerIngress> Ingress { get; set; }
+    }
+
+    /// <summary>
+    /// Model for a
+    /// <see href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#loadbalanceringress-v1-core">
+    /// LoadBalancerIngress
+    /// </see>.
+    /// </summary>
+    public class GkeLoadBalancerIngress
+    {
+        [JsonProperty("ip")]
+        public string Ip { get; set; }
+
+        [JsonProperty("hostname")]
+        public string Hostname { get; set; }
     }
 }

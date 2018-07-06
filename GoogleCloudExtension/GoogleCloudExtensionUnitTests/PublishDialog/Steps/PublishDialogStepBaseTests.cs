@@ -62,7 +62,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 publishDialog,
                 pickProjectPrompt)
             {
-                PublishCommand = Mock.Of<IProtectedCommand>();
+                PublishCommand = Mock.Of<ProtectedAsyncCommand>();
             }
 
             protected override IList<string> RequiredApis => RequiredApisOverride;
@@ -102,7 +102,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 set => base.IsValidGcpProject = value;
             }
 
-            public override IProtectedCommand PublishCommand { get; }
+            public override ProtectedAsyncCommand PublishCommand { get; }
 
             protected internal override void OnFlowFinished() => OnFlowFinishedCallCount++;
 

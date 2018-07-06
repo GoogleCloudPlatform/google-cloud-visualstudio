@@ -68,7 +68,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                     Assert.AreEqual(s_missingComponentInstallCommand, copyableMessage, false);
                 });
 
-            await GCloudWrapperUtils.VerifyGCloudDependencies(GCloudComponent.Kubectl);
+            await GCloudWrapperUtils.VerifyGCloudDependenciesAsync(GCloudComponent.Kubectl);
 
             _showCopyablePromptMock.Verify(a => a(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }

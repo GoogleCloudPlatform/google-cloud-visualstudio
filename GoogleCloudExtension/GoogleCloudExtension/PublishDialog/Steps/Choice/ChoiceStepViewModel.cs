@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
@@ -22,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using GoogleCloudExtension.Deployment;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 {
@@ -53,8 +53,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        public IProtectedCommand PublishCommand { get; } =
-            new ProtectedCommand(() => throw new NotSupportedException(), false);
+        public ProtectedAsyncCommand PublishCommand { get; } =
+            new ProtectedAsyncCommand(() => throw new NotSupportedException(), false);
 
         private IPublishDialog PublishDialog { get; }
 

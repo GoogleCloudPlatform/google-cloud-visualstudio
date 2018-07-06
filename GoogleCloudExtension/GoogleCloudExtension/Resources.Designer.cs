@@ -4598,6 +4598,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Loading Deployments.
+        /// </summary>
+        public static string PublishDialogGkeErrorLoadingDeploymentsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeErrorLoadingDeploymentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading Deployments.
         /// </summary>
         public static string PublishDialogGkeLoadingDeploymentsMessage {

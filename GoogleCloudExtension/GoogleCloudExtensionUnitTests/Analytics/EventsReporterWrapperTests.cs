@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Analytics
 {
@@ -80,7 +81,7 @@ namespace GoogleCloudExtensionUnitTests.Analytics
             const string metadataKey2 = "key 2";
             const string metadataVal2 = "val 2";
             var eventsReporterMock = new Mock<IEventsReporter>();
-            EventsReporterWrapper.ReporterLazy = new Lazy<IEventsReporter>(() => eventsReporterMock.Object);
+            EventsReporterWrapper.ReporterLazy = eventsReporterMock.ToLazy();
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectNumericId).Returns(projectNumber.ToString);
 
             EventsReporterWrapper.ReportEvent(new AnalyticsEvent(eventName, metadataKey1, metadataVal1, metadataKey2, metadataVal2));

@@ -35,7 +35,7 @@
                Target="{Binding ElementName=_clusters}"/>
         <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters}"
-                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                  SelectedItem="{Binding SelectedCluster, Mode=TwoWay}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
                   Margin="0,3,0,0"/>
@@ -77,16 +77,29 @@
                     <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeLoadingDeploymentsMessage}" />
                 </DockPanel>
 
-                <DockPanel x:Key="UpdateExistingDeployment" VerticalAlignment="Center">
+                <DockPanel x:Key="LoadDeploymentsError">
+                    <Image DockPanel.Dock="Left"
+                           Source="../../../Utils/Resources/ic_error_red_24px.png"
+                           Stretch="Uniform"
+                           MaxHeight="15"
+                           ToolTip="{Binding ExistingDeployments.ErrorMessage}"
+                           Margin="0,0,6,0"/>
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeErrorLoadingDeploymentsMessage}"
+                               ToolTip="{Binding ExistingDeployments.ErrorMessage}"
+                               ToolTipService.ShowDuration="20000"/>
+                </DockPanel>
+
+                <DockPanel x:Key="UpdateExistingDeployment">
                     <Image DockPanel.Dock="Left"
                            Source="../../../Utils/Resources/ic_warning_yellow_24px.png"
                            Stretch="Uniform"
                            MaxHeight="15"
                            Margin="0,0,6,0"/>
-                    <TextBlock x:Name="ExistingDeploymentTextBlock" Text="{x:Static ext:Resources.PublishDialogGkeUpdateExistingDeploymentMessage}" />
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeUpdateExistingDeploymentMessage}" />
                 </DockPanel>
 
-                <TextBlock x:Key="CreateNewDeployment" Text="{x:Static ext:Resources.PublishDialogGkeCreateNewDeploymentMessage}" />
+                <TextBlock x:Key="CreateNewDeployment"
+                           Text="{x:Static ext:Resources.PublishDialogGkeCreateNewDeploymentMessage}" />
             </ContentControl.Resources>
 
             <ContentControl.Style>
@@ -94,6 +107,10 @@
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ExistingDeployments.IsPending}" Value="True">
                             <Setter Property="Content" Value="{StaticResource Loading}" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ExistingDeployments.IsError}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource LoadDeploymentsError}"/>
                         </DataTrigger>
 
                         <MultiDataTrigger>
