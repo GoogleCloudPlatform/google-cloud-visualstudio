@@ -121,7 +121,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-            _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
+            _objectUnderTest.PublishCommandAsync.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
         }
 
         protected override void AfterEach()
@@ -845,8 +845,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             // Initalize KubectlContext task.
             _objectUnderTest.SelectedCluster = s_aCluster;
 
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -862,8 +862,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             _objectUnderTest.DeploymentName = DeploymentName;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -879,8 +879,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             _objectUnderTest.DeploymentVersion = DeploymentName;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -897,8 +897,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             var expectedDeployment = new GkeDeployment();
 
             _objectUnderTest.SelectedDeployment = expectedDeployment;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -914,8 +914,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             _objectUnderTest.ExposeService = true;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -932,8 +932,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _objectUnderTest.ExposeService = true;
             _objectUnderTest.ExposePublicService = true;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -951,8 +951,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.ExposeService = true;
             _objectUnderTest.ExposePublicService = true;
             _objectUnderTest.OpenWebsite = true;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -969,8 +969,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             const string expectedConfiguration = "expected-configuration";
 
             _objectUnderTest.SelectedConfiguration = expectedConfiguration;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -987,8 +987,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             const int expectedReplicas = 4;
 
             _objectUnderTest.Replicas = expectedReplicas.ToString();
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             _gkeDeploymentServiceMock
                 .Verify(
@@ -1004,8 +1004,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.SelectedCluster = s_aCluster;
 
             _objectUnderTest.DeploymentVersion = DeploymentName;
-            _objectUnderTest.PublishCommand.Execute(null);
-            await _objectUnderTest.PublishCommand.LatestExecution.SafeTask;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
 
             Assert.AreNotEqual(DeploymentName, _objectUnderTest.DeploymentVersion);
         }

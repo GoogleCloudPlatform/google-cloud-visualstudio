@@ -168,7 +168,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
-        public override ProtectedAsyncCommand PublishCommand { get; }
+        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -190,7 +190,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
             SetAppRegionCommand = new ProtectedAsyncCommand(OnSetAppRegionCommandAsync, false);
 
-            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
+            PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
             _deploymentService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineFlexDeployment>();
             _configurationService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineConfiguration>();
         }

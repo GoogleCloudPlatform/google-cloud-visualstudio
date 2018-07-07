@@ -241,7 +241,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             _browserService = package.GetMefService<IBrowserService>();
             _deploymentService = package.GetMefServiceLazy<IGkeDeploymentService>();
 
-            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
+            PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand, false);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand, false);
             _verifyGCloudTask =
@@ -281,7 +281,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private void OnCreateClusterCommand() => _browserService.OpenBrowser(
             string.Format(GkeAddClusterUrlFormat, CredentialsStore.Default.CurrentProjectId));
 
-        public override ProtectedAsyncCommand PublishCommand { get; }
+        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
         protected override async Task ValidateProjectAsync()
         {

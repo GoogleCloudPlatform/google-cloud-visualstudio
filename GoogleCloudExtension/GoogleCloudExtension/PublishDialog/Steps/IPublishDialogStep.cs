@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
     /// </summary>
     public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
-        ProtectedAsyncCommand PublishCommand { get; }
+        IProtectedCommand PublishCommand { get; }
 
         /// <summary>
         /// Called every time this step moves on to the top of the navigation stack.

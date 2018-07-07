@@ -62,7 +62,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 publishDialog,
                 pickProjectPrompt)
             {
-                PublishCommand = Mock.Of<ProtectedAsyncCommand>();
+                PublishCommandAsync =
+                    new Mock<ProtectedAsyncCommand>(Mock.Of<Func<Task>>(), false).Object;
             }
 
             protected override IList<string> RequiredApis => RequiredApisOverride;
@@ -102,7 +103,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 set => base.IsValidGcpProject = value;
             }
 
-            public override ProtectedAsyncCommand PublishCommand { get; }
+            protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
             protected internal override void OnFlowFinished() => OnFlowFinishedCallCount++;
 
@@ -176,7 +177,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             Assert.IsFalse(_objectUnderTest.NeedsApiEnabled);
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.HasErrors);
-            Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
         }
 

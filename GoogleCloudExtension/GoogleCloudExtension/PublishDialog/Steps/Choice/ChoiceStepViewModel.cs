@@ -53,8 +53,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        public ProtectedAsyncCommand PublishCommand { get; } =
-            new ProtectedAsyncCommand(() => throw new NotSupportedException(), false);
+        public IProtectedCommand PublishCommand { get; } =
+            new ProtectedCommand(() => throw new NotSupportedException(), false);
 
         private IPublishDialog PublishDialog { get; }
 
