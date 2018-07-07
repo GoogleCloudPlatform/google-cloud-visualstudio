@@ -63,7 +63,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             KnownApis.CloudBuildApiName
         };
 
-        private readonly IGkeDataSource _dataSource;
         private IEnumerable<Cluster> _clusters = Enumerable.Empty<Cluster>();
         private Cluster _selectedCluster = null;
         private string _deploymentName = null;
@@ -359,7 +358,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                     return;
                 }
 
-                Task<IKubectlContext> kubectlContextTask = _kubectlContextProvider.GetForClusterAsync(SelectedCluster);
+                Task<IKubectlContext> kubectlContextTask =
+                    _kubectlContextProvider.GetKubectlContextForClusterAsync(SelectedCluster);
                 PublishDialog.TrackTask(kubectlContextTask);
 
                 using (IKubectlContext kubectlContext = await kubectlContextTask)

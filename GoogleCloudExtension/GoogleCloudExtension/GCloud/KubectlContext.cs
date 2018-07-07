@@ -67,7 +67,10 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="cluster">The name of the cluster for which to create credentials.</param>
         /// <param name="zone">The zone of the cluster.</param>
         /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        /// <remarks>Do not use this method directly. Use <see cref="IKubectlContextProvider.GetForClusterAsync"/></remarks>
+        /// <remarks>
+        /// Do not use this method directly.
+        /// Use <see cref="IKubectlContextProvider.GetKubectlContextForClusterAsync"/>.
+        /// </remarks>
         internal static async Task<KubectlContext> GetForClusterAsync(string cluster, string zone)
         {
             var kubctlContext = new KubectlContext();

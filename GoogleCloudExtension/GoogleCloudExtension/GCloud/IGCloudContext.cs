@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.GCloud
         string CredentialsPath { get; }
 
         /// <summary>
-        /// The project id of the project to use for the invokation of gcloud.
+        /// The project id of the project to use for the invocation of gcloud.
         /// </summary>
         string ProjectId { get; }
     }

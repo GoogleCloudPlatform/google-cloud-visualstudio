@@ -28,6 +28,6 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="cluster">The cluster to create credentials for.</param>
         /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        Task<IKubectlContext> GetForClusterAsync(Cluster cluster);
+        Task<IKubectlContext> GetKubectlContextForClusterAsync(Cluster cluster);
     }
 }
