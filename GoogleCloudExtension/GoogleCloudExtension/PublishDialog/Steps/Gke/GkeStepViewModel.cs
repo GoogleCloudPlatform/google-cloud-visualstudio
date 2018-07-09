@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
                 RefreshCanPublish();
                 if (SelectedCluster != null && SelectedCluster != s_placeholderCluster)
                 {
-                    _kubectlContext = _kubectlContextProvider.GetForClusterAsync(SelectedCluster);
+                    _kubectlContext = _kubectlContextProvider.GetKubectlContextForClusterAsync(SelectedCluster);
                     ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(GetDeploymentsAsync());
                 }
             }
@@ -419,7 +419,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
                 PublishDialog.FinishFlow();
 
-                await DeploymentService.DepoloyProjectToGkeAsync(PublishDialog.Project, options);
+                await DeploymentService.DeployProjectToGkeAsync(PublishDialog.Project, options);
             }
         }
 

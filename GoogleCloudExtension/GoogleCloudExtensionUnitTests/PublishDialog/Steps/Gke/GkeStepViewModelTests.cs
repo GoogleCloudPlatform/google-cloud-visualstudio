@@ -99,7 +99,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _gkeDeploymentServiceMock = new Mock<IGkeDeploymentService>();
             _gkeDeploymentServiceMock
                 .Setup(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.IsAny<GkeDeploymentService.Options>()))
                 .Returns(Task.CompletedTask);
@@ -109,7 +109,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
             PackageMock.Setup(p => p.GetMefServiceLazy<IDataSourceFactory>())
                 .Returns(new Lazy<IDataSourceFactory>(() => mockedDataSourceFactory));
-            PackageMock.Setup(p => p.GetMefService<IKubectlContextProvider>().GetForClusterAsync(It.IsAny<Cluster>()))
+            PackageMock.Setup(
+                    p => p.GetMefService<IKubectlContextProvider>()
+                        .GetKubectlContextForClusterAsync(It.IsAny<Cluster>()))
                 .Returns(_kubectlContextMock.ToTask);
             PackageMock.Setup(p => p.GetMefServiceLazy<IGkeDeploymentService>())
                 .Returns(_gkeDeploymentServiceMock.ToLazy);
@@ -850,7 +852,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.IsAny<GkeDeploymentService.Options>()));
         }
@@ -867,7 +869,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.DeploymentName == DeploymentName)));
         }
@@ -884,7 +886,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.DeploymentVersion == DeploymentName)));
         }
@@ -902,7 +904,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.ExistingDeployment == expectedDeployment)));
         }
@@ -919,7 +921,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.ExposeService)));
         }
@@ -937,9 +939,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
-                        It.Is<GkeDeploymentService.Options>(o => o.ExposeService)));
+                        It.Is<GkeDeploymentService.Options>(o => o.ExposePublicService)));
         }
 
         [TestMethod]
@@ -956,7 +958,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.OpenWebsite)));
         }
@@ -974,7 +976,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.Configuration == expectedConfiguration)));
         }
@@ -992,7 +994,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _gkeDeploymentServiceMock
                 .Verify(
-                    s => s.DepoloyProjectToGkeAsync(
+                    s => s.DeployProjectToGkeAsync(
                         It.IsAny<IParsedProject>(),
                         It.Is<GkeDeploymentService.Options>(o => o.Replicas == expectedReplicas)));
         }

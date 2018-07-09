@@ -168,7 +168,7 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project to build and deploy.</param>
         /// <param name="options">Options for deploying and building.</param>
-        public async Task DepoloyProjectToGkeAsync(IParsedProject project, Options options)
+        public async Task DeployProjectToGkeAsync(IParsedProject project, Options options)
         {
             try
             {
