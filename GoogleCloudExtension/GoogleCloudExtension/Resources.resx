@@ -1223,14 +1223,6 @@
     <value>Kubernetes Engine gives you powerful configuration options for the cluster running your .NET Core application.</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
-  <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
-    <value>Deployment {0} was scaled to {1} replicas.</value>
-    <comment>Message printed in the output window when the deployment is scaled to the given number of replicas. {0} is the name of the deployment, {1} is the number of replicas.</comment>
-  </data>
-  <data name="GkePublishDeploymentUpdatedMessage" xml:space="preserve">
-    <value>Deployment {0} was updated.</value>
-    <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
-  </data>
   <data name="GkePublishReplicasCaption" xml:space="preserve">
     <value>Replic_as:</value>
     <comment>The caption for the replicas label.</comment>
@@ -1238,18 +1230,6 @@
   <data name="GkePublishNewClusterCaption" xml:space="preserve">
     <value>Create new cluster</value>
     <comment>Caption for the new cluster link.</comment>
-  </data>
-  <data name="GkePublishDeploymentAlreadyExistsMessage" xml:space="preserve">
-    <value>Deployment {0} already exists, do you want to update it?</value>
-    <comment>Message shown to the user when the deployment already exists to confirm if it should be updated. {0} is the deployment name.</comment>
-  </data>
-  <data name="GkePublishDeploymentAlreadyExistsTitle" xml:space="preserve">
-    <value>Update exising deployment</value>
-    <comment>Title for the user confirmation prompt to udate deployments.</comment>
-  </data>
-  <data name="UiUpdateButtonCaption" xml:space="preserve">
-    <value>Update</value>
-    <comment>Caption for the Update buttons.</comment>
   </data>
   <data name="GkePublishNoClustersPlaceholder" xml:space="preserve">
     <value>No clusters found...</value>
@@ -1591,17 +1571,9 @@
     <value>Service {0} cluster IP address {1}.</value>
     <comment>Message shown when a cluster-only service is deployed to show the ip address. {0} is the service name, {1} is the IP address.</comment>
   </data>
-  <data name="GkePublishServiceDeletedMessage" xml:space="preserve">
-    <value>Service {0} was deleted.</value>
-    <comment>Message shown when a service is deleted due to changes in configuration. {0} is the name of the service.</comment>
-  </data>
   <data name="GkePublishServiceGroupHeader" xml:space="preserve">
     <value>Service</value>
     <comment>The header for the service group in the UI.</comment>
-  </data>
-  <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
-    <value>Service {0} was updated.</value>
-    <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
   </data>
   <data name="GcloudInstallLinkCaption" xml:space="preserve">
     <value>Install Google Cloud SDK</value>
