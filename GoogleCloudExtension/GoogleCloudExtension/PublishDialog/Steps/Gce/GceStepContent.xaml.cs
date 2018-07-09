@@ -14,7 +14,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
 using System;
 using System.Windows.Controls;
@@ -34,13 +33,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         public GceStepContent(
             IPublishDialog publishDialog,
             IGceDataSource dataSource = null,
-            IApiManager apiManager = null,
             Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null,
             IWindowsCredentialsStore currentWindowsCredentialStore = null,
             Action<Instance> manageCredentialsPrompt = null) : this()
         {
             ViewModel = new GceStepViewModel(
-                dataSource, apiManager, pickProjectPrompt,
+                dataSource, pickProjectPrompt,
                 currentWindowsCredentialStore, manageCredentialsPrompt, publishDialog);
         }
 

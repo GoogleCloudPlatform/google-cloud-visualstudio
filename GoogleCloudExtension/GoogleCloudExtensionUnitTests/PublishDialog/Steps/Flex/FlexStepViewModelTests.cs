@@ -104,6 +104,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 
             var mockedApiManager = Mock.Of<IApiManager>(
                 m => m.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true));
+            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
 
             _gaeDataSourceMock = new Mock<IGaeDataSource>();
             _getApplicationTaskSource = new TaskCompletionSource<Application>();
@@ -114,7 +115,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = new FlexStepViewModel(
-                _gaeDataSourceMock.Object, mockedApiManager, Mock.Of<Func<GcpProject>>(),
+                _gaeDataSourceMock.Object, Mock.Of<Func<GcpProject>>(),
                 _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _propertiesChanges = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);

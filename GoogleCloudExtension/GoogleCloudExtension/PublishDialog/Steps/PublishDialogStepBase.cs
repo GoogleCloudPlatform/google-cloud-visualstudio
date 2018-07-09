@@ -165,11 +165,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         }
 
         protected PublishDialogStepBase(
-            IApiManager apiManager,
-            Func<Project> pickProjectPrompt,
-            IPublishDialog publishDialog)
+            IPublishDialog publishDialog,
+            Func<Project> pickProjectPrompt = null)
         {
-            _apiManager = apiManager;
+            _apiManager = GoogleCloudExtensionPackage.Instance.GetMefService<IApiManager>();
             _pickProjectPrompt = pickProjectPrompt;
             PublishDialog = publishDialog;
             _loadProjectTask = new AsyncProperty(null);

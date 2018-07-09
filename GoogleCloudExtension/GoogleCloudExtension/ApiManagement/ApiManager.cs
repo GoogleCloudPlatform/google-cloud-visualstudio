@@ -18,6 +18,7 @@ using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace GoogleCloudExtension.ApiManagement
     /// that manages its own <seealso cref="ServiceManagementDataSource"/> instance. This class will update itself when the user
     /// changes the current project/user.
     /// </summary>
+    [Export(typeof(IApiManager))]
     public class ApiManager : IApiManager
     {
         private static readonly Lazy<ApiManager> s_defaultManager = new Lazy<ApiManager>(CreateApiManager);

@@ -57,11 +57,10 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         private class TestPublishDialogStep : PublishDialogStepBase
         {
             public TestPublishDialogStep(
-                IApiManager apiManager,
                 Func<GcpProject> pickProjectPrompt,
                 IPublishDialog publishDialog) : base(
-                apiManager, pickProjectPrompt,
-                publishDialog)
+                publishDialog,
+                pickProjectPrompt)
             {
                 PublishCommand = Mock.Of<IProtectedCommand>();
             }
@@ -159,8 +158,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
             _apiManagerMock.Setup(x => x.EnableServicesAsync(It.IsAny<IEnumerable<string>>())).Returns(() => _enableServicesTaskSource.Task);
 
-            _objectUnderTest = new TestPublishDialogStep(_apiManagerMock.Object, _pickProjectPromptMock.Object,
-                _mockedPublishDialog);
+            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(_apiManagerMock.Object);
+
+            _objectUnderTest = new TestPublishDialogStep(_pickProjectPromptMock.Object, _mockedPublishDialog);
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 

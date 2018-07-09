@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.ApiManagement;
-using GoogleCloudExtension.DataSources;
-using System;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Gke
@@ -34,13 +30,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.
         /// </summary>
-        public GkeStepContent(
-            IPublishDialog publishDialog,
-            IGkeDataSource dataSource = null,
-            IApiManager apiManager = null,
-            Func<Project> pickProjectPrompt = null) : this()
+        public GkeStepContent(IPublishDialog publishDialog) : this()
         {
-            ViewModel = new GkeStepViewModel(dataSource, apiManager, pickProjectPrompt, publishDialog);
+            ViewModel = new GkeStepViewModel(publishDialog);
         }
 
         public GkeStepViewModel ViewModel

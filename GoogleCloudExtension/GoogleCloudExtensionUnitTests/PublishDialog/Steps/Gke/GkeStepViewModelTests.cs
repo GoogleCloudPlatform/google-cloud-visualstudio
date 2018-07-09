@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.ApiManagement;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtensionUnitTests.Projects;
@@ -25,7 +24,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
@@ -52,12 +50,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
         private GkeStepViewModel _objectUnderTest;
         private TaskCompletionSource<IList<Cluster>> _getClusterListTaskSource;
-        private Mock<Func<Project>> _pickProjectPromptMock;
         private List<string> _changedProperties;
         private int _canPublishChangedCount;
-        private Mock<Func<string, Process>> _startProcessMock;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private FakeParsedProject _parsedProject;
+        private Mock<IBrowserService> _browserServiceMock;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -69,29 +66,30 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         protected override void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
-
-            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
-            _parsedProject.ProjectMock.Setup(p => p.ConfigurationManager.ConfigurationRowNames).Returns(new string[0]);
-
-            _pickProjectPromptMock = new Mock<Func<Project>>();
-            _changedProperties = new List<string>();
+            _browserServiceMock = new Mock<IBrowserService>();
 
             var mockedApiManager = Mock.Of<IApiManager>(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true) &&
                     x.EnableServicesAsync(It.IsAny<IEnumerable<string>>()) == Task.FromResult(true));
-            _getClusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
-            var mockedDataSource = Mock.Of<IGkeDataSource>(ds => ds.GetClusterListAsync() == _getClusterListTaskSource.Task);
 
-            _objectUnderTest = new GkeStepViewModel(
-                mockedDataSource,
-                mockedApiManager,
-                _pickProjectPromptMock.Object,
-                Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject));
+            _getClusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
+            var mockedDataSourceFactory = Mock.Of<IDataSourceFactory>(
+                dsf => dsf.CreateGkeDataSource().GetClusterListAsync() == _getClusterListTaskSource.Task);
+
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IBrowserService>()).Returns(_browserServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
+            PackageMock.Setup(p => p.GetMefServiceLazy<IDataSourceFactory>())
+                .Returns(new Lazy<IDataSourceFactory>(() => mockedDataSourceFactory));
+
+            _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
+            _parsedProject.ProjectMock.Setup(p => p.ConfigurationManager.ConfigurationRowNames).Returns(new string[0]);
+
+            _objectUnderTest = new GkeStepViewModel(Mock.Of<IPublishDialog>(pd => pd.Project == _parsedProject));
+
+            _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
             _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
-            _startProcessMock = new Mock<Func<string, Process>>();
-            _objectUnderTest._startProcessOverride = _startProcessMock.Object;
         }
 
         protected override void AfterEach()
@@ -330,8 +328,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(projectId);
             _objectUnderTest.CreateClusterCommand.Execute(null);
 
-            _startProcessMock.Verify(
-                f => f(string.Format(GkeStepViewModel.GkeAddClusterUrlFormat, projectId)), Times.Once);
+            _browserServiceMock.Verify(
+                s => s.OpenBrowser(string.Format(GkeStepViewModel.GkeAddClusterUrlFormat, projectId)),
+                Times.Once);
         }
 
         [TestMethod]

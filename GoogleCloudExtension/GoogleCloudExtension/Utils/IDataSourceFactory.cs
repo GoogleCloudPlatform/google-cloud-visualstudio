@@ -24,5 +24,9 @@ namespace GoogleCloudExtension.Utils
         IGPlusDataSource CreatePlusDataSource();
 
         IGPlusDataSource CreatePlusDataSource(GoogleCredential credential);
+
+        IGkeDataSource CreateGkeDataSource();
+
+        //TODO(jimwp) Add GCE and GAE data sources.
     }
 }

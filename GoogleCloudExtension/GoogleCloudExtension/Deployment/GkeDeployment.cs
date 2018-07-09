@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Deployment
         public class DeploymentOptions
         {
             public DeploymentOptions(
-                KubectlContext context,
+                IKubectlContext context,
                 string deploymentName,
                 string deploymentVersion,
                 bool exposeService,
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.Deployment
             /// <summary>
             /// The context for any kubectl calls to use.
             /// </summary>
-            public KubectlContext KubectlContext { get; }
+            public IKubectlContext KubectlContext { get; }
 
             /// <summary>
             /// The name of the configuration to publish.
@@ -252,13 +252,13 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        private static async Task<string> WaitForServiceClusterIpAddressAsync(string name, KubectlContext context)
+        private static async Task<string> WaitForServiceClusterIpAddressAsync(string name, IKubectlContext context)
         {
             var service = await context.GetServiceAsync(name);
             return service?.Spec?.ClusterIp;
         }
 
-        private static async Task<string> WaitForServicePublicIpAddressAsync(string name, KubectlContext kubectlContext)
+        private static async Task<string> WaitForServicePublicIpAddressAsync(string name, IKubectlContext kubectlContext)
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;

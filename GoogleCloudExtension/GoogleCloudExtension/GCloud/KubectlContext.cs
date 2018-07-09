@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GCloud
     /// This class owns the context on which to run kubectl commands. This class owns
     /// the config file, when the instance is disposed it will delete the file.
     /// </summary>
-    public class KubectlContext : GCloudContext, IDisposable
+    public class KubectlContext : GCloudContext, IDisposable, IKubectlContext
     {
         // This variable is used to override the location of the application default credentials
         // with the current user's credentials.
@@ -67,7 +67,11 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="cluster">The name of the cluster for which to create credentials.</param>
         /// <param name="zone">The zone of the cluster.</param>
         /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        public static async Task<KubectlContext> GetKubectlContextForClusterAsync(string cluster, string zone)
+        /// <remarks>
+        /// Do not use this method directly.
+        /// Use <see cref="IKubectlContextProvider.GetKubectlContextForClusterAsync"/>.
+        /// </remarks>
+        internal static async Task<KubectlContext> GetForClusterAsync(string cluster, string zone)
         {
             var kubctlContext = new KubectlContext();
             if (!await kubctlContext.InitClusterCredentialsAsync(cluster, zone))

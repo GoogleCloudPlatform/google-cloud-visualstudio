@@ -182,11 +182,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         public FlexStepViewModel(
             IGaeDataSource dataSource,
-            IApiManager apiManager,
             Func<Project> pickProjectPrompt,
             Func<Task<bool>> setAppRegionAsyncFunc,
             IPublishDialog publishDialog)
-            : base(apiManager, pickProjectPrompt, publishDialog)
+            : base(publishDialog, pickProjectPrompt)
         {
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;

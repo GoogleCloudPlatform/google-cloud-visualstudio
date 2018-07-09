@@ -187,7 +187,11 @@
     <Compile Include="Deployment\IWindowsVmDeployment.cs" />
     <Compile Include="Deployment\MSBuildProperty.cs" />
     <Compile Include="Deployment\MSBuildTarget.cs" />
+    <Compile Include="GCloud\IGCloudContext.cs" />
+    <Compile Include="GCloud\IKubectlContext.cs" />
+    <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
+    <Compile Include="GCloud\KubectlContextProvider.cs" />
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
