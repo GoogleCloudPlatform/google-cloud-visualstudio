@@ -116,6 +116,9 @@ namespace GoogleCloudExtension.Deployment
             /// </summary>
             public bool ExposePublicService { get; }
 
+            /// <summary>
+            /// If true, the deployment service will open the website in a browser after finishing the deployment.
+            /// </summary>
             public bool OpenWebsite { get; }
 
             /// <summary>
@@ -185,15 +188,14 @@ namespace GoogleCloudExtension.Deployment
                 using (ShellUtils.SetShellUIBusy())
                 {
                     DateTime deploymentStartTime = DateTime.Now;
-                    result = new Result();
 
-                    string imageTag = await BuildImageAsync(project, options, progress, result);
-                    if (result.Failed)
+                    string imageTag = await BuildImageAsync(project, options, progress);
+                    if (imageTag == null)
                     {
                         return;
                     }
 
-                    await PublishImageToGkeAsync(imageTag, options, progress, result);
+                    result = await PublishImageToGkeAsync(imageTag, options, progress);
                     deploymentDuration = DateTime.Now - deploymentStartTime;
                 }
 
@@ -234,21 +236,18 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="imageTag"></param>
         /// <param name="options">The options to use for the deployment.</param>
         /// <param name="progress">The progress interface for progress notifications.</param>
-        /// <param name="result"></param>
         /// <returns>Returns a <seealso cref="Result"/> if the deployment succeeded null otherwise.</returns>
-        private async Task PublishImageToGkeAsync(
+        private async Task<Result> PublishImageToGkeAsync(
             string imageTag,
             Options options,
-            IProgress<double> progress,
-            Result result)
+            IProgress<double> progress)
         {
-
             // Create or update the deployment.
-            await CreateOrUpdateDeploymentAsync(imageTag, options, progress, result);
+            Result result = await CreateOrUpdateDeploymentAsync(imageTag, options, progress);
 
             if (result.Failed)
             {
-                return;
+                return result;
             }
 
             // Expose the service if requested and it is not already exposed.
@@ -269,14 +268,15 @@ namespace GoogleCloudExtension.Deployment
                     result.Failed |= !serviceDeleted;
                 }
             }
+
+            return result;
         }
 
 
         private async Task<string> BuildImageAsync(
             IParsedProject project,
             Options options,
-            IProgress<double> progress,
-            Result result)
+            IProgress<double> progress)
         {
             ShellUtils.SaveAllFiles();
 
@@ -297,7 +297,6 @@ namespace GoogleCloudExtension.Deployment
                     options.Configuration);
                 if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
                 {
-                    result.Failed = true;
                     return null;
                 }
 
@@ -311,7 +310,7 @@ namespace GoogleCloudExtension.Deployment
                     options.KubectlContext.BuildContainerAsync(imageTag, stageDirectory, GcpOutputWindow.OutputLine);
                 if (!await progress.UpdateProgress(buildContainerTask, 0.4, 0.7))
                 {
-                    result.Failed = true;
+                    return null;
                 }
 
                 return imageTag;
@@ -374,12 +373,12 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        private async Task CreateOrUpdateDeploymentAsync(
+        private async Task<Result> CreateOrUpdateDeploymentAsync(
             string imageTag,
             Options options,
-            IProgress<double> progress,
-            Result result)
+            IProgress<double> progress)
         {
+            var result = new Result();
             if (options.ExistingDeployment == null)
             {
                 bool deploymentCreated =
@@ -412,6 +411,7 @@ namespace GoogleCloudExtension.Deployment
             }
 
             progress.Report(0.8);
+            return result;
         }
 
         private async Task<string> WaitForServicePublicIpAddressAsync(Options options)

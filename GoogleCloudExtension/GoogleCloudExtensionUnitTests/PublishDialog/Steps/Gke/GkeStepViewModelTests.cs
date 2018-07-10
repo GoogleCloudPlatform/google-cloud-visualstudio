@@ -789,7 +789,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         {
             _objectUnderTest.DeploymentName = _deployment.Metadata.Name;
             _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(_getDeploymentsSource.Task);
-            _getDeploymentsSource.SetResult(new[] { new GkeDeployment(), _deployment });
+            _getDeploymentsSource.SetResult(
+                new[] { new GkeDeployment { Metadata = new GkeMetadata { Name = "other-name" } }, _deployment });
             await _objectUnderTest.ExistingDeployments.SafeTask;
 
             Assert.AreEqual(_deployment, _objectUnderTest.SelectedDeployment);
