@@ -14,20 +14,10 @@
 
 using System;
 
-namespace GoogleCloudExtension.Services
+namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Interface for an environment service that matches the static members of <see cref="Environment"/>.
+    /// Interface for a progressbar that can be disposed.
     /// </summary>
-    public interface IEnvironment
-    {
-        /// <inheritdoc cref="Environment.ExpandEnvironmentVariables(string)"/>
-        string ExpandEnvironmentVariables(string name);
-
-        /// <inheritdoc cref="Environment.GetFolderPath(Environment.SpecialFolder)"/>
-        string GetFolderPath(Environment.SpecialFolder folder);
-
-        /// <inheritdoc cref="Environment.GetEnvironmentVariable(string)"/>
-        string GetEnvironmentVariable(string variable);
-    }
+    public interface IDisposableProgress : IProgress<double>, IDisposable { }
 }

@@ -25,18 +25,13 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Override to use for testing.
         /// </summary>
-        internal static Func<GCloudComponent, Task<GCloudValidationResult>> ValidateGCloudAsyncOverride { get; set; }
-
-        /// <summary>
-        /// Override to use for testing.
-        /// </summary>
-        internal static Action<string, string, string> ShowCopyablePromptOverride { get; set; }
-
-        private static Func<GCloudComponent, Task<GCloudValidationResult>> ValidateGCloudAsync =>
-            ValidateGCloudAsyncOverride ?? GCloudWrapper.ValidateGCloudAsync;
+        internal static Action<string, string, string> ShowCopyablePromptOverride { private get; set; }
 
         private static Action<string, string, string> ShowCopyablePrompt =>
             ShowCopyablePromptOverride ?? CopyablePromptDialogWindow.PromptUser;
+
+        private static IGCloudWrapper GCloudWrapper =>
+            GoogleCloudExtensionPackage.Instance.GetMefService<IGCloudWrapper>();
 
         /// <summary>
         /// Verify that the Cloud SDK is installed and at the right version. Optionally also verify that the given
@@ -46,7 +41,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the Cloud SDK installation is valid.</returns>
         public static async Task<bool> VerifyGCloudDependenciesAsync(GCloudComponent component = GCloudComponent.None)
         {
-            GCloudValidationResult result = await ValidateGCloudAsync(component);
+            GCloudValidationResult result = await GCloudWrapper.ValidateGCloudAsync(component);
             if (result.IsValid)
             {
                 return true;
@@ -65,7 +60,7 @@ namespace GoogleCloudExtension.Utils
                     message: string.Format(
                         Resources.GCloudWrapperUtilsOldCloudSdkMessage,
                         result.CloudSdkVersion,
-                        GCloudWrapper.GCloudSdkMinimumVersion),
+                        GCloud.GCloudWrapper.GCloudSdkMinimumVersion),
                     title: Resources.GCloudWrapperUtilsOldCloudSdkTitle);
             }
             else

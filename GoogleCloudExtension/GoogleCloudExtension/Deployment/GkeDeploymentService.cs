@@ -18,7 +18,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -43,26 +42,28 @@ namespace GoogleCloudExtension.Deployment
         private readonly Lazy<IGcpOutputWindow> _gcpOutputWindow;
         private readonly Lazy<IStatusbarService> _statusbarService;
         private readonly Lazy<IShellUtils> _shellUtils;
-        private readonly IToolsPathProvider _toolsPathProvider;
 
         private IStatusbarService StatusbarService => _statusbarService.Value;
         private IShellUtils ShellUtils => _shellUtils.Value;
         private readonly Lazy<IBrowserService> _browserService;
+        private readonly Lazy<INetCoreAppUtils> _netCoreAppUtils;
         private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
         private IBrowserService BrowserService => _browserService.Value;
+        private INetCoreAppUtils NetCoreAppUtils => _netCoreAppUtils.Value;
 
         [ImportingConstructor]
         public GkeDeploymentService(
             Lazy<IGcpOutputWindow> gcpOutputWindow,
             Lazy<IStatusbarService> statusbarService,
             Lazy<IShellUtils> shellUtils,
-            Lazy<IBrowserService> browserService)
+            Lazy<IBrowserService> browserService,
+            Lazy<INetCoreAppUtils> netCoreAppUtils)
         {
             _shellUtils = shellUtils;
             _gcpOutputWindow = gcpOutputWindow;
             _statusbarService = statusbarService;
             _browserService = browserService;
-            _toolsPathProvider = VsVersionUtils.ToolsPathProvider;
+            _netCoreAppUtils = netCoreAppUtils;
         }
 
 
@@ -180,7 +181,7 @@ namespace GoogleCloudExtension.Deployment
                 Result result;
                 using (StatusbarService.Freeze())
                 using (StatusbarService.ShowDeployAnimation())
-                using (ProgressBarHelper progress =
+                using (IDisposableProgress progress =
                     StatusbarService.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                 using (ShellUtils.SetShellUIBusy())
                 {
@@ -282,17 +283,13 @@ namespace GoogleCloudExtension.Deployment
 
             string stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
-            Directory.CreateDirectory(stageDirectory);
-
             progress.Report(0.1);
 
             using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
-
             {
                 Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(
                     project,
                     stageDirectory,
-                    _toolsPathProvider,
                     GcpOutputWindow.OutputLine,
                     options.Configuration);
                 if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
@@ -322,8 +319,7 @@ namespace GoogleCloudExtension.Deployment
             Options options,
             Result result)
         {
-            IList<GkeService> services = await options.KubectlContext.GetServicesAsync();
-            GkeService service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+            GkeService service = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
             string requestedType = options.ExposePublicService ?
                 GkeServiceSpec.LoadBalancerType :
                 GkeServiceSpec.ClusterIpType;

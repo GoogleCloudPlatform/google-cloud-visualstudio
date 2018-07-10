@@ -25,9 +25,10 @@ namespace GoogleCloudExtension.VsVersion
         public const string VisualStudio2015Version = "14.0";
         public const string VisualStudio2017Version = "15.0";
 
-        internal static Lazy<IToolsPathProvider> s_toolsPathProvider =
+        private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider =
             new Lazy<IToolsPathProvider>(GetToolsPathProvider);
         private static readonly Lazy<int> s_remoteDebuggerPort = new Lazy<int>(GetRemoteDebuggerPort);
+        internal static IToolsPathProvider s_toolsPathProviderOverride = null;
 
         /// <summary>
         /// The remote debugger tool port number.
@@ -37,7 +38,7 @@ namespace GoogleCloudExtension.VsVersion
         /// <summary>
         /// The instance of <seealso cref="IToolsPathProvider"/> to use for this version of Visual Studio.
         /// </summary>
-        public static IToolsPathProvider ToolsPathProvider => s_toolsPathProvider.Value;
+        public static IToolsPathProvider ToolsPathProvider => s_toolsPathProviderOverride ?? s_toolsPathProvider.Value;
 
         public static IToolsPathProvider GetToolsPathProvider()
         {

@@ -251,8 +251,10 @@
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="Deployment\GkeDeploymentServiceTests.cs" />
     <Compile Include="Deployment\MSBuildPropertyTests.cs" />
     <Compile Include="Deployment\MSBuildTargetTests.cs" />
+    <Compile Include="Deployment\NetCoreAppUtilsTests.cs" />
     <Compile Include="Deployment\WindowsVmDeploymentTests.cs" />
     <Compile Include="FirewallManagement\PortChangesTests.cs" />
     <Compile Include="FirewallManagement\PortInfoTests.cs" />

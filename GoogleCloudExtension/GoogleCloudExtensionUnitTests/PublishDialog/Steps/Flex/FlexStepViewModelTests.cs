@@ -74,12 +74,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         protected override void BeforeEach()
         {
             _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
-            GCloudWrapperUtils.ValidateGCloudAsyncOverride =
-                Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
-                    f => f(It.IsAny<GCloudComponent>()) == _validateGCloudSource.Task);
-
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-
             _appEngineDeploymentMock = new Mock<IAppEngineFlexDeployment>();
             _publishSource = new TaskCompletionSource<object>();
             _appEngineDeploymentMock.Setup(
@@ -88,6 +83,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
                 .Returns(() => _publishSource.Task);
             _appEngineConfigurationMock = new Mock<IAppEngineConfiguration>();
 
+            PackageMock.Setup(p => p.GetMefService<IGCloudWrapper>().ValidateGCloudAsync(It.IsAny<GCloudComponent>()))
+                .Returns(() => _validateGCloudSource.Task);
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
             PackageMock.Setup(p => p.GetMefServiceLazy<IAppEngineFlexDeployment>())
                 .Returns(_appEngineDeploymentMock.ToLazy());
