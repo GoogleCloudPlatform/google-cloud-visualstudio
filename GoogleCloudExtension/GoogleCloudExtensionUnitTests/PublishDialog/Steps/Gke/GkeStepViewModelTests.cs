@@ -14,11 +14,15 @@
 
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -35,6 +39,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
     {
         private const string VisualStudioProjectName = "VisualStudioProjectName";
         private const string ClusterCId = "id for c";
+        private const string DeploymentName = "deployment-name";
 
         private static readonly Cluster s_aCluster = new Cluster { Name = "Acluster", SelfLink = "id for a" };
         private static readonly Cluster s_bCluster = new Cluster { Name = "Bcluster", SelfLink = "id for b" };
@@ -55,6 +60,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private FakeParsedProject _parsedProject;
         private Mock<IBrowserService> _browserServiceMock;
+        private Mock<IKubectlContext> _kubectlContextMock;
+        private TaskCompletionSource<IList<GkeDeployment>> _getDeploymentsSource;
+        private GkeDeployment _deployment;
+        private TaskCompletionSource<GCloudValidationResult> _validateGcloudSource;
+        private Mock<IGkeDeploymentService> _gkeDeploymentServiceMock;
 
         [ClassInitialize]
         public static void BeforeAll(TestContext context) =>
@@ -65,6 +75,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
         protected override void BeforeEach()
         {
+            _validateGcloudSource = new TaskCompletionSource<GCloudValidationResult>();
+            GCloudWrapperUtils.ValidateGCloudAsyncOverride =
+                Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
+                    f => f(It.IsAny<GCloudComponent>()) == _validateGcloudSource.Task);
+
+            _deployment = new GkeDeployment { Metadata = new GkeMetadata { Name = DeploymentName } };
+
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             _browserServiceMock = new Mock<IBrowserService>();
 
@@ -76,11 +93,28 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             var mockedDataSourceFactory = Mock.Of<IDataSourceFactory>(
                 dsf => dsf.CreateGkeDataSource().GetClusterListAsync() == _getClusterListTaskSource.Task);
 
+            _kubectlContextMock = new Mock<IKubectlContext>();
+            _getDeploymentsSource = new TaskCompletionSource<IList<GkeDeployment>>();
+            _kubectlContextMock.Setup(kube => kube.GetDeploymentsAsync()).Returns(_getDeploymentsSource.Task);
+            _gkeDeploymentServiceMock = new Mock<IGkeDeploymentService>();
+            _gkeDeploymentServiceMock
+                .Setup(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.IsAny<GkeDeploymentService.Options>()))
+                .Returns(Task.CompletedTask);
+
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
             PackageMock.Setup(p => p.GetMefService<IBrowserService>()).Returns(_browserServiceMock.Object);
             PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
             PackageMock.Setup(p => p.GetMefServiceLazy<IDataSourceFactory>())
                 .Returns(new Lazy<IDataSourceFactory>(() => mockedDataSourceFactory));
+            PackageMock.Setup(
+                    p => p.GetMefService<IKubectlContextProvider>()
+                        .GetKubectlContextForClusterAsync(It.IsAny<Cluster>()))
+                .Returns(_kubectlContextMock.ToTask);
+            PackageMock.Setup(p => p.GetMefServiceLazy<IGkeDeploymentService>())
+                .Returns(_gkeDeploymentServiceMock.ToLazy);
 
             _parsedProject = new FakeParsedProject { Name = VisualStudioProjectName };
             _parsedProject.ProjectMock.Setup(p => p.ConfigurationManager.ConfigurationRowNames).Returns(new string[0]);
@@ -89,7 +123,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
-            _objectUnderTest.PublishCommand.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
+            _objectUnderTest.PublishCommandAsync.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
         }
 
         protected override void AfterEach()
@@ -122,11 +156,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetSelectedCluster_EnablesPublish()
+        public async Task TestSetSelectedCluster_EnablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _validateGcloudSource.SetResult(GCloudValidationResult.Valid);
             _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = null;
+            await _objectUnderTest._verifyGCloudTask.SafeTask;
             _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCluster = s_aCluster;
@@ -136,11 +172,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetSelectedCluster_ToNullDisablesPublish()
+        public async Task TestSetSelectedCluster_ToNullDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _validateGcloudSource.SetResult(GCloudValidationResult.Valid);
             _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
+            await _objectUnderTest._verifyGCloudTask.SafeTask;
             _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCluster = null;
@@ -150,17 +188,30 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
-        public void TestSetSelectedCluster_ToPlaceholderDisablesPublish()
+        public async Task TestSetSelectedCluster_ToPlaceholderDisablesPublish()
         {
             _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _validateGcloudSource.SetResult(GCloudValidationResult.Valid);
             _objectUnderTest.OnVisible();
             _objectUnderTest.SelectedCluster = s_aCluster;
+            await _objectUnderTest._verifyGCloudTask.SafeTask;
             _canPublishChangedCount = 0;
 
             _objectUnderTest.SelectedCluster = GkeStepViewModel.s_placeholderCluster;
 
             Assert.IsFalse(_objectUnderTest.CanPublish);
             Assert.AreEqual(1, _canPublishChangedCount);
+        }
+
+        [TestMethod]
+        public void TestSetSelectedCluster_UpdatesExistingDeployments()
+        {
+            _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _objectUnderTest.OnVisible();
+            AsyncProperty<IList<GkeDeployment>> initalDeployments = _objectUnderTest.ExistingDeployments;
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            Assert.AreNotEqual(initalDeployments, _objectUnderTest.ExistingDeployments);
         }
 
         [TestMethod]
@@ -188,6 +239,26 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.DeploymentName = "a-valid-name";
 
             Assert.IsFalse(_objectUnderTest.HasErrors);
+        }
+
+        [TestMethod]
+        public void TestSetDeploymentName_UpdatesSelectedDeploymentToFoundDeployment()
+        {
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(new[] { _deployment });
+
+            _objectUnderTest.DeploymentName = _deployment.Metadata.Name;
+
+            Assert.AreEqual(_deployment, _objectUnderTest.SelectedDeployment);
+        }
+
+        [TestMethod]
+        public void TestSetDeploymentName_ClearsSelectedDeploymentWhenMissing()
+        {
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(new[] { _deployment });
+
+            _objectUnderTest.DeploymentName = "some-other-name";
+
+            Assert.IsNull(_objectUnderTest.SelectedDeployment);
         }
 
         [TestMethod]
@@ -674,6 +745,272 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
                 s => s.SaveUserProperty(
                     _parsedProject.Project, GkeStepViewModel.OpenWebsiteProjectPropertyName,
                     bool.TrueString));
+        }
+
+        [TestMethod]
+        public void TestSetExistingDeployments_SetsProperty()
+        {
+            var expectedValue = new AsyncProperty<IList<GkeDeployment>>(null);
+
+            _objectUnderTest.ExistingDeployments = expectedValue;
+
+            Assert.AreEqual(expectedValue, _objectUnderTest.ExistingDeployments);
+        }
+
+        [TestMethod]
+        public void TestSetExistingDeployments_RaisesPropertyChanged()
+        {
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(null);
+
+            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.ExistingDeployments));
+        }
+
+        [TestMethod]
+        public void TestSetExistingDeployments_UpdatesSelectedDeploymentSyncronously()
+        {
+            _objectUnderTest.DeploymentName = _deployment.Metadata.Name;
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(new[] { _deployment });
+
+            Assert.AreEqual(_deployment, _objectUnderTest.SelectedDeployment);
+        }
+
+        [TestMethod]
+        public void TestSetExistingDeployments_ClearsSelectedDeploymentWhenNotComplete()
+        {
+
+            _objectUnderTest.DeploymentName = DeploymentName;
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(_getDeploymentsSource.Task);
+
+            Assert.IsNull(_objectUnderTest.SelectedDeployment);
+        }
+
+        [TestMethod]
+        public async Task TestSetExistingDeployments_UpdatesSelectedDeploymentAsyncronously()
+        {
+            _objectUnderTest.DeploymentName = _deployment.Metadata.Name;
+            _objectUnderTest.ExistingDeployments = new AsyncProperty<IList<GkeDeployment>>(_getDeploymentsSource.Task);
+            _getDeploymentsSource.SetResult(
+                new[] { new GkeDeployment { Metadata = new GkeMetadata { Name = "other-name" } }, _deployment });
+            await _objectUnderTest.ExistingDeployments.SafeTask;
+
+            Assert.AreEqual(_deployment, _objectUnderTest.SelectedDeployment);
+        }
+
+        [TestMethod]
+        public void TestSetSelectedDeployment_SetsProperty()
+        {
+            _objectUnderTest.SelectedDeployment = _deployment;
+
+            Assert.AreEqual(_deployment, _objectUnderTest.SelectedDeployment);
+        }
+
+        [TestMethod]
+        public void TestSetSelectedDeployment_RaisesPropertyChanged()
+        {
+            _objectUnderTest.SelectedDeployment = _deployment;
+
+            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.SelectedDeployment));
+        }
+
+        [TestMethod]
+        public async Task TestInvalidGcloud_DisablesPublish()
+        {
+            _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.SelectedCluster = s_aCluster;
+            _canPublishChangedCount = 0;
+
+            _validateGcloudSource.SetResult(GCloudValidationResult.GetObsoleteVersion(new Version(10, 0, 0)));
+            await _objectUnderTest._verifyGCloudTask.SafeTask;
+
+            Assert.IsFalse(_objectUnderTest.CanPublish);
+            Assert.IsTrue(_canPublishChangedCount > 0);
+        }
+
+        [TestMethod]
+        public async Task TestValidGcloud_EnablesPublish()
+        {
+            _getClusterListTaskSource.SetResult(s_outOfOrderClusters);
+            _objectUnderTest.OnVisible();
+            _objectUnderTest.SelectedCluster = s_aCluster;
+            _canPublishChangedCount = 0;
+
+            _validateGcloudSource.SetResult(GCloudValidationResult.Valid);
+            await _objectUnderTest._verifyGCloudTask.SafeTask;
+
+            Assert.IsTrue(_objectUnderTest.CanPublish);
+            Assert.AreEqual(1, _canPublishChangedCount);
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentService()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.IsAny<GkeDeploymentService.Options>()));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceWithDeploymentName()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.DeploymentName = DeploymentName;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.DeploymentName == DeploymentName)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceWithDeploymentVersion()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.DeploymentVersion = DeploymentName;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.DeploymentVersion == DeploymentName)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceWithSelectedDeployment()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+            var expectedDeployment = new GkeDeployment();
+
+            _objectUnderTest.SelectedDeployment = expectedDeployment;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.ExistingDeployment == expectedDeployment)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceExposingService()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.ExposeService)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceExposingPublicService()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.ExposePublicService)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceOpeningWebsite()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.ExposeService = true;
+            _objectUnderTest.ExposePublicService = true;
+            _objectUnderTest.OpenWebsite = true;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.OpenWebsite)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceWithConfiguration()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+            const string expectedConfiguration = "expected-configuration";
+
+            _objectUnderTest.SelectedConfiguration = expectedConfiguration;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.Configuration == expectedConfiguration)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_CallsGkeDeploymentServiceWithReplicas()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+            const int expectedReplicas = 4;
+
+            _objectUnderTest.Replicas = expectedReplicas.ToString();
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            _gkeDeploymentServiceMock
+                .Verify(
+                    s => s.DeployProjectToGkeAsync(
+                        It.IsAny<IParsedProject>(),
+                        It.Is<GkeDeploymentService.Options>(o => o.Replicas == expectedReplicas)));
+        }
+
+        [TestMethod]
+        public async Task TestPublishCommand_IncrementsDeploymentVersion()
+        {
+            // Initalize KubectlContext task.
+            _objectUnderTest.SelectedCluster = s_aCluster;
+
+            _objectUnderTest.DeploymentVersion = DeploymentName;
+            _objectUnderTest.PublishCommandAsync.Execute(null);
+            await _objectUnderTest.PublishCommandAsync.LatestExecution.SafeTask;
+
+            Assert.AreNotEqual(DeploymentName, _objectUnderTest.DeploymentVersion);
         }
     }
 }

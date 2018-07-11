@@ -32,25 +32,20 @@ namespace GoogleCloudExtension.Utils
         {
             _statusbar = statusbar;
             _label = label ?? "";
-
-            _statusbar.Progress(ref _cookie, 1, "", 0, 0);
+            _cookie = 0;
+            _statusbar.Progress(ref _cookie, 1, _label, 0, Total);
         }
 
         #region IDisposable
 
-        public void Dispose()
-        {
-            _statusbar.Progress(ref _cookie, 0, "", 0, 0);
-        }
+        public void Dispose() => _statusbar.Progress(ref _cookie, 0, "", 0, 0);
 
         #endregion
 
         #region IProgress<double>
 
-        void IProgress<double>.Report(double value)
-        {
+        void IProgress<double>.Report(double value) =>
             _statusbar.Progress(ref _cookie, 1, _label, (uint)(value * Total), Total);
-        }
 
         #endregion
     }

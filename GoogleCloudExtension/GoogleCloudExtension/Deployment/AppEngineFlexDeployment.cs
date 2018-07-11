@@ -191,7 +191,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
                 Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction, options.Configuration);
-                if (!await ProgressHelper.UpdateProgress(createAppBundleTask, progress, from: 0.1, to: 0.3))
+                if (!await progress.UpdateProgress(createAppBundleTask, from: 0.1, to: 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
                     return null;
@@ -218,7 +218,7 @@ namespace GoogleCloudExtension.Deployment
                     promote: options.Promote,
                     context: options.Context,
                     outputAction: outputAction);
-                if (!await ProgressHelper.UpdateProgress(deployTask, progress, 0.6, 0.9))
+                if (!await progress.UpdateProgress(deployTask, 0.6, 0.9))
                 {
                     Debug.WriteLine("Failed to deploy bundle.");
                     return null;

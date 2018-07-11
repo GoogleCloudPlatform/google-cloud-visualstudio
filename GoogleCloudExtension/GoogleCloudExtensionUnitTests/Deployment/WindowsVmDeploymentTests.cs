@@ -19,6 +19,7 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -54,6 +55,9 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Mock<Configuration> _activeConfigMock;
         private Mock<SolutionBuild> _solutionBuildMock;
 
+        private Mock<IToolsPathProvider> _toolsPathProviderMock;
+        private Lazy<IToolsPathProvider> _oldToolsPathLazy;
+
         private Task<bool> _runCommandTask;
         private string _path;
         private string _parameters;
@@ -64,6 +68,11 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
         protected override void BeforeEach()
         {
+
+            _toolsPathProviderMock = new Mock<IToolsPathProvider>();
+            _oldToolsPathLazy = VsVersionUtils.s_toolsPathProvider;
+            VsVersionUtils.s_toolsPathProvider = _toolsPathProviderMock.ToLazy();
+
             _solutionBuildMock = new Mock<SolutionBuild>();
             _activeConfigMock = new Mock<Configuration>();
             _activeConfigMock.Setup(c => c.ConfigurationName).Returns(DefaultConfigurationName);
@@ -102,6 +111,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _gcpOutputWindowMock.ToLazy());
         }
 
+        protected override void AfterEach() => VsVersionUtils.s_toolsPathProvider = _oldToolsPathLazy;
+
         [TestMethod]
         public async Task TestPublishProjectAsync_RunsProjectBuildForGivenConfiguration()
         {
@@ -123,7 +134,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         public async Task TestPublishProjectAsync_GetsMSBuildPathFromToolsPathProvider()
         {
             const string expectedMSBuildPath = "Expected MSBuild Path";
-            ToolsPathProviderMock.Setup(tpp => tpp.GetMsbuildPath()).Returns(expectedMSBuildPath);
+            _toolsPathProviderMock.Setup(tpp => tpp.GetMsbuildPath()).Returns(expectedMSBuildPath);
 
 
             await _objectUnderTest.PublishProjectAsync(

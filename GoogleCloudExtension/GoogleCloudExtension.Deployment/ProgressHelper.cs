@@ -29,14 +29,15 @@ namespace GoogleCloudExtension.Deployment
         /// Waits for a long running task, periodically updating the progress indicator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="deployTask">The task to wait.</param>
         /// <param name="progress">The progress indicator to update.</param>
+        /// <param name="deployTask">The task to wait.</param>
         /// <param name="from">The initial value.</param>
         /// <param name="to">The final value.</param>
         public static async Task<T> UpdateProgress<T>(
+            this IProgress<double> progress,
             Task<T> deployTask,
-            IProgress<double> progress,
-            double from, double to)
+            double from,
+            double to)
         {
             double current = from;
             while (true)
@@ -46,6 +47,7 @@ namespace GoogleCloudExtension.Deployment
                 Task resultTask = await Task.WhenAny(deployTask, Task.Delay(DefaultTaskWaitMilliseconds));
                 if (resultTask == deployTask)
                 {
+                    progress.Report(to);
                     return await deployTask;
                 }
 

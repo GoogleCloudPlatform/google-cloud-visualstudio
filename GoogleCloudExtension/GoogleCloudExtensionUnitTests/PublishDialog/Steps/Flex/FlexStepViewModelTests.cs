@@ -566,13 +566,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommand_DelegatesToPublishCommandAsync()
-        {
-            Assert.AreEqual(_objectUnderTest.PublishCommandAsync, _objectUnderTest.PublishCommand);
-        }
-
-        [TestMethod]
-        public async Task TestPublishCommandAsync_TracksVerifyGCloudDependenciesTask()
+        public async Task TestPublishCommand_TracksVerifyGCloudDependenciesTask()
         {
             _objectUnderTest.PublishCommandAsync.Execute(null);
 
@@ -583,7 +577,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsPublishForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsPublishForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
             const string expectedVersion = "expected-version";
@@ -598,7 +592,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProject()
+        public void TestPublishCommand_PublishesProject()
         {
             const string expectedVersion = "expected-options-version";
             _objectUnderTest.Version = expectedVersion;
@@ -613,7 +607,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectToVersion()
+        public void TestPublishCommand_PublishesProjectToVersion()
         {
             const string expectedVersion = "expected-options-version";
             _objectUnderTest.Version = expectedVersion;
@@ -629,7 +623,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectToService()
+        public void TestPublishCommand_PublishesProjectToService()
         {
             const string expectedService = "expected-service";
             _objectUnderTest.Service = expectedService;
@@ -645,7 +639,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectWithPromoteOption()
+        public void TestPublishCommand_PublishesProjectWithPromoteOption()
         {
             _objectUnderTest.Promote = false;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
@@ -660,7 +654,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_PublishesProjectWithOpenWebsiteOption()
+        public void TestPublishCommand_PublishesProjectWithOpenWebsiteOption()
         {
             _objectUnderTest.OpenWebsite = false;
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
@@ -675,7 +669,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_UpdatesVersionBeforeFinishFlow()
+        public void TestPublishCommand_UpdatesVersionBeforeFinishFlow()
         {
             const string initalVersion = "initial-version";
             _objectUnderTest.Version = initalVersion;
@@ -691,7 +685,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsUpdateVersionForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsUpdateVersionForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
             const string expectedVersion = "expected-version";
@@ -704,7 +698,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public void TestPublishCommandAsync_FinishesFlowRegardlessOfPublishCompleting()
+        public void TestPublishCommand_FinishesFlowRegardlessOfPublishCompleting()
         {
             _validateGCloudSource.SetResult(s_validGCloudValidationResult);
 
@@ -715,7 +709,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
-        public async Task TestPublishCommandAsync_SkipsFinishFlowForInvalidGCloud()
+        public async Task TestPublishCommand_SkipsFinishFlowForInvalidGCloud()
         {
             _validateGCloudSource.SetResult(s_invalidGCloudValidationResult);
 

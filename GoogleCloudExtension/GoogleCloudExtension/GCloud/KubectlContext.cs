@@ -49,6 +49,8 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         private string _configPath;
 
+        private readonly IFileSystem _fileSystem;
+
         private KubectlContext()
         {
             _configPath = Path.GetTempFileName();
@@ -58,6 +60,7 @@ namespace GoogleCloudExtension.GCloud
             Environment[KubeConfigVariable] = _configPath;
             Environment[UseApplicationDefaultCredentialsVariable] = TrueValue;
             Environment[GoogleApplicationCredentialsVariable] = CredentialsPath;
+            _fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
         }
 
         /// <summary>
@@ -86,30 +89,6 @@ namespace GoogleCloudExtension.GCloud
         {
             string command = $"container clusters get-credentials {cluster} --zone={zone}";
             return RunGcloudCommandAsync(command);
-        }
-
-        /// <summary>
-        /// Release the resources owned by this instance, deletes the files silently.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_configPath == null)
-            {
-                return;
-            }
-
-            try
-            {
-                GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>().File.Delete(_configPath);
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to delete {_configPath}: {ex.Message}");
-            }
-            finally
-            {
-                _configPath = null;
-            }
         }
 
         /// <summary>
@@ -216,6 +195,28 @@ namespace GoogleCloudExtension.GCloud
         public Task<bool> DeleteServiceAsync(string name, Action<string> outputAction) =>
             RunKubectlCommandAsync($"delete service {name}", outputAction);
 
+        /// <summary>
+        /// Gets the cluster IP address of a service.
+        /// </summary>
+        /// <param name="name">The name of the service to get the cluster IP address of.</param>
+        /// <returns>The cluster IP address of the service.</returns>
+        public async Task<string> GetServiceClusterIpAsync(string name)
+        {
+            GkeService service = await GetServiceAsync(name);
+            return service?.Spec?.ClusterIp;
+        }
+
+        /// <summary>
+        /// Gets the public IP address of a service.
+        /// </summary>
+        /// <param name="name">The name of the service to get the public IP address for.</param>
+        /// <returns>The public IP address of the service.</returns>
+        public async Task<string> GetPublicServiceIpAsync(string name)
+        {
+            GkeService service = await GetServiceAsync(name);
+            return service?.Status?.LoadBalancer?.Ingress?.Select(i => i?.Ip).FirstOrDefault(ip => ip != null);
+        }
+
         private Task<bool> RunKubectlCommandAsync(string command, Action<string> outputAction)
         {
             string actualCommand = FormatKubectlCommand(command);
@@ -230,7 +231,6 @@ namespace GoogleCloudExtension.GCloud
 
         private async Task<T> GetKubectlCommandOutputAsync<T>(string command)
         {
-
             string actualCommand = FormatKubectlOutputCommand(command);
             try
             {
@@ -251,5 +251,43 @@ namespace GoogleCloudExtension.GCloud
         private string FormatKubectlCommand(string command) => $"{command} --kubeconfig=\"{_configPath}\"";
 
         private string FormatKubectlOutputCommand(string command) => $"{FormatKubectlCommand(command)} --output=json";
+
+        private void ReleaseUnmanagedResources()
+        {
+            if (_configPath == null)
+            {
+                return;
+            }
+
+            try
+            {
+                _fileSystem.File.Delete(_configPath);
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to delete {_configPath}: {ex.Message}");
+            }
+            finally
+            {
+                _configPath = null;
+            }
+        }
+
+        /// <summary>
+        /// Deletes backing temporary the kubectl configuration files.
+        /// </summary>
+        public void Dispose()
+        {
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Deletes backing temporary the kubectl configuration files.
+        /// </summary>
+        ~KubectlContext()
+        {
+            ReleaseUnmanagedResources();
+        }
     }
 }

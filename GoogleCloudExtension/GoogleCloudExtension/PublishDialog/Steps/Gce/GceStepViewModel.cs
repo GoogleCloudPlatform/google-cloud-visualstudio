@@ -193,10 +193,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, false);
             RefreshInstancesCommand = new ProtectedCommand(
                 () => PublishDialog.TrackTask(LoadValidProjectDataAsync()), false);
-            PublishCommand = new ProtectedAsyncCommand(PublishAsync);
+            PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
         }
 
-        public override IProtectedCommand PublishCommand { get; }
+        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
         protected override void OnIsValidGcpProjectChanged() => RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
 

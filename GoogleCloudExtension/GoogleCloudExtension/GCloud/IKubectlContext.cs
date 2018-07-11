@@ -93,5 +93,19 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
         Task<bool> DeleteServiceAsync(string name, Action<string> outputAction);
+
+        /// <summary>
+        /// Gets the cluster IP address of a service.
+        /// </summary>
+        /// <param name="name">The name of the service to get the cluster IP address of.</param>
+        /// <returns>The cluster IP address of the service.</returns>
+        Task<string> GetServiceClusterIpAsync(string name);
+
+        /// <summary>
+        /// Gets the public IP address of a service.
+        /// </summary>
+        /// <param name="name">The name of the service to get the public IP address for.</param>
+        /// <returns>The public IP address of the service.</returns>
+        Task<string> GetPublicServiceIpAsync(string name);
     }
 }

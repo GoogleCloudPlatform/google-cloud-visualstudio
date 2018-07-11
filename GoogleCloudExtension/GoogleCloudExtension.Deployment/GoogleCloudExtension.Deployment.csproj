@@ -98,7 +98,6 @@
     <Compile Include="CloudBuilderUtils.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="DeploymentException.cs" />
-    <Compile Include="GkeDeploymentResult.cs" />
     <Compile Include="IParsedProject.cs" />
     <Compile Include="IToolsPathProvider.cs" />
     <Compile Include="KnownProjectTypes.cs" />

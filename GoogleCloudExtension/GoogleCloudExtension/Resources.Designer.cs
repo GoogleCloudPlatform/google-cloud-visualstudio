@@ -3346,24 +3346,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deployment {0} already exists, do you want to update it?.
-        /// </summary>
-        public static string GkePublishDeploymentAlreadyExistsMessage {
-            get {
-                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update exising deployment.
-        /// </summary>
-        public static string GkePublishDeploymentAlreadyExistsTitle {
-            get {
-                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy {0} to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentFailureMessage {
@@ -3391,15 +3373,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deployment {0} was scaled to {1} replicas..
-        /// </summary>
-        public static string GkePublishDeploymentScaledMessage {
-            get {
-                return ResourceManager.GetString("GkePublishDeploymentScaledMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Deploying to Kubernetes Engine.
         /// </summary>
         public static string GkePublishDeploymentStatusMessage {
@@ -3414,15 +3387,6 @@ namespace GoogleCloudExtension {
         public static string GkePublishDeploymentSuccessMessage {
             get {
                 return ResourceManager.GetString("GkePublishDeploymentSuccessMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Deployment {0} was updated..
-        /// </summary>
-        public static string GkePublishDeploymentUpdatedMessage {
-            get {
-                return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
             }
         }
         
@@ -3517,15 +3481,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service {0} was deleted..
-        /// </summary>
-        public static string GkePublishServiceDeletedMessage {
-            get {
-                return ResourceManager.GetString("GkePublishServiceDeletedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Service.
         /// </summary>
         public static string GkePublishServiceGroupHeader {
@@ -3549,15 +3504,6 @@ namespace GoogleCloudExtension {
         public static string GkePublishServiceIpTimeoutMessage {
             get {
                 return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Service {0} was updated..
-        /// </summary>
-        public static string GkePublishServiceUpdatedMessage {
-            get {
-                return ResourceManager.GetString("GkePublishServiceUpdatedMessage", resourceCulture);
             }
         }
         
@@ -4589,6 +4535,42 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create New Deployment.
+        /// </summary>
+        public static string PublishDialogGkeCreateNewDeploymentMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeCreateNewDeploymentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Loading Deployments.
+        /// </summary>
+        public static string PublishDialogGkeErrorLoadingDeploymentsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeErrorLoadingDeploymentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Deployments.
+        /// </summary>
+        public static string PublishDialogGkeLoadingDeploymentsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeLoadingDeploymentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Existing Deployment.
+        /// </summary>
+        public static string PublishDialogGkeUpdateExistingDeploymentMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGkeUpdateExistingDeploymentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading project data..
         /// </summary>
         public static string PublishDialogLoadingProjectMessage {
@@ -5242,15 +5224,6 @@ namespace GoogleCloudExtension {
         public static string UiTimeLabel {
             get {
                 return ResourceManager.GetString("UiTimeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update.
-        /// </summary>
-        public static string UiUpdateButtonCaption {
-            get {
-                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
             }
         }
         

@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExceptionWithNullMessage.cs" />
-    <Compile Include="LazyMock.cs" />
+    <Compile Include="MockHelpers.cs" />
     <Compile Include="MsTestExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

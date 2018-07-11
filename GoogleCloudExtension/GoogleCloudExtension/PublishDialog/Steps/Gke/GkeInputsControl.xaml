@@ -21,6 +21,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.Gke"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:GkeStepViewModel}">
     <UserControl.Resources>
@@ -33,7 +35,7 @@
                Target="{Binding ElementName=_clusters}"/>
         <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters}"
-                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                  SelectedItem="{Binding SelectedCluster, Mode=TwoWay}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
                   Margin="0,3,0,0"/>
@@ -56,12 +58,89 @@
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
                Margin="0,5,0,0"/>
-        <TextBox x:Name="_deploymentName"
-                 Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                 Margin="0,3,0,0"/>
+        <ComboBox x:Name="_deploymentName"
+                  IsEnabled="{Binding ExistingDeployments.IsSuccess}"
+                  ItemsSource="{Binding ExistingDeployments.Value}"
+                  SelectedValuePath="Metadata.Name"
+                  DisplayMemberPath="Metadata.Name"
+                  SelectedItem="{Binding SelectedDeployment}"
+                  Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                  IsEditable="True"
+                  IsTextSearchEnabled="True"
+                  IsTextSearchCaseSensitive="True"
+                  Margin="0,3,0,0"/>
+
+        <ContentControl Margin="0,5,0,0" Focusable="False">
+            <ContentControl.Resources>
+                <DockPanel x:Key="Loading" VerticalAlignment="Center">
+                    <controls:ProgressIndicator DockPanel.Dock="Left" Margin="0,0,6,0" MaxHeight="15"/>
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeLoadingDeploymentsMessage}" />
+                </DockPanel>
+
+                <DockPanel x:Key="LoadDeploymentsError">
+                    <Image DockPanel.Dock="Left"
+                           Source="../../../Utils/Resources/ic_error_red_24px.png"
+                           Stretch="Uniform"
+                           MaxHeight="15"
+                           ToolTip="{Binding ExistingDeployments.ErrorMessage}"
+                           Margin="0,0,6,0"/>
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeErrorLoadingDeploymentsMessage}"
+                               ToolTip="{Binding ExistingDeployments.ErrorMessage}"
+                               ToolTipService.ShowDuration="20000"/>
+                </DockPanel>
+
+                <DockPanel x:Key="UpdateExistingDeployment">
+                    <Image DockPanel.Dock="Left"
+                           Source="../../../Utils/Resources/ic_warning_yellow_24px.png"
+                           Stretch="Uniform"
+                           MaxHeight="15"
+                           Margin="0,0,6,0"/>
+                    <TextBlock Text="{x:Static ext:Resources.PublishDialogGkeUpdateExistingDeploymentMessage}" />
+                </DockPanel>
+
+                <TextBlock x:Key="CreateNewDeployment"
+                           Text="{x:Static ext:Resources.PublishDialogGkeCreateNewDeploymentMessage}" />
+            </ContentControl.Resources>
+
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ExistingDeployments.IsPending}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource Loading}" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ExistingDeployments.IsError}" Value="True">
+                            <Setter Property="Content" Value="{StaticResource LoadDeploymentsError}"/>
+                        </DataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ExistingDeployments.IsSuccess}" Value="True"/>
+                                <Condition
+                                    Binding="{Binding SelectedDeployment, Converter={utils:NullEmptyBoolConverter}}"
+                                    Value="False"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <Setter Property="Content" Value="{StaticResource UpdateExistingDeployment}" />
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ExistingDeployments.IsSuccess}" Value="True" />
+                                <Condition
+                                    Binding="{Binding SelectedDeployment, Converter={utils:NullEmptyBoolConverter}}"
+                                    Value="True" />
+                            </MultiDataTrigger.Conditions>
+
+                            <Setter Property="Content" Value="{StaticResource CreateNewDeployment}" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
 
         <DockPanel Margin="0,5,0,0">
-             <!-- Replicas input -->
+            <!-- Replicas input -->
             <DockPanel DockPanel.Dock="Right" Margin="12,0,0,0">
                 <!-- TODO: Use an up/down textbox control. -->
                 <Label DockPanel.Dock="Top"
