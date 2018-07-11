@@ -67,7 +67,6 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
         protected override void BeforeEach()
         {
-
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
             VsVersionUtils.s_toolsPathProviderOverride = _toolsPathProviderMock.Object;
 

@@ -189,7 +189,7 @@ namespace GoogleCloudExtension.Deployment
                     stageDirectory,
                     GcpOutputWindow.OutputLine,
                     options.Configuration);
-                if (!await progress.UpdateProgress(createAppBundleTask, @from: 0.1, to: 0.3))
+                if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
                     return null;
