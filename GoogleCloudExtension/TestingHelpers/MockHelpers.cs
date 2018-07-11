@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Moq;
+using Moq.Language;
+using Moq.Language.Flow;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -61,5 +63,15 @@ namespace TestingHelpers
         /// A <see cref="Task{T}"/> that syncronously results in <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
         /// </returns>
         public static Task<T> ToTask<T>(this Mock<T> mock) where T : class => Task.FromResult(mock.Object);
+
+        /// <typeparam name="TMock">The mocked type.</typeparam>
+        /// <typeparam name="TResult">Type of the return value from the expression.</typeparam>
+        /// <param name="setup">The setup to specify the return value of.</param>
+        /// <param name="result">The result to wrap in a task.</param>
+        public static IReturnsResult<TMock> ReturnsResult<TMock, TResult>(this IReturns<TMock, Task<TResult>> setup, TResult result)
+            where TMock : class
+        {
+            return setup.Returns(Task.FromResult(result));
+        }
     }
 }

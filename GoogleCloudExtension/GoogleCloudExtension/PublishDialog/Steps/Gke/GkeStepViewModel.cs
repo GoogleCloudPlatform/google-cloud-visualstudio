@@ -271,8 +271,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         {
             if (SelectedDeployment?.Metadata.Name != DeploymentName)
             {
-                SelectedDeployment = ExistingDeployments?.Value?.FirstOrDefault(
-                    d => d?.Metadata?.Name != null && d.Metadata.Name == DeploymentName);
+                SelectedDeployment = ExistingDeployments?.Value?.FirstOrDefault(d => d.Metadata.Name == DeploymentName);
             }
         }
 

@@ -19,10 +19,8 @@ using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
@@ -117,6 +115,9 @@ namespace GoogleCloudExtension.Deployment
             /// </summary>
             public bool ExposePublicService { get; }
 
+            /// <summary>
+            /// If true, the deployment service will open the website in a browser after finishing the deployment.
+            /// </summary>
             public bool OpenWebsite { get; }
 
             /// <summary>
@@ -143,25 +144,45 @@ namespace GoogleCloudExtension.Deployment
             /// <summary>
             /// True when some step of the deployment to GKE failed.
             /// </summary>
-            public bool Failed { get; set; }
+            public bool Failed { get; }
 
             /// <summary>
             /// The IP address of the public service if one was exposed. This property can be null
             /// if no public service was exposed or if there was a timeout trying to obtain the public
             /// IP address.
             /// </summary>
-            public string PublicServiceIpAddress { get; set; }
+            public string ServicePublicIpAddress { get; }
 
             /// <summary>
             /// The IP address within the cluster for the service. This property can only be null if there
             /// was an error deploying the app.
             /// </summary>
-            public string ClusterServiceIpAddress { get; set; }
+            public string ServiceClusterIpAddress { get; }
 
             /// <summary>
             /// Is true if the a service was exposed publicly.
             /// </summary>
-            public bool ServiceExposed { get; set; }
+            public bool ServiceExposed { get; }
+
+            private Result(
+                bool failed,
+                bool serviceExposed = false,
+                string serviceClusterIpAddress = null,
+                string servicePublicIpAddress = null)
+            {
+                Failed = failed;
+                ServiceExposed = serviceExposed;
+                ServiceClusterIpAddress = serviceClusterIpAddress;
+                ServicePublicIpAddress = servicePublicIpAddress;
+            }
+
+            public static Result FailedResult { get; } = new Result(true);
+            public static Result SuccessResult { get; } = new Result(false);
+
+            public static Result GetPublicServiceResult(string clusterIpAddress, string publicIpAddress) =>
+                new Result(false, true, clusterIpAddress, publicIpAddress);
+
+            public static Result GetClusterServiceResult(string clusterIpAddress) => new Result(false, true, clusterIpAddress);
         }
 
         /// <summary>
@@ -186,23 +207,25 @@ namespace GoogleCloudExtension.Deployment
                 using (ShellUtils.SetShellUIBusy())
                 {
                     DateTime deploymentStartTime = DateTime.Now;
-                    result = new Result();
 
-                    string imageTag = await BuildImageAsync(project, options, progress, result);
-                    if (result.Failed)
+                    string imageTag = await BuildImageAsync(project, options, progress);
+                    if (imageTag != null)
                     {
-                        return;
+                        result = await PublishImageToGkeAsync(imageTag, options, progress);
+                    }
+                    else
+                    {
+                        result = Result.FailedResult;
                     }
 
-                    await PublishImageToGkeAsync(imageTag, options, progress, result);
                     deploymentDuration = DateTime.Now - deploymentStartTime;
                 }
 
                 OutputResultData(project, options, result);
 
-                if (options.OpenWebsite && result.ServiceExposed && result.PublicServiceIpAddress != null)
+                if (options.OpenWebsite && result.ServiceExposed && result.ServicePublicIpAddress != null)
                 {
-                    BrowserService.OpenBrowser($"http://{result.PublicServiceIpAddress}");
+                    BrowserService.OpenBrowser($"http://{result.ServicePublicIpAddress}");
                 }
 
                 if (result.Failed)
@@ -235,49 +258,47 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="imageTag"></param>
         /// <param name="options">The options to use for the deployment.</param>
         /// <param name="progress">The progress interface for progress notifications.</param>
-        /// <param name="result"></param>
         /// <returns>Returns a <seealso cref="Result"/> if the deployment succeeded null otherwise.</returns>
-        private async Task PublishImageToGkeAsync(
-            string imageTag,
-            Options options,
-            IProgress<double> progress,
-            Result result)
+        private async Task<Result> PublishImageToGkeAsync(string imageTag, Options options, IProgress<double> progress)
         {
-
-            // Create or update the deployment.
-            await CreateOrUpdateDeploymentAsync(imageTag, options, progress, result);
-
-            if (result.Failed)
+            bool success = await CreateOrUpdateDeploymentAsync(imageTag, options);
+            progress.Report(0.8);
+            if (!success)
             {
-                return;
+                return Result.FailedResult;
             }
 
-            // Expose the service if requested and it is not already exposed.
-            if (options.ExposeService)
+            GkeService existingService = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
+            if (existingService != null && options.ExposeService)
             {
-                await UpdateOrExposeServiceAsync(options, result);
+                return await UpdateExistingServiceAsync(existingService, options);
+            }
+            else if (existingService == null && options.ExposeService)
+            {
+                return await ExposeNewServiceAsync(options.DeploymentName, options);
+            }
+            else if (existingService != null && !options.ExposeService)
+            {
+                // The user doesn't want a service exposed.
+                if (await DeleteExistingServiceAsync(existingService, options))
+                {
+                    return Result.SuccessResult;
+                }
+                else
+                {
+                    return Result.FailedResult;
+                }
             }
             else
             {
-                IList<GkeService> services = await options.KubectlContext.GetServicesAsync();
-                GkeService service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
-                // The user doesn't want a service exposed.
-                if (service != null)
-                {
-                    bool serviceDeleted = await options.KubectlContext.DeleteServiceAsync(
-                        options.DeploymentName,
-                        GcpOutputWindow.OutputLine);
-                    result.Failed |= !serviceDeleted;
-                }
+                return Result.SuccessResult;
             }
         }
 
+        private Task<bool> DeleteExistingServiceAsync(GkeService service, Options options) =>
+            options.KubectlContext.DeleteServiceAsync(service.Metadata.Name, GcpOutputWindow.OutputLine);
 
-        private async Task<string> BuildImageAsync(
-            IParsedProject project,
-            Options options,
-            IProgress<double> progress,
-            Result result)
+        private async Task<string> BuildImageAsync(IParsedProject project, Options options, IProgress<double> progress)
         {
             ShellUtils.SaveAllFiles();
 
@@ -294,7 +315,6 @@ namespace GoogleCloudExtension.Deployment
                     options.Configuration);
                 if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
                 {
-                    result.Failed = true;
                     return null;
                 }
 
@@ -308,73 +328,70 @@ namespace GoogleCloudExtension.Deployment
                     options.KubectlContext.BuildContainerAsync(imageTag, stageDirectory, GcpOutputWindow.OutputLine);
                 if (!await progress.UpdateProgress(buildContainerTask, 0.4, 0.7))
                 {
-                    result.Failed = true;
+                    return null;
                 }
 
                 return imageTag;
             }
         }
 
-        private async Task UpdateOrExposeServiceAsync(
-            Options options,
-            Result result)
+        private async Task<Result> UpdateExistingServiceAsync(GkeService existingService, Options options)
         {
-            GkeService service = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
             string requestedType = options.ExposePublicService ?
                 GkeServiceSpec.LoadBalancerType :
                 GkeServiceSpec.ClusterIpType;
-
-            if (service == null)
+            if (existingService.Spec.Type == requestedType)
             {
-                await ExposeServiceAsync(options, result);
-            }
-            else if (service.Spec?.Type != requestedType)
-            {
-                if (!await options.KubectlContext.DeleteServiceAsync(
-                    options.DeploymentName,
-                    GcpOutputWindow.OutputLine))
-                {
-                    result.Failed = true;
-                    return;
-                }
-
-                await ExposeServiceAsync(options, result);
+                return await GetExposedServiceResultAsync(existingService.Metadata.Name, options);
             }
             else
             {
-                result.ServiceExposed = true;
-                result.PublicServiceIpAddress = await options.KubectlContext.GetPublicServiceIpAsync(options.DeploymentName);
+                bool serviceDeleted = await DeleteExistingServiceAsync(existingService, options);
+                if (serviceDeleted)
+                {
+                    return await ExposeNewServiceAsync(existingService.Metadata.Name, options);
+                }
+                else
+                {
+                    return Result.FailedResult;
+                }
             }
         }
 
-        private async Task ExposeServiceAsync(Options options, Result result)
+        private async Task<Result> ExposeNewServiceAsync(string serviceName, Options options)
         {
-            // The service needs to be exposed but it wasn't. Expose a new service here.
             bool serviceExposed = await options.KubectlContext.ExposeServiceAsync(
-                options.DeploymentName,
+                serviceName,
                 options.ExposePublicService,
                 GcpOutputWindow.OutputLine);
-            result.ServiceExposed = serviceExposed;
-            if (!serviceExposed)
-            {
-                result.Failed = true;
-                return;
-            }
 
-            result.ClusterServiceIpAddress =
-                await options.KubectlContext.GetServiceClusterIpAsync(options.DeploymentName);
+            if (serviceExposed)
+            {
+                return await GetExposedServiceResultAsync(serviceName, options);
+            }
+            else
+            {
+                return Result.FailedResult;
+            }
+        }
+
+        private async Task<Result> GetExposedServiceResultAsync(string serviceName, Options options)
+        {
+            string clusterServiceIpAddress =
+                await options.KubectlContext.GetServiceClusterIpAsync(serviceName);
 
             if (options.ExposePublicService)
             {
-                result.PublicServiceIpAddress = await WaitForServicePublicIpAddressAsync(options);
+                string publicIpAddress = await WaitForServicePublicIpAddressAsync(options);
+                return Result.GetPublicServiceResult(clusterServiceIpAddress, publicIpAddress);
+            }
+            else
+            {
+                return Result.GetClusterServiceResult(clusterServiceIpAddress);
             }
         }
 
-        private async Task CreateOrUpdateDeploymentAsync(
-            string imageTag,
-            Options options,
-            IProgress<double> progress,
-            Result result)
+        private async Task<bool> CreateOrUpdateDeploymentAsync(string imageTag, Options options)
         {
             if (options.ExistingDeployment == null)
             {
@@ -384,7 +401,7 @@ namespace GoogleCloudExtension.Deployment
                         imageTag,
                         options.Replicas,
                         GcpOutputWindow.OutputLine);
-                result.Failed |= !deploymentCreated;
+                return deploymentCreated;
             }
             else
             {
@@ -400,14 +417,11 @@ namespace GoogleCloudExtension.Deployment
                             options.DeploymentName,
                             options.Replicas,
                             GcpOutputWindow.OutputLine);
-                    result.Failed |= !deploymentScaled;
+                    return deploymentScaled && await updateImageTask;
                 }
 
-                bool imageUpdated = await updateImageTask;
-                result.Failed |= !imageUpdated;
+                return await updateImageTask;
             }
-
-            progress.Report(0.8);
         }
 
         private async Task<string> WaitForServicePublicIpAddressAsync(Options options)
@@ -437,13 +451,13 @@ namespace GoogleCloudExtension.Deployment
         {
             if (result.ServiceExposed)
             {
-                if (result.PublicServiceIpAddress != null)
+                if (result.ServicePublicIpAddress != null)
                 {
                     GcpOutputWindow.OutputLine(
                         string.Format(
                             Resources.GkePublishServiceIpMessage,
                             options.DeploymentName,
-                            result.PublicServiceIpAddress));
+                            result.ServicePublicIpAddress));
                 }
                 else if (options.ExposePublicService)
                 {
@@ -455,7 +469,7 @@ namespace GoogleCloudExtension.Deployment
                         string.Format(
                             Resources.GkePublishServiceClusterIpMessage,
                             options.DeploymentName,
-                            result.ClusterServiceIpAddress));
+                            result.ServiceClusterIpAddress));
                 }
             }
 
