@@ -160,7 +160,7 @@ namespace GoogleCloudExtension.Deployment
             public string ServiceClusterIpAddress { get; }
 
             /// <summary>
-            /// Is true if the a service was exposed publicly.
+            /// Is true if the a service was exposed.
             /// </summary>
             public bool ServiceExposed { get; }
 
@@ -268,35 +268,46 @@ namespace GoogleCloudExtension.Deployment
                 return Result.FailedResult;
             }
 
-            GkeService existingService = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
-            if (existingService != null && options.ExposeService)
+            if (!options.ExposeService)
             {
-                return await UpdateExistingServiceAsync(existingService, options);
-            }
-            else if (existingService == null && options.ExposeService)
-            {
-                return await ExposeNewServiceAsync(options.DeploymentName, options);
-            }
-            else if (existingService != null && !options.ExposeService)
-            {
-                // The user doesn't want a service exposed.
-                if (await DeleteExistingServiceAsync(existingService, options))
-                {
-                    return Result.SuccessResult;
-                }
-                else
-                {
-                    return Result.FailedResult;
-                }
+                return await DeleteExistingServiceAsync(options);
             }
             else
             {
-                return Result.SuccessResult;
+                return await ExposeOrUpdateServiceAsync(options);
             }
         }
 
-        private Task<bool> DeleteExistingServiceAsync(GkeService service, Options options) =>
-            options.KubectlContext.DeleteServiceAsync(service.Metadata.Name, GcpOutputWindow.OutputLine);
+        private async Task<Result> ExposeOrUpdateServiceAsync(Options options)
+        {
+            GkeService existingService = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
+            if (existingService == null)
+            {
+                return await ExposeNewServiceAsync(options.DeploymentName, options);
+            }
+            else
+            {
+                return await UpdateExistingServiceAsync(existingService, options);
+            }
+        }
+
+        private async Task<Result> DeleteExistingServiceAsync(Options options)
+        {
+            GkeService existingService = await options.KubectlContext.GetServiceAsync(options.DeploymentName);
+            if (existingService == null || await DeleteServiceAsync(existingService.Metadata.Name, options))
+            {
+                return Result.SuccessResult;
+            }
+            else
+            {
+                return Result.FailedResult;
+            }
+        }
+
+        private async Task<bool> DeleteServiceAsync(string service, Options options)
+        {
+            return await options.KubectlContext.DeleteServiceAsync(service, GcpOutputWindow.OutputLine);
+        }
 
         private async Task<string> BuildImageAsync(IParsedProject project, Options options, IProgress<double> progress)
         {
@@ -340,16 +351,16 @@ namespace GoogleCloudExtension.Deployment
             string requestedType = options.ExposePublicService ?
                 GkeServiceSpec.LoadBalancerType :
                 GkeServiceSpec.ClusterIpType;
+            string existingServiceName = existingService.Metadata.Name;
             if (existingService.Spec.Type == requestedType)
             {
-                return await GetExposedServiceResultAsync(existingService.Metadata.Name, options);
+                return await GetExposedServiceResultAsync(existingServiceName, options);
             }
             else
             {
-                bool serviceDeleted = await DeleteExistingServiceAsync(existingService, options);
-                if (serviceDeleted)
+                if (await DeleteServiceAsync(existingServiceName, options))
                 {
-                    return await ExposeNewServiceAsync(existingService.Metadata.Name, options);
+                    return await ExposeNewServiceAsync(existingServiceName, options);
                 }
                 else
                 {
