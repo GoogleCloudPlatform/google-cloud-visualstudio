@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.VsVersion;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
@@ -36,13 +35,13 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         private ToolsPathProviderBase _objectUnderTest;
         private Mock<IFileSystem> _fileSystemMock;
         private Mock<IEnvironment> _environmentMock;
-        private Mock<DTE> _dteMock;
+        private Mock<DTE2> _dteMock;
 
         protected override void BeforeEach()
         {
             _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
             _environmentMock = new Mock<IEnvironment>();
-            _dteMock = new Mock<DTE>();
+            _dteMock = new Mock<DTE2>();
 
             _dteMock.Setup(dte => dte.FullName).Returns(DefaultDevenvPath);
             _environmentMock.Setup(e => e.ExpandEnvironmentVariables(ToolsPathProviderBase.ProgramW6432))
@@ -50,7 +49,7 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
 
             PackageMock.Setup(p => p.GetMefServiceLazy<IFileSystem>()).Returns(_fileSystemMock.ToLazy());
             PackageMock.Setup(p => p.GetMefServiceLazy<IEnvironment>()).Returns(_environmentMock.ToLazy());
-            PackageMock.Setup(p => p.GetService<SDTE, DTE>()).Returns(_dteMock.Object);
+            PackageMock.Setup(p => p.Dte).Returns(_dteMock.Object);
 
             _objectUnderTest = Mock.Of<ToolsPathProviderBase>();
         }

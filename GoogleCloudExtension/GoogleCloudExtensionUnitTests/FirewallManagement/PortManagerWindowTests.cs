@@ -19,6 +19,7 @@ using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.FirewallManagement
 {
@@ -43,24 +44,24 @@ namespace GoogleCloudExtensionUnitTests.FirewallManagement
         }
 
         [TestMethod]
-        public void TestPromptUser_SetsTitle()
+        public async Task TestPromptUser_SetsTitle()
         {
-            PortManagerWindow window = GetWindow(() => PortManagerWindow.PromptUser(new Instance()));
+            PortManagerWindow window = await GetWindow(() => PortManagerWindow.PromptUser(new Instance()));
 
             Assert.AreEqual(Resources.PortManagerWindowCaption, window.Title);
         }
 
         [TestMethod]
-        public void TestPromptUser_ReturnsNullWhenCancelled()
+        public async Task TestPromptUser_ReturnsNullWhenCancelled()
         {
-            PortChanges result = GetResult(w => w.Close(), () => PortManagerWindow.PromptUser(new Instance()));
+            PortChanges result = await GetResult(w => w.Close(), () => PortManagerWindow.PromptUser(new Instance()));
             Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void TestPromptUser_ReturnsResultsOnOkCommand()
+        public async Task TestPromptUser_ReturnsResultsOnOkCommand()
         {
-            PortChanges result = GetResult(
+            PortChanges result = await GetResult(
                 w => w.ViewModel.OkCommand.Execute(null),
                 () => PortManagerWindow.PromptUser(new Instance()));
             Assert.IsNotNull(result);

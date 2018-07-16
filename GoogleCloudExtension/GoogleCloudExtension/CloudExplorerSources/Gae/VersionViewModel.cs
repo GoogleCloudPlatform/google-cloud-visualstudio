@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -98,8 +99,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
+                new MenuItem
+                {
+                    Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                    Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand)
+                },
+                new MenuItem
+                {
+                    Header = Resources.UiPropertiesMenuHeader,
+                    Command = new ProtectedAsyncCommand(OnPropertiesWindowCommandAsync)
+                }
             };
 
             // If the version is running it can be opened.
@@ -108,25 +117,35 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
                 if (_trafficAllocation < 1.0)
                 {
-                    menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeMigrateAllTrafficHeader, Command = new ProtectedCommand(OnMigrateTrafficCommand) });
+                    menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeMigrateAllTrafficHeader, Command = new ProtectedAsyncCommand(OnMigrateTrafficCommandAsync) });
                 }
             }
 
-            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
+            menuItems.Add(
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader,
+                    Command = new ProtectedAsyncCommand(OnBrowseStackdriverLogCommandAsync)
+                });
             menuItems.Add(new Separator());
 
             if (_version.IsServing())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedCommand(OnStopVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedAsyncCommand(OnStopVersionAsync) });
             }
             else if (_version.IsStopped())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new ProtectedCommand(OnStartVersion) });
+                menuItems.Add(new MenuItem
+                {
+                    Header = Resources.CloudExplorerGaeStartVersion,
+                    Command = new
+                    ProtectedAsyncCommand(OnStartVersionAsync)
+                });
             }
 
             if (CanDeleteVersion)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedAsyncCommand(OnDeleteVersionAsync) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -134,13 +153,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             SyncContextMenuState();
         }
 
-        private void OnBrowseStackdriverLogCommand()
+        private async Task OnBrowseStackdriverLogCommandAsync()
         {
-            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
             window?.FilterGAEServiceLog(_service.Id, _version.Id);
         }
 
-        private async void OnMigrateTrafficCommand()
+        private async Task OnMigrateTrafficCommandAsync()
         {
             try
             {
@@ -149,7 +168,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
                 var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
                 await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
-                _owner.InvalidateService(_service.Id);
+                await _owner.InvalidateServiceAsync(_service.Id);
             }
             catch (DataSourceException ex)
             {
@@ -159,17 +178,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        private void OnStartVersion()
+        private async Task OnStartVersionAsync()
         {
-            UpdateServingStatus(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
+            await UpdateServingStatusAsync(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
         }
 
-        private void OnStopVersion()
+        private async Task OnStopVersionAsync()
         {
-            UpdateServingStatus(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
+            await UpdateServingStatusAsync(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
         }
 
-        private void OnDeleteVersion()
+        private async Task OnDeleteVersionAsync()
         {
             string confirmationMessage = String.Format(
                 Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, _version.Id);
@@ -183,7 +202,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
-            DeleteVersion();
+            await DeleteVersionAsync();
         }
 
         private void OnOpenOnCloudConsoleCommand()
@@ -192,9 +211,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(url);
         }
 
-        private void OnPropertiesWindowCommand()
+        private async Task OnPropertiesWindowCommandAsync()
         {
-            _owner.Context.ShowPropertiesWindow(GetItem());
+            await _owner.Context.ShowPropertiesWindowAsync(GetItem());
         }
 
         private void OnOpenVersion()
@@ -202,7 +221,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(_version.VersionUrl);
         }
 
-        private async void DeleteVersion()
+        private async Task DeleteVersionAsync()
         {
             IsLoading = true;
             Children.Clear();
@@ -213,7 +232,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
-                _owner.InvalidateService(_service.Id);
+                await _owner.InvalidateServiceAsync(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
             }
@@ -243,7 +262,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         /// <param name="status">The serving status to update the version to.</param>
         /// <param name="statusMessage">The message to display while updating the status</param>
-        private async void UpdateServingStatus(string status, string statusMessage)
+        private async Task UpdateServingStatusAsync(string status, string statusMessage)
         {
             IsLoading = true;
             Children.Clear();
@@ -257,7 +276,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
-                _owner.InvalidateService(_service.Id);
+                await _owner.InvalidateServiceAsync(_service.Id);
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {

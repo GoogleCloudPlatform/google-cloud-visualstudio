@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Projects;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,7 +37,14 @@ namespace GoogleCloudExtension.SolutionUtils
         /// Get a list of c# source files. 
         /// It refresh and enumerates the list of files each time it is called. 
         /// </summary>
-        public List<ProjectSourceFile> SourceFiles => GetSourceFiles();
+        public List<ProjectSourceFile> SourceFiles
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetSourceFiles();
+            }
+        }
 
         /// <summary>
         /// Project build target version.
@@ -66,13 +74,21 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// The parsed project file. Will refresh each time in case the project changes over time.
         /// </summary>
-        public IParsedDteProject ParsedProject => ProjectParser.ParseProject(_project);
+        public IParsedDteProject ParsedProject
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return ProjectParser.ParseProject(_project);
+            }
+        }
 
         /// <summary>
         /// An internal constructor to allow for unit testing of <seealso cref="ProjectHelper"/> class.
         /// </summary>
         internal ProjectHelper(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (!IsValidSupported(project))
             {
                 throw new ArgumentException($"Input parameter {nameof(project)} is invalid.");
@@ -118,6 +134,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </returns>
         public ProjectSourceFile FindSourceFile(string sourceFilePath)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             foreach (var item in GetSourceFiles())
             {
                 if (item.IsMatchingPath(sourceFilePath))
@@ -136,6 +153,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">A <seealso cref="Project"/> interface.</param>
         public static bool IsValidSupported(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (project == null
                 // The project is not the miscellaneous project which is created automatically
                 // by VS to include elements not belonging to any other project.
@@ -168,6 +186,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private List<ProjectSourceFile> GetSourceFiles()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var items = new List<ProjectSourceFile>();
             foreach (ProjectItem projectItem in _project.ProjectItems)
             {
@@ -179,6 +198,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private void AddSourceFiles(ProjectItem projectItem, List<ProjectSourceFile> items)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (ProjectSourceFile.IsValidSupportedItem(projectItem))
             {
                 items.Add(new ProjectSourceFile(projectItem, this));
@@ -192,6 +212,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private void GetAssembyInfoFromProperties()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             foreach (Property property in _project.Properties)
             {
                 switch (property.Name)

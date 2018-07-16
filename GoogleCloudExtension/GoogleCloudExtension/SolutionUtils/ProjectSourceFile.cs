@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -48,6 +49,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
         public ProjectSourceFile(ProjectItem projectItem, ProjectHelper project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (!IsValidSupportedItem(projectItem))
             {
                 throw new ArgumentException(nameof(projectItem));
@@ -70,6 +72,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="projectItem">A <seealso cref="ProjectItem"/> object.</param>
         public static bool IsValidSupportedItem(ProjectItem projectItem)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
                 !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
             {

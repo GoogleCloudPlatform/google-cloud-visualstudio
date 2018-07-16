@@ -15,6 +15,7 @@
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using System;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -80,6 +81,6 @@ namespace GoogleCloudExtension.Utils
         /// Open a create solution dialog on the given path.
         /// </summary>
         /// <param name="path">The initial path in the create solution dialog.</param>
-        void LaunchCreateSolutionDialog(string path);
+        Task LaunchCreateSolutionDialogAsync(string path);
     }
 }

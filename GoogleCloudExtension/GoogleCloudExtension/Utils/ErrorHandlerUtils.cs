@@ -65,16 +65,17 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
         /// <summary>
         /// Runs the given <seealso cref="Task"/> and handles all non-critical exceptions by showing an
         /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
         /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
         /// </summary>
-        public static async Task HandleExceptionsAsync(Func<Task> task)
+        public static async void HandleExceptionsAsync(Func<Task> taskFunc)
         {
             try
             {
-                await task();
+                await taskFunc();
             }
             catch (Exception ex) when (!IsCriticalException(ex))
             {
@@ -83,4 +84,5 @@ namespace GoogleCloudExtension.Utils
             }
         }
     }
+#pragma warning restore VSTHRD100 // Avoid async void methods
 }

@@ -42,10 +42,10 @@ namespace GoogleCloudExtension.SourceBrowsing
         public static ConcurrentDictionary<ITextView, StackdriverTagger> AllLoggerTaggers => s_taggers.Value;
 
         /// <summary>
-        /// Import <seealso cref="IToolTipProviderFactory"/>.
+        /// Import <seealso cref="IToolTipService"/>.
         /// </summary>
         [Import]
-        public IToolTipProviderFactory ToolTipProviderFactory { get; set; }
+        public IToolTipService ToolTipService { get; set; }
 
         /// <summary>
         /// Implement <see cref="IViewTaggerProvider"/> interface.
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipProviderFactory));
+            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipService));
             return tagger as ITagger<T>;
         }
     }

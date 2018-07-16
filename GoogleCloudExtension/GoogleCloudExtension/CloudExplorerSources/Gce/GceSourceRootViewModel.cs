@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         new MenuItem
                         {
                             Header = Resources.CloudExplorerGceEnableApiMenuHeader,
-                            Command = new ProtectedCommand(OnEnableGceApi)
+                            Command = new ProtectedAsyncCommand(OnEnableGceApiAsync)
                         }
                     }
                 }
@@ -216,7 +216,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start("https://status.cloud.google.com/");
         }
 
-        private async void OnEnableGceApi()
+        private async Task OnEnableGceApiAsync()
         {
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
             Refresh();
@@ -243,7 +243,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        protected override async Task LoadDataOverride()
+        protected override async Task LoadDataOverrideAsync()
         {
             try
             {

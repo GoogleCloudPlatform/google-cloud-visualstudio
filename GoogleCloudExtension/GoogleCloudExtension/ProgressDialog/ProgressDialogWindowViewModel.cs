@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.ProgressDialog
 {
@@ -61,10 +62,9 @@ namespace GoogleCloudExtension.ProgressDialog
         /// </summary>
         private void CloseOnTaskCompletion()
         {
-            _task.ContinueWith(t =>
-            {
-                _owner.Dispatcher.Invoke(CloseOwner);
-            });
+            _task.ContinueWith(
+                t => CloseOwner(),
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CloseOwner()

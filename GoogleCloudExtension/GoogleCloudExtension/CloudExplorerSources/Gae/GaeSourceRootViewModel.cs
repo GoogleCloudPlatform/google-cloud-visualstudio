@@ -19,6 +19,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         };
 
         private Lazy<GaeDataSource> _dataSource;
+        private readonly IBrowserService _browserService;
+
+        public GaeSourceRootViewModel()
+        {
+            _browserService = GoogleCloudExtensionPackage.Instance.GetMefService<IBrowserService>();
+        }
 
         public GaeDataSource DataSource => _dataSource.Value;
 
@@ -82,7 +89,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         new MenuItem
                         {
                             Header = Resources.CloudExplorerGaeEnableApiMenuHeader,
-                            Command = new ProtectedCommand(OnEnableGaeApi)
+                            Command = new ProtectedAsyncCommand(OnEnableGaeApiAsync)
                         }
                     }
                 }
@@ -109,7 +116,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// service and updating the UI.
         /// </summary>
         /// <param name="id">The id of the service to update.</param>
-        public async void InvalidateService(string id)
+        public async Task InvalidateServiceAsync(string id)
         {
             int idx = 0;
             ServiceViewModel oldService = null;
@@ -130,20 +137,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             var wasExpanded = oldService.IsExpanded;
             var newService = await _dataSource.Value.GetServiceAsync(id);
-            var newModel = await LoadService(newService);
+            var newModel = await LoadServiceAsync(newService);
             Children[idx] = newModel;
             newModel.IsExpanded = wasExpanded;
         }
 
         private void OnStatusCommand()
         {
-            Process.Start("https://status.cloud.google.com/");
+            _browserService.OpenBrowser("https://status.cloud.google.com/");
         }
 
         private void OnOpenOnCloudConsoleCommand()
         {
             var url = $"https://console.cloud.google.com/appengine/services?project={Context.CurrentProject.ProjectId}";
-            Process.Start(url);
+            _browserService.OpenBrowser(url);
         }
 
         public override void InvalidateProjectOrAccount()
@@ -167,7 +174,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        protected override async Task LoadDataOverride()
+        protected override async Task LoadDataOverrideAsync()
         {
             try
             {
@@ -184,7 +191,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         {
                             ItemsSource = new List<MenuItem>
                             {
-                                new MenuItem { Header = Resources.CloudExplorerGaeSetAppRegionMenuHeader, Command = new ProtectedCommand(OnSetAppRegion) }
+                                new MenuItem { Header = Resources.CloudExplorerGaeSetAppRegionMenuHeader, Command = new ProtectedAsyncCommand(OnSetAppRegionAsync) }
                             }
                         }
                     };
@@ -194,7 +201,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     return;
                 }
 
-                IList<ServiceViewModel> services = await LoadServiceList();
+                IList<ServiceViewModel> services = await LoadServiceListAsync();
 
                 Children.Clear();
                 foreach (var item in services)
@@ -218,20 +225,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        private async void OnEnableGaeApi()
+        private async Task OnEnableGaeApiAsync()
         {
             await ApiManager.Default.EnableServicesAsync(s_requiredApis);
             Refresh();
         }
 
-        private async Task<IList<ServiceViewModel>> LoadServiceList()
+        private async Task<IList<ServiceViewModel>> LoadServiceListAsync()
         {
             var services = await _dataSource.Value.GetServiceListAsync();
-            var resultTasks = services.Select(x => LoadService(x));
+            var resultTasks = services.Select(x => LoadServiceAsync(x));
             return await Task.WhenAll(resultTasks);
         }
 
-        private async Task<ServiceViewModel> LoadService(Service service)
+        private async Task<ServiceViewModel> LoadServiceAsync(Service service)
         {
             var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
             var versionModels = versions
@@ -241,7 +248,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             return new ServiceViewModel(this, service, versionModels);
         }
 
-        private async void OnSetAppRegion()
+        private async Task OnSetAppRegionAsync()
         {
             if (await GaeUtils.SetAppRegionAsync(CredentialsStore.Default.CurrentProjectId, _dataSource.Value))
             {

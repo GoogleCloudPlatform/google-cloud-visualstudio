@@ -179,10 +179,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         Project ICloudSourceContext.CurrentProject => _currentProject;
 
-        void ICloudSourceContext.ShowPropertiesWindow(object item)
+        async Task ICloudSourceContext.ShowPropertiesWindowAsync(object item)
         {
             _selectionUtils.ActivatePropertiesWindow();
-            _selectionUtils.SelectItem(item);
+            await _selectionUtils.SelectItemAsync(item);
         }
 
         #endregion
@@ -310,7 +310,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 UpdateUserProfile();
 
                 // Load the current project if one is found, otherwise ask the user to choose a project.
-                await LoadCurrentProject();
+                await LoadCurrentProjectAsync();
 
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();
@@ -337,7 +337,7 @@ namespace GoogleCloudExtension.CloudExplorer
             RaiseAllPropertyChanged();
         }
 
-        private async Task LoadCurrentProject()
+        private async Task LoadCurrentProjectAsync()
         {
             // Avoid reentrancy.
             if (_loadingProject)
@@ -393,8 +393,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateAccountDependentDataSources()
         {
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceFactory.Default.CreateResourceManagerDataSource);
-            _plusDataSource = new Lazy<IGPlusDataSource>(DataSourceFactory.Default.CreatePlusDataSource);
+            var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
+            _resourceManagerDataSource =
+                new Lazy<ResourceManagerDataSource>(dataSourceFactory.CreateResourceManagerDataSource);
+            _plusDataSource = new Lazy<IGPlusDataSource>(dataSourceFactory.CreatePlusDataSource);
         }
 
         private async Task RefreshSourcesAsync()

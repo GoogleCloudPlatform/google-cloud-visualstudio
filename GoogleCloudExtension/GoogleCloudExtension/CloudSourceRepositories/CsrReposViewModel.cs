@@ -232,7 +232,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 = new Dictionary<string, IList<Repo>>(StringComparer.OrdinalIgnoreCase);
             foreach (var localGitRepo in localRepos)
             {
-                IList<string> remoteUrls = await localGitRepo.GetRemotesUrls();
+                IList<string> remoteUrls = await localGitRepo.GetRemotesUrlsAsync();
                 foreach (var url in remoteUrls)
                 {
                     string projectId = CsrUtils.ParseProjectId(url);
@@ -342,10 +342,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 var msg = String.Format(Resources.CsrCreateRepoNotificationFormat, repoItem.Name, repoItem.LocalPath);
                 _teamExplorer.ShowMessage(msg,
-                    command: new ProtectedCommand(() =>
+                    command: new ProtectedAsyncCommand(
+                        async () =>
                     {
                         SetRepoActive(repoItem);
-                        ShellUtils.Default.LaunchCreateSolutionDialog(repoItem.LocalPath);
+                        await ShellUtils.Default.LaunchCreateSolutionDialogAsync(repoItem.LocalPath);
                         _teamExplorer.ShowHomeSection();
                     }));
             }
@@ -366,7 +367,8 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task<IList<Project>> GetProjectsAsync()
         {
-            ResourceManagerDataSource resourceManager = DataSourceFactory.Default.CreateResourceManagerDataSource();
+            var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
+            ResourceManagerDataSource resourceManager = dataSourceFactory.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
                 return new List<Project>();

@@ -22,6 +22,7 @@ using Moq;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -36,97 +37,85 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public void TestShowToolWindowNoPackage()
-        {
-            GoogleCloudExtensionPackage.Instance = null;
-
-            var result = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
-
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
-        public void TestShowToolWindowNoWindow()
+        public async Task TestShowToolWindowNoWindow()
         {
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(() => null);
 
-            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
+            await ToolWindowCommandUtils.ShowToolWindowAsync<ToolWindowPane>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
-        public void TestShowToolWindowNoWindowFrame()
+        public async Task TestShowToolWindowNoWindowFrame()
         {
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
-                .Returns(() => new ToolWindowPane { Frame = null });
+                .Returns(new ToolWindowPane { Frame = null });
 
-            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
+            await ToolWindowCommandUtils.ShowToolWindowAsync<ToolWindowPane>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(COMException))]
-        public void TestShowToolWindowShowError()
+        public async Task TestShowToolWindowShowError()
         {
             var mockedFrame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.E_UNEXPECTED);
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
-                .Returns(() => new ToolWindowPane { Frame = mockedFrame });
+                .Returns(new ToolWindowPane { Frame = mockedFrame });
 
-            ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
+            await ToolWindowCommandUtils.ShowToolWindowAsync<ToolWindowPane>();
         }
 
         [TestMethod]
-        public void TestShowToolWindowSuccess()
+        public async Task TestShowToolWindowSuccess()
         {
             var mockedFrame = Mock.Of<IVsWindowFrame>(f => f.Show() == VSConstants.S_OK);
             var expectedResult = new ToolWindowPane { Frame = mockedFrame };
-            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(() => expectedResult);
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>();
+            ToolWindowPane actualResult = await ToolWindowCommandUtils.ShowToolWindowAsync<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
 
         [TestMethod]
-        public void TestShowToolWindowSpecificSuccess()
+        public async Task TestShowToolWindowSpecificSuccess()
         {
             var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
             const int toolWindowId = 2;
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, toolWindowId))
-                .Returns(() => expectedResult);
+                .Returns(expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.ShowToolWindow<ToolWindowPane>(toolWindowId);
+            ToolWindowPane actualResult = await ToolWindowCommandUtils.ShowToolWindowAsync<ToolWindowPane>(toolWindowId);
 
             Assert.AreEqual(expectedResult, actualResult);
         }
 
         [TestMethod]
-        public void TestAddToolWindow()
+        public async Task TestAddToolWindow()
         {
             var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
-            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 0))
-                .Returns(() => null);
-            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0))
-                .Returns(() => expectedResult);
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 0)).Returns(() => null);
+            PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 0)).Returns(expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.AddToolWindow<ToolWindowPane>();
+            ToolWindowPane actualResult = await ToolWindowCommandUtils.AddToolWindowAsync<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }
 
         [TestMethod]
-        public void TestAddToolWindowAdditional()
+        public async Task TestAddToolWindowAdditional()
         {
             var existingWindow = new ToolWindowPane { Frame = _defaultFrame };
             var expectedResult = new ToolWindowPane { Frame = _defaultFrame };
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 0))
-                .Returns(() => existingWindow);
+                .Returns(existingWindow);
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(false, 1))
                 .Returns(() => null);
             PackageMock.Setup(p => p.FindToolWindow<ToolWindowPane>(true, 1))
-                .Returns(() => expectedResult);
+                .Returns(expectedResult);
 
-            var actualResult = ToolWindowCommandUtils.AddToolWindow<ToolWindowPane>();
+            ToolWindowPane actualResult = await ToolWindowCommandUtils.AddToolWindowAsync<ToolWindowPane>();
 
             Assert.AreEqual(expectedResult, actualResult);
         }

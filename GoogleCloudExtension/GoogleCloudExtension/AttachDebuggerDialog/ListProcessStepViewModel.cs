@@ -17,6 +17,7 @@ using EnvDTE80;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Shell = Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -113,13 +113,13 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Responds to Refresh button command.
         /// </summary>
-        public ProtectedCommand RefreshCommand { get; }
+        public ProtectedAsyncCommand RefreshCommand { get; }
 
         #region Implement interface IAttachDebuggerStep
 
         public override ContentControl Content { get; }
 
-        public override Task<IAttachDebuggerStep> OnStartAsync()
+        public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
@@ -134,19 +134,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine($"Failed to save credential for {Context.PublicIp}, last error is {Marshal.GetLastWin32Error()}");
                 // It's OKay to continue, the Debugger2 will prompt UI to ask for credential. 
             }
-            if (!GetAllProcessesList())
+            if (!await GetAllProcessesListAsync())
             {
-                return Task.FromResult<IAttachDebuggerStep>(HelpStepViewModel.CreateStep(Context));
+                return HelpStepViewModel.CreateStep(Context);
             }
             else if (Processes.Count() == 1)
             {
-                return Task.FromResult(Attach());
+                return Attach();
             }
             else
             {
                 EnableSelection();
                 // Returns null so that the user stays on the step to pick a process.
-                return Task.FromResult<IAttachDebuggerStep>(null);
+                return null;
             }
         }
 
@@ -231,9 +231,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsListVisible = true;
         }
 
-        private bool GetAllProcessesList()
+        private async Task<bool> GetAllProcessesListAsync()
         {
-            var dte = Shell.Package.GetGlobalService(typeof(DTE)) as DTE;
+            var dte = await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SDTE, DTE>();
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             var debugger = dte.Debugger as Debugger2;
             var transport = debugger.Transports.Item("Default");
 
@@ -296,7 +297,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             : base(context)
         {
             Content = content;
-            RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
+            RefreshCommand = new ProtectedAsyncCommand(GetAllProcessesListAsync);
         }
 
         private void ResetDefaultSelection()

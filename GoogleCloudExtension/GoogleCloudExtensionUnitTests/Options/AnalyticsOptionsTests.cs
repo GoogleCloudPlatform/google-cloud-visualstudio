@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GoogleCloudExtensionUnitTests.Options
 {
     [TestClass]
-    public class AnalyticsOptionsTests
+    public class AnalyticsOptionsTests : ExtensionTestBase
     {
         [TestMethod]
         public void TestInitialConditions()

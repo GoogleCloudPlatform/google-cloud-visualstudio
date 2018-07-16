@@ -52,10 +52,10 @@ namespace GoogleCloudExtension.OauthLoginFlow
 
             Content = windowContent;
 
-            StartLoginFlow();
+            StartLoginFlowAsync();
         }
 
-        private async void StartLoginFlow()
+        private async System.Threading.Tasks.Task StartLoginFlowAsync()
         {
             try
             {

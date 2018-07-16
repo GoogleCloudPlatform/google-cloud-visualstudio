@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
@@ -30,6 +31,7 @@ namespace GoogleCloudExtension.Utils
 
         public ProgressBarHelper(IVsStatusbar statusbar, string label)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _statusbar = statusbar;
             _label = label ?? "";
             _cookie = 0;
@@ -38,14 +40,22 @@ namespace GoogleCloudExtension.Utils
 
         #region IDisposable
 
-        public void Dispose() => _statusbar.Progress(ref _cookie, 0, "", 0, 0);
+        public void Dispose() => GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.Run(
+            async () =>
+            {
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+                _statusbar.Progress(ref _cookie, 0, "", 0, 0);
+            });
 
         #endregion
 
         #region IProgress<double>
 
-        void IProgress<double>.Report(double value) =>
+        void IProgress<double>.Report(double value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _statusbar.Progress(ref _cookie, 1, _label, (uint)(value * Total), Total);
+        }
 
         #endregion
     }

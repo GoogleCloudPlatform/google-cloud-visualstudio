@@ -12,21 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE80;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.ComponentModel.Design;
+using System.Threading.Tasks;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using IServiceProvider = System.IServiceProvider;
+using IVsServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension
 {
     /// <summary>
     /// Interface extracted from <see cref="GoogleCloudExtensionPackage"/> mainly for testing purposes.
     /// </summary>
-    public interface IGoogleCloudExtensionPackage : IVsPackage, Microsoft.VisualStudio.OLE.Interop.IServiceProvider, IOleCommandTarget, IVsPersistSolutionOpts, IServiceContainer, System.IServiceProvider, IVsUserSettings, IVsUserSettingsMigration, IVsUserSettingsQuery, IVsToolWindowFactory, IVsToolboxItemProvider
+    public interface IGoogleCloudExtensionPackage
+        : IVsPackage,
+            IVsServiceProvider,
+            IOleCommandTarget,
+            IVsPersistSolutionOpts,
+            IServiceContainer,
+            IServiceProvider,
+            IVsUserSettings,
+            IVsUserSettingsMigration,
+            IVsUserSettingsQuery,
+            IVsToolWindowFactory,
+            IVsToolboxItemProvider,
+            IAsyncServiceProvider
     {
+        JoinableTaskFactory JoinableTaskFactory { get; }
         AnalyticsOptions AnalyticsSettings { get; }
         string VsVersion { get; }
 
@@ -44,6 +64,8 @@ namespace GoogleCloudExtension
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         string VersionedApplicationName { get; }
+
+        DTE2 Dte { get; }
 
         /// <summary>
         /// The default <see cref="IShellUtils"/> service.
@@ -70,12 +92,39 @@ namespace GoogleCloudExtension
         /// </summary>
         IUserPromptService UserPromptService { get; }
 
-        T GetDialogPage<T>() where T : DialogPage;
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/>.
+        /// </summary>
+        ICredentialsStore CredentialStore { get; }
+
         bool IsWindowActive();
-        void ShowOptionPage<T>() where T : DialogPage;
+
         void SubscribeClosingEvent(EventHandler handler);
+
         void UnsubscribeClosingEvent(EventHandler handler);
-        ToolWindowPane FindToolWindow(Type toolWindowType, int id, bool create);
+
+        /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns>The service.</returns>
+        Task<I> GetServiceAsync<S, I>();
+
+        /// <summary>
+        /// Gets an exported MEF service.
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
+        /// <returns>The service.</returns>
+        T GetMefService<T>() where T : class;
+
+        /// <summary>
+        /// Gets a lazily initialized <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see>
+        /// service.
+        /// </summary>
+        /// <typeparam name="T">The type the service is exported as.</typeparam>
+        /// <returns>A <see cref="Lazy{T}"/> that evaluates to the service.</returns>
+        Lazy<T> GetMefServiceLazy<T>() where T : class;
 
         /// <summary>
         /// Finds and returns an instance of the given tool window.
@@ -95,20 +144,5 @@ namespace GoogleCloudExtension
         /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
         /// <returns>The service.</returns>
         I GetService<S, I>();
-
-        /// <summary>
-        /// Gets an exported MEF service.
-        /// </summary>
-        /// <typeparam name="T">The type of the service.</typeparam>
-        /// <returns>The service.</returns>
-        T GetMefService<T>() where T : class;
-
-        /// <summary>
-        /// Gets a lazily initialized <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see>
-        /// service.
-        /// </summary>
-        /// <typeparam name="T">The type the service is exported as.</typeparam>
-        /// <returns>A <see cref="Lazy{T}"/> that evaluates to the service.</returns>
-        Lazy<T> GetMefServiceLazy<T>() where T : class;
     }
 }

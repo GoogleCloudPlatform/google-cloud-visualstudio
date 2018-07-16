@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the command that filters log entris on a detail tree view field value.
         /// </summary>
-        ProtectedCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
+        ProtectedAsyncCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.

@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.VsVersion.VS15;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -27,15 +26,15 @@ namespace GoogleCloudExtensionUnitTests.VsVersion.VS15
         private const string DefaultDevenvPath = @"c:\Default\" + DevenvPathFromRoot;
 
         private ToolsPathProvider _objectUnderTest;
-        private Mock<DTE> _dteMock;
+        private Mock<DTE2> _dteMock;
 
         protected override void BeforeEach()
         {
-            _dteMock = new Mock<DTE>();
+            _dteMock = new Mock<DTE2>();
 
             _dteMock.Setup(dte => dte.FullName).Returns(DefaultDevenvPath);
 
-            PackageMock.Setup(p => p.GetService<SDTE, DTE>()).Returns(_dteMock.Object);
+            PackageMock.Setup(p => p.Dte).Returns(_dteMock.Object);
             _objectUnderTest = new ToolsPathProvider();
         }
 

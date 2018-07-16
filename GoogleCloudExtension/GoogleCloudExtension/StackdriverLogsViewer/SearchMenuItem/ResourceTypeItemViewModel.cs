@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Perform delayed load of sub menu items.
         /// TODO: handle DataSourceException.
         /// </summary>
-        protected override async Task LoadSubMenu()
+        protected override async Task LoadSubMenuAsync()
         {
             var values = await _dataSource().ListResourceTypeValuesAsync(ResourceTypeKeys.Type);
             var trimedValues = values?.Select(x => x.Trim(new char[] { '/' })).Where(y => !String.IsNullOrWhiteSpace(y));
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             switch (ResourceTypeKeys.Type)
             {
                 case ResourceTypeNameConsts.GceInstanceType:
-                    await AddGceInstanceSubMenu(trimedValues);
+                    await AddGceInstanceSubMenuAsync(trimedValues);
                     break;
                 default:
                     foreach (var menuItem in trimedValues.Select(x => new ResourceValueItemViewModel(x, this)))
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private async Task AddGceInstanceSubMenu(IEnumerable<string> instanceIds)
+        private async Task AddGceInstanceSubMenuAsync(IEnumerable<string> instanceIds)
         {
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,

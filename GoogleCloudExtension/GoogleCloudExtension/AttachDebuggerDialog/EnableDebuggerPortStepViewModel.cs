@@ -37,10 +37,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// If it connects to remote debugger tool successfully, go to ListProcess step.
         /// Otherwise go to enalbe remote powershell port step that later it goes to install, start remote tool step.
         /// </summary>
-        protected override async Task<IAttachDebuggerStep> GetNextStep()
+        protected override async Task<IAttachDebuggerStep> GetNextStepAsync()
         {
             SetStage(Stage.CheckingConnectivity);
-            if (!(await Context.DebuggerPort.ConnectivityTest(CancelToken)))
+            if (!(await Context.DebuggerPort.ConnectivityTestAsync(CancelToken)))
             {
                 return EnablePowerShellPortStepViewModel.CreateStep(Context);
             }

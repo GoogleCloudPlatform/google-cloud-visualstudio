@@ -17,6 +17,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.ComponentModel.Design;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -28,14 +30,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         protected override void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
-            PackageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))
-                .Returns(_menuCommandServiceMock.Object);
+            PackageMock.Setup(p => p.GetServiceAsync(typeof(IMenuCommandService)))
+                .Returns(Task.FromResult<object>(_menuCommandServiceMock.Object));
         }
 
         [TestMethod]
-        public void TestRegisterCommand()
+        public async Task TestRegisterCommand()
         {
-            LogsViewerToolWindowCommand.Initialize(PackageMock.Object);
+            await LogsViewerToolWindowCommand.InitializeAsync(PackageMock.Object, CancellationToken.None);
 
             _menuCommandServiceMock.Verify(
                 s => s.AddCommand(
@@ -44,20 +46,19 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         }
 
         [TestMethod]
-        public void TestExecuteCommand()
+        public async Task TestExecuteCommand()
         {
             MenuCommand command = null;
             _menuCommandServiceMock.Setup(
                 s => s.AddCommand(It.IsAny<MenuCommand>())).Callback((MenuCommand c) => command = c);
-            Mock<IVsWindowFrame> frameMock = VsWindowFrameMocks.GetWindowFrameMock(MockBehavior.Loose);
-            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>()))
-                .Returns(() => null);
+            Mock<IVsWindowFrame> frameMock = VsWindowFrameMocks.GetWindowFrameMock();
+            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
             var logsViewerToolWindow = Mock.Of<LogsViewerToolWindow>();
             logsViewerToolWindow.Frame = frameMock.Object;
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsViewerToolWindow);
 
-            LogsViewerToolWindowCommand.Initialize(PackageMock.Object);
+            await LogsViewerToolWindowCommand.InitializeAsync(PackageMock.Object, CancellationToken.None);
             command.Invoke();
 
             frameMock.Verify(f => f.Show());

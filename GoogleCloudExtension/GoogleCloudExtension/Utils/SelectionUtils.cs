@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -29,16 +30,28 @@ namespace GoogleCloudExtension.Utils
         private readonly Lazy<ITrackSelection> _selectionTracker;
         private bool _propertiesWindowTickled = false;
 
-        private IVsWindowFrame OwnerFrame => (IVsWindowFrame)_owner.Frame;
+        private IVsWindowFrame OwnerFrame
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return (IVsWindowFrame)_owner.Frame;
+            }
+        }
 
         public SelectionUtils(ToolWindowPane owner)
         {
             _owner = owner;
-            _selectionTracker = new Lazy<ITrackSelection>(() => CreateTrackSelection(_owner));
+            _selectionTracker = new Lazy<ITrackSelection>(() =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return CreateTrackSelection(_owner);
+            });
         }
 
         public void ActivatePropertiesWindow()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var frame = GetPropertiesWindow(_owner, forceCreate: true);
             frame?.Show();
         }
@@ -46,21 +59,23 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Clears the selection, making the property window empty.
         /// </summary>
-        public void ClearSelection()
+        public async Task ClearSelectionAsync()
         {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             var selectionContainer = new SelectionContainer();
             selectionContainer.SelectedObjects = new List<object>();
             _selectionTracker.Value?.OnSelectChange(selectionContainer);
 
-            TicklePropertiesWindow();
+            await TicklePropertiesWindowAsync();
         }
 
         /// <summary>
         /// Selects the given item, showing it in the properties window.
         /// </summary>
         /// <param name="item">The item to be selected.</param>
-        public void SelectItem(object item)
+        public async Task SelectItemAsync(object item)
         {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             var selectionContainer = new SelectionContainer(true, false);
             var list = new List<object> { item };
             selectionContainer.SelectedObjects = list;
@@ -69,11 +84,12 @@ namespace GoogleCloudExtension.Utils
             Debug.WriteLine($"Update/d selected object: {item}");
             _selectionTracker.Value?.OnSelectChange(selectionContainer);
 
-            TicklePropertiesWindow();
+            await TicklePropertiesWindowAsync();
         }
 
         private static ITrackSelection CreateTrackSelection(IServiceProvider serviceProvider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var selectionTracker = serviceProvider.GetService(typeof(STrackSelection)) as ITrackSelection;
             if (selectionTracker == null)
             {
@@ -90,7 +106,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The poroperties window object if it exists, null if it is yet to be created.</returns>
         private static IVsWindowFrame GetPropertiesWindow(IServiceProvider serviceProvider, bool forceCreate = false)
         {
-            IVsWindowFrame frame = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             var shell = serviceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null)
             {
@@ -100,6 +116,7 @@ namespace GoogleCloudExtension.Utils
 
             uint flags = forceCreate ? (uint)__VSFINDTOOLWIN.FTW_fForceCreate : (uint)__VSFINDTOOLWIN.FTW_fFindFirst;
             var guidPropertyBrowser = new Guid(ToolWindowGuids.PropertyBrowser);
+            IVsWindowFrame frame;
             shell.FindToolWindow(flags, ref guidPropertyBrowser, out frame);
             if (forceCreate && frame == null)
             {
@@ -115,8 +132,9 @@ namespace GoogleCloudExtension.Utils
         /// forces the focus to change to the properties window and then back to the owner frame to force
         /// this behavior.
         /// </summary>
-        private async void TicklePropertiesWindow()
+        private async Task TicklePropertiesWindowAsync()
         {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (_propertiesWindowTickled)
             {
                 return;
@@ -124,7 +142,7 @@ namespace GoogleCloudExtension.Utils
 
             // Tickle the properties window, change the focus to force the 
             // properties window to update. This apparently only needs to be done once.
-            await System.Threading.Tasks.Task.Delay(1);
+            await Task.Delay(1);
             var frame = GetPropertiesWindow(_owner);
             if (frame == null || frame.IsVisible() != Microsoft.VisualStudio.VSConstants.S_OK)
             {
@@ -133,7 +151,7 @@ namespace GoogleCloudExtension.Utils
             }
 
             frame?.Show();
-            await System.Threading.Tasks.Task.Delay(1);
+            await Task.Delay(1);
             OwnerFrame?.Show();
             _propertiesWindowTickled = true;
         }

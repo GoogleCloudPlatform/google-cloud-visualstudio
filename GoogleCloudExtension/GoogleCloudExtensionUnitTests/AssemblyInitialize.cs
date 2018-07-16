@@ -16,7 +16,9 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.Threading;
 using Moq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -25,7 +27,8 @@ namespace GoogleCloudExtensionUnitTests
     [TestClass]
     public static class AssemblyInitialize
     {
-        private static IGoogleCloudExtensionPackage s_packageToRestore;
+
+        public static JoinableTaskContext JoinableApplicationContext { get; private set; }
 
         [AssemblyInitialize]
         public static void InitializeAssembly(TestContext context)
@@ -36,16 +39,19 @@ namespace GoogleCloudExtensionUnitTests
                 .Returns(Mock.Of<ISettingsSubset>());
 
             EventsReporterWrapper.DisableReporting();
-            s_packageToRestore = GoogleCloudExtensionPackage.Instance;
             GoogleCloudExtensionPackage.Instance = null;
             // Enable pack URIs.
             Assert.AreEqual(new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown }, Application.Current);
+
+            JoinableApplicationContext = Application.Current.Dispatcher.Invoke(() => new JoinableTaskContext());
+            ApplicationTaskScheduler = Application.Current.Dispatcher.Invoke(TaskScheduler.FromCurrentSynchronizationContext);
         }
+
+        public static TaskScheduler ApplicationTaskScheduler { get; private set; }
 
         [AssemblyCleanup]
         public static void CleanupAfterAllTests()
         {
-            GoogleCloudExtensionPackage.Instance = s_packageToRestore;
             Application.Current.Shutdown();
             Dispatcher.CurrentDispatcher.InvokeShutdown();
 

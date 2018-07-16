@@ -79,14 +79,14 @@ namespace GoogleCloudExtension.Git
         /// <summary>
         /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
         /// </summary>
-        public async Task<IList<string>> GetRemotes() => await ExecCommandAsync("remote");
+        public async Task<IList<string>> GetRemotesAsync() => await ExecCommandAsync("remote");
 
         /// <summary>
         /// Returns a list of remote urls.
         /// </summary>
-        public async Task<IList<string>> GetRemotesUrls()
+        public async Task<IList<string>> GetRemotesUrlsAsync()
         {
-            var remotes = await GetRemotes();
+            var remotes = await GetRemotesAsync();
             if (remotes == null)
             {
                 return new List<string>();

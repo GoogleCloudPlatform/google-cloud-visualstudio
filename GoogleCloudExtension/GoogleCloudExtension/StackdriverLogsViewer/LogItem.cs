@@ -134,7 +134,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Command responses to source link button click event.
         /// </summary>
-        public ProtectedCommand OnNavigateToSourceCommand { get; }
+        public ProtectedAsyncCommand OnNavigateToSourceCommand { get; }
 
         /// <summary>
         /// Log severity level.
@@ -223,8 +223,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
 
                 SourceLinkVisible = true;
-                OnNavigateToSourceCommand = new ProtectedCommand(
-                    () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
+                OnNavigateToSourceCommand = new ProtectedAsyncCommand(
+                    () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this));
                 SourceLinkCaption = string.Format(
                     Resources.LogsViewerSourceLinkCaptionFormat,
                     System.IO.Path.GetFileName(SourceFilePath),

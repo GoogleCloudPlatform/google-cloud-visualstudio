@@ -71,6 +71,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OnProjectIdChanged(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             CreateNewViewModel();
         }
 
@@ -79,6 +80,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public override void OnToolWindowCreated()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.OnToolWindowCreated();
             CreateNewViewModel();
         }
@@ -93,6 +95,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void CreateNewViewModel()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             object toolWindowIdNumber;
             ((IVsWindowFrame)Frame).GetProperty((int)VsFramePropID.MultiInstanceToolNum, out toolWindowIdNumber);
             int windowIdNumber = Convert.ToInt32(toolWindowIdNumber);

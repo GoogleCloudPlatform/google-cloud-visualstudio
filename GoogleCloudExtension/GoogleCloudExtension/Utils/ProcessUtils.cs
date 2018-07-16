@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.Utils
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
-        public Task<bool> RunCommandAsync(
+        public async Task<bool> RunCommandAsync(
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
@@ -108,16 +108,11 @@ namespace GoogleCloudExtension.Utils
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment);
 
-            return Task.Run(async () =>
-            {
-                var process = Process.Start(startInfo);
-                var readErrorsTask = ReadLinesFromOutput(OutputStream.StandardError, process.StandardError, handler);
-                var readOutputTask = ReadLinesFromOutput(OutputStream.StandardOutput, process.StandardOutput, handler);
-                await readErrorsTask;
-                await readOutputTask;
-                process.WaitForExit();
-                return process.ExitCode == 0;
-            });
+            var process = Process.Start(startInfo);
+            var readErrorsTask = ReadLinesFromOutputAsync(OutputStream.StandardError, process.StandardError, handler);
+            var readOutputTask = ReadLinesFromOutputAsync(OutputStream.StandardOutput, process.StandardOutput, handler);
+            await Task.WhenAll(readErrorsTask, readOutputTask, Task.Run(() => process.WaitForExit()));
+            return process.ExitCode == 0;
         }
 
         /// <summary>
@@ -219,16 +214,17 @@ namespace GoogleCloudExtension.Utils
             return startInfo;
         }
 
-        private static Task ReadLinesFromOutput(OutputStream outputStream, StreamReader stream, EventHandler<OutputHandlerEventArgs> handler)
+        private static async Task ReadLinesFromOutputAsync(
+            OutputStream outputStream,
+            StreamReader stream,
+            EventHandler<OutputHandlerEventArgs> handler)
         {
-            return Task.Run(() =>
+            while (!stream.EndOfStream)
             {
-                while (!stream.EndOfStream)
-                {
-                    string line = stream.ReadLine();
-                    handler(null, new OutputHandlerEventArgs(line, outputStream));
-                }
-            });
+                string line = await stream.ReadLineAsync();
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+                handler(null, new OutputHandlerEventArgs(line, outputStream));
+            }
         }
     }
 }

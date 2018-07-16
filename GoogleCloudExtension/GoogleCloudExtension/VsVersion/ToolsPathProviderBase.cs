@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,8 +37,6 @@ namespace GoogleCloudExtension.VsVersion
 
         private readonly Lazy<IEnvironment> _environment =
             GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IEnvironment>();
-
-        private readonly Lazy<DTE> _dte = new Lazy<DTE>(GoogleCloudExtensionPackage.Instance.GetService<SDTE, DTE>);
 
         /// <summary>
         /// The <see cref="IEnvironment"/> service.
@@ -63,7 +60,7 @@ namespace GoogleCloudExtension.VsVersion
         }
 
         private IFileSystem FileSystem => _fileSystem.Value;
-        private DTE Dte => _dte.Value;
+        private DTE2 Dte => GoogleCloudExtensionPackage.Instance.Dte;
 
         /// <inheritdoc />
         public abstract string GetMsbuildPath();

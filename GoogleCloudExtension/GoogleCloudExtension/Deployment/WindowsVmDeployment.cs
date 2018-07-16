@@ -70,6 +70,7 @@ namespace GoogleCloudExtension.Deployment
             string targetDeployPath,
             string configuration)
         {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             // Ensure NuGet packages are restored.
             project.Project.DTE.Solution.SolutionBuild.BuildProject(configuration, project.Project.UniqueName, true);
 

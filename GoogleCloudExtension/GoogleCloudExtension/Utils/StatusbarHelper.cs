@@ -59,7 +59,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to write to the status bar: {ex.Message}");
             }
         }
 
@@ -90,7 +92,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to write to the status bar: {ex.Message}");
             }
 
             return new Disposable();
@@ -113,7 +117,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to show animation: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to show animation: {ex.Message}");
                 return null;
             }
         }
@@ -141,7 +147,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to hide animation: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to hide animation: {ex.Message}");
             }
         }
 
@@ -159,7 +167,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to freeze the status bar output: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to freeze the status bar output: {ex.Message}");
                 return null;
             }
         }
@@ -173,7 +183,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex)
             {
-                ActivityLogUtils.LogError($"Failed to unfreeze the status bar output: {ex.Message}");
+                IVsActivityLog vsActivityLog =
+                    GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to unfreeze the status bar output: {ex.Message}");
             }
         }
     }

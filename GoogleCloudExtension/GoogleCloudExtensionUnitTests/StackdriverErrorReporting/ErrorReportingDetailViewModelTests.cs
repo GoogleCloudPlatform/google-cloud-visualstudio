@@ -39,7 +39,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private ErrorReportingDetailViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
         private Mock<Action<ErrorGroupItem, StackFrame>> _errorFrameToSourceLineMock;
-        private Mock<Func<ErrorReportingToolWindow>> _showErrorReportingToolWindowMock;
+        private Mock<Func<Task<ErrorReportingToolWindow>>> _showErrorReportingToolWindowMock;
         private Mock<IStackdriverErrorReportingDataSource> _dataSourceMock;
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
@@ -50,7 +50,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _propertiesChanged = new List<string>();
             _errorFrameToSourceLineMock = new Mock<Action<ErrorGroupItem, StackFrame>>();
-            _showErrorReportingToolWindowMock = new Mock<Func<ErrorReportingToolWindow>>();
+            _showErrorReportingToolWindowMock = new Mock<Func<Task<ErrorReportingToolWindow>>>();
             _dataSourceMock = new Mock<IStackdriverErrorReportingDataSource>();
             _getPageOfEventsSource = new TaskCompletionSource<ListEventsResponse>();
             _dataSourceMock
@@ -188,9 +188,10 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         }
 
         [TestMethod]
-        public void TestOnBackToOverViewCommand()
+        public async Task TestOnBackToOverViewCommand()
         {
             _objectUnderTest.OnBackToOverViewCommand.Execute(null);
+            await _objectUnderTest.OnBackToOverViewCommand.LatestExecution.SafeTask;
 
             _showErrorReportingToolWindowMock.Verify(f => f());
         }

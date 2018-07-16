@@ -17,6 +17,7 @@ using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using TestingHelpers;
 
@@ -52,83 +53,83 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public void BeforeEach() => _objectUnderTest = new UserPromptUtils();
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithTitle()
+        public async Task TestActionPrompt_PromptsWithTitleAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, ExpectedTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, ExpectedTitle));
             string titleResult = userPrompt.Title;
             Assert.AreEqual(ExpectedTitle, titleResult);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithGivenPrompt()
+        public async Task TestActionPrompt_PromptsWithGivenPromptAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(ExpectedPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(ExpectedPrompt, DefaultTitle));
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithNullMessageByDefault()
+        public async Task TestActionPrompt_PromptsWithNullMessageByDefaultAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsNull(userPrompt.ViewModel.Message);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithGivenMessage()
+        public async Task TestActionPrompt_PromptsWithGivenMessageAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, ExpectedMessage));
             Assert.AreEqual(ExpectedMessage, userPrompt.ViewModel.Message);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithDefaultActionCaption()
+        public async Task TestActionPrompt_PromptsWithDefaultActionCaptionAsync()
         {
             string defaultActionCaption = Resources.UiYesButtonCaption;
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(defaultActionCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithGivenActionCaption()
+        public async Task TestActionPrompt_PromptsWithGivenActionCaptionAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, actionCaption: ExpectedActionCaption));
             Assert.AreEqual(ExpectedActionCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithDefaultCancelCaption()
+        public async Task TestActionPrompt_PromptsWithDefaultCancelCaptionAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(Resources.UiCancelButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithGivenCancelCaption()
+        public async Task TestActionPrompt_PromptsWithGivenCancelCaptionAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, cancelCaption: ExpectedCancelCaption));
             Assert.AreEqual(ExpectedCancelCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithNoIconByDefault()
+        public async Task TestActionPrompt_PromptsWithNoIconByDefaultAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsNull(userPrompt.ViewModel.Icon);
         }
 
         [TestMethod]
-        public void TestActionPrompt_PromptsWithWariningIcon()
+        public async Task TestActionPrompt_PromptsWithWariningIconAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, isWarning: true));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
@@ -136,227 +137,227 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public void TestActionPrompt_ReturnsFalseWhenClosed()
+        public async Task TestActionPrompt_ReturnsFalseWhenClosed()
         {
-            bool result = GetResult(
+            bool result = await GetResult(
                 userPrompt => userPrompt.Close(),
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void TestActionPrompt_ReturnsTrueOnOkCommand()
+        public async Task TestActionPrompt_ReturnsTrueOnOkCommand()
         {
-            bool result = GetResult(
+            bool result = await GetResult(
                 userPrompt => userPrompt.ViewModel.ActionCommand.Execute(null),
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void TestOkPrompt_PromptsWithTitle()
+        public async Task TestOkPrompt_PromptsWithTitleAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, ExpectedTitle));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
         [TestMethod]
-        public void TestOkPrompt_PromptsWithGivenPrompt()
+        public async Task TestOkPrompt_PromptsWithGivenPromptAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(ExpectedPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.OkPrompt(ExpectedPrompt, DefaultTitle));
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestOkPrompt_SetsCancelCaptionToOk()
+        public async Task TestOkPrompt_SetsCancelCaptionToOkAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestOkPrompt_HasActionButtonFalse()
+        public async Task TestOkPrompt_HasActionButtonFalseAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.OkPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_PromptsWithGivenTitle()
+        public async Task TestErrorPrompt_PromptsWithGivenTitleAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, ExpectedTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_PromptsWithGivenPrompt()
+        public async Task TestErrorPrompt_PromptsWithGivenPromptAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(ExpectedPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(ExpectedPrompt, DefaultTitle));
 
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_ErrorDetailsNullByDefault()
+        public async Task TestErrorPrompt_ErrorDetailsNullByDefaultAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsNull(userPrompt.ViewModel.ErrorDetails);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_ShowsGivenErrorDetails()
+        public async Task TestErrorPrompt_ShowsGivenErrorDetailsAsync()
         {
             const string expectedErrorDetails = "Expected Error Details";
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
 
             Assert.AreEqual(expectedErrorDetails, userPrompt.ViewModel.ErrorDetails);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_SetsCancelCaptionToOk()
+        public async Task TestErrorPrompt_SetsCancelCaptionToOkAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_HasActionButtonFalse()
+        public async Task TestErrorPrompt_HasActionButtonFalseAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
 
         [TestMethod]
-        public void TestErrorPrompt_SetsIconToErrorIcon()
+        public async Task TestErrorPrompt_SetsIconToErrorIconAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_PromptsWithGivenTitle()
+        public async Task TestErrorActionPrompt_PromptsWithGivenTitleAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, ExpectedTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, ExpectedTitle));
             Assert.AreEqual(ExpectedTitle, userPrompt.Title);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_PromptsWithGivenPrompt()
+        public async Task TestErrorActionPrompt_PromptsWithGivenPromptAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(ExpectedPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(ExpectedPrompt, DefaultTitle));
 
             Assert.AreEqual(ExpectedPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_ErrorDetailsNullByDefault()
+        public async Task TestErrorActionPrompt_ErrorDetailsNullByDefaultAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.IsNull(userPrompt.ViewModel.ErrorDetails);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_ShowsGivenErrorDetails()
+        public async Task TestErrorActionPrompt_ShowsGivenErrorDetailsAsync()
         {
             const string expectedErrorDetails = "Expected Error Details";
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle, expectedErrorDetails));
 
             Assert.AreEqual(expectedErrorDetails, userPrompt.ViewModel.ErrorDetails);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_SetsCancelCaptionToNo()
+        public async Task TestErrorActionPrompt_SetsCancelCaptionToNoAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiNoButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_SetsActionCaptionToYes()
+        public async Task TestErrorActionPrompt_SetsActionCaptionToYesAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             Assert.AreEqual(Resources.UiYesButtonCaption, userPrompt.ViewModel.ActionButtonCaption);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_SetsIconToErrorIcon()
+        public async Task TestErrorActionPrompt_SetsIconToErrorIconAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
+                await GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_ReturnsFalseWhenClosed()
+        public async Task TestErrorActionPrompt_ReturnsFalseWhenClosed()
         {
-            bool result = GetResult(
+            bool result = await GetResult(
                 userPrompt => userPrompt.Close(),
                 () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void TestErrorActionPrompt_ReturnsTrueOnOkCommand()
+        public async Task TestErrorActionPrompt_ReturnsTrueOnOkCommand()
         {
-            bool result = GetResult(
+            bool result = await GetResult(
                 userPrompt => userPrompt.ViewModel.ActionCommand.Execute(null),
                 () => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_PromptsWithConstantTitle()
+        public async Task TestExceptionPrompt_PromptsWithConstantTitleAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+                await GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
             Assert.AreEqual(Resources.ExceptionPromptTitle, userPrompt.Title);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_PromptsWithGivenExceptionMessage()
+        public async Task TestExceptionPrompt_PromptsWithGivenExceptionMessageAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception(ExpectedPrompt)));
+                await GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception(ExpectedPrompt)));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_PromptsWithAggregateInnerExceptionMessage()
+        public async Task TestExceptionPrompt_PromptsWithAggregateInnerExceptionMessageAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ExceptionPrompt(new AggregateException(new Exception(ExpectedPrompt))));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_PromptsAggregateExceptionFirstInnerExceptionMessage()
+        public async Task TestExceptionPrompt_PromptsAggregateExceptionFirstInnerExceptionMessageAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(
+            UserPromptWindow userPrompt = await GetWindow(
                 () => _objectUnderTest.ExceptionPrompt(
                     new AggregateException(new ExceptionWithNullMessage(), new Exception(ExpectedPrompt))));
 
@@ -364,43 +365,43 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_PromptsWithAggregateMessageWhenNoInnerExceptions()
+        public async Task TestExceptionPrompt_PromptsWithAggregateMessageWhenNoInnerExceptionsAsync()
         {
             UserPromptWindow userPrompt =
-                GetWindow(() => _objectUnderTest.ExceptionPrompt(new AggregateException(ExpectedPrompt)));
+                await GetWindow(() => _objectUnderTest.ExceptionPrompt(new AggregateException(ExpectedPrompt)));
 
             Assert.AreEqual(s_expectedErrorPrompt, userPrompt.ViewModel.Prompt);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_ShowsStacktraceAsErrorDetails()
+        public async Task TestExceptionPrompt_ShowsStacktraceAsErrorDetailsAsync()
         {
             var exception = new Exception();
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(exception));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.ExceptionPrompt(exception));
 
             Assert.AreEqual(exception.StackTrace, userPrompt.ViewModel.ErrorDetails);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_SetsCancelCaptionToOk()
+        public async Task TestExceptionPrompt_SetsCancelCaptionToOkAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             Assert.AreEqual(Resources.UiOkButtonCaption, userPrompt.ViewModel.CancelButtonCaption);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_HasActionButtonFalse()
+        public async Task TestExceptionPrompt_HasActionButtonFalseAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             Assert.IsFalse(userPrompt.ViewModel.HasActionButton);
         }
 
         [TestMethod]
-        public void TestExceptionPrompt_SetsIconToErrorIcon()
+        public async Task TestExceptionPrompt_SetsIconToErrorIconAsync()
         {
-            UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
+            UserPromptWindow userPrompt = await GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
             StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);

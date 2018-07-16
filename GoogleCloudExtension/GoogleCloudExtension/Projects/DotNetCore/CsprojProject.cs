@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
+using Microsoft.VisualStudio.Shell;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -30,11 +31,32 @@ namespace GoogleCloudExtension.Projects.DotNetCore
         private static readonly Regex s_frameworkVersionRegex = new Regex(@"(?<=^netcoreapp)[\d.]+$");
         public Project Project { get; }
 
-        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
+        public string DirectoryPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Path.GetDirectoryName(Project.FullName);
+            }
+        }
 
-        public string FullPath => Project.FullName;
+        public string FullPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Project.FullName;
+            }
+        }
 
-        public string Name => Project.Name;
+        public string Name
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Project.Name;
+            }
+        }
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
 

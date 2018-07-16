@@ -84,15 +84,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)
         {
-            OKCommand = new ProtectedAsyncCommand(() => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
+            OKCommand = new ProtectedAsyncCommand(() => ExceuteAsync(OnOKCommandAsync), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: false);
 
             var context = new AttachDebuggerContext(gceInstance, dialogWindow);
             var firstStep = SetCredentialStepViewModel.CreateStep(context);
-            ErrorHandlerUtils.HandleExceptionsAsync(() => ExceuteAsync(() => GotoStep(firstStep)));
+            ErrorHandlerUtils.HandleExceptionsAsync(() => ExceuteAsync(() => GotoStepAsync(firstStep)));
         }
 
-        private async Task OnOKCommand()
+        private async Task OnOKCommandAsync()
         {
             if (_currentStep == null)
             {
@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 return;
             }
             IAttachDebuggerStep nextStep = await _currentStep.OnOkCommandAsync();
-            await GotoStep(nextStep);
+            await GotoStepAsync(nextStep);
         }
 
         private void OnCancelCommand()
@@ -142,7 +142,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ShowCancelButton = _currentStep?.IsCancelButtonVisible ?? false;
         }
 
-        private async Task GotoStep(IAttachDebuggerStep step)
+        private async Task GotoStepAsync(IAttachDebuggerStep step)
         {
             while (step != null)
             {

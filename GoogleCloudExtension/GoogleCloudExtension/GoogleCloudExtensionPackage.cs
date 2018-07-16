@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -39,6 +40,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension
 {
@@ -59,7 +63,7 @@ namespace GoogleCloudExtension
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
@@ -68,9 +72,9 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
-    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
-    public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
+    public sealed class GoogleCloudExtensionPackage : AsyncPackage, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -97,13 +101,25 @@ namespace GoogleCloudExtension
             new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
-        private DTE _dteInstance;
         private Lazy<IShellUtils> _shellUtilsLazy;
         private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
+        private Lazy<ICredentialsStore> _credentialStore;
+        private IComponentModel _componentModel;
+        internal readonly Task _initializeTask;
+
+        private readonly TaskCompletionSource<IGoogleCloudExtensionPackage> _initializeTaskSource =
+            new TaskCompletionSource<IGoogleCloudExtensionPackage>();
         private event EventHandler ClosingEvent;
+
+        /// <summary>
+        /// The initalized instance of the package.
+        /// </summary>
+        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
+
+        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -129,6 +145,8 @@ namespace GoogleCloudExtension
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
+        public DTE2 Dte { get; private set; }
 
         /// <summary>
         /// The default <see cref="IShellUtils"/> service.
@@ -156,12 +174,13 @@ namespace GoogleCloudExtension
         public IUserPromptService UserPromptService => _userPromptService.Value;
 
         /// <summary>
-        /// The initalized instance of the package.
+        /// The default <see cref="ICredentialsStore"/>.
         /// </summary>
-        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
+        public ICredentialsStore CredentialStore => _credentialStore.Value;
 
         public GoogleCloudExtensionPackage()
         {
+            _initializeTask = _initializeTaskSource.Task;
             // Register all of the properties.
             RegisterSolutionOptions();
         }
@@ -186,10 +205,7 @@ namespace GoogleCloudExtension
         /// Check whether the main window is not minimized.
         /// </summary>
         /// <returns>true/false based on whether window is minimized or not</returns>
-        public bool IsWindowActive()
-        {
-            return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
-        }
+        public bool IsWindowActive() => Dte.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
 
         protected override int QueryClose(out bool canClose)
         {
@@ -257,48 +273,63 @@ namespace GoogleCloudExtension
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken token, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            try
+            {
+                // Activity log utils, to aid in debugging.
+                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                activityLog.LogInfo("Starting Google Cloud Tools.");
 
-            // An remember the package.
-            Instance = this;
+                _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                ExportProvider mefExportProvider = _componentModel.DefaultExportProvider;
+                _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
+                _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
+                _processService = mefExportProvider.GetExport<IProcessService>();
+                _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
+                _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
+                _credentialStore = mefExportProvider.GetExport<ICredentialsStore>();
 
-            // Register the command handlers.
-            CloudExplorerCommand.Initialize(this);
-            ManageAccountsCommand.Initialize(this);
-            PublishProjectMainMenuCommand.Initialize(this);
-            PublishProjectContextMenuCommand.Initialize(this);
-            LogsViewerToolWindowCommand.Initialize(this);
-            GenerateConfigurationContextMenuCommand.Initialize(this);
-            ErrorReportingToolWindowCommand.Initialize(this);
+                Dte = await GetServiceAsync<SDTE, DTE2>();
+                VsVersion = Dte.Version;
+                VsEdition = Dte.Edition;
 
-            // Activity log utils, to aid in debugging.
-            ActivityLogUtils.Initialize(this);
-            ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
+                // An remember the package.
+                Instance = this;
 
-            _dteInstance = (DTE)GetService(typeof(DTE));
-            VsVersion = _dteInstance.Version;
-            VsEdition = _dteInstance.Edition;
+                // Register the command handlers.
+                await Task.WhenAll(
+                    CloudExplorerCommand.InitializeAsync(this, token),
+                    ManageAccountsCommand.InitializeAsync(this, token),
+                    PublishProjectMainMenuCommand.InitializeAsync(this, token),
+                    PublishProjectContextMenuCommand.InitializeAsync(this, token),
+                    LogsViewerToolWindowCommand.InitializeAsync(this, token),
+                    GenerateConfigurationContextMenuCommand.InitializeAsync(this, token),
+                    ErrorReportingToolWindowCommand.InitializeAsync(this, token));
 
-            // Update the installation status of the package.
-            CheckInstallationStatus();
+                // Update the installation status of the package.
+                CheckInstallationStatus();
 
-            // Ensure the commands UI state is updated when the GCP project changes.
-            CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
-            CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
+                // Ensure the commands UI state is updated when the GCP project changes.
+                CredentialStore.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
+                CredentialStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
-            // With this setting we allow more concurrent connections from each HttpClient instance created
-            // in the process. This will allow all GCP API services to have more concurrent connections with
-            // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
-            ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
+                // With this setting we allow more concurrent connections from each HttpClient instance created
+                // in the process. This will allow all GCP API services to have more concurrent connections with
+                // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
+                ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-            ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
-            _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
-            _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
-            _processService = mefExportProvider.GetExport<IProcessService>();
-            _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
-            _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
+                _initializeTaskSource.SetResult(this);
+            }
+            catch (Exception e)
+            {
+                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                activityLog.LogError(e.Message);
+                activityLog.LogError(e.StackTrace);
+            }
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>
@@ -325,39 +356,40 @@ namespace GoogleCloudExtension
         }
 
         /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns>The service.</returns>
+        public async Task<I> GetServiceAsync<S, I>()
+        {
+            return (I)await GetServiceAsync(typeof(S));
+        }
+
+        /// <summary>
         /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
         /// <typeparam name="T">The type the service is exported as.</typeparam>
         /// <returns>The service.</returns>
-        public T GetMefService<T>() where T : class
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return GetService<SComponentModel, IComponentModel>().GetService<T>();
-        }
+        public T GetMefService<T>() where T : class => _componentModel.GetService<T>();
 
         /// <summary>
         /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
         /// <typeparam name="T">The type the service is exported as.</typeparam>
         /// <returns>The <see cref="Lazy{T}"/> that initalizes the service.</returns>
-        public Lazy<T> GetMefServiceLazy<T>() where T : class
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return GetService<SComponentModel, IComponentModel>().DefaultExportProvider.GetExport<T>();
-        }
+        public Lazy<T> GetMefServiceLazy<T>() where T : class => _componentModel.DefaultExportProvider.GetExport<T>();
 
         #endregion
 
         #region User Settings
-
-        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
 
         /// <summary>
         /// Gets the options page of the given type.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
+        private T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
 
         /// <summary>
         /// Displays the options page of the given type.
@@ -376,9 +408,12 @@ namespace GoogleCloudExtension
         /// <returns>
         /// The tool window instance, or null if the given id does not already exist and create was false.
         /// </returns>
-        public TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane
+        public TToolWindow FindToolWindow<TToolWindow>(
+            bool create,
+            int id = 0) where TToolWindow : ToolWindowPane
         {
-            return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
+            ToolWindowPane toolWindowPane = FindToolWindow(typeof(TToolWindow), id, create);
+            return toolWindowPane as TToolWindow;
         }
 
         /// <summary>

@@ -33,9 +33,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gae
         {
             var logsToolWindowMock = new Mock<LogsViewerToolWindow> { CallBase = true };
             logsToolWindowMock.Object.Frame = VsWindowFrameMocks.GetMockedWindowFrame();
-            PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(false, It.IsAny<int>())).Returns(() => null);
+            PackageMock.Setup(
+                    p => p.FindToolWindow<LogsViewerToolWindow>(
+                        false,
+                        It.IsAny<int>()))
+                .Returns(() => null);
             PackageMock.Setup(p => p.FindToolWindow<LogsViewerToolWindow>(true, It.IsAny<int>()))
                 .Returns(logsToolWindowMock.Object);
+
             string filter = null;
             logsToolWindowMock.Setup(w => w.ViewModel.FilterLog(It.IsAny<string>())).Callback((string s) => filter = s);
             var objectUnderTest = new ServiceViewModel(

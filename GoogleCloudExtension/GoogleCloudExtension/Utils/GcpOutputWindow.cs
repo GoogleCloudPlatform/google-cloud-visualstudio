@@ -16,7 +16,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -33,6 +32,7 @@ namespace GoogleCloudExtension.Utils
 
         private readonly Lazy<IVsOutputWindowPane> _outputWindowPane = new Lazy<IVsOutputWindowPane>(() =>
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var outputWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
             outputWindow?.CreatePane(s_windowGuid, WindowTitle, 1, 1);
 
@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="str">The line of text to output.</param>
         public void OutputLine(string str)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _outputWindowPane.Value?.OutputString(str);
             _outputWindowPane.Value?.OutputString("\n");
         }
@@ -57,7 +58,11 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="sender">The sender this event comes from.</param>
         /// <param name="args">The <see cref="OutputHandlerEventArgs"/> for the event.</param>
-        public void OutputLine(object sender, OutputHandlerEventArgs args) => OutputLine(args.Line);
+        public void OutputLine(object sender, OutputHandlerEventArgs args)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            OutputLine(args.Line);
+        }
 
         /// <summary>
         /// Outputs debug information to the Visual Studio output window as well as to the
@@ -66,9 +71,9 @@ namespace GoogleCloudExtension.Utils
         public void OutputDebugLine(string str)
         {
 #if DEBUG
+            ThreadHelper.ThrowIfNotOnUIThread();
             OutputLine(str);
 #endif
-            Debug.WriteLine(str);
         }
 
         /// <summary>
@@ -76,6 +81,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public void Activate()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _outputWindowPane.Value?.Activate();
         }
 
@@ -84,6 +90,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public void Clear()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _outputWindowPane.Value?.Clear();
         }
     }

@@ -8,7 +8,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              x:Name="_errorReportingWindow"

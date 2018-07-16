@@ -16,19 +16,16 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class LogsViewerToolWindowCommand
+    internal static class LogsViewerToolWindowCommand
     {
-        /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly IGoogleCloudExtensionPackage _package;
-
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -42,46 +39,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public static readonly CommandID MenuCommandID = new CommandID(CommandSet, CommandId);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogsViewerToolWindowCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        private LogsViewerToolWindowCommand(IGoogleCloudExtensionPackage package)
-        {
-            if (package == null)
-            {
-                throw new ArgumentNullException(nameof(package));
-            }
-
-            _package = package;
-
-            var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
-            if (commandService != null)
-            {
-                var menuItem = new OleMenuCommand(
-                    (sender, e) => ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>(), MenuCommandID);
-                menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
-                commandService.AddCommand(menuItem);
-            }
-        }
-
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static LogsViewerToolWindowCommand Instance { get; private set; }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider => _package;
-
-        /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(IGoogleCloudExtensionPackage package)
+        /// <param name="token"></param>
+        public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
-            Instance = new LogsViewerToolWindowCommand(package);
+            package.ThrowIfNull(nameof(package));
+
+            if (await package.GetServiceAsync(typeof(IMenuCommandService)) is IMenuCommandService commandService)
+            {
+                await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                var menuItem = new OleMenuCommand(
+                    (sender, e) => package.JoinableTaskFactory.Run(ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>),
+                    MenuCommandID);
+                menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
+                commandService.AddCommand(menuItem);
+            }
         }
     }
 }

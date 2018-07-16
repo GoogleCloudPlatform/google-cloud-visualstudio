@@ -18,96 +18,69 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// Command handler for the CloudExplorerCommand that opens the Tool Window.
     /// </summary>
-    internal sealed class CloudExplorerCommand
+    internal static class CloudExplorerCommand
     {
-        private const string ShowCloudExplorerToolWindowCommand = nameof(ShowCloudExplorerToolWindowCommand);
-
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4129;
+        private const int CommandId = 4129;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
-
-        /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package _package;
-
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static CloudExplorerCommand Instance { get; private set; }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider => _package;
+        private static readonly Guid s_commandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        /// <param name="token"></param>
+        public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
-            Instance = new CloudExplorerCommand(package);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CloudExplorerCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        private CloudExplorerCommand(Package package)
-        {
-            if (package == null)
+            object menuCommandService = await package.GetServiceAsync(typeof(IMenuCommandService));
+            await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            if (menuCommandService is OleMenuCommandService commandService)
             {
-                throw new ArgumentNullException("package");
-            }
-
-            _package = package;
-
-            OleMenuCommandService commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
-            {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.ShowToolWindow, menuCommandID);
+                var menuCommandID = new CommandID(s_commandSet, CommandId);
+                var menuItem = new MenuCommand(ShowToolWindow, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
-        }
 
-        /// <summary>
-        /// Shows the tool window when the menu item is clicked.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        private void ShowToolWindow(object sender, EventArgs e)
-        {
-            EventsReporterWrapper.EnsureAnalyticsOptIn();
+            // <summary>
+            // Shows the tool window when the menu item is clicked.
+            // </summary>
+            // <param name="sender">The event sender.</param>
+            // <param name="e">The event args.</param>
+            void ShowToolWindow(object sender, EventArgs e)
+            {
+                EventsReporterWrapper.EnsureAnalyticsOptIn();
 
-            ErrorHandlerUtils.HandleExceptions(() =>
+                ErrorHandlerUtils.HandleExceptionsAsync(ShowToolWindowAsync);
+            }
+
+            async Task ShowToolWindowAsync()
             {
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = _package.FindToolWindow(typeof(CloudExplorerToolWindow), 0, true);
+                var window = package.FindToolWindow<CloudExplorerToolWindow>(true);
                 if (window?.Frame == null)
                 {
                     throw new NotSupportedException("Cannot create tool window");
                 }
 
-                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                await package.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var windowFrame = (IVsWindowFrame)window.Frame;
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            });
+            }
         }
     }
 }

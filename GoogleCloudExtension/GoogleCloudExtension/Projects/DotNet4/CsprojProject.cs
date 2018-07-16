@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
+using Microsoft.VisualStudio.Shell;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -30,11 +31,32 @@ namespace GoogleCloudExtension.Projects.DotNet4
         private static readonly Regex s_frameworkVersionRegex = new Regex("(?<=Version=v)[\\d.]+");
         public Project Project { get; }
 
-        public string DirectoryPath => Path.GetDirectoryName(Project.FullName);
+        public string DirectoryPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Path.GetDirectoryName(Project.FullName);
+            }
+        }
 
-        public string FullPath => Project.FullName;
+        public string FullPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Project.FullName;
+            }
+        }
 
-        public string Name => Project.Name;
+        public string Name
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Project.Name;
+            }
+        }
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
 
@@ -43,6 +65,7 @@ namespace GoogleCloudExtension.Projects.DotNet4
 
         public CsprojProject(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Project = project;
             string targetFramework = Project.Properties.Item("TargetFrameworkMoniker").Value.ToString();
             FrameworkVersion = s_frameworkVersionRegex.Match(targetFramework).Value;

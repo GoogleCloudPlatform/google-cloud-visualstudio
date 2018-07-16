@@ -16,6 +16,9 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -23,6 +26,7 @@ namespace GoogleCloudExtensionUnitTests
 {
     public abstract class ExtensionTestBase
     {
+        private Mock<IServiceProvider> _serviceProviderMock;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
@@ -32,7 +36,22 @@ namespace GoogleCloudExtensionUnitTests
         [TestInitialize]
         public void IntializeGlobalsForTest()
         {
+
             PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
+            PackageMock.Setup(p => p.JoinableTaskFactory).Returns(AssemblyInitialize.JoinableApplicationContext.Factory);
+
+            _serviceProviderMock = new Mock<IServiceProvider>();
+            _serviceProviderMock.SetupService<SVsActivityLog, IVsActivityLog>();
+            var taskSchedularMock = new Mock<IVsTaskSchedulerService>();
+            Mock<IVsTaskSchedulerService2> taskSchedular2Mock = taskSchedularMock.As<IVsTaskSchedulerService2>();
+            taskSchedular2Mock.Setup(ts => ts.GetAsyncTaskContext()).Returns(AssemblyInitialize.JoinableApplicationContext);
+            _serviceProviderMock.SetupService<SVsTaskSchedulerService, IVsTaskSchedulerService>(taskSchedularMock);
+            _serviceProviderMock.SetupDefaultServices();
+
+            ServiceProvider oldProvider = ServiceProvider.GlobalProvider;
+            ServiceProvider.CreateFromSetSite(_serviceProviderMock.Object);
+            Assert.AreNotEqual(oldProvider, ServiceProvider.GlobalProvider);
+
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
             CredentialStoreMock = Mock.Get(CredentialsStore.Default);
@@ -52,6 +71,7 @@ namespace GoogleCloudExtensionUnitTests
         public void CleanupGlobalsForTest()
         {
             AfterEach();
+            _serviceProviderMock.Dispose();
             GoogleCloudExtensionPackage.Instance = null;
         }
 

@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
+
 namespace GoogleCloudExtension.Utils
 {
     public interface ISelectionUtils
     {
         void ActivatePropertiesWindow();
 
-        void ClearSelection();
+        Task ClearSelectionAsync();
 
-        void SelectItem(object item);
+        Task SelectItemAsync(object item);
     }
 }

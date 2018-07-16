@@ -64,7 +64,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Submenu open event handler.
         /// </summary>
-        public ProtectedCommand OnSubmenuOpenCommand { get; }
+        public ProtectedAsyncCommand OnSubmenuOpenCommand { get; }
 
         /// <summary>
         /// Indicate if the submenu list is populated.
@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             MenuItemParent = parent;
             MenuCommand = new ProtectedCommand(() => CommandBubblingHandler(this));
             MenuItems = new ObservableCollection<MenuItemViewModel>();
-            OnSubmenuOpenCommand = new ProtectedCommand(() => AddItems());
+            OnSubmenuOpenCommand = new ProtectedAsyncCommand(AddItemsAsync);
         }
 
         /// <summary>
@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Inherited classes implement this to perform delay loading of sub menu items. 
         /// </summary>
-        protected virtual Task LoadSubMenu()
+        protected virtual Task LoadSubMenuAsync()
         {
             return Task.FromResult(0);
         }
 
-        private async void AddItems()
+        private async Task AddItemsAsync()
         {
             if (IsSubmenuPopulated || Loading)
             {
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             Loading = true;
             Debug.WriteLine($"{Header} call AddItems from viewModel.");
-            await LoadSubMenu();
+            await LoadSubMenuAsync();
             IsSubmenuPopulated = true;
             Loading = false;
         }

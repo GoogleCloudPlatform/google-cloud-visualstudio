@@ -56,16 +56,16 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// If it is determined it won't connect successfully, 
         /// go to a help page with a link to our documentation.
         /// </summary>
-        protected override async Task<IAttachDebuggerStep> GetNextStep()
+        protected override async Task<IAttachDebuggerStep> GetNextStepAsync()
         {
             SetStage(Stage.CheckingConnectivity);
             var port = Context.RemotePowerShellPort;
             int waitTime = port.WaitForFirewallRuleTimeInSeconds();
             bool connected = waitTime > 0 && _askedToCheckConnectivityLater ?
                 // This is the second time, check connectivity with a longer wait time.
-                await ConnectivityTestUntillTimeout(waitTime) :
+                await ConnectivityTestUntillTimeoutAsync(waitTime) :
                 // This is the first time, we don't check "waitTime", test connectivity anyhow.
-                await port.ConnectivityTest(CancelToken);
+                await port.ConnectivityTestAsync(CancelToken);
             if (connected)
             {
                 return InstallStartRemoteToolStepViewModel.CreateStep(Context);
@@ -85,12 +85,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
         }
 
-        private async Task<bool> ConnectivityTestUntillTimeout(int waitTime)
+        private async Task<bool> ConnectivityTestUntillTimeoutAsync(int waitTime)
         {
             Stopwatch watch = Stopwatch.StartNew();
             while (watch.Elapsed.TotalSeconds < waitTime && !CancelToken.IsCancellationRequested)
             {
-                if (await Context.RemotePowerShellPort.ConnectivityTest(CancelToken))
+                if (await Context.RemotePowerShellPort.ConnectivityTestAsync(CancelToken))
                 {
                     return true;
                 }

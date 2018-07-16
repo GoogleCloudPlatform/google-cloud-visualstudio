@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Add firewall rule to unblock the port to the GCE instance.
         /// </summary>
-        public async Task EnablePort()
+        public async Task EnablePortAsync()
         {
             // Get a refreshed list of firewall rules. 
             // If not refreshed, UpdateInstancePorts may fail. 
@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// If a firewall rule contains tag, 
         /// and the GCE instance also has the tag, the rule is applied to the GCE instance.
         /// </summary>
-        public async Task<bool> IsPortEnabled()
+        public async Task<bool> IsPortEnabledAsync()
         {
             string portTag = PortInfo.GetTag(_gceInstance.Name);
 
@@ -141,7 +141,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// True: Local machine is able to connect to the target GCE VM at the port number.
         /// False: Failed to connect.
         /// </returns>
-        public async Task<bool> ConnectivityTest(CancellationToken cancelToken)
+        public async Task<bool> ConnectivityTestAsync(CancellationToken cancelToken)
         {
             using (TcpClient client = new TcpClient())
             {

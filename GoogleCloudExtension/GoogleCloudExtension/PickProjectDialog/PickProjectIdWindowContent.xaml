@@ -17,7 +17,6 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PickProjectDialog"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:sample="clr-namespace:GoogleCloudExtension.PickProjectDialog.SampleData"
              xmlns:mb="clr-namespace:GoogleCloudExtension.Extensions"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:PickProjectIdViewModel}">

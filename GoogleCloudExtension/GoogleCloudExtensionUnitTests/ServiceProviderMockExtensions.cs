@@ -32,10 +32,19 @@ namespace GoogleCloudExtensionUnitTests
             return serviceMock;
         }
 
-        public static Mock<IVsType> SetupServiceStrict<SVsType, IVsType>(
-            this Mock<IServiceProvider> serviceProviderMock) where IVsType : class
+        public static Mock<IVsType> SetupService<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock, MockBehavior behavior) where IVsType : class
         {
-            var serviceMock = new Mock<IVsType>(MockBehavior.Strict);
+            var serviceMock = new Mock<IVsType>(behavior);
+            serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
+            return serviceMock;
+        }
+
+        public static Mock<IVsType> SetupService<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock,
+            DefaultValueProvider defaultValueProvider) where IVsType : class
+        {
+            var serviceMock = new Mock<IVsType> { DefaultValueProvider = defaultValueProvider };
             serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
             return serviceMock;
         }
@@ -84,7 +93,7 @@ namespace GoogleCloudExtensionUnitTests
             serviceProviderMock.Reset();
             ServiceProvider.GlobalProvider?.Dispose();
             s_mocks.Remove(serviceProviderMock);
-            Assert.AreEqual(s_mocks.Count, 0, UnitTestResources.MultipleServiceProvidersWarning);
+            Assert.AreEqual(0, s_mocks.Count, UnitTestResources.MultipleServiceProvidersWarning);
         }
     }
 }

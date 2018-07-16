@@ -59,30 +59,20 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public async Task TestHandleExceptionsAsync_DoesNotPromptForSuccessAsync()
+        public void TestHandleExceptionsAsync_DoesNotPromptForSuccess()
         {
-            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.CompletedTask);
+            ErrorHandlerUtils.HandleExceptionsAsync(() => Task.CompletedTask);
 
             _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]
-        public async Task TestHandleExceptionsAsync_PromptsForNormalExceptionAsync()
+        public void TestHandleExceptionsAsync_PromptsForNormalException()
         {
             var thrownException = new Exception();
-            await ErrorHandlerUtils.HandleExceptionsAsync(() => Task.FromException(thrownException));
+            ErrorHandlerUtils.HandleExceptionsAsync(() => Task.FromException(thrownException));
 
             _promptUserMock.Verify(p => p.ExceptionPrompt(thrownException), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task TestHandleExceptionsAsync_ThrowsCriticalExceptionAsync()
-        {
-            await Assert.ThrowsExceptionAsync<AccessViolationException>(
-                async () => await ErrorHandlerUtils.HandleExceptionsAsync(
-                    () => Task.FromException(new AccessViolationException())));
-
-            _promptUserMock.Verify(p => p.ExceptionPrompt(It.IsAny<Exception>()), Times.Never);
         }
 
         [TestMethod]

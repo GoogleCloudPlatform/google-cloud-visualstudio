@@ -177,7 +177,7 @@ namespace GoogleCloudExtension.PickProjectDialog
             }
         }
 
-        private Task<IEnumerable<Project>> GetProjectsTask() => _mockedProjectList ?? CredentialsStore.Default.CurrentAccountProjects;
+        private Task<IEnumerable<Project>> GetProjectsTaskAsync() => _mockedProjectList ?? CredentialsStore.Default.CurrentAccountProjects;
 
         private async Task LoadProjectsAsync()
         {
@@ -186,7 +186,7 @@ namespace GoogleCloudExtension.PickProjectDialog
             RefreshCommand.CanExecuteCommand = false;
 
             // Updat the to loaded list of projects.
-            Projects = (await GetProjectsTask()) ?? Enumerable.Empty<Project>();
+            Projects = (await GetProjectsTaskAsync()) ?? Enumerable.Empty<Project>();
             RefreshCommand.CanExecuteCommand = true;
 
             // Choose project from the list.

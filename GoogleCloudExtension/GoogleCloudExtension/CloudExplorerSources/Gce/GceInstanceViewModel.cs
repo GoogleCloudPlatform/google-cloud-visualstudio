@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly GceSourceRootViewModel _owner;
         private Instance _instance;
-        private ProtectedCommand _attachDebuggerCommand;
+        private ProtectedAsyncCommand _attachDebuggerCommand;
 
         private Instance Instance
         {
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _owner = owner;
             Instance = instance;
 
-            UpdateInstanceState();
+            UpdateInstanceStateAsync();
         }
 
         public override void OnMenuItemOpen()
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         /// <summary>
         /// Sync instance state when metadata of the instance changed outside.
         /// </summary>
-        private async void RefreshInstanceState()
+        private async Task RefreshInstanceStateAsync()
         {
             IsLoading = true;
             try
@@ -128,13 +128,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             UpdateContextMenu();
         }
 
-        private void UpdateInstanceState()
+        private async Task UpdateInstanceStateAsync()
         {
             GceOperation pendingOperation = _owner.DataSource.GetPendingOperation(Instance);
-            UpdateInstanceState(pendingOperation);
+            await UpdateInstanceStateAsync(pendingOperation);
         }
 
-        private async void UpdateInstanceState(GceOperation pendingOperation)
+        private async Task UpdateInstanceStateAsync(GceOperation pendingOperation)
         {
             while (pendingOperation != null && !pendingOperation.OperationTask.IsCompleted)
             {
@@ -228,11 +228,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var openTerminalServerSessionCommand = new ProtectedCommand(
                 OnOpenTerminalServerSessionCommand,
                 canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
-            var startInstanceCommand = new ProtectedCommand(OnStartInstanceCommand);
-            var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
-            var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
+            var startInstanceCommand = new ProtectedAsyncCommand(OnStartInstanceCommandAsync);
+            var stopInstanceCommand = new ProtectedAsyncCommand(OnStopInstanceCommandAsync);
+            var manageFirewallPorts = new ProtectedAsyncCommand(OnManageFirewallPortsCommandAsync);
             var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
-            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger);
+            _attachDebuggerCommand = new ProtectedAsyncCommand(OnAttachDebuggerAsync);
 
             var menuItems = new List<MenuItem>
             {
@@ -246,7 +246,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             if (Instance.Id.HasValue)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
+                menuItems.Add(
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader,
+                        Command = new ProtectedAsyncCommand(OnBrowseStackdriverLogCommandAsync)
+                    });
             }
 
             if (Instance.IsRunning())
@@ -266,17 +271,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             SyncContextMenuState();
         }
 
-        private void OnBrowseStackdriverLogCommand()
+        private async Task OnBrowseStackdriverLogCommandAsync()
         {
-            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
             window?.FilterVMInstanceLog(Instance.Id.ToString());
         }
 
-        private void OnAttachDebugger()
+        private async Task OnAttachDebuggerAsync()
         {
             AttachDebuggerWindow.PromptUser(_instance);
             // Refresh instance state because the firewall rules may have been changed.
-            RefreshInstanceState();
+            await RefreshInstanceStateAsync();
         }
 
         private void OnSavePublishSettingsCommand()
@@ -328,10 +333,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnPropertiesWindowCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindowAsync(Item);
         }
 
-        private void OnManageFirewallPortsCommand()
+        private async Task OnManageFirewallPortsCommandAsync()
         {
             try
             {
@@ -342,7 +347,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         Instance,
                         portsToEnable: changes.PortsToEnable,
                         portsToDisable: changes.PortsToDisable);
-                    UpdateInstanceState(operation);
+                    await UpdateInstanceStateAsync(operation);
 
                     EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Success));
                 }
@@ -354,7 +359,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private void OnStopInstanceCommand()
+        private async Task OnStopInstanceCommandAsync()
         {
             try
             {
@@ -368,7 +373,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
 
                 var operation = _owner.DataSource.StopInstance(Instance);
-                UpdateInstanceState(operation);
+                await UpdateInstanceStateAsync(operation);
 
                 EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Success));
             }
@@ -388,7 +393,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
         }
 
-        private void OnStartInstanceCommand()
+        private async Task OnStartInstanceCommandAsync()
         {
             try
             {
@@ -402,7 +407,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
 
                 var operation = _owner.DataSource.StartInstance(Instance);
-                UpdateInstanceState(operation);
+                await UpdateInstanceStateAsync(operation);
 
                 EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Success));
             }

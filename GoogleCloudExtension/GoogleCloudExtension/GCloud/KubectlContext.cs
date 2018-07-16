@@ -15,6 +15,7 @@
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -53,6 +54,7 @@ namespace GoogleCloudExtension.GCloud
 
         private KubectlContext()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _configPath = Path.GetTempFileName();
 
             // Add the environment variables to use to invoke kubectl safely. This environemnt is necessary
