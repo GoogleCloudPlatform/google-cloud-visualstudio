@@ -19,6 +19,7 @@ using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -175,6 +176,7 @@ namespace GoogleCloudExtension.Deployment
         {
             try
             {
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
                 GcpOutputWindow.Clear();
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
@@ -284,7 +286,7 @@ namespace GoogleCloudExtension.Deployment
 
             Directory.CreateDirectory(stageDirectory);
 
-            progress.Report(0.1);
+            await progress.ReportAsync(0.1);
 
             using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
 
@@ -295,7 +297,7 @@ namespace GoogleCloudExtension.Deployment
                     _toolsPathProvider,
                     GcpOutputWindow.OutputLine,
                     options.Configuration);
-                if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
+                if (!await progress.UpdateProgressAsync(createAppBundleTask, 0.1, 0.3))
                 {
                     return null;
                 }
@@ -308,7 +310,7 @@ namespace GoogleCloudExtension.Deployment
 
                 Task<bool> buildContainerTask =
                     options.KubectlContext.BuildContainerAsync(imageTag, stageDirectory, GcpOutputWindow.OutputLine);
-                if (!await progress.UpdateProgress(buildContainerTask, 0.4, 0.7))
+                if (!await progress.UpdateProgressAsync(buildContainerTask, 0.4, 0.7))
                 {
                     return null;
                 }
@@ -410,7 +412,7 @@ namespace GoogleCloudExtension.Deployment
                 result.Failed |= !imageUpdated;
             }
 
-            progress.Report(0.8);
+            await progress.ReportAsync(0.8);
             return result;
         }
 
@@ -419,6 +421,7 @@ namespace GoogleCloudExtension.Deployment
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;
             GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage);
+            await TaskScheduler.Default;
             while (actualTime < s_newServiceIpTimeout)
             {
                 string ip = await options.KubectlContext.GetPublicServiceIpAsync(options.DeploymentName);

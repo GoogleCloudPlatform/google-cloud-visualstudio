@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -106,6 +107,7 @@ namespace GoogleCloudExtension.Utils
             string workingDir = null,
             IDictionary<string, string> environment = null)
         {
+            await TaskScheduler.Default;
             var startInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment);
 
             var process = Process.Start(startInfo);

@@ -113,6 +113,7 @@ namespace GoogleCloudExtension.Deployment
         {
             try
             {
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ShellUtils.SaveAllFiles();
 
                 GcpOutputWindow.Activate();
@@ -185,13 +186,13 @@ namespace GoogleCloudExtension.Deployment
         {
             string stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
-            progress.Report(0.1);
+            await progress.ReportAsync(0.1);
 
             using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
                 Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction, options.Configuration);
-                if (!await progress.UpdateProgress(createAppBundleTask, from: 0.1, to: 0.3))
+                if (!await progress.UpdateProgressAsync(createAppBundleTask, 0.1, 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
                     return null;
@@ -208,7 +209,7 @@ namespace GoogleCloudExtension.Deployment
                 {
                     Debug.WriteLine($"Detected runtime {runtime}");
                 }
-                progress.Report(0.4);
+                await progress.ReportAsync(0.4);
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
                 // the operation to finish, update the progress as it goes.
@@ -218,12 +219,12 @@ namespace GoogleCloudExtension.Deployment
                     promote: options.Promote,
                     context: options.Context,
                     outputAction: outputAction);
-                if (!await progress.UpdateProgress(deployTask, 0.6, 0.9))
+                if (!await progress.UpdateProgressAsync(deployTask, 0.6, 0.9))
                 {
                     Debug.WriteLine("Failed to deploy bundle.");
                     return null;
                 }
-                progress.Report(1.0);
+                await progress.ReportAsync(1.0);
 
                 string service = options.Service ?? ConfigurationService.GetAppEngineService(project);
                 return new AppEngineFlexDeploymentResult(

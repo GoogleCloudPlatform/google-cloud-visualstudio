@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.Utils
         public void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            DTE2 dte2 = GoogleCloudExtensionPackage.Instance.Dte;
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
@@ -170,7 +170,7 @@ namespace GoogleCloudExtension.Utils
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             localPath.ThrowIfNullOrEmpty(nameof(localPath));
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            DTE2 dte = GoogleCloudExtensionPackage.Instance.Dte;
             try
             {
                 dte.Solution.Create(localPath, name);

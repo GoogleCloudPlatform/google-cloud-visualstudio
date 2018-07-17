@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     internal class StackdriverTagger : ITagger<StackdriverTag>
     {
         private static StackdriverTag s_emptyLoggerTag = new StackdriverTag();
-        private readonly IToolTipPresenter _toolTipProvider;
+        private readonly IToolTipProvider _toolTipProvider;
         private readonly ITextView _view;
         private readonly ITextBuffer _sourceBuffer;
         private bool _isTooltipShown = false;
@@ -44,14 +44,14 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         /// <param name="view">The text view on which the tag shows.</param>
         /// <param name="sourceBuffer">The source buffer with the text view.</param>
-        /// <param name="toolTipService">The tool tip provider. <seealso cref="IToolTipProviderFactory"/>. </param>
-        public StackdriverTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipService toolTipService)
+        /// <param name="toolTipProviderFactory">The tool tip provider. <seealso cref="IToolTipProviderFactory"/>. </param>
+        public StackdriverTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipProviderFactory toolTipProviderFactory)
         {
             _sourceBuffer = sourceBuffer;
             _view = view;
             _view.LayoutChanged += OnViewLayoutChanged;
             _view.LostAggregateFocus += OnLostAggregateFocus;
-            _toolTipProvider = toolTipService.CreatePresenter(_view);
+            _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
             if (_view == ActiveTagData.Current?.TextView)
             {
                 ShowOrUpdateToolTip();
@@ -167,14 +167,15 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private void HideTooltip()
         {
-            _toolTipProvider.Dismiss();
+            _toolTipProvider.ClearToolTip();
             _isTooltipShown = false;
         }
 
         private void DisplayTooltip(SnapshotSpan span)
         {
+            _toolTipProvider.ClearToolTip();
             _isTooltipShown = true;
-            // Note, keep a local copy of ActiveTagData.Current.
+            // Note, keep a local copy of ActiveTagData.Current. 
             // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
             ActiveTagData activeData = ActiveTagData.Current;
             if (activeData == null)
@@ -183,9 +184,10 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return;
             }
             activeData.TooltipControl.Width = _view.ViewportWidth;
-            _toolTipProvider.StartOrUpdate(
+            _toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                new[] { activeData.TooltipControl });
+                activeData.TooltipControl,
+                PopupStyles.PositionClosest);
         }
     }
 }
