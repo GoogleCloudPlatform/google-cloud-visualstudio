@@ -149,7 +149,8 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
                 try
                 {
-                    NetCoreAppUtils.GenerateDockerfile(selectedProject);
+                    GoogleCloudExtensionPackage.Instance.GetMefService<INetCoreAppUtils>()
+                        .GenerateDockerfile(selectedProject);
                 }
                 catch (Exception exception)
                 {

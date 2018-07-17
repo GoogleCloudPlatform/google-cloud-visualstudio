@@ -13,9 +13,13 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,10 +29,21 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class contains methods used to maniuplate ASP.NET Core projects.
     /// </summary>
-    public static class NetCoreAppUtils
+    [Export(typeof(INetCoreAppUtils))]
+    public class NetCoreAppUtils : INetCoreAppUtils
     {
+        private readonly Lazy<IProcessService> _processService;
+        private readonly Lazy<IFileSystem> _fileSystem;
+        private readonly Lazy<IGCloudWrapper> _gcloudWrapper;
+        private readonly Lazy<IEnvironment> _environment;
+        private readonly IToolsPathProvider _toolsPathProvider;
         public const string DockerfileName = "Dockerfile";
         private const string RuntimeImageFormat = "gcr.io/google-appengine/aspnetcore:{0}";
+
+        private IProcessService ProcessService => _processService.Value;
+        private IFileSystem FileSystem => _fileSystem.Value;
+        private IGCloudWrapper GCloudWrapper => _gcloudWrapper.Value;
+        public IEnvironment Environment => _environment.Value;
 
         /// <summary>
         /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
@@ -43,24 +58,32 @@ namespace GoogleCloudExtension.Deployment
             "WORKDIR /app\n" +
             "ENTRYPOINT [\"dotnet\", \"{1}.dll\"]\n";
 
+        [ImportingConstructor]
+        public NetCoreAppUtils(Lazy<IProcessService> processService, Lazy<IFileSystem> fileSystem, Lazy<IGCloudWrapper> gcloudWrapper, Lazy<IEnvironment> environment)
+        {
+            _processService = processService;
+            _fileSystem = fileSystem;
+            _gcloudWrapper = gcloudWrapper;
+            _environment = environment;
+            _toolsPathProvider = VsVersionUtils.ToolsPathProvider;
+        }
+
         /// <summary>
         /// Creates an app bundle by publishing it to the given directory.
         /// </summary>
         /// <param name="project">The project.</param>
-        /// <param name="stageDirectory">The directory to which to publish.</param>
-        /// <param name="pathsProvider">The provider for paths.</param>
+        /// <param name="stageDirectory">The directory the build output is published to.</param>
         /// <param name="outputAction">The callback to call with output from the command.</param>
         /// <param name="configuration">The name of the configuration to publish.</param>
-        public static async Task<bool> CreateAppBundleAsync(
+        public async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
-            IToolsPathProvider pathsProvider,
             Action<string> outputAction,
             string configuration)
         {
-            var arguments = $"publish -o \"{stageDirectory}\" -c {configuration}";
-            var externalTools = pathsProvider.GetExternalToolsPath();
-            var workingDir = project.DirectoryPath;
+            string arguments = $"publish -o \"{stageDirectory}\" -c {configuration}";
+            string externalTools = _toolsPathProvider.GetExternalToolsPath();
+            string workingDir = project.DirectoryPath;
             var env = new Dictionary<string, string>
             {
                 { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" }
@@ -68,13 +91,13 @@ namespace GoogleCloudExtension.Deployment
 
             Debug.WriteLine($"Using tools from {externalTools}");
             Debug.WriteLine($"Setting working directory to {workingDir}");
-            Directory.CreateDirectory(stageDirectory);
+            FileSystem.Directory.CreateDirectory(stageDirectory);
             outputAction($"dotnet {arguments}");
-            bool result = await ProcessUtils.Default.RunCommandAsync(
-                file: pathsProvider.GetDotnetPath(),
+            bool result = await ProcessService.RunCommandAsync(
+                file: _toolsPathProvider.GetDotnetPath(),
                 args: arguments,
-                workingDir: workingDir,
                 handler: (o, e) => outputAction(e.Line),
+                workingDir: workingDir,
                 environment: env);
             await GCloudWrapper.GenerateSourceContextAsync(project.DirectoryPath, stageDirectory);
             return result;
@@ -86,21 +109,21 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="stageDirectory">The directory where to save the Dockerfile.</param>
-        public static void CopyOrCreateDockerfile(IParsedProject project, string stageDirectory)
+        public void CopyOrCreateDockerfile(IParsedProject project, string stageDirectory)
         {
-            string sourceDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
+            string sourceDockerfile = GetProjectDockerfilePath(project);
             string targetDockerfile = Path.Combine(stageDirectory, DockerfileName);
             string entryPointName = CommonUtils.GetEntrypointName(stageDirectory) ?? project.Name;
             string baseImage = string.Format(RuntimeImageFormat, project.FrameworkVersion);
 
-            if (File.Exists(sourceDockerfile))
+            if (FileSystem.File.Exists(sourceDockerfile))
             {
-                File.Copy(sourceDockerfile, targetDockerfile, overwrite: true);
+                FileSystem.File.Copy(sourceDockerfile, targetDockerfile, overwrite: true);
             }
             else
             {
                 string content = string.Format(DockerfileDefaultContent, baseImage, entryPointName);
-                File.WriteAllText(targetDockerfile, content);
+                FileSystem.File.WriteAllText(targetDockerfile, content);
             }
         }
 
@@ -108,12 +131,12 @@ namespace GoogleCloudExtension.Deployment
         /// Generates the Dockerfile for this .NET Core project.
         /// </summary>
         /// <param name="project">The project.</param>
-        public static void GenerateDockerfile(IParsedProject project)
+        public void GenerateDockerfile(IParsedProject project)
         {
-            string targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
+            string targetDockerfile = GetProjectDockerfilePath(project);
             string baseImage = string.Format(RuntimeImageFormat, project.FrameworkVersion);
             string content = string.Format(DockerfileDefaultContent, baseImage, project.Name);
-            File.WriteAllText(targetDockerfile, content);
+            FileSystem.File.WriteAllText(targetDockerfile, content);
         }
 
         /// <summary>
@@ -121,10 +144,14 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project.</param>
         /// <returns>True if the Dockerfile exists, false otherwise.</returns>
-        public static bool CheckDockerfile(IParsedProject project)
+        public bool CheckDockerfile(IParsedProject project)
         {
-            string targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
-            return File.Exists(targetDockerfile);
+            return FileSystem.File.Exists(GetProjectDockerfilePath(project));
+        }
+
+        private static string GetProjectDockerfilePath(IParsedProject project)
+        {
+            return Path.Combine(project.DirectoryPath, DockerfileName);
         }
     }
 }

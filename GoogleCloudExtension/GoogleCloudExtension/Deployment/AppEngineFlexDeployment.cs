@@ -17,7 +17,6 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -37,11 +36,13 @@ namespace GoogleCloudExtension.Deployment
         private readonly Lazy<IGcpOutputWindow> _gcpOutputWindow;
         private readonly Lazy<IAppEngineConfiguration> _configurationService;
         private readonly Lazy<IStatusbarService> _statusbarService;
+        private readonly Lazy<INetCoreAppUtils> _netCoreAppUtils;
 
         private IShellUtils ShellUtils => _shellUtils.Value;
         private IGcpOutputWindow GcpOutputWindow => _gcpOutputWindow.Value;
         private IAppEngineConfiguration ConfigurationService => _configurationService.Value;
         private IStatusbarService StatusbarHelper => _statusbarService.Value;
+        private INetCoreAppUtils NetCoreAppUtils => _netCoreAppUtils.Value;
 
         /// <summary>
         /// The options for the deployment operation.
@@ -95,12 +96,14 @@ namespace GoogleCloudExtension.Deployment
             Lazy<IShellUtils> shellUtils,
             Lazy<IGcpOutputWindow> gcpOutputWindow,
             Lazy<IAppEngineConfiguration> configurationService,
-            Lazy<IStatusbarService> statusbarService)
+            Lazy<IStatusbarService> statusbarService,
+            Lazy<INetCoreAppUtils> netCoreAppUtils)
         {
             _shellUtils = shellUtils;
             _gcpOutputWindow = gcpOutputWindow;
             _configurationService = configurationService;
             _statusbarService = statusbarService;
+            _netCoreAppUtils = netCoreAppUtils;
         }
 
 
@@ -123,17 +126,12 @@ namespace GoogleCloudExtension.Deployment
                 AppEngineFlexDeploymentResult result;
                 using (StatusbarHelper.Freeze())
                 using (StatusbarHelper.ShowDeployAnimation())
-                using (ProgressBarHelper progress =
+                using (IDisposableProgress progress =
                     StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
                 using (ShellUtils.SetShellUIBusy())
                 {
                     DateTime startDeploymentTime = DateTime.Now;
-                    result = await PublishProjectAsync(
-                        project,
-                        options,
-                        progress,
-                        VsVersionUtils.ToolsPathProvider,
-                        GcpOutputWindow.OutputLine);
+                    result = await PublishProjectAsync(project, options, progress);
                     deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 
@@ -174,14 +172,10 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="project">The project to deploy.</param>
         /// <param name="options">The <seealso cref="DeploymentOptions"/> to use.</param>
         /// <param name="progress">The progress indicator.</param>
-        /// <param name="toolsPathProvider">The tools path provider to use.</param>
-        /// <param name="outputAction">The action to call with lines from the command output.</param>
         private async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
             IParsedProject project,
             DeploymentOptions options,
-            IProgress<double> progress,
-            IToolsPathProvider toolsPathProvider,
-            Action<string> outputAction)
+            IProgress<double> progress)
         {
             string stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
@@ -190,8 +184,12 @@ namespace GoogleCloudExtension.Deployment
             using (new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
-                Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction, options.Configuration);
-                if (!await progress.UpdateProgress(createAppBundleTask, from: 0.1, to: 0.3))
+                Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(
+                    project,
+                    stageDirectory,
+                    GcpOutputWindow.OutputLine,
+                    options.Configuration);
+                if (!await progress.UpdateProgress(createAppBundleTask, 0.1, 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
                     return null;
@@ -217,7 +215,7 @@ namespace GoogleCloudExtension.Deployment
                     version: options.Version,
                     promote: options.Promote,
                     context: options.Context,
-                    outputAction: outputAction);
+                    outputAction: GcpOutputWindow.OutputLine);
                 if (!await progress.UpdateProgress(deployTask, 0.6, 0.9))
                 {
                     Debug.WriteLine("Failed to deploy bundle.");
@@ -238,7 +236,7 @@ namespace GoogleCloudExtension.Deployment
             string stageDirectory,
             string version,
             bool promote,
-            GCloudContext context,
+            IGCloudContext context,
             Action<string> outputAction)
         {
             string appYamlPath = Path.Combine(stageDirectory, AppEngineConfiguration.AppYamlName);

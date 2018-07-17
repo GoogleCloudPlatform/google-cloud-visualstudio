@@ -28,5 +28,8 @@ namespace GoogleCloudExtension.Services
 
         /// <inheritdoc cref="Environment.GetFolderPath(Environment.SpecialFolder)"/>
         public string GetFolderPath(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
+
+        /// <inheritdoc cref="Environment.GetEnvironmentVariable(string)"/>
+        public string GetEnvironmentVariable(string variable) => Environment.GetEnvironmentVariable(variable);
     }
 }

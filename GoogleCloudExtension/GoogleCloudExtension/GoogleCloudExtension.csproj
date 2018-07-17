@@ -185,10 +185,12 @@
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
     <Compile Include="Deployment\IGkeDeploymentService.cs" />
+    <Compile Include="Deployment\INetCoreAppUtils.cs" />
     <Compile Include="Deployment\IWindowsVmDeployment.cs" />
     <Compile Include="Deployment\MSBuildProperty.cs" />
     <Compile Include="Deployment\MSBuildTarget.cs" />
     <Compile Include="GCloud\IGCloudContext.cs" />
+    <Compile Include="GCloud\IGCloudWrapper.cs" />
     <Compile Include="GCloud\IKubectlContext.cs" />
     <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
@@ -286,6 +288,7 @@
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
     <Compile Include="Utils\IProcessService.cs" />
+    <Compile Include="Utils\IDisposableProgress.cs" />
     <Compile Include="Utils\IProtectedCommand.cs" />
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />

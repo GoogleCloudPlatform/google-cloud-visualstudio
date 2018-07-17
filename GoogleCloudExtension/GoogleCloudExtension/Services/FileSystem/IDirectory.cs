@@ -13,19 +13,23 @@
 // limitations under the License.
 
 using System.Collections.Generic;
+using System.IO;
 
 namespace GoogleCloudExtension.Services.FileSystem
 {
     /// <summary>
     /// Service interface for performing directory operations.
     /// </summary>
-    /// <seealso cref="System.IO.Directory"/>
+    /// <seealso cref="Directory"/>
     public interface IDirectory
     {
-        /// <inheritdoc cref="System.IO.Directory.Exists(string)"/>
+        /// <inheritdoc cref="Directory.Exists(string)"/>
         bool Exists(string path);
 
-        /// <inheritdoc cref="System.IO.Directory.EnumerateDirectories(string)"/>
+        /// <inheritdoc cref="Directory.EnumerateDirectories(string)"/>
         IEnumerable<string> EnumerateDirectories(string path);
+
+        /// <inheritdoc cref="Directory.CreateDirectory(string)"/>
+        DirectoryInfo CreateDirectory(string path);
     }
 }

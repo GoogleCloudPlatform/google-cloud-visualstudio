@@ -35,10 +35,15 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         {
             _targetSdkVersions = new List<string>();
             // ReSharper disable once PossibleUnintendedReferenceComparison
-            VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(
-                () => Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions));
+            VsVersionUtils.s_toolsPathProviderOverride =
+                Mock.Of<IToolsPathProvider>(tpp => tpp.GetNetCoreSdkVersions() == _targetSdkVersions);
             _closeWindowMock = new Mock<Action>();
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
+        }
+
+        protected override void AfterEach()
+        {
+            VsVersionUtils.s_toolsPathProviderOverride = null;
         }
 
         [TestMethod]

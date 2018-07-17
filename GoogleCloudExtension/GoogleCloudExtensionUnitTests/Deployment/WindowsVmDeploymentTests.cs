@@ -50,28 +50,25 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         };
 
         private WindowsVmDeployment _objectUnderTest;
+
         private Mock<IProcessService> _processServiceMock;
         private Mock<IParsedDteProject> _dteProjectMock;
         private Mock<Configuration> _activeConfigMock;
         private Mock<SolutionBuild> _solutionBuildMock;
-
         private Mock<IToolsPathProvider> _toolsPathProviderMock;
-        private Lazy<IToolsPathProvider> _oldToolsPathLazy;
+        private Mock<IGcpOutputWindow> _gcpOutputWindowMock;
+        private Mock<IStatusbarService> _statusbarServiceMock;
+        private Mock<IShellUtils> _shellUtilsMock;
 
         private Task<bool> _runCommandTask;
         private string _path;
         private string _parameters;
         private EventHandler<OutputHandlerEventArgs> _handler;
-        private Mock<IGcpOutputWindow> _gcpOutputWindowMock;
-        private Mock<IStatusbarService> _statusbarServiceMock;
-        private Mock<IShellUtils> _shellUtilsMock;
 
         protected override void BeforeEach()
         {
-
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
-            _oldToolsPathLazy = VsVersionUtils.s_toolsPathProvider;
-            VsVersionUtils.s_toolsPathProvider = _toolsPathProviderMock.ToLazy();
+            VsVersionUtils.s_toolsPathProviderOverride = _toolsPathProviderMock.Object;
 
             _solutionBuildMock = new Mock<SolutionBuild>();
             _activeConfigMock = new Mock<Configuration>();
@@ -111,7 +108,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _gcpOutputWindowMock.ToLazy());
         }
 
-        protected override void AfterEach() => VsVersionUtils.s_toolsPathProvider = _oldToolsPathLazy;
+        protected override void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
 
         [TestMethod]
         public async Task TestPublishProjectAsync_RunsProjectBuildForGivenConfiguration()
