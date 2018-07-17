@@ -94,7 +94,6 @@ namespace ProjectTemplate.Tests
         [DataRow("4", "WebApi")]
         public void TestCompileAspNet(string version, string appType)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             string projectName = $"TestGcpAspNet{appType}";
             CreateProjectFromTemplate(projectName, "NetFramework", "Gcp.AspNet.vstemplate", version, appType);
             Solution.SolutionBuild.Build(true);
@@ -119,7 +118,6 @@ namespace ProjectTemplate.Tests
         [DataRow("2.1", "WebApi")]
         public void TestCompileAspNetCore(string version, string appType)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             string projectName = $"TestGcpAspNetCore{appType}{version.Replace(".", "").Replace("-", "")}";
             CreateProjectFromTemplate(projectName, "NetCore", "Gcp.AspNetCore.vstemplate", version, appType);
             RestorePackages(Path.Combine(SolutionFolderPath, projectName));
@@ -185,7 +183,6 @@ namespace ProjectTemplate.Tests
             string version,
             string appType)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             string projectPath = Path.Combine(SolutionFolderPath, projectName);
             Directory.CreateDirectory(projectPath);
             string templatePath = Solution.GetProjectTemplate(choserTemplateName, "CSharp");

@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _owner = owner;
             Instance = instance;
 
-            UpdateInstanceStateAsync();
+            ErrorHandlerUtils.HandleExceptionsAsync(UpdateInstanceStateAsync);
         }
 
         public override void OnMenuItemOpen()
@@ -263,8 +263,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
-            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) });
-            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) });
+            menuItems.Add(
+                new MenuItem
+                {
+                    Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                    Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand)
+                });
+            menuItems.Add(
+                new MenuItem
+                {
+                    Header = Resources.UiPropertiesMenuHeader,
+                    Command = new ProtectedAsyncCommand(OnPropertiesWindowCommandAsync)
+                });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
@@ -331,9 +341,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start(url);
         }
 
-        private void OnPropertiesWindowCommand()
+        private async Task OnPropertiesWindowCommandAsync()
         {
-            _owner.Context.ShowPropertiesWindowAsync(Item);
+            await _owner.Context.ShowPropertiesWindowAsync(Item);
         }
 
         private async Task OnManageFirewallPortsCommandAsync()

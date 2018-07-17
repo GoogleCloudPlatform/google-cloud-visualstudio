@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,7 +53,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
 
             Content = windowContent;
 
-            StartLoginFlowAsync();
+            ErrorHandlerUtils.HandleExceptionsAsync(StartLoginFlowAsync);
         }
 
         private async System.Threading.Tasks.Task StartLoginFlowAsync()

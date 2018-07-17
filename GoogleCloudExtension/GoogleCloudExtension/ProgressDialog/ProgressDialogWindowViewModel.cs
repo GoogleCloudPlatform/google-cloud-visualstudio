@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils;
 using System;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.ProgressDialog
@@ -60,12 +59,12 @@ namespace GoogleCloudExtension.ProgressDialog
         /// This method will wait for the task to complete (whether succesfully or not) and then it will
         /// close the dialog.
         /// </summary>
-        private void CloseOnTaskCompletion()
-        {
-            _task.ContinueWith(
-                t => CloseOwner(),
-                TaskScheduler.FromCurrentSynchronizationContext());
-        }
+        private void CloseOnTaskCompletion() => ErrorHandlerUtils.HandleExceptionsAsync(
+            async () =>
+            {
+                await _task;
+                CloseOwner();
+            });
 
         private void CloseOwner()
         {

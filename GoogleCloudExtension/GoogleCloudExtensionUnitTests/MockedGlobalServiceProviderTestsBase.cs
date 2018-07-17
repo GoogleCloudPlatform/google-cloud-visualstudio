@@ -166,6 +166,7 @@ namespace GoogleCloudExtensionUnitTests
 
         /// <summary>Waits for the task to complete (not including any continuations) and returns the result set by the task. If the task returns an error code or an exception, this method returns the same error code.</summary>
         /// <returns>The result set by the task.</returns>
+        [SuppressMessage("", "VSTHRD002", Justification = "Synchronous wait required by interface.")]
         public object GetResult()
         {
             OnBlockingWaitBegin?.Invoke(this, null);
@@ -185,6 +186,7 @@ namespace GoogleCloudExtensionUnitTests
         /// <param name="options">Values are of type <see cref="T:Microsoft.VisualStudio.Shell.Interop.__VSTASKWAITOPTIONS" />. Set to VSTWO_AbortOnTaskCancellation to abort if a cancellation occurs.</param>
         /// <returns>
         /// <see langword="true" /> if the task completed successfully before <paramref name="millisecondsTimeout" />, otherwise <see langword="false" />.</returns>
+        [SuppressMessage("", "VSTHRD002", Justification = "Synchronous wait required by interface.")]
         public bool WaitEx(int millisecondsTimeout, uint options)
         {
             OnBlockingWaitBegin?.Invoke(this, null);

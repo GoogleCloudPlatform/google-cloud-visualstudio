@@ -411,7 +411,12 @@ namespace GoogleCloudExtensionUnitTests
                 new Mock<Microsoft.VisualStudio.Shell.Interop.IAsyncServiceProvider>(MockBehavior.Strict);
             asyncServiceProviderMock.As<IAsyncServiceProvider>()
                 .Setup(sp => sp.GetServiceAsync(It.IsAny<Type>()))
-                .Returns((Type t) => Task.FromResult(ServiceProvider.GlobalProvider.GetService(t)));
+                .Returns(
+                    async (Type t) =>
+                    {
+                        await _objectUnderTest.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        return ServiceProvider.GlobalProvider.GetService(t);
+                    });
 
             IAsyncLoadablePackageInitialize packageInit = _objectUnderTest;
             // This runs the AsyncPackage.InitializeAsync() method.

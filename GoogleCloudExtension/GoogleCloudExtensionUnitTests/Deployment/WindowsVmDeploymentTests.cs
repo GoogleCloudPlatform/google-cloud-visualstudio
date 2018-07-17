@@ -445,7 +445,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 s_defaultCredentials,
                 DefaultWebSite,
                 DefaultConfigurationName);
-
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             taskSource.SetResult(result);
 
             Assert.AreEqual(result, await t);
