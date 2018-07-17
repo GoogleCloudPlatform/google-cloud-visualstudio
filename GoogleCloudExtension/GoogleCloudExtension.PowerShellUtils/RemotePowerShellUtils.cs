@@ -102,22 +102,23 @@ namespace GoogleCloudExtension.PowerShellUtils
             CancellationToken cancelToken = default(CancellationToken))
         {
             cancelToken.ThrowIfCancellationRequested();
-            Task<PSDataCollection<PSObject>> powershellTask =
-                Task.Factory.FromAsync(powerShell.BeginInvoke(), powerShell.EndInvoke);
-            cancelToken.Register(powerShell.Stop);
 
-            PSDataCollection<PSObject> output;
+            powerShell.InvocationStateChanged += (sender, args) =>
+            {
+                if (args.InvocationStateInfo.State == PSInvocationState.Running)
+                {
+                    cancelToken.Register(() => powerShell.BeginStop(null, null));
+                }
+            };
+
             try
             {
-                output = await powershellTask;
+                return await Task.Factory.FromAsync(powerShell.BeginInvoke(), powerShell.EndInvoke);
             }
-            catch (Exception e) when (cancelToken.IsCancellationRequested)
+            finally
             {
-                throw new OperationCanceledException("PowerShell operation canceled", e, cancelToken);
+                cancelToken.ThrowIfCancellationRequested();
             }
-            // PowerShell can sometimes complete without error if the cancellation happened quickly enough.
-            cancelToken.ThrowIfCancellationRequested();
-            return output;
         }
     }
 }

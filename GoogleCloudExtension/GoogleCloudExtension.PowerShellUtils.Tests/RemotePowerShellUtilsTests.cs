@@ -33,8 +33,6 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         private const string DefaultUser = "DefaultUser";
         private const string DefaultPassword = "DefaultPassword";
 
-        public TestContext TestContext { get; set; }
-
         [TestMethod]
         public void TestGetEmbeddedFile_ThrowsForUnknownFile()
         {
@@ -94,6 +92,8 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
+                powerShell.AddScript("Start-Sleep -Seconds 30");
+
                 await Assert.ThrowsExceptionAsync<OperationCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationToken(true)));
 
