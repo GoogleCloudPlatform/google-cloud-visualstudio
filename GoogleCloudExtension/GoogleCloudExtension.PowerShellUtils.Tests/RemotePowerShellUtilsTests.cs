@@ -92,6 +92,8 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
+                // PowerShell can not start without a command to execute.
+                // Adding this script helps avoid false positives.
                 powerShell.AddScript("Start-Sleep -Seconds 30");
 
                 await Assert.ThrowsExceptionAsync<OperationCanceledException>(
