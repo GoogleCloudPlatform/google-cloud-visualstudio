@@ -82,8 +82,8 @@ namespace GoogleCloudExtension.Utils
         }
 
         public IGkeDataSource CreateGkeDataSource() => new GkeDataSource(
-            CredentialsStore.Default.CurrentProjectId,
-            CredentialsStore.Default.CurrentGoogleCredential,
+            CredentialsStore.CurrentProjectId,
+            CredentialsStore.CurrentGoogleCredential,
             GoogleCloudExtensionPackage.Instance.ApplicationName);
     }
 }
