@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.Utils
         public IResourceManagerDataSource ResourceManagerDataSource => _resourceManagerDataSource.Value;
         public IGPlusDataSource GPlusDataSource => _gPlusDataSource.Value;
 
+        [ImportingConstructor]
         public DataSourceFactory(ICredentialsStore credentialsStore)
         {
             CredentialsStore = credentialsStore;

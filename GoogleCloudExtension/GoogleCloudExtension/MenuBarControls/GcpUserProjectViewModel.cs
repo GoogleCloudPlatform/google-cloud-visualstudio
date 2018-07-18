@@ -24,15 +24,15 @@ using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
     [Export(typeof(IGcpUserProjectViewModel))]
     public class GcpUserProjectViewModel : ViewModelBase, IGcpUserProjectViewModel
     {
-        private AsyncProperty<string> _profilePictureAsync;
+        private AsyncProperty<BitmapImage> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
-        private string _projectDisplayString;
         private AsyncProperty<Project> _currentProject;
         private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
 
@@ -43,18 +43,9 @@ namespace GoogleCloudExtension.MenuBarControls
         }
 
         /// <summary>
-        /// The user ready string for the project.
-        /// </summary>
-        public string ProjectDisplayString
-        {
-            get => _projectDisplayString;
-            private set => SetValueAndRaise(ref _projectDisplayString, value);
-        }
-
-        /// <summary>
         /// Returns the profile image URL.
         /// </summary>
-        public AsyncProperty<string> ProfilePictureAsync
+        public AsyncProperty<BitmapImage> ProfilePictureAsync
         {
             get => _profilePictureAsync;
             private set => SetValueAndRaise(ref _profilePictureAsync, value);
@@ -91,6 +82,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
             CredentialsStore.CurrentAccountChanged += (sender, args) => UpdateUserProfile();
             CredentialsStore.CurrentProjectIdChanged += (sender, args) => LoadCurrentProject();
+            LoadCurrentProject();
 
             ManageAccountsCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
@@ -101,7 +93,9 @@ namespace GoogleCloudExtension.MenuBarControls
             if (GPlusDataSource != null)
             {
                 Task<Person> profileTask = GPlusDataSource.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
+                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                    profileTask,
+                    x => x != null ? new BitmapImage(new Uri(x.Image.Url)) : null);
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
                     x => x?.Emails.FirstOrDefault()?.Value,
@@ -116,10 +110,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
         public void LoadCurrentProject()
         {
-            if (!CurrentProjectAsync.IsPending)
-            {
-                CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
-            }
+            CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
         }
 
         private async Task<Project> GetCurrentProjectAsync()
@@ -127,10 +118,7 @@ namespace GoogleCloudExtension.MenuBarControls
             string currentProjectId = CredentialsStore.CurrentProjectId;
             if (currentProjectId != null)
             {
-                Project project = await DataSourceFactory.ResourceManagerDataSource.GetProjectAsync(currentProjectId);
-
-                ProjectDisplayString = project?.Name;
-                return project;
+                return await DataSourceFactory.ResourceManagerDataSource.GetProjectAsync(currentProjectId);
             }
             else
             {

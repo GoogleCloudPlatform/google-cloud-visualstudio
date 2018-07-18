@@ -12,13 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
     [Guid(GuidString)]
-    public class GcpMenuBarControlFactory
+    public class GcpMenuBarControlFactory : IVsUIFactory
     {
         public const string GuidString = "36E3BEDB-7C67-404C-B1BC-28B6A87E779A";
+        public const int GcpMenuBarControl = 100;
+
+        /// <summary>Creates an instance of the specified element.</summary>
+        /// <param name="guid">The GUID of the command.</param>
+        /// <param name="dw">The command ID. </param>
+        /// <param name="uiElement">[out] The element that was created.</param>
+        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+        public int CreateUIElement(ref Guid guid, uint dw, out IVsUIElement uiElement)
+        {
+            uiElement = new GcpMenuBarControl();
+            return VSConstants.S_OK;
+        }
     }
 }

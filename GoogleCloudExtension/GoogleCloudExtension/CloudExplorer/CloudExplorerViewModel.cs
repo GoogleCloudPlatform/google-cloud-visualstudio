@@ -63,7 +63,8 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Stores whether the cloud explorer is in zero state.
         /// </summary>
-        public bool IsEmptyState => IsReady && (CredentialsStore.Default.CurrentAccount == null || UserProject.ProjectDisplayString == null);
+        public bool IsEmptyState => IsReady &&
+            (CredentialsStore.Default.CurrentAccount == null || UserProject.CurrentProjectAsync?.Value?.Name == null);
 
         /// <summary>
         /// The negation of IsEmptyState.

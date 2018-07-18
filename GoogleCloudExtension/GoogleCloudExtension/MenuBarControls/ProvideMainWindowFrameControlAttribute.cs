@@ -19,6 +19,7 @@ namespace GoogleCloudExtension.MenuBarControls
 {
     public class ProvideMainWindowFrameControlAttribute : RegistrationAttribute
     {
+        private const string BraceGuidFormat = "B";
         private readonly Type _controlType;
         private readonly int _viewId;
         private readonly Type _factoryType;
@@ -35,21 +36,20 @@ namespace GoogleCloudExtension.MenuBarControls
             using (Key key = context.CreateKey(MainFrameControlKey))
             {
                 key.SetValue(null, "GCP Project Card");
+                key.SetValue("Package", context.ComponentType.GUID.ToString(BraceGuidFormat));
+                key.SetValue("ViewFactory", _factoryType.GUID.ToString(BraceGuidFormat));
+                key.SetValue("ViewId", _viewId);
                 key.SetValue("DisplayName", "#1000");
                 key.SetValue("Alignment", "MenuBarRight");
                 key.SetValue("FullScreenAlignment", "MenuBarRight");
-                key.SetValue("Sort", 700);
-                key.SetValue("FullScreenSort", 700);
-                key.SetValue("ViewFactory", _factoryType.GUID);
-                key.SetValue("ViewId", _viewId);
+                key.SetValue("Sort", 550);
+                key.SetValue("FullScreenSort", 550);
+
             }
         }
 
-        public override void Unregister(RegistrationContext context)
-        {
-            context.RemoveKey(MainFrameControlKey);
-        }
+        public override void Unregister(RegistrationContext context) => context.RemoveKey(MainFrameControlKey);
 
-        private string MainFrameControlKey => @"MainWindowFrameControls\" + _controlType.GUID.ToString("B");
+        private string MainFrameControlKey => @"MainWindowFrameControls\" + _controlType.GUID.ToString(BraceGuidFormat);
     }
 }

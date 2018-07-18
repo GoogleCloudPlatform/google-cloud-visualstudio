@@ -15,6 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
+using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
@@ -22,8 +23,7 @@ namespace GoogleCloudExtension.MenuBarControls
     {
         AsyncProperty<Project> CurrentProjectAsync { get; }
         AsyncProperty<string> ProfileNameAsync { get; }
-        AsyncProperty<string> ProfilePictureAsync { get; }
-        string ProjectDisplayString { get; }
+        AsyncProperty<BitmapImage> ProfilePictureAsync { get; }
 
         /// <summary>
         /// The command to show the manage accounts dialog.

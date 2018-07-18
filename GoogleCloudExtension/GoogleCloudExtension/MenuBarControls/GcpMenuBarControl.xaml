@@ -20,23 +20,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.MenuBarControls"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
-             xmlns:wpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:IGcpUserProjectViewModel}">
-    <StackPanel Orientation="Horizontal">
-        <TextBox Text="{Binding ProjectDisplayString, Mode=OneWay}"
-                 IsReadOnly="True"/>
+             d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <Button Command="{Binding SelectProjectCommand}"
+                MinWidth="50"
+                MaxHeight="20"
+                VerticalAlignment="Center"
+                VerticalContentAlignment="Center">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Content" Value="{Binding CurrentProjectAsync.Value.Name}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentProjectAsync.Value.Name}" Value="">
+                            <Setter Property="Content" Value="No Project" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentProjectAsync.Value.Name}" Value="{x:Null}">
+                            <Setter Property="Content" Value="No Project" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsPending}" Value="True">
+                            <Setter Property="Content" Value="Loading"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsCanceled}" Value="True">
+                            <Setter Property="Content" Value="Error"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsError}" Value="True">
+                            <Setter Property="Content" Value="Error"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter/>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
-        <controls:PressButton Content="{Binding ProfilePictureAsync.Value}"
-                              Command="{Binding ManageAccountsCommand}"
-                              ToolTip="{Binding ProfileNameAsync.Value}">
-            <controls:PressButton.ContentTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding}" Width="25px" Height="25px" VerticalAlignment="Center"
+        <Button Content="{Binding ProfilePictureAsync.Value}"
+                Command="{Binding ManageAccountsCommand}"
+                ToolTip="{Binding ProfileNameAsync.Value}"
+                Width="20"
+                Height="20"
+                VerticalAlignment="Center"
+                VerticalContentAlignment="Center"
+                Margin="5,0,0,0">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Button.Template>
+            <Button.ContentTemplate>
+                <DataTemplate DataType="BitmapImage">
+                    <Image Source="{Binding}" VerticalAlignment="Center"
                            HorizontalAlignment="Center" />
                 </DataTemplate>
-            </controls:PressButton.ContentTemplate>
-        </controls:PressButton>
+            </Button.ContentTemplate>
+        </Button>
     </StackPanel>
 </UserControl>
