@@ -22,8 +22,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.0.1" />
   </ItemGroup>
 
+  <Target Name="NpmInstall" BeforeTargets="Build" Inputs="package.json" Outputs="node_modules">
+    <Exec Command="npm install --loglevel error" />
+  </Target>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="bower install" />
     <Exec Command="dotnet bundle" />
   </Target>
 
