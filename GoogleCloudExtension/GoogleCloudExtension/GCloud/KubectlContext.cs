@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="name">The name of the service to return.</param>
         /// <returns>The service.</returns>
-        public Task<GkeService> GetServiceAsync(string name) => GetKubectlCommandOutputAsync<GkeService>($"get service {name}");
+        public Task<GkeService> GetServiceAsync(string name) => GetKubectlCommandOutputAsync<GkeService>($"get service {name} --ignore-not-found");
 
         /// <summary>
         /// Returns the list of deployments for the current cluster.
