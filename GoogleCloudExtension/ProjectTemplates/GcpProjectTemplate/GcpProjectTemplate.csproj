@@ -67,11 +67,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Core\MVC\.bowerrc" />
     <None Include="Core\MVC\appsettings.json" />
-    <None Include="Core\MVC\bower.json" />
     <None Include="Core\MVC\bundleconfig.json" />
-    <None Include="Core\MVC\project.json" />
+    <None Include="Core\MVC\package.json" />
     <None Include="Core\MVC\Properties\launchSettings.json" />
     <None Include="Core\MVC\web.config" />
     <None Include="Core\MVC\wwwroot\css\site.css" />
@@ -80,7 +78,6 @@
     <None Include="Core\MVC\wwwroot\images\banner1.svg" />
     <None Include="Core\MVC\wwwroot\images\banner2.svg" />
     <None Include="Core\MVC\wwwroot\images\banner3.svg" />
-    <None Include="Core\MVC\wwwroot\images\banner4.svg" />
     <None Include="Core\MVC\wwwroot\js\site.js" />
     <None Include="Core\MVC\wwwroot\js\site.min.js" />
     <None Include="Core\MVC\Project_Readme.html" />

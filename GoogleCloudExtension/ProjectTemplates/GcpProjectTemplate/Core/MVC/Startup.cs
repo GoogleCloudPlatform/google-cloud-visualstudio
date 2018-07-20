@@ -1,10 +1,13 @@
 ﻿using Google.Cloud.Diagnostics.AspNetCore;
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 
 namespace _safe_project_name_
 {
@@ -60,6 +63,11 @@ namespace _safe_project_name_
 
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
+                    RequestPath = new PathString("/lib")
+                });
             }
             else
             {
