@@ -2496,4 +2496,16 @@ Delete corrupted file?</value>
     <value>No User</value>
     <comment>The message displayed for user name when there is no user.</comment>
   </data>
+  <data name="MenuBarPopupProjectNameLabel" xml:space="preserve">
+    <value>Name: </value>
+    <comment>The label of the Project Name text block on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPupupProjectIdLabel" xml:space="preserve">
+    <value>Id: </value>
+    <comment>The label for the project id text block on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPopupProjectNumberLabel" xml:space="preserve">
+    <value>Number: </value>
+    <comment>The label for the project number text block on the menu bar popup.</comment>
+  </data>
 </root>

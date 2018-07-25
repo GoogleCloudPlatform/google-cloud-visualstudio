@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils.Async;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,13 +24,15 @@ namespace GoogleCloudExtension.MenuBarControls
     /// <summary>
     /// Interaction logic for AsyncPropertyContent.xaml
     /// </summary>
-    public partial class AsyncPropertyContent : ContentControl
+    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public class AsyncPropertyContent : ContentControl
     {
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
             nameof(Target),
-            typeof(IAsyncProperty<>),
+            typeof(IAsyncProperty<Task>),
             typeof(AsyncPropertyContent),
-            new PropertyMetadata(new AsyncProperty(null), OnTargetChanged));
+            new PropertyMetadata(new AsyncProperty<object>(Task.FromResult<object>(null)), OnTargetChanged));
 
         public static readonly DependencyProperty SuccessContentProperty = DependencyProperty.Register(
             nameof(SuccessContent),
@@ -55,10 +58,12 @@ namespace GoogleCloudExtension.MenuBarControls
             typeof(AsyncPropertyContent),
             new PropertyMetadata(OnContentChanged));
 
-        public AsyncPropertyContent()
-        {
-            InitializeComponent();
-        }
+        protected static readonly DependencyProperty CurrentContentProperty =
+            DependencyProperty.Register(
+                nameof(CurrentContent),
+                typeof(DependencyProperty),
+                typeof(AsyncPropertyContent),
+                new PropertyMetadata(OnCurrentContentChanged));
 
         /// <summary>
         /// The <see cref="IAsyncProperty{T}"/> that is the target of this control.
@@ -105,51 +110,78 @@ namespace GoogleCloudExtension.MenuBarControls
             set => SetValue(CanceledContentProperty, value);
         }
 
+        private DependencyProperty CurrentContent
+        {
+            get => (DependencyProperty)GetValue(CurrentContentProperty);
+            set => SetValue(CurrentContentProperty, value);
+        }
+
+        static AsyncPropertyContent()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(
+                typeof(AsyncPropertyContent),
+                new FrameworkPropertyMetadata(typeof(AsyncPropertyContent)));
+        }
+
         private static void OnTargetChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (self is AsyncPropertyContent contentControl)
+            if (args.OldValue is IAsyncProperty<Task> oldAsyncProperty)
             {
-                if (args.OldValue is IAsyncProperty<Task> oldAsyncProperty)
-                {
-                    oldAsyncProperty.PropertyChanged -= contentControl.OnTargetPropertyChanged;
-                }
+                oldAsyncProperty.PropertyChanged -= OnTargetPropertyChanged;
+            }
 
-                if (args.NewValue is IAsyncProperty<Task> newAsyncProperty)
+            if (args.NewValue is IAsyncProperty<Task> newAsyncProperty)
+            {
+                newAsyncProperty.PropertyChanged += OnTargetPropertyChanged;
+                self.SetValue(CurrentContentProperty, GetExpectedCurrentContent(newAsyncProperty));
+            }
+
+            void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e)
+            {
+                if (sender is IAsyncProperty<Task> asyncProperty)
                 {
-                    newAsyncProperty.PropertyChanged += contentControl.OnTargetPropertyChanged;
-                    contentControl.UpdateContentFromContext();
+                    self.SetValue(CurrentContentProperty, GetExpectedCurrentContent(asyncProperty));
                 }
             }
         }
 
         private static void OnContentChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (self is AsyncPropertyContent content)
+            if (self.GetValue(CurrentContentProperty) is DependencyProperty currentContent && args.Property == currentContent)
             {
-                content.UpdateContentFromContext();
+                self.SetValue(ContentProperty, self.GetValue(currentContent));
             }
         }
 
-        private void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e) =>
-            UpdateContentFromContext();
-
-        private void UpdateContentFromContext()
+        private static void OnCurrentContentChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (Target.IsSuccess)
+            if (args.Property == CurrentContentProperty && self.GetValue(CurrentContentProperty) is DependencyProperty currentContent)
             {
-                Content = SuccessContent;
+                self.SetValue(ContentProperty, self.GetValue(currentContent));
             }
-            else if (Target.IsPending)
+        }
+
+        private static DependencyProperty GetExpectedCurrentContent(IAsyncProperty<Task> asyncProperty)
+        {
+            if (asyncProperty.IsPending)
             {
-                Content = PendingContent;
+                return PendingContentProperty;
             }
-            else if (Target.IsError)
+            else if (asyncProperty.IsSuccess)
             {
-                Content = ErrorContent;
+                return SuccessContentProperty;
             }
-            else if (Target.IsCanceled)
+            else if (asyncProperty.IsCanceled)
             {
-                Content = CanceledContent;
+                return CanceledContentProperty;
+            }
+            else if (asyncProperty.IsError)
+            {
+                return ErrorContentProperty;
+            }
+            else
+            {
+                return null;
             }
         }
     }

@@ -4111,6 +4111,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name: .
+        /// </summary>
+        public static string MenuBarPopupProjectNameLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number: .
+        /// </summary>
+        public static string MenuBarPopupProjectNumberLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id: .
+        /// </summary>
+        public static string MenuBarPupupProjectIdLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPupupProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More Information.
         /// </summary>
         public static string MoreInfoTitle {

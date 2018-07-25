@@ -15,6 +15,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -37,6 +38,9 @@ using System.Runtime.InteropServices;
 // same time.
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
+
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
+
 [assembly: InternalsVisibleTo(
     "GoogleCloudExtensionUnitTests," +
     "PublicKey=0024000004800000940000000602000000240000525341310004000001000" +
