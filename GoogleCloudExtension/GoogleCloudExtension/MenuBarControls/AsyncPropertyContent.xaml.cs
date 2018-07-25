@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.MenuBarControls
     {
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
             nameof(Target),
-            typeof(IAsyncProperty<Task>),
+            typeof(IAsyncProperty<>),
             typeof(AsyncPropertyContent),
             new PropertyMetadata(new AsyncProperty(null), OnTargetChanged));
 

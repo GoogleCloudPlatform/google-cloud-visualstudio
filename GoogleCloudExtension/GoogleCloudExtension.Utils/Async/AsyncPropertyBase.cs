@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Utils.Async
     /// <summary>
     /// Base class for modeling a task. Implementations should NotifyAllPropertyChanged when the task completes.
     /// </summary>
-    public abstract class AsyncPropertyBase<T> : Model where T : Task
+    public abstract class AsyncPropertyBase<T> : Model, IAsyncProperty<T> where T : Task
     {
         /// <summary>
         /// A task that succeeds when the actual task completes. This task will never throw.
