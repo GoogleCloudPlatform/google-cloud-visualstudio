@@ -32,7 +32,6 @@ namespace GoogleCloudExtension.MenuBarControls
     [Export(typeof(IGcpUserProjectViewModel))]
     public class GcpUserProjectViewModel : ViewModelBase, IGcpUserProjectViewModel
     {
-        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
         private AsyncProperty<BitmapImage> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private AsyncProperty<Project> _currentProject;
@@ -66,7 +65,16 @@ namespace GoogleCloudExtension.MenuBarControls
         public AsyncProperty<string> ProfileEmailAsyc
         {
             get => _profileEmailAsyc;
-            set => SetValueAndRaise(ref _profileEmailAsyc, value);
+            private set => SetValueAndRaise(ref _profileEmailAsyc, value);
+        }
+
+        /// <summary>
+        /// Setting this to true opens the GCP Menu Bar Popup.
+        /// </summary>
+        public bool IsPopupOpen
+        {
+            get => _isPopupOpen;
+            set => SetValueAndRaise(ref _isPopupOpen, value);
         }
 
         /// <summary>
@@ -79,30 +87,27 @@ namespace GoogleCloudExtension.MenuBarControls
         /// </summary>
         public ProtectedCommand SelectProjectCommand { get; }
 
-        private IGPlusDataSource GPlusDataSource => DataSourceFactory.GPlusDataSource;
-        private IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
-        private ICredentialsStore CredentialsStore { get; }
-
-        public bool IsPopupOpen
-        {
-            get => _isPopupOpen;
-            set => SetValueAndRaise(ref _isPopupOpen, value);
-        }
-
+        /// <summary>
+        /// The command to open the GCP Menu Bar Popup.
+        /// </summary>
         public ICommand OpenPopup { get; }
 
+        private IGPlusDataSource GPlusDataSource => DataSourceFactory.GPlusDataSource;
+        private IDataSourceFactory DataSourceFactory { get; }
+        private ICredentialsStore CredentialsStore { get; }
+
         [ImportingConstructor]
-        public GcpUserProjectViewModel(Lazy<IDataSourceFactory> dataSourceFactory, ICredentialsStore credentialsStore)
+        public GcpUserProjectViewModel(IDataSourceFactory dataSourceFactory, ICredentialsStore credentialsStore)
         {
-            _dataSourceFactory = dataSourceFactory;
+            DataSourceFactory = dataSourceFactory;
             CredentialsStore = credentialsStore;
 
-            CredentialsStore.CurrentAccountChanged += (sender, args) => UpdateUserProfile();
             CredentialsStore.CurrentProjectIdChanged += (sender, args) => LoadCurrentProject();
+            DataSourceFactory.DataSourcesUpdated += (sender, args) => UpdateUserProfile();
             LoadCurrentProject();
 
-            ManageAccountsCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
             OpenPopup = new ProtectedCommand(() => IsPopupOpen = true);
+            ManageAccountsCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
         }
 
@@ -117,7 +122,7 @@ namespace GoogleCloudExtension.MenuBarControls
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
                     x => x?.DisplayName,
-                    Resources.CloudExplorerLoadingMessage);
+                    Resources.UiLoadingMessage);
                 ProfileEmailAsyc = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
                     p => p.Emails.FirstOrDefault()?.Value);
@@ -125,7 +130,8 @@ namespace GoogleCloudExtension.MenuBarControls
             else
             {
                 ProfilePictureAsync = null;
-                ProfileNameAsync = new AsyncProperty<string>(Resources.CloudExplorerSelectAccountMessage);
+                ProfileNameAsync = null;
+                ProfileEmailAsyc = null;
             }
         }
 

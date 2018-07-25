@@ -15,6 +15,7 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
@@ -24,6 +25,12 @@ namespace GoogleCloudExtension.MenuBarControls
         AsyncProperty<Project> CurrentProjectAsync { get; }
         AsyncProperty<string> ProfileNameAsync { get; }
         AsyncProperty<BitmapImage> ProfilePictureAsync { get; }
+        AsyncProperty<string> ProfileEmailAsyc { get; }
+
+        /// <summary>
+        /// Setting this to true opens the GCP Menu Bar Popup.
+        /// </summary>
+        bool IsPopupOpen { get; set; }
 
         /// <summary>
         /// The command to show the manage accounts dialog.
@@ -34,6 +41,11 @@ namespace GoogleCloudExtension.MenuBarControls
         /// The command to execute to select a new GCP project.
         /// </summary>
         ProtectedCommand SelectProjectCommand { get; }
+
+        /// <summary>
+        /// The command to open the GCP Menu Bar Popup.
+        /// </summary>
+        ICommand OpenPopup { get; }
 
         void LoadCurrentProject();
         void UpdateUserProfile();

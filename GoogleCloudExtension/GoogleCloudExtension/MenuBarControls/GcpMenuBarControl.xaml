@@ -23,7 +23,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}">
+             d:DataContext="{d:DesignInstance local:IGcpUserProjectViewModel}">
     <UserControl.Resources>
         <ControlTemplate x:Key="ContentOnlyTemplate" TargetType="ContentControl">
             <ContentPresenter />
@@ -31,11 +31,12 @@
 
         <Style x:Key="ContentOnlyButtonStyle" TargetType="Button" >
             <Setter Property="Template" Value="{StaticResource ContentOnlyTemplate}"/>
+            <!-- This value is needed, as the button base style was overriding it. -->
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowPanelTextBrushKey}}"/>
         </Style>
 
-        <StackPanel x:Key="ErrorPanel"
+        <StackPanel x:Key="ProjectLoadErrorPanel"
                     Orientation="Horizontal">
             <Image Source="../Theming/Resources/ic_error_red_14px.png" Stretch="None" />
             <TextBlock Text="{x:Static ext:Resources.UiErrorCaption}" />
@@ -67,16 +68,19 @@
                                         SuccessContent="{Binding CurrentProjectAsync.Value.Name,
                                             TargetNullValue={x:Static ext:Resources.MenuBarNoProjectMessage},
                                             FallbackValue={x:Static ext:Resources.MenuBarNoProjectMessage}}"
-                                        PendingContent="{x:Static ext:Resources.CloudExplorerLoadingMessage}"
-                                        CanceledContent="{StaticResource ErrorPanel}"
-                                        ErrorContent="{StaticResource ErrorPanel}"/>
-            <Image Source="{Binding ProfilePictureAsync.Value}"
-                   ToolTip="{Binding ProfileNameAsync.Value}"
-                   Margin="5,0,0,0"/>
+                                        PendingContent="{x:Static ext:Resources.UiLoadingMessage}"
+                                        CanceledContent="{StaticResource ProjectLoadErrorPanel}"
+                                        ErrorContent="{StaticResource ProjectLoadErrorPanel}"/>
+            <local:AsyncPropertyContent Target="{Binding ProfilePictureAsync}"
+                                        Margin="5,0,0,0">
+                <local:AsyncPropertyContent.SuccessContent>
+                    <Image Source="{Binding ProfilePictureAsync.Value}"
+                           ToolTip="{Binding ProfileNameAsync.Value}"/>
+                </local:AsyncPropertyContent.SuccessContent>
+            </local:AsyncPropertyContent>
 
             <Popup IsOpen="{Binding IsPopupOpen}"
                    StaysOpen="False"
-                   HorizontalOffset="-100"
                    VerticalOffset="5"
                    AllowsTransparency="True"
                    PopupAnimation="Slide">

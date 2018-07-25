@@ -1726,15 +1726,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading....
-        /// </summary>
-        public static string CloudExplorerLoadingMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerLoadingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select or create account.
         /// </summary>
         public static string CloudExplorerNoAccountButtonCaption {
@@ -4102,11 +4093,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No User.
+        ///   Looks up a localized string similar to No User Account.
         /// </summary>
         public static string MenuBarNoUserMessage {
             get {
                 return ResourceManager.GetString("MenuBarNoUserMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Account.
+        /// </summary>
+        public static string MenuBarPopupChangeAccountButtonCaption {
+            get {
+                return ResourceManager.GetString("MenuBarPopupChangeAccountButtonCaption", resourceCulture);
             }
         }
         
@@ -4125,6 +4125,15 @@ namespace GoogleCloudExtension {
         public static string MenuBarPopupProjectNumberLabel {
             get {
                 return ResourceManager.GetString("MenuBarPopupProjectNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Project.
+        /// </summary>
+        public static string MenuBarPopupSelectProjectButtonCaption {
+            get {
+                return ResourceManager.GetString("MenuBarPopupSelectProjectButtonCaption", resourceCulture);
             }
         }
         
@@ -5125,6 +5134,15 @@ namespace GoogleCloudExtension {
         public static string UiGoButtonCaption {
             get {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string UiLoadingMessage {
+            get {
+                return ResourceManager.GetString("UiLoadingMessage", resourceCulture);
             }
         }
         

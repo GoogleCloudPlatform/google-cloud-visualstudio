@@ -24,7 +24,7 @@
              xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}">
+             d:DataContext="{d:DesignInstance local:IGcpUserProjectViewModel}">
     <UserControl.Resources>
         <Style TargetType="Button"
                BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogButtonStyleKey}}" />
@@ -84,9 +84,9 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
                 <Button Command="{Binding SelectProjectCommand}"
-                        Content="Select Project" />
+                        Content="{x:Static ext:Resources.MenuBarPopupSelectProjectButtonCaption}" />
                 <Button Command="{Binding ManageAccountsCommand}"
-                        Content="Change Account"
+                        Content="{x:Static ext:Resources.MenuBarPopupChangeAccountButtonCaption}"
                         Margin="5,0,0,0" />
             </StackPanel>
         </StackPanel>

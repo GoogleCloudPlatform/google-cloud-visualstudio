@@ -343,7 +343,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
-            <TextBox Text="{Binding UserProject.ProjectDisplayString, Mode=OneWay}"
+            <TextBox Text="{Binding UserProject.CurrentProjectAsync.Value.Name, Mode=OneWay}"
                      IsReadOnly="True"
                      Style="{StaticResource CommonTextBoxStyle}" />
             <Button Content="{x:Static ext:Resources.CloudExplorerSelectProjectCaption}"

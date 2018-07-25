@@ -28,12 +28,28 @@ namespace GoogleCloudExtension.Utils
     {
         private Lazy<IResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<IGPlusDataSource> _gPlusDataSource;
+
+        /// <summary>
+        /// The default data source factory.
+        /// </summary>
         public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.DataSourceFactory;
+
+        /// <summary>
+        /// The default data source for managing GCP project resources.
+        /// </summary>
+        public IResourceManagerDataSource ResourceManagerDataSource => _resourceManagerDataSource.Value;
+
+        /// <summary>
+        /// The default data source for managing google accounts.
+        /// </summary>
+        public IGPlusDataSource GPlusDataSource => _gPlusDataSource.Value;
 
         private ICredentialsStore CredentialsStore { get; }
 
-        public IResourceManagerDataSource ResourceManagerDataSource => _resourceManagerDataSource.Value;
-        public IGPlusDataSource GPlusDataSource => _gPlusDataSource.Value;
+        /// <summary>
+        /// This event is triggered when account dependent DataSources have been updated.
+        /// </summary>
+        public event EventHandler DataSourcesUpdated;
 
         [ImportingConstructor]
         public DataSourceFactory(ICredentialsStore credentialsStore)
@@ -41,12 +57,14 @@ namespace GoogleCloudExtension.Utils
             CredentialsStore = credentialsStore;
             SetupLazyDataSources();
             CredentialsStore.CurrentAccountChanged += (sender, args) => SetupLazyDataSources();
+            CredentialsStore.Reset += (sender, args) => SetupLazyDataSources();
         }
 
         private void SetupLazyDataSources()
         {
             _resourceManagerDataSource = new Lazy<IResourceManagerDataSource>(CreateResourceManagerDataSource);
             _gPlusDataSource = new Lazy<IGPlusDataSource>(CreatePlusDataSource);
+            DataSourcesUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         public ResourceManagerDataSource CreateResourceManagerDataSource()
