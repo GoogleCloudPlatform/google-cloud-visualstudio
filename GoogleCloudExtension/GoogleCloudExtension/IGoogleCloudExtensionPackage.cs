@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
@@ -75,6 +76,11 @@ namespace GoogleCloudExtension
         /// The default <see cref="IDataSourceFactory"/> service.
         /// </summary>
         IDataSourceFactory DataSourceFactory { get; }
+
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/> service.
+        /// </summary>
+        ICredentialsStore CredentialsStore { get; }
 
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();

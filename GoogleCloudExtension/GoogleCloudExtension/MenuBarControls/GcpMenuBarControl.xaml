@@ -20,62 +20,75 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.MenuBarControls"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}">
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-        <Button Command="{Binding SelectProjectCommand}"
-                MinWidth="50"
-                MaxHeight="20"
-                VerticalAlignment="Center"
-                VerticalContentAlignment="Center">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Content" Value="{Binding CurrentProjectAsync.Value.Name}"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentProjectAsync.Value.Name}" Value="">
-                            <Setter Property="Content" Value="No Project" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CurrentProjectAsync.Value.Name}" Value="{x:Null}">
-                            <Setter Property="Content" Value="No Project" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsPending}" Value="True">
-                            <Setter Property="Content" Value="Loading"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsCanceled}" Value="True">
-                            <Setter Property="Content" Value="Error"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding CurrentProjectAsync.IsError}" Value="True">
-                            <Setter Property="Content" Value="Error"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <ContentPresenter/>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ContentOnlyTemplate" TargetType="ContentControl">
+            <ContentPresenter />
+        </ControlTemplate>
 
-        <Button Content="{Binding ProfilePictureAsync.Value}"
-                Command="{Binding ManageAccountsCommand}"
-                ToolTip="{Binding ProfileNameAsync.Value}"
-                Width="20"
-                Height="20"
-                VerticalAlignment="Center"
-                VerticalContentAlignment="Center"
-                Margin="5,0,0,0">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <ContentPresenter />
-                </ControlTemplate>
-            </Button.Template>
-            <Button.ContentTemplate>
-                <DataTemplate DataType="BitmapImage">
-                    <Image Source="{Binding}" VerticalAlignment="Center"
-                           HorizontalAlignment="Center" />
-                </DataTemplate>
-            </Button.ContentTemplate>
-        </Button>
-    </StackPanel>
+        <Style x:Key="ContentOnlyButtonStyle" TargetType="Button" >
+            <Setter Property="Template" Value="{StaticResource ContentOnlyTemplate}"/>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowPanelTextBrushKey}}"/>
+        </Style>
+
+        <StackPanel x:Key="ErrorPanel"
+                    Orientation="Horizontal">
+            <Image Source="../Theming/Resources/ic_error_red_14px.png" Stretch="None" />
+            <TextBlock Text="{x:Static ext:Resources.UiErrorCaption}" />
+
+            <StackPanel.ToolTip>
+                <ToolTip>
+                    <TextBlock Text="{Binding CurrentProjectAsync.ErrorMessage, Mode=OneWay}"
+                               TextWrapping="Wrap" />
+                </ToolTip>
+            </StackPanel.ToolTip>
+        </StackPanel>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowPanelTextBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowBorderBrushKey}}"/>
+        </Style>
+    </UserControl.Style>
+
+    <Button Command="{Binding OpenPopup}"
+            MinWidth="50"
+            MaxHeight="20"
+            VerticalAlignment="Center"
+            Cursor="Hand"
+            Style="{StaticResource ContentOnlyButtonStyle}">
+        <StackPanel Orientation="Horizontal">
+            <local:AsyncPropertyContent Target="{Binding CurrentProjectAsync}"
+                                        SuccessContent="{Binding CurrentProjectAsync.Value.Name,
+                                            TargetNullValue={x:Static ext:Resources.MenuBarNoProjectMessage},
+                                            FallbackValue={x:Static ext:Resources.MenuBarNoProjectMessage}}"
+                                        PendingContent="{x:Static ext:Resources.CloudExplorerLoadingMessage}"
+                                        CanceledContent="{StaticResource ErrorPanel}"
+                                        ErrorContent="{StaticResource ErrorPanel}"/>
+            <Image Source="{Binding ProfilePictureAsync.Value}"
+                   ToolTip="{Binding ProfileNameAsync.Value}"
+                   Margin="5,0,0,0"/>
+
+            <Popup IsOpen="{Binding IsPopupOpen}"
+                   StaysOpen="False"
+                   HorizontalOffset="-100"
+                   VerticalOffset="5"
+                   AllowsTransparency="True"
+                   PopupAnimation="Slide">
+                <local:GcpMenuBarPopupControl/>
+            </Popup>
+        </StackPanel>
+    </Button>
 </UserControl>
+
+
+
+
+
+
+

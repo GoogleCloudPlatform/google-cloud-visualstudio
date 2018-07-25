@@ -195,11 +195,17 @@
     <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
     <Compile Include="GCloud\KubectlContextProvider.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
+      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="MenuBarControls\AsyncPropertyContent.xaml.cs">
+      <DependentUpon>AsyncPropertyContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MenuBarControls\GcpMenuBarControl.xaml.cs">
       <DependentUpon>GcpMenuBarControl.xaml</DependentUpon>
     </Compile>
@@ -1029,11 +1035,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MenuBarControls\GcpMenuBarPopupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MenuBarControls\AsyncPropertyContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

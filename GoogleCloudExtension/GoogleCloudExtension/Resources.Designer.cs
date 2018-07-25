@@ -4093,6 +4093,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Project.
+        /// </summary>
+        public static string MenuBarNoProjectMessage {
+            get {
+                return ResourceManager.GetString("MenuBarNoProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No User.
+        /// </summary>
+        public static string MenuBarNoUserMessage {
+            get {
+                return ResourceManager.GetString("MenuBarNoUserMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More Information.
         /// </summary>
         public static string MoreInfoTitle {

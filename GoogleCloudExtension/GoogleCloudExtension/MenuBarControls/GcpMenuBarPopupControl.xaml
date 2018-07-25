@@ -1,0 +1,89 @@
+<!--
+    Copyright 2018 Google Inc. All Rights Reserved.
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<Border x:Class="GoogleCloudExtension.MenuBarControls.GcpMenuBarPopupControl"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:GoogleCloudExtension.MenuBarControls"
+      xmlns:ext="clr-namespace:GoogleCloudExtension"
+      xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+      xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}">
+    <Border.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button"
+               BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ThemedDialogButtonStyleKey}}" />
+        </ResourceDictionary>
+    </Border.Resources>
+
+    <Border.Style>
+        <Style TargetType="Border">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowPanelBrushKey}}" />
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowBorderBrushKey}}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Padding" Value="9" />
+        </Style>
+    </Border.Style>
+
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="Google Cloud Platform Project"
+                   Style="{StaticResource {x:Static shell:VsResourceKeys.TextBlockEnvironment133PercentFontSizeStyleKey}}" Padding="0"/>
+
+        <TextBlock Margin="0,5,0,0">
+            <Run Text="Name: "/>
+            <Run Text="{Binding CurrentProjectAsync.Value.Name, FallbackValue={x:Static ext:Resources.MenuBarNoProjectMessage}}"/>
+        </TextBlock>
+
+        <TextBlock Margin="0,5,0,0">
+            <Run Text="Id: "/>
+            <Run Text="{Binding CurrentProjectAsync.Value.ProjectId, FallbackValue=-}" />
+        </TextBlock>
+
+        <TextBlock Margin="0,5,0,0">
+            <Run Text="Number: "/>
+            <Run Text="{Binding CurrentProjectAsync.Value.ProjectNumber, FallbackValue=-}"/>
+        </TextBlock>
+
+        <Separator Margin="0,5,0,0"/>
+
+        <DockPanel Margin="0,5,0,0">
+            <Border DockPanel.Dock="Left" BorderThickness="1" Padding="0" Margin="0,0,5,0">
+                <Image Source="{Binding ProfilePictureAsync.Value}" Stretch="None" />
+            </Border>
+
+            <TextBlock DockPanel.Dock="Bottom"
+                       Text="{Binding ProfileEmailAsyc.Value, FallbackValue={x:Static ext:Resources.MenuBarNoUserMessage}}" 
+                       Margin="0,5,0,0"/>
+
+            <TextBlock Text="{Binding ProfileNameAsync.Value}"
+                       Style="{StaticResource {x:Static shell:VsResourceKeys.TextBlockEnvironment133PercentFontSizeStyleKey}}"
+                       Padding="0"/>
+        </DockPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Command="{Binding SelectProjectCommand}"
+                    Content="Select Project" />
+            <Button Command="{Binding ManageAccountsCommand}"
+                    Content="Change Account"
+                    Margin="5,0,0,0" />
+        </StackPanel>
+    </StackPanel>
+</Border>

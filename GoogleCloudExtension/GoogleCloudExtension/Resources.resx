@@ -2488,4 +2488,12 @@ Delete corrupted file?</value>
     <value>Error Loading Deployments</value>
     <comment>Message shown when loading deployments failed.</comment>
   </data>
+  <data name="MenuBarNoProjectMessage" xml:space="preserve">
+    <value>No Project</value>
+    <comment>The content of the GcpMenuBar when there is no project at all.</comment>
+  </data>
+  <data name="MenuBarNoUserMessage" xml:space="preserve">
+    <value>No User</value>
+    <comment>The message displayed for user name when there is no user.</comment>
+  </data>
 </root>

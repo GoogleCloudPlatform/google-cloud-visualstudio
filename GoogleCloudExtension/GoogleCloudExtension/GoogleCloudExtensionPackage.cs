@@ -110,6 +110,7 @@ namespace GoogleCloudExtension
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
         private Lazy<IDataSourceFactory> _dataSourceFactory;
+
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -166,6 +167,11 @@ namespace GoogleCloudExtension
         /// The default <see cref="IDataSourceFactory"/> service.
         /// </summary>
         public IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
+
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/> service.
+        /// </summary>
+        public ICredentialsStore CredentialsStore { get; private set; }
 
         /// <summary>
         /// The initalized instance of the package.
@@ -296,22 +302,24 @@ namespace GoogleCloudExtension
             // Update the installation status of the package.
             CheckInstallationStatus();
 
-            // Ensure the commands UI state is updated when the GCP project changes.
-            CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
-            CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
-
             // With this setting we allow more concurrent connections from each HttpClient instance created
             // in the process. This will allow all GCP API services to have more concurrent connections with
             // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-            ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
+            IComponentModel componentModel = GetService<SComponentModel, IComponentModel>();
+            CredentialsStore = componentModel.GetService<ICredentialsStore>();
+            ExportProvider mefExportProvider = componentModel.DefaultExportProvider;
             _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
             _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
             _processService = mefExportProvider.GetExport<IProcessService>();
             _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
             _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
             _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
+
+            // Ensure the commands UI state is updated when the GCP project changes.
+            CredentialsStore.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
+            CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
             ErrorHandler.ThrowOnFailure(
                 GetService<SVsUIFactory, IVsRegisterUIFactories>()

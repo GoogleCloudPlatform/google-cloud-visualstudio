@@ -24,6 +24,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
@@ -31,10 +32,12 @@ namespace GoogleCloudExtension.MenuBarControls
     [Export(typeof(IGcpUserProjectViewModel))]
     public class GcpUserProjectViewModel : ViewModelBase, IGcpUserProjectViewModel
     {
+        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
         private AsyncProperty<BitmapImage> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private AsyncProperty<Project> _currentProject;
-        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
+        private bool _isPopupOpen;
+        private AsyncProperty<string> _profileEmailAsyc;
 
         public AsyncProperty<Project> CurrentProjectAsync
         {
@@ -60,6 +63,12 @@ namespace GoogleCloudExtension.MenuBarControls
             private set => SetValueAndRaise(ref _profileNameAsync, value);
         }
 
+        public AsyncProperty<string> ProfileEmailAsyc
+        {
+            get => _profileEmailAsyc;
+            set => SetValueAndRaise(ref _profileEmailAsyc, value);
+        }
+
         /// <summary>
         /// The command to show the manage accounts dialog.
         /// </summary>
@@ -74,6 +83,14 @@ namespace GoogleCloudExtension.MenuBarControls
         private IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
         private ICredentialsStore CredentialsStore { get; }
 
+        public bool IsPopupOpen
+        {
+            get => _isPopupOpen;
+            set => SetValueAndRaise(ref _isPopupOpen, value);
+        }
+
+        public ICommand OpenPopup { get; }
+
         [ImportingConstructor]
         public GcpUserProjectViewModel(Lazy<IDataSourceFactory> dataSourceFactory, ICredentialsStore credentialsStore)
         {
@@ -85,6 +102,7 @@ namespace GoogleCloudExtension.MenuBarControls
             LoadCurrentProject();
 
             ManageAccountsCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
+            OpenPopup = new ProtectedCommand(() => IsPopupOpen = true);
             SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
         }
 
@@ -98,8 +116,11 @@ namespace GoogleCloudExtension.MenuBarControls
                     x => x != null ? new BitmapImage(new Uri(x.Image.Url)) : null);
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
-                    x => x?.Emails.FirstOrDefault()?.Value,
+                    x => x?.DisplayName,
                     Resources.CloudExplorerLoadingMessage);
+                ProfileEmailAsyc = AsyncPropertyUtils.CreateAsyncProperty(
+                    profileTask,
+                    p => p.Emails.FirstOrDefault()?.Value);
             }
             else
             {
@@ -110,7 +131,17 @@ namespace GoogleCloudExtension.MenuBarControls
 
         public void LoadCurrentProject()
         {
-            CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
+            Project currentProject;
+            if (CurrentProjectAsync?.Value?.ProjectId == CredentialsStore.CurrentProjectId)
+            {
+                currentProject = CurrentProjectAsync?.Value;
+            }
+            else
+            {
+                currentProject = null;
+            }
+
+            CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync(), currentProject);
         }
 
         private async Task<Project> GetCurrentProjectAsync()
@@ -133,6 +164,7 @@ namespace GoogleCloudExtension.MenuBarControls
                 false);
             if (selectedProject != null)
             {
+                CurrentProjectAsync = new AsyncProperty<Project>(selectedProject);
                 CredentialsStore.UpdateCurrentProject(selectedProject);
             }
         }
