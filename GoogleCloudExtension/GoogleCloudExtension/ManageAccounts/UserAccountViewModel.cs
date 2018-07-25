@@ -54,8 +54,8 @@ namespace GoogleCloudExtension.ManageAccounts
 
 
             // TODO: Show the default image while it is being loaded.
-            ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x?.Image.Url);
-            NameAsync = AsyncPropertyUtils.CreateAsyncProperty(
+            ProfilePictureAsync = AsyncProperty.Create(personTask, x => x?.Image.Url);
+            NameAsync = AsyncProperty.Create(
                 personTask, x => x?.DisplayName, Resources.UiLoadingMessage);
         }
     }

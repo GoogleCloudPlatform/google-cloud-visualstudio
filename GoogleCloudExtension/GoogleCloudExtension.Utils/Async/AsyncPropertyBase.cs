@@ -134,5 +134,24 @@ namespace GoogleCloudExtension.Utils.Async
         protected virtual void OnTaskComplete()
         {
         }
+
+        /// <summary>
+        /// Gets the result of the task, or a default value if the task is not successful.
+        /// </summary>
+        /// <typeparam name="TIn">They type of the task result.</typeparam>
+        /// <param name="task">The task to get the result from.</param>
+        /// <param name="defaultValue">The default value to return on a task error.</param>
+        /// <returns>The value of the task, or the default value.</returns>
+        protected static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default(TIn))
+        {
+            try
+            {
+                return task.Result;
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
     }
 }

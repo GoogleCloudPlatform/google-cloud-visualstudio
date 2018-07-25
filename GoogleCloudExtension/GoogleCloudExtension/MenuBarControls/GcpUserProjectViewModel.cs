@@ -116,14 +116,14 @@ namespace GoogleCloudExtension.MenuBarControls
             if (GPlusDataSource != null)
             {
                 Task<Person> profileTask = GPlusDataSource.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                ProfilePictureAsync = AsyncProperty.Create(
                     profileTask,
                     x => x != null ? new BitmapImage(new Uri(x.Image.Url)) : null);
-                ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                ProfileNameAsync = AsyncProperty.Create(
                     profileTask,
                     x => x?.DisplayName,
                     Resources.UiLoadingMessage);
-                ProfileEmailAsyc = AsyncPropertyUtils.CreateAsyncProperty(
+                ProfileEmailAsyc = AsyncProperty.Create(
                     profileTask,
                     p => p.Emails.FirstOrDefault()?.Value);
             }

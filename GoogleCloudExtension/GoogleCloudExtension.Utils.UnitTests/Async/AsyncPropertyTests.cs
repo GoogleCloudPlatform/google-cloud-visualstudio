@@ -16,6 +16,8 @@ using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
@@ -40,6 +42,51 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
                 var objectUnderTest = new AsyncProperty();
 
                 Assert.IsTrue(objectUnderTest.ActualTask.IsCompleted);
+            }
+
+            [TestMethod]
+            public void TestCreate_CreatesNewTask()
+            {
+                using (FakeSyncContext.CreateCurrent())
+                {
+                    Func<object, string> f = o => "new result";
+                    Task<object> inputTask = Task.FromResult(new object());
+
+                    AsyncProperty<string> result = AsyncProperty.Create(inputTask, f);
+
+                    Assert.AreNotEqual(inputTask, result.ActualTask);
+                }
+
+            }
+
+            [TestMethod]
+            public async Task TestCreate_SchedulesNewTaskOnSynchronizationContext()
+            {
+                using (FakeSyncContext.CreateCurrent(out FakeSyncContext fakeSyncContext))
+                {
+                    AsyncProperty<string> result = AsyncProperty.Create(Task.FromResult(new object()), o => "new result");
+                    await result.SafeTask;
+
+                    Assert.AreEqual(fakeSyncContext.PostStates.Single(), result.ActualTask);
+
+                }
+            }
+
+            [TestMethod]
+            public async Task TestCreate_SetsResultantValue()
+            {
+                using (FakeSyncContext.CreateCurrent())
+                {
+                    const string expectedResult = "Expected Result";
+
+                    AsyncProperty<string> result = AsyncProperty.Create(
+                        Task.FromResult(new object()),
+                        o => expectedResult);
+                    await result.SafeTask;
+
+                    Assert.AreEqual(expectedResult, result.Value);
+                }
+
             }
         }
 
@@ -131,5 +178,35 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
                 CollectionAssert.Contains(changedProperties, nameof(objectUnderTest.Value));
             }
         }
+    }
+
+    public class FakeSyncContext : SynchronizationContext
+    {
+        private readonly List<object> _postStates = new List<object>();
+        public IReadOnlyList<object> PostStates => _postStates;
+
+        public static IDisposable CreateCurrent() => CreateCurrent(out _);
+
+        public static IDisposable CreateCurrent(out FakeSyncContext newCurrent)
+        {
+            SynchronizationContext oldSyncContext = Current;
+            newCurrent = new FakeSyncContext();
+            SetSynchronizationContext(newCurrent);
+            return new Disposable(() => SetSynchronizationContext(oldSyncContext));
+        }
+
+        public override void OperationCompleted() => throw new NotSupportedException();
+
+        public override void OperationStarted() => throw new NotSupportedException();
+
+        public override void Post(SendOrPostCallback d, object state)
+        {
+            _postStates.Add(state);
+            d(state);
+        }
+
+        public override void Send(SendOrPostCallback d, object state) => throw new NotSupportedException();
+
+        public override int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout) => throw new NotSupportedException();
     }
 }
