@@ -148,5 +148,18 @@ namespace GoogleCloudExtension.Services
                 return ex?.Message;
             }
         }
+
+        public TResult UserPromptResult<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content)
+        {
+            var dialog = new CommonDialogWindow<IViewModelBase<TResult>>(content);
+            dialog.ShowModal();
+            return dialog.ViewModel.Result;
+        }
+
+        public void PromptUser<T>(CommonWindowContent<T> content) where T : ICloseSource
+        {
+            var dialog = new CommonDialogWindow<T>(content);
+            dialog.ShowModal();
+        }
     }
 }

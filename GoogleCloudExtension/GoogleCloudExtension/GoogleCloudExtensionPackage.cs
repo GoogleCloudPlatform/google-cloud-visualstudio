@@ -75,7 +75,7 @@ namespace GoogleCloudExtension
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
     [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
-    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControl, typeof(GcpMenuBarControlFactory))]
+    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControlCommandId, typeof(GcpMenuBarControlFactory))]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
