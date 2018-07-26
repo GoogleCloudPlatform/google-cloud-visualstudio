@@ -15,6 +15,7 @@
 using GoogleCloudExtension.CopyablePrompt;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
+using GoogleCloudExtension.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -56,7 +57,7 @@ namespace GoogleCloudExtension.Utils
             }
             else if (result.IsObsolete)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: string.Format(
                         Resources.GCloudWrapperUtilsOldCloudSdkMessage,
                         result.CloudSdkVersion,

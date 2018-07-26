@@ -13,18 +13,19 @@
 // limitations under the License.
 
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Services
 {
     /// <summary>
     /// This class provides helpers to show messages to the user in a uniform way.
     /// </summary>
     [Export(typeof(IUserPromptService))]
-    internal class UserPromptUtils : IUserPromptService
+    internal class UserPromptService : IUserPromptService
     {
         public const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
         public const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";

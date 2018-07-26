@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System;
@@ -557,7 +558,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (_logs.Count >= MaxLogEntriesCount)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: Resources.LogViewerResultSetTooLargeMessage,
                     title: Resources.UiDefaultPromptTitle);
                 CancellationTokenSource?.Cancel();

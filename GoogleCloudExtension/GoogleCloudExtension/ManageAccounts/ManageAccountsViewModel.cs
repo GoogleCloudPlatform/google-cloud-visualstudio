@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -99,8 +100,8 @@ namespace GoogleCloudExtension.ManageAccounts
         private void OnDeleteAccountCommand()
         {
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.Default.ActionPrompt(
-                String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
+            if (!UserPromptService.Default.ActionPrompt(
+                string.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
                 Resources.ManageAccountsDeleteAccountPromptTitle,
                 actionCaption: Resources.UiDeleteButtonCaption))
             {

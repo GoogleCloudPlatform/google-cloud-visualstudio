@@ -15,6 +15,7 @@
 using GoogleCloudExtension.AppEngineManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -80,7 +81,7 @@ namespace GoogleCloudExtension.Utils
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.Default.ExceptionPrompt(ex);
+                UserPromptService.Default.ExceptionPrompt(ex);
                 return false;
             }
         }

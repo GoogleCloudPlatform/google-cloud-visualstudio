@@ -17,6 +17,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SplitTrafficManagement;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
@@ -255,7 +256,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             string confirmationMessage = String.Format(
                Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, Service.Id);
-            if (!UserPromptUtils.Default.ActionPrompt(
+            if (!UserPromptService.Default.ActionPrompt(
                 prompt: confirmationMessage,
                 title: Resources.CloudExplorerGaeDeleteService,
                 actionCaption: Resources.UiYesButtonCaption,

@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -120,7 +121,7 @@ namespace GoogleCloudExtension.ApiManagement
 
                 // Need to enable the services, prompt the user.
                 Debug.WriteLine($"Need to enable the services: {string.Join(",", servicesToEnable)}.");
-                if (!UserPromptUtils.Default.ActionPrompt(
+                if (!UserPromptService.Default.ActionPrompt(
                         prompt: prompt,
                         title: Resources.ApiManagerEnableServicesTitle,
                         actionCaption: Resources.UiEnableButtonCaption))
@@ -141,7 +142,7 @@ namespace GoogleCloudExtension.ApiManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);
@@ -175,7 +176,7 @@ namespace GoogleCloudExtension.ApiManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: Resources.ApiManagerEnableServicesErrorMessage,
                     title: Resources.UiErrorCaption,
                     errorDetails: ex.Message);

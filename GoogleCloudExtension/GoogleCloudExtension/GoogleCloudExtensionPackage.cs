@@ -22,6 +22,7 @@ using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;

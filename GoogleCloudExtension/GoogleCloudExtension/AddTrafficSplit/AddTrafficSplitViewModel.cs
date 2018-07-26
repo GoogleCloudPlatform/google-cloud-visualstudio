@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
             int allocationValue;
             if (!Int32.TryParse(Allocation, out allocationValue))
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(Resources.AddGaeTrafficSplitInvalidValueMessage, Allocation),
                     title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
 
             if (allocationValue > 100 || allocationValue < 0)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(Resources.AddGaeTrafficSplitValueOutOfRangeMessage, Allocation),
                     title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;

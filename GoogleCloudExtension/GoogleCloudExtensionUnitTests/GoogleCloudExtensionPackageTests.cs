@@ -19,6 +19,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;

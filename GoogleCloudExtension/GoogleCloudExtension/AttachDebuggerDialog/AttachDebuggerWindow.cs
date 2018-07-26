@@ -16,8 +16,8 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.Utils;
 using System;
 using StringResources = GoogleCloudExtension.Resources;
 
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             if (String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
             {
-                UserPromptUtils.Default.OkPrompt(
+                UserPromptService.Default.OkPrompt(
                     message: StringResources.AttachDebuggerAddPublicIpAddressMessage,
                     title: StringResources.UiDefaultPromptTitle);
                 return;

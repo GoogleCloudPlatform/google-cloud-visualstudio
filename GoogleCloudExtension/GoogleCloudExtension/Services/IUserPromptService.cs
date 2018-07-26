@@ -14,7 +14,7 @@
 
 using System;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Services
 {
     public interface IUserPromptService
     {

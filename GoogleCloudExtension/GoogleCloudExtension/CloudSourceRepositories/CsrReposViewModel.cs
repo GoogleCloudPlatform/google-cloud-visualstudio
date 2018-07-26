@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Git;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
@@ -262,7 +263,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             if (dataSourceErrorProjects.Any())
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(
                         Resources.CsrFetchReposErrorMessage, String.Join(", ", dataSourceErrorProjects)),
                     title: Resources.CsrConnectSectionTitle);
@@ -378,7 +379,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var projects = await resourceManager.GetProjectsListAsync();
                 if (!projects.Any())
                 {
-                    UserPromptUtils.Default.OkPrompt(
+                    UserPromptService.Default.OkPrompt(
                         message: Resources.CsrNoProjectMessage,
                         title: Resources.CsrConnectSectionTitle);
                 }

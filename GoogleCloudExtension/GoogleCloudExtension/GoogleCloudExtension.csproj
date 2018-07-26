@@ -293,7 +293,7 @@
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />
     <Compile Include="Utils\IStatusbarService.cs" />
-    <Compile Include="Utils\IUserPromptService.cs" />
+    <Compile Include="Services\IUserPromptService.cs" />
     <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
@@ -611,7 +611,7 @@
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
-    <Compile Include="Utils\UserPromptUtils.cs" />
+    <Compile Include="Services\UserPromptService.cs" />
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

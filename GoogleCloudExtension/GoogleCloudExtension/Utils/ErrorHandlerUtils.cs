@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Services;
 using Microsoft.VisualStudio;
 using System;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
-                UserPromptUtils.Default.ExceptionPrompt(ex);
+                UserPromptService.Default.ExceptionPrompt(ex);
             }
         }
 
@@ -79,7 +80,7 @@ namespace GoogleCloudExtension.Utils
             catch (Exception ex) when (!IsCriticalException(ex))
             {
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
-                UserPromptUtils.Default.ExceptionPrompt(ex);
+                UserPromptService.Default.ExceptionPrompt(ex);
             }
         }
     }

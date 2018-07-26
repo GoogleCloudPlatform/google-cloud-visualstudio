@@ -22,6 +22,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
@@ -350,7 +351,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException)
             {
                 EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Failure));
-                UserPromptUtils.Default.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
+                UserPromptService.Default.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
         }
 
@@ -358,7 +359,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.Default.ActionPrompt(
+                if (!UserPromptService.Default.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStopButtonCaption))
@@ -383,7 +384,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static void ShowOAuthErrorDialog(OAuthException ex)
         {
             Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
-            UserPromptUtils.Default.OkPrompt(
+            UserPromptService.Default.OkPrompt(
                 String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, CredentialsStore.Default.CurrentAccount.AccountName),
                 Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
         }
@@ -392,7 +393,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.Default.ActionPrompt(
+                if (!UserPromptService.Default.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStartButtonCaption))
