@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension;
-using GoogleCloudExtension.UserPrompt;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Windows.Media.Imaging;
+using GoogleCloudExtension;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.UserPrompt;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestingHelpers;
 
-namespace GoogleCloudExtensionUnitTests.Utils
+namespace GoogleCloudExtensionUnitTests.Services
 {
     [TestClass]
     public class UserPromptUtilsStaticTests : ExtensionTestBase
@@ -28,7 +28,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         [TestMethod]
         public void TestDefault_DefersToPackage()
         {
-            Assert.AreEqual(UserPromptUtils.Default, GoogleCloudExtensionPackage.Instance.UserPromptService);
+            Assert.AreEqual(UserPromptService.Default, GoogleCloudExtensionPackage.Instance.UserPromptService);
         }
     }
 
@@ -42,14 +42,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         private const string ExpectedCancelCaption = "Expected Cancel Caption";
         private const string ExpectedActionCaption = "Expected Action Caption";
         private const string ExpectedMessage = "Expected Message";
-        private UserPromptUtils _objectUnderTest;
+        private UserPromptService _objectUnderTest;
 
         private static readonly string s_expectedErrorPrompt = string.Format(
             Resources.ExceptionPromptMessage,
             ExpectedPrompt);
 
         [TestInitialize]
-        public void BeforeEach() => _objectUnderTest = new UserPromptUtils();
+        public void BeforeEach() => _objectUnderTest = new UserPromptService();
 
         [TestMethod]
         public void TestActionPrompt_PromptsWithTitle()
@@ -132,7 +132,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 () => _objectUnderTest.ActionPrompt(DefaultPrompt, DefaultTitle, isWarning: true));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
-            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.WarningIconPath);
+            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptService.WarningIconPath);
         }
 
         [TestMethod]
@@ -242,7 +242,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 GetWindow(() => _objectUnderTest.ErrorPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
-            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
+            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptService.ErrorIconPath);
         }
 
         [TestMethod]
@@ -306,7 +306,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 GetWindow(() => _objectUnderTest.ErrorActionPrompt(DefaultPrompt, DefaultTitle));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
-            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
+            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptService.ErrorIconPath);
         }
 
         [TestMethod]
@@ -403,7 +403,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             UserPromptWindow userPrompt = GetWindow(() => _objectUnderTest.ExceptionPrompt(new Exception()));
 
             var bitmapImage = (BitmapImage)userPrompt.ViewModel.Icon;
-            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptUtils.ErrorIconPath);
+            StringAssert.EndsWith(bitmapImage.UriSource.AbsolutePath, UserPromptService.ErrorIconPath);
         }
 
         protected override void RegisterActivatedEvent(EventHandler handler)

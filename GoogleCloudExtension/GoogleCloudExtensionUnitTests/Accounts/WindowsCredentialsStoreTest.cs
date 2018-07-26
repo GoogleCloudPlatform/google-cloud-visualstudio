@@ -16,7 +16,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;

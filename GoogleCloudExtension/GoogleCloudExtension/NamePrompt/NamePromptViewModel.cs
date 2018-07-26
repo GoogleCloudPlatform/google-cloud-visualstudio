@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Linq;
@@ -79,13 +80,13 @@ namespace GoogleCloudExtension.NamePrompt
         {
             if (String.IsNullOrEmpty(Name))
             {
-                UserPromptUtils.Default.ErrorPrompt(Resources.NamePromptEmptyNameMessage, Resources.UiErrorCaption);
+                UserPromptService.Default.ErrorPrompt(Resources.NamePromptEmptyNameMessage, Resources.UiErrorCaption);
                 return false;
             }
 
             if (Name.Contains('/'))
             {
-                UserPromptUtils.Default.ErrorPrompt(Resources.NamePromptInvalidCharsMessage, Resources.UiErrorCaption);
+                UserPromptService.Default.ErrorPrompt(Resources.NamePromptInvalidCharsMessage, Resources.UiErrorCaption);
                 return false;
             }
 

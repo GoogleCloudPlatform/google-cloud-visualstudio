@@ -317,7 +317,7 @@
     <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
     <Compile Include="Utils\ProtectedCommandTests.cs" />
     <Compile Include="Utils\StatusbarHelperTests.cs" />
-    <Compile Include="Utils\UserPromptUtilsTests.cs" />
+    <Compile Include="Services\UserPromptServiceTests.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VsVersionUtilsTests.cs" />

@@ -19,6 +19,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Git;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
@@ -228,7 +229,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 CredentialsStore.Default.CurrentAccount.RefreshToken,
                 CsrGitUtils.StoreCredentialPathOption.UrlPath))
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: Resources.CsrCloneFailedToSetCredentialMessage,
                     title: Resources.UiDefaultPromptTitle);
                 return;
@@ -249,7 +250,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
             catch (GitCommandException)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: Resources.CsrCloneFailedMessage,
                     title: Resources.UiDefaultPromptTitle);
                 EventsReporterWrapper.ReportEvent(CsrClonedEvent.Create(CommandStatus.Failure));

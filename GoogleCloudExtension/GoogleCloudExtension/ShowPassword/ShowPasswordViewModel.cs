@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -75,7 +76,7 @@ namespace GoogleCloudExtension.ShowPassword
             catch
             {
                 Debug.WriteLine("Failed to copy the string to the clipboard.");
-                UserPromptUtils.Default.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
+                UserPromptService.Default.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
             }
         }
     }

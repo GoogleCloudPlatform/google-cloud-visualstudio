@@ -15,7 +15,7 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -144,7 +144,7 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (CryptographicException cryptographicException)
             {
-                bool delete = UserPromptUtils.Default.ErrorActionPrompt(
+                bool delete = UserPromptService.Default.ErrorActionPrompt(
                     string.Format(Resources.WindowsCredentialsStoreDecryptErrorMessage, path),
                     Resources.WindowsCredentialsStoreDecryptionErrorTitle, cryptographicException.ToString());
                 if (delete)
@@ -155,7 +155,7 @@ namespace GoogleCloudExtension.Accounts
                     }
                     catch (IOException ioException)
                     {
-                        UserPromptUtils.Default.ErrorPrompt(
+                        UserPromptService.Default.ErrorPrompt(
                             string.Format(Resources.WindowsCredentialsStoreDeletingCorruptedErrorMessage, path),
                             Resources.WindowsCredentialsStoreDeletingCorruptedErrorTitle, ioException.ToString());
                     }
@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (IOException e)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     string.Format(Resources.WindowsCredentialsStoreCredentialFileLoadErrorMessage, path),
                     Resources.WindowsCredentialsStoreCredentialFileLoadErrorTitle, e.ToString());
                 return null;
