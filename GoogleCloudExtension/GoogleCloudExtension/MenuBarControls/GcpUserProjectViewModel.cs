@@ -26,7 +26,6 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
@@ -34,7 +33,7 @@ namespace GoogleCloudExtension.MenuBarControls
     public class GcpUserProjectViewModel : ViewModelBase, IGcpUserProjectViewModel
     {
         private readonly Lazy<IUserPromptService> _userPromptService;
-        private AsyncProperty<BitmapImage> _profilePictureAsync;
+        private AsyncProperty<string> _profilePictureUrlAsync;
         private AsyncProperty<string> _profileNameAsync;
         private AsyncProperty<Project> _currentProject;
         private bool _isPopupOpen;
@@ -49,10 +48,10 @@ namespace GoogleCloudExtension.MenuBarControls
         /// <summary>
         /// Returns the profile image URL.
         /// </summary>
-        public AsyncProperty<BitmapImage> ProfilePictureAsync
+        public AsyncProperty<string> ProfilePictureUrlAsync
         {
-            get => _profilePictureAsync;
-            private set => SetValueAndRaise(ref _profilePictureAsync, value);
+            get => _profilePictureUrlAsync;
+            private set => SetValueAndRaise(ref _profilePictureUrlAsync, value);
         }
 
         /// <summary>
@@ -115,6 +114,7 @@ namespace GoogleCloudExtension.MenuBarControls
             SelectProjectCommand = new ProtectedCommand(SelectProject);
 
             CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
+            UpdateUserProfile();
 
             CredentialsStore.CurrentProjectIdChanged += (sender, args) => LoadCurrentProject();
             DataSourceFactory.DataSourcesUpdated += (sender, args) => UpdateUserProfile();
@@ -125,9 +125,9 @@ namespace GoogleCloudExtension.MenuBarControls
             if (GPlusDataSource != null)
             {
                 Task<Person> profileTask = GPlusDataSource.GetProfileAsync();
-                ProfilePictureAsync = AsyncProperty.Create(
+                ProfilePictureUrlAsync = AsyncProperty.Create(
                     profileTask,
-                    x => x != null ? new BitmapImage(new Uri(x.Image.Url)) : null);
+                    x => x?.Image?.Url);
                 ProfileNameAsync = AsyncProperty.Create(
                     profileTask,
                     x => x?.DisplayName,
@@ -138,7 +138,7 @@ namespace GoogleCloudExtension.MenuBarControls
             }
             else
             {
-                ProfilePictureAsync = new AsyncProperty<BitmapImage>(null);
+                ProfilePictureUrlAsync = new AsyncProperty<string>(null);
                 ProfileNameAsync = new AsyncProperty<string>(null);
                 ProfileEmailAsyc = new AsyncProperty<string>(null);
             }

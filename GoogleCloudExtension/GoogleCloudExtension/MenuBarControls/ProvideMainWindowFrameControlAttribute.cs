@@ -44,7 +44,6 @@ namespace GoogleCloudExtension.MenuBarControls
                 key.SetValue("FullScreenAlignment", "MenuBarRight");
                 key.SetValue("Sort", 550);
                 key.SetValue("FullScreenSort", 550);
-
             }
         }
 

@@ -16,9 +16,7 @@ using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using TestingHelpers;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
 {
@@ -47,46 +45,25 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             [TestMethod]
             public void TestCreate_CreatesNewTask()
             {
-                using (FakeSyncContext.CreateCurrent())
-                {
-                    Func<object, string> f = o => "new result";
-                    Task<object> inputTask = Task.FromResult(new object());
+                Func<object, string> f = o => "new result";
+                Task<object> inputTask = Task.FromResult(new object());
 
-                    AsyncProperty<string> result = AsyncProperty.Create(inputTask, f);
+                AsyncProperty<string> result = AsyncProperty.Create(inputTask, f);
 
-                    Assert.AreNotEqual(inputTask, result.ActualTask);
-                }
-
-            }
-
-            [TestMethod]
-            public async Task TestCreate_SchedulesNewTaskOnSynchronizationContext()
-            {
-                using (FakeSyncContext.CreateCurrent(out FakeSyncContext fakeSyncContext))
-                {
-                    AsyncProperty<string> result = AsyncProperty.Create(Task.FromResult(new object()), o => "new result");
-                    await result.SafeTask;
-
-                    Assert.AreEqual(fakeSyncContext.PostStates.Single(), result.ActualTask);
-
-                }
+                Assert.AreNotEqual(inputTask, result.ActualTask);
             }
 
             [TestMethod]
             public async Task TestCreate_SetsResultantValue()
             {
-                using (FakeSyncContext.CreateCurrent())
-                {
-                    const string expectedResult = "Expected Result";
+                const string expectedResult = "Expected Result";
 
-                    AsyncProperty<string> result = AsyncProperty.Create(
-                        Task.FromResult(new object()),
-                        o => expectedResult);
-                    await result.SafeTask;
+                AsyncProperty<string> result = AsyncProperty.Create(
+                    Task.FromResult(new object()),
+                    o => expectedResult);
+                await result.SafeTask;
 
-                    Assert.AreEqual(expectedResult, result.Value);
-                }
-
+                Assert.AreEqual(expectedResult, result.Value);
             }
         }
 

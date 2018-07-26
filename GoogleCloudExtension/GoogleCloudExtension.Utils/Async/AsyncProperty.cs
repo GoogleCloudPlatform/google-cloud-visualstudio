@@ -44,8 +44,7 @@ namespace GoogleCloudExtension.Utils.Async
             T defaultValue = default(T))
         {
             Task<T> continuationTask = valueSource.ContinueWith(
-                t => func(GetTaskResultSafe(t)),
-                TaskScheduler.FromCurrentSynchronizationContext());
+                t => func(GetTaskResultSafe(t)));
             return new AsyncProperty<T>(continuationTask, defaultValue);
         }
     }

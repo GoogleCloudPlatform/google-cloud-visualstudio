@@ -322,7 +322,7 @@
 
             <!-- The profile button -->
             <controls:PressButton Grid.Column="1"
-                                  Content="{Binding UserProject.ProfilePictureAsync.Value}"
+                                  Content="{Binding UserProject.ProfilePictureUrlAsync.Value}"
                                   Command="{Binding UserProject.ManageAccountsCommand}"
                                   ToolTip="{Binding UserProject.ProfileNameAsync.Value}"
                                   Style="{StaticResource CommandBarButtonStyle}"

@@ -71,10 +71,10 @@
                                         PendingContent="{x:Static ext:Resources.UiLoadingMessage}"
                                         CanceledContent="{StaticResource ProjectLoadErrorPanel}"
                                         ErrorContent="{StaticResource ProjectLoadErrorPanel}"/>
-            <local:AsyncPropertyContent Target="{Binding ProfilePictureAsync}"
+            <local:AsyncPropertyContent Target="{Binding ProfilePictureUrlAsync}"
                                         Margin="5,0,0,0">
                 <local:AsyncPropertyContent.SuccessContent>
-                    <Image Source="{Binding ProfilePictureAsync.Value}"
+                    <Image Source="{Binding ProfilePictureUrlAsync.Value}"
                            ToolTip="{Binding ProfileNameAsync.Value}"/>
                 </local:AsyncPropertyContent.SuccessContent>
             </local:AsyncPropertyContent>

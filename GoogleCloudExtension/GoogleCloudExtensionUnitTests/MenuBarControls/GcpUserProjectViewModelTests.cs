@@ -26,7 +26,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.MenuBarControls
@@ -70,11 +69,11 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         [TestMethod]
         public void TestConstructor_RegistersDataSourceUpdated()
         {
-            AsyncProperty<BitmapImage> origianlPictureProperty = _objectUnderTest.ProfilePictureAsync;
+            AsyncProperty<string> origianlPictureProperty = _objectUnderTest.ProfilePictureUrlAsync;
 
             _dataSourceFactoryMock.Raise(ds => ds.DataSourcesUpdated += null, EventArgs.Empty);
 
-            Assert.AreNotEqual(origianlPictureProperty, _objectUnderTest.ProfilePictureAsync);
+            Assert.AreNotEqual(origianlPictureProperty, _objectUnderTest.ProfilePictureUrlAsync);
         }
 
         [TestMethod]
@@ -145,16 +144,15 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
 
             _objectUnderTest.UpdateUserProfile();
 
-            Assert.IsNull(_objectUnderTest.ProfilePictureAsync.Value);
+            Assert.IsNull(_objectUnderTest.ProfilePictureUrlAsync.Value);
             Assert.IsNull(_objectUnderTest.ProfileNameAsync.Value);
             Assert.IsNull(_objectUnderTest.ProfileEmailAsyc.Value);
         }
 
         [TestMethod]
-        public void TestUpdateUserProfile_GetsDataFromDataSource()
+        public async Task TestUpdateUserProfile_GetsDataFromDataSource()
         {
-            const string expectedImageUrl =
-                "https://github.com/GoogleCloudPlatform/google-cloud-visualstudio/blob/8a7465e7ab314ca049e8223e1e018832f46bf909/GoogleCloudExtension/GoogleCloudExtension/Theming/Resources/logo_cloud.png?raw=true";
+            const string expectedImageUrl = "Expected Url";
             const string expectedDisplayName = "Expected Display Name";
             const string expectedEmailAdderss = "Expected Email Adderss";
             _dataSourceFactoryMock.Setup(ds => ds.GPlusDataSource.GetProfileAsync())
@@ -166,12 +164,13 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
                         Emails = new List<Person.EmailsData> { new Person.EmailsData { Value = expectedEmailAdderss } }
                     });
 
-            using (FakeSyncContext.CreateCurrent())
-            {
-                _objectUnderTest.UpdateUserProfile();
-            }
+            _objectUnderTest.UpdateUserProfile();
 
-            Assert.AreEqual(new Uri(expectedImageUrl), _objectUnderTest.ProfilePictureAsync.Value.UriSource);
+            await _objectUnderTest.ProfilePictureUrlAsync;
+            await _objectUnderTest.ProfileNameAsync;
+            await _objectUnderTest.ProfileEmailAsyc;
+
+            Assert.AreEqual(expectedImageUrl, _objectUnderTest.ProfilePictureUrlAsync.Value);
             Assert.AreEqual(expectedDisplayName, _objectUnderTest.ProfileNameAsync.Value);
             Assert.AreEqual(expectedEmailAdderss, _objectUnderTest.ProfileEmailAsyc.Value);
         }

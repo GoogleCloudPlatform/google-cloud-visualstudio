@@ -18,13 +18,11 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 
 namespace GoogleCloudExtensionUnitTests
 {
     public abstract class ExtensionTestBase
     {
-        private IDisposable _disposeSyncContext;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
@@ -45,8 +43,6 @@ namespace GoogleCloudExtensionUnitTests
             DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>());
             EventsReporterWrapper.DisableReporting();
 
-            _disposeSyncContext = TestingHelpers.FakeSyncContext.CreateCurrent();
-
             BeforeEach();
         }
 
@@ -56,7 +52,6 @@ namespace GoogleCloudExtensionUnitTests
         public void CleanupGlobalsForTest()
         {
             AfterEach();
-            _disposeSyncContext.Dispose();
             GoogleCloudExtensionPackage.Instance = null;
         }
 

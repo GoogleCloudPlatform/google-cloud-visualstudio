@@ -16,7 +16,6 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
@@ -24,7 +23,7 @@ namespace GoogleCloudExtension.MenuBarControls
     {
         AsyncProperty<Project> CurrentProjectAsync { get; }
         AsyncProperty<string> ProfileNameAsync { get; }
-        AsyncProperty<BitmapImage> ProfilePictureAsync { get; }
+        AsyncProperty<string> ProfilePictureUrlAsync { get; }
         AsyncProperty<string> ProfileEmailAsyc { get; }
 
         /// <summary>

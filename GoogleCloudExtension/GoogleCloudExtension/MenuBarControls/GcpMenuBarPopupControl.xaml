@@ -70,7 +70,7 @@
 
             <DockPanel Margin="0,5,0,0">
                 <Border DockPanel.Dock="Left" BorderThickness="1" Padding="0" Margin="0,0,5,0">
-                    <Image Source="{Binding ProfilePictureAsync.Value}" Stretch="Uniform" StretchDirection="Both"/>
+                    <Image Source="{Binding ProfilePictureUrlAsync.Value}" Stretch="Uniform" StretchDirection="Both"/>
                 </Border>
 
                 <StackPanel VerticalAlignment="Center">
