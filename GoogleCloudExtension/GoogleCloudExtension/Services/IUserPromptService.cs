@@ -67,13 +67,13 @@ namespace GoogleCloudExtension.Services
         /// <typeparam name="TResult">The type of the result from the dialog.</typeparam>
         /// <param name="content">The content to display to the user.</param>
         /// <returns>The result of the user prompt.</returns>
-        TResult UserPromptResult<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content);
+        TResult PromptUser<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content);
 
         /// <summary>
         /// Prompts the user with the given content.
         /// </summary>
         /// <typeparam name="T">The type of the view model behind the prompt.</typeparam>
         /// <param name="content">The content to display to the user.</param>
-        void PromptUser<T>(CommonWindowContent<T> content) where T : ICloseSource;
+        void PromptUser(ICommonWindowContent<ICloseSource> content);
     }
 }

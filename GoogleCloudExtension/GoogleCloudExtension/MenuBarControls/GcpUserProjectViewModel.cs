@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
         private void SelectProject()
         {
-            Project selectedProject = UserPromptService.UserPromptResult(
+            Project selectedProject = UserPromptService.PromptUser(
                 new PickProjectIdWindowContent(Resources.CloudExplorerPickProjectHelpMessage, false));
             if (selectedProject != null)
             {

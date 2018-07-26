@@ -97,14 +97,14 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         {
             _objectUnderTest.SelectProjectCommand.Execute(null);
 
-            _userPromptServiceMock.Verify(p => p.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()));
+            _userPromptServiceMock.Verify(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>()));
         }
 
         [TestMethod]
         public void TestSelectProjectCommand_UpdatesCurrentProjectAsync()
         {
             var expectedProject = new Project();
-            _userPromptServiceMock.Setup(p => p.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()))
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(expectedProject);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
@@ -116,7 +116,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         public void TestSelectProjectCommand_UpdatesCredentialsStore()
         {
             var expectedProject = new Project();
-            _userPromptServiceMock.Setup(p => p.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()))
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(expectedProject);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
@@ -128,7 +128,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         public void TestSelectProjectCommand_SkipsUpdatesWhenCanceled()
         {
             AsyncProperty<Project> originalCurrentProjectProperty = _objectUnderTest.CurrentProjectAsync;
-            _userPromptServiceMock.Setup(p => p.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()))
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(() => null);
 
             _objectUnderTest.SelectProjectCommand.Execute(null);
@@ -180,7 +180,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         {
             const string defaultProjectId = "ExpectedProjectId";
             var expectedDefaultProject = new Project { ProjectId = defaultProjectId };
-            _userPromptServiceMock.Setup(s => s.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()))
+            _userPromptServiceMock.Setup(s => s.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(expectedDefaultProject);
             _credentialsStoreMock.Setup(cs => cs.CurrentProjectId).Returns(defaultProjectId);
             _dataSourceFactoryMock.Setup(dsf => dsf.ResourceManagerDataSource.GetProjectAsync(It.IsAny<string>()))
@@ -197,7 +197,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         public void TestLoadCurrentProject_SetsNullDefaultValueWhenDifferent()
         {
             var currentViewModelProject = new Project { ProjectId = "ViewModelProjectId" };
-            _userPromptServiceMock.Setup(s => s.UserPromptResult(It.IsAny<PickProjectIdWindowContent>()))
+            _userPromptServiceMock.Setup(s => s.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(currentViewModelProject);
             _credentialsStoreMock.Setup(cs => cs.CurrentProjectId).Returns("CredentialsStoreProjectId");
             _dataSourceFactoryMock.Setup(dsf => dsf.ResourceManagerDataSource.GetProjectAsync(It.IsAny<string>()))

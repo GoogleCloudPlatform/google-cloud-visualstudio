@@ -150,16 +150,16 @@ namespace GoogleCloudExtension.Services
             }
         }
 
-        public TResult UserPromptResult<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content)
+        public TResult PromptUser<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content)
         {
             var dialog = new CommonDialogWindow<IViewModelBase<TResult>>(content);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
 
-        public void PromptUser<T>(CommonWindowContent<T> content) where T : ICloseSource
+        public void PromptUser(ICommonWindowContent<ICloseSource> content)
         {
-            var dialog = new CommonDialogWindow<T>(content);
+            var dialog = new CommonDialogWindow<ICloseSource>(content);
             dialog.ShowModal();
         }
     }
