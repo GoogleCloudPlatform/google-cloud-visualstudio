@@ -211,7 +211,6 @@
     <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
-    <Compile Include="PickProjectDialog\CommonWindowContent.cs" />
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>
@@ -277,6 +276,8 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
     <Compile Include="TemplateWizards\TemplateType.cs" />
+    <Compile Include="Theming\CommonDialogWindow.cs" />
+    <Compile Include="Utils\CommonWindowContent.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
@@ -297,6 +298,8 @@
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\ICloseSource.cs" />
+    <Compile Include="Utils\ICommonWindowContent.cs" />
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
     <Compile Include="Utils\IProcessService.cs" />

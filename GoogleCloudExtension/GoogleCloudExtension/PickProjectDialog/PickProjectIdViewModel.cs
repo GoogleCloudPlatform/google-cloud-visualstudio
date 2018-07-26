@@ -37,7 +37,6 @@ namespace GoogleCloudExtension.PickProjectDialog
         private string _helpText;
         private bool _hasAccount;
 
-        private readonly IPickProjectIdWindow _owner;
         private readonly Action _promptAccountManagement;
         private readonly Task<IEnumerable<Project>> _mockedProjectList;
 
@@ -117,8 +116,10 @@ namespace GoogleCloudExtension.PickProjectDialog
             private set { SetValueAndRaise(ref _helpText, value); }
         }
 
-        public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
-            : this(owner, ManageAccountsWindow.PromptUser, null)
+        public event Action Close;
+
+        public PickProjectIdViewModel(string helpText, bool allowAccountChange)
+            : this(ManageAccountsWindow.PromptUser, null)
         {
             AllowAccountChange = allowAccountChange;
             HelpText = helpText;
@@ -127,15 +128,12 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// <summary>
         /// For Testing.
         /// </summary>
-        /// <param name="owner">The window or mock window that owns this ViewModel.</param>
         /// <param name="mockedProjectList">An override of the result of <see cref="CredentialsStore.CurrentAccountProjects"/>.</param>
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
-            IPickProjectIdWindow owner,
             Action promptAccountManagement,
             Task<IEnumerable<Project>> mockedProjectList)
         {
-            _owner = owner;
             _promptAccountManagement = promptAccountManagement;
             _mockedProjectList = mockedProjectList;
 
@@ -209,7 +207,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private void OnOkCommand()
         {
             Result = SelectedProject;
-            _owner.Close();
+            Close?.Invoke();
         }
 
         private void OnRefreshCommand()

@@ -18,6 +18,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System;
@@ -32,6 +33,7 @@ namespace GoogleCloudExtension.MenuBarControls
     [Export(typeof(IGcpUserProjectViewModel))]
     public class GcpUserProjectViewModel : ViewModelBase, IGcpUserProjectViewModel
     {
+        private readonly Lazy<IUserPromptService> _userPromptService;
         private AsyncProperty<BitmapImage> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private AsyncProperty<Project> _currentProject;
@@ -95,20 +97,27 @@ namespace GoogleCloudExtension.MenuBarControls
         private IGPlusDataSource GPlusDataSource => DataSourceFactory.GPlusDataSource;
         private IDataSourceFactory DataSourceFactory { get; }
         private ICredentialsStore CredentialsStore { get; }
+        private IUserPromptService UserPromptService => _userPromptService.Value;
 
         [ImportingConstructor]
-        public GcpUserProjectViewModel(IDataSourceFactory dataSourceFactory, ICredentialsStore credentialsStore)
+        public GcpUserProjectViewModel(
+            IDataSourceFactory dataSourceFactory,
+            ICredentialsStore credentialsStore,
+            Lazy<IUserPromptService> userPromptService)
         {
             DataSourceFactory = dataSourceFactory;
             CredentialsStore = credentialsStore;
+            _userPromptService = userPromptService;
+
+            OpenPopup = new ProtectedCommand(() => IsPopupOpen = true);
+            ManageAccountsCommand =
+                new ProtectedCommand(() => UserPromptService.PromptUser(new ManageAccountsWindowContent()));
+            SelectProjectCommand = new ProtectedCommand(SelectProject);
+
+            CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
 
             CredentialsStore.CurrentProjectIdChanged += (sender, args) => LoadCurrentProject();
             DataSourceFactory.DataSourcesUpdated += (sender, args) => UpdateUserProfile();
-            LoadCurrentProject();
-
-            OpenPopup = new ProtectedCommand(() => IsPopupOpen = true);
-            ManageAccountsCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
-            SelectProjectCommand = new ProtectedCommand(OnSelectProjectCommand);
         }
 
         public void UpdateUserProfile()
@@ -129,18 +138,18 @@ namespace GoogleCloudExtension.MenuBarControls
             }
             else
             {
-                ProfilePictureAsync = null;
-                ProfileNameAsync = null;
-                ProfileEmailAsyc = null;
+                ProfilePictureAsync = new AsyncProperty<BitmapImage>(null);
+                ProfileNameAsync = new AsyncProperty<string>(null);
+                ProfileEmailAsyc = new AsyncProperty<string>(null);
             }
         }
 
         public void LoadCurrentProject()
         {
             Project currentProject;
-            if (CurrentProjectAsync?.Value?.ProjectId == CredentialsStore.CurrentProjectId)
+            if (CurrentProjectAsync.Value?.ProjectId == CredentialsStore.CurrentProjectId)
             {
-                currentProject = CurrentProjectAsync?.Value;
+                currentProject = CurrentProjectAsync.Value;
             }
             else
             {
@@ -163,11 +172,10 @@ namespace GoogleCloudExtension.MenuBarControls
             }
         }
 
-        private void OnSelectProjectCommand()
+        private void SelectProject()
         {
-            Project selectedProject = PickProjectIdWindow.PromptUser(
-                Resources.CloudExplorerPickProjectHelpMessage,
-                false);
+            Project selectedProject = UserPromptService.UserPromptResult(
+                new PickProjectIdWindowContent(Resources.CloudExplorerPickProjectHelpMessage, false));
             if (selectedProject != null)
             {
                 CurrentProjectAsync = new AsyncProperty<Project>(selectedProject);

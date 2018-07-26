@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.MenuBarControls
     public class GcpMenuBarControlFactory : IVsUIFactory
     {
         public const string GuidString = "36E3BEDB-7C67-404C-B1BC-28B6A87E779A";
-        public const int GcpMenuBarControl = 100;
+        public const int GcpMenuBarControlCommandId = 100;
 
         private readonly Lazy<IGcpMenuBarControl> _wpfControl;
 
@@ -39,11 +39,25 @@ namespace GoogleCloudExtension.MenuBarControls
 
         /// <summary>Creates an instance of the specified element.</summary>
         /// <param name="guid">The GUID of the command.</param>
-        /// <param name="dw">The command ID. </param>
+        /// <param name="commandId">The command ID. </param>
         /// <param name="uiElement">[out] The element that was created.</param>
         /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public int CreateUIElement(ref Guid guid, uint dw, out IVsUIElement uiElement)
+        public int CreateUIElement(ref Guid guid, uint commandId, out IVsUIElement uiElement)
         {
+            if (guid != typeof(GcpMenuBarControlFactory).GUID)
+            {
+                uiElement = null;
+                return Marshal.GetHRForException(
+                    new ArgumentException($"Expected {typeof(GcpMenuBarControlFactory).GUID} but got {guid}", nameof(guid)));
+            }
+
+            if (commandId != GcpMenuBarControlCommandId)
+            {
+                uiElement = null;
+                return Marshal.GetHRForException(
+                    new ArgumentException($"Expected {GcpMenuBarControlCommandId} but got {commandId}", nameof(commandId)));
+            }
+
             uiElement = WpfControl;
             return VSConstants.S_OK;
         }

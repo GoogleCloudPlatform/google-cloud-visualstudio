@@ -27,9 +27,12 @@ namespace GoogleCloudExtension.PickProjectDialog
         private PickProjectIdWindow(string helpContext, bool allowAccountChange)
             : base(GoogleCloudExtension.Resources.PublishDialogSelectGcpProjectTitle)
         {
-            ViewModel = new PickProjectIdViewModel(this, helpContext, allowAccountChange);
-            Content = new PickProjectIdWindowContent(ViewModel);
+            ViewModel = new PickProjectIdViewModel(helpContext, allowAccountChange);
+            Content = WindowContent = new PickProjectIdWindowContent(ViewModel);
+            WindowContent.Close += Close;
         }
+
+        private PickProjectIdWindowContent WindowContent { get; }
 
         /// <summary>
         /// Initalizes the Pick Project Window and waits for it to finish.

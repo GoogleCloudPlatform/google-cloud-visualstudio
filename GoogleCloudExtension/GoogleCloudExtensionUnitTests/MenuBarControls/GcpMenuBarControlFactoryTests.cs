@@ -13,11 +13,11 @@
 // limitations under the License.
 
 using GoogleCloudExtension.MenuBarControls;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Runtime.InteropServices;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.MenuBarControls
@@ -38,12 +38,38 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         [TestMethod]
         public void TestCreateUIElement_ReturnsControl()
         {
-            Guid empty = Guid.Empty;
+            Guid commandGuid = typeof(GcpMenuBarControlFactory).GUID;
 
-            int hrResult = _objectUnderTest.CreateUIElement(ref empty, 0, out IVsUIElement output);
+            Marshal.ThrowExceptionForHR(_objectUnderTest.CreateUIElement(
+                ref commandGuid,
+                GcpMenuBarControlFactory.GcpMenuBarControlCommandId,
+                out IVsUIElement output));
 
-            Assert.AreEqual(VSConstants.S_OK, hrResult);
             Assert.AreEqual(_controlMock.Object, output);
+        }
+
+        [TestMethod]
+        public void TestCreateUIElement_ThrowsForInvalidGuid()
+        {
+            Guid invalidGuid = Guid.Empty;
+
+            int hrResult = _objectUnderTest.CreateUIElement(ref invalidGuid, 0, out IVsUIElement output);
+
+            Assert.IsNull(output);
+            var exception = Assert.ThrowsException<ArgumentException>(() => Marshal.ThrowExceptionForHR(hrResult));
+            Assert.AreEqual("guid", exception.ParamName);
+        }
+
+        [TestMethod]
+        public void TestCreateUIElement_ThrowsForInvalidCommandId()
+        {
+            Guid commandGuid = typeof(GcpMenuBarControlFactory).GUID;
+
+            int hrResult = _objectUnderTest.CreateUIElement(ref commandGuid, 0, out IVsUIElement output);
+
+            Assert.IsNull(output);
+            var exception = Assert.ThrowsException<ArgumentException>(() => Marshal.ThrowExceptionForHR(hrResult));
+            Assert.AreEqual("guid", exception.ParamName);
         }
     }
 }

@@ -23,7 +23,7 @@ using TestingHelpers;
 namespace GoogleCloudExtensionUnitTests.Services
 {
     [TestClass]
-    public class UserPromptUtilsStaticTests : ExtensionTestBase
+    public class UserPromptServiceStaticTests : ExtensionTestBase
     {
         [TestMethod]
         public void TestDefault_DefersToPackage()
@@ -33,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests.Services
     }
 
     [TestClass]
-    public class UserPromptUtilsTests : WpfTestBase<UserPromptWindow>
+    public class UserPromptServiceTests : WpfTestBase<UserPromptWindow>
     {
         private const string DefaultPrompt = "Default Prompt";
         private const string DefaultTitle = "Default Title";

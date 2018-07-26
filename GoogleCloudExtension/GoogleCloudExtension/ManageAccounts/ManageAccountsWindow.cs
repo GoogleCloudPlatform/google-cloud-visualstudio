@@ -13,14 +13,27 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
+using System;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
     public class ManageAccountsWindow : CommonDialogWindowBase
     {
+        private readonly ManageAccountsWindowContent _windowContent;
+
         private ManageAccountsWindow() : base(GoogleCloudExtension.Resources.ManageAccountsWindowTitle)
         {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
+            _windowContent = new ManageAccountsWindowContent(new ManageAccountsViewModel());
+            Content = _windowContent;
+            _windowContent.Close += Close;
+        }
+
+        /// <summary>Handles the disposing of resources when the window closes.</summary>
+        /// <param name="e">The event arguments.</param>
+        protected override void OnClosed(EventArgs e)
+        {
+            _windowContent.Close -= Close;
+            _windowContent.OnParentClosed();
         }
 
         public static void PromptUser()

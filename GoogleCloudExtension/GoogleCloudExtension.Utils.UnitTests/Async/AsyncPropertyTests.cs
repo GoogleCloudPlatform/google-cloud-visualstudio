@@ -17,8 +17,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
 {
@@ -178,35 +178,5 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
                 CollectionAssert.Contains(changedProperties, nameof(objectUnderTest.Value));
             }
         }
-    }
-
-    public class FakeSyncContext : SynchronizationContext
-    {
-        private readonly List<object> _postStates = new List<object>();
-        public IReadOnlyList<object> PostStates => _postStates;
-
-        public static IDisposable CreateCurrent() => CreateCurrent(out _);
-
-        public static IDisposable CreateCurrent(out FakeSyncContext newCurrent)
-        {
-            SynchronizationContext oldSyncContext = Current;
-            newCurrent = new FakeSyncContext();
-            SetSynchronizationContext(newCurrent);
-            return new Disposable(() => SetSynchronizationContext(oldSyncContext));
-        }
-
-        public override void OperationCompleted() => throw new NotSupportedException();
-
-        public override void OperationStarted() => throw new NotSupportedException();
-
-        public override void Post(SendOrPostCallback d, object state)
-        {
-            _postStates.Add(state);
-            d(state);
-        }
-
-        public override void Send(SendOrPostCallback d, object state) => throw new NotSupportedException();
-
-        public override int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout) => throw new NotSupportedException();
     }
 }
