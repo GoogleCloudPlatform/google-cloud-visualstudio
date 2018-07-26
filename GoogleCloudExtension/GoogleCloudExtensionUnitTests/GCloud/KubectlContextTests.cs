@@ -395,6 +395,16 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
+        public async Task TestGetServiceAsync_PassesIgnoreNotFound()
+        {
+            SetupGetJsonOutput(new GkeService());
+
+            await _objectUnderTest.GetServiceAsync(DefaultServiceName);
+
+            VerifyGetJsonOutputArgsContain<GkeService>("--ignore-not-found");
+        }
+
+        [TestMethod]
         public async Task TestGetDeploymentsAsync_PassesKubeconfig()
         {
             SetupGetJsonOutput(new GkeList<GkeDeployment>());

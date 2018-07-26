@@ -51,6 +51,7 @@ namespace GoogleCloudExtension.GCloud
         private readonly Lazy<IProcessService> _processService;
         private IProcessService ProcessService => _processService.Value;
 
+        [ImportingConstructor]
         public GCloudWrapper(Lazy<IProcessService> processService)
         {
             _processService = processService;

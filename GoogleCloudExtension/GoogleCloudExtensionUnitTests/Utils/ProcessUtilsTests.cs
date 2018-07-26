@@ -114,6 +114,14 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
+        public async Task GetJsonOutputAsync_GetsNull()
+        {
+            JsonDataClass output = await _objectUnderTest.GetJsonOutputAsync<JsonDataClass>(EchoAppName, "-null");
+
+            Assert.IsNull(output);
+        }
+
+        [TestMethod]
         public async Task GetJsonOutputAsync_Success()
         {
             JsonDataClass output = await _objectUnderTest.GetJsonOutputAsync<JsonDataClass>(EchoAppName, JsonArgs);
