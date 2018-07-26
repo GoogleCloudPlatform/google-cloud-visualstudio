@@ -68,6 +68,8 @@ namespace GoogleCloudExtensionUnitTests
                     new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
                     new TypeCatalog(typeof(DelegatingServiceProvider))));
             ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
+            ComponentModelMock.Setup(cm => cm.GetService<GcpMenuBarControlFactory>())
+                .Returns(new GcpMenuBarControlFactory(MockHelpers.LazyOf<IGcpMenuBarControl>()));
 
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = _reporterMock.ToLazy();

@@ -69,7 +69,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
 
             Assert.IsNull(output);
             var exception = Assert.ThrowsException<ArgumentException>(() => Marshal.ThrowExceptionForHR(hrResult));
-            Assert.AreEqual("guid", exception.ParamName);
+            Assert.AreEqual("commandId", exception.ParamName);
         }
     }
 }

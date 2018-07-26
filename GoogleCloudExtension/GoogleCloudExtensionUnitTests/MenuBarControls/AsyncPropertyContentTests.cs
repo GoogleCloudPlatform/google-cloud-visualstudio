@@ -174,9 +174,5 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
 
             Assert.AreEqual(typeof(AsyncPropertyContent), defaultStyleKey);
         }
-
-        [TestMethod]
-        public void TestTarget_ThrowsForInvalidProperty() =>
-            Assert.ThrowsException<InvalidOperationException>(() => _objectUnderTest.Target = new AsyncProperty(null));
     }
 }

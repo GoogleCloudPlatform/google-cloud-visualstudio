@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils.Async;
-using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -137,6 +136,7 @@ namespace GoogleCloudExtension.MenuBarControls
                 {
                     newAsyncProperty.PropertyChanged += contentControl.OnTargetPropertyChanged;
                 }
+
                 contentControl.CurrentContent = contentControl.GetExpectedCurrentContent();
             }
         }
@@ -163,7 +163,11 @@ namespace GoogleCloudExtension.MenuBarControls
 
         private DependencyProperty GetExpectedCurrentContent()
         {
-            if (Target.IsPending)
+            if (Target == null)
+            {
+                return null;
+            }
+            else if (Target.IsPending)
             {
                 return PendingContentProperty;
             }
@@ -181,7 +185,7 @@ namespace GoogleCloudExtension.MenuBarControls
             }
             else
             {
-                throw new InvalidOperationException($"{nameof(Target)} must have a valid task.");
+                return null;
             }
         }
     }

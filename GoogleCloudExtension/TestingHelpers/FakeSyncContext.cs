@@ -36,7 +36,7 @@ namespace TestingHelpers
 
         public override void OperationCompleted() => throw new NotSupportedException();
 
-        public override void OperationStarted() => throw new NotSupportedException();
+        public override void OperationStarted() { }
 
         public override void Post(SendOrPostCallback d, object state)
         {
