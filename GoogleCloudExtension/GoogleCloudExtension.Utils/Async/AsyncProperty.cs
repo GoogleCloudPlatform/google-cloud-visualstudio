@@ -33,9 +33,9 @@ namespace GoogleCloudExtension.Utils.Async
         /// Creates an <seealso cref="AsyncProperty{T}"/> from the given task. When the task competes it will
         /// apply <paramref name="func"/> and that will be the final value of the property.
         /// </summary>
-        /// <typeparam name="TIn">The type that the task will produce.</typeparam>
-        /// <typeparam name="T">The type that the property will produce.</typeparam>
-        /// <param name="valueSource">The task where the value comes from.</param>
+        /// <typeparam name="TIn">The type of the input task result.</typeparam>
+        /// <typeparam name="T">The type of the property value.</typeparam>
+        /// <param name="valueSource">The task where the initial value comes from.</param>
         /// <param name="func">The function to apply to the result of the task.</param>
         /// <param name="defaultValue">The value to use while the task is executing.</param>
         public static AsyncProperty<T> Create<TIn, T>(

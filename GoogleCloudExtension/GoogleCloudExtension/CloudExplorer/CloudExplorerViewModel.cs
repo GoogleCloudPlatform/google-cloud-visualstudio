@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The command to execute to select a new GCP project.
         /// </summary>
-        public ProtectedCommand SelectProjectCommand => UserProject.SelectProjectCommand;
+        public IProtectedCommand SelectProjectCommand => UserProject.SelectProjectCommand;
 
         /// <summary>
         /// The command executed by the refresh button.

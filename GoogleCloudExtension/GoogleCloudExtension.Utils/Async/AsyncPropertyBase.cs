@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.Async
@@ -134,6 +135,8 @@ namespace GoogleCloudExtension.Utils.Async
         protected virtual void OnTaskComplete()
         {
         }
+
+        public TaskAwaiter GetAwaiter() => SafeTask.GetAwaiter();
 
         /// <summary>
         /// Gets the result of the task, or a default value if the task is not successful.

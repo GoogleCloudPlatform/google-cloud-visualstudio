@@ -35,12 +35,12 @@ namespace GoogleCloudExtension.MenuBarControls
         /// <summary>
         /// The command to show the manage accounts dialog.
         /// </summary>
-        ProtectedCommand ManageAccountsCommand { get; }
+        IProtectedCommand ManageAccountsCommand { get; }
 
         /// <summary>
         /// The command to execute to select a new GCP project.
         /// </summary>
-        ProtectedCommand SelectProjectCommand { get; }
+        IProtectedCommand SelectProjectCommand { get; }
 
         /// <summary>
         /// The command to open the GCP Menu Bar Popup.

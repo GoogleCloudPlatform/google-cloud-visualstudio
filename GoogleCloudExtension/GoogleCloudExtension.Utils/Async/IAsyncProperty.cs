@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.Async
@@ -60,5 +61,11 @@ namespace GoogleCloudExtension.Utils.Async
         string ErrorMessage { get; }
 
         event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Allows <code>await IAsyncProperty</code> rather than requiring <code>await IAsyncProperty.SafeTask</code>.
+        /// </summary>
+        /// <returns>The <see cref="TaskAwaiter"/> from <see cref="SafeTask"/></returns>
+        TaskAwaiter GetAwaiter();
     }
 }

@@ -299,9 +299,6 @@ namespace GoogleCloudExtension
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
-            // Update the installation status of the package.
-            CheckInstallationStatus();
-
             // With this setting we allow more concurrent connections from each HttpClient instance created
             // in the process. This will allow all GCP API services to have more concurrent connections with
             // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
@@ -321,9 +318,14 @@ namespace GoogleCloudExtension
             CredentialsStore.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
             CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
+            // Update the installation status of the package.
+            CheckInstallationStatus();
+
             ErrorHandler.ThrowOnFailure(
                 GetService<SVsUIFactory, IVsRegisterUIFactories>()
-                    .RegisterUIFactory(typeof(GcpMenuBarControlFactory).GUID, new GcpMenuBarControlFactory()));
+                    .RegisterUIFactory(
+                        typeof(GcpMenuBarControlFactory).GUID,
+                        componentModel.GetService<GcpMenuBarControlFactory>()));
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

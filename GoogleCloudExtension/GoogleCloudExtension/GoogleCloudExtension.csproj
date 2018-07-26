@@ -211,6 +211,7 @@
     <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
+    <Compile Include="PickProjectDialog\CommonWindowContent.cs" />
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>

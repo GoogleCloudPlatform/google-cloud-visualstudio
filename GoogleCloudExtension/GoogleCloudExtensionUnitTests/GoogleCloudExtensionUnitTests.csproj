@@ -263,6 +263,11 @@
     <Compile Include="FirewallManagement\PortModelTests.cs" />
     <Compile Include="FirewallManagement\PortTestHelpers.cs" />
     <Compile Include="GCloud\KubectlContextTests.cs" />
+    <Compile Include="MenuBarControls\AsyncPropertyContentTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarControlFactoryTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarControlTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControlTests.cs" />
+    <Compile Include="MenuBarControls\GcpUserProjectViewModelTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />

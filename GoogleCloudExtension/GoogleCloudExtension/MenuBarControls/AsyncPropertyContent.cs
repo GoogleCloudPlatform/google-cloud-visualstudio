@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils.Async;
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -125,29 +126,28 @@ namespace GoogleCloudExtension.MenuBarControls
 
         private static void OnTargetChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (args.OldValue is IAsyncProperty<Task> oldAsyncProperty)
+            if (self is AsyncPropertyContent contentControl)
             {
-                oldAsyncProperty.PropertyChanged -= OnTargetPropertyChanged;
-            }
-
-            if (args.NewValue is IAsyncProperty<Task> newAsyncProperty)
-            {
-                newAsyncProperty.PropertyChanged += OnTargetPropertyChanged;
-                self.SetValue(CurrentContentProperty, GetExpectedCurrentContent(newAsyncProperty));
-            }
-
-            void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                if (sender is IAsyncProperty<Task> asyncProperty)
+                if (args.OldValue is IAsyncProperty<Task> oldAsyncProperty)
                 {
-                    self.SetValue(CurrentContentProperty, GetExpectedCurrentContent(asyncProperty));
+                    oldAsyncProperty.PropertyChanged -= contentControl.OnTargetPropertyChanged;
                 }
+
+                if (args.NewValue is IAsyncProperty<Task> newAsyncProperty)
+                {
+                    newAsyncProperty.PropertyChanged += contentControl.OnTargetPropertyChanged;
+                }
+                contentControl.CurrentContent = contentControl.GetExpectedCurrentContent();
             }
         }
 
+        protected void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e) =>
+            CurrentContent = GetExpectedCurrentContent();
+
         private static void OnContentChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (self.GetValue(CurrentContentProperty) is DependencyProperty currentContent && args.Property == currentContent)
+            if (self.GetValue(CurrentContentProperty) is DependencyProperty currentContent &&
+                args.Property == currentContent)
             {
                 self.SetValue(ContentProperty, self.GetValue(currentContent));
             }
@@ -155,33 +155,33 @@ namespace GoogleCloudExtension.MenuBarControls
 
         private static void OnCurrentContentChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
         {
-            if (args.Property == CurrentContentProperty && self.GetValue(CurrentContentProperty) is DependencyProperty currentContent)
+            if (args.Property == CurrentContentProperty && args.NewValue is DependencyProperty currentContent)
             {
                 self.SetValue(ContentProperty, self.GetValue(currentContent));
             }
         }
 
-        private static DependencyProperty GetExpectedCurrentContent(IAsyncProperty<Task> asyncProperty)
+        private DependencyProperty GetExpectedCurrentContent()
         {
-            if (asyncProperty.IsPending)
+            if (Target.IsPending)
             {
                 return PendingContentProperty;
             }
-            else if (asyncProperty.IsSuccess)
+            else if (Target.IsSuccess)
             {
                 return SuccessContentProperty;
             }
-            else if (asyncProperty.IsCanceled)
+            else if (Target.IsCanceled)
             {
                 return CanceledContentProperty;
             }
-            else if (asyncProperty.IsError)
+            else if (Target.IsError)
             {
                 return ErrorContentProperty;
             }
             else
             {
-                return null;
+                throw new InvalidOperationException($"{nameof(Target)} must have a valid task.");
             }
         }
     }

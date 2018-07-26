@@ -14,21 +14,26 @@
 
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
+    public interface IGcpMenuBarControl : IVsUIElement, IVsUIWpfElement { }
+
     /// <summary>
     /// Interaction logic for GcpMenuBarControl.xaml
     /// </summary>
-    public partial class GcpMenuBarControl : UserControl, IVsUIElement, IVsUIWpfElement
+    [Export(typeof(IGcpMenuBarControl))]
+    public partial class GcpMenuBarControl : UserControl, IGcpMenuBarControl
     {
         private IVsUISimpleDataSource _vsDataSource;
 
-        public GcpMenuBarControl()
+        [ImportingConstructor]
+        public GcpMenuBarControl(IGcpUserProjectViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = GoogleCloudExtensionPackage.Instance.GetMefService<IGcpUserProjectViewModel>();
+            DataContext = viewModel;
         }
 
         /// <summary>Gets the data source for this element.</summary>
