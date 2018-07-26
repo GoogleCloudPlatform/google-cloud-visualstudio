@@ -2516,4 +2516,8 @@ Delete corrupted file?</value>
     <value>Change Account</value>
     <comment>The caption on the change account button of the menu bar popup.</comment>
   </data>
+  <data name="MenuBarPopupProjectTitle" xml:space="preserve">
+    <value>Google Cloud Platform Project</value>
+    <comment>The title of the GCP Project section of the menu bar popup.</comment>
+  </data>
 </root>

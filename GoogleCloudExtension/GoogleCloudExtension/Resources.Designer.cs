@@ -4129,6 +4129,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Platform Project.
+        /// </summary>
+        public static string MenuBarPopupProjectTitle {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Project.
         /// </summary>
         public static string MenuBarPopupSelectProjectButtonCaption {

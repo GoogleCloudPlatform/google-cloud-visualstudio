@@ -46,7 +46,7 @@
 
     <Border BorderThickness="2" Padding="9">
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="Google Cloud Platform Project" Style="{StaticResource LargeTextBlockStyle}" />
+            <TextBlock Text="{x:Static ext:Resources.MenuBarPopupProjectTitle}" Style="{StaticResource LargeTextBlockStyle}" />
 
             <TextBlock Margin="0,5,0,0">
                 <Run Text="{x:Static ext:Resources.MenuBarPopupProjectNameLabel}"/>
