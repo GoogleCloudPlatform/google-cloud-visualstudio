@@ -286,7 +286,6 @@ namespace GoogleCloudExtension
             CheckInstallationStatus();
 
             // Ensure the commands UI state is updated when the GCP project changes.
-            CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
             CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
             // With this setting we allow more concurrent connections from each HttpClient instance created

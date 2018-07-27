@@ -127,8 +127,19 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
             {
                 writer.Write("File Contents");
             }
+
             _objectUnderTest.Delete(TargetFilePath);
             Assert.IsFalse(File.Exists(TargetFilePath));
+        }
+
+        [TestMethod]
+        public void TestReadAllText()
+        {
+            string expectedResult = File.ReadAllText(TestXmlFilePath);
+
+            string result = _objectUnderTest.ReadAllText(TestXmlFilePath);
+
+            Assert.AreEqual(expectedResult, result);
         }
     }
 }

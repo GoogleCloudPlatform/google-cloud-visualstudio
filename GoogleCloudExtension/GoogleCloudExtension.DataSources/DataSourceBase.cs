@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.DataSources
     /// the common routines that most source will need, such as pagination.
     /// </summary>
     /// <typeparam name="TService">The type of the service that ultimately performs the API calls.</typeparam>
-    public abstract class DataSourceBase<TService> where TService : BaseClientService
+    public abstract class DataSourceBase<TService> : IDataSourceBase<TService> where TService : BaseClientService
     {
         /// <summary>
         /// The projects/{ProjectId} string commonly used by Google Cloud APIs as project name.

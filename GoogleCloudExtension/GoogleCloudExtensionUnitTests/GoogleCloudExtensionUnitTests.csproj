@@ -230,6 +230,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accounts\CredentialsStoreTests.cs" />
     <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />

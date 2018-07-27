@@ -47,7 +47,6 @@ namespace GoogleCloudExtension.ApiManagement
         {
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentCredentialsChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentCredentialsChanged;
-            CredentialsStore.Default.Reset += OnCurrentCredentialsChanged;
             _dataSource = new Lazy<ServiceManagementDataSource>(CreateDataSource);
         }
 

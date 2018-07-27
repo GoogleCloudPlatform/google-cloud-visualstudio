@@ -57,7 +57,6 @@ namespace GoogleCloudExtension.TitleBar
         {
             OnGotoAccountManagementCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnAccountProjectIdChanged();
-            CredentialsStore.Default.Reset += (sender, e) => OnAccountProjectIdChanged();
         }
 
         private void OnAccountProjectIdChanged()

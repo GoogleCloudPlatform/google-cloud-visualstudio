@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// The interface of the ResourceManagerDataSource. Mock this object in unit tests.
     /// </summary>
-    public interface IResourceManagerDataSource
+    public interface IResourceManagerDataSource : IDataSourceBase<CloudResourceManagerService>
     {
         /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.

@@ -181,7 +181,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(UpdateGroupAndEventAsync));
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
 
-            CredentialsStore.Default.Reset += OnCurrentProjectChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectChanged;
         }
 
@@ -191,7 +190,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public void Dispose()
         {
             OnAutoReloadCommand.CanExecuteCommand = false;
-            CredentialsStore.Default.Reset -= OnCurrentProjectChanged;
             CredentialsStore.Default.CurrentProjectIdChanged -= OnCurrentProjectChanged;
         }
 

@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.Utils
         [Obsolete("This makes a call to MEF every time. Instead, import IDataSourceFactory from MEF and save to an instance member.")]
         public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
 
-        public ResourceManagerDataSource CreateResourceManagerDataSource()
+        public IResourceManagerDataSource CreateResourceManagerDataSource()
         {
             GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
             if (currentCredential != null)

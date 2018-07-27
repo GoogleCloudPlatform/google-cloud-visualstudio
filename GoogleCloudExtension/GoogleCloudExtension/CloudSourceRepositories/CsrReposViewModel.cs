@@ -367,7 +367,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task<IList<Project>> GetProjectsAsync()
         {
-            ResourceManagerDataSource resourceManager = DataSourceFactory.Default.CreateResourceManagerDataSource();
+            IResourceManagerDataSource resourceManager = DataSourceFactory.Default.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
                 return new List<Project>();

@@ -50,17 +50,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         }
 
         [TestMethod]
-        public void TestProjectIdReset()
-        {
-            _objectUnderTest.Frame = _frameMock.Object;
-            ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
-
-            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
-
-            Assert.AreNotEqual(oldViewModel, _objectUnderTest.ViewModel);
-        }
-
-        [TestMethod]
         public void TestCloseDisablesProjectIdChanged()
         {
             _objectUnderTest.Frame = _frameMock.Object;
@@ -69,18 +58,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             ((IVsWindowPane)_objectUnderTest).ClosePane();
             CredentialStoreMock.Raise(
                 cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
-
-            Assert.AreEqual(oldViewModel, _objectUnderTest.ViewModel);
-        }
-
-        [TestMethod]
-        public void TestCloseDisablesProjectIdReset()
-        {
-            _objectUnderTest.Frame = _frameMock.Object;
-            ILogsViewerViewModel oldViewModel = _objectUnderTest.ViewModel;
-
-            ((IVsWindowPane)_objectUnderTest).ClosePane();
-            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.AreEqual(oldViewModel, _objectUnderTest.ViewModel);
         }

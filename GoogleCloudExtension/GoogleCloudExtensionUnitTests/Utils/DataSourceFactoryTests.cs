@@ -19,7 +19,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace GoogleCloudExtensionUnitTests.Utils
 {
@@ -38,7 +37,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => null);
 
-            ResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
+            IResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
 
             Assert.IsNull(result);
         }
@@ -66,7 +65,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
             CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential)
                 .Returns(userAccount.GetGoogleCredential());
 
-            ResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
+            IResourceManagerDataSource result = _objectUnderTest.CreateResourceManagerDataSource();
 
             var googleCredential = (GoogleCredential)result.Service.HttpClientInitializer;
             var userCredential = (UserCredential)googleCredential.UnderlyingCredential;
