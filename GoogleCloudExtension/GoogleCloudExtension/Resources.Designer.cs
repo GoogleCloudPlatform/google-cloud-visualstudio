@@ -1726,15 +1726,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading....
-        /// </summary>
-        public static string CloudExplorerLoadingMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerLoadingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select or create account.
         /// </summary>
         public static string CloudExplorerNoAccountButtonCaption {
@@ -4093,6 +4084,78 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Project.
+        /// </summary>
+        public static string MenuBarNoProjectMessage {
+            get {
+                return ResourceManager.GetString("MenuBarNoProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No User Account.
+        /// </summary>
+        public static string MenuBarNoUserMessage {
+            get {
+                return ResourceManager.GetString("MenuBarNoUserMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Account.
+        /// </summary>
+        public static string MenuBarPopupChangeAccountButtonCaption {
+            get {
+                return ResourceManager.GetString("MenuBarPopupChangeAccountButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name: .
+        /// </summary>
+        public static string MenuBarPopupProjectNameLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number: .
+        /// </summary>
+        public static string MenuBarPopupProjectNumberLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectNumberLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Platform Project.
+        /// </summary>
+        public static string MenuBarPopupProjectTitle {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Project.
+        /// </summary>
+        public static string MenuBarPopupSelectProjectButtonCaption {
+            get {
+                return ResourceManager.GetString("MenuBarPopupSelectProjectButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id: .
+        /// </summary>
+        public static string MenuBarPupupProjectIdLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPupupProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More Information.
         /// </summary>
         public static string MoreInfoTitle {
@@ -5080,6 +5143,15 @@ namespace GoogleCloudExtension {
         public static string UiGoButtonCaption {
             get {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string UiLoadingMessage {
+            get {
+                return ResourceManager.GetString("UiLoadingMessage", resourceCulture);
             }
         }
         

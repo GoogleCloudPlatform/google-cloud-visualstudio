@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
+using GoogleCloudExtension.Theming;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.ManageAccounts
@@ -20,19 +20,23 @@ namespace GoogleCloudExtension.ManageAccounts
     /// <summary>
     /// Interaction logic for ManageCredentialsWindowContent.xaml
     /// </summary>
-    public partial class ManageAccountsWindowContent : UserControl
+    public partial class ManageAccountsWindowContent : CommonWindowContent<ManageAccountsViewModel>
     {
-        public ManageAccountsWindowContent()
+        public ManageAccountsWindowContent() : this(new ManageAccountsViewModel()) { }
+
+        public ManageAccountsWindowContent(ManageAccountsViewModel manageAccountsViewModel) : base(
+            manageAccountsViewModel,
+            GoogleCloudExtension.Resources.ManageAccountsWindowTitle)
         {
             InitializeComponent();
+            DataContext = ViewModel;
         }
 
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (_accountsListBox.SelectedItem != null)
             {
-                var viewModel = (ManageAccountsViewModel)DataContext;
-                viewModel.DoucleClickedItem((UserAccountViewModel)_accountsListBox.SelectedItem);
+                ViewModel.DoubleClickedItem((UserAccountViewModel)_accountsListBox.SelectedItem);
             }
         }
     }

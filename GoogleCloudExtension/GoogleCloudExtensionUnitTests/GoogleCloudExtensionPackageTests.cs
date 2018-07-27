@@ -15,9 +15,11 @@
 using EnvDTE;
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.MenuBarControls;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
@@ -47,11 +49,14 @@ namespace GoogleCloudExtensionUnitTests
     [DeploymentItem(VsixManifestFileName)]
     public class GoogleCloudExtensionPackageTests : MockedGlobalServiceProviderTestsBase
     {
-        private Mock<IEventsReporter> _reporterMock;
-        private GoogleCloudExtensionPackage _objectUnderTest;
-        protected override IVsPackage Package => _objectUnderTest;
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
+
+        private GoogleCloudExtensionPackage _objectUnderTest;
+        private Mock<IEventsReporter> _reporterMock;
+        private Mock<IVsRegisterUIFactories> _registerUiFactoryMock;
+
+        protected override IVsPackage Package => _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
@@ -63,10 +68,17 @@ namespace GoogleCloudExtensionUnitTests
                     new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
                     new TypeCatalog(typeof(DelegatingServiceProvider))));
             ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
+            ComponentModelMock.Setup(cm => cm.GetService<GcpMenuBarControlFactory>())
+                .Returns(new GcpMenuBarControlFactory(MockHelpers.LazyOf<IGcpMenuBarControl>()));
 
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = _reporterMock.ToLazy();
             _objectUnderTest = new GoogleCloudExtensionPackage();
+
+            _registerUiFactoryMock = ServiceProviderMock.SetupService<SVsUIFactory, IVsRegisterUIFactories>();
+            Guid menuBarControlFactoryGuid = typeof(GcpMenuBarControlFactory).GUID;
+            _registerUiFactoryMock.Setup(
+                f => f.RegisterUIFactory(ref menuBarControlFactoryGuid, It.IsAny<IVsUIFactory>()));
         }
 
         [TestMethod]
@@ -352,6 +364,68 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.UserPromptService);
         }
 
+        [TestMethod]
+        public void TestDataSourceFactory_Initalized()
+        {
+            var exportProvider = new FakeExportProvider<IDataSourceFactory>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.DataSourceFactory);
+        }
+
+        [TestMethod]
+        public void TestCredentialsStore_Initalized()
+        {
+            var mockedCredentialStore = Mock.Of<ICredentialsStore>();
+            ComponentModelMock.Setup(s => s.GetService<ICredentialsStore>()).Returns(mockedCredentialStore);
+
+            RunPackageInitalize();
+
+            Assert.AreEqual(mockedCredentialStore, _objectUnderTest.CredentialsStore);
+        }
+
+        [TestMethod]
+        public void TestCredentialsStore_ResetSubscribed()
+        {
+            var exportProvider = new FakeExportsProvider();
+            var credentialsStoreMock = new Mock<ICredentialsStore>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+            ComponentModelMock.Setup(s => s.GetService<ICredentialsStore>()).Returns(credentialsStoreMock.Object);
+
+            RunPackageInitalize();
+            credentialsStoreMock.Raise(cs => cs.Reset += null, EventArgs.Empty);
+
+            var shellUtilsMock = (Mock<IShellUtils>)exportProvider.MockObjects[typeof(IShellUtils)];
+            shellUtilsMock.Verify(su => su.InvalidateCommandsState());
+        }
+
+        [TestMethod]
+        public void TestCredentialsStore_CurrentProjectIdChangedSubscribed()
+        {
+            var exportProvider = new FakeExportsProvider();
+            var credentialsStoreMock = new Mock<ICredentialsStore>();
+            ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
+            ComponentModelMock.Setup(s => s.GetService<ICredentialsStore>()).Returns(credentialsStoreMock.Object);
+
+            RunPackageInitalize();
+            credentialsStoreMock.Raise(cs => cs.CurrentProjectIdChanged += null, EventArgs.Empty);
+
+            var shellUtilsMock = (Mock<IShellUtils>)exportProvider.MockObjects[typeof(IShellUtils)];
+            shellUtilsMock.Verify(su => su.InvalidateCommandsState());
+        }
+
+        [TestMethod]
+        public void TestInitalize_RegistersGcpMeuBarControlFactory()
+        {
+            RunPackageInitalize();
+
+            Guid factoryGuid = typeof(GcpMenuBarControlFactory).GUID;
+            _registerUiFactoryMock.Verify(
+                f => f.RegisterUIFactory(ref factoryGuid, It.IsAny<GcpMenuBarControlFactory>()));
+        }
+
         private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
@@ -382,6 +456,38 @@ namespace GoogleCloudExtensionUnitTests
                     definition.ContractName,
                     () => definition.ContractName == typeof(T).FullName ? MockedValue : null)
             };
+        }
+
+        private class FakeExportsProvider : ExportProvider
+        {
+            private readonly Dictionary<Type, Mock> _mockObjects = new Dictionary<Type, Mock>();
+            public IReadOnlyDictionary<Type, Mock> MockObjects => _mockObjects;
+
+            /// <summary>Gets all the exports that match the constraint defined by the specified definition.</summary>
+            /// <returns>A collection that contains all the exports that match the specified condition.</returns>
+            /// <param name="definition">The object that defines the conditions of the <see cref="T:System.ComponentModel.Composition.Primitives.Export" /> objects to return.</param>
+            /// <param name="atomicComposition">The transactional container for the composition.</param>
+            protected override IEnumerable<Export> GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+            {
+
+                Type contractType = typeof(GoogleCloudExtensionPackage).Assembly.GetType(definition.ContractName);
+
+                return new[]
+                {
+                    new Export(definition.ContractName, GetMockedExport)
+                };
+
+                object GetMockedExport()
+                {
+                    if (!_mockObjects.ContainsKey(contractType))
+                    {
+                        var mock = (Mock)Activator.CreateInstance(typeof(Mock<>).MakeGenericType(contractType));
+                        _mockObjects[contractType] = mock;
+                    }
+
+                    return _mockObjects[contractType].Object;
+                }
+            }
         }
 
         [Export(typeof(SVsServiceProvider))]

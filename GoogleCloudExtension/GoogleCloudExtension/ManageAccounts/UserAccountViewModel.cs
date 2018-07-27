@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Task<Person> personTask;
             try
             {
-                var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
+                IDataSourceFactory dataSourceFactory = DataSourceFactory.Default;
                 IGPlusDataSource dataSource = dataSourceFactory.CreatePlusDataSource(userAccount.GetGoogleCredential());
                 personTask = dataSource.GetProfileAsync();
             }
@@ -54,9 +54,8 @@ namespace GoogleCloudExtension.ManageAccounts
 
 
             // TODO: Show the default image while it is being loaded.
-            ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(personTask, x => x?.Image.Url);
-            NameAsync = AsyncPropertyUtils.CreateAsyncProperty(
-                personTask, x => x?.DisplayName, Resources.CloudExplorerLoadingMessage);
+            ProfilePictureAsync = AsyncProperty.Create(personTask, x => x?.Image.Url);
+            NameAsync = AsyncProperty.Create(personTask, x => x?.DisplayName, Resources.UiLoadingMessage);
         }
     }
 }

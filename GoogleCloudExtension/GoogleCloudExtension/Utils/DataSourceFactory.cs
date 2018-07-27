@@ -26,12 +26,50 @@ namespace GoogleCloudExtension.Utils
     [Export(typeof(IDataSourceFactory))]
     public class DataSourceFactory : IDataSourceFactory
     {
-        [Obsolete("This makes a call to MEF every time. Instead, import IDataSourceFactory from MEF and save to an instance member.")]
-        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
+        private Lazy<IResourceManagerDataSource> _resourceManagerDataSource;
+        private Lazy<IGPlusDataSource> _gPlusDataSource;
+
+        /// <summary>
+        /// The default data source factory.
+        /// </summary>
+        public static IDataSourceFactory Default => GoogleCloudExtensionPackage.Instance.DataSourceFactory;
+
+        /// <summary>
+        /// The default data source for managing GCP project resources.
+        /// </summary>
+        public IResourceManagerDataSource ResourceManagerDataSource => _resourceManagerDataSource.Value;
+
+        /// <summary>
+        /// The default data source for managing google accounts.
+        /// </summary>
+        public IGPlusDataSource GPlusDataSource => _gPlusDataSource.Value;
+
+        private ICredentialsStore CredentialsStore { get; }
+
+        /// <summary>
+        /// This event is triggered when account dependent DataSources have been updated.
+        /// </summary>
+        public event EventHandler DataSourcesUpdated;
+
+        [ImportingConstructor]
+        public DataSourceFactory(ICredentialsStore credentialsStore)
+        {
+            CredentialsStore = credentialsStore;
+            SetupLazyDataSources();
+            CredentialsStore.CurrentAccountChanged += (sender, args) => SetupLazyDataSources();
+            CredentialsStore.Reset += (sender, args) => SetupLazyDataSources();
+        }
+
+        private void SetupLazyDataSources()
+        {
+            _resourceManagerDataSource = new Lazy<IResourceManagerDataSource>(CreateResourceManagerDataSource);
+            _gPlusDataSource = new Lazy<IGPlusDataSource>(CreatePlusDataSource);
+            DataSourcesUpdated?.Invoke(this, EventArgs.Empty);
+        }
 
         public ResourceManagerDataSource CreateResourceManagerDataSource()
         {
-            GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            GoogleCredential currentCredential = CredentialsStore.CurrentGoogleCredential;
             if (currentCredential != null)
             {
                 return new ResourceManagerDataSource(
@@ -45,7 +83,7 @@ namespace GoogleCloudExtension.Utils
 
         public IGPlusDataSource CreatePlusDataSource()
         {
-            GoogleCredential currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            GoogleCredential currentCredential = CredentialsStore.CurrentGoogleCredential;
             return CreatePlusDataSource(currentCredential);
         }
 
@@ -63,8 +101,8 @@ namespace GoogleCloudExtension.Utils
         }
 
         public IGkeDataSource CreateGkeDataSource() => new GkeDataSource(
-            CredentialsStore.Default.CurrentProjectId,
-            CredentialsStore.Default.CurrentGoogleCredential,
-            GoogleCloudExtensionPackage.Instance.ApplicationName);
+            CredentialsStore.CurrentProjectId,
+            CredentialsStore.CurrentGoogleCredential,
+            GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
     }
 }

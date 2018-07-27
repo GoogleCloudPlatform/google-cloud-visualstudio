@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Plus.v1;
 using Google.Apis.Plus.v1.Data;
 using System.Threading.Tasks;
 
@@ -20,8 +21,9 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// Interface of the <see cref="GPlusDataSource"/>
     /// </summary>
-    public interface IGPlusDataSource
+    public interface IGPlusDataSource : IDataSourceBase<PlusService>
     {
+
         /// <summary>
         /// Fetches the profile for the authenticated user.
         /// </summary>

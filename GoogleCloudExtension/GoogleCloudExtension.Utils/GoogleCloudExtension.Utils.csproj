@@ -60,7 +60,7 @@
     <Compile Include="ArgumentCheckUtils.cs" />
     <Compile Include="Async\AsyncProperty.cs" />
     <Compile Include="Async\AsyncPropertyBase.cs" />
-    <Compile Include="Async\AsyncPropertyUtils.cs" />
+    <Compile Include="Async\IAsyncProperty.cs" />
     <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="ControlBehaviors.cs" />

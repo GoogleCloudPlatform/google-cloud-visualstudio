@@ -24,4 +24,9 @@ namespace GoogleCloudExtension.Utils
         bool Loading { get; set; }
         string LoadingMessage { get; set; }
     }
+
+    public interface IViewModelBase<out T> : IViewModelBase, ICloseSource
+    {
+        T Result { get; }
+    }
 }

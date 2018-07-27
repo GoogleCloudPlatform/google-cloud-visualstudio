@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -20,16 +21,22 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// <summary>
     /// Interaction logic for PickProjectIdWindowContent.xaml
     /// </summary>
-    public partial class PickProjectIdWindowContent
+    public partial class PickProjectIdWindowContent : CommonWindowContent<IPickProjectIdViewModel>
     {
         // ReSharper disable once MemberCanBePrivate.Global
         public const string CvsKey = "cvs";
-        private IPickProjectIdViewModel ViewModel { get; }
-        public PickProjectIdWindowContent(IPickProjectIdViewModel viewModel)
+
+        public PickProjectIdWindowContent(string helpText, bool allowAccountChange) : this(
+            new PickProjectIdViewModel(helpText, allowAccountChange))
+        { }
+
+        public PickProjectIdWindowContent(IPickProjectIdViewModel viewModel) : base(
+            viewModel,
+            GoogleCloudExtension.Resources.PublishDialogSelectGcpProjectTitle)
         {
             InitializeComponent();
 
-            DataContext = ViewModel = viewModel;
+            DataContext = ViewModel;
 
             // Ensure the focus is in the filter textbox.
             _filter.Focus();

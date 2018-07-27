@@ -195,11 +195,22 @@
     <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
     <Compile Include="GCloud\KubectlContextProvider.cs" />
+    <Compile Include="MenuBarControls\AsyncPropertyContent.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
+      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarControl.xaml.cs">
+      <DependentUpon>GcpMenuBarControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpMenuBarControlFactory.cs" />
+    <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>
@@ -265,6 +276,12 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
     <Compile Include="TemplateWizards\TemplateType.cs" />
+    <Compile Include="Theming\CommonDialogWindow.cs" />
+    <Compile Include="Theming\CommonWindowContent.cs" />
+    <Compile Include="TitleBar\TitleBar.xaml.cs">
+      <DependentUpon>TitleBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
@@ -285,6 +302,8 @@
     <Compile Include="CloudSourceRepositories\AsyncRepositories.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\ICloseSource.cs" />
+    <Compile Include="Utils\ICommonWindowContent.cs" />
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
     <Compile Include="Utils\IProcessService.cs" />
@@ -386,7 +405,6 @@
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
-    <Compile Include="ManageAccounts\ManageAccountsWindow.cs" />
     <Compile Include="ManageAccounts\ManageAccountsWindowContent.xaml.cs">
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
@@ -541,17 +559,12 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdViewModel.cs" />
-    <Compile Include="PickProjectDialog\PickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdWindowContent.xaml.cs">
       <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="Theming\CommonImageResources.cs" />
-    <Compile Include="TitleBar\TitleBar.xaml.cs">
-      <DependentUpon>TitleBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\StringFormatUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -1024,11 +1037,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MenuBarControls\GcpMenuBarPopupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MenuBarControls\GcpMenuBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1183,6 +1204,10 @@
     <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkTypeResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Theming\CommonDataTemplates.xaml">
       <SubType>Designer</SubType>

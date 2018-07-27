@@ -123,6 +123,7 @@
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GaeLocationExtensions.cs" />
+    <Compile Include="IDataSourceBase.cs" />
     <Compile Include="IGaeDataSource.cs" />
     <Compile Include="IGceDataSource.cs" />
     <Compile Include="IGkeDataSource.cs" />
