@@ -454,7 +454,8 @@ namespace GoogleCloudExtensionUnitTests.Services
             public void TestPromptUser1_SetsWindowContent()
             {
                 var mockedContent =
-                    Mock.Of<ICommonWindowContent<IViewModelBase<string>>>(c => c.Title == "WindowTitle");
+                    Mock.Of<ICommonWindowContent<IViewModelBase<string>>>(
+                        c => c.Title == "WindowTitle" && c.ViewModel.Result == "DefaultResult");
 
                 CommonDialogWindowBase window = GetWindow(() => _objectUnderTest.PromptUser(mockedContent));
 
