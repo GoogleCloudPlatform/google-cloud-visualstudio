@@ -17,6 +17,7 @@ using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -37,11 +38,15 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
             RefreshToken = "DefautRefreshToken"
         };
 
+        private Mock<IDataSourceFactory> _dataSourceFactoryMock;
+
         protected override void BeforeEach()
         {
             _getProfileTaskSource = new TaskCompletionSource<Person>();
-            DataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()).GetProfileAsync())
+            _dataSourceFactoryMock = new Mock<IDataSourceFactory>();
+            _dataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()).GetProfileAsync())
                 .Returns(_getProfileTaskSource.Task);
+            PackageMock.Setup(p => p.DataSourceFactory).Returns(_dataSourceFactoryMock.Object);
         }
 
 
@@ -72,13 +77,13 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
 
             _ = new UserAccountViewModel(mockedUserAccount);
 
-            DataSourceFactoryMock.Verify(dsf => dsf.CreatePlusDataSource(expectedCredential));
+            _dataSourceFactoryMock.Verify(dsf => dsf.CreatePlusDataSource(expectedCredential));
         }
 
         [TestMethod]
         public async Task TestConstructor_ReturnsNullProfilePictureForExceptionCreatingDataSource()
         {
-            DataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()))
+            _dataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()))
                 .Throws<Exception>();
 
             var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
@@ -91,7 +96,7 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
         [TestMethod]
         public async Task TestConstructor_ReturnsNullNameForExceptionCreatingDataSource()
         {
-            DataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()))
+            _dataSourceFactoryMock.Setup(dsf => dsf.CreatePlusDataSource(It.IsAny<GoogleCredential>()))
                 .Throws<Exception>();
 
             var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);

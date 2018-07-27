@@ -31,7 +31,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     /// Class for testing <see cref="GoogleProjectTemplateWizard"/>
     /// </summary>
     [TestClass]
-    public class GoogleProjectTemplateWizardTests
+    public class GoogleProjectTemplateWizardTests : ExtensionTestBase
     {
         private const string ProjectDirectoryBackslash = @"root:\solution\dir\project\dir";
         private const string ProjectDirectoryBackslashEnd = ProjectDirectoryBackslash + @"\";
