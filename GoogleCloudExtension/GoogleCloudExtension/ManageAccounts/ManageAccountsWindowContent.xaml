@@ -1,16 +1,15 @@
-﻿<u:CommonWindowContent x:TypeArguments="local:ManageAccountsViewModel"
-                       x:Class="GoogleCloudExtension.ManageAccounts.ManageAccountsWindowContent"
-                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                       xmlns:local="clr-namespace:GoogleCloudExtension.ManageAccounts"
-                       xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-                       xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
-                       xmlns:ext="clr-namespace:GoogleCloudExtension"
-                       xmlns:u="clr-namespace:GoogleCloudExtension.Utils"
-                       mc:Ignorable="d" 
-                       d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
+﻿<theming:CommonWindowContent x:TypeArguments="local:ManageAccountsViewModel"
+                             x:Class="GoogleCloudExtension.ManageAccounts.ManageAccountsWindowContent"
+                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                             xmlns:local="clr-namespace:GoogleCloudExtension.ManageAccounts"
+                             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+                             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+                             xmlns:ext="clr-namespace:GoogleCloudExtension"
+                             mc:Ignorable="d" 
+                             d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -110,4 +109,4 @@
 
     </theming:CommonDialogWindowBaseContent>
 
-</u:CommonWindowContent>
+</theming:CommonWindowContent>

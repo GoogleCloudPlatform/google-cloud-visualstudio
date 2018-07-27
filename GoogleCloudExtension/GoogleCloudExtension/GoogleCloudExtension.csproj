@@ -277,7 +277,7 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
     <Compile Include="TemplateWizards\TemplateType.cs" />
     <Compile Include="Theming\CommonDialogWindow.cs" />
-    <Compile Include="Utils\CommonWindowContent.cs" />
+    <Compile Include="Theming\CommonWindowContent.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
     <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />

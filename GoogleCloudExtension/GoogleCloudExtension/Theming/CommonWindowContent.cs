@@ -14,8 +14,9 @@
 
 using System;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Theming
 {
     public abstract class CommonWindowContent<T> : UserControl, ICommonWindowContent<T> where T : ICloseSource
     {

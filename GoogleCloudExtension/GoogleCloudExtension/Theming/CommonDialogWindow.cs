@@ -19,21 +19,21 @@ namespace GoogleCloudExtension.Theming
 {
     public class CommonDialogWindow<T> : CommonDialogWindowBase where T : ICloseSource
     {
-        private ICommonWindowContent<T> CommonWindowContent { get; }
+        private readonly ICommonWindowContent<T> _commonWindowContent;
 
-        public T ViewModel => CommonWindowContent.ViewModel;
+        public T ViewModel => _commonWindowContent.ViewModel;
 
         public CommonDialogWindow(ICommonWindowContent<T> commonWindowContent) : base(commonWindowContent.Title)
         {
-            Content = CommonWindowContent = commonWindowContent;
-            CommonWindowContent.Close += Close;
+            Content = _commonWindowContent = commonWindowContent;
+            _commonWindowContent.Close += Close;
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            CommonWindowContent.Close -= Close;
-            CommonWindowContent.OnParentClosed();
+            _commonWindowContent.Close -= Close;
+            _commonWindowContent.OnParentClosed();
         }
     }
 }

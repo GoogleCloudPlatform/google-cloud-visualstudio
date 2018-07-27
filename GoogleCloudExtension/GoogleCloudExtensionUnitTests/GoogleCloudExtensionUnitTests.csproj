@@ -314,6 +314,8 @@
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowContentTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowTests.cs" />
     <Compile Include="Utils\DataSourceFactoryTests.cs" />
     <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\AspNetVersionTests.cs" />

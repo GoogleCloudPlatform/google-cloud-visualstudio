@@ -40,6 +40,21 @@ namespace GoogleCloudExtension.Services
         public static IUserPromptService Default => GoogleCloudExtensionPackage.Instance.UserPromptService;
 
         /// <summary>
+        /// Internal hook for unit testing.
+        /// </summary>
+        internal static event EventHandler UserPromptActivated;
+
+        static UserPromptService()
+        {
+            UserPromptWindow.UserPromptActivated += OnUserPromptActiviated;
+        }
+
+        private static void OnUserPromptActiviated(object sender, EventArgs e)
+        {
+            UserPromptActivated?.Invoke(sender, e);
+        }
+
+        /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
         /// <param name="prompt">The message for the dialog.</param>
@@ -153,14 +168,18 @@ namespace GoogleCloudExtension.Services
         public TResult PromptUser<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content)
         {
             var dialog = new CommonDialogWindow<IViewModelBase<TResult>>(content);
+            dialog.Activated += OnUserPromptActiviated;
             dialog.ShowModal();
+            dialog.Activated -= OnUserPromptActiviated;
             return dialog.ViewModel.Result;
         }
 
         public void PromptUser(ICommonWindowContent<ICloseSource> content)
         {
             var dialog = new CommonDialogWindow<ICloseSource>(content);
+            dialog.Activated += OnUserPromptActiviated;
             dialog.ShowModal();
+            dialog.Activated -= OnUserPromptActiviated;
         }
     }
 }
