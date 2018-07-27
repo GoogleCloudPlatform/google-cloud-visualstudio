@@ -56,6 +56,16 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         }
 
         [TestMethod]
+        public void TestTarget_LeavesContentUnchangedWhenInvalidTask()
+        {
+            _objectUnderTest.CanceledContent = ExpectedContent;
+            _objectUnderTest.Target = new AsyncProperty(Task.FromCanceled(new CancellationToken(true)));
+            _objectUnderTest.Target = new AsyncProperty(null);
+
+            Assert.AreEqual(ExpectedContent, _objectUnderTest.Content);
+        }
+
+        [TestMethod]
         public async Task TestTarget_RegistersOnPropertyChangedSetsContent()
         {
             var source = new TaskCompletionSource<string>();
