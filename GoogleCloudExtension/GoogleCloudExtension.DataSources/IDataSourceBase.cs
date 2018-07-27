@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Container.v1;
-using Google.Apis.Container.v1.Data;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Google.Apis.Services;
 
 namespace GoogleCloudExtension.DataSources
 {
-    /// <summary>
-    /// This interface defines the generic GkeDataSource, which allows dependency injection of sources.
-    /// </summary>
-    public interface IGkeDataSource : IDataSourceBase<ContainerService>
+    public interface IDataSourceBase<out TService> where TService : BaseClientService
     {
         /// <summary>
-        /// Lists all of the clusters in the current project.
+        /// The service wrapped by this data source.
         /// </summary>
-        /// <returns>The list of clusters.</returns>
-        Task<IList<Cluster>> GetClusterListAsync();
+        TService Service { get; }
     }
 }

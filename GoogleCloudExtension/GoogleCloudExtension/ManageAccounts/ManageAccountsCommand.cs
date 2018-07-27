@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.ManageAccounts
         {
             EventsReporterWrapper.EnsureAnalyticsOptIn();
 
-            ManageAccountsWindow.PromptUser();
+            GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
         }
     }
 }

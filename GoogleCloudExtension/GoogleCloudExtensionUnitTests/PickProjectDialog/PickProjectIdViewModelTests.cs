@@ -14,6 +14,7 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PickProjectDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -42,20 +43,19 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
         private PropertyChangedEventHandler _addPropertiesChanged;
-        private Mock<Action> _manageAccoutMock;
 
         protected override void BeforeEach()
         {
             _testObject = null;
             _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
+            CredentialStoreMock.Setup(cs => cs.CurrentAccountProjects).Returns(() => _projectTaskSource.Task);
             _properiesChanged = new List<string>();
             _addPropertiesChanged = (sender, args) => _properiesChanged.Add(args.PropertyName);
-            _manageAccoutMock = new Mock<Action>();
         }
 
         private PickProjectIdViewModel BuildTestObject()
         {
-            var testObject = new PickProjectIdViewModel(_manageAccoutMock.Object, _projectTaskSource.Task);
+            var testObject = new PickProjectIdViewModel("Help Text", false);
             testObject.PropertyChanged += _addPropertiesChanged;
             return testObject;
         }
@@ -98,7 +98,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            _manageAccoutMock.Verify(f => f(), Times.Once);
+            PackageMock.Verify(p => p.UserPromptService.PromptUser(It.IsAny<ManageAccountsWindowContent>()));
             Assert.IsNull(_testObject.LoadTask);
         }
 
@@ -109,7 +109,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            _manageAccoutMock.Verify(f => f(), Times.Once);
+            PackageMock.Verify(p => p.UserPromptService.PromptUser(It.IsAny<ManageAccountsWindowContent>()));
         }
 
         [TestMethod]

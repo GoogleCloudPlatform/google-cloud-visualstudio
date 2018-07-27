@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils.Async;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,8 +23,6 @@ namespace GoogleCloudExtension.MenuBarControls
     /// <summary>
     /// Interaction logic for AsyncPropertyContent.xaml
     /// </summary>
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class AsyncPropertyContent : ContentControl
     {
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
@@ -112,7 +109,6 @@ namespace GoogleCloudExtension.MenuBarControls
 
         private DependencyProperty CurrentContent
         {
-            get => (DependencyProperty)GetValue(CurrentContentProperty);
             set => SetValue(CurrentContentProperty, value);
         }
 
@@ -141,7 +137,7 @@ namespace GoogleCloudExtension.MenuBarControls
             }
         }
 
-        protected void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e) =>
+        private void OnTargetPropertyChanged(object sender, PropertyChangedEventArgs e) =>
             CurrentContent = GetExpectedCurrentContent();
 
         private static void OnContentChanged(DependencyObject self, DependencyPropertyChangedEventArgs args)
