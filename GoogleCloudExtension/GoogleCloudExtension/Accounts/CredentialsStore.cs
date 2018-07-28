@@ -146,9 +146,9 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectId = null;
                 CurrentProjectNumericId = null;
 
-                InvalidateProjectList();
-
+                RefreshProjects();
                 UpdateDefaultCredentials();
+
                 CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
                 CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -179,18 +179,11 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectNumericId = null;
             }
 
-            InvalidateProjectList();
+            RefreshProjects();
+            UpdateDefaultCredentials();
 
             CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
             CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Refreshes the list of projects for the current account.
-        /// </summary>
-        public void RefreshProjects()
-        {
-            InvalidateProjectList();
         }
 
         /// <summary>
@@ -247,7 +240,7 @@ namespace GoogleCloudExtension.Accounts
             return result?.UserAccount;
         }
 
-        private void InvalidateProjectList()
+        public void RefreshProjects()
         {
             Debug.WriteLine("Starting to load projects.");
             CurrentAccountProjects = LoadCurrentAccountProjectsAsync();

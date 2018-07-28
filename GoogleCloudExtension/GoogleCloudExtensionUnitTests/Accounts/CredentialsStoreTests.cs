@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
@@ -58,8 +60,14 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
             _projectIdChangedHandlerMock = new Mock<Action<object, EventArgs>>();
             _accountChangedHandlerMock = new Mock<Action<object, EventArgs>>();
-            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
-            _objectUnderTest.CurrentAccountChanged += new EventHandler(_accountChangedHandlerMock.Object);
+        }
+
+        [TestMethod]
+        public void TestDefault_DefersToPackage()
+        {
+            GoogleCloudExtensionPackage.Instance = Mock.Of<IGoogleCloudExtensionPackage>(
+                p => p.GetMefService<ICredentialsStore>() == _objectUnderTest);
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>(), CredentialsStore.Default);
         }
 
         [TestMethod]
@@ -67,14 +75,21 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         {
             const string account1FilePath = "c:\\account1.json";
             var account1 = new UserAccount { AccountName = "Account1" };
+            const string account2FilePath = "c:\\account2.json";
+            var account2 = new UserAccount { AccountName = "Account2" };
             _fileSystemMock.Setup(fs => fs.Directory.Exists(It.IsAny<string>())).Returns(true);
             _fileSystemMock.Setup(fs => fs.Directory.EnumerateFiles(It.IsAny<string>()))
-                .Returns(new[] { account1FilePath });
+                .Returns(new[] { account1FilePath, account2FilePath });
             _fileSystemMock.Setup(fs => fs.File.ReadAllText(account1FilePath))
                 .Returns(JsonConvert.SerializeObject(account1));
+            _fileSystemMock.Setup(fs => fs.File.ReadAllText(account2FilePath))
+                .Returns(JsonConvert.SerializeObject(account2));
 
             _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
 
+            CollectionAssert.AreEquivalent(
+                new[] { account1.AccountName, account2.AccountName },
+                _objectUnderTest.AccountsList.Select(a => a.AccountName).ToList());
             Assert.AreEqual(account1.AccountName, _objectUnderTest.GetAccount(account1.AccountName).AccountName);
         }
 
@@ -101,7 +116,9 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _fileSystemMock.Setup(fs => fs.File.ReadAllText(account1FilePath)).Throws<IOException>();
 
             Assert.ThrowsException<CredentialsStoreException>(
-                () => new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy()));
+                () => _objectUnderTest = new CredentialsStore(
+                    _fileSystemMock.ToLazy(),
+                    _dataSourceFactoryMock.ToLazy()));
         }
 
         [TestMethod]
@@ -114,7 +131,9 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _fileSystemMock.Setup(fs => fs.File.ReadAllText(account1FilePath)).Returns("This is not Json!");
 
             Assert.ThrowsException<CredentialsStoreException>(
-                () => new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy()));
+                () => _objectUnderTest = new CredentialsStore(
+                    _fileSystemMock.ToLazy(),
+                    _dataSourceFactoryMock.ToLazy()));
         }
 
         [TestMethod]
@@ -148,6 +167,34 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
+        public void TestConstructor_DoesNotThrowForExceptionReadingDefaultCredentials()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(It.IsAny<string>())).Returns(true);
+            _fileSystemMock
+                .Setup(
+                    fs => fs.File.ReadAllText(
+                        It.Is<string>(
+                            s => s.EndsWith(CredentialsStore.DefaultCredentialsFileName, StringComparison.Ordinal))))
+                .Throws<IOException>();
+
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+        }
+
+        [TestMethod]
+        public void TestConstructor_DoesNotThrowForInvalidDefaultCredentialsFile()
+        {
+            _fileSystemMock.Setup(fs => fs.File.Exists(It.IsAny<string>())).Returns(true);
+            _fileSystemMock
+                .Setup(
+                    fs => fs.File.ReadAllText(
+                        It.Is<string>(
+                            s => s.EndsWith(CredentialsStore.DefaultCredentialsFileName, StringComparison.Ordinal))))
+                .Returns("This Is Not JSON!");
+
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+        }
+
+        [TestMethod]
         public void TestUpdateCurrentProject_SetsCurrentProjectId()
         {
             const string expectedProjectId = "Expected Project Id";
@@ -168,8 +215,31 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
+        public void TestUpdateCurrentProject_GivenNullClearsProjectId()
+        {
+            _objectUnderTest.UpdateCurrentProject(_defaultProject);
+
+            _objectUnderTest.UpdateCurrentProject(null);
+
+            Assert.IsNull(_objectUnderTest.CurrentProjectId);
+        }
+
+        [TestMethod]
+        public void TestUpdateCurrentProject_GivenNullClearsProjectNumber()
+        {
+            const int expectedProjectNumber = 10512;
+            _objectUnderTest.UpdateCurrentProject(
+                new Project { ProjectId = DefaultProjectId, ProjectNumber = expectedProjectNumber });
+
+            _objectUnderTest.UpdateCurrentProject(null);
+
+            Assert.IsNull(_objectUnderTest.CurrentProjectNumericId);
+        }
+
+        [TestMethod]
         public void TestUpdateCurrentProject_InvokesCurrentProjetIdChanged()
         {
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
 
             _objectUnderTest.UpdateCurrentProject(_defaultProject);
 
@@ -222,8 +292,8 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         {
             _objectUnderTest.UpdateCurrentProject(_defaultProject);
             Mock.Get(_fileSystemMock.Object.File).ResetCalls();
-            _projectIdChangedHandlerMock.ResetCalls();
-            _accountChangedHandlerMock.ResetCalls();
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
+            _objectUnderTest.CurrentAccountChanged += new EventHandler(_accountChangedHandlerMock.Object);
 
             _objectUnderTest.UpdateCurrentProject(_defaultProject);
 
@@ -262,6 +332,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestUpdateCurrentAccount_RaisesCurrentAccountChanged()
         {
+            _objectUnderTest.CurrentAccountChanged += new EventHandler(_accountChangedHandlerMock.Object);
 
             _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
 
@@ -271,6 +342,8 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestUpdateCurrentAccount_RaisesCurrentProjectIdChanged()
         {
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
+
             _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
 
             _projectIdChangedHandlerMock.Verify(f => f(_objectUnderTest, EventArgs.Empty));
@@ -299,17 +372,50 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestUpdateCurrentProject_DoesNothingForSameAccount()
+        public void TestUpdateCurrentAccount_ToNullDeletesDefaultCredentials()
+        {
+            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
+
+            _objectUnderTest.UpdateCurrentAccount(null);
+
+            _fileSystemMock.Verify(
+                fs => fs.File.Delete(
+                    It.Is<string>(
+                        s => s.EndsWith(CredentialsStore.DefaultCredentialsFileName, StringComparison.Ordinal))));
+        }
+
+        [TestMethod]
+        public void TestUpdateCurrentAccount_ToNullDoesNotThrowForExceptionDeletingDefaultCredentials()
+        {
+            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
+            _fileSystemMock.Setup(fs => fs.File.Delete(It.IsAny<string>())).Throws<IOException>();
+
+            _objectUnderTest.UpdateCurrentAccount(null);
+        }
+
+        [TestMethod]
+        public void TestUpdateCurrentAccount_DoesNotThrowFromIOException()
+        {
+            _fileSystemMock.Setup(fs => fs.File.WriteAllText(It.IsAny<string>(), It.IsAny<string>()))
+                .Throws<IOException>();
+
+            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
+        }
+
+        [TestMethod]
+        public void TestUpdateCurrentAccount_DoesNothingForSameAccount()
         {
             _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
             Mock.Get(_fileSystemMock.Object.File).ResetCalls();
-            _projectIdChangedHandlerMock.ResetCalls();
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
+            _objectUnderTest.CurrentAccountChanged += new EventHandler(_accountChangedHandlerMock.Object);
 
             _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
 
             _fileSystemMock.Verify(fs => fs.File.WriteAllText(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             _fileSystemMock.Verify(fs => fs.File.Delete(It.IsAny<string>()), Times.Never);
             _projectIdChangedHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()), Times.Never);
+            _accountChangedHandlerMock.Verify(f => f(It.IsAny<object>(), It.IsAny<EventArgs>()), Times.Never);
         }
 
         [TestMethod]
@@ -325,15 +431,19 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestResetCredentials_RaisesCurrentAccountChanged()
         {
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
+            _objectUnderTest.CurrentAccountChanged += new EventHandler(_accountChangedHandlerMock.Object);
 
             _objectUnderTest.ResetCredentials(null, null);
 
+            _projectIdChangedHandlerMock.Verify(f => f(_objectUnderTest, EventArgs.Empty));
             _accountChangedHandlerMock.Verify(f => f(_objectUnderTest, EventArgs.Empty));
         }
 
         [TestMethod]
         public void TestResetCredentials_RaisesCurrentProjectIdChanged()
         {
+            _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
 
             _objectUnderTest.ResetCredentials(null, null);
 
@@ -505,6 +615,46 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             IUserAccount result = _objectUnderTest.GetAccount(_defaultUserAccount.AccountName);
 
             Assert.AreEqual(_defaultUserAccount, result);
+        }
+
+        [TestMethod]
+        public void TestCurrentAccountPath()
+        {
+            _objectUnderTest.AddAccount(_defaultUserAccount);
+
+            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
+            string result = _objectUnderTest.CurrentAccountPath;
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void TestCurrentGoogleCredential_FromAccount()
+        {
+            GoogleCredential expectedCredential = new UserAccount
+            {
+                AccountName = DefaultAccountName,
+                ClientId = "ClientId",
+                ClientSecret = "ClientSecret",
+                RefreshToken = "RefreshToken"
+            }.GetGoogleCredential();
+            Mock.Get(_defaultUserAccount).Setup(ua => ua.GetGoogleCredential()).Returns(expectedCredential);
+            _objectUnderTest.AddAccount(_defaultUserAccount);
+
+            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
+            GoogleCredential result = _objectUnderTest.CurrentGoogleCredential;
+
+            Assert.AreEqual(expectedCredential, result);
+        }
+
+        [TestMethod]
+        public void TestCurrentGoogleCredential_FromNoCurrentAccount()
+        {
+            _objectUnderTest.UpdateCurrentAccount(null);
+
+            GoogleCredential result = _objectUnderTest.CurrentGoogleCredential;
+
+            Assert.IsNull(result);
         }
 
         private static bool IsExpectedCredentialsJson(string s, string accountName, string projectId)
