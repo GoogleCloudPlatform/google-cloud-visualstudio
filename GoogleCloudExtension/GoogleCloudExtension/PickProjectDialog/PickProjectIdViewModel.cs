@@ -167,7 +167,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         {
             if (CredentialsStore.Default.CurrentAccount != null)
             {
-                LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+                LoadTask = new AsyncProperty(LoadProjectsAsync());
                 HasAccount = true;
             }
             else
