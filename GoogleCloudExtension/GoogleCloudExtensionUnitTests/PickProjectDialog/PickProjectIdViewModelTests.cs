@@ -38,7 +38,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
         private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
-        private TaskCompletionSource<IEnumerable<Project>> _projectTaskSource;
+        private TaskCompletionSource<IList<Project>> _projectTaskSource;
         private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
@@ -48,7 +48,9 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         protected override void BeforeEach()
         {
             _testObject = null;
-            _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
+            _projectTaskSource = new TaskCompletionSource<IList<Project>>();
+            PackageMock.Setup(p => p.DataSourceFactory.ResourceManagerDataSource.ProjectsListTask)
+                .Returns(() => _projectTaskSource.Task);
             _windowMock = new Mock<IPickProjectIdWindow>();
             _windowMock.Setup(window => window.Close()).Verifiable();
             _properiesChanged = new List<string>();
@@ -58,7 +60,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 
         private PickProjectIdViewModel BuildTestObject()
         {
-            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object, _projectTaskSource.Task);
+            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object);
             testObject.PropertyChanged += _addPropertiesChanged;
             return testObject;
         }

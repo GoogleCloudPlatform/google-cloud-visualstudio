@@ -39,7 +39,6 @@ namespace GoogleCloudExtension.PickProjectDialog
 
         private readonly IPickProjectIdWindow _owner;
         private readonly Action _promptAccountManagement;
-        private readonly Task<IEnumerable<Project>> _mockedProjectList;
 
         /// <summary>
         /// Result of the view model after the dialog window is closed. Remains
@@ -118,7 +117,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         }
 
         public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
-            : this(owner, ManageAccountsWindow.PromptUser, null)
+            : this(owner, ManageAccountsWindow.PromptUser)
         {
             AllowAccountChange = allowAccountChange;
             HelpText = helpText;
@@ -132,12 +131,10 @@ namespace GoogleCloudExtension.PickProjectDialog
         /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
         internal PickProjectIdViewModel(
             IPickProjectIdWindow owner,
-            Action promptAccountManagement,
-            Task<IEnumerable<Project>> mockedProjectList)
+            Action promptAccountManagement)
         {
             _owner = owner;
             _promptAccountManagement = promptAccountManagement;
-            _mockedProjectList = mockedProjectList;
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
             OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
@@ -177,8 +174,6 @@ namespace GoogleCloudExtension.PickProjectDialog
             }
         }
 
-        private Task<IEnumerable<Project>> GetProjectsTask() => _mockedProjectList ?? CredentialsStore.Default.CurrentAccountProjects;
-
         private async Task LoadProjectsAsync()
         {
             // The projects list will be empty while we load.
@@ -186,7 +181,7 @@ namespace GoogleCloudExtension.PickProjectDialog
             RefreshCommand.CanExecuteCommand = false;
 
             // Updat the to loaded list of projects.
-            Projects = (await GetProjectsTask()) ?? Enumerable.Empty<Project>();
+            Projects = (await DataSourceFactory.Default.ResourceManagerDataSource.ProjectsListTask) ?? Enumerable.Empty<Project>();
             RefreshCommand.CanExecuteCommand = true;
 
             // Choose project from the list.
@@ -214,7 +209,7 @@ namespace GoogleCloudExtension.PickProjectDialog
 
         private void OnRefreshCommand()
         {
-            CredentialsStore.Default.RefreshProjects();
+            DataSourceFactory.Default.ResourceManagerDataSource.RefreshProjects();
             StartLoadProjects();
         }
     }

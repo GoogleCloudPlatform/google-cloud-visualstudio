@@ -16,7 +16,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -36,11 +35,6 @@ namespace GoogleCloudExtension.Accounts
         /// Returns the path for the current account.
         /// </summary>
         string CurrentAccountPath { get; }
-
-        /// <summary>
-        /// The cached list of GCP projects for the current project.
-        /// </summary>
-        Task<IEnumerable<Project>> CurrentAccountProjects { get; }
 
         /// <summary>
         /// The GoogleCredential for the current <see cref="UserAccount"/>.
@@ -79,11 +73,6 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="accountName">The name to look.</param>
         /// <returns>The account if found, null otherwise.</returns>
         IUserAccount GetAccount(string accountName);
-
-        /// <summary>
-        /// Refreshes the list of projects for the current account.
-        /// </summary>
-        void RefreshProjects();
 
         /// <summary>
         /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
