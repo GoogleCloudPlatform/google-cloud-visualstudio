@@ -136,6 +136,10 @@ namespace GoogleCloudExtension.Utils.Async
         {
         }
 
+        /// <summary>
+        /// Allows <code>await AsyncPropertyBase</code> rather than requiring <code>await AsyncPropertyBase.SafeTask</code>.
+        /// </summary>
+        /// <returns>The <see cref="TaskAwaiter"/> from <see cref="IAsyncProperty{T}.SafeTask"/></returns>
         public TaskAwaiter GetAwaiter() => SafeTask.GetAwaiter();
 
         /// <summary>
