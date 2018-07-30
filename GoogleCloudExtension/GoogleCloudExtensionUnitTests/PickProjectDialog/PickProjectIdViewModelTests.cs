@@ -16,6 +16,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -208,6 +209,27 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
                 _properiesChanged);
             CollectionAssert.AreEqual(new[] { s_testProject }, _testObject.Projects.ToList());
             Assert.AreEqual(s_testProject, _testObject.SelectedProject);
+        }
+
+        [TestMethod]
+        public void TestRefreshCommand_RefreshesResourceManagerDataSource()
+        {
+            _testObject = BuildTestObject();
+
+            _testObject.RefreshCommand.Execute(null);
+
+            PackageMock.Verify(p => p.DataSourceFactory.ResourceManagerDataSource.RefreshProjects());
+        }
+
+        [TestMethod]
+        public void TestRefreshCommand_StartsNewLoadTask()
+        {
+            _testObject = BuildTestObject();
+            AsyncProperty originalLoadTask = _testObject.LoadTask;
+
+            _testObject.RefreshCommand.Execute(null);
+
+            Assert.AreNotEqual(originalLoadTask, _testObject.LoadTask);
         }
     }
 }
