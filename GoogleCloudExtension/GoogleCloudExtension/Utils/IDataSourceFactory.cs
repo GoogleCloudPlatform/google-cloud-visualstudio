@@ -14,11 +14,27 @@
 
 using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.DataSources;
+using System;
 
 namespace GoogleCloudExtension.Utils
 {
     public interface IDataSourceFactory
     {
+        /// <summary>
+        /// The default data source for managing GCP project resources.
+        /// </summary>
+        IResourceManagerDataSource ResourceManagerDataSource { get; }
+
+        /// <summary>
+        /// The default data source for managing google accounts.
+        /// </summary>
+        IGPlusDataSource GPlusDataSource { get; }
+
+        /// <summary>
+        /// This event is triggered when account dependent DataSources have been updated.
+        /// </summary>
+        event EventHandler DataSourcesUpdated;
+
         IResourceManagerDataSource CreateResourceManagerDataSource();
 
         IGPlusDataSource CreatePlusDataSource();
