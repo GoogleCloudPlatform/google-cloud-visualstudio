@@ -31,5 +31,8 @@ namespace GoogleCloudExtension.Services.FileSystem
 
         /// <inheritdoc cref="Directory.CreateDirectory(string)"/>
         DirectoryInfo CreateDirectory(string path);
+
+        /// <inheritdoc cref="Directory.EnumerateFiles(string)"/>
+        IEnumerable<string> EnumerateFiles(string path);
     }
 }

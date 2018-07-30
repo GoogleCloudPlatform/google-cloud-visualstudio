@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The list of accounts known to the store.
         /// </summary>
-        IEnumerable<UserAccount> AccountsList { get; }
+        IEnumerable<IUserAccount> AccountsList { get; }
 
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
@@ -59,12 +59,11 @@ namespace GoogleCloudExtension.Accounts
 
         event EventHandler CurrentAccountChanged;
         event EventHandler CurrentProjectIdChanged;
-        event EventHandler Reset;
 
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
-        void AddAccount(UserAccount userAccount);
+        void AddAccount(IUserAccount userAccount);
 
         /// <summary>
         /// Deletes the <paramref name="account"/> from the store. The account must exist in the store
@@ -79,7 +78,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="accountName">The name to look.</param>
         /// <returns>The account if found, null otherwise.</returns>
-        UserAccount GetAccount(string accountName);
+        IUserAccount GetAccount(string accountName);
 
         /// <summary>
         /// Refreshes the list of projects for the current account.

@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private Project _currentProject;
-        private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
+        private Lazy<IResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<IGPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
         private string _emptyStateButtonCaption;
@@ -223,7 +223,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
             CredentialsStore.Default.CurrentAccountChanged += OnCredentialsChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCredentialsChanged;
-            CredentialsStore.Default.Reset += OnCredentialsChanged;
 
             ErrorHandlerUtils.HandleExceptionsAsync(ResetCredentialsAsync);
         }
@@ -393,7 +392,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateAccountDependentDataSources()
         {
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceFactory.Default.CreateResourceManagerDataSource);
+            _resourceManagerDataSource = new Lazy<IResourceManagerDataSource>(DataSourceFactory.Default.CreateResourceManagerDataSource);
             _plusDataSource = new Lazy<IGPlusDataSource>(DataSourceFactory.Default.CreatePlusDataSource);
         }
 

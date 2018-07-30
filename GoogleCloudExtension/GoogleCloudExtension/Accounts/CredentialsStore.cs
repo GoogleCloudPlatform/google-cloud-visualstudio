@@ -14,7 +14,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
@@ -38,6 +38,9 @@ namespace GoogleCloudExtension.Accounts
     [Export(typeof(ICredentialsStore))]
     public class CredentialsStore : ICredentialsStore
     {
+        private readonly Lazy<IFileSystem> _fileSystem;
+        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
+
         /// <summary>
         /// Remembers the file name used to serialize a particular <see cref="UserAccount"/>.
         /// </summary>
@@ -45,11 +48,11 @@ namespace GoogleCloudExtension.Accounts
         {
             public string FileName { get; set; }
 
-            public UserAccount UserAccount { get; set; }
+            public IUserAccount UserAccount { get; set; }
         }
 
         private const string AccountsStorePath = @"googlecloudvsextension\accounts";
-        private const string DefaultCredentialsFileName = "default_credentials";
+        public const string DefaultCredentialsFileName = "default_credentials";
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
 
@@ -59,7 +62,6 @@ namespace GoogleCloudExtension.Accounts
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
-        public event EventHandler Reset;
 
         /// <summary>
         /// The current <see cref="UserAccount"/> selected.
@@ -94,13 +96,22 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The list of accounts known to the store.
         /// </summary>
-        public IEnumerable<UserAccount> AccountsList => _cachedCredentials.Values.Select(x => x.UserAccount);
+        public IEnumerable<IUserAccount> AccountsList => _cachedCredentials.Values.Select(x => x.UserAccount);
 
-        private CredentialsStore()
+        private IFileSystem FileSystem => _fileSystem.Value;
+        private IDirectory Directory => FileSystem.Directory;
+        private IFile File => FileSystem.File;
+        private IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
+
+        [ImportingConstructor]
+        public CredentialsStore(Lazy<IFileSystem> fileSystem, Lazy<IDataSourceFactory> dataSourceFactory)
         {
+            _fileSystem = fileSystem;
+            _dataSourceFactory = dataSourceFactory;
+
             _cachedCredentials = LoadAccounts();
 
-            var defaultCredentials = LoadDefaultCredentials();
+            DefaultCredentials defaultCredentials = LoadDefaultCredentials();
             if (defaultCredentials != null)
             {
                 ResetCredentials(defaultCredentials.AccountName, defaultCredentials.ProjectId);
@@ -135,17 +146,17 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectId = null;
                 CurrentProjectNumericId = null;
 
-                InvalidateProjectList();
-
+                RefreshProjects();
                 UpdateDefaultCredentials();
+
                 CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
+                CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         /// <summary>
         /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
-        /// given <paramref name="projectId"/>. The <seealso cref="Reset"/> event will be raised to notify
-        /// listeners on this.
+        /// given <paramref name="projectId"/>.
         /// If <paramref name="accountName"/> cannot be found in the store then the credentials will be reset
         /// to empty.
         /// </summary>
@@ -153,7 +164,7 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="projectId">The projectId to make current.</param>
         public void ResetCredentials(string accountName, string projectId)
         {
-            var newCurrentAccount = GetAccount(accountName);
+            IUserAccount newCurrentAccount = GetAccount(accountName);
             if (newCurrentAccount != null)
             {
                 CurrentAccount = newCurrentAccount;
@@ -167,17 +178,12 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectId = null;
                 CurrentProjectNumericId = null;
             }
-            Reset?.Invoke(this, EventArgs.Empty);
 
-            InvalidateProjectList();
-        }
+            RefreshProjects();
+            UpdateDefaultCredentials();
 
-        /// <summary>
-        /// Refreshes the list of projects for the current account.
-        /// </summary>
-        public void RefreshProjects()
-        {
-            InvalidateProjectList();
+            CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
+            CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -188,7 +194,7 @@ namespace GoogleCloudExtension.Accounts
         /// <returns>True if the current account was deleted, false otherwise.</returns>
         public void DeleteAccount(IUserAccount account)
         {
-            var accountFilePath = GetUserAccountPath(account.AccountName);
+            string accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
             {
                 Debug.WriteLine($"Should not be here, unknown account name: {account.AccountName}");
@@ -196,7 +202,7 @@ namespace GoogleCloudExtension.Accounts
             }
 
             File.Delete(accountFilePath);
-            var isCurrentAccount = account.AccountName == CurrentAccount?.AccountName;
+            bool isCurrentAccount = account.AccountName == CurrentAccount?.AccountName;
             _cachedCredentials = LoadAccounts();
             if (isCurrentAccount)
             {
@@ -207,14 +213,14 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
-        public void AddAccount(UserAccount userAccount)
+        public void AddAccount(IUserAccount userAccount)
         {
             EnsureCredentialsRootExist();
-            var name = SaveUserAccount(userAccount);
+            string name = SaveUserAccount(userAccount);
             _cachedCredentials[userAccount.AccountName] = new StoredUserAccount
             {
                 FileName = name,
-                UserAccount = userAccount,
+                UserAccount = userAccount
             };
         }
 
@@ -223,19 +229,18 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="accountName">The name to look.</param>
         /// <returns>The account if found, null otherwise.</returns>
-        public UserAccount GetAccount(string accountName)
+        public IUserAccount GetAccount(string accountName)
         {
             if (accountName == null)
             {
                 return null;
             }
 
-            StoredUserAccount result = null;
-            _cachedCredentials.TryGetValue(accountName, out result);
+            _cachedCredentials.TryGetValue(accountName, out StoredUserAccount result);
             return result?.UserAccount;
         }
 
-        private void InvalidateProjectList()
+        public void RefreshProjects()
         {
             Debug.WriteLine("Starting to load projects.");
             CurrentAccountProjects = LoadCurrentAccountProjectsAsync();
@@ -245,10 +250,7 @@ namespace GoogleCloudExtension.Accounts
         {
             try
             {
-                var dataSource = new ResourceManagerDataSource(
-                    CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
-                return await dataSource.GetProjectsListAsync();
+                return await DataSourceFactory.CreateResourceManagerDataSource().GetProjectsListAsync();
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
@@ -258,15 +260,17 @@ namespace GoogleCloudExtension.Accounts
 
         private string GetUserAccountPath(string accountName)
         {
-            StoredUserAccount stored;
-            if (_cachedCredentials.TryGetValue(accountName, out stored))
+            if (_cachedCredentials.TryGetValue(accountName, out StoredUserAccount stored))
             {
                 return Path.Combine(s_credentialsStoreRoot, stored.FileName);
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
-        private static Dictionary<string, StoredUserAccount> LoadAccounts()
+        private Dictionary<string, StoredUserAccount> LoadAccounts()
         {
             Debug.WriteLine($"Listing credentials in directory: {s_credentialsStoreRoot}");
             if (!Directory.Exists(s_credentialsStoreRoot))
@@ -279,7 +283,7 @@ namespace GoogleCloudExtension.Accounts
                 .ToDictionary(x => x.UserAccount.AccountName);
         }
 
-        private static void EnsureCredentialsRootExist()
+        private void EnsureCredentialsRootExist()
         {
             if (Directory.Exists(s_credentialsStoreRoot))
             {
@@ -291,15 +295,15 @@ namespace GoogleCloudExtension.Accounts
 
         private static string GetCredentialsStoreRoot()
         {
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             return Path.Combine(localAppData, AccountsStorePath);
         }
 
-        private static UserAccount LoadUserAccount(string path)
+        private UserAccount LoadUserAccount(string path)
         {
             try
             {
-                var contents = AtomicFileRead(path);
+                string contents = File.ReadAllText(path);
                 return JsonConvert.DeserializeObject<UserAccount>(contents);
             }
             catch (JsonException ex)
@@ -314,12 +318,12 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        private static void SaveUserAccount(UserAccount userAccount, string path)
+        private void SaveUserAccount(IUserAccount userAccount, string path)
         {
             try
             {
-                var serialized = JsonConvert.SerializeObject(userAccount);
-                AtomicFileWrite(path, serialized);
+                string serialized = JsonConvert.SerializeObject(userAccount);
+                File.WriteAllText(path, serialized);
             }
             catch (IOException ex)
             {
@@ -328,21 +332,21 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        private static string SaveUserAccount(UserAccount userAccount)
+        private string SaveUserAccount(IUserAccount userAccount)
         {
-            var name = GetFileName(userAccount);
-            var savePath = Path.Combine(s_credentialsStoreRoot, name);
+            string name = GetFileName(userAccount);
+            string savePath = Path.Combine(s_credentialsStoreRoot, name);
             SaveUserAccount(userAccount, savePath);
             return name;
         }
 
-        private static string GetFileName(UserAccount userAccount)
+        private static string GetFileName(IUserAccount userAccount)
         {
-            var serialized = JsonConvert.SerializeObject(userAccount);
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
+            string serialized = JsonConvert.SerializeObject(userAccount);
+            SHA1 sha1 = SHA1.Create();
+            byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (byte b in hash)
             {
                 sb.AppendFormat("{0:x2}", b);
@@ -353,20 +357,19 @@ namespace GoogleCloudExtension.Accounts
 
         private void UpdateDefaultCredentials()
         {
-            var path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
+            string path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
 
             if (CurrentAccount?.AccountName != null)
             {
                 var defaultCredentials = new DefaultCredentials
                 {
                     ProjectId = CurrentProjectId,
-                    AccountName = CurrentAccount?.AccountName,
+                    AccountName = CurrentAccount.AccountName
                 };
 
                 try
                 {
-                    Debug.WriteLine($"Updating default account: {path}");
-                    AtomicFileWrite(path, JsonConvert.SerializeObject(defaultCredentials));
+                    File.WriteAllText(path, JsonConvert.SerializeObject(defaultCredentials));
                 }
                 catch (IOException ex)
                 {
@@ -389,7 +392,7 @@ namespace GoogleCloudExtension.Accounts
 
         private DefaultCredentials LoadDefaultCredentials()
         {
-            var path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
+            string path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
             if (!File.Exists(path))
             {
                 return null;
@@ -398,7 +401,7 @@ namespace GoogleCloudExtension.Accounts
             DefaultCredentials result = null;
             try
             {
-                var contents = AtomicFileRead(path);
+                string contents = File.ReadAllText(path);
                 result = JsonConvert.DeserializeObject<DefaultCredentials>(contents);
             }
             catch (JsonException ex)
@@ -410,40 +413,6 @@ namespace GoogleCloudExtension.Accounts
                 Debug.WriteLine($"Failed to read default credentials: {ex.Message}");
             }
             return result;
-        }
-
-        private static void AtomicFileWrite(string path, string contents)
-        {
-            try
-            {
-                using (var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                using (var stream = new StreamWriter(file))
-                {
-                    stream.Write(contents);
-                }
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to write the file {path}: {ex.Message}");
-                throw;
-            }
-        }
-
-        private static string AtomicFileRead(string path)
-        {
-            try
-            {
-                using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (var stream = new StreamReader(file))
-                {
-                    return stream.ReadToEnd();
-                }
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to read the file {path}: {ex.Message}");
-                throw;
-            }
         }
     }
 }

@@ -18,7 +18,7 @@ using System.IO;
 namespace GoogleCloudExtension.Services.FileSystem
 {
     /// <summary>
-    /// Interface for a file service that matches the static members of <see cref="System.IO.File"/>.
+    /// Interface for a file service that matches the static members of <see cref="File"/>.
     /// </summary>
     public interface IFile
     {
@@ -42,5 +42,8 @@ namespace GoogleCloudExtension.Services.FileSystem
 
         /// <inheritdoc cref="File.Delete(string)"/>
         void Delete(string path);
+
+        /// <inheritdoc cref="File.ReadAllText(string)"/>
+        string ReadAllText(string path);
     }
 }

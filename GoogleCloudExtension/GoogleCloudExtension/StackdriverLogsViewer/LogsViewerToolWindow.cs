@@ -64,7 +64,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _content = new LogsViewerToolWindowControl();
 
             CredentialsStore.Default.CurrentProjectIdChanged += OnProjectIdChanged;
-            CredentialsStore.Default.Reset += OnProjectIdChanged;
 
             EventsReporterWrapper.ReportEvent(LogsViewerOpenEvent.Create());
         }
@@ -88,7 +87,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             base.OnClose();
             ViewModel?.Dispose();
             CredentialsStore.Default.CurrentProjectIdChanged -= OnProjectIdChanged;
-            CredentialsStore.Default.Reset -= OnProjectIdChanged;
         }
 
         private void CreateNewViewModel()
