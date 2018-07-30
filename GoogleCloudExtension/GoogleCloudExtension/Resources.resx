@@ -369,7 +369,7 @@
     <value>The status of the zone.</value>
     <comment>The description of the status property of a GCE zone.</comment>
   </data>
-  <data name="CloudExplorerLoadingMessage" xml:space="preserve">
+  <data name="UiLoadingMessage" xml:space="preserve">
     <value>Loading...</value>
     <comment>General loading message.</comment>
   </data>

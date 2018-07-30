@@ -1726,15 +1726,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading....
-        /// </summary>
-        public static string CloudExplorerLoadingMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerLoadingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select or create account.
         /// </summary>
         public static string CloudExplorerNoAccountButtonCaption {
@@ -5080,6 +5071,15 @@ namespace GoogleCloudExtension {
         public static string UiGoButtonCaption {
             get {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string UiLoadingMessage {
+            get {
+                return ResourceManager.GetString("UiLoadingMessage", resourceCulture);
             }
         }
         
