@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.Accounts
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
 
-        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>();
+        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.CredentialsStore;
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;

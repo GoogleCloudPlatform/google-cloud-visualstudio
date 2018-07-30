@@ -48,8 +48,6 @@ namespace GoogleCloudExtension.CloudExplorer
         private AsyncProperty<string> _profilePictureAsync;
         private AsyncProperty<string> _profileNameAsync;
         private Project _currentProject;
-        private Lazy<IResourceManagerDataSource> _resourceManagerDataSource;
-        private Lazy<IGPlusDataSource> _plusDataSource;
         private string _emptyStateMessage;
         private string _emptyStateButtonCaption;
         private ICommand _emptyStateCommand;
@@ -175,6 +173,11 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         internal ProtectedAsyncCommand RefreshCommand { get; }
 
+        private static IGPlusDataSource GPlusDataSource => DataSourceFactory.Default.GPlusDataSource;
+
+        private static IResourceManagerDataSource ResourceManagerDataSource =>
+            DataSourceFactory.Default.ResourceManagerDataSource;
+
         #region ICloudSourceContext implementation.
 
         Project ICloudSourceContext.CurrentProject => _currentProject;
@@ -221,17 +224,18 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             };
 
-            CredentialsStore.Default.CurrentAccountChanged += OnCredentialsChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCredentialsChanged;
+            DataSourceFactory.Default.DataSourcesUpdated += OnCredentialsChanged;
 
             ErrorHandlerUtils.HandleExceptionsAsync(ResetCredentialsAsync);
         }
 
         private void UpdateUserProfile()
         {
-            if (_plusDataSource.Value != null)
+            IGPlusDataSource gPlusDataSource = GPlusDataSource;
+            if (gPlusDataSource != null)
             {
-                Task<Person> profileTask = _plusDataSource.Value.GetProfileAsync();
+                Task<Person> profileTask = gPlusDataSource.GetProfileAsync();
                 ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
                 ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
                     profileTask,
@@ -290,7 +294,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             if (projectId != null)
             {
-                return await _resourceManagerDataSource.Value.GetProjectAsync(projectId);
+                return await ResourceManagerDataSource.GetProjectAsync(projectId);
             }
             else
             {
@@ -304,8 +308,6 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 IsBusy = true;
 
-                // These data sources only depend on the current account, which will not change for now.
-                InvalidateAccountDependentDataSources();
                 UpdateUserProfile();
 
                 // Load the current project if one is found, otherwise ask the user to choose a project.
@@ -388,12 +390,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
                 EmptyStateCommand = new ProtectedCommand(OnNavigateToCloudConsoleCommand);
             }
-        }
-
-        private void InvalidateAccountDependentDataSources()
-        {
-            _resourceManagerDataSource = new Lazy<IResourceManagerDataSource>(DataSourceFactory.Default.CreateResourceManagerDataSource);
-            _plusDataSource = new Lazy<IGPlusDataSource>(DataSourceFactory.Default.CreatePlusDataSource);
         }
 
         private async Task RefreshSourcesAsync()

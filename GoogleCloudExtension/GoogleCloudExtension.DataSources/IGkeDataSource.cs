@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Container.v1;
 using Google.Apis.Container.v1.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// This interface defines the generic GkeDataSource, which allows dependency injection of sources.
     /// </summary>
-    public interface IGkeDataSource
+    public interface IGkeDataSource : IDataSourceBase<ContainerService>
     {
         /// <summary>
         /// Lists all of the clusters in the current project.

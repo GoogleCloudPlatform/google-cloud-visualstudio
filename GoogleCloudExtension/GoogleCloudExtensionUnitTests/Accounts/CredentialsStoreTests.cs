@@ -65,9 +65,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestDefault_DefersToPackage()
         {
-            GoogleCloudExtensionPackage.Instance = Mock.Of<IGoogleCloudExtensionPackage>(
-                p => p.GetMefService<ICredentialsStore>() == _objectUnderTest);
-            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>(), CredentialsStore.Default);
+            var expectedCredentialsStore = Mock.Of<ICredentialsStore>();
+            GoogleCloudExtensionPackage.Instance =
+                Mock.Of<IGoogleCloudExtensionPackage>(p => p.CredentialsStore == expectedCredentialsStore);
+
+            Assert.AreEqual(expectedCredentialsStore, CredentialsStore.Default);
         }
 
         [TestMethod]
