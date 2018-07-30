@@ -8,14 +8,8 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// <summary>
     /// Interface of the view model used by the <see cref="PickProjectIdWindowContent"/>
     /// </summary>
-    public interface IPickProjectIdViewModel : IViewModelBase
+    public interface IPickProjectIdViewModel : IViewModelBase<Project>
     {
-        /// <summary>
-        /// Result of the view model after the dialog window is closed. Remains
-        /// null until an action buttion is clicked.
-        /// </summary>
-        Project Result { get; }
-
         /// <summary>
         /// Command to open the manage users dialog.
         /// </summary>

@@ -37,10 +37,6 @@ namespace GoogleCloudExtension.PickProjectDialog
         private string _helpText;
         private bool _hasAccount;
 
-        private readonly IPickProjectIdWindow _owner;
-        private readonly Action _promptAccountManagement;
-        private readonly Task<IEnumerable<Project>> _mockedProjectList;
-
         /// <summary>
         /// Result of the view model after the dialog window is closed. Remains
         /// null until an action buttion is clicked.
@@ -117,27 +113,15 @@ namespace GoogleCloudExtension.PickProjectDialog
             private set { SetValueAndRaise(ref _helpText, value); }
         }
 
-        public PickProjectIdViewModel(IPickProjectIdWindow owner, string helpText, bool allowAccountChange)
-            : this(owner, ManageAccountsWindow.PromptUser, null)
+        /// <summary>
+        /// Implements <see cref="ICloseSource.Close"/>. When invoked, tells the parent window to close.
+        /// </summary>
+        public event Action Close;
+
+        public PickProjectIdViewModel(string helpText, bool allowAccountChange)
         {
             AllowAccountChange = allowAccountChange;
             HelpText = helpText;
-        }
-
-        /// <summary>
-        /// For Testing.
-        /// </summary>
-        /// <param name="owner">The window or mock window that owns this ViewModel.</param>
-        /// <param name="mockedProjectList">An override of the result of <see cref="CredentialsStore.CurrentAccountProjects"/>.</param>
-        /// <param name="promptAccountManagement">Action to prompt managing accounts.</param>
-        internal PickProjectIdViewModel(
-            IPickProjectIdWindow owner,
-            Action promptAccountManagement,
-            Task<IEnumerable<Project>> mockedProjectList)
-        {
-            _owner = owner;
-            _promptAccountManagement = promptAccountManagement;
-            _mockedProjectList = mockedProjectList;
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
             OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
@@ -167,7 +151,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         {
             if (CredentialsStore.Default.CurrentAccount != null)
             {
-                LoadTask = AsyncPropertyUtils.CreateAsyncProperty(LoadProjectsAsync());
+                LoadTask = new AsyncProperty(LoadProjectsAsync());
                 HasAccount = true;
             }
             else
@@ -177,8 +161,6 @@ namespace GoogleCloudExtension.PickProjectDialog
             }
         }
 
-        private Task<IEnumerable<Project>> GetProjectsTask() => _mockedProjectList ?? CredentialsStore.Default.CurrentAccountProjects;
-
         private async Task LoadProjectsAsync()
         {
             // The projects list will be empty while we load.
@@ -186,7 +168,7 @@ namespace GoogleCloudExtension.PickProjectDialog
             RefreshCommand.CanExecuteCommand = false;
 
             // Updat the to loaded list of projects.
-            Projects = (await GetProjectsTask()) ?? Enumerable.Empty<Project>();
+            Projects = (await CredentialsStore.Default.CurrentAccountProjects) ?? Enumerable.Empty<Project>();
             RefreshCommand.CanExecuteCommand = true;
 
             // Choose project from the list.
@@ -202,14 +184,14 @@ namespace GoogleCloudExtension.PickProjectDialog
 
         private void OnChangeUserCommand()
         {
-            _promptAccountManagement();
+            GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
             StartLoadProjects();
         }
 
         private void OnOkCommand()
         {
             Result = SelectedProject;
-            _owner.Close();
+            Close?.Invoke();
         }
 
         private void OnRefreshCommand()

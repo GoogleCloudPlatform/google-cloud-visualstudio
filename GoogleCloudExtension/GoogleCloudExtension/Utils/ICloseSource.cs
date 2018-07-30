@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
+using System;
 
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.Utils
 {
-    public class ManageAccountsWindow : CommonDialogWindowBase
+    public interface ICloseSource
     {
-        private ManageAccountsWindow() : base(GoogleCloudExtension.Resources.ManageAccountsWindowTitle)
-        {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
-        }
-
-        public static void PromptUser()
-        {
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
-        }
+        event Action Close;
     }
 }
