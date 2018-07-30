@@ -23,7 +23,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
 using System.Threading.Tasks;
-using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
@@ -119,7 +118,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.RefreshCommand.Execute(null);
             _currentProjectSource.SetResult(null);
             await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
-            await _objectUnderTest.ProfileNameAsync.SafeTask;
 
             Assert.AreEqual(Resources.CloudExploreNoProjectMessage, _objectUnderTest.EmptyStateMessage);
         }

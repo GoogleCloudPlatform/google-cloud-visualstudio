@@ -2488,4 +2488,36 @@ Delete corrupted file?</value>
     <value>Error Loading Deployments</value>
     <comment>Message shown when loading deployments failed.</comment>
   </data>
+  <data name="MenuBarNoProjectMessage" xml:space="preserve">
+    <value>No Project</value>
+    <comment>The content of the GcpMenuBar when there is no project at all.</comment>
+  </data>
+  <data name="MenuBarNoUserMessage" xml:space="preserve">
+    <value>No User Account</value>
+    <comment>The message displayed for user name when there is no user.</comment>
+  </data>
+  <data name="MenuBarPopupProjectNameLabel" xml:space="preserve">
+    <value>Name: </value>
+    <comment>The label of the Project Name text block on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPupupProjectIdLabel" xml:space="preserve">
+    <value>Id: </value>
+    <comment>The label for the project id text block on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPopupProjectNumberLabel" xml:space="preserve">
+    <value>Number: </value>
+    <comment>The label for the project number text block on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPopupSelectProjectButtonCaption" xml:space="preserve">
+    <value>Select Project</value>
+    <comment>The caption of the select project button on the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPopupChangeAccountButtonCaption" xml:space="preserve">
+    <value>Change Account</value>
+    <comment>The caption on the change account button of the menu bar popup.</comment>
+  </data>
+  <data name="MenuBarPopupProjectTitle" xml:space="preserve">
+    <value>Google Cloud Platform Project</value>
+    <comment>The title of the GCP Project section of the menu bar popup.</comment>
+  </data>
 </root>

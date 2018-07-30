@@ -481,7 +481,7 @@ namespace GoogleCloudExtensionUnitTests.Services
                 UserPromptService.UserPromptActivated += handler;
 
             protected override void UnregisterActivatedEvent(EventHandler handler) =>
-                UserPromptService.UserPromptActivated += handler;
+                UserPromptService.UserPromptActivated -= handler;
         }
     }
 }
