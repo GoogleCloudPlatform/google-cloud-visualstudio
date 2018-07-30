@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.Async
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.Utils.Async
     /// <summary>
     /// Base class for modeling a task. Implementations should NotifyAllPropertyChanged when the task completes.
     /// </summary>
-    public abstract class AsyncPropertyBase<T> : Model where T : Task
+    public abstract class AsyncPropertyBase<T> : Model, IAsyncProperty<T> where T : Task
     {
         /// <summary>
         /// A task that succeeds when the actual task completes. This task will never throw.
@@ -133,6 +134,27 @@ namespace GoogleCloudExtension.Utils.Async
         /// </summary>
         protected virtual void OnTaskComplete()
         {
+        }
+
+        public TaskAwaiter GetAwaiter() => SafeTask.GetAwaiter();
+
+        /// <summary>
+        /// Gets the result of the task, or a default value if the task is not successful.
+        /// </summary>
+        /// <typeparam name="TIn">They type of the task result.</typeparam>
+        /// <param name="task">The task to get the result from.</param>
+        /// <param name="defaultValue">The default value to return on a task error.</param>
+        /// <returns>The value of the task, or the default value.</returns>
+        protected static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default(TIn))
+        {
+            try
+            {
+                return task.Result;
+            }
+            catch
+            {
+                return defaultValue;
+            }
         }
     }
 }
