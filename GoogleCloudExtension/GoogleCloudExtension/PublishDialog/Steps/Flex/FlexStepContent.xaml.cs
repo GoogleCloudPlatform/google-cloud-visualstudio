@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.DataSources;
 using System;
 using System.Threading.Tasks;
@@ -37,11 +36,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         public FlexStepContent(
             IPublishDialog publishDialog,
             IGaeDataSource dataSource = null,
-            Func<Project> pickProjectPrompt = null,
             Func<Task<bool>> setAppRegionAsyncFunc = null) : this()
         {
             ViewModel = new FlexStepViewModel(
-                dataSource, pickProjectPrompt, setAppRegionAsyncFunc, publishDialog);
+                dataSource, setAppRegionAsyncFunc, publishDialog);
         }
 
         public FlexStepViewModel ViewModel

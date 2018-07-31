@@ -37,6 +37,12 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             protected override void OnTaskComplete() => OnTaskCompleteCallCount++;
 
             public int OnTaskCompleteCallCount { get; private set; }
+
+            public static T GetTaskResultSafe2<T>(Task<T> task, T defaultValue) =>
+                GetTaskResultSafe(task, defaultValue);
+
+            public static T GetTaskResultSafe2<T>(Task<T> task) =>
+                GetTaskResultSafe(task);
         }
 
         [TestInitialize]
@@ -317,6 +323,34 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             _tcs.SetResult(null);
 
             await objectUnderTest.SafeTask;
+        }
+
+        [TestMethod]
+        public void TestGetTaskResultSafe_Result()
+        {
+            const string expectedResult = "Expected Result";
+
+            string actualResult = TestAsyncPropertyBase.GetTaskResultSafe2(Task.FromResult(expectedResult));
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [TestMethod]
+        public void TestGetTaskResultSafe_Error()
+        {
+            string actualResult = TestAsyncPropertyBase.GetTaskResultSafe2(Task.FromException<string>(new Exception()));
+
+            Assert.AreEqual(default(string), actualResult);
+        }
+
+        [TestMethod]
+        public void TestGetTaskResultSafe_ErrorDefaultValue()
+        {
+            const string expectedDefaultValue = "Expected Default Value";
+
+            string actualResult = TestAsyncPropertyBase.GetTaskResultSafe2(Task.FromException<string>(new Exception()), expectedDefaultValue);
+
+            Assert.AreEqual(expectedDefaultValue, actualResult);
         }
     }
 }

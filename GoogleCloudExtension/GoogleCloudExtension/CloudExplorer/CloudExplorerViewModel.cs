@@ -236,8 +236,8 @@ namespace GoogleCloudExtension.CloudExplorer
             if (gPlusDataSource != null)
             {
                 Task<Person> profileTask = gPlusDataSource.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
-                ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                ProfilePictureAsync = AsyncProperty.Create(profileTask, x => x?.Image.Url);
+                ProfileNameAsync = AsyncProperty.Create(
                     profileTask,
                     x => x?.Emails.FirstOrDefault()?.Value,
                     Resources.CloudExplorerLoadingMessage);
@@ -258,14 +258,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ManageAccountsWindow.PromptUser();
+            GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
         }
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectIdWindow.PromptUser(
-                Resources.CloudExplorerPickProjectHelpMessage,
-                allowAccountChange: false);
+            Project selectedProject = GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(
+                new PickProjectIdWindowContent(Resources.CloudExplorerPickProjectHelpMessage, false));
             if (selectedProject == null)
             {
                 return;
