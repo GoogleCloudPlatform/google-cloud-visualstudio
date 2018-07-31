@@ -104,6 +104,8 @@ namespace GoogleCloudExtension
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
+        private Lazy<IDataSourceFactory> _dataSourceFactory;
+
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -155,6 +157,16 @@ namespace GoogleCloudExtension
         /// The default <see cref="IUserPromptService"/>.
         /// </summary>
         public IUserPromptService UserPromptService => _userPromptService.Value;
+
+        /// <summary>
+        /// The default <see cref="IDataSourceFactory"/> service.
+        /// </summary>
+        public IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
+
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/> service.
+        /// </summary>
+        public ICredentialsStore CredentialsStore { get; private set; }
 
         /// <summary>
         /// The initalized instance of the package.
@@ -282,23 +294,26 @@ namespace GoogleCloudExtension
             VsVersion = _dteInstance.Version;
             VsEdition = _dteInstance.Edition;
 
-            // Update the installation status of the package.
-            CheckInstallationStatus();
-
-            // Ensure the commands UI state is updated when the GCP project changes.
-            CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
-
             // With this setting we allow more concurrent connections from each HttpClient instance created
             // in the process. This will allow all GCP API services to have more concurrent connections with
             // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
             ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-            ExportProvider mefExportProvider = GetService<SComponentModel, IComponentModel>().DefaultExportProvider;
+            IComponentModel componentModel = GetService<SComponentModel, IComponentModel>();
+            CredentialsStore = componentModel.GetService<ICredentialsStore>();
+            ExportProvider mefExportProvider = componentModel.DefaultExportProvider;
             _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
             _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
             _processService = mefExportProvider.GetExport<IProcessService>();
             _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
             _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
+            _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
+
+            // Ensure the commands UI state is updated when the GCP project changes.
+            CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
+
+            // Update the installation status of the package.
+            CheckInstallationStatus();
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

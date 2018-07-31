@@ -24,6 +24,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public interface IResourceManagerDataSource : IDataSourceBase<CloudResourceManagerService>
     {
+
+        Task<IList<Project>> ProjectsListTask { get; }
         /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.
         /// </summary>
@@ -35,5 +37,7 @@ namespace GoogleCloudExtension.DataSources
         /// It always return empty list if no item is found, caller can safely assume there is no null return.
         /// </summary>
         Task<IList<Project>> GetProjectsListAsync();
+
+        void RefreshProjects();
     }
 }

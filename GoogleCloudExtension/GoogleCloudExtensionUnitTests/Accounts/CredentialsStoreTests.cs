@@ -17,15 +17,12 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Accounts
@@ -41,22 +38,16 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private Mock<Action<object, EventArgs>> _accountChangedHandlerMock;
         private IUserAccount _defaultUserAccount;
         private Project _defaultProject;
-        private Mock<IDataSourceFactory> _dataSourceFactoryMock;
-        private TaskCompletionSource<IList<Project>> _getProjectsSource;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _getProjectsSource = new TaskCompletionSource<IList<Project>>();
             _defaultProject = new Project { ProjectId = DefaultProjectId };
             _defaultUserAccount = Mock.Of<IUserAccount>(ua => ua.AccountName == DefaultAccountName);
 
             _fileSystemMock = new Mock<IFileSystem> { DefaultValueProvider = DefaultValueProvider.Mock };
-            _dataSourceFactoryMock = new Mock<IDataSourceFactory>();
-            _dataSourceFactoryMock.Setup(dsf => dsf.CreateResourceManagerDataSource().GetProjectsListAsync())
-                .Returns(() => _getProjectsSource.Task);
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
 
             _projectIdChangedHandlerMock = new Mock<Action<object, EventArgs>>();
             _accountChangedHandlerMock = new Mock<Action<object, EventArgs>>();
@@ -65,9 +56,11 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestDefault_DefersToPackage()
         {
-            GoogleCloudExtensionPackage.Instance = Mock.Of<IGoogleCloudExtensionPackage>(
-                p => p.GetMefService<ICredentialsStore>() == _objectUnderTest);
-            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>(), CredentialsStore.Default);
+            var expectedCredentialsStore = Mock.Of<ICredentialsStore>();
+            GoogleCloudExtensionPackage.Instance =
+                Mock.Of<IGoogleCloudExtensionPackage>(p => p.CredentialsStore == expectedCredentialsStore);
+
+            Assert.AreEqual(expectedCredentialsStore, CredentialsStore.Default);
         }
 
         [TestMethod]
@@ -85,7 +78,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _fileSystemMock.Setup(fs => fs.File.ReadAllText(account2FilePath))
                 .Returns(JsonConvert.SerializeObject(account2));
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
 
             CollectionAssert.AreEquivalent(
                 new[] { account1.AccountName, account2.AccountName },
@@ -101,7 +94,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             _fileSystemMock.Setup(fs => fs.Directory.EnumerateFiles(It.IsAny<string>()))
                 .Returns(new[] { notAccountFilePath });
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
 
             _fileSystemMock.Verify(fs => fs.File.ReadAllText(notAccountFilePath), Times.Never);
         }
@@ -117,8 +110,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
             Assert.ThrowsException<CredentialsStoreException>(
                 () => _objectUnderTest = new CredentialsStore(
-                    _fileSystemMock.ToLazy(),
-                    _dataSourceFactoryMock.ToLazy()));
+                    _fileSystemMock.ToLazy()));
         }
 
         [TestMethod]
@@ -132,8 +124,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
             Assert.ThrowsException<CredentialsStoreException>(
                 () => _objectUnderTest = new CredentialsStore(
-                    _fileSystemMock.ToLazy(),
-                    _dataSourceFactoryMock.ToLazy()));
+                    _fileSystemMock.ToLazy()));
         }
 
         [TestMethod]
@@ -160,7 +151,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                     JsonConvert.SerializeObject(
                         defaultCredentials));
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
 
             Assert.AreEqual(account1.AccountName, _objectUnderTest.CurrentAccount.AccountName);
             Assert.AreEqual(expectedProjectId, _objectUnderTest.CurrentProjectId);
@@ -177,7 +168,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                             s => s.EndsWith(CredentialsStore.DefaultCredentialsFileName, StringComparison.Ordinal))))
                 .Throws<IOException>();
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
         }
 
         [TestMethod]
@@ -191,7 +182,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                             s => s.EndsWith(CredentialsStore.DefaultCredentialsFileName, StringComparison.Ordinal))))
                 .Returns("This Is Not JSON!");
 
-            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy(), _dataSourceFactoryMock.ToLazy());
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
         }
 
         [TestMethod]
@@ -350,16 +341,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestUpdateCurrentAccount_StartsCurrentAccountProjectsLoad()
-        {
-            Task<IEnumerable<Project>> originalTask = _objectUnderTest.CurrentAccountProjects;
-
-            _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
-
-            Assert.AreNotEqual(originalTask, _objectUnderTest.CurrentAccountProjects);
-        }
-
-        [TestMethod]
         public void TestUpdateCurrentAccount_UpdatesDefaultCredentials()
         {
             _objectUnderTest.UpdateCurrentAccount(_defaultUserAccount);
@@ -419,16 +400,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestResetCredentials_StartsCurrentAccountProjectsLoad()
-        {
-            Task<IEnumerable<Project>> originalTask = _objectUnderTest.CurrentAccountProjects;
-
-            _objectUnderTest.ResetCredentials(null, null);
-
-            Assert.AreNotEqual(originalTask, _objectUnderTest.CurrentAccountProjects);
-        }
-
-        [TestMethod]
         public void TestResetCredentials_RaisesCurrentAccountChanged()
         {
             _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
@@ -470,38 +441,6 @@ namespace GoogleCloudExtensionUnitTests.Accounts
             Assert.AreEqual(_defaultUserAccount, _objectUnderTest.CurrentAccount);
             Assert.AreEqual(DefaultProjectId, _objectUnderTest.CurrentProjectId);
             Assert.IsNull(_objectUnderTest.CurrentProjectNumericId);
-        }
-
-        [TestMethod]
-        public void TestRefreshProjects_StartsCurrentAccountProjectsLoad()
-        {
-            Task<IEnumerable<Project>> originalTask = _objectUnderTest.CurrentAccountProjects;
-
-            _objectUnderTest.RefreshProjects();
-
-            Assert.AreNotEqual(originalTask, _objectUnderTest.CurrentAccountProjects);
-        }
-
-        [TestMethod]
-        public async Task TestCurrentAccountProjects_LoadsCurrentAccountProjects()
-        {
-            Project[] expectedResult = { new Project(), _defaultProject };
-
-            _objectUnderTest.RefreshProjects();
-            _getProjectsSource.SetResult(expectedResult);
-            IEnumerable<Project> results = await _objectUnderTest.CurrentAccountProjects;
-
-            CollectionAssert.AreEqual(expectedResult, results.ToList());
-        }
-
-        [TestMethod]
-        public async Task TestCurrentAccountProjects_GetsEmptyOnTaskException()
-        {
-            _objectUnderTest.RefreshProjects();
-            _getProjectsSource.SetException(new Exception());
-            IEnumerable<Project> results = await _objectUnderTest.CurrentAccountProjects;
-
-            CollectionAssert.That.IsEmpty(results);
         }
 
         [TestMethod]

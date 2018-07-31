@@ -15,7 +15,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -39,7 +37,6 @@ namespace GoogleCloudExtension.Accounts
     public class CredentialsStore : ICredentialsStore
     {
         private readonly Lazy<IFileSystem> _fileSystem;
-        private readonly Lazy<IDataSourceFactory> _dataSourceFactory;
 
         /// <summary>
         /// Remembers the file name used to serialize a particular <see cref="UserAccount"/>.
@@ -58,7 +55,7 @@ namespace GoogleCloudExtension.Accounts
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
 
-        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.GetMefService<ICredentialsStore>();
+        public static ICredentialsStore Default => GoogleCloudExtensionPackage.Instance.CredentialsStore;
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
@@ -89,11 +86,6 @@ namespace GoogleCloudExtension.Accounts
         public string CurrentProjectNumericId { get; private set; }
 
         /// <summary>
-        /// The cached list of GCP projects for the current project.
-        /// </summary>
-        public Task<IEnumerable<Project>> CurrentAccountProjects { get; private set; }
-
-        /// <summary>
         /// The list of accounts known to the store.
         /// </summary>
         public IEnumerable<IUserAccount> AccountsList => _cachedCredentials.Values.Select(x => x.UserAccount);
@@ -101,13 +93,11 @@ namespace GoogleCloudExtension.Accounts
         private IFileSystem FileSystem => _fileSystem.Value;
         private IDirectory Directory => FileSystem.Directory;
         private IFile File => FileSystem.File;
-        private IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
 
         [ImportingConstructor]
-        public CredentialsStore(Lazy<IFileSystem> fileSystem, Lazy<IDataSourceFactory> dataSourceFactory)
+        public CredentialsStore(Lazy<IFileSystem> fileSystem)
         {
             _fileSystem = fileSystem;
-            _dataSourceFactory = dataSourceFactory;
 
             _cachedCredentials = LoadAccounts();
 
@@ -146,7 +136,6 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectId = null;
                 CurrentProjectNumericId = null;
 
-                RefreshProjects();
                 UpdateDefaultCredentials();
 
                 CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
@@ -179,7 +168,6 @@ namespace GoogleCloudExtension.Accounts
                 CurrentProjectNumericId = null;
             }
 
-            RefreshProjects();
             UpdateDefaultCredentials();
 
             CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
@@ -238,24 +226,6 @@ namespace GoogleCloudExtension.Accounts
 
             _cachedCredentials.TryGetValue(accountName, out StoredUserAccount result);
             return result?.UserAccount;
-        }
-
-        public void RefreshProjects()
-        {
-            Debug.WriteLine("Starting to load projects.");
-            CurrentAccountProjects = LoadCurrentAccountProjectsAsync();
-        }
-
-        private async Task<IEnumerable<Project>> LoadCurrentAccountProjectsAsync()
-        {
-            try
-            {
-                return await DataSourceFactory.CreateResourceManagerDataSource().GetProjectsListAsync();
-            }
-            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
-            {
-                return Enumerable.Empty<Project>();
-            }
         }
 
         private string GetUserAccountPath(string accountName)

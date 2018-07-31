@@ -22,6 +22,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
@@ -30,20 +31,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
     {
         private CloudExplorerViewModel _objectUnderTest;
         private ISelectionUtils _mockedSelectionUtils;
-        private ResourceManagerDataSource _mockedResourceManagerDataSource;
-        private IGPlusDataSource _mockedGPlusDataSource;
         private Mock<IGPlusDataSource> _gPlusDataSourceMock;
         private SynchronizedCollection<string> _propertiesChanged;
 
         protected override void BeforeEach()
         {
             _gPlusDataSourceMock = new Mock<IGPlusDataSource>();
-            _mockedResourceManagerDataSource = null;
-            _mockedGPlusDataSource = null;
 
-            DataSourceFactoryMock.Setup(f => f.CreateResourceManagerDataSource())
-                .Returns(() => _mockedResourceManagerDataSource);
-            DataSourceFactoryMock.Setup(f => f.CreatePlusDataSource()).Returns(() => _mockedGPlusDataSource);
+            PackageMock.Setup(p => p.DataSourceFactory.GPlusDataSource).Returns(_gPlusDataSourceMock.Object);
 
             _mockedSelectionUtils = Mock.Of<ISelectionUtils>();
             _objectUnderTest = new CloudExplorerViewModel(_mockedSelectionUtils);
@@ -72,19 +67,20 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         [TestMethod]
         public async Task TestRefreshCommand_ResetsCredentialsAsync()
         {
-            _mockedGPlusDataSource = _gPlusDataSourceMock.Object;
             const string profileName = "NewProfileName";
             var getProfileResult = new Person
             {
                 Emails = new[] { new Person.EmailsData { Value = profileName } },
                 Image = new Person.ImageData()
             };
-            _gPlusDataSourceMock.Setup(ds => ds.GetProfileAsync()).Returns(Task.FromResult(getProfileResult));
+            _gPlusDataSourceMock.Setup(ds => ds.GetProfileAsync()).ReturnsResult(getProfileResult);
             _propertiesChanged.Clear();
+
             _objectUnderTest.RefreshCommand.Execute(null);
             await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.ProfileNameAsync.SafeTask;
 
-            CollectionAssert.Contains(_propertiesChanged, "ProfileNameAsync");
+            CollectionAssert.Contains(_propertiesChanged, nameof(_objectUnderTest.ProfileNameAsync));
             Assert.AreEqual(profileName, _objectUnderTest.ProfileNameAsync.Value);
         }
     }
