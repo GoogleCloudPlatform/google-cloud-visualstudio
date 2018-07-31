@@ -252,6 +252,7 @@
     <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModelTests.cs" />
     <Compile Include="Deployment\GkeDeploymentServiceTests.cs" />
     <Compile Include="Deployment\MSBuildPropertyTests.cs" />
     <Compile Include="Deployment\MSBuildTargetTests.cs" />
@@ -264,6 +265,7 @@
     <Compile Include="FirewallManagement\PortModelTests.cs" />
     <Compile Include="FirewallManagement\PortTestHelpers.cs" />
     <Compile Include="GCloud\KubectlContextTests.cs" />
+    <Compile Include="ManageAccounts\ManageAccountsViewModelTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -309,6 +311,9 @@
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowContentTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowTests.cs" />
+    <Compile Include="TitleBar\TitleBarViewModelTests.cs" />
     <Compile Include="Utils\DataSourceFactoryTests.cs" />
     <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
     <Compile Include="TemplateWizards\Dialogs\AspNetVersionTests.cs" />

@@ -32,7 +32,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
 using DteProject = EnvDTE.Project;
-using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 {
@@ -112,8 +111,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = new FlexStepViewModel(
-                _gaeDataSourceMock.Object, Mock.Of<Func<GcpProject>>(),
-                _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
+                _gaeDataSourceMock.Object, _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _propertiesChanges = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);
         }

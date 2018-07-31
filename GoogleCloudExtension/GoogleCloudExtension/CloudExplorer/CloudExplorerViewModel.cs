@@ -254,14 +254,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ManageAccountsWindow.PromptUser();
+            GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
         }
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectIdWindow.PromptUser(
-                Resources.CloudExplorerPickProjectHelpMessage,
-                allowAccountChange: false);
+            Project selectedProject = GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(
+                new PickProjectIdWindowContent(Resources.CloudExplorerPickProjectHelpMessage, false));
             if (selectedProject == null)
             {
                 return;

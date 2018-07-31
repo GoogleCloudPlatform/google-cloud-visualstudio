@@ -14,12 +14,12 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PickProjectDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
@@ -33,34 +33,24 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private const string TestProjectId = "loaded-project-id";
         private const string MockUserName = "UserName";
         private const string TestExceptionMessage = "Test Exception";
+        private const string DefaultHelpText = "Help Text";
 
         private static readonly Project s_defaultProject = new Project { ProjectId = DefaultProjectId };
         private static readonly Project s_testProject = new Project { ProjectId = TestProjectId };
         private static readonly UserAccount s_defaultAccount = new UserAccount { AccountName = MockUserName };
 
         private TaskCompletionSource<IEnumerable<Project>> _projectTaskSource;
-        private Mock<IPickProjectIdWindow> _windowMock;
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
-        private PropertyChangedEventHandler _addPropertiesChanged;
-        private Mock<Action> _manageAccoutMock;
 
         protected override void BeforeEach()
         {
             _testObject = null;
             _projectTaskSource = new TaskCompletionSource<IEnumerable<Project>>();
-            _windowMock = new Mock<IPickProjectIdWindow>();
-            _windowMock.Setup(window => window.Close()).Verifiable();
+            CredentialStoreMock.Setup(cs => cs.CurrentAccountProjects).Returns(() => _projectTaskSource.Task);
             _properiesChanged = new List<string>();
-            _addPropertiesChanged = (sender, args) => _properiesChanged.Add(args.PropertyName);
-            _manageAccoutMock = new Mock<Action>();
-        }
-
-        private PickProjectIdViewModel BuildTestObject()
-        {
-            var testObject = new PickProjectIdViewModel(_windowMock.Object, _manageAccoutMock.Object, _projectTaskSource.Task);
-            testObject.PropertyChanged += _addPropertiesChanged;
-            return testObject;
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, false);
+            _testObject.PropertyChanged += (sender, args) => _properiesChanged.Add(args.PropertyName);
         }
 
         [TestMethod]
@@ -68,7 +58,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
 
-            _testObject = BuildTestObject();
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, false);
 
             Assert.IsNull(_testObject.LoadTask);
             Assert.IsNull(_testObject.Projects);
@@ -82,7 +72,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount);
 
-            _testObject = BuildTestObject();
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, false);
 
             Assert.IsFalse(_testObject.LoadTask.IsCompleted, "Task should be running.");
             Assert.IsFalse(_testObject.LoadTask.IsError);
@@ -94,32 +84,49 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         }
 
         [TestMethod]
+        public void TestConstructor_SetsAllowAccountChange()
+        {
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, true);
+
+            Assert.IsTrue(_testObject.AllowAccountChange);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsHelpText()
+        {
+            const string expectedHelpText = "Expected Help Text";
+
+            _testObject = new PickProjectIdViewModel(expectedHelpText, true);
+
+            Assert.AreEqual(expectedHelpText, _testObject.HelpText);
+        }
+
+        [TestMethod]
         public void TestChangeUserCommandNoUser()
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
-            _testObject = BuildTestObject();
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, false);
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            _manageAccoutMock.Verify(f => f(), Times.Once);
+            PackageMock.Verify(p => p.UserPromptService.PromptUser(It.IsAny<ManageAccountsWindowContent>()));
             Assert.IsNull(_testObject.LoadTask);
         }
 
         [TestMethod]
         public void TestChangeUserCommand_CallsPromptManageAccount()
         {
-            _testObject = BuildTestObject();
 
             _testObject.ChangeUserCommand.Execute(null);
 
-            _manageAccoutMock.Verify(f => f(), Times.Once);
+            PackageMock.Verify(p => p.UserPromptService.PromptUser(It.IsAny<ManageAccountsWindowContent>()));
         }
 
         [TestMethod]
         public void TestChangeUserCommand_UpdatesHasAccount()
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(() => null);
-            _testObject = BuildTestObject();
+            _testObject = new PickProjectIdViewModel(DefaultHelpText, false);
 
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount).Returns(s_defaultAccount);
             _testObject.ChangeUserCommand.Execute(null);
@@ -130,8 +137,6 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestErrorWhileLoading()
         {
-            _testObject = BuildTestObject();
-
             _projectTaskSource.SetException(new Exception(TestExceptionMessage));
 
             Assert.IsTrue(_testObject.LoadTask.IsCompleted, "Task should not be running.");
@@ -145,21 +150,20 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestOkCommand()
         {
-            _testObject = BuildTestObject();
             _testObject.SelectedProject = s_defaultProject;
+            var closeMock = new Mock<Action>();
+            _testObject.Close += closeMock.Object;
 
             _testObject.OkCommand.Execute(null);
 
-            _windowMock.Verify(window => window.Close());
+            closeMock.Verify(f => f());
             Assert.AreEqual(s_defaultProject, _testObject.Result);
         }
 
         [TestMethod]
         public void TestReloadProjects()
         {
-            _testObject = BuildTestObject();
             _projectTaskSource.SetResult(new[] { s_testProject });
-            _properiesChanged.Clear();
 
             _testObject.ChangeUserCommand.Execute(null);
 
@@ -173,8 +177,6 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestLoadProjectsWithMissingSelectedProject()
         {
-            _testObject = BuildTestObject();
-
             _testObject.SelectedProject = s_defaultProject;
             _projectTaskSource.SetResult(new[] { s_testProject });
 
@@ -193,8 +195,6 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestLoadProjectsWithIncludedSelectedProject()
         {
-            _testObject = BuildTestObject();
-
             _testObject.SelectedProject = s_testProject;
             _projectTaskSource.SetResult(new[] { s_testProject });
 

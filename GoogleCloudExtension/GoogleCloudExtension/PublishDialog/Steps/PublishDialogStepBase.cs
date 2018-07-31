@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
@@ -40,15 +41,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         public const string DefaultConfiguration = "Release";
         private readonly IApiManager _apiManager;
         private bool _needsApiEnabled = false;
-        private readonly Func<Project> _pickProjectPrompt;
         private bool _isValidGcpProject = false;
         private AsyncProperty _loadProjectTask;
         private IEnumerable<string> _configurations;
         private string _selectedConfiguration;
         private string _lastConfiguration;
-
-        private Func<Project> PickProjectPrompt => _pickProjectPrompt ??
-            (() => PickProjectIdWindow.PromptUser(Resources.PublishDialogPickProjectHelpMessage, allowAccountChange: true));
 
         protected internal IPublishDialog PublishDialog { get; }
 
@@ -166,12 +163,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             set => SetValueAndRaise(ref _selectedConfiguration, value);
         }
 
+        private IUserPromptService UserPromptService => GoogleCloudExtensionPackage.Instance.UserPromptService;
+
         protected PublishDialogStepBase(
-            IPublishDialog publishDialog,
-            Func<Project> pickProjectPrompt = null)
+            IPublishDialog publishDialog)
         {
             _apiManager = GoogleCloudExtensionPackage.Instance.GetMefService<IApiManager>();
-            _pickProjectPrompt = pickProjectPrompt;
             PublishDialog = publishDialog;
             _loadProjectTask = new AsyncProperty(null);
 
@@ -357,7 +354,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
         private void OnSelectProjectCommand()
         {
-            Project selectedProject = PickProjectPrompt();
+            Project selectedProject = UserPromptService.PromptUser(
+                new PickProjectIdWindowContent(Resources.PublishDialogPickProjectHelpMessage, true));
             bool hasChanged = !string.Equals(selectedProject?.ProjectId, CredentialsStore.Default.CurrentProjectId);
             if (selectedProject?.ProjectId != null && hasChanged)
             {
