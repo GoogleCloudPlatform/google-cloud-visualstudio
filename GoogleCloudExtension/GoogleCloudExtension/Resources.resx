@@ -2488,4 +2488,16 @@ Delete corrupted file?</value>
     <value>Error Loading Deployments</value>
     <comment>Message shown when loading deployments failed.</comment>
   </data>
+  <data name="GkePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to Kubernetes Engine</value>
+    <comment>The title on the GkePublish dialog step. Takes the project name as a parameter.</comment>
+  </data>
+  <data name="GcePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to Compute Engine</value>
+    <comment>The title of the GcePublish dialog step. Takes the project name as a parameter.</comment>
+  </data>
+  <data name="GaePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to App Engine</value>
+    <comment>The title of the GaePublish dialog step. Takes the project name as a parameter.</comment>
+  </data>
 </root>

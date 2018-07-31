@@ -228,9 +228,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         /// Command to execute to refresh the list of clusters.
         /// </summary>
         public ProtectedCommand RefreshClustersListCommand { get; }
+        public override string Title { get; }
 
+        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
         private IGkeDataSource DataSource => _dataSourceFactory.Value.CreateGkeDataSource();
         private IGkeDeploymentService DeploymentService => _deploymentService.Value;
+
 
         public GkeStepViewModel(IPublishDialog publishDialog) : base(publishDialog)
         {
@@ -247,6 +250,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
             _verifyGCloudTask =
                 new AsyncProperty<bool>(GCloudWrapperUtils.VerifyGCloudDependenciesAsync(GCloudComponent.Kubectl));
             _verifyGCloudTask.PropertyChanged += (sender, args) => RefreshCanPublish();
+
+            Title = string.Format(Resources.GkePublishStepTitle, PublishDialog.Project.Name);
         }
 
         /// <summary>
@@ -279,8 +284,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
 
         private void OnCreateClusterCommand() => _browserService.OpenBrowser(
             string.Format(GkeAddClusterUrlFormat, CredentialsStore.Default.CurrentProjectId));
-
-        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
         protected override async Task ValidateProjectAsync()
         {
