@@ -218,12 +218,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
             try
             {
-                ShellUtils.Default.SaveAllFiles();
-
-                GcpOutputWindow.Default.Activate();
-                GcpOutputWindow.Default.Clear();
-                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
-
                 DateTime startDeploymentTime = DateTime.Now;
                 bool result = await _deploymentService.Value.PublishProjectAsync(
                     project,
