@@ -130,6 +130,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         }
 
         [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new FlexStepViewModel(
+                _gaeDataSourceMock.Object,
+                Mock.Of<Func<GcpProject>>(),
+                _setAppRegionAsyncFuncMock.Object,
+                Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
+        }
+
+        [TestMethod]
         public void TestValidateProjectAsync_NoProjectSetsNeedsAppCreated()
         {
             CredentialStoreMock.SetupGet(cs => cs.CurrentProjectId).Returns(() => null);
