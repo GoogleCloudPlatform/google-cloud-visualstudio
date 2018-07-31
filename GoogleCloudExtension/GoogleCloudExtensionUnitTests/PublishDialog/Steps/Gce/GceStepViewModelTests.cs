@@ -174,7 +174,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 
             _objectUnderTest = new GceStepViewModel(
                 Mock.Of<IGceDataSource>(),
-                Mock.Of<Func<GcpProject>>(),
                 _windowsCredentialStoreMock.Object,
                 _manageCredentialsPromptMock.Object,
                 Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
