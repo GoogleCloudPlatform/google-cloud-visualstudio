@@ -40,6 +40,9 @@ namespace GoogleCloudExtension.DataSources
             public const string DeleteRequested = "DELETE_REQUESTED";
         }
 
+        /// <summary>
+        /// The task to get the list of projects associated with the account this datasource was configured for.
+        /// </summary>
         public Task<IList<Project>> ProjectsListTask { get; private set; }
 
         /// <param name="credential">The credentials to use for the service.</param>
@@ -89,6 +92,9 @@ namespace GoogleCloudExtension.DataSources
                 predicate: x => x.LifecycleState == LifecycleState.Active);
         }
 
+        /// <summary>
+        /// Refreshes ProjectsListTask so it includes any newly created projects.
+        /// </summary>
         public void RefreshProjects() => ProjectsListTask = GetProjectsListAsync();
 
         /// <summary>
