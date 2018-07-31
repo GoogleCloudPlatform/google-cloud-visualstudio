@@ -41,6 +41,30 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
 
                 Assert.IsTrue(objectUnderTest.ActualTask.IsCompleted);
             }
+
+            [TestMethod]
+            public void TestCreate_CreatesNewTask()
+            {
+                Func<object, string> f = o => "new result";
+                Task<object> inputTask = Task.FromResult(new object());
+
+                AsyncProperty<string> result = AsyncProperty.Create(inputTask, f);
+
+                Assert.AreNotEqual(inputTask, result.ActualTask);
+            }
+
+            [TestMethod]
+            public async Task TestCreate_SetsResultantValue()
+            {
+                const string expectedResult = "Expected Result";
+
+                AsyncProperty<string> result = AsyncProperty.Create(
+                    Task.FromResult(new object()),
+                    o => expectedResult);
+                await result.SafeTask;
+
+                Assert.AreEqual(expectedResult, result.Value);
+            }
         }
 
         [TestClass]

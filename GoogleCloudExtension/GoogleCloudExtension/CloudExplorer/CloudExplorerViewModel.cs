@@ -232,8 +232,8 @@ namespace GoogleCloudExtension.CloudExplorer
             if (_plusDataSource.Value != null)
             {
                 Task<Person> profileTask = _plusDataSource.Value.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyUtils.CreateAsyncProperty(profileTask, x => x?.Image.Url);
-                ProfileNameAsync = AsyncPropertyUtils.CreateAsyncProperty(
+                ProfilePictureAsync = AsyncProperty.Create(profileTask, x => x?.Image.Url);
+                ProfileNameAsync = AsyncProperty.Create(
                     profileTask,
                     x => x?.Emails.FirstOrDefault()?.Value,
                     Resources.CloudExplorerLoadingMessage);

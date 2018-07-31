@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils.Async
@@ -27,6 +28,25 @@ namespace GoogleCloudExtension.Utils.Async
         /// Creates an <see cref="AsyncProperty"/> with an already completed task.
         /// </summary>
         public AsyncProperty() : base(Task.CompletedTask) { }
+
+        /// <summary>
+        /// Creates an <seealso cref="AsyncProperty{T}"/> from the given task. When the task competes it will
+        /// apply <paramref name="func"/> and that will be the final value of the property.
+        /// </summary>
+        /// <typeparam name="TIn">The type of the input task result.</typeparam>
+        /// <typeparam name="T">The type of the property value.</typeparam>
+        /// <param name="valueSource">The task where the initial value comes from.</param>
+        /// <param name="func">The function to apply to the result of the task.</param>
+        /// <param name="defaultValue">The value to use while the task is executing.</param>
+        public static AsyncProperty<T> Create<TIn, T>(
+            Task<TIn> valueSource,
+            Func<TIn, T> func,
+            T defaultValue = default(T))
+        {
+            Task<T> continuationTask = valueSource.ContinueWith(
+                t => func(GetTaskResultSafe(t)));
+            return new AsyncProperty<T>(continuationTask, defaultValue);
+        }
     }
 
     /// <summary>
@@ -57,7 +77,7 @@ namespace GoogleCloudExtension.Utils.Async
         public AsyncProperty(Task<T> valueSource, T defaultValue = default(T)) : base(valueSource)
         {
             Value = ActualTask.IsCompleted ?
-                AsyncPropertyUtils.GetTaskResultSafe(ActualTask, defaultValue) :
+                GetTaskResultSafe(ActualTask, defaultValue) :
                 defaultValue;
         }
 
@@ -67,7 +87,7 @@ namespace GoogleCloudExtension.Utils.Async
 
         protected override void OnTaskComplete()
         {
-            Value = AsyncPropertyUtils.GetTaskResultSafe(ActualTask, Value);
+            Value = GetTaskResultSafe(ActualTask, Value);
         }
     }
 }
