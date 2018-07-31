@@ -234,7 +234,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         private IGkeDataSource DataSource => _dataSourceFactory.Value.CreateGkeDataSource();
         private IGkeDeploymentService DeploymentService => _deploymentService.Value;
 
-
         public GkeStepViewModel(IPublishDialog publishDialog) : base(publishDialog)
         {
             IGoogleCloudExtensionPackage package = GoogleCloudExtensionPackage.Instance;
