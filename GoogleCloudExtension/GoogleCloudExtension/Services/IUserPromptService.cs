@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 using System;
 
 namespace GoogleCloudExtension.Services
@@ -59,5 +61,20 @@ namespace GoogleCloudExtension.Services
         /// <param name="message">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
         void OkPrompt(string message, string title);
+
+        /// <summary>
+        /// Prompts the user with the given content, and returns the result.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result from the dialog.</typeparam>
+        /// <param name="content">The content to display to the user.</param>
+        /// <returns>The result of the user prompt.</returns>
+        TResult PromptUser<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content);
+
+        /// <summary>
+        /// Prompts the user with the given content.
+        /// </summary>
+        /// <typeparam name="T">The type of the view model behind the prompt.</typeparam>
+        /// <param name="content">The content to display to the user.</param>
+        void PromptUser(ICommonWindowContent<ICloseSource> content);
     }
 }

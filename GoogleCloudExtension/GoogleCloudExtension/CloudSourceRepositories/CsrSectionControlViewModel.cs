@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             if (CredentialsStore.Default.CurrentAccount == null)
             {
-                ManageAccountsWindow.PromptUser();
+                GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
             }
             Refresh();
         }

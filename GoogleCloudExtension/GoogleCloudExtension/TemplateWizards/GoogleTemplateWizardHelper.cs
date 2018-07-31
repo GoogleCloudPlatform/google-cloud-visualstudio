@@ -32,9 +32,9 @@ namespace GoogleCloudExtension.TemplateWizards
             {
                 Directory.Delete(replacements[ReplacementsKeys.DestinationDirectoryKey], true);
             }
-            bool isExclusive;
+
             if (Directory.Exists(replacements[ReplacementsKeys.SolutionDirectoryKey]) &&
-                bool.TryParse(replacements[ReplacementsKeys.ExclusiveProjectKey], out isExclusive) &&
+                bool.TryParse(replacements[ReplacementsKeys.ExclusiveProjectKey], out bool isExclusive) &&
                 isExclusive)
             {
                 Directory.Delete(replacements[ReplacementsKeys.SolutionDirectoryKey], true);

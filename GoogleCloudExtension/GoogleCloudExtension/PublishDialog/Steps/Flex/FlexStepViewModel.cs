@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
@@ -181,10 +180,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         public FlexStepViewModel(
             IGaeDataSource dataSource,
-            Func<Project> pickProjectPrompt,
             Func<Task<bool>> setAppRegionAsyncFunc,
             IPublishDialog publishDialog)
-            : base(publishDialog, pickProjectPrompt)
+            : base(publishDialog)
         {
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;

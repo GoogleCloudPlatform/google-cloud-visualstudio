@@ -14,8 +14,10 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.VsProject;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
@@ -45,25 +47,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
         private TaskCompletionSource<bool> _areServicesEnabledTaskSource;
         private TaskCompletionSource<object> _enableServicesTaskSource;
         private IPublishDialog _mockedPublishDialog;
-        private Mock<Func<GcpProject>> _pickProjectPromptMock;
         private List<string> _changedProperties;
         private static readonly List<string> s_configurations = new List<string> { "Debug", "Release" };
         private DteProject _mockedProject;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
+        private Mock<IUserPromptService> _userPromptServiceMock;
 
         /// <summary>
         /// A minimal implementation of PublishDialogStepBase. Most functions faked with counter to record call counts.
         /// </summary>
         private class TestPublishDialogStep : PublishDialogStepBase
         {
-            public TestPublishDialogStep(
-                Func<GcpProject> pickProjectPrompt,
-                IPublishDialog publishDialog) : base(
-                publishDialog,
-                pickProjectPrompt)
+            public TestPublishDialogStep(IPublishDialog publishDialog) : base(publishDialog)
             {
-                PublishCommandAsync =
-                    new Mock<ProtectedAsyncCommand>(Mock.Of<Func<Task>>(), false).Object;
+                PublishCommandAsync = new Mock<ProtectedAsyncCommand>(Mock.Of<Func<Task>>(), false).Object;
             }
 
             protected override IList<string> RequiredApis => RequiredApisOverride;
@@ -144,25 +141,27 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
 
         protected override void BeforeEach()
         {
-            _propertyServiceMock = Mock.Get(PackageMock.Object.GetMefService<IVsProjectPropertyService>());
-
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _enableServicesTaskSource = new TaskCompletionSource<object>();
-
-            _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
-            _mockedPublishDialog = Mock.Of<IPublishDialog>(
-                d => d.Project.Name == VisualStudioProjectName && d.Project.Project == _mockedProject);
-
-            _pickProjectPromptMock = new Mock<Func<GcpProject>>();
-            _changedProperties = new List<string>();
 
             _apiManagerMock = new Mock<IApiManager>();
             _apiManagerMock.Setup(x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>())).Returns(() => _areServicesEnabledTaskSource.Task);
             _apiManagerMock.Setup(x => x.EnableServicesAsync(It.IsAny<IEnumerable<string>>())).Returns(() => _enableServicesTaskSource.Task);
+            _userPromptServiceMock = new Mock<IUserPromptService>();
+            _propertyServiceMock = new Mock<IVsProjectPropertyService>();
 
             PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(_apiManagerMock.Object);
+            PackageMock.Setup(p => p.UserPromptService).Returns(_userPromptServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
 
-            _objectUnderTest = new TestPublishDialogStep(_pickProjectPromptMock.Object, _mockedPublishDialog);
+            _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
+
+            _mockedPublishDialog = Mock.Of<IPublishDialog>(
+                d => d.Project.Name == VisualStudioProjectName && d.Project.Project == _mockedProject);
+
+            _objectUnderTest = new TestPublishDialogStep(_mockedPublishDialog);
+
+            _changedProperties = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 
@@ -606,6 +605,63 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                     _mockedProject,
                     PublishDialogStepBase.ConfigurationPropertyName,
                     Configuration));
+        }
+
+        [TestMethod]
+        public void TestSelectProjectCommand_PromptsUser()
+        {
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+
+            _userPromptServiceMock.Verify(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>()));
+        }
+
+        [TestMethod]
+        public void TestSelectProjectCommand_UpdatesCredentialStore()
+        {
+            var newProject = new GcpProject { ProjectId = "NewProjectId" };
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>())).Returns(newProject);
+            CredentialStoreMock.Setup(cs => cs.CurrentProjectId).Returns("OldProjectId");
+
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+
+            CredentialStoreMock.Verify(cs => cs.UpdateCurrentProject(newProject));
+        }
+
+        [TestMethod]
+        public void TestSelectProjectCommand_DoesNotUpdateCredentialStoreForNullProject()
+        {
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>())).Returns(() => null);
+            CredentialStoreMock.Setup(cs => cs.CurrentProjectId).Returns("OldProjectId");
+
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+
+            CredentialStoreMock.Verify(cs => cs.UpdateCurrentProject(It.IsAny<GcpProject>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestSelectProjectCommand_DoesNotUpdateCredentialStoreForProjectWithNullId()
+        {
+            var newProject = new GcpProject { ProjectId = null };
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>())).Returns(newProject);
+            CredentialStoreMock.Setup(cs => cs.CurrentProjectId).Returns("OldProjectId");
+
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+
+            CredentialStoreMock.Verify(cs => cs.UpdateCurrentProject(It.IsAny<GcpProject>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void TestSelectProjectCommand_ReloadsSameSelectedProject()
+        {
+            const string currentProjectId = "CurrentProjectId";
+            var newProject = new GcpProject { ProjectId = currentProjectId };
+            _userPromptServiceMock.Setup(p => p.PromptUser(It.IsAny<PickProjectIdWindowContent>())).Returns(newProject);
+            CredentialStoreMock.Setup(cs => cs.CurrentProjectId).Returns(currentProjectId);
+
+            _objectUnderTest.SelectProjectCommand.Execute(null);
+
+            Assert.AreEqual(1, _objectUnderTest.ClearLoadedProjectDataCallCount);
+            Assert.AreEqual(1, _objectUnderTest.LoadAnyProjectDataCallCount);
         }
     }
 }

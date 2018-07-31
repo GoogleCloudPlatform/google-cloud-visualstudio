@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
@@ -31,10 +32,16 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateWizard))]
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
-        // Mockable static methods for testing.
-        internal Func<GcpProject> PromptPickProjectId =
-            () => PickProjectIdWindow.PromptUser(Resources.TemplateWizardPickProjectIdHelpText, allowAccountChange: false);
+        private readonly Lazy<IUserPromptService> _userPromptService;
+
         internal Action<Dictionary<string, string>> CleanupDirectories = GoogleTemplateWizardHelper.CleanupDirectories;
+        private IUserPromptService UserPromptService => _userPromptService.Value;
+
+        [ImportingConstructor]
+        public GoogleProjectTemplateWizard(Lazy<IUserPromptService> userPromptService)
+        {
+            _userPromptService = userPromptService;
+        }
 
         ///<inheritdoc />
         public void RunStarted(
@@ -48,7 +55,8 @@ namespace GoogleCloudExtension.TemplateWizards
                 // Don't show the popup if the key has already been set.
                 if (!replacements.ContainsKey(ReplacementsKeys.GcpProjectIdKey))
                 {
-                    GcpProject project = PromptPickProjectId();
+                    GcpProject project = UserPromptService.PromptUser(
+                        new PickProjectIdWindowContent(Resources.TemplateWizardPickProjectIdHelpText, false));
 
                     if (project == null)
                     {
