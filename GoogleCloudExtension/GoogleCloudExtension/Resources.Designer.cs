@@ -2266,7 +2266,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to StackDriver.
+        ///   Looks up a localized string similar to Stackdriver.
         /// </summary>
         public static string ConsoleLinkStackDriverGroupCaption {
             get {
