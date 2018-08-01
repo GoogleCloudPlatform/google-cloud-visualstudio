@@ -403,11 +403,6 @@
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
-      <DependentUpon>NamePromptContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NamePrompt\NamePromptViewModel.cs" />
-    <Compile Include="NamePrompt\NamePromptWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -1035,10 +1030,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NamePrompt\NamePromptContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
