@@ -195,9 +195,6 @@
     <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
     <Compile Include="GCloud\KubectlContextProvider.cs" />
-    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
-      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Git\CsrGitUtils.cs" />
     <Compile Include="Git\GitCommandException.cs" />
     <Compile Include="Git\GitCommit.cs" />
@@ -210,6 +207,9 @@
       <DependentUpon>GcpMenuBarControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MenuBarControls\GcpMenuBarControlFactory.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
+      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
@@ -411,11 +411,6 @@
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
-      <DependentUpon>NamePromptContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NamePrompt\NamePromptViewModel.cs" />
-    <Compile Include="NamePrompt\NamePromptWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -1051,10 +1046,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MenuBarControls\GcpMenuBarControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NamePrompt\NamePromptContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2617,15 +2617,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Enter name:.
-        /// </summary>
-        public static string EnterNameDialogNameMessage {
-            get {
-                return ResourceManager.GetString("EnterNameDialogNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
         public static string ErrorReporting1DayButtonCaption {
@@ -4188,33 +4179,6 @@ namespace GoogleCloudExtension {
         public static string MoreInfoTitle {
             get {
                 return ResourceManager.GetString("MoreInfoTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter name.
-        /// </summary>
-        public static string NamePromptCaption {
-            get {
-                return ResourceManager.GetString("NamePromptCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name cannot be empty..
-        /// </summary>
-        public static string NamePromptEmptyNameMessage {
-            get {
-                return ResourceManager.GetString("NamePromptEmptyNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name cannot contain invalid chars &apos;/&apos;.
-        /// </summary>
-        public static string NamePromptInvalidCharsMessage {
-            get {
-                return ResourceManager.GetString("NamePromptInvalidCharsMessage", resourceCulture);
             }
         }
         

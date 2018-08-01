@@ -1055,18 +1055,6 @@
     <value>Report _Usage Statistics.</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
-  <data name="NamePromptCaption" xml:space="preserve">
-    <value>Enter name</value>
-    <comment>Caption for the name prompt dialog.</comment>
-  </data>
-  <data name="NamePromptEmptyNameMessage" xml:space="preserve">
-    <value>Name cannot be empty.</value>
-    <comment>Message shown when a name is empty in the name prompt.</comment>
-  </data>
-  <data name="NamePromptInvalidCharsMessage" xml:space="preserve">
-    <value>Name cannot contain invalid chars '/'</value>
-    <comment>Message shown when a name contains invalid chars.</comment>
-  </data>
   <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
     <value>Cancelling</value>
     <comment>Show a cancelling message after cancel request button is clicked.</comment>
@@ -1238,10 +1226,6 @@
   <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
-  </data>
-  <data name="EnterNameDialogNameMessage" xml:space="preserve">
-    <value>_Enter name:</value>
-    <comment>Message to show on the dialog for the name text box.</comment>
   </data>
   <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
     <value>All logs</value>
