@@ -61,10 +61,10 @@ information.
 
 Apache 2.0. See [LICENSE](LICENSE) for more information.
 
-Releases: https://github.com/GoogleCloudPlatform/google-cloud-visualstudio/releases
-Marketplace: https://marketplace.visualstudio.com/items?itemName=GoogleCloudTools.GoogleCloudPlatformExtensionforVisualStudio
-BuildBadge: https://ci.appveyor.com/api/projects/status/yof6v5tlchyqcnhl?svg=true
-Build: https://ci.appveyor.com/project/GoogleCloudPlatform/google-cloud-visualstudio
-BuildArtifact: https://ci.appveyor.com/api/projects/GoogleCloudPlatform/google-cloud-visualstudio/artifacts/GoogleCloudExtension/GoogleCloudExtension/bin/Release/GoogleCloudExtension.vsix?branch=master
-CoverageBadge: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio/branch/master/graph/badge.svg
-Coverage: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio
+[Releases]: https://github.com/GoogleCloudPlatform/google-cloud-visualstudio/releases
+[Marketplace]: https://marketplace.visualstudio.com/items?itemName=GoogleCloudTools.GoogleCloudPlatformExtensionforVisualStudio
+[BuildBadge]: https://ci.appveyor.com/api/projects/status/yof6v5tlchyqcnhl?svg=true
+[Build]: https://ci.appveyor.com/project/GoogleCloudPlatform/google-cloud-visualstudio
+[BuildArtifact]: https://ci.appveyor.com/api/projects/GoogleCloudPlatform/google-cloud-visualstudio/artifacts/GoogleCloudExtension/GoogleCloudExtension/bin/Release/GoogleCloudExtension.vsix?branch=master
+[CoverageBadge]: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio/branch/master/graph/badge.svg
+[Coverage]: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio
