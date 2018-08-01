@@ -3,7 +3,7 @@
 
 # Visual Studio Extension for Google Cloud Platform
 
-This repo contains the source code for Cloud Tools for  Visual Studio, an extension
+This repo contains the source code for Cloud Tools for Visual Studio, an extension
 for integrating Google Cloud Platform into Visual Studio.
 
 ## Install
@@ -18,7 +18,8 @@ The Visual Studio extension depends on the Cloud SDK for certain functionality, 
 sure that you have at least version 174.0.0 of the Cloud SDK installed when running the extension.
 
 You can install the Google Cloud SDK from <https://cloud.google.com/sdk/>. You will
-also need to make sure that you have **kubectl** component. It is used for interactions with Google Container Engine.
+also need to make sure that you have the **kubectl** component. It is used for interactions
+with Google Kubernetes Engine.
 
 You can make sure that you have all the necessary components installed by running the command:
 ```bash
@@ -36,10 +37,11 @@ project.
 
 To build the extension you will need to have Visual Studio 2017. You will need the
 the Visual Studio extension development toolset installed to be able to develop and build the extension.
-After that just open the .sln file and build it it. If you get an error during the
-restoration of the NuGet packages ensure that you have enabled nuget.org as a source in the NuGet Package Manager.
+You can then open the main solution file: *GoogleCloudExtension\GoogleCloudExtension.sln*.
 If you get a build/project load error, try restoring NuGet packages first, as the
-project files reference files in one of the packages.
+project files reference files in one of the packages. If you get an error during
+the restoration of the NuGet packages, ensure that you have enabled nuget.org as a
+source in the NuGet Package Manager.
 
 ## Build tools
 
