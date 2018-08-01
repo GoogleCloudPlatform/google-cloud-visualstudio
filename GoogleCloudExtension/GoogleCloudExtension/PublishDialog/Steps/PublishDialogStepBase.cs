@@ -151,6 +151,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         }
 
         public IProtectedCommand PublishCommand => PublishCommandAsync;
+        public abstract string Title { get; }
 
         protected internal abstract ProtectedAsyncCommand PublishCommandAsync { get; }
 

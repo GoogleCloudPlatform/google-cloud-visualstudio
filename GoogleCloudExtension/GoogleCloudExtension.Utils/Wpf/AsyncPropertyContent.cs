@@ -21,7 +21,7 @@ using System.Windows.Controls;
 namespace GoogleCloudExtension.Utils.Wpf
 {
     /// <summary>
-    /// Interaction logic for AsyncPropertyContent.xaml
+    /// A content control that displays one of its contents based on the state of its <see cref="Target"/> async property.
     /// </summary>
     public class AsyncPropertyContent : ContentControl
     {

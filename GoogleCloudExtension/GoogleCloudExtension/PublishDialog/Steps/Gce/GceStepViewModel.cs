@@ -166,6 +166,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             set => SetValueAndRaise(ref _launchRemoteDebugger, value);
         }
 
+        public override string Title { get; }
+        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
+
         private IGceDataSource CurrentDataSource =>
             _dataSource ?? new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
@@ -193,9 +196,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
             RefreshInstancesCommand = new ProtectedCommand(
                 () => PublishDialog.TrackTask(LoadValidProjectDataAsync()), false);
             PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
-        }
 
-        protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
+            Title = string.Format(Resources.GcePublishStepTitle, publishDialog.Project.Name);
+        }
 
         protected override void OnIsValidGcpProjectChanged() => RefreshInstancesCommand.CanExecuteCommand = IsValidGcpProject;
 
@@ -218,12 +221,6 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
             try
             {
-                ShellUtils.Default.SaveAllFiles();
-
-                GcpOutputWindow.Default.Activate();
-                GcpOutputWindow.Default.Clear();
-                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
-
                 DateTime startDeploymentTime = DateTime.Now;
                 bool result = await _deploymentService.Value.PublishProjectAsync(
                     project,

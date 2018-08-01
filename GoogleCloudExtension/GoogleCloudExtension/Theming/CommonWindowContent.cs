@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.Theming
         public T ViewModel { get; }
 
         /// <summary>
-        /// Creates a new common window content. .
+        /// Creates a new common window content.
         /// </summary>
         /// <param name="viewModel">The <see cref="ViewModel"/>.</param>
         /// <param name="title">The title of the parent window.</param>

@@ -143,6 +143,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         }
 
         [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new GkeStepViewModel(Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
+        }
+
+        [TestMethod]
         public void TestSetSelectedCluster()
         {
             _objectUnderTest.SelectedCluster = s_aCluster;

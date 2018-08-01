@@ -78,7 +78,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _currentProjectSource.SetResult(new Project());
 
             _objectUnderTest.RefreshCommand.Execute(null);
-            await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.RefreshCommand.LatestExecution;
 
             _userProjectViewModelMock.Verify(up => up.UpdateUserProfile());
             _userProjectViewModelMock.Verify(up => up.LoadCurrentProject());
@@ -88,12 +88,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshCommand_AwaitsCurrentProject()
         {
             _objectUnderTest.RefreshCommand.Execute(null);
-            Task safeTask = _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
+            AsyncProperty asyncProperty = _objectUnderTest.RefreshCommand.LatestExecution;
 
-            Assert.IsFalse(safeTask.IsCompleted);
+            Assert.IsFalse(asyncProperty.IsCompleted);
             _currentProjectSource.SetResult(new Project());
-            await safeTask;
-            Assert.IsTrue(safeTask.IsCompleted);
+            await asyncProperty;
+            Assert.IsTrue(asyncProperty.IsCompleted);
         }
 
         [TestMethod]
@@ -105,7 +105,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
             _objectUnderTest.RefreshCommand.Execute(null);
             _currentProjectSource.SetResult(new Project());
-            await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.RefreshCommand.LatestExecution;
 
             Assert.AreEqual(expectedCommand, _objectUnderTest.EmptyStateCommand);
         }
@@ -117,7 +117,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
 
             _objectUnderTest.RefreshCommand.Execute(null);
             _currentProjectSource.SetResult(null);
-            await _objectUnderTest.RefreshCommand.LatestExecution.SafeTask;
+            await _objectUnderTest.RefreshCommand.LatestExecution;
 
             Assert.AreEqual(Resources.CloudExploreNoProjectMessage, _objectUnderTest.EmptyStateMessage);
         }

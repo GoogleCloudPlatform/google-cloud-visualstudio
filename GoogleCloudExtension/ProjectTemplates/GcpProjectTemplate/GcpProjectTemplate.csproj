@@ -105,7 +105,6 @@
       <SubType>Designer</SubType>
       <OutputSubPath>WebAPI</OutputSubPath>
     </VSTemplate>
-    <Content Include="Core\MVC\app_offline.htm" />
     <Content Include="Core\MVC\__TemplateIcon.png" />
     <VSTemplate Include="Core\WebAPI\1.1.vstemplate">
       <SubType>Designer</SubType>

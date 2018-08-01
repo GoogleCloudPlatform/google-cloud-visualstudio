@@ -43,6 +43,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
                 ClientSecret = "TestClientSecret",
                 RefreshToken = "TestRefreshToken"
             };
+            CredentialStoreMock.SetupGet(cs => cs.CurrentGoogleCredential).Returns(() => _userAccount.GetGoogleCredential());
         }
 
         [TestMethod]
@@ -52,6 +53,37 @@ namespace GoogleCloudExtensionUnitTests.Utils
             PackageMock.Setup(p => p.DataSourceFactory).Returns(expectedFactory);
 
             Assert.AreEqual(expectedFactory, DataSourceFactory.Default);
+        }
+
+        [TestMethod]
+        public void TestCurrentAccountChanged_UpdatesResourceManagerDataSource()
+        {
+            IResourceManagerDataSource origianlResourceDataSource = _objectUnderTest.ResourceManagerDataSource;
+
+            CredentialStoreMock.Raise(cs => cs.CurrentAccountChanged += null, EventArgs.Empty);
+
+            Assert.AreNotEqual(origianlResourceDataSource, _objectUnderTest.ResourceManagerDataSource);
+        }
+
+        [TestMethod]
+        public void TestCurrentAccountChanged_UpdatesGPlusDataSource()
+        {
+            IGPlusDataSource origianlGPlusDataSource = _objectUnderTest.GPlusDataSource;
+
+            CredentialStoreMock.Raise(cs => cs.CurrentAccountChanged += null, EventArgs.Empty);
+
+            Assert.AreNotEqual(origianlGPlusDataSource, _objectUnderTest.GPlusDataSource);
+        }
+
+        [TestMethod]
+        public void TestCurrentAccountChanged_InvokesDataSourcesUpdated()
+        {
+            var eventHandlerMock = new Mock<Action<object, EventArgs>>();
+            _objectUnderTest.DataSourcesUpdated += new EventHandler(eventHandlerMock.Object);
+
+            CredentialStoreMock.Raise(cs => cs.CurrentAccountChanged += null, EventArgs.Empty);
+
+            eventHandlerMock.Verify(h => h(_objectUnderTest, EventArgs.Empty));
         }
 
         [TestMethod]

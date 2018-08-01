@@ -2433,8 +2433,8 @@ Delete corrupted file?</value>
     <comment>The caption of the root node fo the Networking cloud console link group.</comment>
   </data>
   <data name="ConsoleLinkStackDriverGroupCaption" xml:space="preserve">
-    <value>StackDriver</value>
-    <comment>The caption of the root node fo the StackDriver cloud console link group.</comment>
+    <value>Stackdriver</value>
+    <comment>The caption of the root node fo the Stackdriver cloud console link group.</comment>
   </data>
   <data name="ConsoleLinkToolsGroupCaption" xml:space="preserve">
     <value>Tools</value>
@@ -2487,6 +2487,18 @@ Delete corrupted file?</value>
   <data name="PublishDialogGkeErrorLoadingDeploymentsMessage" xml:space="preserve">
     <value>Error Loading Deployments</value>
     <comment>Message shown when loading deployments failed.</comment>
+  </data>
+  <data name="GkePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to Kubernetes Engine</value>
+    <comment>The title on the GkePublish dialog step. Takes the project name as a parameter.</comment>
+  </data>
+  <data name="GcePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to Compute Engine</value>
+    <comment>The title of the GcePublish dialog step. Takes the project name as a parameter.</comment>
+  </data>
+  <data name="GaePublishStepTitle" xml:space="preserve">
+    <value>Publish {0} to App Engine</value>
+    <comment>The title of the GaePublish dialog step. Takes the project name as a parameter.</comment>
   </data>
   <data name="MenuBarNoProjectMessage" xml:space="preserve">
     <value>No Project</value>
