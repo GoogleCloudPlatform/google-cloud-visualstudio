@@ -100,6 +100,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
                 set => base.IsValidGcpProject = value;
             }
 
+            public override string Title { get; } = "";
             protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
             protected internal override void OnFlowFinished() => OnFlowFinishedCallCount++;
