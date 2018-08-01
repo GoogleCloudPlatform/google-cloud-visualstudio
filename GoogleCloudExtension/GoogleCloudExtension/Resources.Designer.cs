@@ -4129,6 +4129,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Id: .
+        /// </summary>
+        public static string MenuBarPopupProjectIdLabel {
+            get {
+                return ResourceManager.GetString("MenuBarPopupProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name: .
         /// </summary>
         public static string MenuBarPopupProjectNameLabel {
@@ -4161,15 +4170,6 @@ namespace GoogleCloudExtension {
         public static string MenuBarPopupSelectProjectButtonCaption {
             get {
                 return ResourceManager.GetString("MenuBarPopupSelectProjectButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Id: .
-        /// </summary>
-        public static string MenuBarPupupProjectIdLabel {
-            get {
-                return ResourceManager.GetString("MenuBarPupupProjectIdLabel", resourceCulture);
             }
         }
         

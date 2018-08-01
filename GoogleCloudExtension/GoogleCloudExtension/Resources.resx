@@ -2496,7 +2496,7 @@ Delete corrupted file?</value>
     <value>Name: </value>
     <comment>The label of the Project Name text block on the menu bar popup.</comment>
   </data>
-  <data name="MenuBarPupupProjectIdLabel" xml:space="preserve">
+  <data name="MenuBarPopupProjectIdLabel" xml:space="preserve">
     <value>Id: </value>
     <comment>The label for the project id text block on the menu bar popup.</comment>
   </data>

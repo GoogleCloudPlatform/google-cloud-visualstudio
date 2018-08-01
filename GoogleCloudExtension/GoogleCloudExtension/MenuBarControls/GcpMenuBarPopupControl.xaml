@@ -57,7 +57,7 @@
             </TextBlock>
 
             <TextBlock Margin="0,5,0,0">
-                <Run Text="{x:Static ext:Resources.MenuBarPupupProjectIdLabel}"/>
+                <Run Text="{x:Static ext:Resources.MenuBarPopupProjectIdLabel}"/>
                 <Run Text="{Binding CurrentProjectAsync.Value.ProjectId}" />
             </TextBlock>
 
