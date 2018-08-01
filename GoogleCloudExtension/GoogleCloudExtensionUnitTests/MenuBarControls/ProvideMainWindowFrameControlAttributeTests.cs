@@ -66,17 +66,59 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
             _contextMock.Setup(c => c.ComponentType.GUID).Returns(new Guid(packageGuid));
             var keyMock = new Mock<RegistrationAttribute.Key>();
             _contextMock.Setup(c => c.CreateKey(TestTypeRegKey)).Returns(keyMock.Object);
+
             _objectUnderTest.Register(_contextMock.Object);
 
-            keyMock.Verify(k => k.SetValue(null, "GCP Project Card"));
+            keyMock.Verify(k => k.SetValue(null, _objectUnderTest.Name));
             keyMock.Verify(k => k.SetValue("Package", packageGuid));
             keyMock.Verify(k => k.SetValue("ViewFactory", TestFactoryTypeRegGuid));
             keyMock.Verify(k => k.SetValue("ViewId", ViewId));
-            keyMock.Verify(k => k.SetValue("DisplayName", "#1000"));
-            keyMock.Verify(k => k.SetValue("Alignment", "MenuBarRight"));
-            keyMock.Verify(k => k.SetValue("FullScreenAlignment", "MenuBarRight"));
-            keyMock.Verify(k => k.SetValue("Sort", 550));
-            keyMock.Verify(k => k.SetValue("FullScreenSort", 550));
+            keyMock.Verify(k => k.SetValue("DisplayName", _objectUnderTest.DisplayNameResourceKey));
+            keyMock.Verify(k => k.SetValue("Alignment", _objectUnderTest.Alignment.ToString()));
+            keyMock.Verify(k => k.SetValue("FullScreenAlignment", _objectUnderTest.Alignment.ToString()));
+            keyMock.Verify(k => k.SetValue("Sort", _objectUnderTest.Sort));
+            keyMock.Verify(k => k.SetValue("FullScreenSort", _objectUnderTest.Sort));
+        }
+
+        [TestMethod]
+        public void TestDisplayNameResourceKey_SetsProperty()
+        {
+            const string expectedValue = "Expected Value";
+
+            _objectUnderTest.DisplayNameResourceKey = expectedValue;
+
+            Assert.AreEqual(expectedValue, _objectUnderTest.DisplayNameResourceKey);
+        }
+
+        [TestMethod]
+        public void TestAlignment_SetsProperty()
+        {
+            const ProvideMainWindowFrameControlAttribute.AlignmentEnum expectedValue =
+                (ProvideMainWindowFrameControlAttribute.AlignmentEnum)5;
+
+            _objectUnderTest.Alignment = expectedValue;
+
+            Assert.AreEqual(expectedValue, _objectUnderTest.Alignment);
+        }
+
+        [TestMethod]
+        public void TestSort_SetsProperty()
+        {
+            const int expectedValue = 2123;
+
+            _objectUnderTest.Sort = expectedValue;
+
+            Assert.AreEqual(expectedValue, _objectUnderTest.Sort);
+        }
+
+        [TestMethod]
+        public void TestName_SetsProperty()
+        {
+            const string expectedValue = "Expected Value";
+
+            _objectUnderTest.Name = expectedValue;
+
+            Assert.AreEqual(expectedValue, _objectUnderTest.Name);
         }
 
         [Guid(Guid)]
