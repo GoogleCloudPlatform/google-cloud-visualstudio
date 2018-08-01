@@ -127,7 +127,7 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
         {
             var objectUnderTest = new UserAccountViewModel(s_defaultUserAccount);
 
-            Assert.AreEqual(Resources.CloudExplorerLoadingMessage, objectUnderTest.NameAsync.Value);
+            Assert.AreEqual(Resources.UiLoadingMessage, objectUnderTest.NameAsync.Value);
         }
 
         [TestMethod]

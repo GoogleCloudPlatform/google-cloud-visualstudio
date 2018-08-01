@@ -265,6 +265,7 @@
     <Compile Include="FirewallManagement\PortModelTests.cs" />
     <Compile Include="FirewallManagement\PortTestHelpers.cs" />
     <Compile Include="GCloud\KubectlContextTests.cs" />
+    <Compile Include="MenuBarControls\GcpUserProjectViewModelTests.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModelTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
