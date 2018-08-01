@@ -120,6 +120,10 @@ namespace GoogleCloudExtension.MenuBarControls
             DataSourceFactory.DataSourcesUpdated += (sender, args) => UpdateUserProfile();
         }
 
+        /// <summary>
+        /// Refreshes <see cref="IGcpUserProjectViewModel.ProfileEmailAsyc"/>, <see cref="IGcpUserProjectViewModel.ProfileNameAsync"/> and
+        /// <see cref="IGcpUserProjectViewModel.ProfilePictureUrlAsync"/>.
+        /// </summary>
         public void UpdateUserProfile()
         {
             if (GPlusDataSource != null)
@@ -144,6 +148,9 @@ namespace GoogleCloudExtension.MenuBarControls
             }
         }
 
+        /// <summary>
+        /// Refreshes <see cref="IGcpUserProjectViewModel.CurrentProjectAsync"/>.
+        /// </summary>
         public void LoadCurrentProject()
         {
             Project currentProject;

@@ -46,7 +46,15 @@ namespace GoogleCloudExtension.MenuBarControls
         /// </summary>
         ICommand OpenPopup { get; }
 
+        /// <summary>
+        /// Refreshes <see cref="CurrentProjectAsync"/>.
+        /// </summary>
         void LoadCurrentProject();
+
+        /// <summary>
+        /// Refreshes <see cref="ProfileEmailAsyc"/>, <see cref="ProfileNameAsync"/> and
+        /// <see cref="ProfilePictureUrlAsync"/>.
+        /// </summary>
         void UpdateUserProfile();
     }
 }
