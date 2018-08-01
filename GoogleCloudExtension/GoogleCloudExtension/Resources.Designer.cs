@@ -3058,6 +3058,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish {0} to App Engine.
+        /// </summary>
+        public static string GaePublishStepTitle {
+            get {
+                return ResourceManager.GetString("GaePublishStepTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Setting App Engine region..
         /// </summary>
         public static string GaeUtilsSetAppEngineRegionProgressMessage {
@@ -3108,6 +3117,15 @@ namespace GoogleCloudExtension {
         public static string GcePublishStepStartMessage {
             get {
                 return ResourceManager.GetString("GcePublishStepStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish {0} to Compute Engine.
+        /// </summary>
+        public static string GcePublishStepTitle {
+            get {
+                return ResourceManager.GetString("GcePublishStepTitle", resourceCulture);
             }
         }
         
@@ -3504,6 +3522,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishServiceIpTimeoutMessage {
             get {
                 return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish {0} to Kubernetes Engine.
+        /// </summary>
+        public static string GkePublishStepTitle {
+            get {
+                return ResourceManager.GetString("GkePublishStepTitle", resourceCulture);
             }
         }
         

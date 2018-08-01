@@ -200,6 +200,9 @@
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindow.xaml.cs">
+      <DependentUpon>PublishDialogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>
@@ -436,7 +439,6 @@
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\Steps\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\Steps\PublishDialogStepBase.cs" />
-    <Compile Include="PublishDialog\PublishDialogWindow.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
@@ -1051,6 +1053,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PickFileDialog\PickFileWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PublishDialog\PublishDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

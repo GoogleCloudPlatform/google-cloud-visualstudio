@@ -168,6 +168,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new GceStepViewModel(
+                Mock.Of<IGceDataSource>(),
+                _windowsCredentialStoreMock.Object,
+                _manageCredentialsPromptMock.Object,
+                Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
+        }
+
+        [TestMethod]
         public void TestSetSelectedInstance()
         {
             _objectUnderTest.SelectedInstance = s_nonWindowsInstance;
