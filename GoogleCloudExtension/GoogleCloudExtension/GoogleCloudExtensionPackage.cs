@@ -20,6 +20,7 @@ using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.MenuBarControls;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Services;
@@ -27,6 +28,8 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
+using Microsoft.Internal.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -71,6 +74,8 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
+    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControlCommandId, typeof(GcpMenuBarControlFactory))]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -314,6 +319,12 @@ namespace GoogleCloudExtension
 
             // Update the installation status of the package.
             CheckInstallationStatus();
+
+            ErrorHandler.ThrowOnFailure(
+                GetService<SVsUIFactory, IVsRegisterUIFactories>()
+                    .RegisterUIFactory(
+                        typeof(GcpMenuBarControlFactory).GUID,
+                        componentModel.GetService<GcpMenuBarControlFactory>()));
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>

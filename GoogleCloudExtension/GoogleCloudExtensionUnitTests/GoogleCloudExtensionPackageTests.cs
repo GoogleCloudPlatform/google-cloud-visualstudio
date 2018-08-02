@@ -19,6 +19,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.MenuBarControls;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
@@ -53,6 +54,7 @@ namespace GoogleCloudExtensionUnitTests
 
         private GoogleCloudExtensionPackage _objectUnderTest;
         private Mock<IEventsReporter> _reporterMock;
+        private Mock<IVsRegisterUIFactories> _registerUiFactoryMock;
 
         protected override IVsPackage Package => _objectUnderTest;
 
@@ -66,10 +68,17 @@ namespace GoogleCloudExtensionUnitTests
                     new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
                     new TypeCatalog(typeof(DelegatingServiceProvider))));
             ComponentModelMock.Setup(cm => cm.DefaultExportProvider).Returns(container);
+            ComponentModelMock.Setup(cm => cm.GetService<GcpMenuBarControlFactory>())
+                .Returns(new GcpMenuBarControlFactory(MockHelpers.LazyOf<IGcpMenuBarControl>()));
 
             _reporterMock = new Mock<IEventsReporter>();
             EventsReporterWrapper.ReporterLazy = _reporterMock.ToLazy();
             _objectUnderTest = new GoogleCloudExtensionPackage();
+
+            _registerUiFactoryMock = ServiceProviderMock.SetupService<SVsUIFactory, IVsRegisterUIFactories>();
+            Guid menuBarControlFactoryGuid = typeof(GcpMenuBarControlFactory).GUID;
+            _registerUiFactoryMock.Setup(
+                f => f.RegisterUIFactory(ref menuBarControlFactoryGuid, It.IsAny<IVsUIFactory>()));
         }
 
         [TestMethod]
@@ -390,6 +399,16 @@ namespace GoogleCloudExtensionUnitTests
 
             var shellUtilsMock = (Mock<IShellUtils>)exportProvider.MockObjects[typeof(IShellUtils)];
             shellUtilsMock.Verify(su => su.InvalidateCommandsState());
+        }
+
+        [TestMethod]
+        public void TestInitalize_RegistersGcpMeuBarControlFactory()
+        {
+            RunPackageInitalize();
+
+            Guid factoryGuid = typeof(GcpMenuBarControlFactory).GUID;
+            _registerUiFactoryMock.Verify(
+                f => f.RegisterUIFactory(ref factoryGuid, It.IsAny<GcpMenuBarControlFactory>()));
         }
 
         private static string GetVsixManifestVersion()
