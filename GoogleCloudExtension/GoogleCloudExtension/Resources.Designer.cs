@@ -5291,6 +5291,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to :.
+        /// </summary>
+        public static string UiTimeSeparator {
+            get {
+                return ResourceManager.GetString("UiTimeSeparator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Yes.
         /// </summary>
         public static string UiYesButtonCaption {
