@@ -3211,6 +3211,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Hide Google Cloud Project and User Control.
+        /// </summary>
+        public static string GeneralOptionsHideMenuBarControlCheckboxLabel {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuBarControlCheckboxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden..
+        /// </summary>
+        public static string GeneralOptionsHideMenuControlCheckboxTooltip {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuControlCheckboxTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
         /// </summary>
         public static string GenerateConfigurationAppYamlGeneratedMessage {

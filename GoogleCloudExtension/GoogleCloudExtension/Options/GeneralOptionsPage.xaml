@@ -31,8 +31,8 @@
                     Content="{x:Static ext:Resources.AnalyticsPromptLinkText}" />
             </StackPanel>
         </GroupBox>
-        <CheckBox Content="_Hide Google Cloud Project and User Control"
-                  ToolTip="When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden."
+        <CheckBox Content="{x:Static ext:Resources.GeneralOptionsHideMenuBarControlCheckboxLabel}"
+                  ToolTip="{x:Static ext:Resources.GeneralOptionsHideMenuControlCheckboxTooltip}"
                   Margin="0,9,0,0"
                   IsChecked="{Binding HideUserProjectControl}"/>
     </StackPanel>

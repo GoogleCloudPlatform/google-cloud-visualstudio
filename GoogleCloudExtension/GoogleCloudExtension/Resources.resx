@@ -2516,4 +2516,12 @@ Delete corrupted file?</value>
     <value>Google Cloud Platform Project</value>
     <comment>The title of the GCP Project section of the menu bar popup.</comment>
   </data>
+  <data name="GeneralOptionsHideMenuBarControlCheckboxLabel" xml:space="preserve">
+    <value>_Hide Google Cloud Project and User Control</value>
+    <comment>The label of the Hide User Project Control checkbox on the general options page.</comment>
+  </data>
+  <data name="GeneralOptionsHideMenuControlCheckboxTooltip" xml:space="preserve">
+    <value>When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden.</value>
+    <comment>The tool tip of the Hide User Project Control checkbox on the general options page.</comment>
+  </data>
 </root>
