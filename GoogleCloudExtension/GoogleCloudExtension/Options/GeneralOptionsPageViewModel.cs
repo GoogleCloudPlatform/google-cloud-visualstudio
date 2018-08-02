@@ -13,16 +13,20 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
+using System;
 
 namespace GoogleCloudExtension.Options
 {
     /// <summary>
     /// The View Model for the AnalyticsOptionsPage.
     /// </summary>
-    public class AnalyticsOptionsPageViewModel : ViewModelBase
+    public class GeneralOptionsPageViewModel : ViewModelBase
     {
         private bool _optIn;
+        private bool _hideUserProjectControl;
+        private readonly Lazy<IBrowserService> _browserService;
 
         /// <summary>
         /// True if the user has opted-into report usage statistics. False by default.
@@ -38,9 +42,20 @@ namespace GoogleCloudExtension.Options
         /// </summary>
         public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
 
-        public AnalyticsOptionsPageViewModel()
+        public bool HideUserProjectControl
         {
-            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(() => AnalyticsLearnMoreUtils.OpenLearnMoreLink());
+            get => _hideUserProjectControl;
+            set => SetValueAndRaise(ref _hideUserProjectControl, value);
+        }
+
+        private IBrowserService BrowserService => _browserService.Value;
+
+        public GeneralOptionsPageViewModel()
+        {
+            _browserService = new Lazy<IBrowserService>(
+                () => GoogleCloudExtensionPackage.Instance.GetMefService<IBrowserService>());
+            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(
+                () => BrowserService.OpenBrowser(AnalyticsLearnMoreConstants.AnalyticsLearnMoreLink));
         }
     }
 }

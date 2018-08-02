@@ -14,109 +14,127 @@
 
 using GoogleCloudExtension.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Options
 {
     [TestClass]
     public class AnalyticsOptionsTests
     {
+        private AnalyticsOptions _objectUnderTest;
+
+        [TestInitialize]
+        public void BeforeEach() => _objectUnderTest = new AnalyticsOptions();
+
         [TestMethod]
         public void TestInitialConditions()
         {
-            var objectUnderTest = new AnalyticsOptions();
-
-            Assert.IsFalse(objectUnderTest.OptIn);
-            Assert.IsFalse(objectUnderTest.DialogShown);
-            Assert.IsNull(objectUnderTest.ClientId);
-            Assert.IsNull(objectUnderTest.InstalledVersion);
+            Assert.IsFalse(_objectUnderTest.OptIn);
+            Assert.IsFalse(_objectUnderTest.DialogShown);
+            Assert.IsNull(_objectUnderTest.ClientId);
+            Assert.IsNull(_objectUnderTest.InstalledVersion);
+            Assert.IsFalse(_objectUnderTest.HideUserProjectControl);
         }
 
         [TestMethod]
-        public void TestSetOptIn()
+        public void TestSetOptIn_SetsProperty()
         {
-            var objectUnderTest = new AnalyticsOptions();
+            _objectUnderTest.OptIn = true;
 
-            objectUnderTest.OptIn = true;
-
-            Assert.IsTrue(objectUnderTest.OptIn);
+            Assert.IsTrue(_objectUnderTest.OptIn);
         }
 
         [TestMethod]
-        public void TestSetDialogShown()
+        public void TestSetDialogShown_SetsProperty()
         {
-            var objectUnderTest = new AnalyticsOptions();
+            _objectUnderTest.DialogShown = true;
 
-            objectUnderTest.DialogShown = true;
-
-            Assert.IsTrue(objectUnderTest.DialogShown);
+            Assert.IsTrue(_objectUnderTest.DialogShown);
         }
 
         [TestMethod]
-        public void TestSetClientId()
+        public void TestSetClientId_SetsProperty()
         {
             const string testClientId = "test-client-id-string";
-            var objectUnderTest = new AnalyticsOptions();
 
-            objectUnderTest.ClientId = testClientId;
+            _objectUnderTest.ClientId = testClientId;
 
-            Assert.AreEqual(testClientId, objectUnderTest.ClientId);
+            Assert.AreEqual(testClientId, _objectUnderTest.ClientId);
         }
 
         [TestMethod]
-        public void TestSetInstalledVersion()
+        public void TestSetInstalledVersion_SetsProperty()
         {
             const string testVersionString = "test-version-string";
-            var objectUnderTest = new AnalyticsOptions();
 
-            objectUnderTest.InstalledVersion = testVersionString;
+            _objectUnderTest.InstalledVersion = testVersionString;
 
-            Assert.AreEqual(testVersionString, objectUnderTest.InstalledVersion);
+            Assert.AreEqual(testVersionString, _objectUnderTest.InstalledVersion);
         }
 
         [TestMethod]
-        public void TestResetSettings()
+        public void TestResetSettings_ResetsProperties()
         {
             const string testClientId = "test-client-id-string";
-            var objectUnderTest = new AnalyticsOptions
-            {
-                ClientId = testClientId,
-                DialogShown = true,
-                OptIn = true
-            };
+            _objectUnderTest.ClientId = testClientId;
+            _objectUnderTest.DialogShown = true;
+            _objectUnderTest.OptIn = true;
+            _objectUnderTest.HideUserProjectControl = true;
 
-            objectUnderTest.ResetSettings();
+            _objectUnderTest.ResetSettings();
 
-            Assert.IsFalse(objectUnderTest.OptIn);
-            Assert.IsFalse(objectUnderTest.DialogShown);
-            Assert.IsNull(objectUnderTest.ClientId);
+            Assert.IsFalse(_objectUnderTest.OptIn);
+            Assert.IsFalse(_objectUnderTest.DialogShown);
+            Assert.IsNull(_objectUnderTest.ClientId);
+            Assert.IsFalse(_objectUnderTest.HideUserProjectControl);
         }
 
         [TestMethod]
-        public void TestSaveSettingsSettingsInitalizesClientId()
+        public void TestSaveSettingsSettings_WithOptInInitalizesClientId()
         {
-            var objectUnderTest = new AnalyticsOptions
-            {
-                OptIn = true,
-                ClientId = null
-            };
+            _objectUnderTest.OptIn = true;
+            _objectUnderTest.ClientId = null;
 
-            objectUnderTest.SaveSettingsToStorage();
+            _objectUnderTest.SaveSettingsToStorage();
 
-            Assert.IsNotNull(objectUnderTest.ClientId);
+            Assert.IsNotNull(_objectUnderTest.ClientId);
         }
 
         [TestMethod]
-        public void TestSaveSettingsSettingsDiablesClientId()
+        public void TestSaveSettingsSettings_WithoutOptInClearsClientId()
         {
-            var objectUnderTest = new AnalyticsOptions
+            _objectUnderTest.ClientId = "test-client-id-string";
+            _objectUnderTest.OptIn = false;
+
+            _objectUnderTest.SaveSettingsToStorage();
+
+            Assert.IsNull(_objectUnderTest.ClientId);
+        }
+
+        [TestMethod]
+        public void TestHideUserProjectControl_SetsProperty()
+        {
+            _objectUnderTest.HideUserProjectControl = true;
+
+            Assert.IsTrue(_objectUnderTest.HideUserProjectControl);
+        }
+
+        [TestMethod]
+        public void TestHideUserProjectControl_RaisesPropertyChanged()
+        {
+            var senders = new List<object>();
+            var changedProperties = new List<string>();
+            _objectUnderTest.PropertyChanged += (sender, args) =>
             {
-                ClientId = "test-client-id-string",
-                OptIn = false
+                senders.Add(sender);
+                changedProperties.Add(args.PropertyName);
             };
 
-            objectUnderTest.SaveSettingsToStorage();
+            _objectUnderTest.HideUserProjectControl = true;
 
-            Assert.IsNull(objectUnderTest.ClientId);
+            CollectionAssert.Contains(changedProperties, nameof(_objectUnderTest.HideUserProjectControl));
+            CollectionAssert.That.All(senders).AreEqualTo(_objectUnderTest);
         }
     }
 }

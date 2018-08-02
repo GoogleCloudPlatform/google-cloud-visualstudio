@@ -37,7 +37,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -67,15 +66,15 @@ namespace GoogleCloudExtension
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
     [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
-    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, AnalyticsOptions.PageName, 1, 2, false)]
     [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
-    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControlCommandId, typeof(GcpMenuBarControlFactory))]
+    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControlCommandId,
+        typeof(GcpMenuBarControlFactory))]
     public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -376,7 +375,7 @@ namespace GoogleCloudExtension
 
         #region User Settings
 
-        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
+        public AnalyticsOptions GeneralSettings => GetDialogPage<AnalyticsOptions>();
 
         /// <summary>
         /// Gets the options page of the given type.
@@ -414,7 +413,7 @@ namespace GoogleCloudExtension
         /// </summary>
         private void CheckInstallationStatus()
         {
-            AnalyticsOptions settings = AnalyticsSettings;
+            AnalyticsOptions settings = GeneralSettings;
             if (settings.InstalledVersion == null)
             {
                 // This is a new installation.

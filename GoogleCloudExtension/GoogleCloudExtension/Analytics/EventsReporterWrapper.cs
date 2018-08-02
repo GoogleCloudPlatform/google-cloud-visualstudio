@@ -29,7 +29,6 @@ namespace GoogleCloudExtension.Analytics
         /// <summary>
         /// Mockable static method for testing.
         /// </summary>
-        internal static Func<bool> PromptAnalyticsOptIn { private get; set; } = AnalyticsOptInWindow.PromptUser;
         public const string ExtensionEventType = "visualstudio";
         public const string ExtensionEventSource = "virtual.visualstudio";
 
@@ -54,11 +53,12 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static void EnsureAnalyticsOptIn()
         {
-            AnalyticsOptions settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
+            IGoogleCloudExtensionPackage package = GoogleCloudExtensionPackage.Instance;
+            AnalyticsOptions settings = package.GeneralSettings;
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = PromptAnalyticsOptIn();
+                settings.OptIn = package.UserPromptService.PromptUser(new AnalyticsOptInWindowContent());
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.Analytics
 
         private static IEventsReporter CreateReporter()
         {
-            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
+            var settings = GoogleCloudExtensionPackage.Instance.GeneralSettings;
 
             if (settings.OptIn)
             {

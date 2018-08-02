@@ -1052,7 +1052,7 @@
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
-    <value>Report _Usage Statistics.</value>
+    <value>Report _Usage Statistics</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
   <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
@@ -2183,7 +2183,7 @@
     <comment>Smaller text on the Analytics Opt In Prompt.</comment>
   </data>
   <data name="AnalyticsPromptLinkText" xml:space="preserve">
-    <value>Learn more.</value>
+    <value>What do we collect?</value>
     <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
   </data>
   <data name="UiCopyMenuHeader" xml:space="preserve">

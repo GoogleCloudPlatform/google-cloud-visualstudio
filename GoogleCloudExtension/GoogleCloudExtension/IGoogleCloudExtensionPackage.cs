@@ -29,7 +29,7 @@ namespace GoogleCloudExtension
     /// </summary>
     public interface IGoogleCloudExtensionPackage : IVsPackage, Microsoft.VisualStudio.OLE.Interop.IServiceProvider, IOleCommandTarget, IVsPersistSolutionOpts, IServiceContainer, System.IServiceProvider, IVsUserSettings, IVsUserSettingsMigration, IVsUserSettingsQuery, IVsToolWindowFactory, IVsToolboxItemProvider
     {
-        AnalyticsOptions AnalyticsSettings { get; }
+        AnalyticsOptions GeneralSettings { get; }
         string VsVersion { get; }
 
         /// <summary>

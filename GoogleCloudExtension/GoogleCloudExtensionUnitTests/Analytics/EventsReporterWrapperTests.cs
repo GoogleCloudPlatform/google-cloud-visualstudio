@@ -18,7 +18,6 @@ using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using GoogleCloudExtension.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
 using TestingHelpers;
 
@@ -27,48 +26,46 @@ namespace GoogleCloudExtensionUnitTests.Analytics
     [TestClass]
     public class EventsReporterWrapperTests : ExtensionTestBase
     {
-        private AnalyticsOptions _analyticsOptions;
-        private Mock<Func<bool>> _promptAnalyticsMock;
+        private AnalyticsOptions _generalOptions;
 
         protected override void BeforeEach()
         {
-            _analyticsOptions = new AnalyticsOptions();
-            PackageMock.Setup(p => p.AnalyticsSettings).Returns(_analyticsOptions);
-            _promptAnalyticsMock = new Mock<Func<bool>>();
-            EventsReporterWrapper.PromptAnalyticsOptIn = _promptAnalyticsMock.Object;
+            _generalOptions = new AnalyticsOptions();
+            PackageMock.Setup(p => p.GeneralSettings).Returns(_generalOptions);
         }
 
         protected override void AfterEach()
         {
-            EventsReporterWrapper.PromptAnalyticsOptIn = AnalyticsOptInWindow.PromptUser;
             EventsReporterWrapper.DisableReporting();
         }
 
         [TestMethod]
-        public void TestEnsureAnalyticsOptInShowsPrompt()
+        public void TestEnsureAnalyticsOptIn_ShowsPromptWhenDialogNotShown()
         {
-            _analyticsOptions.DialogShown = false;
-            _analyticsOptions.OptIn = false;
-            _promptAnalyticsMock.Setup(f => f()).Returns(true);
+            _generalOptions.DialogShown = false;
+            _generalOptions.OptIn = false;
+            PackageMock.Setup(p => p.UserPromptService.PromptUser(It.IsAny<AnalyticsOptInWindowContent>()))
+                .Returns(true);
 
             EventsReporterWrapper.EnsureAnalyticsOptIn();
 
-            _promptAnalyticsMock.Verify(f => f(), Times.Once);
-            Assert.IsTrue(_analyticsOptions.OptIn);
-            Assert.IsTrue(_analyticsOptions.DialogShown);
+            Assert.IsTrue(_generalOptions.OptIn);
+            Assert.IsTrue(_generalOptions.DialogShown);
         }
 
         [TestMethod]
-        public void TestEnsureAnalyticsOptInSkipsPrompt()
+        public void TestEnsureAnalyticsOptIn_SkipsPromptWhenDialogShown()
         {
-            _analyticsOptions.DialogShown = true;
-            _analyticsOptions.OptIn = false;
+            _generalOptions.DialogShown = true;
+            _generalOptions.OptIn = false;
 
             EventsReporterWrapper.EnsureAnalyticsOptIn();
 
-            _promptAnalyticsMock.Verify(f => f(), Times.Never);
-            Assert.IsTrue(_analyticsOptions.DialogShown);
-            Assert.IsFalse(_analyticsOptions.OptIn);
+            PackageMock.Verify(
+                p => p.UserPromptService.PromptUser(It.IsAny<AnalyticsOptInWindowContent>()),
+                Times.Never);
+            Assert.IsTrue(_generalOptions.DialogShown);
+            Assert.IsFalse(_generalOptions.OptIn);
         }
 
         [TestMethod]

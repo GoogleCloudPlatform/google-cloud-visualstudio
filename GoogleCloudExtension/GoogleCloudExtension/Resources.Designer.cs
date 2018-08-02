@@ -214,7 +214,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report _Usage Statistics..
+        ///   Looks up a localized string similar to Report _Usage Statistics.
         /// </summary>
         public static string AnalyticsOptionsOptInLabel {
             get {
@@ -232,7 +232,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more..
+        ///   Looks up a localized string similar to What do we collect?.
         /// </summary>
         public static string AnalyticsPromptLinkText {
             get {

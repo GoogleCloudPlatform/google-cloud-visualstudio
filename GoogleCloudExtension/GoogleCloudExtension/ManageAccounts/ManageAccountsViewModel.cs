@@ -84,6 +84,8 @@ namespace GoogleCloudExtension.ManageAccounts
             SetAsCurrentAccountCommand = new ProtectedCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             DeleteAccountCommand = new ProtectedCommand(OnDeleteAccountCommand);
             AddAccountCommand = new ProtectedCommand(OnAddAccountCommand);
+
+            EventsReporterWrapper.EnsureAnalyticsOptIn();
         }
 
         public void DoubleClickedItem(UserAccountViewModel userAccount)

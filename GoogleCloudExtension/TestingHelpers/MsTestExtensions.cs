@@ -22,5 +22,26 @@ namespace TestingHelpers
     {
         public static void IsEmpty(this CollectionAssert that, IEnumerable<object> enumerable) =>
             Assert.IsFalse(enumerable.Any(), "Collection is not empty");
+
+        public static AllAssert All(this CollectionAssert that, IEnumerable<object> enumerable) =>
+            new AllAssert(enumerable);
+
+        public class AllAssert
+        {
+            private readonly IEnumerable<object> _enumerable;
+
+            public AllAssert(IEnumerable<object> enumerable)
+            {
+                _enumerable = enumerable;
+            }
+
+            public void AreEqualTo(object value)
+            {
+                foreach (object o in _enumerable)
+                {
+                    Assert.AreEqual(value, o);
+                }
+            }
+        }
     }
 }
