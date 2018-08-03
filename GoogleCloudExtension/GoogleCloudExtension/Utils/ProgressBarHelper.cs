@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// Class that manages the progress bar in the status bar of Visual Studio.
     /// </summary>
-    public class ProgressBarHelper : IProgress<double>, IDisposable
+    public class ProgressBarHelper : IDisposableProgress
     {
         private const uint Total = 1000;
 

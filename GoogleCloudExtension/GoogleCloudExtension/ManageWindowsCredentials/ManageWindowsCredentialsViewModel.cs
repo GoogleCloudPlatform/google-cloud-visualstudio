@@ -20,6 +20,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnDeleteCredentialsCommand()
         {
-            if (!UserPromptUtils.Default.ActionPrompt(
+            if (!UserPromptService.Default.ActionPrompt(
                     String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
                     Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle,
                     message: Resources.UiOperationCannotBeUndone,
@@ -175,7 +176,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             try
             {
                 Debug.WriteLine("The user requested the password to be generated.");
-                if (!UserPromptUtils.Default.ActionPrompt(
+                if (!UserPromptService.Default.ActionPrompt(
                         prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
                         title: Resources.ResetPasswordConfirmationPromptTitle,
                         message: Resources.UiOperationCannotBeUndone,
@@ -198,7 +199,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
             catch (GCloudException ex)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name),
                     title: Resources.ResetPasswordConfirmationPromptTitle,
                     errorDetails: ex.Message);

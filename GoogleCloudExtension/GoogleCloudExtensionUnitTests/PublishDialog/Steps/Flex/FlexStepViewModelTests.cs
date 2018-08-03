@@ -32,7 +32,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
 using DteProject = EnvDTE.Project;
-using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
 {
@@ -74,12 +73,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         protected override void BeforeEach()
         {
             _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
-            GCloudWrapperUtils.ValidateGCloudAsyncOverride =
-                Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
-                    f => f(It.IsAny<GCloudComponent>()) == _validateGCloudSource.Task);
-
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
-
             _appEngineDeploymentMock = new Mock<IAppEngineFlexDeployment>();
             _publishSource = new TaskCompletionSource<object>();
             _appEngineDeploymentMock.Setup(
@@ -88,6 +82,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
                 .Returns(() => _publishSource.Task);
             _appEngineConfigurationMock = new Mock<IAppEngineConfiguration>();
 
+            PackageMock.Setup(p => p.GetMefService<IGCloudWrapper>().ValidateGCloudAsync(It.IsAny<GCloudComponent>()))
+                .Returns(() => _validateGCloudSource.Task);
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
             PackageMock.Setup(p => p.GetMefServiceLazy<IAppEngineFlexDeployment>())
                 .Returns(_appEngineDeploymentMock.ToLazy());
@@ -115,8 +111,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             _setAppRegionAsyncFuncMock.Setup(func => func()).Returns(() => _setAppRegionTaskSource.Task);
 
             _objectUnderTest = new FlexStepViewModel(
-                _gaeDataSourceMock.Object, Mock.Of<Func<GcpProject>>(),
-                _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
+                _gaeDataSourceMock.Object, _setAppRegionAsyncFuncMock.Object, _mockedPublishDialog);
             _propertiesChanges = new List<string>();
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanges.Add(args.PropertyName);
         }
@@ -130,6 +125,19 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
             Assert.IsTrue(_objectUnderTest.Promote);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new FlexStepViewModel(
+                _gaeDataSourceMock.Object,
+                _setAppRegionAsyncFuncMock.Object,
+                Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
         }
 
         [TestMethod]

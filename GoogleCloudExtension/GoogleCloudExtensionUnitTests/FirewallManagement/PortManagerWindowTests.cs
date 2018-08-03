@@ -46,7 +46,7 @@ namespace GoogleCloudExtensionUnitTests.FirewallManagement
         [TestMethod]
         public async Task TestPromptUser_SetsTitle()
         {
-            PortManagerWindow window = await GetWindow(() => PortManagerWindow.PromptUser(new Instance()));
+            PortManagerWindow window = await GetWindowAsync(() => PortManagerWindow.PromptUser(new Instance()));
 
             Assert.AreEqual(Resources.PortManagerWindowCaption, window.Title);
         }

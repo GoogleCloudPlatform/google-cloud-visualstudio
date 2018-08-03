@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,8 +22,10 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// The interface of the ResourceManagerDataSource. Mock this object in unit tests.
     /// </summary>
-    public interface IResourceManagerDataSource
+    public interface IResourceManagerDataSource : IDataSourceBase<CloudResourceManagerService>
     {
+
+        Task<IList<Project>> ProjectsListTask { get; }
         /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.
         /// </summary>
@@ -34,5 +37,7 @@ namespace GoogleCloudExtension.DataSources
         /// It always return empty list if no item is found, caller can safely assume there is no null return.
         /// </summary>
         Task<IList<Project>> GetProjectsListAsync();
+
+        void RefreshProjects();
     }
 }

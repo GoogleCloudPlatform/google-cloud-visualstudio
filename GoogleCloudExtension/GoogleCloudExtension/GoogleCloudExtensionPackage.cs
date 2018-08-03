@@ -21,12 +21,16 @@ using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.MenuBarControls;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
+using Microsoft.Internal.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -74,6 +78,11 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
+    [ProvideMainWindowFrameControl(
+        typeof(GcpMenuBarControl),
+        GcpMenuBarControlFactory.GcpMenuBarControlCommandId,
+        typeof(GcpMenuBarControlFactory))]
     public sealed class GoogleCloudExtensionPackage : AsyncPackage, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -106,12 +115,13 @@ namespace GoogleCloudExtension
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
-        private Lazy<ICredentialsStore> _credentialStore;
+        private Lazy<IDataSourceFactory> _dataSourceFactory;
         private IComponentModel _componentModel;
         internal readonly Task _initializeTask;
 
         private readonly TaskCompletionSource<IGoogleCloudExtensionPackage> _initializeTaskSource =
             new TaskCompletionSource<IGoogleCloudExtensionPackage>();
+
         private event EventHandler ClosingEvent;
 
         /// <summary>
@@ -174,9 +184,14 @@ namespace GoogleCloudExtension
         public IUserPromptService UserPromptService => _userPromptService.Value;
 
         /// <summary>
-        /// The default <see cref="ICredentialsStore"/>.
+        /// The default <see cref="IDataSourceFactory"/> service.
         /// </summary>
-        public ICredentialsStore CredentialStore => _credentialStore.Value;
+        public IDataSourceFactory DataSourceFactory => _dataSourceFactory.Value;
+
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/> service.
+        /// </summary>
+        public ICredentialsStore CredentialsStore { get; private set; }
 
         public GoogleCloudExtensionPackage()
         {
@@ -284,13 +299,14 @@ namespace GoogleCloudExtension
 
                 _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
                 await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                CredentialsStore = _componentModel.GetService<ICredentialsStore>();
                 ExportProvider mefExportProvider = _componentModel.DefaultExportProvider;
                 _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
                 _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
                 _processService = mefExportProvider.GetExport<IProcessService>();
                 _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
                 _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
-                _credentialStore = mefExportProvider.GetExport<ICredentialsStore>();
+                _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
 
                 Dte = await GetServiceAsync<SDTE, DTE2>();
                 VsVersion = Dte.Version;
@@ -313,14 +329,19 @@ namespace GoogleCloudExtension
                 CheckInstallationStatus();
 
                 // Ensure the commands UI state is updated when the GCP project changes.
-                CredentialStore.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
-                CredentialStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
+                CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
                 // With this setting we allow more concurrent connections from each HttpClient instance created
                 // in the process. This will allow all GCP API services to have more concurrent connections with
                 // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
                 ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
+                IVsRegisterUIFactories registerUIFactories = await GetServiceAsync<SVsUIFactory, IVsRegisterUIFactories>();
+
+                ErrorHandler.ThrowOnFailure(
+                    registerUIFactories.RegisterUIFactory(
+                        typeof(GcpMenuBarControlFactory).GUID,
+                        _componentModel.GetService<GcpMenuBarControlFactory>()));
                 _initializeTaskSource.SetResult(this);
             }
             catch (Exception e)
@@ -389,7 +410,7 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        private T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
+        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
 
         /// <summary>
         /// Displays the options page of the given type.

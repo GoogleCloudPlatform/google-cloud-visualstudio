@@ -23,34 +23,33 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtensionUnitTests.Utils
 {
     [TestClass]
-    public class GCloudWrapperUtilsTests
+    public class GCloudWrapperUtilsTests : ExtensionTestBase
     {
         private static readonly string s_missingComponentTitle = Resources.GcloudMissingComponentTitle;
         private static readonly string s_missingComponentMessage = string.Format(Resources.GcloudMissingComponentErrorMessage, "Kubectl");
         private static readonly string s_missingComponentInstallCommand = string.Format(Resources.GcloudMissingComponentInstallCommand, "kubectl").ToLower();
 
-        private Mock<Func<GCloudComponent, Task<GCloudValidationResult>>> _validateGCloudAsyncMock;
         private TaskCompletionSource<GCloudValidationResult> _validateGCloudAsyncSource;
         private Mock<Action<string, string, string>> _showCopyablePromptMock;
+        private Mock<IGCloudWrapper> _gcloudWrapperMock;
 
-        [TestInitialize]
-        public void BeforeEach()
+        protected override void BeforeEach()
         {
             _validateGCloudAsyncSource = new TaskCompletionSource<GCloudValidationResult>();
-            _validateGCloudAsyncMock = new Mock<Func<GCloudComponent, Task<GCloudValidationResult>>>();
-            _validateGCloudAsyncMock.Setup(f => f(It.IsAny<GCloudComponent>())).Returns(_validateGCloudAsyncSource.Task);
+            _gcloudWrapperMock = new Mock<IGCloudWrapper>();
+            _gcloudWrapperMock.Setup(g => g.ValidateGCloudAsync(It.IsAny<GCloudComponent>()))
+                .Returns(_validateGCloudAsyncSource.Task);
+
+            PackageMock.Setup(p => p.GetMefService<IGCloudWrapper>()).Returns(_gcloudWrapperMock.Object);
 
             _showCopyablePromptMock = new Mock<Action<string, string, string>>();
 
-            GCloudWrapperUtils.ValidateGCloudAsyncOverride = _validateGCloudAsyncMock.Object;
             GCloudWrapperUtils.ShowCopyablePromptOverride = _showCopyablePromptMock.Object;
 
         }
 
-        [TestCleanup]
-        public void AfterEach()
+        protected override void AfterEach()
         {
-            GCloudWrapperUtils.ValidateGCloudAsyncOverride = null;
             GCloudWrapperUtils.ShowCopyablePromptOverride = null;
         }
 

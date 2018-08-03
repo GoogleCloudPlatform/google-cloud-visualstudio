@@ -132,7 +132,7 @@ namespace GoogleCloudExtension.Utils
         /// An instance of <seealso cref="ProgressBarHelper"/> which can be used to both update the progress bar
         /// and perform cleanup.
         /// </returns>
-        public ProgressBarHelper ShowProgressBar(string label)
+        public IDisposableProgress ShowProgressBar(string label)
         {
             return new ProgressBarHelper(Statusbar, label);
         }

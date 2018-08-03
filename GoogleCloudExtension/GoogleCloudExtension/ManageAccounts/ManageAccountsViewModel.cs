@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,8 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
-    public class ManageAccountsViewModel : ViewModelBase
+    public class ManageAccountsViewModel : ViewModelBase, ICloseSource
     {
-        private readonly ManageAccountsWindow _owner;
         private IEnumerable<UserAccountViewModel> _userAccountsList;
         private UserAccountViewModel _currentUserAccount;
         private string _currentAccountName;
@@ -68,24 +68,25 @@ namespace GoogleCloudExtension.ManageAccounts
 
         public ProtectedCommand DeleteAccountCommand { get; }
 
-        public ICommand CloseCommand { get; }
-
         public ICommand AddAccountCommand { get; }
 
-        public ManageAccountsViewModel(ManageAccountsWindow owner)
+        /// <summary>
+        /// Implements <see cref="ICloseSource.Close"/>. When invoked, tells the parent window to close.
+        /// </summary>
+        public event Action Close;
+
+        public ManageAccountsViewModel()
         {
-            _owner = owner;
             _userAccountsList = LoadUserCredentialsViewModel();
 
             CurrentAccountName = CredentialsStore.Default.CurrentAccount?.AccountName;
 
             SetAsCurrentAccountCommand = new ProtectedCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             DeleteAccountCommand = new ProtectedCommand(OnDeleteAccountCommand);
-            CloseCommand = new ProtectedCommand(owner.Close);
             AddAccountCommand = new ProtectedAsyncCommand(OnAddAccountCommandAsync);
         }
 
-        public void DoucleClickedItem(UserAccountViewModel userAccount)
+        public void DoubleClickedItem(UserAccountViewModel userAccount)
         {
             if (userAccount.IsCurrentAccount)
             {
@@ -93,14 +94,14 @@ namespace GoogleCloudExtension.ManageAccounts
             }
 
             CredentialsStore.Default.UpdateCurrentAccount(userAccount.UserAccount);
-            _owner.Close();
+            Close?.Invoke();
         }
 
         private void OnDeleteAccountCommand()
         {
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.Default.ActionPrompt(
-                String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
+            if (!UserPromptService.Default.ActionPrompt(
+                string.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
                 Resources.ManageAccountsDeleteAccountPromptTitle,
                 actionCaption: Resources.UiDeleteButtonCaption))
             {
@@ -117,7 +118,7 @@ namespace GoogleCloudExtension.ManageAccounts
         {
             Debug.WriteLine($"Setting current account: {CurrentAccountName}");
             CredentialsStore.Default.UpdateCurrentAccount(CurrentUserAccount.UserAccount);
-            _owner.Close();
+            Close?.Invoke();
         }
 
         private async System.Threading.Tasks.Task OnAddAccountCommandAsync()
@@ -127,7 +128,7 @@ namespace GoogleCloudExtension.ManageAccounts
             {
                 EventsReporterWrapper.ReportEvent(NewLoginEvent.Create());
                 Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
-                _owner.Close();
+                Close?.Invoke();
             }
         }
 

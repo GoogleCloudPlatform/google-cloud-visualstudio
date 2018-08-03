@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Services
 {
     /// <summary>
     /// This class provides helpers to show messages to the user in a uniform way.
     /// </summary>
     [Export(typeof(IUserPromptService))]
-    internal class UserPromptUtils : IUserPromptService
+    internal class UserPromptService : IUserPromptService
     {
         public const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
         public const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";
@@ -36,6 +38,21 @@ namespace GoogleCloudExtension.Utils
         /// The default <see cref="IUserPromptService"/>.
         /// </summary>
         public static IUserPromptService Default => GoogleCloudExtensionPackage.Instance.UserPromptService;
+
+        /// <summary>
+        /// Internal hook for unit testing.
+        /// </summary>
+        internal static event EventHandler UserPromptActivated;
+
+        static UserPromptService()
+        {
+            UserPromptWindow.UserPromptActivated += OnUserPromptActiviated;
+        }
+
+        private static void OnUserPromptActiviated(object sender, EventArgs e)
+        {
+            UserPromptActivated?.Invoke(sender, e);
+        }
 
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
@@ -146,6 +163,23 @@ namespace GoogleCloudExtension.Utils
             {
                 return ex?.Message;
             }
+        }
+
+        public TResult PromptUser<TResult>(ICommonWindowContent<IViewModelBase<TResult>> content)
+        {
+            var dialog = new CommonDialogWindow<IViewModelBase<TResult>>(content);
+            dialog.Activated += OnUserPromptActiviated;
+            dialog.ShowModal();
+            dialog.Activated -= OnUserPromptActiviated;
+            return dialog.ViewModel.Result;
+        }
+
+        public void PromptUser(ICommonWindowContent<ICloseSource> content)
+        {
+            var dialog = new CommonDialogWindow<ICloseSource>(content);
+            dialog.Activated += OnUserPromptActiviated;
+            dialog.ShowModal();
+            dialog.Activated -= OnUserPromptActiviated;
         }
     }
 }

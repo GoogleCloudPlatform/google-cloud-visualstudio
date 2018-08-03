@@ -187,11 +187,13 @@
     </Compile>
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
     <Compile Include="Deployment\IGkeDeploymentService.cs" />
+    <Compile Include="Deployment\INetCoreAppUtils.cs" />
     <Compile Include="Deployment\IWindowsVmDeployment.cs" />
     <Compile Include="Deployment\MSBuildProperty.cs" />
     <Compile Include="Deployment\MSBuildTarget.cs" />
     <Compile Include="Deployment\ProgressHelper.cs" />
     <Compile Include="GCloud\IGCloudContext.cs" />
+    <Compile Include="GCloud\IGCloudWrapper.cs" />
     <Compile Include="GCloud\IKubectlContext.cs" />
     <Compile Include="GCloud\IKubectlContextProvider.cs" />
     <Compile Include="GCloud\KubectlContext.cs" />
@@ -201,6 +203,19 @@
     <Compile Include="Git\GitCommit.cs" />
     <Compile Include="Git\GitRepository.cs" />
     <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindow.xaml.cs">
+      <DependentUpon>PublishDialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpMenuBarControl.xaml.cs">
+      <DependentUpon>GcpMenuBarControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpMenuBarControlFactory.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
+      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>
@@ -266,6 +281,12 @@
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
     <Compile Include="TemplateWizards\TemplateType.cs" />
+    <Compile Include="Theming\CommonDialogWindow.cs" />
+    <Compile Include="Theming\CommonWindowContent.cs" />
+    <Compile Include="TitleBar\TitleBar.xaml.cs">
+      <DependentUpon>TitleBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\Disposable.cs" />
     <Compile Include="Utils\EditableModel.cs" />
     <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
@@ -286,14 +307,17 @@
     <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
     <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\ICloseSource.cs" />
+    <Compile Include="Theming\ICommonWindowContent.cs" />
     <Compile Include="Utils\IDataSourceFactory.cs" />
     <Compile Include="Utils\IGcpOutputWindow.cs" />
     <Compile Include="Utils\IProcessService.cs" />
+    <Compile Include="Utils\IDisposableProgress.cs" />
     <Compile Include="Utils\IProtectedCommand.cs" />
     <Compile Include="Utils\ISelectionUtils.cs" />
     <Compile Include="Utils\IShellUtils.cs" />
     <Compile Include="Utils\IStatusbarService.cs" />
-    <Compile Include="Utils\IUserPromptService.cs" />
+    <Compile Include="Services\IUserPromptService.cs" />
     <Compile Include="Utils\IViewModelBase.cs" />
     <Compile Include="Utils\MockAsyncProperty.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
@@ -386,16 +410,10 @@
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
-    <Compile Include="ManageAccounts\ManageAccountsWindow.cs" />
     <Compile Include="ManageAccounts\ManageAccountsWindowContent.xaml.cs">
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
-      <DependentUpon>NamePromptContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NamePrompt\NamePromptViewModel.cs" />
-    <Compile Include="NamePrompt\NamePromptWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -429,7 +447,6 @@
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\Steps\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\Steps\PublishDialogStepBase.cs" />
-    <Compile Include="PublishDialog\PublishDialogWindow.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
@@ -541,17 +558,12 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdViewModel.cs" />
-    <Compile Include="PickProjectDialog\PickProjectIdWindow.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdWindowContent.xaml.cs">
       <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="Theming\CommonImageResources.cs" />
-    <Compile Include="TitleBar\TitleBar.xaml.cs">
-      <DependentUpon>TitleBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\StringFormatUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -611,7 +623,7 @@
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
-    <Compile Include="Utils\UserPromptUtils.cs" />
+    <Compile Include="Services\UserPromptService.cs" />
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -650,7 +662,9 @@
     <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
     <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
     <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="GoogleCloudExtension.ruleset" />
     <None Include="Key.snk" />
     <None Include="packages.config">
@@ -813,17 +827,9 @@
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26201\lib\Microsoft.VisualStudio.Shell.15.0.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Framework.15.5.27130\lib\net45\Microsoft.VisualStudio.Shell.Framework.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.10.0.15.0.25415\lib\net45\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.11.0.15.0.25415\lib\net45\Microsoft.VisualStudio.Shell.Immutable.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.12.0.15.0.25415\lib\net45\Microsoft.VisualStudio.Shell.Immutable.12.0.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.14.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.14.0.15.0.25405\lib\net45\Microsoft.VisualStudio.Shell.Immutable.14.0.dll</HintPath>
@@ -882,8 +888,8 @@
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.8.0.8.0.50728\lib\net11\Microsoft.VisualStudio.TextManager.Interop.8.0.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Threading, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Threading.15.0.240\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=15.6.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.15.6.56\lib\net46\Microsoft.VisualStudio.Threading.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Utilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Utilities.15.5.27130\lib\net46\Microsoft.VisualStudio.Utilities.dll</HintPath>
@@ -891,8 +897,8 @@
     <Reference Include="Microsoft.VisualStudio.Validation, Version=15.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.15.3.53\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -901,8 +907,8 @@
       <HintPath>..\packages\stdole.7.0.3303\lib\net10\stdole.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="StreamJsonRpc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\StreamJsonRpc.1.0.36\lib\net45\StreamJsonRpc.dll</HintPath>
+    <Reference Include="StreamJsonRpc, Version=1.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\StreamJsonRpc.1.3.23\lib\net45\StreamJsonRpc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -913,7 +919,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
+      <HintPath>..\packages\Microsoft.PowerShell.3.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
@@ -1048,6 +1054,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MenuBarControls\GcpMenuBarPopupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1056,7 +1066,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="NamePrompt\NamePromptContent.xaml">
+    <Page Include="MenuBarControls\GcpMenuBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1073,6 +1083,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PickFileDialog\PickFileWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PublishDialog\PublishDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

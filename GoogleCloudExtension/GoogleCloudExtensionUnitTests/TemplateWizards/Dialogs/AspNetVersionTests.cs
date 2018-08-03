@@ -17,7 +17,6 @@ using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,18 +26,16 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     public class AspNetVersionTests : ExtensionTestBase
     {
         private Mock<IToolsPathProvider> _toolsPathProviderMock;
-        private Lazy<IToolsPathProvider> _toolsPathProviderToRestore;
 
         protected override void BeforeEach()
         {
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
-            _toolsPathProviderToRestore = VsVersionUtils.s_toolsPathProvider;
-            VsVersionUtils.s_toolsPathProvider = new Lazy<IToolsPathProvider>(() => _toolsPathProviderMock.Object);
+            VsVersionUtils.s_toolsPathProviderOverride = _toolsPathProviderMock.Object;
         }
 
         protected override void AfterEach()
         {
-            VsVersionUtils.s_toolsPathProvider = _toolsPathProviderToRestore;
+            VsVersionUtils.s_toolsPathProviderOverride = null;
         }
 
         [TestMethod]

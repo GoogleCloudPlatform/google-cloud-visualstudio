@@ -66,10 +66,68 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
+        public async Task ProjectsListTask()
+        {
+            var responses = new[]
+            {
+                new ListProjectsResponse
+                {
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
+                    NextPageToken = null
+                },
+                new ListProjectsResponse
+                {
+                    Projects = new List<Project> {s_aProject},
+                    NextPageToken = null
+                }
+            };
+            CloudResourceManagerService service = GetMockedService(
+                (CloudResourceManagerService s) => s.Projects,
+                p => p.List(),
+                responses);
+            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+
+            IList<Project> projects = await dataSource.ProjectsListTask;
+
+            Assert.AreEqual(1, projects.Count);
+            Assert.AreEqual(s_someProject, projects[0]);
+        }
+
+        [TestMethod]
+        public async Task RefreshProjects_RestartsProjectsListTask()
+        {
+            var responses = new[]
+            {
+                new ListProjectsResponse
+                {
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
+                    NextPageToken = null
+                },
+                new ListProjectsResponse
+                {
+                    Projects = new List<Project> {s_aProject},
+                    NextPageToken = null
+                }
+            };
+            CloudResourceManagerService service = GetMockedService(
+                (CloudResourceManagerService s) => s.Projects,
+                p => p.List(),
+                responses);
+            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+
+            dataSource.RefreshProjects();
+            IList<Project> projects = await dataSource.ProjectsListTask;
+
+            Assert.AreEqual(1, projects.Count);
+            Assert.AreEqual(s_aProject, projects[0]);
+        }
+
+        [TestMethod]
         public async Task GetProjectsListAsyncTestSinglePage()
         {
             var responses = new[]
             {
+                new ListProjectsResponse(),
                 new ListProjectsResponse
                 {
                     Projects = new List<Project> {s_someProject, s_disabledProject},
@@ -96,6 +154,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         {
             var responses = new[]
             {
+                new ListProjectsResponse(),
                 new ListProjectsResponse
                 {
                     Projects = new List<Project> {s_someProject, s_disabledProject},

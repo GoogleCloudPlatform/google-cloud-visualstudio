@@ -75,26 +75,15 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
         protected override void BeforeEach()
         {
-            _validateGcloudSource = new TaskCompletionSource<GCloudValidationResult>();
-            GCloudWrapperUtils.ValidateGCloudAsyncOverride =
-                Mock.Of<Func<GCloudComponent, Task<GCloudValidationResult>>>(
-                    f => f(It.IsAny<GCloudComponent>()) == _validateGcloudSource.Task);
-
             _deployment = new GkeDeployment { Metadata = new GkeMetadata { Name = DeploymentName } };
+
+            _getClusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
+            _getDeploymentsSource = new TaskCompletionSource<IList<GkeDeployment>>();
+            _validateGcloudSource = new TaskCompletionSource<GCloudValidationResult>();
 
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             _browserServiceMock = new Mock<IBrowserService>();
-
-            var mockedApiManager = Mock.Of<IApiManager>(
-                x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true) &&
-                    x.EnableServicesAsync(It.IsAny<IEnumerable<string>>()) == Task.FromResult(true));
-
-            _getClusterListTaskSource = new TaskCompletionSource<IList<Cluster>>();
-            var mockedDataSourceFactory = Mock.Of<IDataSourceFactory>(
-                dsf => dsf.CreateGkeDataSource().GetClusterListAsync() == _getClusterListTaskSource.Task);
-
             _kubectlContextMock = new Mock<IKubectlContext>();
-            _getDeploymentsSource = new TaskCompletionSource<IList<GkeDeployment>>();
             _kubectlContextMock.Setup(kube => kube.GetDeploymentsAsync()).Returns(_getDeploymentsSource.Task);
             _gkeDeploymentServiceMock = new Mock<IGkeDeploymentService>();
             _gkeDeploymentServiceMock
@@ -104,11 +93,18 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
                         It.IsAny<GkeDeploymentService.Options>()))
                 .Returns(Task.CompletedTask);
 
+
+            PackageMock.Setup(p => p.GetMefService<IGCloudWrapper>().ValidateGCloudAsync(It.IsAny<GCloudComponent>()))
+                .Returns(() => _validateGcloudSource.Task);
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
             PackageMock.Setup(p => p.GetMefService<IBrowserService>()).Returns(_browserServiceMock.Object);
-            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(mockedApiManager);
+            PackageMock.Setup(p => p.GetMefService<IApiManager>()).Returns(Mock.Of<IApiManager>(
+                x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()) == Task.FromResult(true) &&
+                    x.EnableServicesAsync(It.IsAny<IEnumerable<string>>()) == Task.FromResult(true)));
             PackageMock.Setup(p => p.GetMefServiceLazy<IDataSourceFactory>())
-                .Returns(new Lazy<IDataSourceFactory>(() => mockedDataSourceFactory));
+                .Returns(
+                    MockHelpers.LazyOf<IDataSourceFactory>(
+                        dsf => dsf.CreateGkeDataSource().GetClusterListAsync() == _getClusterListTaskSource.Task));
             PackageMock.Setup(
                     p => p.GetMefService<IKubectlContextProvider>()
                         .GetKubectlContextForClusterAsync(It.IsAny<Cluster>()))
@@ -144,6 +140,16 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             Assert.IsFalse(_objectUnderTest.OpenWebsite);
             Assert.IsFalse(_objectUnderTest.CreateClusterCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.RefreshClustersListCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new GkeStepViewModel(Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
         }
 
         [TestMethod]

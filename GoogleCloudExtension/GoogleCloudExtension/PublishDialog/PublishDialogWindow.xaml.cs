@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,16 +21,17 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// This class implements the window that hosts the publish dialog wizard.
     /// </summary>
-    public class PublishDialogWindow : CommonDialogWindowBase
+    public partial class PublishDialogWindow : CommonDialogWindowBase
     {
         private PublishDialogWindowViewModel ViewModel { get; }
 
-        private PublishDialogWindow(IParsedDteProject project) :
+        public PublishDialogWindow(IParsedDteProject project) :
             base(string.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name))
         {
-            ViewModel = new PublishDialogWindowViewModel(project, Close);
+            DataContext = ViewModel = new PublishDialogWindowViewModel(project, Close);
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
             Closed += (sender, args) => ViewModel.FinishFlow();
+            InitializeComponent();
         }
 
         /// <summary>

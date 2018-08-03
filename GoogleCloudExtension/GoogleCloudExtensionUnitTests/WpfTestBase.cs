@@ -73,7 +73,7 @@ namespace GoogleCloudExtensionUnitTests
         /// If this method returns null and the window is visible, it is likely because the event handlers have not
         /// been set up properly.
         /// </remarks>
-        protected async Task<TWindow> GetWindow(Action promptAction)
+        protected async Task<TWindow> GetWindowAsync(Action promptAction)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 

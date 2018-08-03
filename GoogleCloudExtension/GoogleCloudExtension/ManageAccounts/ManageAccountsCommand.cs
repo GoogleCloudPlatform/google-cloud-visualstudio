@@ -56,18 +56,18 @@ namespace GoogleCloudExtension.ManageAccounts
                 commandService.AddCommand(menuItem);
 
             }
+        }
 
-            // <summary>
-            // Shows the tool window when the menu item is clicked.
-            // </summary>
-            // <param name="sender">The event sender.</param>
-            // <param name="e">The event args.</param>
-            void ShowToolWindow(object sender, EventArgs e)
-            {
-                EventsReporterWrapper.EnsureAnalyticsOptIn();
+        // <summary>
+        // Shows the tool window when the menu item is clicked.
+        // </summary>
+        // <param name="sender">The event sender.</param>
+        // <param name="e">The event args.</param>
+        static void ShowToolWindow(object sender, EventArgs e)
+        {
+            EventsReporterWrapper.EnsureAnalyticsOptIn();
 
-                ManageAccountsWindow.PromptUser();
-            }
+            GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
         }
     }
 }

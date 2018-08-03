@@ -462,14 +462,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         }
 
         [TestMethod]
-        public void TestResetProjectId()
-        {
-            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
-
-            Assert.IsTrue(_objectUnderTest.IsAccountChanged);
-        }
-
-        [TestMethod]
         public void TestDisposeDisablesAutoReload()
         {
             _objectUnderTest.Dispose();
@@ -483,15 +475,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             _objectUnderTest.Dispose();
             CredentialStoreMock.Raise(
                 cs => cs.CurrentProjectIdChanged += null, CredentialsStore.Default, null);
-
-            Assert.IsFalse(_objectUnderTest.IsAccountChanged);
-        }
-
-        [TestMethod]
-        public void TestDisposeDisablesResetProjectId()
-        {
-            _objectUnderTest.Dispose();
-            CredentialStoreMock.Raise(cs => cs.Reset += null, CredentialsStore.Default, null);
 
             Assert.IsFalse(_objectUnderTest.IsAccountChanged);
         }

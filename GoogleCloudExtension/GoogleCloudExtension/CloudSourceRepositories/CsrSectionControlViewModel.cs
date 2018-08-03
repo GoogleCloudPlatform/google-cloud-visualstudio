@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             if (CredentialsStore.Default.CurrentAccount == null)
             {
-                ManageAccountsWindow.PromptUser();
+                GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
             }
             Refresh();
         }
@@ -95,7 +95,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             _accountChangedHandler = (sender, e) => OnAccountChanged();
             CredentialsStore.Default.CurrentAccountChanged += _accountChangedHandler;
-            CredentialsStore.Default.Reset += _accountChangedHandler;
 
             if (CredentialsStore.Default.CurrentAccount == null)
             {
@@ -176,7 +175,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             if (_accountChangedHandler != null)
             {
-                CredentialsStore.Default.Reset -= _accountChangedHandler;
                 CredentialsStore.Default.CurrentAccountChanged -= _accountChangedHandler;
             }
         }

@@ -168,7 +168,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnAutoReloadCommand = new ProtectedCommand(Reload);
 
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
-            CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
 
         /// <summary>

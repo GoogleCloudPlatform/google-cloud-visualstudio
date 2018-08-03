@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
-using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.DataSources;
@@ -168,6 +167,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
         /// </summary>
         public ProtectedAsyncCommand SetAppRegionCommand { get; }
 
+        public override string Title { get; }
         protected internal override ProtectedAsyncCommand PublishCommandAsync { get; }
 
         private IGaeDataSource CurrentDataSource => _dataSource ?? new GaeDataSource(
@@ -180,10 +180,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
 
         public FlexStepViewModel(
             IGaeDataSource dataSource,
-            Func<Project> pickProjectPrompt,
             Func<Task<bool>> setAppRegionAsyncFunc,
             IPublishDialog publishDialog)
-            : base(publishDialog, pickProjectPrompt)
+            : base(publishDialog)
         {
             _dataSource = dataSource;
             _setAppRegionAsyncFunc = setAppRegionAsyncFunc;
@@ -193,6 +192,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Flex
             PublishCommandAsync = new ProtectedAsyncCommand(PublishAsync);
             _deploymentService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineFlexDeployment>();
             _configurationService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IAppEngineConfiguration>();
+
+            Title = string.Format(Resources.GaePublishStepTitle, publishDialog.Project.Name);
         }
 
         protected internal override void OnFlowFinished()

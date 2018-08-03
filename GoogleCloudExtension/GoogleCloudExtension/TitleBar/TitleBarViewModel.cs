@@ -55,9 +55,10 @@ namespace GoogleCloudExtension.TitleBar
         /// </summary>
         public TitleBarViewModel()
         {
-            OnGotoAccountManagementCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
+            OnGotoAccountManagementCommand = new ProtectedCommand(
+                () => GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(
+                    new ManageAccountsWindowContent()));
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnAccountProjectIdChanged();
-            CredentialsStore.Default.Reset += (sender, e) => OnAccountProjectIdChanged();
         }
 
         private void OnAccountProjectIdChanged()

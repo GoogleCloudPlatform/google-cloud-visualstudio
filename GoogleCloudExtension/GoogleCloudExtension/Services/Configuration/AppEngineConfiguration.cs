@@ -72,17 +72,21 @@ namespace GoogleCloudExtension.Services.Configuration
         private readonly Deserializer _yamlDeserializer = new Deserializer();
         private readonly Serializer _yamlSerializer = new Serializer();
         private readonly Lazy<IFileSystem> _fileSystem;
+        private readonly Lazy<INetCoreAppUtils> _netCoreAppUtils;
 
         private IFileSystem FileSystem => _fileSystem.Value;
+        private INetCoreAppUtils NetCoreAppUtils => _netCoreAppUtils.Value;
 
         /// <summary>
         /// Creates a new AppEngineConfiguration service.
         /// </summary>
         /// <param name="fileSystem">The <see cref="IFileSystem"/> service to import.</param>
+        /// <param name="netCoreAppUtils">The <see cref="INetCoreAppUtils"/> service to import.</param>
         [ImportingConstructor]
-        public AppEngineConfiguration(Lazy<IFileSystem> fileSystem)
+        public AppEngineConfiguration(Lazy<IFileSystem> fileSystem, Lazy<INetCoreAppUtils> netCoreAppUtils)
         {
             _fileSystem = fileSystem;
+            _netCoreAppUtils = netCoreAppUtils;
         }
 
         /// <summary>

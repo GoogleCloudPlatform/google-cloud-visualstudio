@@ -45,5 +45,8 @@ namespace GoogleCloudExtension.Services.FileSystem
 
         /// <inheritdoc cref="File.Delete(string)"/>
         public void Delete(string path) => File.Delete(path);
+
+        /// <inheritdoc cref="File.ReadAllText(string)"/>
+        public string ReadAllText(string path) => File.ReadAllText(path);
     }
 }

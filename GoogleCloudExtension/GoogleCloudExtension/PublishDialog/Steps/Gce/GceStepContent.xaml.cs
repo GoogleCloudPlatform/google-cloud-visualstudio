@@ -33,13 +33,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
         public GceStepContent(
             IPublishDialog publishDialog,
             IGceDataSource dataSource = null,
-            Func<Google.Apis.CloudResourceManager.v1.Data.Project> pickProjectPrompt = null,
             IWindowsCredentialsStore currentWindowsCredentialStore = null,
             Action<Instance> manageCredentialsPrompt = null) : this()
         {
             ViewModel = new GceStepViewModel(
-                dataSource, pickProjectPrompt,
-                currentWindowsCredentialStore, manageCredentialsPrompt, publishDialog);
+                dataSource, currentWindowsCredentialStore, manageCredentialsPrompt, publishDialog);
         }
 
         public GceStepViewModel ViewModel

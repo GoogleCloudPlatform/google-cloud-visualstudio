@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Git;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System;
@@ -262,7 +263,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
             if (dataSourceErrorProjects.Any())
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(
                         Resources.CsrFetchReposErrorMessage, String.Join(", ", dataSourceErrorProjects)),
                     title: Resources.CsrConnectSectionTitle);
@@ -367,8 +368,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         private async Task<IList<Project>> GetProjectsAsync()
         {
-            var dataSourceFactory = GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>();
-            ResourceManagerDataSource resourceManager = dataSourceFactory.CreateResourceManagerDataSource();
+            IResourceManagerDataSource resourceManager = DataSourceFactory.Default.CreateResourceManagerDataSource();
             if (resourceManager == null)
             {
                 return new List<Project>();
@@ -380,7 +380,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 var projects = await resourceManager.GetProjectsListAsync();
                 if (!projects.Any())
                 {
-                    UserPromptUtils.Default.OkPrompt(
+                    UserPromptService.Default.OkPrompt(
                         message: Resources.CsrNoProjectMessage,
                         title: Resources.CsrConnectSectionTitle);
                 }

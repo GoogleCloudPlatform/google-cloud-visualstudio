@@ -26,8 +26,8 @@ frustration later on.
 
 ## Developer Workflow
 
-If you would like to add a new feature or change, first create a new Issue. There we will
-triage the idea and discuss any design or implementation details.
+If you would like to add a new feature or change, first create a new Issue. This
+allows us to triage the idea and discuss any design or implementation details.
 
 Contributors are expected to do their work in a local fork and submit code for consideration via a
 pull request.

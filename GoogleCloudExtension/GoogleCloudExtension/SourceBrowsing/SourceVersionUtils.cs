@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Git;
 using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
@@ -109,7 +110,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="filePath">The file path to be shown in the error prompt.</param>
         public static void FileItemNotFoundPrompt(string filePath)
         {
-            UserPromptUtils.Default.ErrorPrompt(
+            UserPromptService.Default.ErrorPrompt(
                 message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
                 title: Resources.SourceVersionUtilsUnalbeFindFileTitle);
         }
@@ -119,7 +120,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         public static void FailedToOpenFilePrompt(string filePath)
         {
-            UserPromptUtils.Default.ErrorPrompt(
+            UserPromptService.Default.ErrorPrompt(
                 message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
                 title: Resources.UiDefaultPromptTitle);
         }
@@ -172,7 +173,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
-            if (UserPromptUtils.Default.ActionPrompt(
+            if (UserPromptService.Default.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
                     title: Resources.UiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
@@ -187,7 +188,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static void LogEntryVersionInfoMissingPrompt()
         {
-            UserPromptUtils.Default.ErrorPrompt(
+            UserPromptService.Default.ErrorPrompt(
                 message: Resources.LogsViewerVersionInfoMissingMessage,
                 title: Resources.UiDefaultPromptTitle);
         }
@@ -242,7 +243,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     project.Version,
                     assemblyVersion);
 
-                if (UserPromptUtils.Default.ActionPrompt(
+                if (UserPromptService.Default.ActionPrompt(
                     prompt: prompt,
                     title: Resources.SourceVersionUtilsVersionMismatchTitle,
                     message: Resources.LogsViewerVersionMissmatchAskIgnoreMessage))
@@ -276,7 +277,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             var matchingFiles = await commit.FindMatchingEntryAsync(filePath);
             if (matchingFiles.Count() == 0)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     message: String.Format(
                         Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                         filePath, commit.Sha, commit.Root),

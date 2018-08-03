@@ -28,7 +28,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TestingHelpers;
 using DteProject = EnvDTE.Project;
-using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
 {
@@ -141,7 +140,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _mockedProject = Mock.Of<DteProject>(p => p.ConfigurationManager.ConfigurationRowNames == new string[0]);
             _objectUnderTest = new GceStepViewModel(
                 mockedDataSource,
-                Mock.Of<Func<GcpProject>>(),
                 _windowsCredentialStoreMock.Object,
                 _manageCredentialsPromptMock.Object,
                 Mock.Of<IPublishDialog>(
@@ -167,6 +165,20 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             Assert.IsFalse(_objectUnderTest.RefreshInstancesCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.OpenWebsite);
             Assert.IsFalse(_objectUnderTest.LaunchRemoteDebugger);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsTitle()
+        {
+            const string expectedName = "Expected Name";
+
+            _objectUnderTest = new GceStepViewModel(
+                Mock.Of<IGceDataSource>(),
+                _windowsCredentialStoreMock.Object,
+                _manageCredentialsPromptMock.Object,
+                Mock.Of<IPublishDialog>(pd => pd.Project.Name == expectedName));
+
+            StringAssert.Contains(_objectUnderTest.Title, expectedName);
         }
 
         [TestMethod]

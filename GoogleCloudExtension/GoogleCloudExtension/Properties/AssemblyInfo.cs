@@ -37,6 +37,7 @@ using System.Runtime.InteropServices;
 // same time.
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
+
 [assembly: InternalsVisibleTo(
     "GoogleCloudExtensionUnitTests," +
     "PublicKey=0024000004800000940000000602000000240000525341310004000001000" +

@@ -40,6 +40,11 @@ namespace GoogleCloudExtension.DataSources
             public const string DeleteRequested = "DELETE_REQUESTED";
         }
 
+        /// <summary>
+        /// The task to get the list of projects associated with the account this datasource was configured for.
+        /// </summary>
+        public Task<IList<Project>> ProjectsListTask { get; private set; }
+
         /// <param name="credential">The credentials to use for the service.</param>
         /// <param name="appName">The name of the application.</param>
         public ResourceManagerDataSource(GoogleCredential credential, string appName)
@@ -56,7 +61,9 @@ namespace GoogleCloudExtension.DataSources
             GoogleCredential credential,
             Func<BaseClientService.Initializer, CloudResourceManagerService> factory,
             string appName) : base(credential, factory, appName)
-        { }
+        {
+            ProjectsListTask = GetProjectsListAsync();
+        }
 
         /// <summary>
         /// Returns the complete list of projects for the current credentials.
@@ -84,6 +91,11 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken,
                 predicate: x => x.LifecycleState == LifecycleState.Active);
         }
+
+        /// <summary>
+        /// Refreshes ProjectsListTask so it includes any newly created projects.
+        /// </summary>
+        public void RefreshProjects() => ProjectsListTask = GetProjectsListAsync();
 
         /// <summary>
         /// Returns the project given its <paramref name="projectId"/>.

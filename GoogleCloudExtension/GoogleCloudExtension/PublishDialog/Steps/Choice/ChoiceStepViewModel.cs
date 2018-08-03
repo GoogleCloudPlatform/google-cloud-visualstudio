@@ -56,11 +56,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         public IProtectedCommand PublishCommand { get; } =
             new ProtectedCommand(() => throw new NotSupportedException(), false);
 
+        public string Title { get; }
+
         private IPublishDialog PublishDialog { get; }
 
         public ChoiceStepViewModel(IPublishDialog publishDialog)
         {
             PublishDialog = publishDialog;
+            Title = string.Format(Resources.PublishDialogCaption, publishDialog.Project.Name);
         }
 
         /// <summary>

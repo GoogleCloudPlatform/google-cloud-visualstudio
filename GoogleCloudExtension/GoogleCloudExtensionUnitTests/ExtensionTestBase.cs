@@ -15,7 +15,6 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -28,8 +27,6 @@ namespace GoogleCloudExtensionUnitTests
     {
         private Mock<IServiceProvider> _serviceProviderMock;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
-
-        protected Mock<IDataSourceFactory> DataSourceFactoryMock { get; private set; }
 
         protected Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
 
@@ -59,7 +56,6 @@ namespace GoogleCloudExtensionUnitTests
             CredentialStoreMock.SetupGet(cs => cs.CurrentAccount)
                 .Returns(new UserAccount { AccountName = "DefaultAccountName" });
 
-            DataSourceFactoryMock = Mock.Get(GoogleCloudExtensionPackage.Instance.GetMefService<IDataSourceFactory>());
             EventsReporterWrapper.DisableReporting();
 
             BeforeEach();

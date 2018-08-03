@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.SolutionUtils;
@@ -84,7 +85,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
 
             // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
             if (!configurationStatus.HasAppYaml ||
-                UserPromptUtils.Default.ActionPrompt(
+                UserPromptService.Default.ActionPrompt(
                     prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
                     title: Resources.GenerateConfigurationOverwritePromptTitle,
                     actionCaption: Resources.UiOverwriteButtonCaption,
@@ -98,7 +99,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 catch (Exception error)
 
                 {
-                    UserPromptUtils.Default.ErrorPrompt(
+                    UserPromptService.Default.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
                             AppEngineConfiguration.AppYamlName),
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
 
             // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
             if (!configurationStatus.HasDockerfile ||
-                UserPromptUtils.Default.ActionPrompt(
+                UserPromptService.Default.ActionPrompt(
                     prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
                     title: Resources.GenerateConfigurationOverwritePromptTitle,
                     actionCaption: Resources.UiOverwriteButtonCaption,
@@ -121,11 +122,12 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                 Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
                 try
                 {
-                    NetCoreAppUtils.GenerateDockerfile(selectedProject);
+                    GoogleCloudExtensionPackage.Instance.GetMefService<INetCoreAppUtils>()
+                        .GenerateDockerfile(selectedProject);
                 }
                 catch (Exception exception)
                 {
-                    UserPromptUtils.Default.ErrorPrompt(
+                    UserPromptService.Default.ErrorPrompt(
                         string.Format(
                             Resources.GenerateConfigurationFileGenerationErrorMessage,
                             NetCoreAppUtils.DockerfileName),

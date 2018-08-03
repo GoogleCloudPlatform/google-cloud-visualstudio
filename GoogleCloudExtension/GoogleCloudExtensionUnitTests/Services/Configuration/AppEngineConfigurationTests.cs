@@ -40,14 +40,18 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         private Mock<IFileSystem> _fileSystemMock;
         private IParsedDteProject _mockedParsedProject;
         private Mock<IParsedDteProject> _parsedProjectMock;
+        private Mock<INetCoreAppUtils> _netCoreAppUtilsMock;
 
         protected override void BeforeEach()
         {
             _parsedProjectMock = new Mock<IParsedDteProject> { DefaultValue = DefaultValue.Mock };
             _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(ProjectDirectory);
             _mockedParsedProject = _parsedProjectMock.Object;
+
             _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
-            _objectUnderTest = new AppEngineConfiguration(_fileSystemMock.ToLazy());
+            _netCoreAppUtilsMock = new Mock<INetCoreAppUtils>();
+
+            _objectUnderTest = new AppEngineConfiguration(_fileSystemMock.ToLazy(), _netCoreAppUtilsMock.ToLazy());
         }
 
         [TestMethod]

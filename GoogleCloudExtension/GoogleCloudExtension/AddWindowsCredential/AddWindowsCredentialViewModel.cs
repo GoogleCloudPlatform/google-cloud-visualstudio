@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
@@ -158,7 +159,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         {
             if (String.IsNullOrEmpty(UserName))
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyUser,
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
@@ -167,7 +168,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             var invalidChars = UserName.Intersect(UserNameInvalidChars).ToArray();
             if (invalidChars.Length > 0)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     String.Format(Resources.AddWindowsCredentialValidationInvalidChars, new string(invalidChars)),
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
@@ -175,7 +176,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
 
             if (ManualPassword && String.IsNullOrEmpty(Password))
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyPassword,
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;

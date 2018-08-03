@@ -50,7 +50,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         public void TestConstructor_SetsCredentialsPath()
         {
             const string expectedCredentialsPath = "expected-credentials-path";
-            PackageMock.SetupGet(p => p.CredentialStore.CurrentAccountPath).Returns(expectedCredentialsPath);
+            PackageMock.SetupGet(p => p.CredentialsStore.CurrentAccountPath)
+                .Returns(expectedCredentialsPath);
 
             var objectUnderTest = new GCloudContext();
 
@@ -61,7 +62,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         public void TestConstructor_SetsProjectId()
         {
             const string expectedProjectId = "expected-project-id";
-            PackageMock.SetupGet(p => p.CredentialStore.CurrentProjectId).Returns(expectedProjectId);
+            PackageMock.SetupGet(p => p.CredentialsStore.CurrentProjectId).Returns(expectedProjectId);
 
             var objectUnderTest = new GCloudContext();
 

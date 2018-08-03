@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.PowerShellUtils;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -72,7 +73,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             catch (RuntimeException e)
             {
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     e.ErrorRecord.Exception?.Message ?? e.ErrorRecord.ToString(),
                     Resources.AttachDebuggerInstallerError,
                     e.ErrorRecord.InvocationInfo.Line);
@@ -80,7 +81,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 Debug.WriteLine($"{ex}");
-                UserPromptUtils.Default.ErrorPrompt(
+                UserPromptService.Default.ErrorPrompt(
                     ex.Message,
                     Resources.AttachDebuggerInstallerError,
                     ex.StackTrace);

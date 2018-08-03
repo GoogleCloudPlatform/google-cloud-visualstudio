@@ -16,6 +16,7 @@ using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +25,10 @@ namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
     /// This class wraps the gcloud command and offers up some of its services in a
-    /// as async methods. 
+    /// as async methods.
     /// </summary>
-    public static class GCloudWrapper
+    [Export(typeof(IGCloudWrapper))]
+    public class GCloudWrapper : IGCloudWrapper
     {
         // The minimum version of the Google Cloud SDK that the extension can work with. Update this only when
         // a feature appears in the Cloud SDK that is absolutely required for the extension to work.
@@ -39,11 +41,21 @@ namespace GoogleCloudExtension.GCloud
         private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
 
         // Mapping between the enum and the actual gcloud component.
-        private static readonly Dictionary<GCloudComponent, string> s_componentNames = new Dictionary<GCloudComponent, string>
+        private static readonly Dictionary<GCloudComponent, string> s_componentNames =
+            new Dictionary<GCloudComponent, string>
+            {
+                [GCloudComponent.Beta] = "beta",
+                [GCloudComponent.Kubectl] = "kubectl",
+            };
+
+        private readonly Lazy<IProcessService> _processService;
+        private IProcessService ProcessService => _processService.Value;
+
+        [ImportingConstructor]
+        public GCloudWrapper(Lazy<IProcessService> processService)
         {
-            [GCloudComponent.Beta] = "beta",
-            [GCloudComponent.Kubectl] = "kubectl",
-        };
+            _processService = processService;
+        }
 
         /// <summary>
         /// Validates that gcloud is installed with the minimum version and that the given component
@@ -51,7 +63,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="component">the component to check, optional. If no component is provided only gcloud is checked.</param>
         /// <returns></returns>
-        public static async Task<GCloudValidationResult> ValidateGCloudAsync(GCloudComponent component = GCloudComponent.None)
+        public async Task<GCloudValidationResult> ValidateGCloudAsync(GCloudComponent component = GCloudComponent.None)
         {
             if (!IsGCloudCliInstalled())
             {
@@ -80,7 +92,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="sourcePath">The directory for which to generate the source contenxt.</param>
         /// <param name="outputPath">Where to store the source context files.</param>
         /// <returns>The task to be completed when the operation finishes.</returns>
-        public static async Task GenerateSourceContextAsync(string sourcePath, string outputPath)
+        public async Task GenerateSourceContextAsync(string sourcePath, string outputPath)
         {
             bool result = await RunCommandAsync(
                 $"debug source gen-repo-info-file --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"");
@@ -90,14 +102,14 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static async Task<IList<string>> GetInstalledComponentsAsync()
+        private async Task<IList<string>> GetInstalledComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
             IList<CloudSdkComponent> components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
             return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
         }
 
-        private static bool IsGCloudCliInstalled()
+        private bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
             string gcloudPath = PathUtils.GetCommandPathFromPATH("gcloud.cmd");
@@ -106,7 +118,7 @@ namespace GoogleCloudExtension.GCloud
             return gcloudPath != null;
         }
 
-        private static async Task<bool> IsComponentInstalledAsync(GCloudComponent component)
+        private async Task<bool> IsComponentInstalledAsync(GCloudComponent component)
         {
             if (!IsGCloudCliInstalled())
             {
@@ -116,7 +128,7 @@ namespace GoogleCloudExtension.GCloud
             return installedComponents.Contains(s_componentNames[component]);
         }
 
-        private static async Task<Version> GetInstalledCloudSdkVersionAsync()
+        private async Task<Version> GetInstalledCloudSdkVersionAsync()
         {
             if (!IsGCloudCliInstalled())
             {
@@ -127,7 +139,7 @@ namespace GoogleCloudExtension.GCloud
             return new Version(version.SdkVersion);
         }
 
-        private static async Task<T> GetJsonOutputAsync<T>(string command)
+        private async Task<T> GetJsonOutputAsync<T>(string command)
         {
             string actualCommand = $"gcloud {command} --format=json";
             try
@@ -135,7 +147,7 @@ namespace GoogleCloudExtension.GCloud
 
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.Default.GetJsonOutputAsync<T>(
+                return await ProcessService.GetJsonOutputAsync<T>(
                     file: "cmd.exe",
                     args: $"/c {actualCommand}");
             }
@@ -145,12 +157,12 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static Task<bool> RunCommandAsync(string command)
+        private Task<bool> RunCommandAsync(string command)
         {
             void DebugOutputHandler(object o, OutputHandlerEventArgs e) => Debug.WriteLine(e.Line);
 
             // This code depends on the fact that gcloud.cmd is a batch file.
-            return ProcessUtils.Default.RunCommandAsync("cmd.exe", $"/c gcloud {command}", DebugOutputHandler);
+            return ProcessService.RunCommandAsync("cmd.exe", $"/c gcloud {command}", DebugOutputHandler);
         }
     }
 }

@@ -7,11 +7,15 @@ namespace EchoApp
     {
         public static int Main(string[] args)
         {
-            if (args.Length > 1)
+            if (args.Length > 0)
             {
                 string flag = args[0];
                 string message = string.Join(" ", args.Skip(1));
-                if (flag.Equals("-out", StringComparison.OrdinalIgnoreCase))
+                if (flag.Equals("-null", StringComparison.OrdinalIgnoreCase))
+                {
+                    return 0;
+                }
+                else if (flag.Equals("-out", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.Write(message);
                     return 0;

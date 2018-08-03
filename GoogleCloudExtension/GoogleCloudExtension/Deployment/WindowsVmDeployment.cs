@@ -71,8 +71,13 @@ namespace GoogleCloudExtension.Deployment
             string configuration)
         {
             await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            ShellUtils.SaveAllFiles();
             // Ensure NuGet packages are restored.
             project.Project.DTE.Solution.SolutionBuild.BuildProject(configuration, project.Project.UniqueName, true);
+
+            GcpOutputWindow.Clear();
+            GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+            GcpOutputWindow.Activate();
 
             string msbuildPath = VsVersionUtils.ToolsPathProvider.GetMsbuildPath();
             MSBuildTarget target;
@@ -103,10 +108,20 @@ namespace GoogleCloudExtension.Deployment
             using (StatusbarHelper.ShowDeployAnimation())
             using (ShellUtils.SetShellUIBusy())
             {
-                return await ProcessService.RunCommandAsync(
+                string msBuildParameters = string.Join(" ", parameters);
+                bool result = await ProcessService.RunCommandAsync(
                     msbuildPath,
-                    string.Join(" ", parameters),
+                    msBuildParameters,
                     GcpOutputWindow.OutputLine);
+
+                if (result)
+                {
+                    return true;
+                }
+
+                // An inital failure is common, retry.
+                await Task.Delay(TimeSpan.FromMilliseconds(100));
+                return await ProcessService.RunCommandAsync(msbuildPath, msBuildParameters, GcpOutputWindow.OutputLine);
             }
         }
     }

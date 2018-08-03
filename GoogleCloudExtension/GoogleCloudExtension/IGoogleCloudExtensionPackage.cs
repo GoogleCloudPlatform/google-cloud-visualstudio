@@ -15,6 +15,7 @@
 using EnvDTE80;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -93,10 +94,16 @@ namespace GoogleCloudExtension
         IUserPromptService UserPromptService { get; }
 
         /// <summary>
-        /// The default <see cref="ICredentialsStore"/>.
+        /// The default <see cref="IDataSourceFactory"/> service.
         /// </summary>
-        ICredentialsStore CredentialStore { get; }
+        IDataSourceFactory DataSourceFactory { get; }
 
+        /// <summary>
+        /// The default <see cref="ICredentialsStore"/> service.
+        /// </summary>
+        ICredentialsStore CredentialsStore { get; }
+
+        T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
 
         void SubscribeClosingEvent(EventHandler handler);

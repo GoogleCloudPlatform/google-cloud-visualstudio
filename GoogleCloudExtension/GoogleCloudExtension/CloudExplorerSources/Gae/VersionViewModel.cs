@@ -17,6 +17,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -192,7 +193,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             string confirmationMessage = String.Format(
                 Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, _version.Id);
-            if (!UserPromptUtils.Default.ActionPrompt(
+            if (!UserPromptService.Default.ActionPrompt(
                 confirmationMessage,
                 Resources.CloudExplorerGaeDeleteVersion,
                 actionCaption: Resources.UiYesButtonCaption,

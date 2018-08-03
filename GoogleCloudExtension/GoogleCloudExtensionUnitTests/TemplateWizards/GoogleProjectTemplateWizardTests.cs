@@ -13,12 +13,15 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.TemplateWizards;
 using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using TestingHelpers;
 using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 using VsProject = EnvDTE.Project;
 
@@ -28,7 +31,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
     /// Class for testing <see cref="GoogleProjectTemplateWizard"/>
     /// </summary>
     [TestClass]
-    public class GoogleProjectTemplateWizardTests
+    public class GoogleProjectTemplateWizardTests : ExtensionTestBase
     {
         private const string ProjectDirectoryBackslash = @"root:\solution\dir\project\dir";
         private const string ProjectDirectoryBackslashEnd = ProjectDirectoryBackslash + @"\";
@@ -56,22 +59,20 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         private GoogleProjectTemplateWizard _objectUnderTest;
         private Mock<Action<Dictionary<string, string>>> _cleanupDirectoriesMock;
-        private Mock<Func<GcpProject>> _pickProjectMock;
         private Dictionary<string, string> _replacementsDictionary;
         private DTE _mockedDte;
+        private Mock<IUserPromptService> _userPromptServiceMock;
 
         [TestInitialize]
         public void BeforeEachTest()
         {
             _mockedDte = Mock.Of<DTE>(dte => dte.CommandLineArguments == "");
-            _pickProjectMock = new Mock<Func<GcpProject>>();
             _cleanupDirectoriesMock = new Mock<Action<Dictionary<string, string>>>();
-            _objectUnderTest =
-                new GoogleProjectTemplateWizard
-                {
-                    PromptPickProjectId = _pickProjectMock.Object,
-                    CleanupDirectories = _cleanupDirectoriesMock.Object
-                };
+            _userPromptServiceMock = new Mock<IUserPromptService>();
+            _objectUnderTest = new GoogleProjectTemplateWizard(_userPromptServiceMock.ToLazy())
+            {
+                CleanupDirectories = _cleanupDirectoriesMock.Object
+            };
             _replacementsDictionary = new Dictionary<string, string>
             {
                 {ReplacementsKeys.DestinationDirectoryKey, ProjectDirectoryBackslash},
@@ -84,7 +85,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [ExpectedException(typeof(WizardBackoutException))]
         public void TestRunStartedCanceled()
         {
-            _pickProjectMock.Setup(x => x()).Returns(() => null);
+            _userPromptServiceMock.Setup(s => s.PromptUser(It.IsAny<PickProjectIdWindowContent>())).Returns(() => null);
             _replacementsDictionary.Add(ReplacementsKeys.ExclusiveProjectKey, bool.FalseString);
 
             try
@@ -106,7 +107,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedPickProjectSkipped()
         {
-            _pickProjectMock.Setup(x => x()).Returns(() => new GcpProject());
+            _userPromptServiceMock.Setup(s => s.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
+                .Returns(() => new GcpProject());
             foreach (string projectDir in s_projectDirectoriesToTest)
             {
                 foreach (string solutionDir in s_solutionDirectoriesToTest)
@@ -140,7 +142,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
         [TestMethod]
         public void TestRunStartedSuccess()
         {
-            _pickProjectMock.Setup(x => x())
+            _userPromptServiceMock.Setup(s => s.PromptUser(It.IsAny<PickProjectIdWindowContent>()))
                 .Returns(() => new GcpProject { ProjectId = MockProjectId });
             _replacementsDictionary.Add(ReplacementsKeys.SafeProjectNameKey, ProjectName);
 

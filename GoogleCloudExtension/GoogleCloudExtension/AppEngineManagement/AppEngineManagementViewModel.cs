@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
@@ -110,7 +111,7 @@ namespace GoogleCloudExtension.AppEngineManagement
             }
             catch (DataSourceException ex)
             {
-                UserPromptUtils.Default.ExceptionPrompt(ex);
+                UserPromptService.Default.ExceptionPrompt(ex);
                 _owner.Close();
                 return Enumerable.Empty<string>();
             }
