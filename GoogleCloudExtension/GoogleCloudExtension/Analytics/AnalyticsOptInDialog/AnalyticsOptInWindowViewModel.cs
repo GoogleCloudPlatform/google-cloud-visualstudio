@@ -21,15 +21,9 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
     /// <summary>
     /// View model for user control AnalyticsOptInWindowContent.xaml.
     /// </summary>
-    public class AnalyticsOptInWindowViewModel : ViewModelBase, IViewModelBase<bool>
+    public class AnalyticsOptInWindowViewModel : ViewModelBase<bool>
     {
         private readonly Lazy<IBrowserService> _browserService;
-
-        /// <summary>
-        /// Result of the view model after the dialog window is closed. Remains
-        /// false until an action buttion is clicked.
-        /// </summary>
-        public bool Result { get; private set; }
 
         /// <summary>
         /// Command for opting in into sharing Analytics info with Google.
@@ -46,7 +40,7 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
         /// <summary>
         /// Event to close the parent window.
         /// </summary>
-        public event Action Close;
+        public sealed override event Action Close = () => { };
 
         public AnalyticsOptInWindowViewModel()
         {
@@ -60,7 +54,7 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
         private void OnOptInCommand()
         {
             Result = true;
-            Close?.Invoke();
+            Close();
         }
     }
 }

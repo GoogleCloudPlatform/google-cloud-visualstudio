@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
@@ -34,6 +36,25 @@ namespace GoogleCloudExtension.Utils
         {
             get { return _loadingMessage; }
             set { SetValueAndRaise(ref _loadingMessage, value); }
+        }
+    }
+
+    public abstract class ViewModelBase<T> : ViewModelBase, IViewModelBase<T>
+    {
+        private T _result;
+
+        /// <summary>
+        /// Event to close the parent window.
+        /// </summary>
+        public abstract event Action Close;
+
+        /// <summary>
+        /// The view model result value.
+        /// </summary>
+        public virtual T Result
+        {
+            get => _result;
+            protected set => SetValueAndRaise(ref _result, value);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// <summary>
     /// View model for picking a project id.
     /// </summary>
-    public class PickProjectIdViewModel : ViewModelBase, IPickProjectIdViewModel
+    public class PickProjectIdViewModel : ViewModelBase<Project>, IPickProjectIdViewModel
     {
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
@@ -36,12 +36,6 @@ namespace GoogleCloudExtension.PickProjectDialog
         private string _filter;
         private string _helpText;
         private bool _hasAccount;
-
-        /// <summary>
-        /// Result of the view model after the dialog window is closed. Remains
-        /// null until an action buttion is clicked.
-        /// </summary>
-        public Project Result { get; private set; }
 
         /// <summary>
         /// Command to open the manage users dialog.
@@ -114,9 +108,9 @@ namespace GoogleCloudExtension.PickProjectDialog
         }
 
         /// <summary>
-        /// Implements <see cref="ICloseSource.Close"/>. When invoked, tells the parent window to close.
+        /// When invoked, tells the parent window to close.
         /// </summary>
-        public event Action Close;
+        public sealed override event Action Close = () => { };
 
         public PickProjectIdViewModel(string helpText, bool allowAccountChange)
         {
@@ -131,20 +125,21 @@ namespace GoogleCloudExtension.PickProjectDialog
 
         public bool FilterItem(object item)
         {
-            var project = item as Project;
-            if (project == null)
+            if (item is Project project)
+            {
+                // If there is no filter, allow the item.
+                if (string.IsNullOrEmpty(Filter))
+                {
+                    return true;
+                }
+
+                // Check name and project id for the filter.
+                return project.ProjectId.Contains(Filter) || project.Name.Contains(Filter);
+            }
+            else
             {
                 return false;
             }
-
-            // If there is no filter, allow the item.
-            if (string.IsNullOrEmpty(Filter))
-            {
-                return true;
-            }
-
-            // Check name and project id for the filter.
-            return project.ProjectId.Contains(Filter) || project.Name.Contains(Filter);
         }
 
         private void StartLoadProjects()
@@ -191,7 +186,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         private void OnOkCommand()
         {
             Result = SelectedProject;
-            Close?.Invoke();
+            Close();
         }
 
         private void OnRefreshCommand()
