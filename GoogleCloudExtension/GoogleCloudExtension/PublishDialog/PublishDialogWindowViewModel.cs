@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.PublishDialog
             ChangeCurrentStep(oldStepContent?.ViewModel);
         }
 
-        private void PopStep()
+        public void PopStep()
         {
             IStepContent<IPublishDialogStep> oldStepContent = _stack.Pop();
             Content = _stack.Peek();
@@ -111,18 +111,18 @@ namespace GoogleCloudExtension.PublishDialog
                 oldStep.OnNotVisible();
             }
 
-            CurrentStep.OnVisible();
+            CurrentStep.OnVisible(oldStep);
             AddStepEvents(CurrentStep);
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
             PublishCommand = CurrentStep.PublishCommand;
         }
 
-        private void AddStepEvents(IPublishDialogStep dialogStep)
+        private void AddStepEvents(INotifyDataErrorInfo dialogStep)
         {
             dialogStep.ErrorsChanged += OnErrorsChanged;
         }
 
-        private void RemoveStepEvents(IPublishDialogStep dialogStep)
+        private void RemoveStepEvents(INotifyDataErrorInfo dialogStep)
         {
             dialogStep.ErrorsChanged -= OnErrorsChanged;
         }
@@ -136,14 +136,19 @@ namespace GoogleCloudExtension.PublishDialog
             PushStep(step);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called from a step that wants to finish the flow, or when the dialog is closed.
+        /// </summary>
         public void FinishFlow()
         {
             FlowFinished?.Invoke(this, EventArgs.Empty);
             _closeWindow();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Event raised when <see cref="IPublishDialog.FinishFlow"/> is called.
+        /// Gives the step an opportunity to cleanup.
+        /// </summary>
         public event EventHandler FlowFinished;
 
         /// <summary>
@@ -154,24 +159,27 @@ namespace GoogleCloudExtension.PublishDialog
 
         #endregion
 
-        #region INotifyDataErrorInfo
-
-        /// <inheritdoc />
+        /// <summary>Gets the validation errors for a specified property.</summary>
+        /// <returns>The validation errors for the property.</returns>
+        /// <param name="propertyName">
+        /// The name of the property to retrieve validation errors for.
+        /// If null or <see cref="String.Empty" /> retrieve all dialog errors.
+        /// </param>
         public IEnumerable GetErrors(string propertyName)
         {
             return CurrentStep.GetErrors(propertyName);
         }
 
-        /// <inheritdoc />
+        /// <summary>Indicates whether the dialog has validation errors. </summary>
+        /// <returns>true if the dialog currently has validation errors; false otherwise.</returns>
         public bool HasErrors => CurrentStep.HasErrors;
 
-        /// <inheritdoc />
+        /// <summary>Occurs when the validation errors have changed.</summary>
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
         {
             ErrorsChanged?.Invoke(sender, e);
         }
-        #endregion
     }
 }

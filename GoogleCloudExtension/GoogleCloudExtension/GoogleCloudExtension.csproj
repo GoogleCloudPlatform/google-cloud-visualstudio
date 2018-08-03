@@ -213,6 +213,10 @@
     <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepContent.xaml.cs">
+      <DependentUpon>CoreGceWarningStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepViewModel.cs" />
     <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
       <DependentUpon>GaeInputsControl.xaml</DependentUpon>
     </Compile>
@@ -1056,6 +1060,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="PublishDialog\Steps\Choice\ChoiceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

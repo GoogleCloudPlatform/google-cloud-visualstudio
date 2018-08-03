@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -58,5 +57,10 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         /// <param name="task">The task to track.</param>
         void TrackTask(Task task);
+
+        /// <summary>
+        /// Pops the current step off of the stack.
+        /// </summary>
+        void PopStep();
     }
 }

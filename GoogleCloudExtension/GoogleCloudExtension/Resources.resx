@@ -2516,4 +2516,24 @@ Delete corrupted file?</value>
     <value>Google Cloud Platform Project</value>
     <comment>The title of the GCP Project section of the menu bar popup.</comment>
   </data>
+  <data name="PublishGceWarningStepLine1" xml:space="preserve">
+    <value>Google Compute Engine is not the recomended choice for ASP.NET Core apps.</value>
+    <comment>The first line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine2" xml:space="preserve">
+    <value>Using either Google App Engine Flex or Google Kubernetes Engine will avoid having to configure IIS to run ASP.NET Core.</value>
+    <comment>The second line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine3BeforeLink" xml:space="preserve">
+    <value>If you do wish to continue, instructions for seting up IIS to run ASP.NET Core app can be found </value>
+    <comment>The beginning part of the third line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine3HyperLink" xml:space="preserve">
+    <value>here</value>
+    <comment>The text of the hyperlink on the ASP.NET Core on GCE Warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine3AfterLink" xml:space="preserve">
+    <value>.</value>
+    <comment>The end part of the third line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
 </root>

@@ -191,11 +191,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// <summary>
         /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
+        /// <param name="previousStep">Unused.</param>
         /// <remarks>
         /// This method adds event handlers for <see cref="IPublishDialog.FlowFinished"/> and <see cref="ICredentialsStore.CurrentProjectIdChanged"/>,
         /// and Loads properties from the project file.
         /// </remarks>
-        public void OnVisible()
+        public void OnVisible(IPublishDialogStep previousStep = null)
         {
             AddHandlers();
             LoadProjectPropertiesBase();

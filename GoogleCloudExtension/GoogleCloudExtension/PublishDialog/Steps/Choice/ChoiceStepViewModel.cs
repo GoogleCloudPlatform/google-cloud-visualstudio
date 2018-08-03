@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
@@ -69,7 +70,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        public void OnVisible()
+        /// <param name="previousStep">Unused</param>
+        public void OnVisible(IPublishDialogStep previousStep = null)
         {
             AddHandlers();
             Choices = GetChoicesForCurrentProject();
@@ -130,15 +132,21 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         private void OnAppEngineChoiceCommand()
         {
             PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gae.ToString());
-            var nextStep = new FlexStepContent(PublishDialog);
-            PublishDialog.NavigateToStep(nextStep);
+            PublishDialog.NavigateToStep(new FlexStepContent(PublishDialog));
         }
 
         private void OnGceChoiceCommand()
         {
-            PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gce.ToString());
-            var nextStep = new GceStepContent(PublishDialog);
-            PublishDialog.NavigateToStep(nextStep);
+            if (PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication)
+            {
+                // The warning step is in charge of managing GoogleCloudPublishChoicePropertyName.
+                PublishDialog.NavigateToStep(new CoreGceWarningStepContent(PublishDialog));
+            }
+            else
+            {
+                PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gce.ToString());
+                PublishDialog.NavigateToStep(new GceStepContent(PublishDialog));
+            }
         }
 
         private void OnFlowFinished(object sender, EventArgs e)

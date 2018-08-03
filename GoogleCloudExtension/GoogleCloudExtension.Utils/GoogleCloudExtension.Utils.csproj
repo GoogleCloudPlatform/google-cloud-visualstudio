@@ -81,6 +81,7 @@
     <Compile Include="WindowsCredentialManager.cs" />
     <Compile Include="Wpf\AsyncPropertyContent.cs" />
     <Compile Include="Wpf\BooleanAndConverter.cs" />
+    <Compile Include="Wpf\WhitespaceDiscardingSpan.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

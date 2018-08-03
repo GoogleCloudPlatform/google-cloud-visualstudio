@@ -4724,6 +4724,51 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Compute Engine is not the recomended choice for ASP.NET Core apps..
+        /// </summary>
+        public static string PublishGceWarningStepLine1 {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using either Google App Engine Flex or Google Kubernetes Engine will avoid having to configure IIS to run ASP.NET Core..
+        /// </summary>
+        public static string PublishGceWarningStepLine2 {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string PublishGceWarningStepLine3AfterLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine3AfterLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you do wish to continue, instructions for seting up IIS to run ASP.NET Core app can be found .
+        /// </summary>
+        public static string PublishGceWarningStepLine3BeforeLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine3BeforeLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to here.
+        /// </summary>
+        public static string PublishGceWarningStepLine3HyperLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine3HyperLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deployment succeeded.
         /// </summary>
         public static string PublishSuccessStatusMessage {
