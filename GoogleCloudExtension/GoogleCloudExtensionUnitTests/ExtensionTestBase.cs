@@ -15,6 +15,7 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtensionUnitTests.FakeServices;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -39,10 +40,7 @@ namespace GoogleCloudExtensionUnitTests
 
             _serviceProviderMock = new Mock<IServiceProvider>();
             _serviceProviderMock.SetupService<SVsActivityLog, IVsActivityLog>();
-            var taskSchedularMock = new Mock<IVsTaskSchedulerService>();
-            Mock<IVsTaskSchedulerService2> taskSchedular2Mock = taskSchedularMock.As<IVsTaskSchedulerService2>();
-            taskSchedular2Mock.Setup(ts => ts.GetAsyncTaskContext()).Returns(AssemblyInitialize.JoinableApplicationContext);
-            _serviceProviderMock.SetupService<SVsTaskSchedulerService, IVsTaskSchedulerService>(taskSchedularMock);
+            _serviceProviderMock.SetupService<SVsTaskSchedulerService>(new FakeIVsTaskSchedulerService());
             _serviceProviderMock.SetupDefaultServices();
 
             ServiceProvider oldProvider = ServiceProvider.GlobalProvider;

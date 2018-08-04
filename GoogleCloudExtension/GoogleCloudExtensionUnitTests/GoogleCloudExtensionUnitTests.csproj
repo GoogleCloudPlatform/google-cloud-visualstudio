@@ -289,6 +289,9 @@
     <Compile Include="Deployment\MSBuildTargetTests.cs" />
     <Compile Include="Deployment\NetCoreAppUtilsTests.cs" />
     <Compile Include="Deployment\WindowsVmDeploymentTests.cs" />
+    <Compile Include="FakeServices\FakeIVsTask.cs" />
+    <Compile Include="FakeServices\FakeIVsTaskCompletionSource.cs" />
+    <Compile Include="FakeServices\FakeIVsTaskSchedulerService.cs" />
     <Compile Include="FirewallManagement\PortChangesTests.cs" />
     <Compile Include="FirewallManagement\PortInfoTests.cs" />
     <Compile Include="FirewallManagement\PortManagerViewModelTests.cs" />

@@ -73,6 +73,22 @@ namespace GoogleCloudExtensionUnitTests
             s_mocks[serviceProviderMock][typeof(SVsType)] = serviceMock;
         }
 
+        public static void SetupService<SVsType>(this Mock<IServiceProvider> serviceProviderMock, object service)
+        {
+            Guid serviceGuid = typeof(SVsType).GUID;
+            Guid iUnknownGuid = typeof(IUnknown).GUID;
+            // ReSharper disable once RedundantAssignment
+            IntPtr interfacePtr = Marshal.GetIUnknownForObject(service);
+            serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
+                .Returns(VSConstants.S_OK);
+            if (!s_mocks.ContainsKey(serviceProviderMock))
+            {
+                s_mocks[serviceProviderMock] = new Dictionary<Type, object>();
+            }
+
+            s_mocks[serviceProviderMock][typeof(SVsType)] = service;
+        }
+
         /// <summary>
         /// Sets up services required for a service provider to be the global service provider.
         /// </summary>

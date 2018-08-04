@@ -434,7 +434,9 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         public async Task TestPublishProjectAsync_ReturnsResultOfRunCommand(bool result)
         {
             var taskSource = new TaskCompletionSource<bool>();
+            taskSource.SetResult(result);
             _runCommandTask = taskSource.Task;
+            _runCommandTask = Task.FromResult(result);
 
             Task<bool> t = _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
@@ -442,7 +444,6 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 s_defaultCredentials,
                 DefaultWebSite,
                 DefaultConfigurationName);
-            taskSource.SetResult(result);
 
             Assert.AreEqual(result, await t);
         }

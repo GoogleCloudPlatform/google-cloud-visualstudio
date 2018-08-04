@@ -18,6 +18,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -118,6 +119,8 @@ namespace GoogleCloudExtension.Deployment
                 {
                     return true;
                 }
+
+                await TaskScheduler.Default;
 
                 // An inital failure is common, retry.
                 await Task.Delay(TimeSpan.FromMilliseconds(100));
