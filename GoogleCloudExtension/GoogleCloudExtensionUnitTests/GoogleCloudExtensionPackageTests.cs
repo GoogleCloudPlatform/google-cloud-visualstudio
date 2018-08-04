@@ -78,7 +78,6 @@ namespace GoogleCloudExtensionUnitTests
             Guid menuBarControlFactoryGuid = typeof(GcpMenuBarControlFactory).GUID;
             _registerUiFactoryMock.Setup(
                 f => f.RegisterUIFactory(ref menuBarControlFactoryGuid, It.IsAny<IVsUIFactory>()));
-            DelegatingServiceProvider.Delegate = _objectUnderTest;
         }
 
         [TestMethod]
@@ -486,12 +485,10 @@ namespace GoogleCloudExtensionUnitTests
         [Export(typeof(SVsServiceProvider))]
         public class DelegatingServiceProvider : SVsServiceProvider
         {
-            public static System.IServiceProvider Delegate { private get; set; }
-
             /// <summary>Gets the service object of the specified type.</summary>
             /// <returns>A service object of type <paramref name="serviceType" />.-or- null if there is no service object of type <paramref name="serviceType" />.</returns>
             /// <param name="serviceType">An object that specifies the type of service object to get. </param>
-            public object GetService(Type serviceType) => Delegate.GetService(serviceType);
+            public object GetService(Type serviceType) => ServiceProvider.GlobalProvider.GetService(serviceType);
         }
 
         private async Task RunPackageInitalizeAsync()
@@ -504,7 +501,7 @@ namespace GoogleCloudExtensionUnitTests
                     async (Type t) =>
                     {
                         await _objectUnderTest.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        return ServiceProvider.GlobalProvider.GetService(t);
+                        return ((System.IServiceProvider)_objectUnderTest).GetService(t);
                     });
 
             IAsyncLoadablePackageInitialize packageInit = _objectUnderTest;

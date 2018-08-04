@@ -283,6 +283,7 @@
     <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
     <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
     <Compile Include="CloudSourceRepositories\CsrSectionControlViewModelTests.cs" />
+    <Compile Include="DelegatingTaskSchedulerService.cs" />
     <Compile Include="Deployment\GkeDeploymentServiceTests.cs" />
     <Compile Include="Deployment\MSBuildPropertyTests.cs" />
     <Compile Include="Deployment\MSBuildTargetTests.cs" />
@@ -332,6 +333,7 @@
     <Compile Include="Services\FileSystem\IOFileServiceTests.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
     <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
+    <Compile Include="SimpleIServiceProvider.cs" />
     <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItemTests.cs" />

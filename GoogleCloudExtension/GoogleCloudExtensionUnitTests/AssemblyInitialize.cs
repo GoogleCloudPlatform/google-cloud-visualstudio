@@ -15,6 +15,8 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
 using Moq;
@@ -27,7 +29,10 @@ namespace GoogleCloudExtensionUnitTests
     [TestClass]
     public static class AssemblyInitialize
     {
-
+        /// <summary>
+        /// Static field prevents garbage collection.
+        /// </summary>
+        private static SimpleIServiceProvider s_simpleIServiceProvider;
         public static JoinableTaskContext JoinableApplicationContext { get; private set; }
 
         [AssemblyInitialize]
@@ -45,6 +50,17 @@ namespace GoogleCloudExtensionUnitTests
 
             JoinableApplicationContext = Application.Current.Dispatcher.Invoke(() => new JoinableTaskContext());
             ApplicationTaskScheduler = Application.Current.Dispatcher.Invoke(TaskScheduler.FromCurrentSynchronizationContext);
+
+            // Initalize VsTaskLibraryHelper.ServiceInstance to a service that delegates to the current service.
+            IVsTaskSchedulerService delegatinTaskSchedulerService = new DelegatingTaskSchedulerService();
+            s_simpleIServiceProvider = new SimpleIServiceProvider
+            {
+                {typeof(SVsTaskSchedulerService), delegatinTaskSchedulerService},
+                {typeof(SVsActivityLog), Mock.Of<IVsActivityLog>()}
+            };
+            ServiceProvider.CreateFromSetSite(s_simpleIServiceProvider);
+            Assert.AreEqual(delegatinTaskSchedulerService, VsTaskLibraryHelper.ServiceInstance);
+            ServiceProvider.GlobalProvider.Dispose();
         }
 
         public static TaskScheduler ApplicationTaskScheduler { get; private set; }
@@ -54,7 +70,6 @@ namespace GoogleCloudExtensionUnitTests
         {
             Application.Current.Shutdown();
             Dispatcher.CurrentDispatcher.InvokeShutdown();
-
         }
     }
 }
