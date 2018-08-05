@@ -2516,4 +2516,8 @@ Delete corrupted file?</value>
     <value>Google Cloud Platform Project</value>
     <comment>The title of the GCP Project section of the menu bar popup.</comment>
   </data>
+  <data name="UiTimeSeparator" xml:space="preserve">
+    <value>:</value>
+    <comment>The time separator (ususally ":").</comment>
+  </data>
 </root>
