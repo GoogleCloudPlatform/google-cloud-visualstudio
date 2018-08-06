@@ -2516,6 +2516,10 @@ Delete corrupted file?</value>
     <value>Google Cloud Platform Project</value>
     <comment>The title of the GCP Project section of the menu bar popup.</comment>
   </data>
+  <data name="UiTimeSeparator" xml:space="preserve">
+    <value>:</value>
+    <comment>The time separator (ususally ":").</comment>
+  </data>
   <data name="GeneralOptionsHideMenuBarControlCheckboxLabel" xml:space="preserve">
     <value>_Hide Google Cloud Project and User Control</value>
     <comment>The label of the Hide User Project Control checkbox on the general options page.</comment>
