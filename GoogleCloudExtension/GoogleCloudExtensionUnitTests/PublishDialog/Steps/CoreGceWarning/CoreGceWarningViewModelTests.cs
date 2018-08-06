@@ -171,7 +171,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         [TestMethod]
         public void TestPublishCommand_ThrowsNotSupported()
         {
-            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.PublishCommand.Execute(null));
+            _objectUnderTest.PublishCommand.Execute(null);
+
+            PackageMock.Verify(p => p.UserPromptService.ExceptionPrompt(It.IsAny<NotSupportedException>()));
         }
     }
 }
