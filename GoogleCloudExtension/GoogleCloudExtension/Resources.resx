@@ -2516,6 +2516,10 @@ Delete corrupted file?</value>
     <value>Google Cloud Platform Project</value>
     <comment>The title of the GCP Project section of the menu bar popup.</comment>
   </data>
+  <data name="UiTimeSeparator" xml:space="preserve">
+    <value>:</value>
+    <comment>The time separator (ususally ":").</comment>
+  </data>
   <data name="PublishGceWarningStepLine1" xml:space="preserve">
     <value>Google Compute Engine is not the recomended choice for ASP.NET Core apps.</value>
     <comment>The first line of the ASP.NET Core on GCE warning dialog.</comment>
