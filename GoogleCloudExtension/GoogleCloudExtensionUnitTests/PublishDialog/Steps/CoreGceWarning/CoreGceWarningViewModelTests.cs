@@ -167,5 +167,11 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
             PackageMock.Verify(
                 p => p.GetMefService<IBrowserService>().OpenBrowser(CoreGceWarningStepViewModel.AspNetCoreIisDocsLink));
         }
+
+        [TestMethod]
+        public void TestPublishCommand_ThrowsNotSupported()
+        {
+            Assert.ThrowsException<NotSupportedException>(() => _objectUnderTest.PublishCommand.Execute(null));
+        }
     }
 }
