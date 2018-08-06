@@ -276,7 +276,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         [TestMethod]
         public void TestFilterItem_ReturnsTrueForFilterMatchingId()
         {
-            _testObject.Filter = "Id";
+            _testObject.Filter = "id";
 
             bool result = _testObject.FilterItem(new Project { Name = "ProjectName", ProjectId = "project-id" });
 
