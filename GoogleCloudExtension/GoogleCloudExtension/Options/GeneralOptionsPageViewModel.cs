@@ -52,7 +52,8 @@ namespace GoogleCloudExtension.Options
 
         public GeneralOptionsPageViewModel()
         {
-            _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
+            _browserService = new Lazy<IBrowserService>(
+                () => GoogleCloudExtensionPackage.Instance.GetMefService<IBrowserService>());
             AnalyticsLearnMoreLinkCommand = new ProtectedCommand(
                 () => BrowserService.OpenBrowser(AnalyticsLearnMoreConstants.AnalyticsLearnMoreLink));
         }
