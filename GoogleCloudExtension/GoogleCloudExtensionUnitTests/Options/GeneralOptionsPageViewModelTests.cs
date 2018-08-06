@@ -12,21 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Options;
+using GoogleCloudExtension.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Options
 {
     [TestClass]
-    public class GeneralOptionsPageViewModelTests
+    public class GeneralOptionsPageViewModelTests : ExtensionTestBase
     {
         private GeneralOptionsPageViewModel _objectUnderTest;
         private List<string> _changedProperties;
+        private Mock<IBrowserService> _browserServiceMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
+            _browserServiceMock = new Mock<IBrowserService>();
+            PackageMock.Setup(p => p.GetMefServiceLazy<IBrowserService>()).Returns(_browserServiceMock.ToLazy());
+
             _objectUnderTest = new GeneralOptionsPageViewModel();
 
             _changedProperties = new List<string>();
@@ -73,6 +81,14 @@ namespace GoogleCloudExtensionUnitTests.Options
             _objectUnderTest.HideUserProjectControl = true;
 
             CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.HideUserProjectControl));
+        }
+
+        [TestMethod]
+        public void TestAnalyticsLearnMoreCommand_OpensBrowser()
+        {
+            _objectUnderTest.AnalyticsLearnMoreLinkCommand.Execute(null);
+
+            _browserServiceMock.Verify(bs => bs.OpenBrowser(AnalyticsLearnMoreConstants.AnalyticsLearnMoreLink));
         }
     }
 }

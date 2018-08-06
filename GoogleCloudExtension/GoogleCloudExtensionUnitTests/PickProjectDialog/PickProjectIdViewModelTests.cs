@@ -232,5 +232,55 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 
             Assert.AreNotEqual(originalLoadTask, _testObject.LoadTask);
         }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsFalseForNonProjectItem()
+        {
+            bool result = _testObject.FilterItem(new object());
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        public void TestFilterItem_ReturnsTrueForNullEmptyFilter(string filter)
+        {
+            _testObject.Filter = filter;
+
+            bool result = _testObject.FilterItem(new Project());
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsFalseForNonMatchingFilter()
+        {
+            _testObject.Filter = "Does Not Match";
+
+            bool result = _testObject.FilterItem(new Project { Name = "ProjectName", ProjectId = "project-id" });
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsTrueForFilterMatchingName()
+        {
+            _testObject.Filter = "Name";
+
+            bool result = _testObject.FilterItem(new Project { Name = "ProjectName", ProjectId = "project-id" });
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsTrueForFilterMatchingId()
+        {
+            _testObject.Filter = "Id";
+
+            bool result = _testObject.FilterItem(new Project { Name = "ProjectName", ProjectId = "project-id" });
+
+            Assert.IsTrue(result);
+        }
     }
 }
