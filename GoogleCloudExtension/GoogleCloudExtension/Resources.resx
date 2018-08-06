@@ -1052,7 +1052,7 @@
     <comment>Description for the opt-in option in the analytics options.</comment>
   </data>
   <data name="AnalyticsOptionsOptInLabel" xml:space="preserve">
-    <value>Report _Usage Statistics.</value>
+    <value>Report _Usage Statistics</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
   <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
@@ -2183,7 +2183,7 @@
     <comment>Smaller text on the Analytics Opt In Prompt.</comment>
   </data>
   <data name="AnalyticsPromptLinkText" xml:space="preserve">
-    <value>Learn more.</value>
+    <value>What do we collect?</value>
     <comment>The text for the link explaining how and why we collect usage statistics and how to opt in or out.</comment>
   </data>
   <data name="UiCopyMenuHeader" xml:space="preserve">
@@ -2519,5 +2519,13 @@ Delete corrupted file?</value>
   <data name="UiTimeSeparator" xml:space="preserve">
     <value>:</value>
     <comment>The time separator (ususally ":").</comment>
+  </data>
+  <data name="GeneralOptionsHideMenuBarControlCheckboxLabel" xml:space="preserve">
+    <value>_Hide Google Cloud Project and User Control</value>
+    <comment>The label of the Hide User Project Control checkbox on the general options page.</comment>
+  </data>
+  <data name="GeneralOptionsHideMenuControlCheckboxTooltip" xml:space="preserve">
+    <value>When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden.</value>
+    <comment>The tool tip of the Hide User Project Control checkbox on the general options page.</comment>
   </data>
 </root>

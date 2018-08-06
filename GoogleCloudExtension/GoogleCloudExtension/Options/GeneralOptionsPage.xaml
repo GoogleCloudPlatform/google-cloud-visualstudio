@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="GoogleCloudExtension.Options.AnalyticsOptionsPage"
+﻿<UserControl x:Class="GoogleCloudExtension.Options.GeneralOptionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.Options"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type local:AnalyticsOptionsPageViewModel}}">
+             d:DataContext="{d:DesignInstance {x:Type local:GeneralOptionsPageViewModel}}"
+             Padding="12">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,11 +24,16 @@
                     ToolTip="{x:Static ext:Resources.AnalyticsOptionsOptInDescription}"
                     IsChecked="{Binding OptIn}"/>
                 <Button
+                    Margin="0,3,0,0"
                     HorizontalAlignment="Left"
                     Style="{StaticResource ButtonLikeHyperlinkStyle}"
                     Command="{Binding AnalyticsLearnMoreLinkCommand}"
-                    Content="{x:Static ext:Resources.AnalyticsPromptLinkText}" />                
+                    Content="{x:Static ext:Resources.AnalyticsPromptLinkText}" />
             </StackPanel>
         </GroupBox>
+        <CheckBox Content="{x:Static ext:Resources.GeneralOptionsHideMenuBarControlCheckboxLabel}"
+                  ToolTip="{x:Static ext:Resources.GeneralOptionsHideMenuControlCheckboxTooltip}"
+                  Margin="0,9,0,0"
+                  IsChecked="{Binding HideUserProjectControl}"/>
     </StackPanel>
 </UserControl>

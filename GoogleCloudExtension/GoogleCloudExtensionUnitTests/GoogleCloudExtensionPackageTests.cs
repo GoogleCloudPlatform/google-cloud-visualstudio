@@ -101,22 +101,22 @@ namespace GoogleCloudExtensionUnitTests
                 GoogleCloudExtensionPackage.Instance.VersionedApplicationName);
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
-                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
-            Assert.IsNull(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.ClientId);
-            Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.DialogShown);
-            Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
+                GoogleCloudExtensionPackage.Instance.GeneralSettings.InstalledVersion);
+            Assert.IsNull(GoogleCloudExtensionPackage.Instance.GeneralSettings.ClientId);
+            Assert.IsFalse(GoogleCloudExtensionPackage.Instance.GeneralSettings.DialogShown);
+            Assert.IsFalse(GoogleCloudExtensionPackage.Instance.GeneralSettings.OptIn);
         }
 
         [TestMethod]
         public void TestUpdatePackageVersion()
         {
-            _objectUnderTest.AnalyticsSettings.InstalledVersion = "0.1.0.0";
+            _objectUnderTest.GeneralSettings.InstalledVersion = "0.1.0.0";
 
             RunPackageInitalize();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
-                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+                GoogleCloudExtensionPackage.Instance.GeneralSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
                     It.IsAny<string>(), It.IsAny<string>(), UpgradeEvent.UpgradeEventName, It.IsAny<bool>(),
@@ -130,7 +130,7 @@ namespace GoogleCloudExtensionUnitTests
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
-                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+                GoogleCloudExtensionPackage.Instance.GeneralSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
                     It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),
@@ -140,14 +140,15 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void TestSamePackageVersion()
         {
-            _objectUnderTest.AnalyticsSettings.InstalledVersion =
+            GoogleCloudExtensionPackage.Instance = _objectUnderTest;
+            _objectUnderTest.GeneralSettings.InstalledVersion =
                 typeof(GoogleCloudExtensionPackage).Assembly.GetName().Version.ToString();
 
             RunPackageInitalize();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
-                GoogleCloudExtensionPackage.Instance.AnalyticsSettings.InstalledVersion);
+                GoogleCloudExtensionPackage.Instance.GeneralSettings.InstalledVersion);
             _reporterMock.Verify(
                 r => r.ReportEvent(
                     It.IsAny<string>(), It.IsAny<string>(), NewInstallEvent.NewInstallEventName, It.IsAny<bool>(),

@@ -214,7 +214,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report _Usage Statistics..
+        ///   Looks up a localized string similar to Report _Usage Statistics.
         /// </summary>
         public static string AnalyticsOptionsOptInLabel {
             get {
@@ -232,7 +232,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more..
+        ///   Looks up a localized string similar to What do we collect?.
         /// </summary>
         public static string AnalyticsPromptLinkText {
             get {
@@ -3207,6 +3207,24 @@ namespace GoogleCloudExtension {
         public static string GcpProjectNameHeader {
             get {
                 return ResourceManager.GetString("GcpProjectNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Hide Google Cloud Project and User Control.
+        /// </summary>
+        public static string GeneralOptionsHideMenuBarControlCheckboxLabel {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuBarControlCheckboxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden..
+        /// </summary>
+        public static string GeneralOptionsHideMenuControlCheckboxTooltip {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuControlCheckboxTooltip", resourceCulture);
             }
         }
         
