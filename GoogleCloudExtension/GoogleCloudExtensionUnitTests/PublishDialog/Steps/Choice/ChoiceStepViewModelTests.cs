@@ -63,6 +63,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         {
             Assert.IsFalse(_objectUnderTest.PublishCommand.CanExecuteCommand);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
+            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.PublishCaption);
         }
 
         [TestMethod]

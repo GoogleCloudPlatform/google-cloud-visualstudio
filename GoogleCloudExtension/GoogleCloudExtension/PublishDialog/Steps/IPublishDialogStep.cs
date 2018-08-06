@@ -33,6 +33,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         string Title { get; }
 
         /// <summary>
+        /// The Caption of the Publish button.
+        /// </summary>
+        string PublishCaption { get; }
+
+        /// <summary>
         /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
         /// <param name="previousStep">The previously visible step.</param>

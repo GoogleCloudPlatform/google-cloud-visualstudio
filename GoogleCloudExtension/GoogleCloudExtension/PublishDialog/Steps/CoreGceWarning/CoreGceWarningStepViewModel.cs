@@ -25,7 +25,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
     public class CoreGceWarningStepViewModel : ValidatingViewModelBase, IPublishDialogStep
     {
         public const string AspNetCoreIisDocsLink = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/";
+
         private readonly IPublishDialog _publishDialog;
+        private readonly GceStepContent _nextStepContent;
         private readonly Lazy<IBrowserService> _browserService;
 
         /// <summary>
@@ -34,15 +36,14 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         public string Title { get; }
 
         /// <summary>
-        /// A disabled command that throws <see cref="NotSupportedException"/>.
+        /// The Caption of the Publish button.
         /// </summary>
-        public IProtectedCommand PublishCommand { get; } =
-            new ProtectedCommand(() => throw new NotSupportedException(), false);
+        public string PublishCaption { get; } = Resources.PublishDialogNextButtonCaption;
 
         /// <summary>
         /// The command to continue on to the GCE publish step.
         /// </summary>
-        public ProtectedCommand OkCommand { get; }
+        public IProtectedCommand PublishCommand { get; }
 
         /// <summary>
         /// The command to open the browser to docs for hosting ASP.NET Core on IIS.
@@ -55,9 +56,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
             _publishDialog = publishDialog;
             BrowseAspNetCoreIisDocs = new ProtectedCommand(OnBrowseAspNetCoreIisDocs);
             Title = string.Format(Resources.GcePublishStepTitle, publishDialog.Project.Name);
-            OkCommand = new ProtectedCommand(OnOkCommand);
-            _browserService = new Lazy<IBrowserService>(
-                () => GoogleCloudExtensionPackage.Instance.GetMefService<IBrowserService>());
+            PublishCommand = new ProtectedCommand(OnOkCommand);
+            _nextStepContent = new GceStepContent(_publishDialog);
+            _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
         }
 
         private void OnBrowseAspNetCoreIisDocs() =>
@@ -68,7 +69,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
             _publishDialog.Project.SaveUserProperty(
                 ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,
                 ChoiceType.Gce.ToString());
-            _publishDialog.NavigateToStep(new GceStepContent(_publishDialog));
+            _publishDialog.NavigateToStep(_nextStepContent);
         }
 
         /// <summary>
@@ -77,20 +78,20 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         /// <param name="previousStep">The previously shown dialog step.</param>
         public void OnVisible(IPublishDialogStep previousStep)
         {
-            if (previousStep is GceStepViewModel)
+            if (previousStep == _nextStepContent.ViewModel)
             {
                 // Skip this step when going back, but ensure this warning will be shown next time.
                 _publishDialog.Project.DeleteUserProperty(ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName);
                 _publishDialog.PopStep();
             }
-            else if (previousStep is ChoiceStepViewModel)
+            else
             {
                 string previousChoiceId =
                     _publishDialog.Project.GetUserProperty(ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName);
-                // Skip this warning step if the dialog was previously closed on the GCE step.
+                // Skip this warning step if the dialog was previously completed on the GCE step.
                 if (Enum.TryParse(previousChoiceId, out ChoiceType previousChoice) && previousChoice == ChoiceType.Gce)
                 {
-                    _publishDialog.NavigateToStep(new GceStepContent(_publishDialog));
+                    _publishDialog.NavigateToStep(_nextStepContent);
                 }
             }
         }

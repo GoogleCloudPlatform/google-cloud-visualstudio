@@ -2521,23 +2521,23 @@ Delete corrupted file?</value>
     <comment>The time separator (ususally ":").</comment>
   </data>
   <data name="PublishGceWarningStepLine1" xml:space="preserve">
-    <value>Google Compute Engine is not the recomended choice for ASP.NET Core apps.</value>
+    <value>The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are Google App Engine Flex and Google Kubernetes Engine.</value>
     <comment>The first line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
-  <data name="PublishGceWarningStepLine2" xml:space="preserve">
-    <value>Using either Google App Engine Flex or Google Kubernetes Engine will avoid having to configure IIS to run ASP.NET Core.</value>
-    <comment>The second line of the ASP.NET Core on GCE warning dialog.</comment>
+  <data name="PublishGceWarningStepLine2BeforeLink" xml:space="preserve">
+    <value>Hosting ASP.NET Core on Google Compute Engine will require </value>
+    <comment>The first part of the second line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
-  <data name="PublishGceWarningStepLine3BeforeLink" xml:space="preserve">
-    <value>If you do wish to continue, instructions for seting up IIS to run ASP.NET Core app can be found </value>
-    <comment>The beginning part of the third line of the ASP.NET Core on GCE warning dialog.</comment>
-  </data>
-  <data name="PublishGceWarningStepLine3HyperLink" xml:space="preserve">
-    <value>here</value>
+  <data name="PublishGceWarningStepLine2HyperLink" xml:space="preserve">
+    <value>manual configuration of IIS</value>
     <comment>The text of the hyperlink on the ASP.NET Core on GCE Warning dialog.</comment>
   </data>
-  <data name="PublishGceWarningStepLine3AfterLink" xml:space="preserve">
+  <data name="PublishGceWarningStepLine2AfterLink" xml:space="preserve">
     <value>.</value>
-    <comment>The end part of the third line of the ASP.NET Core on GCE warning dialog.</comment>
+    <comment>The end part of the second line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishDialogNextButtonCaption" xml:space="preserve">
+    <value>_Next</value>
+    <comment>The caption of the Next button on the CoreGceWarning publish step.</comment>
   </data>
 </root>

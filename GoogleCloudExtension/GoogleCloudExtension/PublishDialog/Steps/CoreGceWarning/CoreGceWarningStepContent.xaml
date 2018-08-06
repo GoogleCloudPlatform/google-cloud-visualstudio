@@ -25,32 +25,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="247"
              d:DesignWidth="476"
-             d:DataContext="{d:DesignInstance local:CoreGceWarningStepViewModel}">
+             d:DataContext="{d:DesignInstance local:CoreGceWarningStepViewModel}"
+             Padding="24">
     <DockPanel VerticalAlignment="Center">
-        <Button DockPanel.Dock="Bottom"
-                Margin="0,18,0,0"
-                Content="{x:Static ext:Resources.UiOkButtonCaption}"
-                Command="{Binding OkCommand}"
-                HorizontalAlignment="Center"
-                MinWidth="75" />
-        <DockPanel VerticalAlignment="Center">
-            <Image DockPanel.Dock="Left"
-                   Source="../../../Utils/Resources/ic_warning_yellow_24px.png"
-                   Stretch="None" />
-            <TextBlock TextWrapping="Wrap" Margin="9,0,0,0">
-                <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine1}" />
-                <LineBreak/>
-                <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2}"/>
-                <LineBreak/>
-                <wpf:WhitespaceDiscardingSpan>
-                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3BeforeLink}" />
-                    <Hyperlink Command="{Binding BrowseAspNetCoreIisDocs}">
-                        <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3HyperLink}" />
-                    </Hyperlink>
-                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3AfterLink}"/>
-                </wpf:WhitespaceDiscardingSpan>
-            </TextBlock>
-        </DockPanel>
+        <Image DockPanel.Dock="Left"
+               Source="../../../Utils/Resources/ic_warning_yellow_24px.png"
+               Stretch="None" />
+        <TextBlock TextWrapping="Wrap" Margin="9,0,0,0">
+            <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine1}" />
+            <wpf:WhitespaceDiscardingSpan>
+                <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2BeforeLink}" />
+                <Hyperlink Command="{Binding BrowseAspNetCoreIisDocs}">
+                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2HyperLink}" />
+                </Hyperlink>
+                <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}"/>
+            </wpf:WhitespaceDiscardingSpan>
+        </TextBlock>
     </DockPanel>
 </UserControl>
 

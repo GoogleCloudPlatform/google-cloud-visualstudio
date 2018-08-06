@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.PublishDialog.Steps;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
@@ -24,18 +23,19 @@ using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.VsProject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
+using TestingHelpers;
 using Project = EnvDTE.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
 {
     [TestClass]
-    public class CoreGceWarningViewModelTests : ExtensionTestBase
+    public class CoreGceWarningStepViewModelTests : ExtensionTestBase
     {
         private Mock<IPublishDialog> _publishDialogMock;
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private CoreGceWarningStepViewModel _objectUnderTest;
         private Project _dteProject;
+        private Mock<IBrowserService> _browserServiceMock;
         private const string VisualStudioProjectName = "VisualStudioProjectname";
 
         [TestInitialize]
@@ -48,7 +48,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
             _publishDialogMock.Setup(pd => pd.Project.Project).Returns(_dteProject);
 
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
+            _browserServiceMock = new Mock<IBrowserService>();
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
+            PackageMock.Setup(p => p.GetMefServiceLazy<IBrowserService>()).Returns(_browserServiceMock.ToLazy());
 
             _objectUnderTest = new CoreGceWarningStepViewModel(_publishDialogMock.Object);
         }
@@ -65,9 +67,17 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         }
 
         [TestMethod]
-        public void TestOkCommand_SavesChoiceProperty()
+        public void TestConstructor_SetsPublishCaption()
         {
-            _objectUnderTest.OkCommand.Execute(null);
+            _objectUnderTest = new CoreGceWarningStepViewModel(_publishDialogMock.Object);
+
+            Assert.AreEqual(Resources.PublishDialogNextButtonCaption, _objectUnderTest.PublishCaption);
+        }
+
+        [TestMethod]
+        public void TestPublishCommand_SavesChoiceProperty()
+        {
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _propertyServiceMock.Verify(
                 ps => ps.SaveUserProperty(
@@ -77,22 +87,22 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         }
 
         [TestMethod]
-        public void TestOkCommand_NavigatesToNextStep()
+        public void TestPublishCommand_NavigatesToNextStep()
         {
-            _objectUnderTest.OkCommand.Execute(null);
+            _objectUnderTest.PublishCommand.Execute(null);
 
             _publishDialogMock.Verify(pd => pd.NavigateToStep(It.IsAny<GceStepContent>()));
         }
 
         [TestMethod]
-        public void TestOnVisible_FromGceStepSkipsToChoiceStep()
+        public void TestOnVisible_FromNextStepSkipsToChoiceStep()
         {
-            _objectUnderTest.OnVisible(
-                new GceStepViewModel(
-                    Mock.Of<IGceDataSource>(),
-                    Mock.Of<IWindowsCredentialsStore>(),
-                    Mock.Of<Action<Instance>>(),
-                    _publishDialogMock.Object));
+            IStepContent<IPublishDialogStep> nextStepContent = null;
+            _publishDialogMock.Setup(pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()))
+                .Callback<IStepContent<IPublishDialogStep>>(stepContent => nextStepContent = stepContent);
+            _objectUnderTest.PublishCommand.Execute(null);
+
+            _objectUnderTest.OnVisible(nextStepContent.ViewModel);
 
             _publishDialogMock.Verify(pd => pd.PopStep());
         }
@@ -100,12 +110,12 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         [TestMethod]
         public void TestOnVisible_FromGceStepDeletesChoiceProperty()
         {
-            _objectUnderTest.OnVisible(
-                new GceStepViewModel(
-                    Mock.Of<IGceDataSource>(),
-                    Mock.Of<IWindowsCredentialsStore>(),
-                    Mock.Of<Action<Instance>>(),
-                    _publishDialogMock.Object));
+            IStepContent<IPublishDialogStep> nextStepContent = null;
+            _publishDialogMock.Setup(pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()))
+                .Callback<IStepContent<IPublishDialogStep>>(stepContent => nextStepContent = stepContent);
+            _objectUnderTest.PublishCommand.Execute(null);
+
+            _objectUnderTest.OnVisible(nextStepContent.ViewModel);
 
             _propertyServiceMock.Verify(
                 ps => ps.DeleteUserProperty(_dteProject, ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName));
@@ -164,16 +174,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         {
             _objectUnderTest.BrowseAspNetCoreIisDocs.Execute(null);
 
-            PackageMock.Verify(
-                p => p.GetMefService<IBrowserService>().OpenBrowser(CoreGceWarningStepViewModel.AspNetCoreIisDocsLink));
-        }
-
-        [TestMethod]
-        public void TestPublishCommand_ThrowsNotSupported()
-        {
-            _objectUnderTest.PublishCommand.Execute(null);
-
-            PackageMock.Verify(p => p.UserPromptService.ExceptionPrompt(It.IsAny<NotSupportedException>()));
+            _browserServiceMock.Verify(b => b.OpenBrowser(CoreGceWarningStepViewModel.AspNetCoreIisDocsLink));
         }
     }
 }

@@ -272,7 +272,7 @@
     <Compile Include="MenuBarControls\GcpUserProjectViewModelTests.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttributeTests.cs" />
     <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningContentTests.cs" />
-    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepViewModelTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />

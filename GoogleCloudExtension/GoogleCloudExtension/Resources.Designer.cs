@@ -4634,6 +4634,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Next.
+        /// </summary>
+        public static string PublishDialogNextButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
@@ -4724,7 +4733,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Compute Engine is not the recomended choice for ASP.NET Core apps..
+        ///   Looks up a localized string similar to The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are Google App Engine Flex and Google Kubernetes Engine..
         /// </summary>
         public static string PublishGceWarningStepLine1 {
             get {
@@ -4733,38 +4742,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using either Google App Engine Flex or Google Kubernetes Engine will avoid having to configure IIS to run ASP.NET Core..
-        /// </summary>
-        public static string PublishGceWarningStepLine2 {
-            get {
-                return ResourceManager.GetString("PublishGceWarningStepLine2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ..
         /// </summary>
-        public static string PublishGceWarningStepLine3AfterLink {
+        public static string PublishGceWarningStepLine2AfterLink {
             get {
-                return ResourceManager.GetString("PublishGceWarningStepLine3AfterLink", resourceCulture);
+                return ResourceManager.GetString("PublishGceWarningStepLine2AfterLink", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you do wish to continue, instructions for seting up IIS to run ASP.NET Core app can be found .
+        ///   Looks up a localized string similar to Hosting ASP.NET Core on Google Compute Engine will require .
         /// </summary>
-        public static string PublishGceWarningStepLine3BeforeLink {
+        public static string PublishGceWarningStepLine2BeforeLink {
             get {
-                return ResourceManager.GetString("PublishGceWarningStepLine3BeforeLink", resourceCulture);
+                return ResourceManager.GetString("PublishGceWarningStepLine2BeforeLink", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to here.
+        ///   Looks up a localized string similar to manual configuration of IIS.
         /// </summary>
-        public static string PublishGceWarningStepLine3HyperLink {
+        public static string PublishGceWarningStepLine2HyperLink {
             get {
-                return ResourceManager.GetString("PublishGceWarningStepLine3HyperLink", resourceCulture);
+                return ResourceManager.GetString("PublishGceWarningStepLine2HyperLink", resourceCulture);
             }
         }
         

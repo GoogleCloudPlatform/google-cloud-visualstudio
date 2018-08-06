@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.PickProjectDialog;
@@ -178,6 +179,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.HasErrors);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
+            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.PublishCaption);
         }
 
         [TestMethod]

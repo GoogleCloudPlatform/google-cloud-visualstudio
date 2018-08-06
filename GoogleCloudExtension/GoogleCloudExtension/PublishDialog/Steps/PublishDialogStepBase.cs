@@ -153,6 +153,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         public IProtectedCommand PublishCommand => PublishCommandAsync;
         public abstract string Title { get; }
 
+        /// <summary>
+        /// The Caption of the Publish button.
+        /// </summary>
+        public string PublishCaption { get; } = Resources.PublishDialogPublishButtonCaption;
+
         protected internal abstract ProtectedAsyncCommand PublishCommandAsync { get; }
 
         /// <summary>

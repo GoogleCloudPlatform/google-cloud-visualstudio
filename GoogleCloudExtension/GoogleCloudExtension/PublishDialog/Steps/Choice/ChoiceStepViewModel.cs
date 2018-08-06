@@ -59,6 +59,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
 
         public string Title { get; }
 
+        /// <summary>
+        /// The Caption of the Publish button.
+        /// </summary>
+        public string PublishCaption { get; } = Resources.PublishDialogPublishButtonCaption;
+
         private IPublishDialog PublishDialog { get; }
 
         public ChoiceStepViewModel(IPublishDialog publishDialog)
