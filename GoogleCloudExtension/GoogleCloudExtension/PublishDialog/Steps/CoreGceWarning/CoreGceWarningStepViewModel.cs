@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
@@ -39,6 +40,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         /// The Caption of the Publish button.
         /// </summary>
         public string PublishCaption { get; } = Resources.PublishDialogNextButtonCaption;
+
+        /// <summary>
+        /// The general options for the package.
+        /// </summary>
+        public AnalyticsOptions Options { get; } = GoogleCloudExtensionPackage.Instance.GeneralSettings;
 
         /// <summary>
         /// The command to continue on to the GCE publish step.
@@ -83,6 +89,11 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
                 // Skip this step when going back, but ensure this warning will be shown next time.
                 _publishDialog.Project.DeleteUserProperty(ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName);
                 _publishDialog.PopStep();
+            }
+            else if (Options.DoNotShowAspNetCoreGceWarning)
+            {
+                // Skip this step if the user suppressed it.
+                _publishDialog.NavigateToStep(_nextStepContent);
             }
             else
             {

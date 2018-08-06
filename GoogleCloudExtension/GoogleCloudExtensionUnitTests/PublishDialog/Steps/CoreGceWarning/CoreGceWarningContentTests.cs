@@ -20,7 +20,7 @@ using Moq;
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
 {
     [TestClass]
-    public class CoreGceWarningContentTests
+    public class CoreGceWarningContentTests : ExtensionTestBase
     {
         private CoreGceWarningStepContent _objectUnderTest;
         private IPublishDialog _publishDialog;

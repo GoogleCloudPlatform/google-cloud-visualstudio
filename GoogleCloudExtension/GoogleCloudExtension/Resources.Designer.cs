@@ -5174,6 +5174,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this warning again.
+        /// </summary>
+        public static string UiDontShowWarningAgain {
+            get {
+                return ResourceManager.GetString("UiDontShowWarningAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string UiEnableButtonCaption {

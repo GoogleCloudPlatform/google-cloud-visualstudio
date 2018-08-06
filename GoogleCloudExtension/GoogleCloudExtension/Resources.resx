@@ -2548,4 +2548,7 @@ Delete corrupted file?</value>
     <value>_Next</value>
     <comment>The caption of the Next button on the CoreGceWarning publish step.</comment>
   </data>
+  <data name="UiDontShowWarningAgain" xml:space="preserve">
+    <value>Don't show this warning again</value>
+  </data>
 </root>

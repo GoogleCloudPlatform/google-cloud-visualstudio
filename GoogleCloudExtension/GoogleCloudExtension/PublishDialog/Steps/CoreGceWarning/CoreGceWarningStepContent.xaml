@@ -22,22 +22,37 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning"
              xmlns:wpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
+             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              mc:Ignorable="d" 
              d:DesignHeight="247"
              d:DesignWidth="476"
-             d:DataContext="{d:DesignInstance local:CoreGceWarningStepViewModel}"
-             Padding="24">
-    <DockPanel VerticalAlignment="Center">
-        <Image DockPanel.Dock="Left"
-               Source="../../../Utils/Resources/ic_warning_yellow_24px.png"
-               Stretch="None" />
-        <TextBlock TextWrapping="Wrap" Margin="9,0,0,0">
+             d:DataContext="{d:DesignInstance local:CoreGceWarningStepViewModel}">
+    <DockPanel VerticalAlignment="Stretch" Margin="24,24,24,0">
+        <!-- CheckBox first so the Image And TextBlock stay aligned -->
+        <CheckBox DockPanel.Dock="Bottom"
+                  IsChecked="{Binding Options.DoNotShowAspNetCoreGceWarning}"
+                  HorizontalAlignment="Right"
+                  Margin="0,24,0,0"
+                  Content="{x:Static ext:Resources.UiDontShowWarningAgain}" />
+
+        <imaging:CrispImage DockPanel.Dock="Left"
+                            VerticalAlignment="Center"
+                            Moniker="{x:Static catalog:KnownMonikers.StatusWarning}"
+                            Stretch="Uniform"
+                            Width="32"
+                            Margin="0,0,24,0"/>
+
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">
             <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine1}" />
+
             <wpf:WhitespaceDiscardingSpan>
                 <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2BeforeLink}" />
+
                 <Hyperlink Command="{Binding BrowseAspNetCoreIisDocs}">
                     <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2HyperLink}" />
                 </Hyperlink>
+
                 <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}"/>
             </wpf:WhitespaceDiscardingSpan>
         </TextBlock>

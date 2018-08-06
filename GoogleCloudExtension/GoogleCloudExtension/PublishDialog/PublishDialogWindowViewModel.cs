@@ -52,19 +52,9 @@ namespace GoogleCloudExtension.PublishDialog
         public ProtectedCommand PrevCommand { get; }
 
         /// <summary>
-        /// The command to execute when presing the "Publish" button.
-        /// </summary>
-        public IProtectedCommand PublishCommand => CurrentStep.PublishCommand;
-
-        /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
         /// </summary>
         private IPublishDialogStep CurrentStep => Content.ViewModel;
-
-        /// <summary>
-        /// The caption of the Publish/Next button.
-        /// </summary>
-        public virtual string PublishCaption => CurrentStep.PublishCaption;
 
         public PublishDialogWindowViewModel(IParsedDteProject project, Action closeWindow)
         {
@@ -75,7 +65,6 @@ namespace GoogleCloudExtension.PublishDialog
 
             var initialStep = new ChoiceStepContent(this);
             PushStep(initialStep, null);
-            initialStep.ViewModel.ExecutePreviousChoice();
         }
 
         private void OnPrevCommand()
@@ -109,8 +98,6 @@ namespace GoogleCloudExtension.PublishDialog
             AddStepEvents(CurrentStep);
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
             RaisePropertyChanged(nameof(Content));
-            RaisePropertyChanged(nameof(PublishCommand));
-            RaisePropertyChanged(nameof(PublishCaption));
         }
 
         private void AddStepEvents(INotifyDataErrorInfo dialogStep)

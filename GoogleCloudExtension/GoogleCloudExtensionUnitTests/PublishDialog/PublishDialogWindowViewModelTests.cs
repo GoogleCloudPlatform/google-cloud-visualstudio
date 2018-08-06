@@ -90,22 +90,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestConstructor_SetsPublishCommand()
-        {
-            var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
-
-            Assert.AreEqual(objectUnderTest.Content.ViewModel.PublishCommand, objectUnderTest.PublishCommand);
-        }
-
-        [TestMethod]
-        public void TestConstructor_SetsPublishCaption()
-        {
-            var objectUnderTest = new PublishDialogWindowViewModel(_mockedParsedProject, _mockedCloseWindowAction);
-
-            Assert.AreEqual(objectUnderTest.Content.ViewModel.PublishCaption, objectUnderTest.PublishCaption);
-        }
-
-        [TestMethod]
         public void TestNavigateToStep_UpdatesContent()
         {
             _objectUnderTest.NavigateToStep(_stepContentMock.Object);
@@ -120,27 +104,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.NavigateToStep(_stepContentMock.Object);
 
             Assert.IsTrue(_objectUnderTest.PrevCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestNavigateToStep_UpdatesPublishCommand()
-        {
-            _objectUnderTest.NavigateToStep(_stepContentMock.Object);
-
-            Assert.AreEqual(_stepContentMock.Object.ViewModel.PublishCommand, _objectUnderTest.PublishCommand);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.PublishCommand));
-        }
-
-        [TestMethod]
-        public void TestNavigateToStep_UpdatePublishCaption()
-        {
-            const string expectedCaption = "Expected Caption";
-            _stepContentMock.SetupGet(c => c.ViewModel.PublishCaption).Returns(expectedCaption);
-
-            _objectUnderTest.NavigateToStep(_stepContentMock.Object);
-
-            Assert.AreEqual(expectedCaption, _objectUnderTest.PublishCaption);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.PublishCaption));
         }
 
         [TestMethod]
@@ -187,31 +150,6 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
             _objectUnderTest.PrevCommand.Execute(null);
 
             Assert.IsFalse(_objectUnderTest.PrevCommand.CanExecuteCommand);
-        }
-
-        [TestMethod]
-        public void TestPreviousCommand_UpdatesPublishCommand()
-        {
-            _objectUnderTest.NavigateToStep(_stepContentMock.Object);
-            _changedProperties.Clear();
-
-            _objectUnderTest.PrevCommand.Execute(null);
-
-            Assert.AreNotEqual(_stepContentMock.Object.ViewModel.PublishCommand, _objectUnderTest.PublishCommand);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.PublishCommand));
-        }
-
-        [TestMethod]
-        public void TestPreviousCommand_UpdatePublishCaption()
-        {
-            string originalCaption = _objectUnderTest.PublishCaption;
-            _objectUnderTest.NavigateToStep(_stepContentMock.Object);
-            _changedProperties.Clear();
-
-            _objectUnderTest.PrevCommand.Execute(null);
-
-            Assert.AreEqual(originalCaption, _objectUnderTest.PublishCaption);
-            CollectionAssert.Contains(_changedProperties, nameof(_objectUnderTest.PublishCaption));
         }
 
         [TestMethod]

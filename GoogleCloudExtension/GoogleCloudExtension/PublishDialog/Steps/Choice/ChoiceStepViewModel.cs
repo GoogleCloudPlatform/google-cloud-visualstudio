@@ -80,6 +80,10 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         {
             AddHandlers();
             Choices = GetChoicesForCurrentProject();
+            if (previousStep == null)
+            {
+                ExecutePreviousChoice();
+            }
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// Called when the dialog first loads to move past this step to the prevously chosen step, if it exists.
         /// </summary>
-        public void ExecutePreviousChoice()
+        private void ExecutePreviousChoice()
         {
             string previousChoiceId = PublishDialog.Project.GetUserProperty(GoogleCloudPublishChoicePropertyName);
             if (Enum.TryParse(previousChoiceId, out ChoiceType previousChoiceType))

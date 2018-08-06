@@ -167,6 +167,22 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         }
 
         [TestMethod]
+        public void TestOnVisible_WithDoNotShowCheckedSkipssWarning()
+        {
+            GoogleCloudExtensionPackage.Instance.GeneralSettings.DoNotShowAspNetCoreGceWarning = true;
+            _propertyServiceMock
+                .Setup(
+                    ps => ps.GetUserProperty(
+                        It.IsAny<Project>(),
+                        ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName))
+                .Returns("");
+
+            _objectUnderTest.OnVisible(new ChoiceStepViewModel(_publishDialogMock.Object));
+
+            _publishDialogMock.Verify(pd => pd.NavigateToStep(It.IsAny<GceStepContent>()));
+        }
+
+        [TestMethod]
         public void TestOnNotVisible_DoesNotThrow() => _objectUnderTest.OnNotVisible();
 
         [TestMethod]
