@@ -16,6 +16,7 @@ using GoogleCloudExtension.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using TestingHelpers;
+using UIElement = System.Windows.UIElement;
 
 namespace GoogleCloudExtensionUnitTests.Options
 {
@@ -136,5 +137,18 @@ namespace GoogleCloudExtensionUnitTests.Options
             CollectionAssert.Contains(changedProperties, nameof(_objectUnderTest.HideUserProjectControl));
             CollectionAssert.That.All(senders).AreEqualTo(_objectUnderTest);
         }
+
+        [TestMethod]
+        public void TestChild_ReturnsGeneralOptionsPage()
+        {
+            var objectUnderTest = new TestProtectedAnalyticsOptions();
+
+            Assert.IsInstanceOfType(objectUnderTest.PublicChild, typeof(GeneralOptionsPage));
+        }
+    }
+
+    public class TestProtectedAnalyticsOptions : AnalyticsOptions
+    {
+        public UIElement PublicChild => Child;
     }
 }
