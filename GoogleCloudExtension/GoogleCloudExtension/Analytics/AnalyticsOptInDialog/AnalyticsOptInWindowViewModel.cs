@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
+using System;
 
 namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
 {
     /// <summary>
     /// View model for user control AnalyticsOptInWindowContent.xaml.
     /// </summary>
-    public class AnalyticsOptInWindowViewModel : ViewModelBase
+    public class AnalyticsOptInWindowViewModel : ViewModelBase<bool>
     {
-        private readonly AnalyticsOptInWindow _owner;
-
-        /// <summary>
-        /// Result of the view model after the dialog window is closed. Remains
-        /// false until an action buttion is clicked.
-        /// </summary>
-        public bool Result { get; private set; }
+        private readonly Lazy<IBrowserService> _browserService;
 
         /// <summary>
         /// Command for opting in into sharing Analytics info with Google.
@@ -39,18 +35,26 @@ namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
         /// </summary>
         public ProtectedCommand AnalyticsLearnMoreLinkCommand { get; }
 
-        public AnalyticsOptInWindowViewModel(AnalyticsOptInWindow owner)
+        private IBrowserService BrowserService => _browserService.Value;
+
+        /// <summary>
+        /// Event to close the parent window.
+        /// </summary>
+        public sealed override event Action Close = () => { };
+
+        public AnalyticsOptInWindowViewModel()
         {
-            _owner = owner.ThrowIfNull(nameof(owner));
+            _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
 
             OptInCommand = new ProtectedCommand(OnOptInCommand);
-            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(() => AnalyticsLearnMoreUtils.OpenLearnMoreLink());
+            AnalyticsLearnMoreLinkCommand = new ProtectedCommand(
+                () => BrowserService.OpenBrowser(AnalyticsLearnMoreConstants.AnalyticsLearnMoreLink));
         }
 
         private void OnOptInCommand()
         {
             Result = true;
-            _owner.Close();
+            Close();
         }
     }
 }

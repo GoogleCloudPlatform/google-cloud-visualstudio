@@ -19,14 +19,14 @@ namespace GoogleCloudExtension.Options
     /// <summary>
     /// Interaction logic for AnalyticsOptionsPage.xaml
     /// </summary>
-    public partial class AnalyticsOptionsPage : UserControl
+    public partial class GeneralOptionsPage : UserControl
     {
-        internal AnalyticsOptionsPageViewModel ViewModel { get; }
+        internal GeneralOptionsPageViewModel ViewModel { get; }
 
-        internal AnalyticsOptionsPage()
+        internal GeneralOptionsPage()
         {
             InitializeComponent();
-            ViewModel = new AnalyticsOptionsPageViewModel();
+            ViewModel = new GeneralOptionsPageViewModel();
             DataContext = ViewModel;
         }
     }

@@ -17,6 +17,7 @@ using Google.Apis.Plus.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
@@ -78,6 +79,8 @@ namespace GoogleCloudExtension.MenuBarControls
             set => SetValueAndRaise(ref _isPopupOpen, value);
         }
 
+        public AnalyticsOptions Options { get; }
+
         /// <summary>
         /// The command to show the manage accounts dialog.
         /// </summary>
@@ -115,6 +118,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
             CurrentProjectAsync = new AsyncProperty<Project>(GetCurrentProjectAsync());
             UpdateUserProfile();
+            Options = GoogleCloudExtensionPackage.Instance.GeneralSettings;
 
             CredentialsStore.CurrentProjectIdChanged += (sender, args) => LoadCurrentProject();
             DataSourceFactory.DataSourcesUpdated += (sender, args) => UpdateUserProfile();

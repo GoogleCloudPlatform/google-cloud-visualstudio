@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using System.Windows.Input;
@@ -45,6 +46,11 @@ namespace GoogleCloudExtension.MenuBarControls
         /// The command to open the GCP Menu Bar Popup.
         /// </summary>
         ICommand OpenPopup { get; }
+
+        /// <summary>
+        /// The general options page.
+        /// </summary>
+        AnalyticsOptions Options { get; }
 
         /// <summary>
         /// Refreshes <see cref="CurrentProjectAsync"/>.

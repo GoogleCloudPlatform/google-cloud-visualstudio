@@ -14,6 +14,7 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Plus.v1.Data;
+using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.MenuBarControls;
@@ -234,6 +235,12 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
             await _objectUnderTest.CurrentProjectAsync;
 
             Assert.AreEqual(expectedProject, _objectUnderTest.CurrentProjectAsync.Value);
+        }
+
+        [TestMethod]
+        public void TestOptions_DelegatesToPackageOptions()
+        {
+            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GeneralSettings, _objectUnderTest.Options);
         }
     }
 }

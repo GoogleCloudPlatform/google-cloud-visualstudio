@@ -70,8 +70,7 @@
     </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
-    <Compile Include="Analytics\AnalyticsLearnMoreUtils.cs" />
-    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindow.cs" />
+    <Compile Include="Analytics\AnalyticsLearnMoreConstants.cs" />
     <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml.cs">
       <DependentUpon>AnalyticsOptInWindowContent.xaml</DependentUpon>
     </Compile>
@@ -324,10 +323,10 @@
     <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
     <Compile Include="PickProjectDialog\SampleData\NeedsAccountState.cs" />
     <Compile Include="PickProjectDialog\SampleData\LoadingState.cs" />
-    <Compile Include="Options\AnalyticsOptionsPage.xaml.cs">
-      <DependentUpon>AnalyticsOptionsPage.xaml</DependentUpon>
+    <Compile Include="Options\GeneralOptionsPage.xaml.cs">
+      <DependentUpon>GeneralOptionsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\AnalyticsOptionsPageViewModel.cs" />
+    <Compile Include="Options\GeneralOptionsPageViewModel.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
     <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
@@ -1047,7 +1046,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\AnalyticsOptionsPage.xaml">
+    <Page Include="Options\GeneralOptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

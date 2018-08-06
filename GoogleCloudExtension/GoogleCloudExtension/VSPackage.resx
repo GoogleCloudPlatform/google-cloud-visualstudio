@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="1" xml:space="preserve">
+    <value>Google Cloud Tools</value>
+    <comment>The name of the package's options catagory.</comment>
+  </data>
   <data name="1000" xml:space="preserve">
     <value>Google Cloud Platform Project</value>
     <comment>The display name of the GCP Main Frame Control.</comment>
@@ -126,5 +130,9 @@
   </data>
   <data name="112" xml:space="preserve">
     <value>DeployToGae Visual Studio Extension Detailed Info</value>
+  </data>
+  <data name="2" xml:space="preserve">
+    <value>General</value>
+    <comment>The name of the general options page.</comment>
   </data>
 </root>
