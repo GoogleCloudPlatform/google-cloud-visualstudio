@@ -119,6 +119,10 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.14.3.26930\lib\net20\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.14.3.26930\lib\net20\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6071\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
     </Reference>
@@ -263,6 +267,8 @@
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStoreTests.cs" />
     <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContentTests.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowViewModelTests.cs" />
     <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
     <Compile Include="AssemblyInitialize.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPortTests.cs" />
@@ -305,6 +311,8 @@
     <Compile Include="MenuBarControls\GcpMenuBarPopupControlTests.cs" />
     <Compile Include="MenuBarControls\GcpUserProjectViewModelTests.cs" />
     <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttributeTests.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningContentTests.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepViewModelTests.cs" />
     <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
     <Compile Include="GCloud\GCloudContextUnitTests.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -312,7 +320,7 @@
     <Compile Include="ManageAccounts\UserAccountViewModelTests.cs" />
     <Compile Include="MockedGlobalServiceProviderTestsBase.cs" />
     <Compile Include="Options\AnalyticsOptionsTests.cs" />
-    <Compile Include="Options\AnalyticsOptionsPageViewModelTests.cs" />
+    <Compile Include="Options\GeneralOptionsPageViewModelTests.cs" />
     <Compile Include="PickProjectDialog\PickProjectIdWindowContentTests.cs" />
     <Compile Include="Projects\DotNet4\CsprojProjectTests.cs" />
     <Compile Include="Projects\DotNetCore\JsonProjectTests.cs" />
@@ -364,6 +372,7 @@
     <Compile Include="Utils\ProtectedCommandTests.cs" />
     <Compile Include="Utils\StatusbarHelperTests.cs" />
     <Compile Include="Services\UserPromptServiceTests.cs" />
+    <Compile Include="Utils\ViewModelBaseTests.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VsVersionUtilsTests.cs" />

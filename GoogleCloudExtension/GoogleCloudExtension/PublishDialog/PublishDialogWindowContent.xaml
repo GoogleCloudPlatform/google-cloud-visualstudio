@@ -37,11 +37,10 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogBackButtonCaption}"
                                       Command="{Binding PrevCommand}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}"
-                                      Command="{Binding PublishCommand}"/>
+            <theming:DialogButtonInfo Caption="{Binding Content.ViewModel.ActionCaption}"
+                                      Command="{Binding Content.ViewModel.ActionCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
                                       IsCancel="true" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
-
 </UserControl>

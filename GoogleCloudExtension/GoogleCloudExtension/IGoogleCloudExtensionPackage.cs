@@ -48,7 +48,7 @@ namespace GoogleCloudExtension
             IAsyncServiceProvider
     {
         JoinableTaskFactory JoinableTaskFactory { get; }
-        AnalyticsOptions AnalyticsSettings { get; }
+        AnalyticsOptions GeneralSettings { get; }
         string VsVersion { get; }
 
         /// <summary>

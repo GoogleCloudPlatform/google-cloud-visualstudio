@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Analytics
 {
-    public interface ICloseSource
+    /// <summary>
+    /// Class to hold URL Usage Statistics explanation link and the code for opening it.
+    /// </summary>
+    public static class AnalyticsLearnMoreConstants
     {
         /// <summary>
-        /// Event to close the parent window.
+        /// Url of the page containing a detailed explanation on how and why we collect Usage Statistics.
         /// </summary>
-        event Action Close;
+        public const string AnalyticsLearnMoreLink = "https://cloud.google.com/tools/visual-studio/docs/usage-reporting";
     }
 }

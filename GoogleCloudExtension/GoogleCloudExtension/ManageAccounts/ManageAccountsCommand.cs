@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
@@ -65,8 +64,6 @@ namespace GoogleCloudExtension.ManageAccounts
         // <param name="e">The event args.</param>
         static void ShowToolWindow(object sender, EventArgs e)
         {
-            EventsReporterWrapper.EnsureAnalyticsOptIn();
-
             GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
         }
     }

@@ -55,8 +55,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         public bool CanPublish
         {
-            get => PublishCommand.CanExecuteCommand;
-            protected set => PublishCommand.CanExecuteCommand = value;
+            get => ActionCommand.CanExecuteCommand;
+            protected set => ActionCommand.CanExecuteCommand = value;
         }
 
         /// <summary>
@@ -151,8 +151,20 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
-        public IProtectedCommand PublishCommand => PublishCommandAsync;
+        /// <summary>
+        /// The Command of the Next/Publish button.
+        /// </summary>
+        public IProtectedCommand ActionCommand => PublishCommandAsync;
+
+        /// <summary>
+        /// The Title of the dialog.
+        /// </summary>
         public abstract string Title { get; }
+
+        /// <summary>
+        /// The Caption of the Next/Publish button.
+        /// </summary>
+        public string ActionCaption { get; } = Resources.PublishDialogPublishButtonCaption;
 
         protected internal abstract ProtectedAsyncCommand PublishCommandAsync { get; }
 
@@ -192,11 +204,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// <summary>
         /// Called every time this step moves on to the top of the navigation stack.
         /// </summary>
+        /// <param name="previousStep">Unused.</param>
         /// <remarks>
         /// This method adds event handlers for <see cref="IPublishDialog.FlowFinished"/> and <see cref="ICredentialsStore.CurrentProjectIdChanged"/>,
         /// and Loads properties from the project file.
         /// </remarks>
-        public void OnVisible()
+        public void OnVisible(IPublishDialogStep previousStep = null)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             AddHandlers();

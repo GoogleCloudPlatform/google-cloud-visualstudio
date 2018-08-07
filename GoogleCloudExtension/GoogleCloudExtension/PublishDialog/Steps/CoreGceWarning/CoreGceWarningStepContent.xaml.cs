@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Windows.Controls;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
 {
-    public interface ICloseSource
+    /// <summary>
+    /// Interaction logic for CoreGceWarningStepContent.xaml
+    /// </summary>
+    public partial class CoreGceWarningStepContent : UserControl, IStepContent<CoreGceWarningStepViewModel>
     {
-        /// <summary>
-        /// Event to close the parent window.
-        /// </summary>
-        event Action Close;
+        public CoreGceWarningStepContent(IPublishDialog publishDialog)
+        {
+            InitializeComponent();
+            DataContext = ViewModel = new CoreGceWarningStepViewModel(publishDialog);
+        }
+
+        public CoreGceWarningStepViewModel ViewModel { get; }
     }
 }

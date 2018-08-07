@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.Analytics.AnalyticsOptInDialog
 {
     /// <summary>
     /// Interaction logic for AnalyticsOptInWindowContent.xaml
     /// </summary>
-    public partial class AnalyticsOptInWindowContent : UserControl
+    public partial class AnalyticsOptInWindowContent : CommonWindowContent<AnalyticsOptInWindowViewModel>
     {
-        public AnalyticsOptInWindowContent()
+        public AnalyticsOptInWindowContent() : base(new AnalyticsOptInWindowViewModel(), GoogleCloudExtension.Resources.AnalyticsPromptTitle)
         {
             InitializeComponent();
         }

@@ -2,7 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:GoogleCloudExtension.Controls"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib" >
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:GoogleCloudExtension="clr-namespace:GoogleCloudExtension">
 
     <Style x:Key="TimeTextBoxStyle" TargetType="TextBox" >
         <Setter Property="MaxLength" Value="2" />
@@ -93,7 +94,7 @@
                                     AncestorType={x:Type local:TimeBox}}}" />
 
                             <TextBlock Grid.Column="1" 
-                                       Text=":"
+                                       Text="{x:Static GoogleCloudExtension:Resources.UiTimeSeparator}"
                                        VerticalAlignment="Center"/>
 
                             <TextBox 
@@ -107,7 +108,7 @@
                                     AncestorType={x:Type local:TimeBox}}}" />
 
                             <TextBlock Grid.Column="3" 
-                                       Text=":"
+                                       Text="{x:Static GoogleCloudExtension:Resources.UiTimeSeparator}"
                                        VerticalAlignment="Center"/>
 
                             <TextBox

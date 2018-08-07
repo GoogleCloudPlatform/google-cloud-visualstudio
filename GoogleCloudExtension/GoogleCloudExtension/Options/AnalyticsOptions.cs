@@ -22,23 +22,43 @@ using System.Windows;
 namespace GoogleCloudExtension.Options
 {
     /// <summary>
-    /// This class represents the extension's analytics settings.
+    /// This class represents the extension's general options. It can not be renamed to keep backwards compatiblity.
     /// </summary>
     [DesignerCategory("Code")]
-    public class AnalyticsOptions : UIElementDialogPage
+    public class AnalyticsOptions : UIElementDialogPage, INotifyPropertyChanged
     {
+        /// <summary>
+        /// The canonical nonlocalized name of the General Options page subcategory. This value must not change.
+        /// </summary>
+        public const string PageName = "Usage Report";
+
         /// <summary>
         /// The WPF page to actually show.
         /// </summary>
-        private readonly AnalyticsOptionsPage _analyticsOptionsPage = new AnalyticsOptionsPage();
+        private readonly GeneralOptionsPage _generalOptionsPage;
 
         /// <summary>
         /// Whether the user is opt-in or not into report usage statistics. By default is false.
         /// </summary>
         public bool OptIn
         {
-            get { return _analyticsOptionsPage.ViewModel.OptIn; }
-            set { _analyticsOptionsPage.ViewModel.OptIn = value; }
+            get => _generalOptionsPage.ViewModel.OptIn;
+            set => _generalOptionsPage.ViewModel.OptIn = value;
+        }
+
+        /// <summary>
+        /// Determins whether the Google Cloud Platform User/Project control on the main menu bar is visible or hidden.
+        /// </summary>
+        public bool HideUserProjectControl
+        {
+            get => _generalOptionsPage.ViewModel.HideUserProjectControl;
+            set => _generalOptionsPage.ViewModel.HideUserProjectControl = value;
+        }
+
+        public bool DoNotShowAspNetCoreGceWarning
+        {
+            get => _generalOptionsPage.ViewModel.DoNotShowAspNetCoreGceWarning;
+            set => _generalOptionsPage.ViewModel.DoNotShowAspNetCoreGceWarning = value;
         }
 
         /// <summary>
@@ -57,7 +77,15 @@ namespace GoogleCloudExtension.Options
         public string InstalledVersion { get; set; }
 
         /// <inheritdoc />
-        protected override UIElement Child => _analyticsOptionsPage;
+        protected override UIElement Child => _generalOptionsPage;
+
+        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
+
+        public AnalyticsOptions()
+        {
+            _generalOptionsPage = new GeneralOptionsPage();
+            _generalOptionsPage.ViewModel.PropertyChanged += (sender, args) => PropertyChanged(this, args);
+        }
 
         /// <summary>
         /// Reset all the settings to their default values.
@@ -67,6 +95,8 @@ namespace GoogleCloudExtension.Options
             OptIn = false;
             DialogShown = false;
             ClientId = null;
+            HideUserProjectControl = false;
+            DoNotShowAspNetCoreGceWarning = false;
         }
 
         /// <summary>

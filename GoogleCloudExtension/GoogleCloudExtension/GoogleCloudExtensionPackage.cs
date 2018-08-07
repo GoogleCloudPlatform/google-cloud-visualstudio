@@ -38,7 +38,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -71,7 +70,6 @@ namespace GoogleCloudExtension
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
     [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
@@ -129,7 +127,7 @@ namespace GoogleCloudExtension
         /// </summary>
         public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
-        public AnalyticsOptions AnalyticsSettings => GetDialogPage<AnalyticsOptions>();
+        public AnalyticsOptions GeneralSettings => GetDialogPage<AnalyticsOptions>();
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -444,7 +442,7 @@ namespace GoogleCloudExtension
         /// </summary>
         private void CheckInstallationStatus()
         {
-            AnalyticsOptions settings = AnalyticsSettings;
+            AnalyticsOptions settings = GeneralSettings;
             if (settings.InstalledVersion == null)
             {
                 // This is a new installation.

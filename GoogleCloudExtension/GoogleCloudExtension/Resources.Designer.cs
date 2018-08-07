@@ -214,7 +214,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report _Usage Statistics..
+        ///   Looks up a localized string similar to Report _Usage Statistics.
         /// </summary>
         public static string AnalyticsOptionsOptInLabel {
             get {
@@ -232,7 +232,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more..
+        ///   Looks up a localized string similar to What do we collect?.
         /// </summary>
         public static string AnalyticsPromptLinkText {
             get {
@@ -3211,6 +3211,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Hide Google Cloud Project and User Control.
+        /// </summary>
+        public static string GeneralOptionsHideMenuBarControlCheckboxLabel {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuBarControlCheckboxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When checked, the Google Cloud Project and User control, next to the Microsoft User control, will be hidden..
+        /// </summary>
+        public static string GeneralOptionsHideMenuControlCheckboxTooltip {
+            get {
+                return ResourceManager.GetString("GeneralOptionsHideMenuControlCheckboxTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
         /// </summary>
         public static string GenerateConfigurationAppYamlGeneratedMessage {
@@ -4634,6 +4652,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Next.
+        /// </summary>
+        public static string PublishDialogNextButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
@@ -4720,6 +4747,42 @@ namespace GoogleCloudExtension {
         public static string PublishFailureStatusMessage {
             get {
                 return ResourceManager.GetString("PublishFailureStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are App Engine flexible and Kubernetes Engine..
+        /// </summary>
+        public static string PublishGceWarningStepLine1 {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string PublishGceWarningStepLine2AfterLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine2AfterLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hosting ASP.NET Core applications on Compute Engine requires .
+        /// </summary>
+        public static string PublishGceWarningStepLine2BeforeLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine2BeforeLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to manual configuration of IIS.
+        /// </summary>
+        public static string PublishGceWarningStepLine2HyperLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine2HyperLink", resourceCulture);
             }
         }
         
@@ -5111,6 +5174,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this warning again.
+        /// </summary>
+        public static string UiDontShowWarningAgain {
+            get {
+                return ResourceManager.GetString("UiDontShowWarningAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string UiEnableButtonCaption {
@@ -5287,6 +5359,15 @@ namespace GoogleCloudExtension {
         public static string UiTimeLabel {
             get {
                 return ResourceManager.GetString("UiTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to :.
+        /// </summary>
+        public static string UiTimeSeparator {
+            get {
+                return ResourceManager.GetString("UiTimeSeparator", resourceCulture);
             }
         }
         

@@ -24,4 +24,4 @@ ${workspace}/tools/find_files.py -d $1 ${find_files_params} | xargs grep -HnE \
 
 # Look for literal strings on .xaml files.
 ${workspace}/tools/find_files.py -d $1 -e .xaml -x ${exclude_paths[@]} | xargs grep -HnE \
-    "Header=\"[A-Z]|Content=\"[A-Z]|Text=\"[A-Z]"
+    "Header=\"[^{]|Content=\"[^{]|Text=\"[^{]|ToolTip=\"[^{]"
