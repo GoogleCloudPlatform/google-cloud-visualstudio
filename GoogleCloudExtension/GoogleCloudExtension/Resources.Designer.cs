@@ -4751,7 +4751,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are Google App Engine Flex and Google Kubernetes Engine..
+        ///   Looks up a localized string similar to The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are App Engine flexible and Kubernetes Engine..
         /// </summary>
         public static string PublishGceWarningStepLine1 {
             get {
@@ -4769,7 +4769,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hosting ASP.NET Core on Google Compute Engine will require .
+        ///   Looks up a localized string similar to Hosting ASP.NET Core applications on Compute Engine requires .
         /// </summary>
         public static string PublishGceWarningStepLine2BeforeLink {
             get {

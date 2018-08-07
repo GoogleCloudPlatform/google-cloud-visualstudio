@@ -2529,11 +2529,11 @@ Delete corrupted file?</value>
     <comment>The tool tip of the Hide User Project Control checkbox on the general options page.</comment>
   </data>
   <data name="PublishGceWarningStepLine1" xml:space="preserve">
-    <value>The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are Google App Engine Flex and Google Kubernetes Engine.</value>
+    <value>The recommended services for hosting ASP.NET Core applications on Google Cloud Platform are App Engine flexible and Kubernetes Engine.</value>
     <comment>The first line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
   <data name="PublishGceWarningStepLine2BeforeLink" xml:space="preserve">
-    <value>Hosting ASP.NET Core on Google Compute Engine will require </value>
+    <value>Hosting ASP.NET Core applications on Compute Engine requires </value>
     <comment>The first part of the second line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
   <data name="PublishGceWarningStepLine2HyperLink" xml:space="preserve">
