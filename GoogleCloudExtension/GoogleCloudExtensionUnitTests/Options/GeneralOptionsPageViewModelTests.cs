@@ -31,7 +31,6 @@ namespace GoogleCloudExtensionUnitTests.Options
         [TestInitialize]
         public void BeforeEach()
         {
-
             _objectUnderTest = new GeneralOptionsPageViewModel();
 
             _changedProperties = new List<string>();

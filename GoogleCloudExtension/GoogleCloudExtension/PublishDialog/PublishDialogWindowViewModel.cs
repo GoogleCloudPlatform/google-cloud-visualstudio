@@ -32,8 +32,6 @@ namespace GoogleCloudExtension.PublishDialog
     public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, INotifyDataErrorInfo
     {
         private readonly Stack<IStepContent<IPublishDialogStep>> _stack = new Stack<IStepContent<IPublishDialogStep>>();
-        private IStepContent<IPublishDialogStep> _content;
-        private IProtectedCommand _publishCommand;
         private readonly Action _closeWindow;
         private AsyncProperty _asyncAction = new AsyncProperty();
 
@@ -46,11 +44,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
         /// </summary>
-        public IStepContent<IPublishDialogStep> Content
-        {
-            get { return _content; }
-            set { SetValueAndRaise(ref _content, value); }
-        }
+        public IStepContent<IPublishDialogStep> Content => _stack.Peek();
 
         /// <summary>
         /// The command to execute when pressing the "Prev" button.
@@ -58,18 +52,9 @@ namespace GoogleCloudExtension.PublishDialog
         public ProtectedCommand PrevCommand { get; }
 
         /// <summary>
-        /// The command to execute when presing the "Publish" button.
-        /// </summary>
-        public IProtectedCommand PublishCommand
-        {
-            get => _publishCommand;
-            set => SetValueAndRaise(ref _publishCommand, value);
-        }
-
-        /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
         /// </summary>
-        private IPublishDialogStep CurrentStep => _stack.Peek().ViewModel;
+        private IPublishDialogStep CurrentStep => Content.ViewModel;
 
         public PublishDialogWindowViewModel(IParsedDteProject project, Action closeWindow)
         {
@@ -79,8 +64,7 @@ namespace GoogleCloudExtension.PublishDialog
             PrevCommand = new ProtectedCommand(OnPrevCommand);
 
             var initialStep = new ChoiceStepContent(this);
-            PushStep(initialStep);
-            initialStep.ViewModel.ExecutePreviousChoice();
+            PushStep(initialStep, null);
         }
 
         private void OnPrevCommand()
@@ -88,18 +72,17 @@ namespace GoogleCloudExtension.PublishDialog
             PopStep();
         }
 
-        private void PushStep(IStepContent<IPublishDialogStep> nextStepContent)
+        private void PushStep(
+            IStepContent<IPublishDialogStep> nextStepContent,
+            IStepContent<IPublishDialogStep> previousStepContent)
         {
-            IStepContent<IPublishDialogStep> oldStepContent = _stack.Count > 0 ? _stack.Peek() : null;
             _stack.Push(nextStepContent);
-            Content = nextStepContent;
-            ChangeCurrentStep(oldStepContent?.ViewModel);
+            ChangeCurrentStep(previousStepContent?.ViewModel);
         }
 
-        private void PopStep()
+        public void PopStep()
         {
             IStepContent<IPublishDialogStep> oldStepContent = _stack.Pop();
-            Content = _stack.Peek();
             ChangeCurrentStep(oldStepContent.ViewModel);
         }
 
@@ -111,18 +94,18 @@ namespace GoogleCloudExtension.PublishDialog
                 oldStep.OnNotVisible();
             }
 
-            CurrentStep.OnVisible();
+            CurrentStep.OnVisible(oldStep);
             AddStepEvents(CurrentStep);
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
-            PublishCommand = CurrentStep.PublishCommand;
+            RaisePropertyChanged(nameof(Content));
         }
 
-        private void AddStepEvents(IPublishDialogStep dialogStep)
+        private void AddStepEvents(INotifyDataErrorInfo dialogStep)
         {
             dialogStep.ErrorsChanged += OnErrorsChanged;
         }
 
-        private void RemoveStepEvents(IPublishDialogStep dialogStep)
+        private void RemoveStepEvents(INotifyDataErrorInfo dialogStep)
         {
             dialogStep.ErrorsChanged -= OnErrorsChanged;
         }
@@ -131,19 +114,21 @@ namespace GoogleCloudExtension.PublishDialog
 
         public IParsedDteProject Project { get; }
 
-        public void NavigateToStep(IStepContent<IPublishDialogStep> step)
-        {
-            PushStep(step);
-        }
+        public void NavigateToStep(IStepContent<IPublishDialogStep> step) => PushStep(step, Content);
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Called from a step that wants to finish the flow, or when the dialog is closed.
+        /// </summary>
         public void FinishFlow()
         {
             FlowFinished?.Invoke(this, EventArgs.Empty);
             _closeWindow();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Event raised when <see cref="IPublishDialog.FinishFlow"/> is called.
+        /// Gives the step an opportunity to cleanup.
+        /// </summary>
         public event EventHandler FlowFinished;
 
         /// <summary>
@@ -154,24 +139,21 @@ namespace GoogleCloudExtension.PublishDialog
 
         #endregion
 
-        #region INotifyDataErrorInfo
+        /// <summary>Gets the validation errors for a specified property.</summary>
+        /// <returns>The validation errors for the property.</returns>
+        /// <param name="propertyName">
+        /// The name of the property to retrieve validation errors for.
+        /// If null or <see cref="string.Empty" /> retrieve all dialog errors.
+        /// </param>
+        public IEnumerable GetErrors(string propertyName) => CurrentStep.GetErrors(propertyName);
 
-        /// <inheritdoc />
-        public IEnumerable GetErrors(string propertyName)
-        {
-            return CurrentStep.GetErrors(propertyName);
-        }
-
-        /// <inheritdoc />
+        /// <summary>Indicates whether the dialog has validation errors. </summary>
+        /// <returns>true if the dialog currently has validation errors; false otherwise.</returns>
         public bool HasErrors => CurrentStep.HasErrors;
 
-        /// <inheritdoc />
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        /// <summary>Occurs when the validation errors have changed.</summary>
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = (sender, args) => { };
 
-        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
-        {
-            ErrorsChanged?.Invoke(sender, e);
-        }
-        #endregion
+        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e) => ErrorsChanged(this, e);
     }
 }

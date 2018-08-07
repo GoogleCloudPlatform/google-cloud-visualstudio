@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning;
 using GoogleCloudExtension.PublishDialog.Steps.Flex;
 using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.PublishDialog.Steps.Gke;
@@ -53,10 +54,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        public IProtectedCommand PublishCommand { get; } =
+        public IProtectedCommand ActionCommand { get; } =
             new ProtectedCommand(() => throw new NotSupportedException(), false);
 
         public string Title { get; }
+
+        /// <summary>
+        /// The Caption of the Publish button.
+        /// </summary>
+        public string ActionCaption { get; } = Resources.PublishDialogPublishButtonCaption;
 
         private IPublishDialog PublishDialog { get; }
 
@@ -69,10 +75,15 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// Called every time that this step is at the top of the navigation stack and therefore visible.
         /// </summary>
-        public void OnVisible()
+        /// <param name="previousStep">Unused</param>
+        public void OnVisible(IPublishDialogStep previousStep = null)
         {
             AddHandlers();
             Choices = GetChoicesForCurrentProject();
+            if (previousStep == null)
+            {
+                ExecutePreviousChoice();
+            }
         }
 
         /// <summary>
@@ -83,7 +94,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// Called when the dialog first loads to move past this step to the prevously chosen step, if it exists.
         /// </summary>
-        public void ExecutePreviousChoice()
+        private void ExecutePreviousChoice()
         {
             string previousChoiceId = PublishDialog.Project.GetUserProperty(GoogleCloudPublishChoicePropertyName);
             if (Enum.TryParse(previousChoiceId, out ChoiceType previousChoiceType))
@@ -130,15 +141,21 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         private void OnAppEngineChoiceCommand()
         {
             PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gae.ToString());
-            var nextStep = new FlexStepContent(PublishDialog);
-            PublishDialog.NavigateToStep(nextStep);
+            PublishDialog.NavigateToStep(new FlexStepContent(PublishDialog));
         }
 
         private void OnGceChoiceCommand()
         {
-            PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gce.ToString());
-            var nextStep = new GceStepContent(PublishDialog);
-            PublishDialog.NavigateToStep(nextStep);
+            if (PublishDialog.Project.ProjectType == KnownProjectTypes.NetCoreWebApplication)
+            {
+                // The warning step is in charge of managing GoogleCloudPublishChoicePropertyName.
+                PublishDialog.NavigateToStep(new CoreGceWarningStepContent(PublishDialog));
+            }
+            else
+            {
+                PublishDialog.Project.SaveUserProperty(GoogleCloudPublishChoicePropertyName, ChoiceType.Gce.ToString());
+                PublishDialog.NavigateToStep(new GceStepContent(PublishDialog));
+            }
         }
 
         private void OnFlowFinished(object sender, EventArgs e)

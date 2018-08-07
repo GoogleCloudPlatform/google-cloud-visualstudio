@@ -27,6 +27,7 @@ namespace GoogleCloudExtension.Options
         private bool _optIn;
         private bool _hideUserProjectControl;
         private readonly Lazy<IBrowserService> _browserService;
+        private bool _doNotShowAspNetCoreGceWarning;
 
         /// <summary>
         /// True if the user has opted-into report usage statistics. False by default.
@@ -49,6 +50,12 @@ namespace GoogleCloudExtension.Options
         }
 
         private IBrowserService BrowserService => _browserService.Value;
+
+        public bool DoNotShowAspNetCoreGceWarning
+        {
+            get => _doNotShowAspNetCoreGceWarning;
+            set => SetValueAndRaise(ref _doNotShowAspNetCoreGceWarning, value);
+        }
 
         public GeneralOptionsPageViewModel()
         {

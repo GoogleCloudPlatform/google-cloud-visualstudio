@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.Options
         /// <summary>
         /// The WPF page to actually show.
         /// </summary>
-        private readonly GeneralOptionsPage _generalOptionsPage = new GeneralOptionsPage();
+        private readonly GeneralOptionsPage _generalOptionsPage;
 
         /// <summary>
         /// Whether the user is opt-in or not into report usage statistics. By default is false.
@@ -53,6 +53,12 @@ namespace GoogleCloudExtension.Options
         {
             get => _generalOptionsPage.ViewModel.HideUserProjectControl;
             set => _generalOptionsPage.ViewModel.HideUserProjectControl = value;
+        }
+
+        public bool DoNotShowAspNetCoreGceWarning
+        {
+            get => _generalOptionsPage.ViewModel.DoNotShowAspNetCoreGceWarning;
+            set => _generalOptionsPage.ViewModel.DoNotShowAspNetCoreGceWarning = value;
         }
 
         /// <summary>
@@ -73,11 +79,12 @@ namespace GoogleCloudExtension.Options
         /// <inheritdoc />
         protected override UIElement Child => _generalOptionsPage;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = (sender, args) => { };
 
         public AnalyticsOptions()
         {
-            _generalOptionsPage.ViewModel.PropertyChanged += (sender, args) => PropertyChanged?.Invoke(this, args);
+            _generalOptionsPage = new GeneralOptionsPage();
+            _generalOptionsPage.ViewModel.PropertyChanged += (sender, args) => PropertyChanged(this, args);
         }
 
         /// <summary>
@@ -89,6 +96,7 @@ namespace GoogleCloudExtension.Options
             DialogShown = false;
             ClientId = null;
             HideUserProjectControl = false;
+            DoNotShowAspNetCoreGceWarning = false;
         }
 
         /// <summary>
