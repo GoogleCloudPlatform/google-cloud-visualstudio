@@ -28,7 +28,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         private IPublishDialog _publishDialog;
 
         [ClassInitialize]
-        public void BeforeAny()
+        public static void BeforeAny(TestContext context)
         {
             // Ensure Microsoft.VisualStudio.ImageCatalog and Microsoft.VisualStudio.Images are references.
             // ReSharper disable once AssignmentIsFullyDiscarded
