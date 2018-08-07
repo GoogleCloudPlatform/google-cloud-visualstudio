@@ -12,22 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
 {
     [TestClass]
-    public class CoreGceWarningContentTests : ExtensionTestBase
+    public class CoreGceWarningContentTests
     {
         private CoreGceWarningStepContent _objectUnderTest;
         private IPublishDialog _publishDialog;
 
+        [ClassInitialize]
+        public void BeforeAny()
+        {
+            // Ensure Microsoft.VisualStudio.ImageCatalog and Microsoft.VisualStudio.Images are references.
+            // ReSharper disable once AssignmentIsFullyDiscarded
+            _ = new CrispImage { Moniker = KnownMonikers.StatusWarning };
+        }
+
         [TestInitialize]
         public void BeforeEach()
         {
+            GoogleCloudExtensionPackage.Instance = Mock.Of<IGoogleCloudExtensionPackage>();
             _publishDialog = Mock.Of<IPublishDialog>(pd => pd.Project.Name == "SomeVsProjectName");
         }
 
