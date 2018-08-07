@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
             set { SetValueAndRaise(ref _choices, value); }
         }
 
-        public IProtectedCommand PublishCommand { get; } =
+        public IProtectedCommand ActionCommand { get; } =
             new ProtectedCommand(() => throw new NotSupportedException(), false);
 
         public string Title { get; }
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Choice
         /// <summary>
         /// The Caption of the Publish button.
         /// </summary>
-        public string PublishCaption { get; } = Resources.PublishDialogPublishButtonCaption;
+        public string ActionCaption { get; } = Resources.PublishDialogPublishButtonCaption;
 
         private IPublishDialog PublishDialog { get; }
 

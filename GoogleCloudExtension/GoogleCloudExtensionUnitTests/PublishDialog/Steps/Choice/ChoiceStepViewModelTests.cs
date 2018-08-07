@@ -61,9 +61,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         [TestMethod]
         public void TestInitialState()
         {
-            Assert.IsFalse(_objectUnderTest.PublishCommand.CanExecuteCommand);
+            Assert.IsFalse(_objectUnderTest.ActionCommand.CanExecuteCommand);
             CollectionAssert.That.IsEmpty(_objectUnderTest.Choices);
-            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.PublishCaption);
+            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.ActionCaption);
         }
 
         [TestMethod]
@@ -147,7 +147,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         [TestMethod]
         public void TestPublishCommand_Throws()
         {
-            _objectUnderTest.PublishCommand.Execute(null);
+            _objectUnderTest.ActionCommand.Execute(null);
 
             PackageMock.Verify(p => p.UserPromptService.ExceptionPrompt(It.IsAny<NotSupportedException>()));
         }

@@ -179,7 +179,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             Assert.IsFalse(_objectUnderTest.EnableApiCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.HasErrors);
             Assert.IsFalse(_objectUnderTest.ShowInputControls);
-            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.PublishCaption);
+            Assert.AreEqual(Resources.PublishDialogPublishButtonCaption, _objectUnderTest.ActionCaption);
         }
 
         [TestMethod]

@@ -37,9 +37,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         public string Title { get; }
 
         /// <summary>
-        /// The Caption of the Publish button.
+        /// The Caption of the Next/Publish button.
         /// </summary>
-        public string PublishCaption { get; } = Resources.PublishDialogNextButtonCaption;
+        public string ActionCaption { get; } = Resources.PublishDialogNextButtonCaption;
 
         /// <summary>
         /// The general options for the package.
@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         /// <summary>
         /// The command to continue on to the GCE publish step.
         /// </summary>
-        public IProtectedCommand PublishCommand { get; }
+        public IProtectedCommand ActionCommand { get; }
 
         /// <summary>
         /// The command to open the browser to docs for hosting ASP.NET Core on IIS.
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
             _publishDialog = publishDialog;
             BrowseAspNetCoreIisDocs = new ProtectedCommand(OnBrowseAspNetCoreIisDocs);
             Title = string.Format(Resources.GcePublishStepTitle, publishDialog.Project.Name);
-            PublishCommand = new ProtectedCommand(OnOkCommand);
+            ActionCommand = new ProtectedCommand(OnNextCommand);
             _nextStepContent = new GceStepContent(_publishDialog);
             _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
         }
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         private void OnBrowseAspNetCoreIisDocs() =>
             BrowserService.OpenBrowser(AspNetCoreIisDocsLink);
 
-        private void OnOkCommand()
+        private void OnNextCommand()
         {
             _publishDialog.Project.SaveUserProperty(
                 ChoiceStepViewModel.GoogleCloudPublishChoicePropertyName,

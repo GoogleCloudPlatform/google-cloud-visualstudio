@@ -54,8 +54,8 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </summary>
         public bool CanPublish
         {
-            get => PublishCommand.CanExecuteCommand;
-            protected set => PublishCommand.CanExecuteCommand = value;
+            get => ActionCommand.CanExecuteCommand;
+            protected set => ActionCommand.CanExecuteCommand = value;
         }
 
         /// <summary>
@@ -150,13 +150,20 @@ namespace GoogleCloudExtension.PublishDialog.Steps
             }
         }
 
-        public IProtectedCommand PublishCommand => PublishCommandAsync;
+        /// <summary>
+        /// The Command of the Next/Publish button.
+        /// </summary>
+        public IProtectedCommand ActionCommand => PublishCommandAsync;
+
+        /// <summary>
+        /// The Title of the dialog.
+        /// </summary>
         public abstract string Title { get; }
 
         /// <summary>
-        /// The Caption of the Publish button.
+        /// The Caption of the Next/Publish button.
         /// </summary>
-        public string PublishCaption { get; } = Resources.PublishDialogPublishButtonCaption;
+        public string ActionCaption { get; } = Resources.PublishDialogPublishButtonCaption;
 
         protected internal abstract ProtectedAsyncCommand PublishCommandAsync { get; }
 

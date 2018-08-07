@@ -23,9 +23,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
     public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
         /// <summary>
-        /// The command to publish the project.
+        /// The Command linked to the Next/Publish button.
         /// </summary>
-        IProtectedCommand PublishCommand { get; }
+        IProtectedCommand ActionCommand { get; }
 
         /// <summary>
         /// The title of the publish dialog in this step.
@@ -33,9 +33,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         string Title { get; }
 
         /// <summary>
-        /// The Caption of the Publish button.
+        /// The Caption of the Next/Publish button.
         /// </summary>
-        string PublishCaption { get; }
+        string ActionCaption { get; }
 
         /// <summary>
         /// Called every time this step moves on to the top of the navigation stack.

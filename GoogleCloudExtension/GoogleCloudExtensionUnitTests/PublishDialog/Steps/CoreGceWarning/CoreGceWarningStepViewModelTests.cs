@@ -71,13 +71,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         {
             _objectUnderTest = new CoreGceWarningStepViewModel(_publishDialogMock.Object);
 
-            Assert.AreEqual(Resources.PublishDialogNextButtonCaption, _objectUnderTest.PublishCaption);
+            Assert.AreEqual(Resources.PublishDialogNextButtonCaption, _objectUnderTest.ActionCaption);
         }
 
         [TestMethod]
         public void TestPublishCommand_SavesChoiceProperty()
         {
-            _objectUnderTest.PublishCommand.Execute(null);
+            _objectUnderTest.ActionCommand.Execute(null);
 
             _propertyServiceMock.Verify(
                 ps => ps.SaveUserProperty(
@@ -89,7 +89,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
         [TestMethod]
         public void TestPublishCommand_NavigatesToNextStep()
         {
-            _objectUnderTest.PublishCommand.Execute(null);
+            _objectUnderTest.ActionCommand.Execute(null);
 
             _publishDialogMock.Verify(pd => pd.NavigateToStep(It.IsAny<GceStepContent>()));
         }
@@ -100,7 +100,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
             IStepContent<IPublishDialogStep> nextStepContent = null;
             _publishDialogMock.Setup(pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()))
                 .Callback<IStepContent<IPublishDialogStep>>(stepContent => nextStepContent = stepContent);
-            _objectUnderTest.PublishCommand.Execute(null);
+            _objectUnderTest.ActionCommand.Execute(null);
 
             _objectUnderTest.OnVisible(nextStepContent.ViewModel);
 
@@ -113,7 +113,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
             IStepContent<IPublishDialogStep> nextStepContent = null;
             _publishDialogMock.Setup(pd => pd.NavigateToStep(It.IsAny<IStepContent<IPublishDialogStep>>()))
                 .Callback<IStepContent<IPublishDialogStep>>(stepContent => nextStepContent = stepContent);
-            _objectUnderTest.PublishCommand.Execute(null);
+            _objectUnderTest.ActionCommand.Execute(null);
 
             _objectUnderTest.OnVisible(nextStepContent.ViewModel);
 
