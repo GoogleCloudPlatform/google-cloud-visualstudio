@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
     public class ConsoleLinkGroup : TreeHierarchy
     {
         public ConsoleLinkGroup(string caption, ICloudSourceContext context, IEnumerable<LinkInfo> groupLinks) : base(
-            groupLinks.Select(l => new ConsoleLink(context, l)))
+            groupLinks.Select(l => new ConsoleLink(l, context)))
         {
             Caption = caption;
         }

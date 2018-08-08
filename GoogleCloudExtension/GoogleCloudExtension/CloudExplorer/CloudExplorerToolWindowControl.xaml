@@ -9,8 +9,6 @@
              x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:consoleLinks="clr-namespace:GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks"
-             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
-             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
@@ -92,17 +90,8 @@
                     <Hyperlink Focusable="False"
                                Command="{Binding NavigateCommand}"
                                Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogHyperlinkStyleKey}}">
-                        <Run Focusable="False" Text="{Binding Caption}" />
+                        <TextBlock Focusable="False" Text="{Binding Caption}" />
                     </Hyperlink>
-
-                    <TextBlock Focusable="False"
-                               Visibility="{Binding InfoLinkInfo, Converter={utils:NullEmptyInvisibleConverter}}">
-                        <Hyperlink Command="{Binding NavigateInfoCommand}" TextDecorations="None">
-                            <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.StatusInformation}"
-                                                Width="12"
-                                                ToolTip="{Binding InfoLinkInfo.Caption}"/>
-                        </Hyperlink>
-                    </TextBlock>
                 </TextBlock>
             </DataTemplate>
 
