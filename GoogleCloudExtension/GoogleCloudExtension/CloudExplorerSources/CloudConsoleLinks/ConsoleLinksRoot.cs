@@ -58,10 +58,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         private const string PubSubPath = "cloudpubsub";
         private const string MachineLearningEnginePath = "mlengine";
 
+        private const string KubernetesCodelabLink =
+            "https://codelabs.developers.google.com/codelabs/cloud-kubernetes-aspnetcore/";
+
         internal static readonly LinkInfo s_consoleHomeFormatInfo = new LinkInfo(
             HomeUrl, Resources.CloudExplorerConsoleLinkCaption);
 
-        private static readonly IReadOnlyList<(string, string)> s_primaryConsoleLinkPaths = new[]
+        private static readonly IReadOnlyList<(string path, string caption)> s_primaryConsoleLinkPaths = new[]
         {
             (AppEnginePath, Resources.CloudLinkAppEngineCaption),
             (ComputeEnginePath, Resources.CloudLinkComputeEngineCaption),
@@ -123,6 +126,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                 })
             };
 
+        private static readonly IReadOnlyDictionary<string, LinkInfo> s_helpLinks = new Dictionary<string, LinkInfo>
+        {
+            [KubernetesEnginePath] = new LinkInfo(KubernetesCodelabLink, Resources.ConsoleLinksKubernetesInfoTooltip)
+        };
+
         private readonly Func<string, Process> _startProcess;
 
         private readonly ICloudSourceContext _context;
@@ -157,9 +165,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
             Caption = s_consoleHomeFormatInfo.Caption;
             NavigateCommand = new ProtectedCommand(OnNavigateCommand);
 
-            foreach (LinkInfo formatLinkInfo in PrimaryConsoleLinkFormats)
+            foreach ((string path, string caption) tuple in s_primaryConsoleLinkPaths)
             {
-                Children.Add(new ConsoleLink(formatLinkInfo, _context));
+                LinkInfo linkInfo = PathTupleToLinkInfo(tuple);
+                ConsoleLink consoleLink = s_helpLinks.ContainsKey(tuple.path) ?
+                    new ConsoleLink(_context, linkInfo, s_helpLinks[tuple.path]) :
+                    new ConsoleLink(_context, linkInfo);
+
+                Children.Add(consoleLink);
             }
 
             foreach ((string groupCaption, IEnumerable<LinkInfo> linkInfos) in GroupedConsoleLinkFormats)

@@ -2495,4 +2495,8 @@ Delete corrupted file?</value>
   <data name="UiDontShowWarningAgain" xml:space="preserve">
     <value>Don't show this warning again</value>
   </data>
+  <data name="ConsoleLinksKubernetesInfoTooltip" xml:space="preserve">
+    <value>Kubernetes Engine Code Lab</value>
+    <comment>The tooltip of the info link of the kubernetes console link.</comment>
+  </data>
 </root>

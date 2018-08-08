@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
 {
@@ -26,7 +26,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
     {
         private readonly LinkInfo _linkFormatInfo;
         private readonly ICloudSourceContext _context;
-        private readonly Func<string, Process> _startProcess;
+        private readonly Lazy<IBrowserService> _browserService =
+            GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
 
         /// <summary>
         /// The command to execute when the link is pressed.
@@ -34,38 +35,50 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         public ProtectedCommand NavigateCommand { get; }
 
         /// <summary>
-        /// Creates a new Console Link tree leaf node.
+        /// The link info for the help link, if any.
         /// </summary>
-        /// <param name="linkFormatInfo">
-        /// The link info with the caption and the <see cref="string.Format(string,object[])"/> ready url format.
-        /// </param>
-        /// <param name="context">The <see cref="ICloudSourceContext"/>.</param>
-        public ConsoleLink(LinkInfo linkFormatInfo, ICloudSourceContext context) : this(
-            linkFormatInfo, context, Process.Start)
-        { }
+        public LinkInfo InfoLinkInfo { get; }
 
         /// <summary>
-        /// Internal constructor for testing.
+        /// The command to navigate to the info link.
         /// </summary>
+        public ProtectedCommand NavigateInfoCommand { get; }
+
+        private IBrowserService BrowserService => _browserService.Value;
+
+        /// <summary>
+        /// Creates a new Console Link tree leaf node.
+        /// </summary>
+        /// <param name="context">The <see cref="ICloudSourceContext"/>.</param>
         /// <param name="linkFormatInfo">
         /// The link info with the caption and the <see cref="string.Format(string,object[])"/> ready url format.
         /// </param>
-        /// <param name="context">The <see cref="ICloudSourceContext"/>.</param>
-        /// <param name="startProcess">
-        /// Dependency injecion of the static function <see cref="Process.Start(string)"/>.
-        /// </param>
-        internal ConsoleLink(LinkInfo linkFormatInfo, ICloudSourceContext context, Func<string, Process> startProcess)
+        /// <param name="infoLinkInfo">The link info for the help section of the console link.</param>
+        public ConsoleLink(ICloudSourceContext context, LinkInfo linkFormatInfo, LinkInfo infoLinkInfo) : this(context, linkFormatInfo)
         {
-            _startProcess = startProcess;
+            InfoLinkInfo = infoLinkInfo;
+            NavigateInfoCommand.CanExecuteCommand = true;
+        }
+
+        /// <summary>
+        /// Creates a new Console Link tree leaf node.
+        /// </summary>
+        /// <param name="context">The <see cref="ICloudSourceContext"/>.</param>
+        /// <param name="linkFormatInfo">
+        /// The link info with the caption and the <see cref="string.Format(string,object[])"/> ready url format.
+        /// </param>
+        public ConsoleLink(ICloudSourceContext context, LinkInfo linkFormatInfo)
+        {
             _context = context;
             _linkFormatInfo = linkFormatInfo;
             Caption = _linkFormatInfo.Caption;
             NavigateCommand = new ProtectedCommand(OnNavigateCommand);
+            NavigateInfoCommand = new ProtectedCommand(OnNavigateHelpCommand, false);
         }
 
-        private void OnNavigateCommand()
-        {
-            _startProcess(string.Format(_linkFormatInfo.NavigateUrl, _context.CurrentProject?.ProjectId));
-        }
+        private void OnNavigateCommand() => BrowserService.OpenBrowser(
+            string.Format(_linkFormatInfo.NavigateUrl, _context.CurrentProject?.ProjectId));
+
+        private void OnNavigateHelpCommand() => BrowserService.OpenBrowser(InfoLinkInfo.NavigateUrl);
     }
 }
