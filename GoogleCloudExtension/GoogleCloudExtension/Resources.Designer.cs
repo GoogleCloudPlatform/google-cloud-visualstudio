@@ -1888,7 +1888,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cloud Launcher.
+        ///   Looks up a localized string similar to Marketplace.
         /// </summary>
         public static string CloudLinkCloudLauncherCaption {
             get {

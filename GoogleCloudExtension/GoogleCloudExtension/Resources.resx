@@ -2257,7 +2257,7 @@ Delete corrupted file?</value>
     <comment>Caption for the cloud console link to Deployment Manager</comment>
   </data>
   <data name="CloudLinkCloudLauncherCaption" xml:space="preserve">
-    <value>Cloud Launcher</value>
+    <value>Marketplace</value>
     <comment>Caption for the cloud console link to Cloud Launcher</comment>
   </data>
   <data name="CloudLinkIAmCaption" xml:space="preserve">
