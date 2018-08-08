@@ -282,5 +282,15 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsFalseForUninitalizedProject()
+        {
+            _testObject.Filter = "something";
+
+            bool result = _testObject.FilterItem(new Project());
+
+            Assert.IsFalse(result);
+        }
     }
 }
