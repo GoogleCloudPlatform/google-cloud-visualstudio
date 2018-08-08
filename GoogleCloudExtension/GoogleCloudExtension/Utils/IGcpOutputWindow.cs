@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
+
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
@@ -47,5 +49,23 @@ namespace GoogleCloudExtension.Utils
         /// <param name="sender">The sender this event comes from.</param>
         /// <param name="args">The <see cref="OutputHandlerEventArgs"/> for the event.</param>
         void OutputLine(object sender, OutputHandlerEventArgs args);
+
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="str">The line of text to output.</param>
+        Task OutputLineAsync(string str);
+
+        /// <summary>
+        /// Activates the GCP output window pane, making sure it is visible for the user.
+        /// </summary>
+        Task ActivateAsync();
+
+        /// <summary>
+        /// Clears all of the content from the GCP window pane.
+        /// </summary>
+        Task ClearAsync();
+
+        Task OutputLineAsync(string line, OutputStream stream);
     }
 }

@@ -194,18 +194,17 @@ namespace GoogleCloudExtension.Deployment
         {
             try
             {
-                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+                await GcpOutputWindow.ClearAsync();
+                await GcpOutputWindow.ActivateAsync();
+                await GcpOutputWindow.OutputLineAsync(string.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
 
                 TimeSpan deploymentDuration;
                 Result result;
-                using (StatusbarService.Freeze())
-                using (StatusbarService.ShowDeployAnimation())
+                using (await StatusbarService.FreezeAsync())
+                using (await StatusbarService.ShowDeployAnimationAsync())
                 using (IDisposableProgress progress =
-                    StatusbarService.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-                using (ShellUtils.SetShellUIBusy())
+                    await StatusbarService.ShowProgressBarAsync(Resources.GkePublishDeploymentStatusMessage))
+                using (await ShellUtils.SetShellUIBusyAsync())
                 {
                     DateTime deploymentStartTime = DateTime.Now;
 
@@ -231,13 +230,13 @@ namespace GoogleCloudExtension.Deployment
 
                 if (result.Failed)
                 {
-                    StatusbarService.SetText(Resources.PublishFailureStatusMessage);
+                    await StatusbarService.SetTextAsync(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
                 }
                 else
                 {
-                    StatusbarService.SetText(Resources.PublishSuccessStatusMessage);
+                    await StatusbarService.SetTextAsync(Resources.PublishSuccessStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(
                         GkeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
@@ -245,9 +244,9 @@ namespace GoogleCloudExtension.Deployment
             }
             catch (Exception)
             {
-                GcpOutputWindow.OutputLine(
+                await GcpOutputWindow.OutputLineAsync(
                     string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
-                StatusbarService.SetText(Resources.PublishFailureStatusMessage);
+                await StatusbarService.SetTextAsync(Resources.PublishFailureStatusMessage);
                 EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
@@ -323,7 +322,7 @@ namespace GoogleCloudExtension.Deployment
                 Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(
                     project,
                     stageDirectory,
-                    GcpOutputWindow.OutputLine,
+                    GcpOutputWindow.OutputLineAsync,
                     options.Configuration);
                 if (!await progress.UpdateProgressAsync(createAppBundleTask, 0.1, 0.3))
                 {
@@ -337,7 +336,7 @@ namespace GoogleCloudExtension.Deployment
                     options.DeploymentVersion);
 
                 Task<bool> buildContainerTask =
-                    options.KubectlContext.BuildContainerAsync(imageTag, stageDirectory, GcpOutputWindow.OutputLine);
+                    options.KubectlContext.BuildContainerAsync(imageTag, stageDirectory, GcpOutputWindow.OutputLineAsync);
                 if (!await progress.UpdateProgressAsync(buildContainerTask, 0.4, 0.7))
                 {
                     return null;
@@ -440,7 +439,7 @@ namespace GoogleCloudExtension.Deployment
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;
-            GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage);
+            await GcpOutputWindow.OutputLineAsync(Resources.GkePublishWaitingForServiceIpMessage);
             while (actualTime < s_newServiceIpTimeout)
             {
                 string ip = await options.KubectlContext.GetPublicServiceIpAsync(options.DeploymentName);

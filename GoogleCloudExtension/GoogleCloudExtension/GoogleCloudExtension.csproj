@@ -244,6 +244,7 @@
       <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Projects\ProjectPropertyConstants.cs" />
+    <Compile Include="RegisterUIFactoriesExtensions.cs" />
     <Compile Include="Services\BrowserService.cs" />
     <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
     <Compile Include="Deployment\AppEngineFlexDeployment.cs" />

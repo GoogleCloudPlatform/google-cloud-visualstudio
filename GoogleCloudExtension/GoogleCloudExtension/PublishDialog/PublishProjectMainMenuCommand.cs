@@ -75,6 +75,9 @@ namespace GoogleCloudExtension.PublishDialog
 
             void OnBeforeQueryStatus(object sender, EventArgs e)
             {
+#pragma warning disable VSTHRD109 // Switch instead of assert in async methods
+                ThreadHelper.ThrowIfNotOnUIThread();
+#pragma warning restore VSTHRD109 // Switch instead of assert in async methods
                 if (!(sender is OleMenuCommand menuCommand))
                 {
                     return;

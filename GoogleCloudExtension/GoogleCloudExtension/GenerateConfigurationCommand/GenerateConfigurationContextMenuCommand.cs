@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     return;
                 }
 
-                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(Resources.GenerateConfigurationAppYamlGeneratedMessage);
             }
 
             // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
@@ -136,7 +136,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     return;
                 }
 
-                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(Resources.GenerateConfigurationDockerfileGeneratedMessage);
             }
         }
 

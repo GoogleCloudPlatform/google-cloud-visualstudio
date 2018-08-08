@@ -30,7 +30,6 @@ using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -123,7 +122,14 @@ namespace GoogleCloudExtension
         /// </summary>
         public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
-        public AnalyticsOptions GeneralSettings => GetDialogPage<AnalyticsOptions>();
+        public AnalyticsOptions GeneralSettings
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetDialogPage<AnalyticsOptions>();
+            }
+        }
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -285,11 +291,6 @@ namespace GoogleCloudExtension
         {
             try
             {
-                // Activity log utils, to aid in debugging.
-                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
-                await activityLog.LogInfoAsync("Starting Google Cloud Tools.");
-
-                Task<DTE2> dteTask = GetServiceAsync<SDTE, DTE2>();
                 _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
                 CredentialsStore = _componentModel.GetService<ICredentialsStore>();
                 ExportProvider mefExportProvider = _componentModel.DefaultExportProvider;
@@ -300,10 +301,14 @@ namespace GoogleCloudExtension
                 _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
                 _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
 
-                Dte = await dteTask;
+                Dte = await GetServiceAsync<SDTE, DTE2>();
 
                 // Remember the package.
                 Instance = this;
+
+                // Activity log utils, to aid in debugging.
+                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await activityLog.LogInfoAsync("Starting Google Cloud Tools.");
 
                 // Register the command handlers.
                 await Task.WhenAll(
@@ -315,8 +320,9 @@ namespace GoogleCloudExtension
                     GenerateConfigurationContextMenuCommand.InitializeAsync(this, token),
                     ErrorReportingToolWindowCommand.InitializeAsync(this, token));
 
+
                 // Update the installation status of the package.
-                CheckInstallationStatus();
+                await CheckInstallationStatusAsync();
 
                 // Ensure the commands UI state is updated when the GCP project changes.
                 CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
@@ -326,12 +332,10 @@ namespace GoogleCloudExtension
                 // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
                 ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-                IVsRegisterUIFactories registerUIFactories = await GetServiceAsync<SVsUIFactory, IVsRegisterUIFactories>();
-
-                ErrorHandler.ThrowOnFailure(
-                    registerUIFactories.RegisterUIFactory(
-                        typeof(GcpMenuBarControlFactory).GUID,
-                        _componentModel.GetService<GcpMenuBarControlFactory>()));
+                IVsRegisterUIFactories registerUIFactories =
+                    await GetServiceAsync<SVsUIFactory, IVsRegisterUIFactories>();
+                var controlFactory = _componentModel.GetService<GcpMenuBarControlFactory>();
+                await registerUIFactories.RegisterUIFactoryAsync(controlFactory, token);
             }
             catch (Exception e)
             {
@@ -372,6 +376,7 @@ namespace GoogleCloudExtension
         /// <returns>The service.</returns>
         public async Task<I> GetServiceAsync<S, I>()
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             return (I)await GetServiceAsync(typeof(S));
         }
 
@@ -398,7 +403,11 @@ namespace GoogleCloudExtension
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
+        public T GetDialogPage<T>() where T : DialogPage
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return (T)GetDialogPage(typeof(T));
+        }
 
         /// <summary>
         /// Displays the options page of the given type.
@@ -430,8 +439,9 @@ namespace GoogleCloudExtension
         /// if no previous version is found, or an upgrade if a lower version is found. If the same version
         /// is found, nothing is reported.
         /// </summary>
-        private void CheckInstallationStatus()
+        private async Task CheckInstallationStatusAsync()
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             AnalyticsOptions settings = GeneralSettings;
             if (settings.InstalledVersion == null)
             {

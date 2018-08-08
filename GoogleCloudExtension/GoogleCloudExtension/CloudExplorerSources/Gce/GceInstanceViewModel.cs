@@ -200,11 +200,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
-                            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
+                            await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
                             break;
 
                         case OperationType.StopInstance:
-                            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
+                            await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
                             break;
                     }
 
@@ -390,8 +390,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.Default.Activate();
-                GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
+                await GcpOutputWindow.Default.ActivateAsync();
+                await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
                 EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
@@ -424,8 +424,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.Default.Activate();
-                GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
+                await GcpOutputWindow.Default.ActivateAsync();
+                await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
 
                 EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Failure));
             }

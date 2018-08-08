@@ -76,9 +76,9 @@ namespace GoogleCloudExtension.Deployment
             // Ensure NuGet packages are restored.
             project.Project.DTE.Solution.SolutionBuild.BuildProject(configuration, project.Project.UniqueName, true);
 
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
-            GcpOutputWindow.Activate();
+            await GcpOutputWindow.ClearAsync();
+            await GcpOutputWindow.OutputLineAsync(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+            await GcpOutputWindow.ActivateAsync();
 
             string msbuildPath = VsVersionUtils.ToolsPathProvider.GetMsbuildPath();
             MSBuildTarget target;
@@ -105,15 +105,15 @@ namespace GoogleCloudExtension.Deployment
                 new MSBuildProperty("AllowUntrustedCertificate", "True")
             };
             string publishMessage = string.Format(Resources.GcePublishProgressMessage, targetInstance.Name);
-            using (StatusbarHelper.FreezeText(publishMessage))
-            using (StatusbarHelper.ShowDeployAnimation())
-            using (ShellUtils.SetShellUIBusy())
+            using (await StatusbarHelper.FreezeTextAsync(publishMessage))
+            using (await StatusbarHelper.ShowDeployAnimationAsync())
+            using (await ShellUtils.SetShellUIBusyAsync())
             {
                 string msBuildParameters = string.Join(" ", parameters);
                 bool result = await ProcessService.RunCommandAsync(
                     msbuildPath,
                     msBuildParameters,
-                    GcpOutputWindow.OutputLine);
+                    GcpOutputWindow.OutputLineAsync);
 
                 if (result)
                 {
@@ -124,7 +124,10 @@ namespace GoogleCloudExtension.Deployment
 
                 // An inital failure is common, retry.
                 await Task.Delay(TimeSpan.FromMilliseconds(100));
-                return await ProcessService.RunCommandAsync(msbuildPath, msBuildParameters, GcpOutputWindow.OutputLine);
+                return await ProcessService.RunCommandAsync(
+                    msbuildPath,
+                    msBuildParameters,
+                    GcpOutputWindow.OutputLineAsync);
             }
         }
     }

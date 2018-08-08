@@ -232,12 +232,12 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
                 if (result)
                 {
-                    GcpOutputWindow.Default.OutputLine(
+                    await GcpOutputWindow.Default.OutputLineAsync(
                         string.Format(Resources.GcePublishSuccessMessage, project.Name, selectedInstance.Name));
-                    StatusbarHelper.Default.SetText(Resources.PublishSuccessStatusMessage);
+                    await StatusbarHelper.Default.SetTextAsync(Resources.PublishSuccessStatusMessage);
 
                     string url = selectedInstance.GetDestinationAppUri();
-                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
                         Process.Start(url);
@@ -253,16 +253,16 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
                 }
                 else
                 {
-                    GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
-                    StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
+                    await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                    await StatusbarHelper.Default.SetTextAsync(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.Default.OutputLine(string.Format(Resources.GcePublishFailedMessage, project.Name));
-                StatusbarHelper.Default.SetText(Resources.PublishFailureStatusMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.GcePublishFailedMessage, project.Name));
+                await StatusbarHelper.Default.SetTextAsync(Resources.PublishFailureStatusMessage);
 
                 EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }

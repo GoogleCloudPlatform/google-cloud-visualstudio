@@ -35,7 +35,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private const string DefaultContentsPath = "default-contents-path";
         private GCloudContext _objectUnderTest;
         private Mock<IProcessService> _processServiceMock;
-        private Action<string> _mockedOutputAction;
+        private Func<string, Task> _mockedOutputAction;
 
         protected override void BeforeEach()
         {
@@ -43,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             SetupRunCommandResult(true);
             PackageMock.Setup(p => p.ProcessService).Returns(_processServiceMock.Object);
             _objectUnderTest = new GCloudContext();
-            _mockedOutputAction = Mock.Of<Action<string>>();
+            _mockedOutputAction = Mock.Of<Func<string, Task>>();
         }
 
         [TestMethod]
@@ -311,7 +311,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "cmd.exe",
                     It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -323,7 +323,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Returns(Task.FromResult(result));
@@ -343,22 +343,21 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
         private void SetupRunCommandInvokeHandler(string expectedOutputLine)
         {
-            var outputHandlerEventArgs = new OutputHandlerEventArgs(expectedOutputLine, OutputStream.StandardOutput);
             _processServiceMock
                 .Setup(
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        EventHandler<OutputHandlerEventArgs> handler,
+                        Func<string, OutputStream, Task> handler,
                         string workingDir,
-                        IDictionary<string, string> env) => handler.Invoke(null, outputHandlerEventArgs))
+                        IDictionary<string, string> env) => handler.Invoke(expectedOutputLine, OutputStream.StandardOutput))
                 .Returns(Task.FromResult(true));
         }
     }

@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.Deployment
         public async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
-            Action<string> outputAction,
+            Func<string, OutputStream, Task> outputAction,
             string configuration)
         {
             string arguments = $"publish -o \"{stageDirectory}\" -c {configuration}";
@@ -92,11 +92,11 @@ namespace GoogleCloudExtension.Deployment
             Debug.WriteLine($"Using tools from {externalTools}");
             Debug.WriteLine($"Setting working directory to {workingDir}");
             FileSystem.Directory.CreateDirectory(stageDirectory);
-            outputAction($"dotnet {arguments}");
+            await outputAction($"dotnet {arguments}", OutputStream.StandardOutput);
             bool result = await ProcessService.RunCommandAsync(
                 file: _toolsPathProvider.GetDotnetPath(),
                 args: arguments,
-                handler: (o, e) => outputAction(e.Line),
+                handler: outputAction,
                 workingDir: workingDir,
                 environment: env);
             await GCloudWrapper.GenerateSourceContextAsync(project.DirectoryPath, stageDirectory);

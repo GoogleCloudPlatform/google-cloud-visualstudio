@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 
@@ -79,6 +80,18 @@ namespace GoogleCloudExtension.Utils
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_guid, false);
 
             return new Disposable(SetShellNormal);
+        }
+
+
+        /// <summary>
+        /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
+        /// to a variable in a using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
+        public async Task<IDisposable> SetShellUIBusyAsync()
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return SetShellUIBusy();
         }
 
         /// <summary>

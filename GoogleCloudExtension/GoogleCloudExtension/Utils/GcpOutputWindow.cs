@@ -14,8 +14,10 @@
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using System;
 using System.ComponentModel.Composition;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -29,6 +31,9 @@ namespace GoogleCloudExtension.Utils
         private static readonly Guid s_windowGuid = new Guid("E701CE22-DDEA-418A-9E66-C5A4F3891958");
 
         public static IGcpOutputWindow Default => GoogleCloudExtensionPackage.Instance.GcpOutputWindow;
+
+        private static JoinableTaskFactory JoinableTaskFactory =>
+            GoogleCloudExtensionPackage.Instance.JoinableTaskFactory;
 
         private readonly Lazy<IVsOutputWindowPane> _outputWindowPane = new Lazy<IVsOutputWindowPane>(() =>
         {
@@ -51,6 +56,22 @@ namespace GoogleCloudExtension.Utils
             ThreadHelper.ThrowIfNotOnUIThread();
             _outputWindowPane.Value?.OutputString(str);
             _outputWindowPane.Value?.OutputString("\n");
+        }
+
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="str">The line of text to output.</param>
+        public async Task OutputLineAsync(string str)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            _outputWindowPane.Value?.OutputString(str);
+            _outputWindowPane.Value?.OutputString("\n");
+        }
+
+        public Task OutputLineAsync(string line, OutputStream stream)
+        {
+            return OutputLineAsync(line);
         }
 
         /// <summary>
@@ -86,11 +107,29 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
+        /// Activates the GCP output window pane, making sure it is visible for the user.
+        /// </summary>
+        public async Task ActivateAsync()
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            _outputWindowPane.Value?.Activate();
+        }
+
+        /// <summary>
         /// Clears all of the content from the GCP window pane.
         /// </summary>
         public void Clear()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            _outputWindowPane.Value?.Clear();
+        }
+
+        /// <summary>
+        /// Clears all of the content from the GCP window pane.
+        /// </summary>
+        public async Task ClearAsync()
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             _outputWindowPane.Value?.Clear();
         }
     }

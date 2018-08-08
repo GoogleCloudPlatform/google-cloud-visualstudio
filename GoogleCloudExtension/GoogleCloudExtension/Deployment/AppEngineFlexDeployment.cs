@@ -119,17 +119,17 @@ namespace GoogleCloudExtension.Deployment
                 await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ShellUtils.SaveAllFiles();
 
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
+                await GcpOutputWindow.ActivateAsync();
+                await GcpOutputWindow.ClearAsync();
+                await GcpOutputWindow.OutputLineAsync(string.Format(Resources.FlexPublishStepStartMessage, project.Name));
 
                 TimeSpan deploymentDuration;
                 AppEngineFlexDeploymentResult result;
-                using (StatusbarHelper.Freeze())
-                using (StatusbarHelper.ShowDeployAnimation())
+                using (await StatusbarHelper.FreezeAsync())
+                using (await StatusbarHelper.ShowDeployAnimationAsync())
                 using (IDisposableProgress progress =
-                    StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
-                using (ShellUtils.SetShellUIBusy())
+                    await StatusbarHelper.ShowProgressBarAsync(Resources.FlexPublishProgressMessage))
+                using (await ShellUtils.SetShellUIBusyAsync())
                 {
                     DateTime startDeploymentTime = DateTime.Now;
                     result = await PublishProjectAsync(project, options, progress);
@@ -138,11 +138,11 @@ namespace GoogleCloudExtension.Deployment
 
                 if (result != null)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishSuccessMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+                    await GcpOutputWindow.OutputLineAsync(string.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                    await StatusbarHelper.SetTextAsync(Resources.PublishSuccessStatusMessage);
 
                     string url = result.GetDeploymentUrl();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    await GcpOutputWindow.OutputLineAsync(string.Format(Resources.PublishUrlMessage, url));
                     if (options.OpenWebsite)
                     {
                         Process.Start(url);
@@ -153,8 +153,8 @@ namespace GoogleCloudExtension.Deployment
                 }
                 else
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                    await GcpOutputWindow.OutputLineAsync(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                    await StatusbarHelper.SetTextAsync(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure, deploymentDuration));
                 }
@@ -162,8 +162,8 @@ namespace GoogleCloudExtension.Deployment
             catch (Exception)
             {
                 EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
-                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                await GcpOutputWindow.OutputLineAsync(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                await StatusbarHelper.SetTextAsync(Resources.PublishFailureStatusMessage);
             }
         }
 
@@ -188,7 +188,7 @@ namespace GoogleCloudExtension.Deployment
                 Task<bool> createAppBundleTask = NetCoreAppUtils.CreateAppBundleAsync(
                     project,
                     stageDirectory,
-                    GcpOutputWindow.OutputLine,
+                    GcpOutputWindow.OutputLineAsync,
                     options.Configuration);
                 if (!await progress.UpdateProgressAsync(createAppBundleTask, 0.1, 0.3))
                 {
@@ -215,8 +215,7 @@ namespace GoogleCloudExtension.Deployment
                     stageDirectory: stageDirectory,
                     version: options.Version,
                     promote: options.Promote,
-                    context: options.Context,
-                    outputAction: GcpOutputWindow.OutputLine);
+                    context: options.Context);
                 if (!await progress.UpdateProgressAsync(deployTask, 0.6, 0.9))
                 {
                     Debug.WriteLine("Failed to deploy bundle.");
@@ -237,11 +236,10 @@ namespace GoogleCloudExtension.Deployment
             string stageDirectory,
             string version,
             bool promote,
-            IGCloudContext context,
-            Action<string> outputAction)
+            IGCloudContext context)
         {
             string appYamlPath = Path.Combine(stageDirectory, AppEngineConfiguration.AppYamlName);
-            return context.DeployAppAsync(appYamlPath, version, promote, outputAction);
+            return context.DeployAppAsync(appYamlPath, version, promote, GcpOutputWindow.OutputLineAsync);
         }
     }
 }

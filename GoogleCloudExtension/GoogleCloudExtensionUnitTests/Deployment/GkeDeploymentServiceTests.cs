@@ -52,9 +52,11 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Mock<IKubectlContext> _kubectlContextMock;
         private IParsedProject _mockedParsedProject;
         private static readonly GkeDeployment s_defaultExistingDeployment = new GkeDeployment { Spec = new GkeSpec { Replicas = DefaultReplicas } };
+        private Mock<IDisposable> _disposableMock;
 
         protected override void BeforeEach()
         {
+            _disposableMock = new Mock<IDisposable>();
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
             _gcpOutputWindowMock = new Mock<IGcpOutputWindow>();
             _statusbarServiceMock = new Mock<IStatusbarService> { DefaultValueProvider = DefaultValueProvider.Mock };
@@ -66,7 +68,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     n => n.CreateAppBundleAsync(
                         It.IsAny<IParsedProject>(),
                         It.IsAny<string>(),
-                        It.IsAny<Action<string>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>()))
                 .ReturnsResult(true);
             _netCoreAppUtilsMock.Setup(n => n.CopyOrCreateDockerfile(It.IsAny<IParsedProject>(), It.IsAny<string>()));
@@ -82,7 +84,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             _kubectlContextMock = new Mock<IKubectlContext>();
             _kubectlContextMock
-                .Setup(g => g.BuildContainerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action<string>>()))
+                .Setup(g => g.BuildContainerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Func<string, Task>>()))
                 .ReturnsResult(true);
             _kubectlContextMock
                 .Setup(
@@ -122,7 +124,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _gcpOutputWindowMock.Verify(o => o.Clear());
+            _gcpOutputWindowMock.Verify(o => o.ClearAsync());
         }
 
         [TestMethod]
@@ -130,7 +132,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _gcpOutputWindowMock.Verify(o => o.Activate());
+            _gcpOutputWindowMock.Verify(o => o.ActivateAsync());
         }
 
         [TestMethod]
@@ -149,15 +151,17 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.Freeze());
+            _statusbarServiceMock.Verify(s => s.FreezeAsync());
         }
 
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_UnFreezesStatusbar()
         {
+            _statusbarServiceMock.Setup(s => s.FreezeAsync()).ReturnsResult(_disposableMock.Object);
+
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.Freeze().Dispose());
+            _disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -165,15 +169,17 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.ShowDeployAnimation());
+            _statusbarServiceMock.Verify(s => s.ShowDeployAnimationAsync());
         }
 
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_StopsStatusbarAnimation()
         {
+            _statusbarServiceMock.Setup(s => s.ShowDeployAnimationAsync()).ReturnsResult(_disposableMock.Object);
+
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.ShowDeployAnimation().Dispose());
+            _disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -181,15 +187,19 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.ShowProgressBar(It.IsAny<string>()));
+            _statusbarServiceMock.Verify(s => s.ShowProgressBarAsync(It.IsAny<string>()));
         }
 
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_RemovesStatusbarProgress()
         {
+            var disposableProgress = new Mock<IDisposableProgress>();
+            _statusbarServiceMock.Setup(s => s.ShowProgressBarAsync(It.IsAny<string>()))
+                .ReturnsResult(disposableProgress.Object);
+
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.ShowProgressBar(It.IsAny<string>()).Dispose());
+            disposableProgress.Verify(dp => dp.Dispose());
         }
 
         [TestMethod]
@@ -197,15 +207,17 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         {
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _shellUtilsMock.Verify(s => s.SetShellUIBusy());
+            _shellUtilsMock.Verify(s => s.SetShellUIBusyAsync());
         }
 
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_CancelsShellUiBusy()
         {
+            _shellUtilsMock.Setup(s => s.SetShellUIBusyAsync()).ReturnsResult(_disposableMock.Object);
+
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _shellUtilsMock.Verify(s => s.SetShellUIBusy().Dispose());
+            _disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -227,7 +239,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 n => n.CreateAppBundleAsync(
                     _mockedParsedProject,
                     It.IsAny<string>(),
-                    _gcpOutputWindowMock.Object.OutputLine,
+                    _gcpOutputWindowMock.Object.OutputLineAsync,
                     ExpectedConfiguration));
         }
 
@@ -239,7 +251,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     n => n.CreateAppBundleAsync(
                         It.IsAny<IParsedProject>(),
                         It.IsAny<string>(),
-                        It.IsAny<Action<string>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>()))
                 .ReturnsResult(false);
 
@@ -247,7 +259,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _mockedParsedProject,
                 GetOptionsBuilder().SetConfiguration(ExpectedConfiguration).Build());
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -276,19 +288,19 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                             s.Contains(ExpectedDeploymentName) &&
                             s.Contains(ExpectedDeploymentVersion)),
                     It.IsAny<string>(),
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
         public async Task TestBuildImageAsync_BuildContainerFailureFailsDeployment()
         {
             _kubectlContextMock
-                .Setup(g => g.BuildContainerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Action<string>>()))
+                .Setup(g => g.BuildContainerAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Func<string, Task>>()))
                 .ReturnsResult(false);
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -329,7 +341,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -368,7 +380,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -402,7 +414,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -440,7 +452,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _mockedParsedProject,
                 GetOptionsBuilder().SetExposeService(true).Build());
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -516,7 +528,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         [TestMethod]
@@ -560,7 +572,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
 
         }
 
@@ -613,11 +625,11 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_FailsBuildOnException()
         {
-            _gcpOutputWindowMock.Setup(o => o.Clear()).Throws<Exception>();
+            _gcpOutputWindowMock.Setup(o => o.ClearAsync()).Throws<Exception>();
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, GetOptionsBuilder().Build());
 
-            _statusbarServiceMock.Verify(s => s.SetText(Resources.PublishFailureStatusMessage));
+            _statusbarServiceMock.Verify(s => s.SetTextAsync(Resources.PublishFailureStatusMessage));
         }
 
         private class GkeDeploymentOptionsBuilder

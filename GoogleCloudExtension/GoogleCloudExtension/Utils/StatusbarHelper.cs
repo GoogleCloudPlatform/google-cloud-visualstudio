@@ -16,6 +16,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -51,17 +53,42 @@ namespace GoogleCloudExtension.Utils
             ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                Statusbar.IsFrozen(out int frozen);
-                if (!Convert.ToBoolean(frozen))
-                {
-                    Statusbar.SetText(text);
-                }
+                SetTextImpl(text);
             }
             catch (Exception ex)
             {
                 IVsActivityLog vsActivityLog =
                     GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
                 vsActivityLog.LogError($"Failed to write to the status bar: {ex.Message}");
+            }
+        }
+
+        private void SetTextImpl(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Statusbar.IsFrozen(out int frozen);
+            if (!Convert.ToBoolean(frozen))
+            {
+                Statusbar.SetText(text);
+            }
+        }
+
+        /// <summary>
+        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
+        public async Task SetTextAsync(string text)
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            try
+            {
+                SetTextImpl(text);
+            }
+            catch (Exception ex)
+            {
+                IVsActivityLog vsActivityLog =
+                    await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await vsActivityLog.LogErrorAsync($"Failed to write to the status bar: {ex.Message}");
             }
         }
 
@@ -74,27 +101,54 @@ namespace GoogleCloudExtension.Utils
             ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                Statusbar.IsFrozen(out int frozen);
-                if (!Convert.ToBoolean(frozen))
-                {
-                    Statusbar.GetText(out string existingText);
-                    Statusbar.SetText(text);
-                    Statusbar.FreezeOutput(Convert.ToInt32(true));
-
-                    void UnfreezeText()
-                    {
-                        Statusbar.FreezeOutput(Convert.ToInt32(false));
-                        Statusbar.SetText(existingText);
-                    }
-
-                    return new Disposable(UnfreezeText);
-                }
+                return FreezeTextImpl(text);
             }
             catch (Exception ex)
             {
                 IVsActivityLog vsActivityLog =
                     GoogleCloudExtensionPackage.Instance.GetService<SVsActivityLog, IVsActivityLog>();
                 vsActivityLog.LogError($"Failed to write to the status bar: {ex.Message}");
+                return new Disposable();
+            }
+        }
+
+        /// <summary>
+        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
+        public async Task<IDisposable> FreezeTextAsync(string text)
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            try
+            {
+                return FreezeTextImpl(text);
+            }
+            catch (Exception ex)
+            {
+                IVsActivityLog vsActivityLog =
+                    await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                vsActivityLog.LogError($"Failed to write to the status bar: {ex.Message}");
+                return new Disposable();
+            }
+        }
+
+        private IDisposable FreezeTextImpl(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Statusbar.IsFrozen(out int frozen);
+            if (!Convert.ToBoolean(frozen))
+            {
+                Statusbar.GetText(out string existingText);
+                Statusbar.SetText(text);
+                Statusbar.FreezeOutput(Convert.ToInt32(true));
+
+                void UnfreezeText()
+                {
+                    Statusbar.FreezeOutput(Convert.ToInt32(false));
+                    Statusbar.SetText(existingText);
+                }
+
+                return new Disposable(UnfreezeText);
             }
 
             return new Disposable();
@@ -125,6 +179,18 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
+        /// Shows an animation to show that a deploy action is being executed. This animation will only show
+        /// if VS is showing all of the visual effects. The result of the method should stored in a variable in a
+        /// using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will stop the animation on dispose.</returns>
+        public async Task<IDisposable> ShowDeployAnimationAsync()
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return ShowDeployAnimation();
+        }
+
+        /// <summary>
         /// Shows the progress bar indicator in the Visual Studio shell.
         /// </summary>
         /// <param name="label">The label to use for the progress indicator.</param>
@@ -134,7 +200,22 @@ namespace GoogleCloudExtension.Utils
         /// </returns>
         public IDisposableProgress ShowProgressBar(string label)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return new ProgressBarHelper(Statusbar, label);
+        }
+
+        /// <summary>
+        /// Shows the progress bar indicator in the Visual Studio shell.
+        /// </summary>
+        /// <param name="label">The label to use for the progress indicator.</param>
+        /// <returns>
+        /// An instance of <seealso cref="ProgressBarHelper"/> which can be used to both update the progress bar
+        /// and perform cleanup.
+        /// </returns>
+        public async Task<IDisposableProgress> ShowProgressBarAsync(string label)
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return ShowProgressBar(label);
         }
 
         private void HideDeployAnimation()
@@ -172,6 +253,17 @@ namespace GoogleCloudExtension.Utils
                 vsActivityLog.LogError($"Failed to freeze the status bar output: {ex.Message}");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Freezes the status bar, which prevents updates from other parts of the VS shell.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will unfreeze the status bar on dispose.</returns>
+        public async Task<IDisposable> FreezeAsync()
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return Freeze();
+
         }
 
         private void UnFreeze()

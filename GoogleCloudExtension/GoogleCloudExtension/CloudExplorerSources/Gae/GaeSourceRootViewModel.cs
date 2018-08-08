@@ -216,9 +216,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.Default.OutputLine(Resources.CloudExplorerGaeFailedServicesMessage);
-                GcpOutputWindow.Default.OutputLine(ex.Message);
-                GcpOutputWindow.Default.Activate();
+                await GcpOutputWindow.Default.OutputLineAsync(Resources.CloudExplorerGaeFailedServicesMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(ex.Message);
+                await GcpOutputWindow.Default.ActivateAsync();
 
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
@@ -233,8 +233,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private async Task<IList<ServiceViewModel>> LoadServiceListAsync()
         {
-            var services = await _dataSource.Value.GetServiceListAsync();
-            var resultTasks = services.Select(x => LoadServiceAsync(x));
+            IList<Service> services = await _dataSource.Value.GetServiceListAsync();
+            IEnumerable<Task<ServiceViewModel>> resultTasks = services.Select(LoadServiceAsync);
             return await Task.WhenAll(resultTasks);
         }
 
