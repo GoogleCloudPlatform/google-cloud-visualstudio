@@ -462,6 +462,7 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="Utils\ProcessExtensions.cs" />
     <Compile Include="Utils\ProcessUtils.cs" />
     <Compile Include="Utils\ProtectedAsyncCommand.cs" />
     <Compile Include="Utils\ProtectedCommandBase.cs" />

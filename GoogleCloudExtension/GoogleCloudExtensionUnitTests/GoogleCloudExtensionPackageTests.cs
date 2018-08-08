@@ -92,7 +92,7 @@ namespace GoogleCloudExtensionUnitTests
 
             string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
-            Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
+            Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.Instance.VsEdition);
             Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.Instance.ApplicationName);
             Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.Instance.ApplicationVersion);
             Assert.AreEqual(

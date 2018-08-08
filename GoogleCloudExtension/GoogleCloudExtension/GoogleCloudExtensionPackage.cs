@@ -75,7 +75,7 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, "Usage Report", 0, 0, false, Sort = 0)]
+    [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, AnalyticsOptions.PageName, 1, 2, false)]
     [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
     [ProvideMainWindowFrameControl(
         typeof(GcpMenuBarControl),
@@ -115,10 +115,6 @@ namespace GoogleCloudExtension
         private Lazy<IUserPromptService> _userPromptService;
         private Lazy<IDataSourceFactory> _dataSourceFactory;
         private IComponentModel _componentModel;
-        internal readonly Task _initializeTask;
-
-        private readonly TaskCompletionSource<IGoogleCloudExtensionPackage> _initializeTaskSource =
-            new TaskCompletionSource<IGoogleCloudExtensionPackage>();
 
         private event EventHandler ClosingEvent;
 
@@ -142,12 +138,12 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The version of Visual Studio currently running.
         /// </summary>
-        public string VsVersion { get; private set; }
+        public string VsVersion => Dte.Version;
 
         /// <summary>
         /// The edition of Visual Studio currently running.
         /// </summary>
-        public static string VsEdition { get; private set; }
+        public string VsEdition => Dte.Edition;
 
         /// <summary>
         /// Returns the versioned application name in the right format for analytics, etc...
@@ -193,7 +189,6 @@ namespace GoogleCloudExtension
 
         public GoogleCloudExtensionPackage()
         {
-            _initializeTask = _initializeTaskSource.Task;
             // Register all of the properties.
             RegisterSolutionOptions();
         }
@@ -292,11 +287,10 @@ namespace GoogleCloudExtension
             {
                 // Activity log utils, to aid in debugging.
                 IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
-                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                activityLog.LogInfo("Starting Google Cloud Tools.");
+                await activityLog.LogInfoAsync("Starting Google Cloud Tools.");
 
+                Task<DTE2> dteTask = GetServiceAsync<SDTE, DTE2>();
                 _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
-                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
                 CredentialsStore = _componentModel.GetService<ICredentialsStore>();
                 ExportProvider mefExportProvider = _componentModel.DefaultExportProvider;
                 _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
@@ -306,11 +300,9 @@ namespace GoogleCloudExtension
                 _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
                 _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
 
-                Dte = await GetServiceAsync<SDTE, DTE2>();
-                VsVersion = Dte.Version;
-                VsEdition = Dte.Edition;
+                Dte = await dteTask;
 
-                // An remember the package.
+                // Remember the package.
                 Instance = this;
 
                 // Register the command handlers.
@@ -340,14 +332,12 @@ namespace GoogleCloudExtension
                     registerUIFactories.RegisterUIFactory(
                         typeof(GcpMenuBarControlFactory).GUID,
                         _componentModel.GetService<GcpMenuBarControlFactory>()));
-                _initializeTaskSource.SetResult(this);
             }
             catch (Exception e)
             {
                 IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
-                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                activityLog.LogError(e.Message);
-                activityLog.LogError(e.StackTrace);
+                await activityLog.LogErrorAsync(e.Message);
+                await activityLog.LogErrorAsync(e.StackTrace);
             }
         }
 
@@ -454,13 +444,12 @@ namespace GoogleCloudExtension
                 // This is an upgrade (or different version installed).
                 Debug.WriteLine($"Found new version {settings.InstalledVersion} different than current {ApplicationVersion}");
 
-                Version current, installed;
-                if (!Version.TryParse(ApplicationVersion, out current))
+                if (!Version.TryParse(ApplicationVersion, out Version current))
                 {
                     Debug.WriteLine($"Invalid application version: {ApplicationVersion}");
                     return;
                 }
-                if (!Version.TryParse(settings.InstalledVersion, out installed))
+                if (!Version.TryParse(settings.InstalledVersion, out Version installed))
                 {
                     Debug.WriteLine($"Invalid installed version: {settings.InstalledVersion}");
                     return;

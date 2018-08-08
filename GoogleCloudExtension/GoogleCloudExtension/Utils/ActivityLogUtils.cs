@@ -14,6 +14,8 @@
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -25,17 +27,32 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     internal static class ActivityLogUtils
     {
+        private static JoinableTaskFactory JoinableTaskFactory => GoogleCloudExtensionPackage.Instance.JoinableTaskFactory;
 
         /// <summary>
         /// Logs a information entry into the log.
         /// </summary>
+        /// <param name="activityLog">The <see cref="IVsActivityLog"/> to log the entry.</param>
+        /// <param name="entry">The log entry.</param>
+        public static async Task LogInfoAsync(this IVsActivityLog activityLog, string entry)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            activityLog.LogEntry(
+                (int)__ACTIVITYLOG_ENTRYTYPE.ALE_INFORMATION,
+                nameof(GoogleCloudExtensionPackage),
+                entry);
+        }
+
+        /// <summary>
+        /// Logs an error entry into the log.
+        /// </summary>
         /// <param name="activityLogService">The <see cref="IVsActivityLog"/> to log the entry.</param>
         /// <param name="entry">The log entry.</param>
-        public static void LogInfo(this IVsActivityLog activityLogService, string entry)
+        public static async Task LogErrorAsync(this IVsActivityLog activityLogService, string entry)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             activityLogService.LogEntry(
-                (int)__ACTIVITYLOG_ENTRYTYPE.ALE_INFORMATION,
+                (int)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
                 nameof(GoogleCloudExtensionPackage),
                 entry);
         }

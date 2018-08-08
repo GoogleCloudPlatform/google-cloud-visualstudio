@@ -103,6 +103,11 @@ namespace GoogleCloudExtension
         /// </summary>
         ICredentialsStore CredentialsStore { get; }
 
+        /// <summary>
+        /// The edition of Visual Studio currently running.
+        /// </summary>
+        string VsEdition { get; }
+
         T GetDialogPage<T>() where T : DialogPage;
         bool IsWindowActive();
 
