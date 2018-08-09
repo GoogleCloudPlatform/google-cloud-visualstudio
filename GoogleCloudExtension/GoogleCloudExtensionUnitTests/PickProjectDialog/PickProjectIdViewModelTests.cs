@@ -284,7 +284,7 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         }
 
         [TestMethod]
-        public void TestFilterItem_ReturnsFalseForUninitalizedProject()
+        public void TestFilterItem_ReturnsFalseForUninitializedProject()
         {
             _testObject.Filter = "something";
 

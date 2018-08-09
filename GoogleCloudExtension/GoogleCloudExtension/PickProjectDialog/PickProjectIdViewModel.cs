@@ -134,7 +134,8 @@ namespace GoogleCloudExtension.PickProjectDialog
                 }
 
                 // Check name and project id for the filter.
-                return project.ProjectId?.Contains(Filter) == true || project.Name?.Contains(Filter) == true;
+                return project.ProjectId != null && project.ProjectId.Contains(Filter) ||
+                    project.Name != null && project.Name.Contains(Filter);
             }
             else
             {
