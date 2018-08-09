@@ -2320,6 +2320,10 @@ Delete corrupted file?</value>
     <value>Monitoring</value>
     <comment>Caption for the cloud console link to StackDriver Monitoring</comment>
   </data>
+  <data name="CloudLinkStackDriverTraceCaption" xml:space="preserve">
+    <value>Trace</value>
+    <comment>Caption for the cloud console link to StackDriver Trace</comment>
+  </data>
   <data name="CloudLinkStackDriverDebugCaption" xml:space="preserve">
     <value>Debug</value>
     <comment>Caption for the cloud console link to StackDriver Debug</comment>
@@ -2332,9 +2336,17 @@ Delete corrupted file?</value>
     <value>Error Reporting</value>
     <comment>Caption for the cloud console link to StackDriver Error Reporting</comment>
   </data>
+  <data name="CloudLinkStackDriverProfilerCaption" xml:space="preserve">	
+    <value>Profiler</value>	
+    <comment>Caption for the cloud console link to StackDriver Profiler</comment>	
+  </data>
   <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
     <value>Source Repositories</value>
     <comment>Caption for the cloud console link to Source Repositories</comment>
+  </data>
+  <data name="CloudLinkEndpointsCaption" xml:space="preserve">
+    <value>Endpoints</value>
+    <comment>Caption for the cloud console link to Endpoints</comment>
   </data>
   <data name="CloudLinkBigQueryCaption" xml:space="preserve">
     <value>BigQuery</value>
