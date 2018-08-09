@@ -69,7 +69,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
                 objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNetCore10, objectUnderTest.SelectedVersion);
+            Assert.AreEqual(AspNetVersion.AspNetCore20, objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
@@ -102,7 +102,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11 },
                 objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNetCore10, objectUnderTest.SelectedVersion);
+            Assert.AreEqual(AspNetVersion.AspNetCore11, objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
@@ -139,7 +139,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             CollectionAssert.AreEqual(
                 new[] { AspNetVersion.AspNetCore10, AspNetVersion.AspNetCore11, AspNetVersion.AspNetCore20 },
                 objectUnderTest.AvailableVersions.ToList());
-            Assert.AreEqual(AspNetVersion.AspNetCore10, objectUnderTest.SelectedVersion);
+            Assert.AreEqual(AspNetVersion.AspNetCore20, objectUnderTest.SelectedVersion);
         }
 
         [TestMethod]
