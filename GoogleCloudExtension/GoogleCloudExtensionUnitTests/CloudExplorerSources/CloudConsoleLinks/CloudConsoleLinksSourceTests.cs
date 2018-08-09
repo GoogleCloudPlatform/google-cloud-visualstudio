@@ -20,7 +20,7 @@ using Moq;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
 {
     [TestClass]
-    public class CloudConsoleLinksSourceTests
+    public class CloudConsoleLinksSourceTests : ExtensionTestBase
     {
         [TestMethod]
         public void TestConstructor_SetsRoot()
