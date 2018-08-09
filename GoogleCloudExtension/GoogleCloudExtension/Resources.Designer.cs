@@ -1942,6 +1942,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Endpoints.
+        /// </summary>
+        public static string CloudLinkEndpointsCaption {
+            get {
+                return ResourceManager.GetString("CloudLinkEndpointsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hybrid Connectivity.
         /// </summary>
         public static string CloudLinkHybridConnectivityCaption {
@@ -2073,6 +2082,24 @@ namespace GoogleCloudExtension {
         public static string CloudLinkStackDriverMonitoringCaption {
             get {
                 return ResourceManager.GetString("CloudLinkStackDriverMonitoringCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profiler.
+        /// </summary>
+        public static string CloudLinkStackDriverProfilerCaption {
+            get {
+                return ResourceManager.GetString("CloudLinkStackDriverProfilerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace.
+        /// </summary>
+        public static string CloudLinkStackDriverTraceCaption {
+            get {
+                return ResourceManager.GetString("CloudLinkStackDriverTraceCaption", resourceCulture);
             }
         }
         
