@@ -90,7 +90,6 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             objectUnderTest.NavigateInfoCommand.Execute(null);
 
             _browserServiceMock.Verify(b => b.OpenBrowser(testUrl));
-
         }
 
         [TestMethod]
