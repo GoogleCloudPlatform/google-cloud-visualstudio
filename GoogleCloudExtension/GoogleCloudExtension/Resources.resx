@@ -2316,29 +2316,29 @@ Delete corrupted file?</value>
     <value>Network Security</value>
     <comment>Caption for the cloud console link to Network Security</comment>
   </data>
-  <data name="CloudLinkStackDriverMonitoringCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverMonitoringCaption" xml:space="preserve">
     <value>Monitoring</value>
-    <comment>Caption for the cloud console link to StackDriver Monitoring</comment>
+    <comment>Caption for the cloud console link to Stackdriver Monitoring</comment>
   </data>
-  <data name="CloudLinkStackDriverTraceCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverTraceCaption" xml:space="preserve">
     <value>Trace</value>
-    <comment>Caption for the cloud console link to StackDriver Trace</comment>
+    <comment>Caption for the cloud console link to Stackdriver Trace</comment>
   </data>
-  <data name="CloudLinkStackDriverDebugCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverDebugCaption" xml:space="preserve">
     <value>Debug</value>
-    <comment>Caption for the cloud console link to StackDriver Debug</comment>
+    <comment>Caption for the cloud console link to Stackdriver Debug</comment>
   </data>
-  <data name="CloudLinkStackDriverLoggingCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverLoggingCaption" xml:space="preserve">
     <value>Logging</value>
-    <comment>Caption for the cloud console link to StackDriver Logging</comment>
+    <comment>Caption for the cloud console link to Stackdriver Logging</comment>
   </data>
-  <data name="CloudLinkStackDriverErrorReportingCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverErrorReportingCaption" xml:space="preserve">
     <value>Error Reporting</value>
-    <comment>Caption for the cloud console link to StackDriver Error Reporting</comment>
+    <comment>Caption for the cloud console link to Stackdriver Error Reporting</comment>
   </data>
-  <data name="CloudLinkStackDriverProfilerCaption" xml:space="preserve">	
+  <data name="CloudLinkStackdriverProfilerCaption" xml:space="preserve">	
     <value>Profiler</value>	
-    <comment>Caption for the cloud console link to StackDriver Profiler</comment>	
+    <comment>Caption for the cloud console link to Stackdriver Profiler</comment>	
   </data>
   <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
     <value>Source Repositories</value>
@@ -2372,7 +2372,7 @@ Delete corrupted file?</value>
     <value>Networking</value>
     <comment>The caption of the root node fo the Networking cloud console link group.</comment>
   </data>
-  <data name="ConsoleLinkStackDriverGroupCaption" xml:space="preserve">
+  <data name="ConsoleLinkStackdriverGroupCaption" xml:space="preserve">
     <value>Stackdriver</value>
     <comment>The caption of the root node fo the Stackdriver cloud console link group.</comment>
   </data>
