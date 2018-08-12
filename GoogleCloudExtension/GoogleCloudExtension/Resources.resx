@@ -2232,10 +2232,6 @@ Delete corrupted file?</value>
     <value>Load failed</value>
     <comment>The title of the error dialog box when loading a windows credential file failed.</comment>
   </data>
-  <data name="CloudLinkGettingStartedCaption" xml:space="preserve">
-    <value>Getting started</value>
-    <comment>Caption for the cloud console link to Getting started</comment>
-  </data>
   <data name="CloudLinkAppEngineCaption" xml:space="preserve">
     <value>App Engine</value>
     <comment>Caption for the cloud console link to App Engine</comment>
@@ -2257,7 +2253,7 @@ Delete corrupted file?</value>
     <comment>Caption for the cloud console link to Deployment Manager</comment>
   </data>
   <data name="CloudLinkCloudLauncherCaption" xml:space="preserve">
-    <value>Cloud Launcher</value>
+    <value>Marketplace</value>
     <comment>Caption for the cloud console link to Cloud Launcher</comment>
   </data>
   <data name="CloudLinkIAmCaption" xml:space="preserve">
@@ -2280,14 +2276,6 @@ Delete corrupted file?</value>
     <value>Security</value>
     <comment>Caption for the cloud console link to Security</comment>
   </data>
-  <data name="CloudLinkCloudFunctionsCaption" xml:space="preserve">
-    <value>Cloud Functions</value>
-    <comment>Caption for the cloud console link to Cloud Functions</comment>
-  </data>
-  <data name="CloudLinkCloudTasksCaption" xml:space="preserve">
-    <value>Cloud Tasks</value>
-    <comment>Caption for the cloud console link to Cloud Tasks</comment>
-  </data>
   <data name="CloudLinkBigtableCaption" xml:space="preserve">
     <value>Bigtable</value>
     <comment>Caption for the cloud console link to Bigtable</comment>
@@ -2307,14 +2295,6 @@ Delete corrupted file?</value>
   <data name="CloudLinkSpannerCaption" xml:space="preserve">
     <value>Spanner</value>
     <comment>Caption for the cloud console link to Spanner</comment>
-  </data>
-  <data name="CloudLinkMemoryStoreCaption" xml:space="preserve">
-    <value>Memorystore</value>
-    <comment>Caption for the cloud console link to Memorystore</comment>
-  </data>
-  <data name="CloudLinkFileStoreCaption" xml:space="preserve">
-    <value>Filestore</value>
-    <comment>Caption for the cloud console link to Filestore</comment>
   </data>
   <data name="CloudLinkVpcNetworkCaption" xml:space="preserve">
     <value>VPC network</value>
@@ -2336,29 +2316,29 @@ Delete corrupted file?</value>
     <value>Network Security</value>
     <comment>Caption for the cloud console link to Network Security</comment>
   </data>
-  <data name="CloudLinkStackDriverMonitoringCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverMonitoringCaption" xml:space="preserve">
     <value>Monitoring</value>
-    <comment>Caption for the cloud console link to StackDriver Monitoring</comment>
+    <comment>Caption for the cloud console link to Stackdriver Monitoring</comment>
   </data>
-  <data name="CloudLinkStackDriverDebugCaption" xml:space="preserve">
-    <value>Debug</value>
-    <comment>Caption for the cloud console link to StackDriver Debug</comment>
-  </data>
-  <data name="CloudLinkStackDriverTraceCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverTraceCaption" xml:space="preserve">
     <value>Trace</value>
-    <comment>Caption for the cloud console link to StackDriver Trace</comment>
+    <comment>Caption for the cloud console link to Stackdriver Trace</comment>
   </data>
-  <data name="CloudLinkStackDriverLoggingCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverDebugCaption" xml:space="preserve">
+    <value>Debug</value>
+    <comment>Caption for the cloud console link to Stackdriver Debug</comment>
+  </data>
+  <data name="CloudLinkStackdriverLoggingCaption" xml:space="preserve">
     <value>Logging</value>
-    <comment>Caption for the cloud console link to StackDriver Logging</comment>
+    <comment>Caption for the cloud console link to Stackdriver Logging</comment>
   </data>
-  <data name="CloudLinkStackDriverErrorReportingCaption" xml:space="preserve">
+  <data name="CloudLinkStackdriverErrorReportingCaption" xml:space="preserve">
     <value>Error Reporting</value>
-    <comment>Caption for the cloud console link to StackDriver Error Reporting</comment>
+    <comment>Caption for the cloud console link to Stackdriver Error Reporting</comment>
   </data>
-  <data name="CloudLinkStackDriverProfilerCaption" xml:space="preserve">
-    <value>Profiler</value>
-    <comment>Caption for the cloud console link to StackDriver Profiler</comment>
+  <data name="CloudLinkStackdriverProfilerCaption" xml:space="preserve">	
+    <value>Profiler</value>	
+    <comment>Caption for the cloud console link to Stackdriver Profiler</comment>	
   </data>
   <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
     <value>Source Repositories</value>
@@ -2376,33 +2356,9 @@ Delete corrupted file?</value>
     <value>Pub/Sub</value>
     <comment>Caption for the cloud console link to Pub/Sub</comment>
   </data>
-  <data name="CloudLinkDataprocCaption" xml:space="preserve">
-    <value>Dataproc</value>
-    <comment>Caption for the cloud console link to Dataproc</comment>
-  </data>
-  <data name="CloudLinkDataflowCaption" xml:space="preserve">
-    <value>Dataflow</value>
-    <comment>Caption for the cloud console link to Dataflow</comment>
-  </data>
   <data name="CloudLinkMachineLearningEngineCaption" xml:space="preserve">
     <value>ML Engine</value>
     <comment>Caption for the cloud console link to ML Engine</comment>
-  </data>
-  <data name="CloudLinkIoTCoreCaption" xml:space="preserve">
-    <value>IoT Core</value>
-    <comment>Caption for the cloud console link to IoT Core</comment>
-  </data>
-  <data name="CloudLinkComposerCaption" xml:space="preserve">
-    <value>Composer</value>
-    <comment>Caption for the cloud console link to Composer</comment>
-  </data>
-  <data name="CloudLinkGenomicsCaption" xml:space="preserve">
-    <value>Genomics</value>
-    <comment>Caption for the cloud console link to Genomics</comment>
-  </data>
-  <data name="CloudLinkDataprepCaption" xml:space="preserve">
-    <value>Dataprep</value>
-    <comment>Caption for the cloud console link to Dataprep</comment>
   </data>
   <data name="ConsoleLinkComputeGroupCaption" xml:space="preserve">
     <value>Compute</value>
@@ -2416,7 +2372,7 @@ Delete corrupted file?</value>
     <value>Networking</value>
     <comment>The caption of the root node fo the Networking cloud console link group.</comment>
   </data>
-  <data name="ConsoleLinkStackDriverGroupCaption" xml:space="preserve">
+  <data name="ConsoleLinkStackdriverGroupCaption" xml:space="preserve">
     <value>Stackdriver</value>
     <comment>The caption of the root node fo the Stackdriver cloud console link group.</comment>
   </data>

@@ -1879,16 +1879,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cloud Functions.
-        /// </summary>
-        public static string CloudLinkCloudFunctionsCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkCloudFunctionsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cloud Launcher.
+        ///   Looks up a localized string similar to Marketplace.
         /// </summary>
         public static string CloudLinkCloudLauncherCaption {
             get {
@@ -1915,24 +1906,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cloud Tasks.
-        /// </summary>
-        public static string CloudLinkCloudTasksCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkCloudTasksCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Composer.
-        /// </summary>
-        public static string CloudLinkComposerCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkComposerCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Compute Engine.
         /// </summary>
         public static string CloudLinkComputeEngineCaption {
@@ -1947,33 +1920,6 @@ namespace GoogleCloudExtension {
         public static string CloudLinkContainerRegistryCaption {
             get {
                 return ResourceManager.GetString("CloudLinkContainerRegistryCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dataflow.
-        /// </summary>
-        public static string CloudLinkDataflowCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkDataflowCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dataprep.
-        /// </summary>
-        public static string CloudLinkDataprepCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkDataprepCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dataproc.
-        /// </summary>
-        public static string CloudLinkDataprocCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkDataprocCaption", resourceCulture);
             }
         }
         
@@ -2005,33 +1951,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filestore.
-        /// </summary>
-        public static string CloudLinkFileStoreCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkFileStoreCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Genomics.
-        /// </summary>
-        public static string CloudLinkGenomicsCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkGenomicsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting started.
-        /// </summary>
-        public static string CloudLinkGettingStartedCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkGettingStartedCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hybrid Connectivity.
         /// </summary>
         public static string CloudLinkHybridConnectivityCaption {
@@ -2050,15 +1969,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IoT Core.
-        /// </summary>
-        public static string CloudLinkIoTCoreCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkIoTCoreCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Kubernetes Engine.
         /// </summary>
         public static string CloudLinkKubernetesEngineCaption {
@@ -2073,15 +1983,6 @@ namespace GoogleCloudExtension {
         public static string CloudLinkMachineLearningEngineCaption {
             get {
                 return ResourceManager.GetString("CloudLinkMachineLearningEngineCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Memorystore.
-        /// </summary>
-        public static string CloudLinkMemoryStoreCaption {
-            get {
-                return ResourceManager.GetString("CloudLinkMemoryStoreCaption", resourceCulture);
             }
         }
         
@@ -2151,54 +2052,54 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
-        public static string CloudLinkStackDriverDebugCaption {
+        public static string CloudLinkStackdriverDebugCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverDebugCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverDebugCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Error Reporting.
         /// </summary>
-        public static string CloudLinkStackDriverErrorReportingCaption {
+        public static string CloudLinkStackdriverErrorReportingCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverErrorReportingCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverErrorReportingCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Logging.
         /// </summary>
-        public static string CloudLinkStackDriverLoggingCaption {
+        public static string CloudLinkStackdriverLoggingCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverLoggingCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverLoggingCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Monitoring.
         /// </summary>
-        public static string CloudLinkStackDriverMonitoringCaption {
+        public static string CloudLinkStackdriverMonitoringCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverMonitoringCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverMonitoringCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Profiler.
         /// </summary>
-        public static string CloudLinkStackDriverProfilerCaption {
+        public static string CloudLinkStackdriverProfilerCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverProfilerCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverProfilerCaption", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Trace.
         /// </summary>
-        public static string CloudLinkStackDriverTraceCaption {
+        public static string CloudLinkStackdriverTraceCaption {
             get {
-                return ResourceManager.GetString("CloudLinkStackDriverTraceCaption", resourceCulture);
+                return ResourceManager.GetString("CloudLinkStackdriverTraceCaption", resourceCulture);
             }
         }
         
@@ -2259,9 +2160,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Stackdriver.
         /// </summary>
-        public static string ConsoleLinkStackDriverGroupCaption {
+        public static string ConsoleLinkStackdriverGroupCaption {
             get {
-                return ResourceManager.GetString("ConsoleLinkStackDriverGroupCaption", resourceCulture);
+                return ResourceManager.GetString("ConsoleLinkStackdriverGroupCaption", resourceCulture);
             }
         }
         
