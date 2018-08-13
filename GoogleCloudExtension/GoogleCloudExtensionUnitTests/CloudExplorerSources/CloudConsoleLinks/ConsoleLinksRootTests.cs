@@ -24,7 +24,7 @@ using System.Linq;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
 {
     [TestClass]
-    public class ConsoleLinksRootTests
+    public class ConsoleLinksRootTests : ExtensionTestBase
     {
         [TestMethod]
         public void TestConstructor_SetsCaption()

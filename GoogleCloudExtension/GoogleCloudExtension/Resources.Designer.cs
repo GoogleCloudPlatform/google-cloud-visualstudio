@@ -2158,6 +2158,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kubernetes Engine Code Lab.
+        /// </summary>
+        public static string ConsoleLinksKubernetesInfoTooltip {
+            get {
+                return ResourceManager.GetString("ConsoleLinksKubernetesInfoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver.
         /// </summary>
         public static string ConsoleLinkStackdriverGroupCaption {
