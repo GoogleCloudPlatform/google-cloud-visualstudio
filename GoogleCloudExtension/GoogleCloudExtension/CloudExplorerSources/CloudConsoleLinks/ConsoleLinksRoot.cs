@@ -49,12 +49,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         private const string HybridConnectivityPath = "hybrid";
         private const string NetworkServiceTierPath = "net-tier";
         private const string NetworkSecurityPath = "net-security";
-        private const string StackDriverMonitoringPath = "monitoring";
-        private const string StackDriverDebugPath = "debug";
-        private const string StackDriverTracePath = "traces";
-        private const string StackDriverLoggingPath = "logs";
-        private const string StackDriverErrorReportingPath = "errors";
-        private const string StackDriverProfilerPath = "profiler";
+        private const string StackdriverMonitoringPath = "monitoring";
+        private const string StackdriverDebugPath = "debug";
+        private const string StackdriverTracePath = "traces";
+        private const string StackdriverLoggingPath = "logs";
+        private const string StackdriverErrorReportingPath = "errors";
+        private const string StackdriverProfilerPath = "profiler";
         private const string SourceRepositoriesPath = "code";
         private const string EndpointsPath = "endpoints";
         private const string BigQueryPath = "bigquery";
@@ -108,14 +108,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                     (NetworkServiceTierPath, Resources.CloudLinkNetworkServiceTierCaption),
                     (NetworkSecurityPath, Resources.CloudLinkNetworkSecurityCaption)
                 }),
-                (Resources.ConsoleLinkStackDriverGroupCaption, new[]
+                (Resources.ConsoleLinkStackdriverGroupCaption, new[]
                 {
-                    (StackDriverMonitoringPath, Resources.CloudLinkStackDriverMonitoringCaption),
-                    (StackDriverDebugPath, Resources.CloudLinkStackDriverDebugCaption),
-                    (StackDriverTracePath, Resources.CloudLinkStackDriverTraceCaption),
-                    (StackDriverLoggingPath, Resources.CloudLinkStackDriverLoggingCaption),
-                    (StackDriverErrorReportingPath, Resources.CloudLinkStackDriverErrorReportingCaption),
-                    (StackDriverProfilerPath, Resources.CloudLinkStackDriverProfilerCaption)
+                    (StackdriverMonitoringPath, Resources.CloudLinkStackdriverMonitoringCaption),
+                    (StackdriverDebugPath, Resources.CloudLinkStackdriverDebugCaption),
+                    (StackdriverTracePath, Resources.CloudLinkStackdriverTraceCaption),
+                    (StackdriverLoggingPath, Resources.CloudLinkStackdriverLoggingCaption),
+                    (StackdriverErrorReportingPath, Resources.CloudLinkStackdriverErrorReportingCaption),
+                    (StackdriverProfilerPath, Resources.CloudLinkStackdriverProfilerCaption)
                 }),
                 (Resources.ConsoleLinkToolsGroupCaption, new[]
                 {
