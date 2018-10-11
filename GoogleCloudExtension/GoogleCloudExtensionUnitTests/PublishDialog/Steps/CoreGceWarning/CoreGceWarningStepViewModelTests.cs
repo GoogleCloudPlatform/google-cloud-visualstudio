@@ -192,5 +192,13 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
 
             _browserServiceMock.Verify(b => b.OpenBrowser(CoreGceWarningStepViewModel.AspNetCoreIisDocsLink));
         }
+
+        [TestMethod]
+        public void TestBrowsAspNetMarketplaceImage_OpensBrowser()
+        {
+            _objectUnderTest.BrowseAspNetMarketplaceImage.Execute(null);
+
+            _browserServiceMock.Verify(b => b.OpenBrowser(CoreGceWarningStepViewModel.AspNetMarketplaceImageLink));
+        }
     }
 }
