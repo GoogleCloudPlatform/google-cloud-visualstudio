@@ -27,6 +27,9 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
     {
         public const string AspNetCoreIisDocsLink = "https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/";
 
+        public const string AspNetMarketplaceImageLink =
+            "https://console.cloud.google.com/marketplace/details/click-to-deploy-images/aspnet";
+
         private readonly IPublishDialog _publishDialog;
         private readonly GceStepContent _nextStepContent;
         private readonly Lazy<IBrowserService> _browserService;
@@ -57,15 +60,21 @@ namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
         public ProtectedCommand BrowseAspNetCoreIisDocs { get; }
         private IBrowserService BrowserService => _browserService.Value;
 
+        public ProtectedCommand BrowseAspNetMarketplaceImage { get; }
+
         public CoreGceWarningStepViewModel(IPublishDialog publishDialog)
         {
             _publishDialog = publishDialog;
             BrowseAspNetCoreIisDocs = new ProtectedCommand(OnBrowseAspNetCoreIisDocs);
+            BrowseAspNetMarketplaceImage = new ProtectedCommand(OnBrowseAspNeMarketplaceImage);
             Title = string.Format(Resources.GcePublishStepTitle, publishDialog.Project.Name);
             ActionCommand = new ProtectedCommand(OnNextCommand);
             _nextStepContent = new GceStepContent(_publishDialog);
             _browserService = GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
         }
+
+        private void OnBrowseAspNeMarketplaceImage() =>
+            BrowserService.OpenBrowser(AspNetMarketplaceImageLink);
 
         private void OnBrowseAspNetCoreIisDocs() =>
             BrowserService.OpenBrowser(AspNetCoreIisDocsLink);

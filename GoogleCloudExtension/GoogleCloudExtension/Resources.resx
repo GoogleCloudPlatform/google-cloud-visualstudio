@@ -2489,14 +2489,26 @@ Delete corrupted file?</value>
     <comment>The first line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
   <data name="PublishGceWarningStepLine2BeforeLink" xml:space="preserve">
-    <value>Hosting ASP.NET Core applications on Compute Engine requires </value>
+    <value>Hosting ASP.NET Core applications on Compute Engine should use the </value>
     <comment>The first part of the second line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
-  <data name="PublishGceWarningStepLine2HyperLink" xml:space="preserve">
+  <data name="PublishGceWarningStepLine2MarketplaceLink" xml:space="preserve">
+    <value>ASP.NET Framework Marketplace Image</value>
+    <comment>The text of the link to the ASP.NET Framework Marketplace </comment>
+  </data>
+  <data name="PublishGceWarningStepLine2AfterLink" xml:space="preserve">
+    <value>.</value>
+    <comment>The text after the link of the second line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine3BeforeLink" xml:space="preserve">
+    <value>The default windows image will require </value>
+    <comment>The part between the links of the second line of the ASP.NET Core on GCE warning dialog.</comment>
+  </data>
+  <data name="PublishGceWarningStepLine3DocsLink" xml:space="preserve">
     <value>manual configuration of IIS</value>
     <comment>The text of the hyperlink on the ASP.NET Core on GCE Warning dialog.</comment>
   </data>
-  <data name="PublishGceWarningStepLine2AfterLink" xml:space="preserve">
+  <data name="PublishGceWarningStepLine3AfterLink" xml:space="preserve">
     <value>.</value>
     <comment>The end part of the second line of the ASP.NET Core on GCE warning dialog.</comment>
   </data>
