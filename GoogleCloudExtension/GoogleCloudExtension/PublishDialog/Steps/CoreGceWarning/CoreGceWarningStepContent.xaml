@@ -46,7 +46,7 @@
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">
                 <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine1}" />
                 <LineBreak />
-                <LineBreak/>
+                <LineBreak />
 
                 <wpf:WhitespaceDiscardingSpan>
                     <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2BeforeLink}" />
@@ -55,11 +55,11 @@
                         <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2MarketplaceLink}" />
                     </Hyperlink>
 
-                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}"/>
+                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}" />
                 </wpf:WhitespaceDiscardingSpan>
 
                 <LineBreak />
-                <LineBreak/>
+                <LineBreak />
 
                 <wpf:WhitespaceDiscardingSpan>
                     <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3BeforeLink}" />
