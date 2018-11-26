@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
@@ -25,6 +27,7 @@ namespace GoogleCloudExtension.GCloud.Models
         /// The version of the Cloud SDK itself.
         /// </summary>
         [JsonProperty("Google Cloud SDK")]
-        public string SdkVersion { get; set; }
+        [JsonConverter(typeof(VersionConverter))]
+        public Version SdkVersion { get; set; }
     }
 }

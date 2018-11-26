@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -26,26 +27,39 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public class GCloudContext : IGCloudContext
     {
+        /// <summary>
+        /// The first version of gcloud with the builds group.
+        /// </summary>
+        /// <seealso href="https://cloud.google.com/sdk/docs/release-notes#20700_2018-06-26"/>
+        public const string GCloudBuildsMinimumVersion = "207.0.0";
+
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
 
         /// <summary>
+        /// The first version of gcloud with the builds group.
+        /// </summary>
+        /// <see cref="GCloudBuildsMinimumVersion"/>
+        private static readonly Version s_gCloudBuildsMinimumVersion = new Version(GCloudBuildsMinimumVersion);
+
+        /// <summary>
         /// The path to the credentials .json file to use for the call. The .json file should be a
-        /// format accetable by gcloud's --credential-file-override parameter. Typically an authorize_user kind.
+        /// format acceptable by gcloud's --credential-file-override parameter. Typically an authorize_user kind.
         /// </summary>
         public string CredentialsPath { get; }
 
         /// <summary>
-        /// The project id of the project to use for the invokation of gcloud.
+        /// The project id of the project to use for the invocation of gcloud.
         /// </summary>
         public string ProjectId { get; }
 
-        protected readonly Dictionary<string, string> Environment = new Dictionary<string, string>
-        {
+        protected readonly Dictionary<string, string> Environment = new Dictionary<string, string> {
             [GCloudMetricsVariable] = GoogleCloudExtensionPackage.Instance.ApplicationName,
             [GCloudMetricsVersionVariable] =
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion
         };
+
+        private readonly Task<CloudSdkVersions> _versionsTask;
 
         /// <summary>
         /// Creates the default GCloud context from the current environment.
@@ -54,6 +68,7 @@ namespace GoogleCloudExtension.GCloud
         {
             CredentialsPath = CredentialsStore.Default.CurrentAccountPath;
             ProjectId = CredentialsStore.Default.CurrentProjectId;
+            _versionsTask = GetGcloudOutputAsync<CloudSdkVersions>("version");
         }
 
         /// <summary>
@@ -92,10 +107,13 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="imageTag">The name of the image to build.</param>
         /// <param name="contentsPath">The contents of the container, including the Dockerfile.</param>
         /// <param name="outputAction">The action to perform on each line of output.</param>
-        public Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Action<string> outputAction)
+        public async Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Action<string> outputAction)
         {
-            string command = $"container builds submit --tag=\"{imageTag}\" \"{contentsPath}\"";
-            return RunGcloudCommandAsync(command, outputAction);
+            CloudSdkVersions sdkVersions = await _versionsTask;
+            string group = sdkVersions.SdkVersion >= s_gCloudBuildsMinimumVersion ? "builds" : "container builds";
+
+            string command = $"{group} submit --tag=\"{imageTag}\" \"{contentsPath}\"";
+            return await RunGcloudCommandAsync(command, outputAction);
         }
 
         /// <summary>
