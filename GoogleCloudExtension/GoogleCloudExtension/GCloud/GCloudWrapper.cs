@@ -42,7 +42,8 @@ namespace GoogleCloudExtension.GCloud
 
         // Mapping between the enum and the actual gcloud component.
         private static readonly Dictionary<GCloudComponent, string> s_componentNames =
-            new Dictionary<GCloudComponent, string> {
+            new Dictionary<GCloudComponent, string>
+            {
                 [GCloudComponent.Beta] = "beta",
                 [GCloudComponent.Kubectl] = "kubectl"
             };
