@@ -53,10 +53,10 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         public string ProjectId { get; }
 
-        protected readonly Dictionary<string, string> Environment = new Dictionary<string, string> {
+        protected readonly Dictionary<string, string> Environment = new Dictionary<string, string>
+        {
             [GCloudMetricsVariable] = GoogleCloudExtensionPackage.Instance.ApplicationName,
-            [GCloudMetricsVersionVariable] =
-                GoogleCloudExtensionPackage.Instance.ApplicationVersion
+            [GCloudMetricsVersionVariable] = GoogleCloudExtensionPackage.Instance.ApplicationVersion
         };
 
         private readonly Task<CloudSdkVersions> _versionsTask;
