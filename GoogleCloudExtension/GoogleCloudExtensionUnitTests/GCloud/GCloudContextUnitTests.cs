@@ -270,7 +270,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_ForOldVersionRuns_GcloudContainerBuildsSubmit()
+        public async Task TestBuildContainerAsync_ForOldVersion_RunsGcloudContainerBuildsSubmit()
         {
             _versionResultSource.SetResult(s_buildsMissingSdkVersion);
             await _objectUnderTest.BuildContainerAsync(DefaultImageTag, DefaultContentsPath, _mockedOutputAction);
@@ -279,7 +279,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_ForNewerVersions_RunsGcloudBuildsSubmit()
+        public async Task TestBuildContainerAsync_ForNewerVersion_RunsGcloudBuildsSubmit()
         {
             _versionResultSource.SetResult(s_buildsEnabledSdkVersion);
             await _objectUnderTest.BuildContainerAsync(DefaultImageTag, DefaultContentsPath, _mockedOutputAction);
