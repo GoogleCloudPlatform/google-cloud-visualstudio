@@ -2158,6 +2158,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kubernetes Engine Code Lab.
+        /// </summary>
+        public static string ConsoleLinksKubernetesInfoTooltip {
+            get {
+                return ResourceManager.GetString("ConsoleLinksKubernetesInfoTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver.
         /// </summary>
         public static string ConsoleLinkStackdriverGroupCaption {
@@ -4670,7 +4679,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hosting ASP.NET Core applications on Compute Engine requires .
+        ///   Looks up a localized string similar to Hosting ASP.NET Core applications on Compute Engine should use the .
         /// </summary>
         public static string PublishGceWarningStepLine2BeforeLink {
             get {
@@ -4679,11 +4688,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASP.NET Framework Marketplace Image.
+        /// </summary>
+        public static string PublishGceWarningStepLine2MarketplaceLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine2MarketplaceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string PublishGceWarningStepLine3AfterLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine3AfterLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The default windows image will require .
+        /// </summary>
+        public static string PublishGceWarningStepLine3BeforeLink {
+            get {
+                return ResourceManager.GetString("PublishGceWarningStepLine3BeforeLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to manual configuration of IIS.
         /// </summary>
-        public static string PublishGceWarningStepLine2HyperLink {
+        public static string PublishGceWarningStepLine3DocsLink {
             get {
-                return ResourceManager.GetString("PublishGceWarningStepLine2HyperLink", resourceCulture);
+                return ResourceManager.GetString("PublishGceWarningStepLine3DocsLink", resourceCulture);
             }
         }
         

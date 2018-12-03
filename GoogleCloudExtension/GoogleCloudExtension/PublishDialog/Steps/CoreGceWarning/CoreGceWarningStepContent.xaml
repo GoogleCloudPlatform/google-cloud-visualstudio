@@ -28,7 +28,7 @@
              d:DesignHeight="247"
              d:DesignWidth="476"
              d:DataContext="{d:DesignInstance local:CoreGceWarningStepViewModel}">
-    <DockPanel VerticalAlignment="Stretch" Margin="36,0,36,0">
+    <DockPanel VerticalAlignment="Stretch" Margin="24,0,24,0">
         <CheckBox DockPanel.Dock="Bottom"
                   IsChecked="{Binding Options.DoNotShowAspNetCoreGceWarning}"
                   HorizontalAlignment="Right"
@@ -45,18 +45,30 @@
 
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">
                 <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine1}" />
-
-                <LineBreak/>
-                <LineBreak/>
+                <LineBreak />
+                <LineBreak />
 
                 <wpf:WhitespaceDiscardingSpan>
                     <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2BeforeLink}" />
 
-                    <Hyperlink Command="{Binding BrowseAspNetCoreIisDocs}">
-                        <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2HyperLink}" />
+                    <Hyperlink Command="{Binding BrowseAspNetMarketplaceImage}">
+                        <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2MarketplaceLink}" />
                     </Hyperlink>
 
-                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}"/>
+                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine2AfterLink}" />
+                </wpf:WhitespaceDiscardingSpan>
+
+                <LineBreak />
+                <LineBreak />
+
+                <wpf:WhitespaceDiscardingSpan>
+                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3BeforeLink}" />
+
+                    <Hyperlink Command="{Binding BrowseAspNetCoreIisDocs}">
+                        <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3DocsLink}" />
+                    </Hyperlink>
+
+                    <Run Text="{x:Static ext:Resources.PublishGceWarningStepLine3AfterLink}" />
                 </wpf:WhitespaceDiscardingSpan>
             </TextBlock>
         </DockPanel>
