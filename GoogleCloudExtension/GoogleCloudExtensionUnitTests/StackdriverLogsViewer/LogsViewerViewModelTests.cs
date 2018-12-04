@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private List<string> _propertiesChanged;
         private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = DefaultAccountName };
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 

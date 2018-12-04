@@ -45,7 +45,7 @@ namespace ProjectTemplate.Tests
 
         private VisualStudioWrapper(string devEnvPath, string arguments)
         {
-            // start devenv
+            // start devenv.exe
             _devEnvProcess = Process.Start(
                 new ProcessStartInfo
                 {
@@ -107,49 +107,12 @@ namespace ProjectTemplate.Tests
                 Debug.WriteLine($"Error in {nameof(VisualStudioWrapper)}.{nameof(Dispose)}: {e}");
             }
 
-            // Dispose managed resource on disposal but not finialization.
+            // Dispose managed resource on disposal but not finalization.
             if (disposing)
             {
                 _devEnvProcess.Dispose();
                 _comMessageFilter.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Factory method for creating a new <see cref="VisualStudioWrapper"/> linked to an experimental instance.
-        /// </summary>
-        /// <remarks>
-        /// This method first tries to run the devenv on the environment path.
-        /// If that fails, it tries to get the running Visual Studio 2015 instance and create a new experimental
-        /// instance from that path.
-        /// </remarks>
-        /// <returns>A new <see cref="VisualStudioWrapper"/>.</returns>
-        public static VisualStudioWrapper CreateExperimentalInstance()
-        {
-            try
-            {
-                // Try the currently running Visual Studio instance first.
-                var tempDte = (DTE)Marshal.GetActiveObject("VisualStudio.DTE");
-                return new VisualStudioWrapper(tempDte.FullName, "/rootSuffix Exp");
-            }
-            catch (COMException)
-            {
-                // Revert to trying for version of VS this was compiled by.
-            }
-
-            try
-            {
-#if VS2015
-                return CreateExperimentalInstance("14.0");
-#elif VS2017
-                return CreateExperimentalInstance("15.0");
-#endif
-            }
-            catch
-            {
-                // If any error occurs, default to the devenv on the path.
-            }
-            return new VisualStudioWrapper("devenv", "/rootSuffix Exp");
         }
 
         /// <summary>
@@ -164,9 +127,11 @@ namespace ProjectTemplate.Tests
 
         private static string GetDevEnvPath(string version)
         {
-            var installRoot = Registry.GetValue(
-                @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7", version, null) as string;
-            if (installRoot != null)
+            var installRootValue = Registry.GetValue(
+                @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7",
+                version,
+                null);
+            if (installRootValue is string installRoot)
             {
                 return Path.Combine(installRoot, @"Common7\IDE\devenv.exe");
             }
@@ -182,8 +147,7 @@ namespace ProjectTemplate.Tests
             DateTimeOffset timeout = DateTimeOffset.Now.Add(s_timeout);
             while (timeout > DateTimeOffset.Now)
             {
-                var dte = ComHelper.GetRunningObject(IsMatchingMonikerName) as DTE2;
-                if (dte != null)
+                if (ComHelper.GetRunningObject(IsMatchingMonikerName) is DTE2 dte)
                 {
                     return dte;
                 }
@@ -196,8 +160,7 @@ namespace ProjectTemplate.Tests
         {
             try
             {
-                string name;
-                moniker.GetDisplayName(bindCtx, null, out name);
+                moniker.GetDisplayName(bindCtx, null, out string name);
                 return !string.IsNullOrWhiteSpace(name) &&
                     name.StartsWith("!VisualStudio.DTE", StringComparison.Ordinal) &&
                     name.EndsWith($":{_devEnvProcess.Id}", StringComparison.Ordinal);

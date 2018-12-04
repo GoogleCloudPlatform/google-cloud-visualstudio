@@ -66,15 +66,7 @@ namespace ProjectTemplate.Tests
         }
 
         [ClassCleanup]
-        public static void CleanupClass()
-        {
-            s_visualStudio.Dispose();
-        }
-
-        [TestInitialize]
-        public void BeforeEach()
-        {
-        }
+        public static void CleanupClass() => s_visualStudio.Dispose();
 
         [TestCleanup]
         public void AfterEach()
@@ -96,6 +88,7 @@ namespace ProjectTemplate.Tests
         {
             string projectName = $"TestGcpAspNet{appType}";
             CreateProjectFromTemplate(projectName, "NetFramework", "Gcp.AspNet.vstemplate", version, appType);
+            RestorePackages(Path.Combine(SolutionFolderPath, projectName));
             Solution.SolutionBuild.Build(true);
 
             Assert.AreEqual(vsBuildState.vsBuildStateDone, Solution.SolutionBuild.BuildState, projectName);
@@ -179,13 +172,13 @@ namespace ProjectTemplate.Tests
         private void CreateProjectFromTemplate(
             string projectName,
             string framework,
-            string choserTemplateName,
+            string chooserTemplateName,
             string version,
             string appType)
         {
             string projectPath = Path.Combine(SolutionFolderPath, projectName);
             Directory.CreateDirectory(projectPath);
-            string templatePath = Solution.GetProjectTemplate(choserTemplateName, "CSharp");
+            string templatePath = Solution.GetProjectTemplate(chooserTemplateName, "CSharp");
             var serviceProvider = Dte as IServiceProvider;
             var vsSolution6 = (IVsSolution6)serviceProvider.QueryService<SVsSolution>();
             var resultObject = new JObject

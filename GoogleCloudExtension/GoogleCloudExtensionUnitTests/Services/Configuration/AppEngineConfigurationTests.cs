@@ -42,7 +42,8 @@ namespace GoogleCloudExtensionUnitTests.Services.Configuration
         private Mock<IParsedDteProject> _parsedProjectMock;
         private Mock<INetCoreAppUtils> _netCoreAppUtilsMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _parsedProjectMock = new Mock<IParsedDteProject> { DefaultValue = DefaultValue.Mock };
             _parsedProjectMock.Setup(p => p.DirectoryPath).Returns(ProjectDirectory);

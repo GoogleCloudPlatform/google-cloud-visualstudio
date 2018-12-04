@@ -24,10 +24,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
     {
         private Mock<Action> _closeWindowMock;
 
-        protected override void BeforeEach()
-        {
-            _closeWindowMock = new Mock<Action>();
-        }
+        [TestInitialize]
+        public void BeforeEach() => _closeWindowMock = new Mock<Action>();
 
         [TestMethod]
         public void TestCreateResult()

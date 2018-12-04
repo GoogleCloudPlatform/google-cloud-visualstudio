@@ -31,7 +31,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private List<string> _targetSdkVersions;
         private Mock<Action> _closeWindowMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _targetSdkVersions = new List<string>();
             // ReSharper disable once PossibleUnintendedReferenceComparison
@@ -41,10 +42,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);
         }
 
-        protected override void AfterEach()
-        {
-            VsVersionUtils.s_toolsPathProviderOverride = null;
-        }
+        [TestCleanup]
+        public void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
 
         [TestMethod]
         public void TestInitialConditionsVs2015MissingNetCoreSdk()

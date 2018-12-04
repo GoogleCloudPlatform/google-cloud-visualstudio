@@ -25,10 +25,7 @@ namespace GoogleCloudExtensionUnitTests.TitleBar
         private TitleBarViewModel _objectUnderTest;
 
         [TestInitialize]
-        public new void BeforeEach()
-        {
-            _objectUnderTest = new TitleBarViewModel();
-        }
+        public void BeforeEach() => _objectUnderTest = new TitleBarViewModel();
 
         [TestMethod]
         public void TestGoToAccountManagementCommand_PromptsUser()

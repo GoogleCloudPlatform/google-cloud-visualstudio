@@ -37,7 +37,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private Mock<IProcessService> _processServiceMock;
         private Action<string> _mockedOutputAction;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _processServiceMock = new Mock<IProcessService>();
             SetupRunCommandResult(true);

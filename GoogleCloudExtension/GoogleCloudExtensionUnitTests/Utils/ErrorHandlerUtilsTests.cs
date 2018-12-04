@@ -26,7 +26,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
     {
         private Mock<IUserPromptService> _promptUserMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _promptUserMock = new Mock<IUserPromptService>();
             PackageMock.Setup(p => p.UserPromptService).Returns(_promptUserMock.Object);

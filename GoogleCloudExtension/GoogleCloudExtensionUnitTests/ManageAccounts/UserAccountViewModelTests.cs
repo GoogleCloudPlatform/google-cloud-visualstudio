@@ -40,7 +40,8 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
 
         private Mock<IDataSourceFactory> _dataSourceFactoryMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _getProfileTaskSource = new TaskCompletionSource<Person>();
             _dataSourceFactoryMock = new Mock<IDataSourceFactory>();

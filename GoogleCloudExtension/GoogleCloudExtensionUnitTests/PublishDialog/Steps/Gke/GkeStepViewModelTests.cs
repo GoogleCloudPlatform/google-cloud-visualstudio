@@ -73,7 +73,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
         [ClassCleanup]
         public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _deployment = new GkeDeployment { Metadata = new GkeMetadata { Name = DeploymentName } };
 
@@ -122,10 +123,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
             _objectUnderTest.PublishCommandAsync.CanExecuteChanged += (sender, args) => _canPublishChangedCount++;
         }
 
-        protected override void AfterEach()
-        {
-            _objectUnderTest.OnFlowFinished();
-        }
+        [TestCleanup]
+        public void AfterEach() => _objectUnderTest.OnFlowFinished();
 
         [TestMethod]
         public void TestInitialState()

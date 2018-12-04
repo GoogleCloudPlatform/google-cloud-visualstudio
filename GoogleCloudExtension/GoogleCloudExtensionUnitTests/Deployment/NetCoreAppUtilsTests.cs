@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Mock<IGCloudWrapper> _gcloudWrapperMock;
         private Mock<IEnvironment> _environmentMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
             _toolsPathProviderMock.Setup(tpp => tpp.GetDotnetPath()).Returns(DefaultDotnetPath);
@@ -64,10 +65,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _environmentMock.ToLazy());
         }
 
-        protected override void AfterEach()
-        {
-            VsVersionUtils.s_toolsPathProviderOverride = null;
-        }
+        [TestCleanup]
+        public void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
 
         [TestMethod]
         public async Task TestCreateAppBundleAsync_CreatesTargetStageDirectory()

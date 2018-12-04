@@ -53,7 +53,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private IParsedProject _mockedParsedProject;
         private static readonly GkeDeployment s_defaultExistingDeployment = new GkeDeployment { Spec = new GkeSpec { Replicas = DefaultReplicas } };
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
             _gcpOutputWindowMock = new Mock<IGcpOutputWindow>();
@@ -112,10 +113,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             _mockedParsedProject = Mock.Of<IParsedProject>();
         }
 
-        protected override void AfterEach()
-        {
-            VsVersionUtils.s_toolsPathProviderOverride = null;
-        }
+        [TestCleanup]
+        public void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
 
         [TestMethod]
         public async Task TestDeployProjectToGkeAsync_ClearsGcpOutput()

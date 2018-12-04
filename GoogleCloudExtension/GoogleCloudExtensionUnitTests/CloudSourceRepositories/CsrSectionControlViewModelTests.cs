@@ -25,10 +25,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepositories
         private CsrSectionControlViewModel _objectUnderTest;
 
         [TestInitialize]
-        public new void BeforeEach()
-        {
-            _objectUnderTest = new CsrSectionControlViewModel();
-        }
+        public void BeforeEach() => _objectUnderTest = new CsrSectionControlViewModel();
 
         [TestMethod]
         public void TestSignIn_PromptsForNoUser()

@@ -25,7 +25,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
     {
         private Mock<IMenuCommandService> _menuCommandServiceMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
             PackageMock.Setup(p => p.GetService(typeof(IMenuCommandService)))

@@ -65,7 +65,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private string _parameters;
         private EventHandler<OutputHandlerEventArgs> _handler;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _toolsPathProviderMock = new Mock<IToolsPathProvider>();
             VsVersionUtils.s_toolsPathProviderOverride = _toolsPathProviderMock.Object;
@@ -108,7 +109,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 _gcpOutputWindowMock.ToLazy());
         }
 
-        protected override void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
+        [TestCleanup] public void AfterEach() => VsVersionUtils.s_toolsPathProviderOverride = null;
 
         [TestMethod]
         public async Task TestPublishProjectAsync_RunsProjectBuildForGivenConfiguration()

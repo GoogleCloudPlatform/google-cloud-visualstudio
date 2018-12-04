@@ -29,7 +29,8 @@ namespace GoogleCloudExtensionUnitTests.Projects
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private const string PropertyValue = "PropertyValue";
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);

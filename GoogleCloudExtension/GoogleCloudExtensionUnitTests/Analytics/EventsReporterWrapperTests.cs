@@ -28,16 +28,15 @@ namespace GoogleCloudExtensionUnitTests.Analytics
     {
         private AnalyticsOptions _generalOptions;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _generalOptions = new AnalyticsOptions();
             PackageMock.Setup(p => p.GeneralSettings).Returns(_generalOptions);
         }
 
-        protected override void AfterEach()
-        {
-            EventsReporterWrapper.DisableReporting();
-        }
+        [TestCleanup]
+        public void AfterEach() => EventsReporterWrapper.DisableReporting();
 
         [TestMethod]
         public void TestEnsureAnalyticsOptIn_ShowsPromptWhenDialogNotShown()

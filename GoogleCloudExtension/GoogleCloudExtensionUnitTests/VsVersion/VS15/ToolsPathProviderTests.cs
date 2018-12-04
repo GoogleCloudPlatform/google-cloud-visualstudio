@@ -29,7 +29,8 @@ namespace GoogleCloudExtensionUnitTests.VsVersion.VS15
         private ToolsPathProvider _objectUnderTest;
         private Mock<DTE> _dteMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _dteMock = new Mock<DTE>();
 
