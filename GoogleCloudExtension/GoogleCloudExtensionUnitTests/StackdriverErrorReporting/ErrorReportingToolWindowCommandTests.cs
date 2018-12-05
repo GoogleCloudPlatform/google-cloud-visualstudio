@@ -28,7 +28,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
     {
         private Mock<IMenuCommandService> _menuCommandServiceMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
             PackageMock.Setup(sp => sp.GetServiceAsync(typeof(IMenuCommandService)))
@@ -37,10 +38,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task TestInitializeNullPackage()
-        {
-            await ErrorReportingToolWindowCommand.InitializeAsync(null, CancellationToken.None);
-        }
+        public async Task TestInitializeNullPackage() => await ErrorReportingToolWindowCommand.InitializeAsync(null, CancellationToken.None);
 
         [TestMethod]
         public async Task TestInitialize()
