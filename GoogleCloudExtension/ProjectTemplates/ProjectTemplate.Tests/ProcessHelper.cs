@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
-using System.Threading.Tasks;
 
 namespace ProjectTemplate.Tests
 {
@@ -27,7 +26,7 @@ namespace ProjectTemplate.Tests
     public static class ProcessHelper
     {
         /// <summary>
-        /// Kills the given process and all decendant processes.
+        /// Kills the given process and all descendant processes.
         /// </summary>
         /// <param name="process">The parent process to kill.</param>
         /// <returns>A list of all of the <see cref="Process"/> objects of the killed processes.</returns>
@@ -80,27 +79,6 @@ namespace ProjectTemplate.Tests
             }
 
             return killedProcesses;
-        }
-
-        /// <summary>
-        /// Kills the given process and all decendant processes.
-        /// </summary>
-        /// <param name="process">The parent process to kill.</param>
-        /// <param name="timeout">The amount of time to wait for the processes to exit.</param>
-        public static void KillProcessTreeAndWait(this Process process, TimeSpan timeout)
-        {
-            IList<Process> killedProcesses = process.KillProcessTree();
-            var tasks = new List<Task>();
-            foreach (Process killedProcess in killedProcesses)
-            {
-                var taskSource = new TaskCompletionSource<bool>();
-                killedProcess.Exited += (sender, args) => taskSource.SetResult(true);
-                if (!killedProcess.HasExited)
-                {
-                    tasks.Add(taskSource.Task);
-                }
-            }
-            Task.WaitAll(tasks.ToArray(), timeout);
         }
     }
 }

@@ -23,27 +23,15 @@ namespace GoogleCloudExtensionUnitTests.Analytics.AnalyticsOptInDialog
         private AnalyticsOptInWindowContent _objectUnderTest;
 
         [TestInitialize]
-        public void BeforeEach()
-        {
-            _objectUnderTest = new AnalyticsOptInWindowContent();
-        }
+        public void BeforeEach() => _objectUnderTest = new AnalyticsOptInWindowContent();
 
         [TestMethod]
-        public void TestConstructor_CreatesViewModel()
-        {
-            Assert.IsNotNull(_objectUnderTest.ViewModel);
-        }
+        public void TestConstructor_CreatesViewModel() => Assert.IsNotNull(_objectUnderTest.ViewModel);
 
         [TestMethod]
-        public void TestConstructor_SetsTitle()
-        {
-            Assert.AreEqual(GoogleCloudExtension.Resources.AnalyticsPromptTitle, _objectUnderTest.Title);
-        }
+        public void TestConstructor_SetsTitle() => Assert.AreEqual(GoogleCloudExtension.Resources.AnalyticsPromptTitle, _objectUnderTest.Title);
 
         [TestMethod]
-        public void TestConstructor_InitalizesComponent()
-        {
-            Assert.IsTrue(_objectUnderTest.IsInitialized);
-        }
+        public void TestConstructor_InitializesComponent() => Assert.IsTrue(_objectUnderTest.IsInitialized);
     }
 }

@@ -29,7 +29,8 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private PickProjectIdWindowContent _objectUnderTest;
         private Mock<IPickProjectIdViewModel> _viewModelMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _viewModelMock = new Mock<IPickProjectIdViewModel>();
             _objectUnderTest = new PickProjectIdWindowContent(_viewModelMock.Object);

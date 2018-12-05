@@ -33,7 +33,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
         private List<string> _propertiesChanged;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
             _getPageOfGroupStatusSource = new TaskCompletionSource<ListGroupStatsResponse>();

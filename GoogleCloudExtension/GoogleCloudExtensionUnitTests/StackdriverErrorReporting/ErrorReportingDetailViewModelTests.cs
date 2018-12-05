@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         private TaskCompletionSource<ListEventsResponse> _getPageOfEventsSource;
         private TaskCompletionSource<ListGroupStatsResponse> _getPageOfGroupStatusSource;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             PackageMock.Setup(p => p.IsWindowActive()).Returns(true);
 

@@ -42,7 +42,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Choice
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private Mock<IPublishDialog> _publishDialogMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _parsedProject = new FakeParsedProject
             {

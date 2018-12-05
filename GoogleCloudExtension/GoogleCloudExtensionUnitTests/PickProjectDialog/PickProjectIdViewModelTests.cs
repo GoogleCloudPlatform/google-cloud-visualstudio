@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _testObject = null;
             _projectTaskSource = new TaskCompletionSource<IList<Project>>();

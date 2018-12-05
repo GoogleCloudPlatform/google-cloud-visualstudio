@@ -28,7 +28,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
         private Mock<Action> _closeWindowMock;
         private TemplateChooserViewModelBase _objectUnderTest;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _closeWindowMock = new Mock<Action>();
             _objectUnderTest = new TestTemplateChooserViewModelBase(_closeWindowMock);
@@ -131,15 +132,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             {
             }
 
-            public override FrameworkType GetSelectedFramework()
-            {
-                return default(FrameworkType);
-            }
+            public override FrameworkType GetSelectedFramework() => default(FrameworkType);
 
-            public override AspNetVersion GetSelectedVersion()
-            {
-                return default(AspNetVersion);
-            }
+            public override AspNetVersion GetSelectedVersion() => default(AspNetVersion);
         }
     }
 }

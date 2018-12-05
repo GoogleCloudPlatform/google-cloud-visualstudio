@@ -39,10 +39,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInitializeNullPackage()
-        {
-            ErrorReportingToolWindowCommand.Initialize(null);
-        }
+        public void TestInitializeNullPackage() => ErrorReportingToolWindowCommand.Initialize(null);
 
         [TestMethod]
         public void TestInitialize()

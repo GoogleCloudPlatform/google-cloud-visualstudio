@@ -56,7 +56,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private SourceRootViewModelBase _objectUnderTest;
         private Mock<SourceRootViewModelBase> _objectUnderTestMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 

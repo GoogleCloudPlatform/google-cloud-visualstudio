@@ -53,7 +53,8 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         private Mock<Action<string>> _deleteFileMock;
         private Mock<IUserPromptService> _promptUserMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _directoryExistsMock = new Mock<Func<string, bool>>();
             _fileExistsMock = new Mock<Func<string, bool>>();
@@ -78,7 +79,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestGetCredentialsForInstance_ReturnsEmptyListForNonExistantDirectory()
+        public void TestGetCredentialsForInstance_ReturnsEmptyListForNonexistentDirectory()
         {
             _directoryExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 
@@ -118,7 +119,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestGetCredentialslForInstance_SortsByUsername()
+        public void TestGetCredentialsForInstance_SortsByUsername()
         {
             const string password = "passwordString";
             byte[] encryptedBytes = ProtectedData.Protect(
@@ -270,7 +271,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestDeleteCredentialsForInstance_SkipsForNonExistantFile()
+        public void TestDeleteCredentialsForInstance_SkipsForNonexistentFile()
         {
             _fileExistsMock.Setup(f => f(It.IsAny<string>())).Returns(false);
 

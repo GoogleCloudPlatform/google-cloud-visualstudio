@@ -119,7 +119,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         private Mock<IVsProjectPropertyService> _propertyServiceMock;
         private DteProject _mockedProject;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();
             PackageMock.Setup(p => p.GetMefService<IVsProjectPropertyService>()).Returns(_propertyServiceMock.Object);
@@ -149,10 +150,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 
-        protected override void AfterEach()
-        {
-            _objectUnderTest.OnFlowFinished();
-        }
+        [TestCleanup]
+        public void AfterEach() => _objectUnderTest.OnFlowFinished();
 
         [TestMethod]
         public void TestInitialState()
@@ -552,10 +551,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gce
         }
 
         [TestMethod]
-        public void TestConstructor_SetSiteName()
-        {
-            Assert.AreEqual(GceStepViewModel.DefaultSiteName, _objectUnderTest.SiteName);
-        }
+        public void TestConstructor_SetSiteName() => Assert.AreEqual(GceStepViewModel.DefaultSiteName, _objectUnderTest.SiteName);
 
         [TestMethod]
         public void TestSetSiteName_SetsProperty()

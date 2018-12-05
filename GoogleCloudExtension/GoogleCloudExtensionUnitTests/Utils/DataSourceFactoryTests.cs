@@ -33,7 +33,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
 
         private UserAccount _userAccount;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _objectUnderTest = new DataSourceFactory(CredentialStoreMock.Object);
             _userAccount = new UserAccount

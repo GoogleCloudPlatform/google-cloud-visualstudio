@@ -31,7 +31,8 @@ namespace GoogleCloudExtensionUnitTests.FirewallManagement
     {
         private Action _mockedCloseAction;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _mockedCloseAction = Mock.Of<Action>();
             PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2017Version);

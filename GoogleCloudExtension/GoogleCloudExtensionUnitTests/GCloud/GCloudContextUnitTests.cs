@@ -62,7 +62,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             new object[] {s_buildsEnabledSdkVersion}
         };
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _processServiceMock = new Mock<IProcessService>();
             _versionResultSource = new TaskCompletionSource<CloudSdkVersions>();

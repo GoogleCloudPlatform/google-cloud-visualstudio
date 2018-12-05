@@ -34,7 +34,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private Mock<IGcpUserProjectViewModel> _userProjectViewModelMock;
         private TaskCompletionSource<Project> _currentProjectSource;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _currentProjectSource = new TaskCompletionSource<Project>();
 
@@ -67,10 +68,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         }
 
         [TestMethod]
-        public void TestConstructor_GetUserProjectFromMefService()
-        {
-            Assert.AreEqual(_userProjectViewModelMock.Object, _objectUnderTest.UserProject);
-        }
+        public void TestConstructor_GetUserProjectFromMefService() => Assert.AreEqual(_userProjectViewModelMock.Object, _objectUnderTest.UserProject);
 
         [TestMethod]
         public async Task TestRefreshCommand_ResetsCredentialsAsync()
@@ -123,10 +121,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         }
 
         [TestMethod]
-        public void TestSelectedProjectCommand_RedirectesToUserProject()
-        {
-            Assert.AreEqual(_userProjectViewModelMock.Object.SelectProjectCommand, _objectUnderTest.SelectProjectCommand);
-        }
+        public void TestSelectedProjectCommand_RedirectesToUserProject() => Assert.AreEqual(_userProjectViewModelMock.Object.SelectProjectCommand, _objectUnderTest.SelectProjectCommand);
 
         [TestMethod]
         public void TestCurrentProject_RedirectesToUserProject()
