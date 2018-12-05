@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.GCloud
             new Dictionary<GCloudComponent, string>
             {
                 [GCloudComponent.Beta] = "beta",
-                [GCloudComponent.Kubectl] = "kubectl",
+                [GCloudComponent.Kubectl] = "kubectl"
             };
 
         private readonly Lazy<IProcessService> _processService;
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.GCloud
         /// in <paramref name="outputPath"/>. If the <paramref name="sourcePath"/> does not refer to a supported CVS (currently git) then
         /// nothing will be done.
         /// </summary>
-        /// <param name="sourcePath">The directory for which to generate the source contenxt.</param>
+        /// <param name="sourcePath">The directory for which to generate the source context.</param>
         /// <param name="outputPath">Where to store the source context files.</param>
         /// <returns>The task to be completed when the operation finishes.</returns>
         public async Task GenerateSourceContextAsync(string sourcePath, string outputPath)
@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.GCloud
             return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
         }
 
-        private bool IsGCloudCliInstalled()
+        private static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
             string gcloudPath = PathUtils.GetCommandPathFromPATH("gcloud.cmd");
@@ -136,7 +136,7 @@ namespace GoogleCloudExtension.GCloud
             }
 
             CloudSdkVersions version = await GetJsonOutputAsync<CloudSdkVersions>("version");
-            return new Version(version.SdkVersion);
+            return version.SdkVersion;
         }
 
         private async Task<T> GetJsonOutputAsync<T>(string command)

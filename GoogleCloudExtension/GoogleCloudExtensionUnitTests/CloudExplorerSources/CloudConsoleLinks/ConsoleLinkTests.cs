@@ -14,32 +14,35 @@
 
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
+using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Diagnostics;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
 {
     [TestClass]
-    public class ConsoleLinkTests
+    public class ConsoleLinkTests : ExtensionTestBase
     {
         private const string DefaultCaption = "Default Caption";
         private const string DefaultUrl = "url://default";
         private static readonly LinkInfo s_defaultLinkInfo = new LinkInfo(DefaultUrl, DefaultCaption);
-        private Mock<Func<string, Process>> _startProcessMock;
+        private Mock<IBrowserService> _browserServiceMock;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _startProcessMock = new Mock<Func<string, Process>>();
+            _browserServiceMock = new Mock<IBrowserService>();
+
+            PackageMock.Setup(p => p.GetMefServiceLazy<IBrowserService>()).Returns(_browserServiceMock.ToLazy());
         }
+
         [TestMethod]
         public void TestConstructor_SetsCaption()
         {
             const string testCaption = "Test Caption";
-            var objectUnderTest = new ConsoleLink(new LinkInfo(DefaultUrl, testCaption), Mock.Of<ICloudSourceContext>());
+            var objectUnderTest = new ConsoleLink(Mock.Of<ICloudSourceContext>(), new LinkInfo(DefaultUrl, testCaption));
 
             Assert.AreEqual(testCaption, objectUnderTest.Caption);
         }
@@ -47,9 +50,46 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
         [TestMethod]
         public void TestConstructor_CreatesNavigateCommand()
         {
-            var objectUnderTest = new ConsoleLink(s_defaultLinkInfo, Mock.Of<ICloudSourceContext>());
+            var objectUnderTest = new ConsoleLink(Mock.Of<ICloudSourceContext>(), s_defaultLinkInfo);
 
             Assert.IsTrue(objectUnderTest.NavigateCommand.CanExecuteCommand);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsHelpLinkInfo()
+        {
+            var expectedHelpLinkInfo = new LinkInfo("url://test/url", "Test Caption");
+            var objectUnderTest = new ConsoleLink(
+                Mock.Of<ICloudSourceContext>(),
+                new LinkInfo(DefaultUrl, DefaultCaption),
+                expectedHelpLinkInfo);
+
+            Assert.AreEqual(expectedHelpLinkInfo, objectUnderTest.InfoLinkInfo);
+        }
+
+        [TestMethod]
+        public void TestConstructor_EnablesNavigateHelpCommand()
+        {
+            var objectUnderTest = new ConsoleLink(
+                Mock.Of<ICloudSourceContext>(),
+                new LinkInfo(DefaultUrl, DefaultCaption),
+                new LinkInfo(DefaultUrl, DefaultCaption));
+
+            Assert.IsTrue(objectUnderTest.NavigateInfoCommand.CanExecute(null));
+        }
+
+        [TestMethod]
+        public void TestNavigateHelpCommand_NavigatesToUrl()
+        {
+            const string testUrl = "url://test/url";
+
+            var objectUnderTest = new ConsoleLink(
+                Mock.Of<ICloudSourceContext>(),
+                new LinkInfo(DefaultUrl, DefaultCaption),
+                new LinkInfo(testUrl, "Test Caption"));
+            objectUnderTest.NavigateInfoCommand.Execute(null);
+
+            _browserServiceMock.Verify(b => b.OpenBrowser(testUrl));
         }
 
         [TestMethod]
@@ -58,13 +98,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             const string testUrlFormat = "url://default?project={0}";
             const string expectedUrl = "url://default?project=";
             var objectUnderTest = new ConsoleLink(
-                new LinkInfo(testUrlFormat, DefaultCaption),
                 Mock.Of<ICloudSourceContext>(),
-                _startProcessMock.Object);
+                new LinkInfo(testUrlFormat, DefaultCaption));
 
             objectUnderTest.NavigateCommand.Execute(null);
 
-            _startProcessMock.Verify(f => f(expectedUrl), Times.Once);
+            _browserServiceMock.Verify(b => b.OpenBrowser(expectedUrl), Times.Once);
         }
 
         [TestMethod]
@@ -74,13 +113,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             const string testProjectId = "testProjectId";
             const string expectedUrl = "url://project/testProjectId/default";
             var objectUnderTest = new ConsoleLink(
-                new LinkInfo(testUrlFormat, DefaultCaption),
                 Mock.Of<ICloudSourceContext>(c => c.CurrentProject.ProjectId == testProjectId),
-                _startProcessMock.Object);
+                new LinkInfo(testUrlFormat, DefaultCaption));
 
             objectUnderTest.NavigateCommand.Execute(null);
 
-            _startProcessMock.Verify(f => f(expectedUrl), Times.Once);
+            _browserServiceMock.Verify(b => b.OpenBrowser(expectedUrl), Times.Once);
         }
 
         [TestMethod]
@@ -93,17 +131,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
             const string secondExpectedUrl = "url://project/secondProjectId/default";
             var contextMock = new Mock<ICloudSourceContext>();
             contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(firstProjectId);
-            var objectUnderTest = new ConsoleLink(
-                new LinkInfo(testUrlFormat, DefaultCaption),
-                contextMock.Object,
-                _startProcessMock.Object);
+            var objectUnderTest = new ConsoleLink(contextMock.Object, new LinkInfo(testUrlFormat, DefaultCaption));
 
             objectUnderTest.NavigateCommand.Execute(null);
             contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(secondProjectId);
             objectUnderTest.NavigateCommand.Execute(null);
 
-            _startProcessMock.Verify(f => f(firstExpectedUrl), Times.Once);
-            _startProcessMock.Verify(f => f(secondExpectedUrl), Times.Once);
+            _browserServiceMock.Verify(b => b.OpenBrowser(firstExpectedUrl), Times.Once);
+            _browserServiceMock.Verify(b => b.OpenBrowser(secondExpectedUrl), Times.Once);
         }
     }
 }

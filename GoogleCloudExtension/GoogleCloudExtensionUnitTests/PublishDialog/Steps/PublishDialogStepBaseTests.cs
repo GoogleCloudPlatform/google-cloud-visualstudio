@@ -140,7 +140,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             }
         }
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _areServicesEnabledTaskSource = new TaskCompletionSource<bool>();
             _enableServicesTaskSource = new TaskCompletionSource<object>();
@@ -166,7 +167,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps
             _objectUnderTest.PropertyChanged += (sender, args) => _changedProperties.Add(args.PropertyName);
         }
 
-        protected override void AfterEach() => _objectUnderTest.OnFlowFinished();
+        [TestCleanup]
+        public void AfterEach() => _objectUnderTest.OnFlowFinished();
 
         [TestMethod]
         public void TestInitialState()

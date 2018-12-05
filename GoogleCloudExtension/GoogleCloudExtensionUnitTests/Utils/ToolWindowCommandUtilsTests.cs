@@ -31,10 +31,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
     {
         private IVsWindowFrame _defaultFrame;
 
-        protected override void BeforeEach()
-        {
-            _defaultFrame = VsWindowFrameMocks.GetMockedWindowFrame();
-        }
+        [TestInitialize]
+        public void BeforeEach() => _defaultFrame = VsWindowFrameMocks.GetMockedWindowFrame();
 
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
@@ -121,16 +119,10 @@ namespace GoogleCloudExtensionUnitTests.Utils
         }
 
         [TestMethod]
-        public void TestEnableMenuItemOnValidProjectIdNullSender()
-        {
-            ToolWindowCommandUtils.EnableMenuItemOnValidProjectId(null, null);
-        }
+        public void TestEnableMenuItemOnValidProjectIdNullSender() => ToolWindowCommandUtils.EnableMenuItemOnValidProjectId(null, null);
 
         [TestMethod]
-        public void TestEnableMenuItemOnValidProjectIdInvalidSender()
-        {
-            ToolWindowCommandUtils.EnableMenuItemOnValidProjectId(Mock.Of<object>(), null);
-        }
+        public void TestEnableMenuItemOnValidProjectIdInvalidSender() => ToolWindowCommandUtils.EnableMenuItemOnValidProjectId(Mock.Of<object>(), null);
 
         [TestMethod]
         public void TestEnableMenuItemOnValidProjectIdInvalidProjectId()

@@ -22,7 +22,7 @@ using System.Linq;
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.CloudConsoleLinks
 {
     [TestClass]
-    public class ConsoleLinkGroupTests
+    public class ConsoleLinkGroupTests : ExtensionTestBase
     {
         private static readonly ICloudSourceContext s_mockedContext = Mock.Of<ICloudSourceContext>();
         private const string DefaultCaption = "DefaultCaption";

@@ -15,7 +15,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private LogsViewerToolWindow _objectUnderTest;
         private Mock<IVsWindowFrame> _frameMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _frameMock = VsWindowFrameMocks.GetWindowFrameMock(MockBehavior.Loose);
             _objectUnderTest = new LogsViewerToolWindow();
@@ -64,10 +65,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 
         [TestMethod]
         [ExpectedException(typeof(InvalidCastException))]
-        public void TestSetContentOfInvalidType()
-        {
-            _objectUnderTest.Content = new object();
-        }
+        public void TestSetContentOfInvalidType() => _objectUnderTest.Content = new object();
 
         [TestMethod]
         public void TestSetContentOfValidType()

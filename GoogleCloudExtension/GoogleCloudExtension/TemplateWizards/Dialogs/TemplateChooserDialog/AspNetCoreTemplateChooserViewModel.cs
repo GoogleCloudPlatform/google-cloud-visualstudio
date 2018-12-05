@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog
                 SetValueAndRaise(ref _availableVersions, value);
                 if (!AvailableVersions.Contains(SelectedVersion))
                 {
-                    SelectedVersion = AvailableVersions.FirstOrDefault();
+                    SelectedVersion = AvailableVersions.LastOrDefault();
                 }
             }
         }

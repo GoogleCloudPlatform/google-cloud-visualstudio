@@ -32,7 +32,7 @@ namespace GoogleCloudExtensionUnitTests
         protected Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
 
         [TestInitialize]
-        public void IntializeGlobalsForTest()
+        public void InitializeGlobalsForTest()
         {
 
             PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
@@ -55,20 +55,13 @@ namespace GoogleCloudExtensionUnitTests
                 .Returns(new UserAccount { AccountName = "DefaultAccountName" });
 
             EventsReporterWrapper.DisableReporting();
-
-            BeforeEach();
         }
-
-        protected virtual void BeforeEach() { }
 
         [TestCleanup]
         public void CleanupGlobalsForTest()
         {
-            AfterEach();
             _serviceProviderMock.Dispose();
             GoogleCloudExtensionPackage.Instance = null;
         }
-
-        protected virtual void AfterEach() { }
     }
 }

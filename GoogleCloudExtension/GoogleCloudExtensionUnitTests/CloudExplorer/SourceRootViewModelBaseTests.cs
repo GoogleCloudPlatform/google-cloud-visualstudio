@@ -53,7 +53,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         private ICloudSourceContext _mockedContext;
         private TestableSourceRootViewModelBase _objectUnderTest;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
 
             _mockedContext = Mock.Of<ICloudSourceContext>();

@@ -27,7 +27,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         private const string ProjectUrlArgumentFormat = "?project={0}";
 
         private const string HomeUrl = CloudConsoleRootUrl + ProjectUrlArgumentFormat;
-        private const string GettingStartedPath = "getting-started";
         private const string AppEnginePath = "appengine";
         private const string ComputeEnginePath = "compute";
         private const string KubernetesEnginePath = "kubernetes";
@@ -40,44 +39,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         private const string ApisAndServicesPath = "apis";
         private const string SupportPath = "support";
         private const string SecurityCenterPath = "security";
-        private const string CloudFunctionsPath = "functions";
-        private const string CloudTasksPath = "cloudtasks";
         private const string BigtablePath = "bigtable";
         private const string DatastorePath = "datastore";
         private const string CloudStoragePath = "storage";
         private const string CloudSqlPath = "sql";
         private const string SpannerPath = "spanner";
-        private const string MemoryStorePath = "memorystore";
-        private const string FileStorePath = "filestore";
         private const string VpcNetworkPath = "networking";
         private const string NetworkServicesPath = "net-services";
         private const string HybridConnectivityPath = "hybrid";
         private const string NetworkServiceTierPath = "net-tier";
         private const string NetworkSecurityPath = "net-security";
-        private const string StackDriverMonitoringPath = "monitoring";
-        private const string StackDriverDebugPath = "debug";
-        private const string StackDriverTracePath = "traces";
-        private const string StackDriverLoggingPath = "logs";
-        private const string StackDriverErrorReportingPath = "errors";
-        private const string StackDriverProfilerPath = "profiler";
+        private const string StackdriverMonitoringPath = "monitoring";
+        private const string StackdriverDebugPath = "debug";
+        private const string StackdriverTracePath = "traces";
+        private const string StackdriverLoggingPath = "logs";
+        private const string StackdriverErrorReportingPath = "errors";
+        private const string StackdriverProfilerPath = "profiler";
         private const string SourceRepositoriesPath = "code";
         private const string EndpointsPath = "endpoints";
         private const string BigQueryPath = "bigquery";
         private const string PubSubPath = "cloudpubsub";
-        private const string DataprocPath = "dataproc";
-        private const string DataflowPath = "dataflow";
         private const string MachineLearningEnginePath = "mlengine";
-        private const string IoTCorePath = "iot";
-        private const string ComposerPath = "composer";
-        private const string GenomicsPath = "genomics";
-        private const string DataprepPath = "dataprep";
+
+        private const string KubernetesCodelabLink =
+            "https://codelabs.developers.google.com/codelabs/cloud-kubernetes-aspnetcore/";
 
         internal static readonly LinkInfo s_consoleHomeFormatInfo = new LinkInfo(
             HomeUrl, Resources.CloudExplorerConsoleLinkCaption);
 
-        private static readonly IReadOnlyList<(string, string)> s_primaryConsoleLinkPaths = new[]
+        private static readonly IReadOnlyList<(string path, string caption)> s_primaryConsoleLinkPaths = new[]
         {
-            (GettingStartedPath, Resources.CloudLinkGettingStartedCaption),
             (AppEnginePath, Resources.CloudLinkAppEngineCaption),
             (ComputeEnginePath, Resources.CloudLinkComputeEngineCaption),
             (KubernetesEnginePath, Resources.CloudLinkKubernetesEngineCaption)
@@ -99,9 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                 {
                     (AppEnginePath, Resources.CloudLinkAppEngineCaption),
                     (ComputeEnginePath, Resources.CloudLinkComputeEngineCaption),
-                    (KubernetesEnginePath, Resources.CloudLinkKubernetesEngineCaption),
-                    (CloudFunctionsPath, Resources.CloudLinkCloudFunctionsCaption),
-                    (CloudTasksPath, Resources.CloudLinkCloudTasksCaption)
+                    (KubernetesEnginePath, Resources.CloudLinkKubernetesEngineCaption)
                 }),
                 (Resources.ConsoleLinkStorageGroupCaption, new[]
                 {
@@ -109,9 +98,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                     (DatastorePath, Resources.CloudLinkDatastoreCaption),
                     (CloudStoragePath, Resources.CloudLinkCloudStorageCaption),
                     (CloudSqlPath, Resources.CloudLinkCloudSqlCaption),
-                    (SpannerPath, Resources.CloudLinkSpannerCaption),
-                    (MemoryStorePath, Resources.CloudLinkMemoryStoreCaption),
-                    (FileStorePath, Resources.CloudLinkFileStoreCaption)
+                    (SpannerPath, Resources.CloudLinkSpannerCaption)
                 }),
                 (Resources.ConsoleLinkNetworkingGroupCaption, new[]
                 {
@@ -121,14 +108,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                     (NetworkServiceTierPath, Resources.CloudLinkNetworkServiceTierCaption),
                     (NetworkSecurityPath, Resources.CloudLinkNetworkSecurityCaption)
                 }),
-                (Resources.ConsoleLinkStackDriverGroupCaption, new[]
+                (Resources.ConsoleLinkStackdriverGroupCaption, new[]
                 {
-                    (StackDriverMonitoringPath, Resources.CloudLinkStackDriverMonitoringCaption),
-                    (StackDriverDebugPath, Resources.CloudLinkStackDriverDebugCaption),
-                    (StackDriverTracePath, Resources.CloudLinkStackDriverTraceCaption),
-                    (StackDriverLoggingPath, Resources.CloudLinkStackDriverLoggingCaption),
-                    (StackDriverErrorReportingPath, Resources.CloudLinkStackDriverErrorReportingCaption),
-                    (StackDriverProfilerPath, Resources.CloudLinkStackDriverProfilerCaption)
+                    (StackdriverMonitoringPath, Resources.CloudLinkStackdriverMonitoringCaption),
+                    (StackdriverDebugPath, Resources.CloudLinkStackdriverDebugCaption),
+                    (StackdriverTracePath, Resources.CloudLinkStackdriverTraceCaption),
+                    (StackdriverLoggingPath, Resources.CloudLinkStackdriverLoggingCaption),
+                    (StackdriverErrorReportingPath, Resources.CloudLinkStackdriverErrorReportingCaption),
+                    (StackdriverProfilerPath, Resources.CloudLinkStackdriverProfilerCaption)
                 }),
                 (Resources.ConsoleLinkToolsGroupCaption, new[]
                 {
@@ -141,15 +128,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
                 {
                     (BigQueryPath, Resources.CloudLinkBigQueryCaption),
                     (PubSubPath, Resources.CloudLinkPubSubCaption),
-                    (DataprocPath, Resources.CloudLinkDataprocCaption),
-                    (DataflowPath, Resources.CloudLinkDataflowCaption),
-                    (MachineLearningEnginePath, Resources.CloudLinkMachineLearningEngineCaption),
-                    (IoTCorePath, Resources.CloudLinkIoTCoreCaption),
-                    (ComposerPath, Resources.CloudLinkComposerCaption),
-                    (GenomicsPath, Resources.CloudLinkGenomicsCaption),
-                    (DataprepPath, Resources.CloudLinkDataprepCaption)
+                    (MachineLearningEnginePath, Resources.CloudLinkMachineLearningEngineCaption)
                 })
             };
+
+        private static readonly IReadOnlyDictionary<string, LinkInfo> s_helpLinks = new Dictionary<string, LinkInfo>
+        {
+            [KubernetesEnginePath] = new LinkInfo(KubernetesCodelabLink, Resources.ConsoleLinksKubernetesInfoTooltip)
+        };
 
         private readonly Func<string, Process> _startProcess;
 
@@ -185,9 +171,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
             Caption = s_consoleHomeFormatInfo.Caption;
             NavigateCommand = new ProtectedCommand(OnNavigateCommand);
 
-            foreach (LinkInfo formatLinkInfo in PrimaryConsoleLinkFormats)
+            foreach ((string path, string caption) tuple in s_primaryConsoleLinkPaths)
             {
-                Children.Add(new ConsoleLink(formatLinkInfo, _context));
+                LinkInfo linkInfo = PathTupleToLinkInfo(tuple);
+                ConsoleLink consoleLink = s_helpLinks.ContainsKey(tuple.path) ?
+                    new ConsoleLink(_context, linkInfo, s_helpLinks[tuple.path]) :
+                    new ConsoleLink(_context, linkInfo);
+
+                Children.Add(consoleLink);
             }
 
             foreach ((string groupCaption, IEnumerable<LinkInfo> linkInfos) in GroupedConsoleLinkFormats)

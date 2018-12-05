@@ -70,7 +70,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Flex
         [ClassCleanup]
         public static void AfterAll() => GcpPublishStepsUtils.NowOverride = null;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _validateGCloudSource = new TaskCompletionSource<GCloudValidationResult>();
             _propertyServiceMock = new Mock<IVsProjectPropertyService>();

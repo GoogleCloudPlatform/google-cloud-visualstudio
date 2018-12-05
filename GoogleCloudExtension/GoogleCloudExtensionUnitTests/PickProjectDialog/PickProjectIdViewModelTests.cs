@@ -44,7 +44,8 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         private PickProjectIdViewModel _testObject;
         private List<string> _properiesChanged;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _testObject = null;
             _projectTaskSource = new TaskCompletionSource<IList<Project>>();
@@ -281,6 +282,16 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
             bool result = _testObject.FilterItem(new Project { Name = "ProjectName", ProjectId = "project-id" });
 
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void TestFilterItem_ReturnsFalseForUninitializedProject()
+        {
+            _testObject.Filter = "something";
+
+            bool result = _testObject.FilterItem(new Project());
+
+            Assert.IsFalse(result);
         }
     }
 }

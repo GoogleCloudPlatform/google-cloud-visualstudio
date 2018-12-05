@@ -28,7 +28,8 @@ namespace GoogleCloudExtensionUnitTests.VsVersion.VS14
         private Mock<IEnvironment> _environmentMock;
         private ToolsPathProvider _objectUnderTest;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _environmentMock = new Mock<IEnvironment>();
 

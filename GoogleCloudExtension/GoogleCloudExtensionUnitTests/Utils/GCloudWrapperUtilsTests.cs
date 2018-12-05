@@ -33,7 +33,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
         private Mock<Action<string, string, string>> _showCopyablePromptMock;
         private Mock<IGCloudWrapper> _gcloudWrapperMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _validateGCloudAsyncSource = new TaskCompletionSource<GCloudValidationResult>();
             _gcloudWrapperMock = new Mock<IGCloudWrapper>();
@@ -48,10 +49,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
 
         }
 
-        protected override void AfterEach()
-        {
-            GCloudWrapperUtils.ShowCopyablePromptOverride = null;
-        }
+        [TestCleanup]
+        public void AfterEach() => GCloudWrapperUtils.ShowCopyablePromptOverride = null;
 
         [TestMethod]
         public async Task TestMissingComponentPrompt()

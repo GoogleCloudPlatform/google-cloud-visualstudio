@@ -37,7 +37,8 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         private Mock<IStepContent<IPublishDialogStep>> _stepContentMock;
         private List<string> _changedProperties;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _stepContentMock =
                 new Mock<IStepContent<IPublishDialogStep>> { DefaultValueProvider = DefaultValueProvider.Mock };

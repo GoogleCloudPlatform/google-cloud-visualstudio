@@ -37,7 +37,8 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         private Mock<IEnvironment> _environmentMock;
         private Mock<DTE2> _dteMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _fileSystemMock = new Mock<IFileSystem> { DefaultValue = DefaultValue.Mock };
             _environmentMock = new Mock<IEnvironment>();

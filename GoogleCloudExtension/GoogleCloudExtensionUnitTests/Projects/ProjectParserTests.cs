@@ -31,7 +31,8 @@ namespace GoogleCloudExtensionUnitTests.Projects
         private Mock<IFileSystem> _fileSystemMock;
         private Mock<Project> _projectMock;
 
-        protected override void BeforeEach()
+        [TestInitialize]
+        public void BeforeEach()
         {
             _projectMock = new Mock<Project>();
             _fileSystemMock = new Mock<IFileSystem>();

@@ -27,7 +27,7 @@ namespace GoogleCloudExtensionUnitTests.ManageAccounts
         private Mock<Action> _closeHandlerMock;
 
         [TestInitialize]
-        public new void BeforeEach()
+        public void BeforeEach()
         {
             _objectUnderTest = new ManageAccountsViewModel();
 

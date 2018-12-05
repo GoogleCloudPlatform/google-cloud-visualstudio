@@ -40,7 +40,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         private Mock<IUserPromptService> _userPromptServiceMock;
 
         [TestInitialize]
-        public new void BeforeEach()
+        public void BeforeEach()
         {
             _dataSourceFactoryMock = new Mock<IDataSourceFactory>();
             _credentialsStoreMock = new Mock<ICredentialsStore>();
@@ -52,10 +52,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         }
 
         [TestMethod]
-        public void TestConstructor_InitalizesCurrentProjectAsync()
-        {
-            Assert.IsNotNull(_objectUnderTest.CurrentProjectAsync);
-        }
+        public void TestConstructor_InitalizesCurrentProjectAsync() => Assert.IsNotNull(_objectUnderTest.CurrentProjectAsync);
 
         [TestMethod]
         public void TestConstructor_RegistersCurrentProjectIdChanged()
@@ -238,9 +235,6 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         }
 
         [TestMethod]
-        public void TestOptions_DelegatesToPackageOptions()
-        {
-            Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GeneralSettings, _objectUnderTest.Options);
-        }
+        public void TestOptions_DelegatesToPackageOptions() => Assert.AreEqual(GoogleCloudExtensionPackage.Instance.GeneralSettings, _objectUnderTest.Options);
     }
 }

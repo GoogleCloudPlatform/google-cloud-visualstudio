@@ -13,11 +13,14 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.GCloud
@@ -36,11 +39,35 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private GCloudContext _objectUnderTest;
         private Mock<IProcessService> _processServiceMock;
         private Func<string, Task> _mockedOutputAction;
+        private TaskCompletionSource<CloudSdkVersions> _versionResultSource;
 
-        protected override void BeforeEach()
+        /// <summary>
+        /// A version of Google Cloud SDK that includes the gcloud builds commands.
+        /// </summary>
+        private static readonly CloudSdkVersions s_buildsEnabledSdkVersion =
+            new CloudSdkVersions { SdkVersion = new Version(GCloudContext.GCloudBuildsMinimumVersion) };
+
+        /// <summary>
+        /// A version of Google Cloud SDK from before the gcloud builds commands were added.
+        /// </summary>
+        private static readonly CloudSdkVersions s_buildsMissingSdkVersion =
+            new CloudSdkVersions { SdkVersion = new Version(GCloudWrapper.GCloudSdkMinimumVersion) };
+
+        /// <summary>
+        /// Used as dynamic data to test that container builder arguments do not change between versions.
+        /// </summary>
+        private static IEnumerable<object[]> SdkVersions => new[]
+        {
+            new object[] {s_buildsMissingSdkVersion},
+            new object[] {s_buildsEnabledSdkVersion}
+        };
+
+        [TestInitialize]
+        public void BeforeEach()
         {
             _processServiceMock = new Mock<IProcessService>();
-            SetupRunCommandResult(true);
+            _versionResultSource = new TaskCompletionSource<CloudSdkVersions>();
+            SetupGetJsonOutput("version", _versionResultSource.Task);
             PackageMock.Setup(p => p.ProcessService).Returns(_processServiceMock.Object);
             _objectUnderTest = new GCloudContext();
             _mockedOutputAction = Mock.Of<Func<string, Task>>();
@@ -244,16 +271,29 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_RunsGcloudContainerBuildsSubmit()
+        public async Task TestBuildContainerAsync_ForOldVersion_RunsGcloudContainerBuildsSubmit()
         {
+            _versionResultSource.SetResult(s_buildsMissingSdkVersion);
             await _objectUnderTest.BuildContainerAsync(DefaultImageTag, DefaultContentsPath, _mockedOutputAction);
 
-            VerifyCommandArgsContain("container builds submit");
+            VerifyCommandArgsContain("gcloud container builds submit");
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_PassesGivenImageTag()
+        public async Task TestBuildContainerAsync_ForNewerVersion_RunsGcloudBuildsSubmit()
         {
+            _versionResultSource.SetResult(s_buildsEnabledSdkVersion);
+            await _objectUnderTest.BuildContainerAsync(DefaultImageTag, DefaultContentsPath, _mockedOutputAction);
+
+            VerifyCommandArgsContain("gcloud builds submit");
+            VerifyCommandArgs(s => !s.Contains("container"));
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(SdkVersions))]
+        public async Task TestBuildContainerAsync_PassesGivenImageTag(CloudSdkVersions version)
+        {
+            _versionResultSource.SetResult(version);
             const string expectedImageTag = "expected-image-tag";
             await _objectUnderTest.BuildContainerAsync(expectedImageTag, DefaultContentsPath, _mockedOutputAction);
 
@@ -261,8 +301,10 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_PassesGivenIContentPath()
+        [DynamicData(nameof(SdkVersions))]
+        public async Task TestBuildContainerAsync_PassesGivenIContentPath(CloudSdkVersions version)
         {
+            _versionResultSource.SetResult(version);
             const string expectedContentsPath = "expected-contents-path";
             await _objectUnderTest.BuildContainerAsync(DefaultImageTag, expectedContentsPath, _mockedOutputAction);
 
@@ -270,8 +312,10 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestBuildContainerAsync_PassesHandler()
+        [DynamicData(nameof(SdkVersions))]
+        public async Task TestBuildContainerAsync_PassesHandler(CloudSdkVersions version)
         {
+            _versionResultSource.SetResult(version);
             const string expectedOutputLine = "expected-output-line";
             SetupRunCommandInvokeHandler(expectedOutputLine);
 
@@ -280,11 +324,16 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             Mock.Get(_mockedOutputAction).Verify(f => f(expectedOutputLine));
         }
 
+        private static IEnumerable<object[]> SdkVersionAndBooleans =>
+            SdkVersions.SelectMany(v => new[] { true, false }, (v, b) => new[] { v[0], b });
+
         [TestMethod]
-        [DataRow(true)]
-        [DataRow(false)]
-        public async Task TestBuildContainerAsync_ReturnsResultFromCommand(bool expectedResult)
+        [DynamicData(nameof(SdkVersionAndBooleans))]
+        public async Task TestBuildContainerAsync_ReturnsResultFromCommand(
+            CloudSdkVersions version,
+            bool expectedResult)
         {
+            _versionResultSource.SetResult(version);
             SetupRunCommandResult(expectedResult);
 
             bool result = await _objectUnderTest.BuildContainerAsync(
@@ -305,12 +354,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     It.IsAny<IDictionary<string, string>>()));
         }
 
-        private void VerifyCommandArgsContain(string expectedArg)
+        private void VerifyCommandArgsContain(string expectedArg) => VerifyCommandArgs(s => s.Contains(expectedArg));
+
+        private void VerifyCommandArgs(Expression<Func<string, bool>> predicateExpression)
         {
             _processServiceMock.Verify(
                 p => p.RunCommandAsync(
                     "cmd.exe",
-                    It.Is<string>(s => s.Contains(expectedArg)),
+                    It.Is(predicateExpression),
                     It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
@@ -327,6 +378,18 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Returns(Task.FromResult(result));
+        }
+
+        private void SetupGetJsonOutput<T>(string command, Task<T> result)
+        {
+            _processServiceMock
+                .Setup(
+                    p => p.GetJsonOutputAsync<T>(
+                        It.IsAny<string>(),
+                        It.Is<string>(s => s.Contains(command)),
+                        null,
+                        It.IsAny<Dictionary<string, string>>()))
+                .Returns(result);
         }
 
         private void SetupGetJsonOutput<T>(T result)
