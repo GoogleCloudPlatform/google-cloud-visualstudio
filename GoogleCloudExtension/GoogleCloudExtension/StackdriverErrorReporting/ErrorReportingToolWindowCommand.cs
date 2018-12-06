@@ -42,25 +42,24 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        /// <param name="token"></param>
+        /// <param name="token">The token to cancel adding the command.</param>
         public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
             package.ThrowIfNull(nameof(package));
 
-            if (await package.GetServiceAsync(typeof(IMenuCommandService)) is IMenuCommandService commandService)
-            {
-                await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(
-                    async (sender, e) =>
-                    {
-                        await ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingToolWindow>();
-                        EventsReporterWrapper.ReportEvent(ErrorsViewerOpenEvent.Create());
-                    },
-                    menuCommandID);
-                menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
-                commandService.AddCommand(menuItem);
-            }
+            IMenuCommandService commandService =
+                await package.GetServiceAsync<IMenuCommandService, IMenuCommandService>();
+            await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            var menuCommandID = new CommandID(CommandSet, CommandId);
+            var menuItem = new OleMenuCommand(
+                async (sender, e) =>
+                {
+                    await ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingToolWindow>();
+                    EventsReporterWrapper.ReportEvent(ErrorsViewerOpenEvent.Create());
+                },
+                menuCommandID);
+            menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
+            commandService.AddCommand(menuItem);
         }
     }
 }

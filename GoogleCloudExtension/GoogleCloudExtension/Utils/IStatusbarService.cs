@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.Utils
         Task SetTextAsync(string text);
 
         /// <summary>
-        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// Change the text in the status bar and freeze it. If the status bar is frozen no change is made.
         /// </summary>
         /// <param name="text">The text to display.</param>
         Task<IDisposable> FreezeTextAsync(string text);

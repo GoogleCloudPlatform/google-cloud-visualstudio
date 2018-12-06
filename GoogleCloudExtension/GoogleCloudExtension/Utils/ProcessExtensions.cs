@@ -15,13 +15,24 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-static internal class ProcessExtensions
+namespace GoogleCloudExtension.Utils
 {
-    public static Task ExecuteAsync(this Process process)
+    /// <summary>
+    /// Extension methods for <see cref="Process"/>.
+    /// </summary>
+    internal static class ProcessExtensions
     {
-        var tcs = new TaskCompletionSource<object>();
-        process.Exited += (sender, args) => tcs.SetResult(null);
-        process.Start();
-        return tcs.Task;
+        /// <summary>
+        /// Executes the give process.
+        /// </summary>
+        /// <param name="process"> The process to execute.</param>
+        /// <returns> A task that completes when the given process exits.</returns>
+        public static Task ExecuteAsync(this Process process)
+        {
+            var tcs = new TaskCompletionSource<object>();
+            process.Exited += (sender, args) => tcs.SetResult(null);
+            process.Start();
+            return tcs.Task;
+        }
     }
 }

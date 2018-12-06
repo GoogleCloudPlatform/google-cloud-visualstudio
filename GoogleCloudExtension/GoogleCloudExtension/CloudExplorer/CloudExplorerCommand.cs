@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        /// <param name="token"></param>
+        /// <param name="token">The cancellation token.</param>
         public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
             object menuCommandService = await package.GetServiceAsync(typeof(IMenuCommandService));

@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.ManageAccounts
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        /// <param name="token"></param>
+        /// <param name="token">The cancellation token.</param>
         public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
             if (package == null)
@@ -62,9 +62,7 @@ namespace GoogleCloudExtension.ManageAccounts
         // </summary>
         // <param name="sender">The event sender.</param>
         // <param name="e">The event args.</param>
-        static void ShowToolWindow(object sender, EventArgs e)
-        {
+        private static void ShowToolWindow(object sender, EventArgs e) =>
             GoogleCloudExtensionPackage.Instance.UserPromptService.PromptUser(new ManageAccountsWindowContent());
-        }
     }
 }

@@ -69,10 +69,15 @@ namespace GoogleCloudExtension.Utils
             _outputWindowPane.Value?.OutputString("\n");
         }
 
-        public Task OutputLineAsync(string line, OutputStream stream)
-        {
-            return OutputLineAsync(line);
-        }
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="line">The line of text to output.</param>
+        /// <param name="sourceStream">The source stream of the output (stderr or stdout). This value is ignored.</param>
+        /// <returns>
+        /// A <see cref="Task"/> that completes when the line has been output to the Gcp Output window.
+        /// </returns>
+        public Task OutputLineAsync(string line, OutputStream sourceStream) => OutputLineAsync(line);
 
         /// <summary>
         /// Outputs the line from the given OutputEventArg to the GCP output window pane.

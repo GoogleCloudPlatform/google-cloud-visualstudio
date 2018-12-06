@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.Deployment
 
                 await TaskScheduler.Default;
 
-                // An inital failure is common, retry.
+                // An initial failure is common, retry.
                 await Task.Delay(TimeSpan.FromMilliseconds(100));
                 return await ProcessService.RunCommandAsync(
                     msbuildPath,

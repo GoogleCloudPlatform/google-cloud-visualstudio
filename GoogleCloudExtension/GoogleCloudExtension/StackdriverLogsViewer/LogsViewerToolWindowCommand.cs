@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        /// <param name="token"></param>
+        /// <param name="token">The token to cancel adding the command.</param>
         public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
             package.ThrowIfNull(nameof(package));

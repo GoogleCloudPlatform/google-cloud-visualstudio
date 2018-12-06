@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
@@ -159,7 +159,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Runs a process until it exists, returns it's complete output.
         /// </summary>
-        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="file">The path to the executable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.Utils
         /// Launches a process and parses its stdout stream as a json value to an instance of <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to use to deserialize the stdout stream.</typeparam>
-        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="file">The path to the executable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment to use for the executable.</param>

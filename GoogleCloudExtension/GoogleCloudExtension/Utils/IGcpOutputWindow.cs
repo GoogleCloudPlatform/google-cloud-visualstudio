@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Service interface for controling the Google Cloud Tools output window pane.
+    /// Service interface for controlling the Google Cloud Tools output window pane.
     /// </summary>
     public interface IGcpOutputWindow
     {
@@ -66,6 +66,14 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         Task ClearAsync();
 
-        Task OutputLineAsync(string line, OutputStream stream);
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="line">The line of text to output.</param>
+        /// <param name="sourceStream">The source stream of the output (stderr or stdout). This value is ignored.</param>
+        /// <returns>
+        /// A <see cref="Task"/> that completes when the line has been output to the Gcp Output window.
+        /// </returns>
+        Task OutputLineAsync(string line, OutputStream sourceStream);
     }
 }
