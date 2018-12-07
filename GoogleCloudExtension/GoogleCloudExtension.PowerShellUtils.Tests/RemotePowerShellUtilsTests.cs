@@ -37,7 +37,8 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         public void TestGetEmbeddedFile_ThrowsForUnknownFile()
         {
             const string expectedResourceName = "Unknown/File.txt";
-            var e = Assert.ThrowsException<FileNotFoundException>(() => RemotePowerShellUtils.GetEmbeddedFile(expectedResourceName));
+            FileNotFoundException e = Assert.ThrowsException<FileNotFoundException>(
+                () => RemotePowerShellUtils.GetEmbeddedFile(expectedResourceName));
             Assert.AreEqual(expectedResourceName, e.Message);
         }
 
@@ -55,7 +56,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         [DataRow(" \r\n\t\f")]
         public void TestCreatePSCredential_ThrowsForInvalidPassword(string invalidPassword)
         {
-            var e = Assert.ThrowsException<ArgumentException>(
+            ArgumentException e = Assert.ThrowsException<ArgumentException>(
                 () => RemotePowerShellUtils.CreatePSCredential(DefaultUser, invalidPassword));
 
             Assert.AreEqual("input", e.Message);
@@ -80,7 +81,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         [TestMethod]
         public async Task TestInvokeAsync_ThrowsOperationCanceledWhenTokenAlreadyCanceled()
         {
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 await Assert.ThrowsExceptionAsync<OperationCanceledException>(
                     () => powerShell.InvokeAsync(new CancellationToken(true)));
@@ -88,9 +89,9 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
-        public async Task TestInvokeAsync_DoesNotStartPowershellWhenTokenAlreadyCanceled()
+        public async Task TestInvokeAsync_DoesNotStartPowerShellWhenTokenAlreadyCanceled()
         {
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 // PowerShell can not start without a command to execute.
                 // Adding this script helps avoid false positives.
@@ -104,10 +105,11 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
+        [TestCategory("SkipOnAppVeyor")]
         [Timeout(5000)]
         public async Task TestInvokeAsync_ThrowsTaskCanceledExceptionWhenTokenCanceled()
         {
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 powerShell.AddScript("Start-Sleep -Seconds 30");
 
@@ -117,10 +119,11 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         }
 
         [TestMethod]
+        [TestCategory("SkipOnAppVeyor")]
         [Timeout(5000)]
-        public async Task TestInvokeAsync_StopsPowershellWhenTokenCanceled()
+        public async Task TestInvokeAsync_StopsPowerShellWhenTokenCanceled()
         {
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 powerShell.AddScript("Start-Sleep -Seconds 30");
 
@@ -135,7 +138,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         public async Task TestInvokeAsync_ExecutesPowerShell()
         {
             const string expectedValue = "expectedValue";
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 powerShell.AddVariable("varName", expectedValue);
                 powerShell.AddScript("Write-Output $varName");
@@ -150,7 +153,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         public async Task TestInvokeAsync_ThrowsThrownPowerShellException()
         {
             const string expectedValue = "Test Exception";
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 powerShell.AddVariable("varName", expectedValue);
                 powerShell.AddScript("throw $varName");
@@ -166,7 +169,7 @@ namespace GoogleCloudExtension.PowerShellUtils.Tests
         public async Task TestInvokeAsync_ThrowsPowerShellErrorOnErrorActionStop()
         {
             const string expectedValue = "Test Exception";
-            using (PowerShell powerShell = PowerShell.Create())
+            using (var powerShell = PowerShell.Create())
             {
                 powerShell.AddVariable("varName", expectedValue);
                 powerShell.AddScript("$ErrorActionPreference = \"Stop\"");
