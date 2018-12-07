@@ -27,9 +27,11 @@ namespace GoogleCloudExtension.Utils
     public static class ErrorHandlerUtils
     {
         /// <summary>
-        /// Runs the given <seealso cref="Action"/> and handles all non-critical exceptions by showing an
-        /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
-        /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
+        /// Runs the given <seealso cref="Action"/> and handles all non-critical exceptions
+        /// by showing an error dialog to the user.
+        /// If the exception is critical, as determined by
+        /// <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>, then it
+        /// is re-thrown as this could be that the process is not in a good state to continue executing.
         /// </summary>
         /// <param name="action"></param>
         public static void HandleExceptions(Action action)
@@ -69,9 +71,13 @@ namespace GoogleCloudExtension.Utils
 #pragma warning disable VSTHRD100 // Avoid async void methods
         /// <summary>
         /// Runs the given <seealso cref="Task"/> and handles all non-critical exceptions by showing an
-        /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
-        /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
+        /// error dialog to the user. If the exception is critical, as determined by
+        /// <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>, then it
+        /// is re-thrown as this could be that the process is not in a good state to continue executing.
         /// </summary>
+        /// <remarks>
+        /// This method is intentionally async void, as it is meant to be the fire and forget method for tasks.
+        /// </remarks>
         public static async void HandleExceptionsAsync(Func<Task> taskFunc)
         {
             try
