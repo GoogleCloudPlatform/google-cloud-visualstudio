@@ -56,7 +56,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         [TestMethod]
         public void TestDefault_DefersToPackage()
         {
-            var expectedCredentialsStore = Mock.Of<ICredentialsStore>();
+            ICredentialsStore expectedCredentialsStore = Mock.Of<ICredentialsStore>();
             GoogleCloudExtensionPackage.Instance =
                 Mock.Of<IGoogleCloudExtensionPackage>(p => p.CredentialsStore == expectedCredentialsStore);
 
@@ -84,6 +84,37 @@ namespace GoogleCloudExtensionUnitTests.Accounts
                 new[] { account1.AccountName, account2.AccountName },
                 _objectUnderTest.AccountsList.Select(a => a.AccountName).ToList());
             Assert.AreEqual(account1.AccountName, _objectUnderTest.GetAccount(account1.AccountName).AccountName);
+        }
+
+        [TestMethod]
+        public void TestConstructor_DoesNotThrowForMultipleSameAccountCredentials()
+        {
+            const string accountName = "AccountName";
+            const string account1FilePath = "c:\\account1.json";
+            var account1 = new UserAccount { AccountName = accountName };
+            const string account2FilePath = "c:\\account2.json";
+            var account2 = new UserAccount { AccountName = accountName };
+            _fileSystemMock.Setup(fs => fs.Directory.Exists(It.IsAny<string>())).Returns(true);
+            _fileSystemMock.Setup(fs => fs.Directory.EnumerateFiles(It.IsAny<string>()))
+                .Returns(
+                    new[]
+                    {
+                        account1FilePath,
+                        account2FilePath
+                    });
+            _fileSystemMock.Setup(fs => fs.File.ReadAllText(account1FilePath))
+                .Returns(JsonConvert.SerializeObject(account1));
+            _fileSystemMock.Setup(fs => fs.File.ReadAllText(account2FilePath))
+                .Returns(JsonConvert.SerializeObject(account2));
+
+            _objectUnderTest = new CredentialsStore(_fileSystemMock.ToLazy());
+
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    accountName
+                },
+                _objectUnderTest.AccountsList.Select(a => a.AccountName).ToList());
         }
 
         [TestMethod]
@@ -228,7 +259,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestUpdateCurrentProject_InvokesCurrentProjetIdChanged()
+        public void TestUpdateCurrentProject_InvokesCurrentProjectIdChanged()
         {
             _objectUnderTest.CurrentProjectIdChanged += new EventHandler(_projectIdChangedHandlerMock.Object);
 
@@ -444,7 +475,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestDeleteAccount_ThrowExceptionForNonExistantAccount()
+        public void TestDeleteAccount_ThrowExceptionForNonexistentAccount()
         {
             Assert.ThrowsException<InvalidOperationException>(
                 () => _objectUnderTest.DeleteAccount(_defaultUserAccount));
@@ -485,7 +516,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestAddAccount_CreatesCredentailsRootWhenMissing()
+        public void TestAddAccount_CreatesCredentialsRootWhenMissing()
         {
             _fileSystemMock.Setup(fs => fs.Directory.Exists(It.IsAny<string>())).Returns(false);
 
@@ -495,7 +526,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
         }
 
         [TestMethod]
-        public void TestAddAccount_SkipsCreatesCredentailsRootWhenExistant()
+        public void TestAddAccount_SkipsCreatesCredentialsRootWhenExistent()
         {
             _fileSystemMock.Setup(fs => fs.Directory.Exists(It.IsAny<string>())).Returns(true);
 
@@ -598,7 +629,7 @@ namespace GoogleCloudExtensionUnitTests.Accounts
 
         private static bool IsExpectedCredentialsJson(string s, string accountName, string projectId)
         {
-            var credentials = JsonConvert.DeserializeObject<DefaultCredentials>(s);
+            DefaultCredentials credentials = JsonConvert.DeserializeObject<DefaultCredentials>(s);
             return credentials.AccountName == accountName && credentials.ProjectId == projectId;
         }
     }
