@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.Accounts
                     return false;
                 }
 
-                var credentials = await GetUserAccountForRefreshToken(refreshToken);
+                var credentials = await GetUserAccountForRefreshTokenAsync(refreshToken);
 
                 var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.Accounts
         /// <param name="userAccount"></param>
         public static void DeleteAccount(IUserAccount userAccount) => CredentialsStore.Default.DeleteAccount(userAccount);
 
-        private static async Task<UserAccount> GetUserAccountForRefreshToken(string refreshToken)
+        private static async Task<UserAccount> GetUserAccountForRefreshTokenAsync(string refreshToken)
         {
             var result = new UserAccount
             {

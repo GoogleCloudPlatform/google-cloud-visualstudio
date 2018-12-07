@@ -32,10 +32,19 @@ namespace GoogleCloudExtensionUnitTests
             return serviceMock;
         }
 
-        public static Mock<IVsType> SetupServiceStrict<SVsType, IVsType>(
-            this Mock<IServiceProvider> serviceProviderMock) where IVsType : class
+        public static Mock<IVsType> SetupService<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock, MockBehavior behavior) where IVsType : class
         {
-            var serviceMock = new Mock<IVsType>(MockBehavior.Strict);
+            var serviceMock = new Mock<IVsType>(behavior);
+            serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
+            return serviceMock;
+        }
+
+        public static Mock<IVsType> SetupService<SVsType, IVsType>(
+            this Mock<IServiceProvider> serviceProviderMock,
+            DefaultValueProvider defaultValueProvider) where IVsType : class
+        {
+            var serviceMock = new Mock<IVsType> { DefaultValueProvider = defaultValueProvider };
             serviceProviderMock.SetupService<SVsType, IVsType>(serviceMock);
             return serviceMock;
         }
@@ -64,6 +73,22 @@ namespace GoogleCloudExtensionUnitTests
             s_mocks[serviceProviderMock][typeof(SVsType)] = serviceMock;
         }
 
+        public static void SetupService<SVsType>(this Mock<IServiceProvider> serviceProviderMock, object service)
+        {
+            Guid serviceGuid = typeof(SVsType).GUID;
+            Guid iUnknownGuid = typeof(IUnknown).GUID;
+            // ReSharper disable once RedundantAssignment
+            IntPtr interfacePtr = Marshal.GetIUnknownForObject(service);
+            serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
+                .Returns(VSConstants.S_OK);
+            if (!s_mocks.ContainsKey(serviceProviderMock))
+            {
+                s_mocks[serviceProviderMock] = new Dictionary<Type, object>();
+            }
+
+            s_mocks[serviceProviderMock][typeof(SVsType)] = service;
+        }
+
         /// <summary>
         /// Sets up services required for a service provider to be the global service provider.
         /// </summary>
@@ -84,7 +109,7 @@ namespace GoogleCloudExtensionUnitTests
             serviceProviderMock.Reset();
             ServiceProvider.GlobalProvider?.Dispose();
             s_mocks.Remove(serviceProviderMock);
-            Assert.AreEqual(s_mocks.Count, 0, UnitTestResources.MultipleServiceProvidersWarning);
+            Assert.AreEqual(0, s_mocks.Count, UnitTestResources.MultipleServiceProvidersWarning);
         }
     }
 }

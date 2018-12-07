@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.Deployment
 {
     /// <summary>
-    /// This class contains methods used to maniuplate ASP.NET Core projects.
+    /// This class contains methods used to manipulate ASP.NET Core projects.
     /// </summary>
     [Export(typeof(INetCoreAppUtils))]
     public class NetCoreAppUtils : INetCoreAppUtils
@@ -43,14 +43,14 @@ namespace GoogleCloudExtension.Deployment
         private IProcessService ProcessService => _processService.Value;
         private IFileSystem FileSystem => _fileSystem.Value;
         private IGCloudWrapper GCloudWrapper => _gcloudWrapper.Value;
-        public IEnvironment Environment => _environment.Value;
+        private IEnvironment Environment => _environment.Value;
 
         /// <summary>
         /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
         /// App Engine Flex environment. It invokes the entry point .dll given by {1}.
         /// The parameters into the string are:
         ///   {0}, the base image for the app's Docker image.
-        ///   {1}, the entrypoint .dll for the app.
+        ///   {1}, the entry point .dll for the app.
         /// </summary>
         private const string DockerfileDefaultContent =
             "FROM {0}\n" +
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.Deployment
         public async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
-            Action<string> outputAction,
+            Func<string, OutputStream, Task> outputAction,
             string configuration)
         {
             string arguments = $"publish -o \"{stageDirectory}\" -c {configuration}";
@@ -92,11 +92,11 @@ namespace GoogleCloudExtension.Deployment
             Debug.WriteLine($"Using tools from {externalTools}");
             Debug.WriteLine($"Setting working directory to {workingDir}");
             FileSystem.Directory.CreateDirectory(stageDirectory);
-            outputAction($"dotnet {arguments}");
+            await outputAction($"dotnet {arguments}", OutputStream.StandardOutput);
             bool result = await ProcessService.RunCommandAsync(
                 file: _toolsPathProvider.GetDotnetPath(),
                 args: arguments,
-                handler: (o, e) => outputAction(e.Line),
+                handler: outputAction,
                 workingDir: workingDir,
                 environment: env);
             await GCloudWrapper.GenerateSourceContextAsync(project.DirectoryPath, stageDirectory);
@@ -144,14 +144,8 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         /// <param name="project">The project.</param>
         /// <returns>True if the Dockerfile exists, false otherwise.</returns>
-        public bool CheckDockerfile(IParsedProject project)
-        {
-            return FileSystem.File.Exists(GetProjectDockerfilePath(project));
-        }
+        public bool CheckDockerfile(IParsedProject project) => FileSystem.File.Exists(GetProjectDockerfilePath(project));
 
-        private static string GetProjectDockerfilePath(IParsedProject project)
-        {
-            return Path.Combine(project.DirectoryPath, DockerfileName);
-        }
+        private static string GetProjectDockerfilePath(IParsedProject project) => Path.Combine(project.DirectoryPath, DockerfileName);
     }
 }

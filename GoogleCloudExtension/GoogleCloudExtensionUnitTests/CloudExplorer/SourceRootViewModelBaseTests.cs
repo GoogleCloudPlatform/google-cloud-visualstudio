@@ -16,7 +16,6 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Moq.Protected;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -51,49 +50,81 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         };
         private static readonly TreeNode s_childNode = new TreeNode { Caption = ChildCaption };
 
-        private TaskCompletionSource<IList<TreeNode>> _loadDataSource;
         private ICloudSourceContext _mockedContext;
-        private SourceRootViewModelBase _objectUnderTest;
-        private Mock<SourceRootViewModelBase> _objectUnderTestMock;
+        private TestableSourceRootViewModelBase _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
 
             _mockedContext = Mock.Of<ICloudSourceContext>();
-            _objectUnderTest = Mock.Of<SourceRootViewModelBase>(
-                o => o.RootCaption == MockRootCaption &&
-                o.ErrorPlaceholder == s_errorPlaceholder &&
-                o.LoadingPlaceholder == s_loadingPlaceholder &&
-                o.NoItemsPlaceholder == s_noItemsPlaceholder);
-            _objectUnderTestMock = Mock.Get(_objectUnderTest);
-            _objectUnderTestMock.CallBase = true;
-            _objectUnderTestMock.Protected().Setup<Task>("LoadDataOverride").Returns(
-                async () =>
+            _objectUnderTest = new TestableSourceRootViewModelBase();
+        }
+
+        private class TestableSourceRootViewModelBase : SourceRootViewModelBase
+        {
+            public TaskCompletionSource<IList<TreeNode>> LoadDataSource = new TaskCompletionSource<IList<TreeNode>>();
+
+            /// <summary>
+            /// Returns the caption to use for the root node for this data source.
+            /// </summary>
+            public override string RootCaption { get; } = MockRootCaption;
+
+            /// <summary>
+            /// Returns the tree node to use when there's an error loading data.
+            /// </summary>
+            public override TreeLeaf ErrorPlaceholder { get; } = s_errorPlaceholder;
+
+            /// <summary>
+            /// Returns the tree node to use when there's no data returned by this data source.
+            /// </summary>
+            public override TreeLeaf NoItemsPlaceholder { get; } = s_noItemsPlaceholder;
+
+            /// <summary>
+            /// Returns the tree node to use while loading data.
+            /// </summary>
+            public override TreeLeaf LoadingPlaceholder { get; } = s_loadingPlaceholder;
+
+            /// <summary>
+            /// Returns the tree node to use when we detect that the necessary APIs are not enabled.
+            /// </summary>
+            public override TreeLeaf ApiNotEnabledPlaceholder { get; }
+
+            /// <summary>
+            /// Returns the names of the required APIs for the source.
+            /// </summary>
+            public override IList<string> RequiredApis { get; }
+
+            /// <summary>
+            /// Override this function to load and display the data in the control.
+            /// </summary>
+            protected override async Task LoadDataOverrideAsync()
+            {
+                LoadDataOverrideCallCount++;
+                IList<TreeNode> children;
+                try
                 {
-                    IList<TreeNode> childNodes;
-                    try
-                    {
-                        childNodes = await _loadDataSource.Task;
-                    }
-                    finally
-                    {
-                        _loadDataSource = new TaskCompletionSource<IList<TreeNode>>();
-                    }
-                    _objectUnderTest.Children.Clear();
-                    foreach (TreeNode child in childNodes)
-                    {
-                        _objectUnderTest.Children.Add(child);
-                    }
-                });
-            _objectUnderTest = _objectUnderTestMock.Object;
+                    children = await LoadDataSource.Task;
+                }
+                finally
+                {
+                    LoadDataSource = new TaskCompletionSource<IList<TreeNode>>();
+                }
+
+                Children.Clear();
+                foreach (TreeNode child in children)
+                {
+                    Children.Add(child);
+                }
+            }
+
+            public int LoadDataOverrideCallCount { get; private set; }
         }
 
         [TestMethod]
         public void TestInitialConditions()
         {
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.IsNull(_objectUnderTest.Context);
             Assert.IsNull(_objectUnderTest.Icon);
             Assert.IsNull(_objectUnderTest.Caption);
@@ -105,7 +136,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         {
             _objectUnderTest.Initialize(_mockedContext);
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(_mockedContext, _objectUnderTest.Context);
             Assert.AreEqual(_objectUnderTest.RootIcon, _objectUnderTest.Icon);
             Assert.AreEqual(_objectUnderTest.RootCaption, _objectUnderTest.Caption);
@@ -119,7 +150,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.IsExpanded = false;
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
         }
 
@@ -131,7 +162,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TreeLeaf;
             Assert.IsNotNull(child);
@@ -149,7 +180,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.IsExpanded = true;
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TreeLeaf;
             Assert.IsNotNull(child);
@@ -165,7 +196,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.Initialize(_mockedContext);
             _objectUnderTest.IsExpanded = true;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -174,10 +205,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestLoadingError()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_errorPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -186,10 +217,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestLoadingNoItems()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -198,10 +229,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestLoadingSuccess()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
@@ -213,12 +244,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.IsExpanded = true;
             _objectUnderTest.IsExpanded = false;
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -228,14 +259,14 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         {
             _objectUnderTest.Initialize(_mockedContext);
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.IsExpanded = false;
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_noItemsPlaceholder.Caption, _objectUnderTest.Children[0].Caption);
         }
@@ -246,7 +277,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.Refresh();
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
         }
 
@@ -257,7 +288,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.Refresh();
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Never());
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -268,12 +299,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             _objectUnderTest.Initialize(_mockedContext);
             _objectUnderTest.IsExpanded = true;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Once());
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_noItemsPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -282,11 +313,11 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshLoading()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_loadingPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -295,13 +326,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshLoadError()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_errorPlaceholder, _objectUnderTest.Children[0]);
         }
@@ -310,13 +341,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshLoadNoItems()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
@@ -325,13 +356,13 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshLoadSuccess()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
@@ -340,16 +371,16 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestDoubleRefresh()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(2));
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }
@@ -358,16 +389,16 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
         public async Task TestRefreshAgain()
         {
             _objectUnderTest.IsExpanded = true;
-            _loadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
+            _objectUnderTest.LoadDataSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode>());
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
-            _loadDataSource.SetResult(new List<TreeNode> { s_childNode });
+            _objectUnderTest.LoadDataSource.SetResult(new List<TreeNode> { s_childNode });
             await _objectUnderTest.LoadingTask;
 
-            _objectUnderTestMock.Protected().Verify("LoadDataOverride", Times.Exactly(3));
+            Assert.AreEqual(3, _objectUnderTest.LoadDataOverrideCallCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             Assert.AreEqual(s_childNode, _objectUnderTest.Children[0]);
         }

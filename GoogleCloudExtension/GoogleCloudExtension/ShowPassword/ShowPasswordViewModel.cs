@@ -57,10 +57,10 @@ namespace GoogleCloudExtension.ShowPassword
         {
             _options = options;
 
-            CopyCommand = new ProtectedCommand(OnCopyCommand);
+            CopyCommand = new ProtectedAsyncCommand(OnCopyCommandAsync);
         }
 
-        private async void OnCopyCommand()
+        private async Task OnCopyCommandAsync()
         {
             try
             {

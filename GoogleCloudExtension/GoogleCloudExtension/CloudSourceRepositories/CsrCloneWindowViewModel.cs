@@ -21,6 +21,7 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Git;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -53,7 +55,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<Project> _projects;
         private Project _selectedProject;
         private bool _isReady = true;
-        private bool _needsApiEnabled;
+        private AsyncProperty<bool> _apisAreEnabled;
+        private AsyncProperty<IList<Repo>> _repositoriesAsync = new AsyncProperty<IList<Repo>>(null);
+        internal static Func<string, Task<IList<Repo>>> s_getCloudReposAsync = CsrUtils.GetCloudReposAsync;
 
         /// <summary>
         /// The projects list
@@ -69,24 +73,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public Project SelectedProject
         {
-            get { return _selectedProject; }
+            get => _selectedProject;
             set
             {
-                var oldValue = _selectedProject;
+                Project oldValue = _selectedProject;
                 SetValueAndRaise(ref _selectedProject, value);
                 if (oldValue != _selectedProject)
                 {
-                    NeedsApiEnabled = false;
-                    RepositoriesAsync.ClearList();
-                    ErrorHandlerUtils.HandleExceptionsAsync(() => ExecuteAsync(async () =>
-                    {
-                        IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
-                        NeedsApiEnabled = !(await apiManager.AreServicesEnabledAsync(s_requiredApis));
-                        if (!NeedsApiEnabled)
-                        {
-                            await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
-                        }
-                    }));
+                    IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
+                    ApisAreEnabled = new AsyncProperty<bool>(apiManager.AreServicesEnabledAsync(s_requiredApis));
                 }
             }
         }
@@ -94,7 +89,17 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// The list of repositories that belong to the project
         /// </summary>
-        public AsyncRepositories RepositoriesAsync { get; } = new AsyncRepositories();
+        public AsyncProperty<IList<Repo>> RepositoriesAsync
+        {
+            get => _repositoriesAsync;
+            set
+            {
+                RepositoriesAsync.PropertyChanged -= OnAsycRepositoriesPropertyChanged;
+                SetValueAndRaise(ref _repositoriesAsync, value);
+                RepositoriesAsync.PropertyChanged += OnAsycRepositoriesPropertyChanged;
+                OnAsycRepositoriesPropertyChanged(null, null);
+            }
+        }
 
         /// <summary>
         /// Currently selected repository
@@ -125,10 +130,27 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Indicates if the selected project needs to enable the CSR APIs.
         /// </summary>
-        public bool NeedsApiEnabled
+        public AsyncProperty<bool> ApisAreEnabled
         {
-            get { return _needsApiEnabled; }
-            set { SetValueAndRaise(ref _needsApiEnabled, value); }
+            get => _apisAreEnabled;
+            set
+            {
+                SetValueAndRaise(ref _apisAreEnabled, value);
+                RepositoriesAsync = new AsyncProperty<IList<Repo>>(LoadReposAsync(), new Repo[0]);
+            }
+        }
+
+        private async Task<IList<Repo>> LoadReposAsync()
+        {
+            await ApisAreEnabled.SafeTask;
+            if (ApisAreEnabled.Value)
+            {
+                return await s_getCloudReposAsync(_selectedProject.ProjectId);
+            }
+            else
+            {
+                return new Repo[0];
+            }
         }
 
         /// <summary>
@@ -174,44 +196,34 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 throw new ArgumentException($"{nameof(projects)} must not be empty");
             }
-            EnableApiCommand = new ProtectedAsyncCommand(() => ExecuteAsync(OnEnableApiCommand));
+            EnableApiCommand = new ProtectedAsyncCommand(() => ExecuteAsync(OnEnableApiCommandAsync));
             PickFolderCommand = new ProtectedCommand(PickFoloder);
             CloneRepoCommand = new ProtectedAsyncCommand(() => ExecuteAsync(CloneAsync), canExecuteCommand: false);
             CreateRepoCommand = new ProtectedCommand(OpenCreateRepoDialog, canExecuteCommand: false);
-            RepositoriesAsync.PropertyChanged += RepositoriesAsyncPropertyChanged;
 
             var projectId = CredentialsStore.Default.CurrentProjectId;
             // If projectId is null, choose first project. Otherwise, choose the project.
             SelectedProject = Projects.FirstOrDefault(x => projectId == null || x.ProjectId == projectId);
         }
 
-        private void RepositoriesAsyncPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAsycRepositoriesPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
+            CreateRepoCommand.CanExecuteCommand = RepositoriesAsync.IsSuccess;
+
+            // Set last created repo as default
+            if (_latestCreatedRepo != null)
             {
-                // RaiseAllPropertyChanged set e.PropertyName as null
-                case null:
-                case nameof(AsyncRepositories.Value):
-                    CreateRepoCommand.CanExecuteCommand =
-                        RepositoriesAsync.DisplayState != AsyncRepositories.DisplayOptions.Pending;
+                SelectedRepository = RepositoriesAsync.Value?
+                    .FirstOrDefault(x => x.Name == _latestCreatedRepo.Name);
+                if (SelectedRepository != null)
+                {
+                    return;
+                }
 
-                    // Set last created repo as default
-                    if (_latestCreatedRepo != null)
-                    {
-                        SelectedRepository = RepositoriesAsync.Value?
-                            .FirstOrDefault(x => x.Name == _latestCreatedRepo.Name);
-                        if (SelectedRepository != null)
-                        {
-                            break;
-                        }
-                        // else if it is null, user may have changed project, continue to select first repo.
-                    }
-
-                    SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
-                    break;
-                default:
-                    break;
+                // else if it is null, user may have changed project, continue to select first repo.
             }
+
+            SelectedRepository = RepositoriesAsync.Value?.FirstOrDefault();
         }
 
         private async Task CloneAsync()
@@ -258,12 +270,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        private async Task OnEnableApiCommand()
+        private async Task OnEnableApiCommandAsync()
         {
             IApiManager apiManager = s_getApiManagerFunc(_selectedProject.ProjectId);
             await apiManager.EnableServicesAsync(s_requiredApis);
-            NeedsApiEnabled = false;
-            await RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId);
+            ApisAreEnabled = new AsyncProperty<bool>(true);
         }
 
         private void PickFoloder()
@@ -272,7 +283,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 dialog.SelectedPath = LocalPath;
                 dialog.ShowNewFolderButton = true;
-                var result = dialog.ShowDialog();
+                DialogResult result = dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     LocalPath = dialog.SelectedPath;
@@ -302,7 +313,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         private IEnumerable<ValidationResult> ValidateLocalPath()
         {
             string fieldName = Resources.CsrCloneLocalPathFieldName;
-            if (String.IsNullOrEmpty(LocalPath))
+            if (string.IsNullOrEmpty(LocalPath))
             {
                 yield return StringValidationResult.FromResource(
                     nameof(Resources.ValdiationNotEmptyMessage), fieldName);
@@ -311,7 +322,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             if (!IsDefaultLocation(LocalPath) && !Directory.Exists(LocalPath))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrClonePathNotExistMessage));
-                yield break;
             }
             if (SelectedRepository != null)
             {
@@ -320,7 +330,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 {
                     yield return StringValidationResult.FromResource(
                         nameof(Resources.CsrClonePathExistNotEmptyMessageFormat), destPath);
-                    yield break;
                 }
             }
         }
@@ -332,12 +341,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 _newReposList.Add(_latestCreatedRepo.Name);
                 // Update the repos list
-                ErrorHandlerUtils.HandleExceptionsAsync(
-                    () => RepositoriesAsync.StartListRepoTaskAsync(_selectedProject.ProjectId));
+                RepositoriesAsync = new AsyncProperty<IList<Repo>>(LoadReposAsync(), new Repo[0]);
             }
         }
 
         private bool IsDefaultLocation(string localPath) =>
-            String.Equals(Path.GetFullPath(localPath), s_defaultLocalPath, StringComparison.OrdinalIgnoreCase);
+            string.Equals(Path.GetFullPath(localPath), s_defaultLocalPath, StringComparison.OrdinalIgnoreCase);
     }
 }

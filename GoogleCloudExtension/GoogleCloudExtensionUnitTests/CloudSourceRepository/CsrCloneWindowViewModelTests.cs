@@ -52,8 +52,8 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
                 _testTaskCompletionSource = new TaskCompletionSource<IList<Repo>>();
                 return task;
             });
-            AsyncRepositories.GetCloudReposAsync = _getCloudReposMock.Object;
-            CsrCloneWindowViewModel.s_getApiManagerFunc = (projectId) => _apiManagerMock.Object;
+            CsrCloneWindowViewModel.s_getCloudReposAsync = _getCloudReposMock.Object;
+            CsrCloneWindowViewModel.s_getApiManagerFunc = projectId => _apiManagerMock.Object;
 
             _closeWindowActionMock = new Mock<Action>();
             _cloneWindowViewModel = new CsrCloneWindowViewModel(_closeWindowActionMock.Object, _testProjects);
@@ -79,7 +79,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
 
             Assert.AreEqual(defaultRepo, _cloneWindowViewModel.SelectedRepository);
-            Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
+            Assert.IsTrue(_cloneWindowViewModel.ApisAreEnabled.Value);
             _apiManagerMock.Verify();
         }
 
@@ -93,7 +93,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
             _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
             Assert.AreEqual(null, _cloneWindowViewModel.SelectedRepository);
-            Assert.IsTrue(_cloneWindowViewModel.NeedsApiEnabled);
+            Assert.IsFalse(_cloneWindowViewModel.ApisAreEnabled.Value);
             _apiManagerMock.Verify();
         }
 
@@ -119,7 +119,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 
             _apiManagerMock.Verify();
             Assert.AreEqual(defaultRepo, _cloneWindowViewModel.SelectedRepository);
-            Assert.IsFalse(_cloneWindowViewModel.NeedsApiEnabled);
+            Assert.IsTrue(_cloneWindowViewModel.ApisAreEnabled.Value);
         }
 
         /// <summary>

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using System.Diagnostics;
+using Microsoft.VisualStudio.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -26,27 +27,17 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     internal static class ActivityLogUtils
     {
-        private static IServiceProvider s_serviceProvider;
-
-        /// <summary>
-        /// Initialize the helper, most importantly provides the service provider to use
-        /// to get to the log service.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider to use to get the log service.</param>
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            s_serviceProvider = serviceProvider;
-        }
+        private static JoinableTaskFactory JoinableTaskFactory => GoogleCloudExtensionPackage.Instance.JoinableTaskFactory;
 
         /// <summary>
         /// Logs a information entry into the log.
         /// </summary>
+        /// <param name="activityLog">The <see cref="IVsActivityLog"/> to log the entry.</param>
         /// <param name="entry">The log entry.</param>
-        public static void LogInfo(string entry)
+        public static async Task LogInfoAsync(this IVsActivityLog activityLog, string entry)
         {
-            Debug.WriteLine($"Info: {entry}");
-            var log = GetActivityLog();
-            log?.LogEntry(
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            activityLog.LogEntry(
                 (int)__ACTIVITYLOG_ENTRYTYPE.ALE_INFORMATION,
                 nameof(GoogleCloudExtensionPackage),
                 entry);
@@ -55,28 +46,29 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Logs an error entry into the log.
         /// </summary>
+        /// <param name="activityLogService">The <see cref="IVsActivityLog"/> to log the entry.</param>
         /// <param name="entry">The log entry.</param>
-        public static void LogError(string entry)
+        public static async Task LogErrorAsync(this IVsActivityLog activityLogService, string entry)
         {
-            Debug.WriteLine($"Error: {entry}");
-            var log = GetActivityLog();
-            log.LogEntry(
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            activityLogService.LogEntry(
                 (int)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
                 nameof(GoogleCloudExtensionPackage),
                 entry);
         }
 
         /// <summary>
-        /// This method retrieves the activity log service, as per the documentation a new interface must
-        /// be fetched everytime it is needed, which is why not caching is performed.
-        /// See https://msdn.microsoft.com/en-us/library/bb166359.aspx for more details.
+        /// Logs an error entry into the log.
         /// </summary>
-        /// <returns>The current instance of IVsACtivityLog to use.</returns>
-        private static IVsActivityLog GetActivityLog()
+        /// <param name="activityLogService">The <see cref="IVsActivityLog"/> to log the entry.</param>
+        /// <param name="entry">The log entry.</param>
+        public static void LogError(this IVsActivityLog activityLogService, string entry)
         {
-            var log = s_serviceProvider.GetService(typeof(SVsActivityLog)) as IVsActivityLog;
-            Debug.WriteLineIf(log == null, "Failed to obtain IVsActivityLog interface.");
-            return log;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            activityLogService.LogEntry(
+                (int)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                nameof(GoogleCloudExtensionPackage),
+                entry);
         }
     }
 }

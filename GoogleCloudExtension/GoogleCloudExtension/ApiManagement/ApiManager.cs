@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.ApiManagement
                 }
 
                 // Enable all services in parallel.
-                await ProgressDialogWindow.PromptUser(
+                await ProgressDialogWindow.PromptUserAsync(
                     dataSource.EnableAllServicesAsync(servicesToEnable),
                     new ProgressDialogWindow.Options
                     {
@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.ApiManagement
 
             try
             {
-                await ProgressDialogWindow.PromptUser(
+                await ProgressDialogWindow.PromptUserAsync(
                     dataSource.EnableAllServicesAsync(serviceNames),
                     new ProgressDialogWindow.Options
                     {

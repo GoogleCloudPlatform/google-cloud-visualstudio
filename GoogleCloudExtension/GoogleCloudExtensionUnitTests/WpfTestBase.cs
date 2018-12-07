@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.Threading;
 using Moq;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -31,16 +32,14 @@ namespace GoogleCloudExtensionUnitTests
     /// <typeparam name="TWindow">The type of window being tested.</typeparam>
     public abstract class WpfTestBase<TWindow> : MockedGlobalServiceProviderTestsBase where TWindow : Window
     {
-        protected override IVsPackage Package => _packageMock.Object;
-        private Mock<Package> _packageMock;
+        private JoinableTaskFactory JoinableTaskFactory { get; } =
+            AssemblyInitialize.JoinableApplicationContext.Factory;
 
         [TestInitialize]
         public void InitWpfServiceProvider()
         {
             // Allow previous windows to die before bringing up a new one.
-            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
-
-            _packageMock = new Mock<Package> { CallBase = true };
+            Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
 
             Mock<IVsSettingsManager> settingsManagerMock =
                 ServiceProviderMock.SetupService<SVsSettingsManager, IVsSettingsManager>();
@@ -62,7 +61,7 @@ namespace GoogleCloudExtensionUnitTests
             serviceProviderProperty.SetMethod.Invoke(null, new object[] { null });
 
             // Set the global service provider.
-            RunPackageInitalize();
+            //            RunPackageInitalize();
         }
 
         /// <summary>
@@ -74,28 +73,29 @@ namespace GoogleCloudExtensionUnitTests
         /// If this method returns null and the window is visible, it is likely because the event handlers have not
         /// been set up properly.
         /// </remarks>
-        protected TWindow GetWindow(Action promptAction) => Dispatcher.CurrentDispatcher.Invoke(
-            () =>
+        protected async Task<TWindow> GetWindowAsync(Action promptAction)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            TWindow window = null;
+
+            void OnPromptInitialized(object sender, EventArgs args)
             {
-                TWindow window = null;
+                window = (TWindow)sender;
+                window.Close();
+            }
 
-                void OnPromptInitialized(object sender, EventArgs args)
-                {
-                    window = (TWindow)sender;
-                    window.Close();
-                }
-
-                RegisterActivatedEvent(OnPromptInitialized);
-                try
-                {
-                    promptAction();
-                    return window;
-                }
-                finally
-                {
-                    UnregisterActivatedEvent(OnPromptInitialized);
-                }
-            });
+            RegisterActivatedEvent(OnPromptInitialized);
+            try
+            {
+                promptAction();
+                return window;
+            }
+            finally
+            {
+                UnregisterActivatedEvent(OnPromptInitialized);
+            }
+        }
 
         /// <summary>
         /// Gets the result of the prompt action.
@@ -107,22 +107,22 @@ namespace GoogleCloudExtensionUnitTests
         /// If this method returns null and the window is visible, it is likely because the event handlers have not
         /// been set up properly.
         /// </remarks>
-        protected TResult GetResult<TResult>(Action<TWindow> closeAction, Func<TResult> promptAction) =>
-            Dispatcher.CurrentDispatcher.Invoke(
-                () =>
-                {
-                    void OnPromptInitialized(object sender, EventArgs args) => closeAction((TWindow)sender);
+        protected async Task<TResult> GetResult<TResult>(Action<TWindow> closeAction, Func<TResult> promptAction)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                    RegisterActivatedEvent(OnPromptInitialized);
-                    try
-                    {
-                        return promptAction();
-                    }
-                    finally
-                    {
-                        UnregisterActivatedEvent(OnPromptInitialized);
-                    }
-                });
+            void OnPromptInitialized(object sender, EventArgs args) => closeAction((TWindow)sender);
+
+            RegisterActivatedEvent(OnPromptInitialized);
+            try
+            {
+                return promptAction();
+            }
+            finally
+            {
+                UnregisterActivatedEvent(OnPromptInitialized);
+            }
+        }
 
         /// <summary>
         /// Implementers must register the given handler to an event that is fired when the window to test is activated.

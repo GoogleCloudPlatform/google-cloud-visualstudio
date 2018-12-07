@@ -38,7 +38,14 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.
         /// </summary>
-        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
+        private SolutionBuild2 SolutionBuild
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return _solution.SolutionBuild as SolutionBuild2;
+            }
+        }
 
         /// <summary>
         /// Returns the current solution open, null if no solution is present.
@@ -47,31 +54,48 @@ namespace GoogleCloudExtension.SolutionUtils
         {
             get
             {
-                var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+                ThreadHelper.ThrowIfNotOnUIThread();
+                var dte = (DTE)Package.GetGlobalService(typeof(DTE));
                 var solution = dte.Solution;
                 return solution != null ? new SolutionHelper(solution) : null;
             }
         }
 
         /// <summary>
-        /// Returns the path to the root of the solution.
-        /// </summary>
-        public string SolutionDirectory => Path.GetDirectoryName(_solution.FullName);
-
-        /// <summary>
         /// Returns the startup project for the current solution.
         /// </summary>
-        public ProjectHelper StartupProject => GetStartupProject();
+        public ProjectHelper StartupProject
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetStartupProject();
+            }
+        }
 
         /// <summary>
         /// Returns the selected project in the Solution Explorer.
         /// </summary>
-        public ProjectHelper SelectedProject => GetSelectedProject();
+        public ProjectHelper SelectedProject
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetSelectedProject();
+            }
+        }
 
         /// <summary>
         /// Get a list of <seealso cref="ProjectHelper"/> objects under current solution.
         /// </summary>
-        public List<ProjectHelper> Projects => GetProjectList();
+        public List<ProjectHelper> Projects
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetProjectList();
+            }
+        }
 
         private SolutionHelper(Solution solution)
         {
@@ -85,12 +109,14 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <returns>A list of <seealso cref="ProjectSourceFile"/> objects that matches the searched file path.</returns>
         public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
             return query.ToList<ProjectSourceFile>();
         }
 
         private ProjectHelper GetSelectedProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var selectedProjectDirectory = GetSelectedProjectDirectory();
             if (selectedProjectDirectory == null)
             {
@@ -122,6 +148,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <returns>The path to the directory that contains the project.</returns>
         private static string GetSelectedProjectDirectory()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
             var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
             if (monitorSelection == null || solution == null)
@@ -168,6 +195,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private ProjectHelper GetStartupProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var sb = SolutionBuild;
             if (sb == null)
             {
@@ -203,6 +231,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private List<ProjectHelper> GetProjectList()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             List<ProjectHelper> list = new List<ProjectHelper>();
             var projects = GetSolutionProjects();
             foreach (Project project in projects)
@@ -220,6 +249,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         private IList<Project> GetSolutionProjects()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             List<Project> result = new List<Project>();
 
             var rootProjects = _solution.Projects;
@@ -246,6 +276,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         private IList<Project> GetSolutionFolderProjects(Project solutionDir)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             List<Project> result = new List<Project>();
 
             // Indexes in ProjectItems start at 1 and go through Count.

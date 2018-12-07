@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                        watch.Elapsed < s_waitConnectionTimeout &&
                        !session.IsStopped)
                 {
-                    if (await Context.DebuggerPort.ConnectivityTest(CancelToken))
+                    if (await Context.DebuggerPort.ConnectivityTestAsync(CancelToken))
                     {
                         EventsReporterWrapper.ReportEvent(RemoteDebuggerRemoteToolsStartedEvent.Create(
                             CommandStatus.Success, DateTime.Now - startTimestamp));

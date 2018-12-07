@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.PublishDialog
 {
     /// <summary>
     /// This class implements the command handler for the menu item shown under "Tools > Google Cloud Tools".
     /// </summary>
-    internal sealed class PublishProjectMainMenuCommand
+    internal static class PublishProjectMainMenuCommand
     {
         /// <summary>
         /// Command ID.
@@ -37,97 +39,64 @@ namespace GoogleCloudExtension.PublishDialog
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package _package;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PublishProjectMainMenuCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
+        /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private PublishProjectMainMenuCommand(Package package)
+        /// <param name="token"></param>
+        public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
             if (package == null)
             {
-                throw new ArgumentNullException("package");
+                throw new ArgumentNullException(nameof(package));
             }
 
-            _package = package;
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
+            if (await package.GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
+                await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(OnDeployCommand, menuCommandID);
                 menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
-        }
 
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static PublishProjectMainMenuCommand Instance
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
+            // <summary>
+            // This function is the callback used to execute the command when the menu item is clicked.
+            // See the constructor to see how the menu item is associated with this function using
+            // OleMenuCommandService service and MenuCommand class.
+            // </summary>
+            // <param name="sender">Event sender.</param>
+            // <param name="e">Event args.</param>
+            async void OnDeployCommand(object sender, EventArgs e)
             {
-                return _package;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
-        {
-            Instance = new PublishProjectMainMenuCommand(package);
-        }
-
-        /// <summary>
-        /// This function is the callback used to execute the command when the menu item is clicked.
-        /// See the constructor to see how the menu item is associated with this function using
-        /// OleMenuCommandService service and MenuCommand class.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="e">Event args.</param>
-        private void OnDeployCommand(object sender, EventArgs e)
-        {
-            var project = SolutionHelper.CurrentSolution.StartupProject.ParsedProject;
-            Debug.WriteLine($"Deploying project: {project.FullPath}");
-            PublishDialogWindow.PromptUser(project);
-        }
-
-        private void OnBeforeQueryStatus(object sender, EventArgs e)
-        {
-            var menuCommand = sender as OleMenuCommand;
-            if (menuCommand == null)
-            {
-                return;
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+                IParsedDteProject project = SolutionHelper.CurrentSolution.StartupProject.ParsedProject;
+                PublishDialogWindow.PromptUser(project);
             }
 
-            menuCommand.Visible = true;
+            void OnBeforeQueryStatus(object sender, EventArgs e)
+            {
+#pragma warning disable VSTHRD109 // Switch instead of assert in async methods
+                ThreadHelper.ThrowIfNotOnUIThread();
+#pragma warning restore VSTHRD109 // Switch instead of assert in async methods
+                if (!(sender is OleMenuCommand menuCommand))
+                {
+                    return;
+                }
 
-            var startupProject = SolutionHelper.CurrentSolution.StartupProject?.ParsedProject;
-            if (startupProject == null)
-            {
-                menuCommand.Enabled = false;
-                menuCommand.Text = Resources.PublishDialogGenericMenuHeader;
-            }
-            else
-            {
-                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.Default.IsBusy();
-                menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, startupProject.Name);
+                menuCommand.Visible = true;
+
+                IParsedDteProject startupProject = SolutionHelper.CurrentSolution.StartupProject?.ParsedProject;
+                if (startupProject == null)
+                {
+                    menuCommand.Enabled = false;
+                    menuCommand.Text = Resources.PublishDialogGenericMenuHeader;
+                }
+                else
+                {
+                    menuCommand.Enabled =
+                        PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.Default.IsBusy();
+                    menuCommand.Text = string.Format(Resources.PublishDialogProjectMenuHeader, startupProject.Name);
+                }
             }
         }
     }

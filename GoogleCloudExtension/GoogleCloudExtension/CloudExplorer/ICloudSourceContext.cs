@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -30,6 +31,6 @@ namespace GoogleCloudExtension.CloudExplorer
         /// Shows the properties window for the provided item.
         /// </summary>
         /// <param name="item"></param>
-        void ShowPropertiesWindow(object item);
+        Task ShowPropertiesWindowAsync(object item);
     }
 }

@@ -139,10 +139,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         Project ICloudSourceContext.CurrentProject => UserProject.CurrentProjectAsync.Value;
 
-        void ICloudSourceContext.ShowPropertiesWindow(object item)
+        async Task ICloudSourceContext.ShowPropertiesWindowAsync(object item)
         {
             _selectionUtils.ActivatePropertiesWindow();
-            _selectionUtils.SelectItem(item);
+            await _selectionUtils.SelectItemAsync(item);
         }
 
         #endregion

@@ -50,6 +50,7 @@ namespace GoogleCloudExtension.TemplateWizards
             WizardRunKind runKind,
             object[] customParams)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 string projectName = replacements[ReplacementsKeys.ProjectNameKey];

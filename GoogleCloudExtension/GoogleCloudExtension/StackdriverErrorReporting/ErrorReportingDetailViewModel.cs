@@ -44,8 +44,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         // References to static method dependencies. Mockable for testing.
         internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
-        internal Func<ErrorReportingToolWindow> ShowErrorReportingToolWindow =
-            ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>;
+        internal Func<Task<ErrorReportingToolWindow>> ShowErrorReportingToolWindow =
+            ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingToolWindow>;
 
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
 
@@ -152,7 +152,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Go back to overview window command.
         /// </summary>
-        public ProtectedCommand OnBackToOverViewCommand { get; }
+        public ProtectedAsyncCommand OnBackToOverViewCommand { get; }
 
         /// <summary>
         /// The command that responds to source link button click event.
@@ -177,7 +177,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _package = GoogleCloudExtensionPackage.Instance;
             IsVisibleUnbound = true;
             OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
-            OnBackToOverViewCommand = new ProtectedCommand(() => ShowErrorReportingToolWindow());
+            OnBackToOverViewCommand = new ProtectedAsyncCommand(async () => await ShowErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(UpdateGroupAndEventAsync));
             _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
 

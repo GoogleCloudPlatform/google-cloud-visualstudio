@@ -21,13 +21,14 @@ using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.PublishDialog.Steps
 {
@@ -210,6 +211,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
         /// </remarks>
         public void OnVisible(IPublishDialogStep previousStep = null)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             AddHandlers();
             LoadProjectPropertiesBase();
             LoadProjectProperties();
@@ -219,6 +221,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps
 
         private void LoadProjectPropertiesBase()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _lastConfiguration = PublishDialog.Project.GetUserProperty(ConfigurationPropertyName);
 
             var rowNames = (IEnumerable)PublishDialog.Project.Project.ConfigurationManager.ConfigurationRowNames;

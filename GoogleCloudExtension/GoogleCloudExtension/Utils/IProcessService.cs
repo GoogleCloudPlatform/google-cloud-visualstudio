@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
@@ -43,29 +43,35 @@ namespace GoogleCloudExtension.Utils
             IDictionary<string, string> environment = null);
 
         /// <summary>
-        /// Runs a process until it exists, returns it's complete output.
-        /// </summary>
-        /// <param name="file">The path to the exectuable.</param>
-        /// <param name="args">The arguments to pass to the executable.</param>
-        /// <param name="workingDir">The working directory to use, optional.</param>
-        /// <param name="environment">The environment variables to use for the executable.</param>
-        Task<ProcessOutput> GetCommandOutputAsync(
-            string file,
-            string args,
-            string workingDir = null,
-            IDictionary<string, string> environment = null);
-
-        /// <summary>
         /// Launches a process and parses its stdout stream as a json value to an instance of <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to use to deserialize the stdout stream.</typeparam>
-        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="file">The path to the executable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment to use for the executable.</param>
         Task<T> GetJsonOutputAsync<T>(
             string file,
             string args,
+            string workingDir = null,
+            IDictionary<string, string> environment = null);
+
+        /// <summary>
+        /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
+        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
+        /// by the process.
+        /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
+        /// </summary>
+        /// <param name="file">The path to the binary to execute, it must not be null.</param>
+        /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
+        /// of the UI thread. Must not be null.</param>
+        /// <param name="workingDir">The working directory to use, optional.</param>
+        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        Task<bool> RunCommandAsync(
+            string file,
+            string args,
+            Func<string, OutputStream, Task> handler,
             string workingDir = null,
             IDictionary<string, string> environment = null);
     }

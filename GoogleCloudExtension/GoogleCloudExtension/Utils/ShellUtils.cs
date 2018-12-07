@@ -20,6 +20,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 
 namespace GoogleCloudExtension.Utils
@@ -38,6 +40,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the shell is in the debugger state, false otherwise.</returns>
         public bool IsDebugging()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.Debugging_guid);
         }
@@ -48,6 +51,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the shell is in the building state, false otherwise.</returns>
         public bool IsBuilding()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionBuilding_guid);
         }
@@ -55,7 +59,11 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Returns true if the shell is in a busy state.
         /// </summary>
-        public bool IsBusy() => IsDebugging() || IsBuilding();
+        public bool IsBusy()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return IsDebugging() || IsBuilding();
+        }
 
         /// <summary>
         /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
@@ -64,6 +72,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
         public IDisposable SetShellUIBusy()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsMonitorSelection monitorSelection = GetMonitorSelectionService();
 
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionBuilding_guid, true);
@@ -71,6 +80,18 @@ namespace GoogleCloudExtension.Utils
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_guid, false);
 
             return new Disposable(SetShellNormal);
+        }
+
+
+        /// <summary>
+        /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
+        /// to a variable in a using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
+        public async Task<IDisposable> SetShellUIBusyAsync()
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return SetShellUIBusy();
         }
 
         /// <summary>
@@ -82,6 +103,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public void InvalidateCommandsState()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null)
             {
@@ -94,28 +116,11 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Attempts to move the VS window to the foreground.
-        /// </summary>
-        public void SetForegroundWindow()
-        {
-            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-            if (shell == null)
-            {
-                Debug.WriteLine($"Could not acquire {nameof(SVsUIShell)}");
-                return;
-            }
-
-            if (shell.SetForegroundWindow() != VSConstants.S_OK)
-            {
-                Debug.WriteLine($"Failed to call SetForegroundWindow.");
-            }
-        }
-
-        /// <summary>
         /// Executes the "File.OpenProject" command in the shell.
         /// </summary>
         public void OpenProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.OpenProject");
         }
@@ -127,6 +132,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The Window that displays the project item.</returns>
         public Window Open(string sourceFile)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             Window window = dte.ItemOperations.OpenFile(sourceFile);
             if (window != null)
@@ -141,6 +147,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public ServiceProvider GetGloblalServiceProvider()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
             VSOLEInterop.IServiceProvider sp = (VSOLEInterop.IServiceProvider)dte2;
             return new ServiceProvider(sp);
@@ -151,6 +158,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public void SaveAllFiles()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.SaveAll");
         }
@@ -161,7 +169,8 @@ namespace GoogleCloudExtension.Utils
         /// <param name="onWindowCloseEventHandler">The event handler.</param>
         public void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
         {
-            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            DTE2 dte2 = GoogleCloudExtensionPackage.Instance.Dte;
             dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
@@ -172,8 +181,9 @@ namespace GoogleCloudExtension.Utils
         /// <param name="name">The solution name.</param>
         public void CreateEmptySolution(string localPath, string name)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             localPath.ThrowIfNullOrEmpty(nameof(localPath));
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            DTE2 dte = GoogleCloudExtensionPackage.Instance.Dte;
             try
             {
                 dte.Solution.Create(localPath, name);
@@ -187,25 +197,29 @@ namespace GoogleCloudExtension.Utils
         /// Open a create solution dialog on the given path.
         /// </summary>
         /// <param name="path">The initial path in the create solution dialog.</param>
-        public void LaunchCreateSolutionDialog(string path)
+        public async Task LaunchCreateSolutionDialogAsync(string path)
         {
             path.ThrowIfNullOrEmpty(nameof(path));
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            DTE dte = await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SDTE, DTE>();
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             // Set default project location
             // Refer to https://msdn.microsoft.com/en-us/library/ms165643.aspx
-            var locationItem = dte.Properties["Environment", "ProjectsAndSolution"].Item("ProjectsLocation");
+            Property locationItem = dte.Properties["Environment", "ProjectsAndSolution"].Item("ProjectsLocation");
             if (locationItem != null)
             {
                 locationItem.Value = path;
             }
 
-            var solution = GetGloblalServiceProvider()?.GetService(typeof(SVsSolution)) as IVsSolution;
+            IVsSolution solution =
+                await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SVsSolution, IVsSolution>();
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             solution?.CreateNewProjectViaDlg(null, null, 0);
         }
 
         private void SetShellNormal()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var monitorSelection = GetMonitorSelectionService();
             var isDebugging = IsDebugging();
 
@@ -216,7 +230,9 @@ namespace GoogleCloudExtension.Utils
 
         private IVsMonitorSelection GetMonitorSelectionService()
         {
-            var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IVsMonitorSelection monitorSelection = GoogleCloudExtensionPackage.Instance
+                .GetService<SVsShellMonitorSelection, IVsMonitorSelection>();
             if (monitorSelection == null)
             {
                 Debug.WriteLine($"Could not acquire {nameof(SVsShellMonitorSelection)}");
@@ -228,9 +244,9 @@ namespace GoogleCloudExtension.Utils
 
         private void SetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid, bool value)
         {
-            uint cookie = 0;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            ErrorHandler.ThrowOnFailure(monitorSelection.GetCmdUIContextCookie(contextGuid, out cookie));
+            ErrorHandler.ThrowOnFailure(monitorSelection.GetCmdUIContextCookie(contextGuid, out uint cookie));
             if (cookie != 0)
             {
                 ErrorHandler.ThrowOnFailure(monitorSelection.SetCmdUIContext(cookie, value ? 1 : 0));
@@ -239,16 +255,15 @@ namespace GoogleCloudExtension.Utils
 
         private bool GetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid)
         {
-            uint cookie = 0;
-            int isActive = 0;
-
-            ErrorHandler.ThrowOnFailure(monitorSelection.GetCmdUIContextCookie(contextGuid, out cookie));
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ErrorHandler.ThrowOnFailure(monitorSelection.GetCmdUIContextCookie(contextGuid, out uint cookie));
             if (cookie != 0)
             {
-                ErrorHandler.ThrowOnFailure(monitorSelection.IsCmdUIContextActive(cookie, out isActive));
+                ErrorHandler.ThrowOnFailure(monitorSelection.IsCmdUIContextActive(cookie, out int isActive));
+                return isActive != 0;
             }
 
-            return isActive != 0;
+            return false;
         }
     }
 }

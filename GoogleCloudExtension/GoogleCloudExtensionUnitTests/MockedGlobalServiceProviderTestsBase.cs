@@ -13,8 +13,11 @@
 // limitations under the License.
 
 using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension;
+using GoogleCloudExtensionUnitTests.FakeServices;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -24,26 +27,34 @@ namespace GoogleCloudExtensionUnitTests
 {
     public abstract class MockedGlobalServiceProviderTestsBase
     {
-        protected Mock<DTE> DteMock { get; private set; }
+        protected Mock<DTE2> DteMock { get; private set; }
         protected Mock<IServiceProvider> ServiceProviderMock { get; private set; }
         protected Mock<IComponentModel> ComponentModelMock { get; private set; }
-        protected abstract IVsPackage Package { get; }
-
-        protected void RunPackageInitalize()
-        {
-            // This runs the Initialize() method.
-            Package.SetSite(ServiceProviderMock.Object);
-        }
 
         [TestInitialize]
         public void TestInitalize()
         {
-            DteMock = new Mock<DTE>();
+            var taskSchedularMock = new Mock<IVsTaskSchedulerService>();
+            Mock<IVsTaskSchedulerService2> taskSchedular2Mock = taskSchedularMock.As<IVsTaskSchedulerService2>();
+            taskSchedularMock.Setup(ts => ts.CreateTaskCompletionSource())
+                .Returns(() => new FakeIVsTaskCompletionSource());
+            taskSchedular2Mock.Setup(ts => ts.GetAsyncTaskContext())
+                .Returns(AssemblyInitialize.JoinableApplicationContext);
+            taskSchedular2Mock.Setup(ts => ts.GetTaskScheduler(It.IsAny<uint>()))
+                .Returns((uint context) => FakeIVsTask.GetSchedulerFromContext((__VSTASKRUNCONTEXT)context));
+
+            DteMock = new Mock<DTE>().As<DTE2>();
             ServiceProviderMock = DteMock.As<IServiceProvider>();
-            ServiceProviderMock.SetupService<DTE, DTE>(DteMock);
-            ComponentModelMock = ServiceProviderMock.SetupService<SComponentModel, IComponentModel>();
-            ComponentModelMock.DefaultValueProvider = DefaultValueProvider.Mock;
+            ServiceProviderMock.SetupService<SDTE, DTE2>(DteMock);
+            ServiceProviderMock.SetupService<DTE, DTE2>(DteMock);
+            ComponentModelMock =
+                ServiceProviderMock.SetupService<SComponentModel, IComponentModel>(DefaultValueProvider.Mock);
+            ServiceProviderMock.SetupService<SVsTaskSchedulerService, IVsTaskSchedulerService2>(taskSchedular2Mock);
             ServiceProviderMock.SetupDefaultServices();
+
+            ServiceProvider oldProvider = ServiceProvider.GlobalProvider;
+            ServiceProvider.CreateFromSetSite(ServiceProviderMock.Object);
+            Assert.AreNotEqual(oldProvider, ServiceProvider.GlobalProvider);
         }
 
         [TestCleanup]

@@ -16,6 +16,7 @@ using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.FileSystem;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -113,6 +114,7 @@ namespace GoogleCloudExtension.Services.Configuration
         /// <param name="service">The service the new app.yaml will target. Defaults to the default service.</param>
         public void AddAppYamlItem(IParsedDteProject project, string service = DefaultServiceName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string targetAppYaml = GetAppYamlPath(project);
             GenerateAppYaml(targetAppYaml, service);
             ProjectItem appYamlItem = project.Project.ProjectItems.AddFromFile(targetAppYaml);

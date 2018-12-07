@@ -45,7 +45,9 @@ namespace GoogleCloudExtension.Git
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
             Sha = sha.ThrowIfNullOrEmpty(nameof(sha));
-            _fileTree = new AsyncLazy<Dictionary<string, string>>(GetFileTreeAsync);
+            _fileTree = new AsyncLazy<Dictionary<string, string>>(
+                GetFileTreeAsync,
+                GoogleCloudExtensionPackage.Instance.JoinableTaskFactory);
         }
 
         /// <summary>

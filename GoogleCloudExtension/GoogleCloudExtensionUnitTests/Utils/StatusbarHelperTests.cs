@@ -34,7 +34,7 @@ namespace GoogleCloudExtensionUnitTests.Utils
     }
 
     [TestClass]
-    public class StatusbarHelperTests
+    public class StatusbarHelperTests : ExtensionTestBase
     {
         private const string StatusbarMessage = "Message On Statusbar";
         private Mock<IVsStatusbar> _vsStatusbarMock;

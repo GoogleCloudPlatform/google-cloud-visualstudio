@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.Theming
 {
@@ -53,9 +54,9 @@ namespace GoogleCloudExtensionUnitTests.Theming
         }
 
         [TestMethod]
-        public void TestConstructor_RegistersClose()
+        public async Task TestConstructor_RegistersClose()
         {
-            bool? showModalResult = GetResult(
+            bool? showModalResult = await GetResult(
                 w => _contentMock.Raise(c => c.ViewModel.Close += null),
                 () => _objectUnderTest.ShowModal());
 

@@ -136,7 +136,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 DefaultDescription,
                 _defaultInstance,
                 _dataSourceMock.ToLazy());
-            await objectUnderTest.EnablePort();
+            await objectUnderTest.EnablePortAsync();
 
             _dataSourceMock.Verify();
         }
@@ -161,7 +161,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 DefaultDescription,
                 _defaultInstance,
                 _dataSourceMock.ToLazy());
-            Task task = objectUnderTest.EnablePort();
+            Task task = objectUnderTest.EnablePortAsync();
 
             Assert.IsFalse(task.IsCompleted);
 
@@ -190,7 +190,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 DefaultDescription,
                 _defaultInstance,
                 _dataSourceMock.ToLazy());
-            Task task = objectUnderTest.EnablePort();
+            Task task = objectUnderTest.EnablePortAsync();
 
             Assert.IsFalse(task.IsCompleted);
 
@@ -209,7 +209,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 _expectedInstance,
                 _dataSourceMock.ToLazy());
 
-            bool result = await objectUnderTests.IsPortEnabled();
+            bool result = await objectUnderTests.IsPortEnabledAsync();
 
             Assert.IsFalse(result);
         }
@@ -227,7 +227,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 _expectedInstance,
                 _dataSourceMock.ToLazy());
 
-            bool result = await objectUnderTests.IsPortEnabled();
+            bool result = await objectUnderTests.IsPortEnabledAsync();
             Assert.IsFalse(result);
         }
 
@@ -259,7 +259,7 @@ namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog
                 PortTestHelpers.GetInstanceWithEnabledPort(_expectedPortInfo, ExpectedInstanceName),
                 _dataSourceMock.ToLazy());
 
-            bool result = await objectUnderTests.IsPortEnabled();
+            bool result = await objectUnderTests.IsPortEnabledAsync();
             Assert.IsTrue(result);
         }
     }

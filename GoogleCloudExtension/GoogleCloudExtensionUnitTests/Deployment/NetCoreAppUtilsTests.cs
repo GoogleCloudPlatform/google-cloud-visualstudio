@@ -43,6 +43,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Mock<IToolsPathProvider> _toolsPathProviderMock;
         private Mock<IGCloudWrapper> _gcloudWrapperMock;
         private Mock<IEnvironment> _environmentMock;
+        private readonly Func<string, OutputStream, Task> _defaultOutputAction = (s, os) => Task.CompletedTask;
 
         [TestInitialize]
         public void BeforeEach()
@@ -74,7 +75,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(),
                 ExpectedStagingDirectoryPath,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             _fileSystemMock.Verify(fs => fs.Directory.CreateDirectory(ExpectedStagingDirectoryPath));
@@ -88,14 +89,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(),
                 DefaultDirectory,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             _processServiceMock.Verify(
                 p => p.RunCommandAsync(
                     ExpectedDotnetPath,
                     It.IsAny<string>(),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -106,14 +107,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(),
                 "expected-stage-directory",
-                s => { },
+                _defaultOutputAction,
                 "expected-configuration");
 
             _processServiceMock.Verify(
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     "publish -o \"expected-stage-directory\" -c expected-configuration",
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -121,7 +122,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         [TestMethod]
         public async Task TestCreateAppBundleAsync_PassesOutputActionToDotnetCommand()
         {
-            var mockedOutputAction = Mock.Of<Action<string>>();
+            var mockedOutputAction = Mock.Of<Func<string, OutputStream, Task>>(
+                f => f(It.IsAny<string>(), It.IsAny<OutputStream>()) == Task.CompletedTask);
             const string expectedOutputLine = "expected-output-line";
             SetupRunDotnetWithOutputLine(expectedOutputLine);
 
@@ -131,7 +133,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 mockedOutputAction,
                 DefaultConfiguration);
 
-            Mock.Get(mockedOutputAction).Verify(f => f(expectedOutputLine));
+            Mock.Get(mockedOutputAction).Verify(f => f(expectedOutputLine, It.IsAny<OutputStream>()));
         }
 
         [TestMethod]
@@ -145,14 +147,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(),
                 DefaultDirectory,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             _processServiceMock.Verify(
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.Is<IDictionary<string, string>>(d => d["PATH"] == "expected-path-var;expected-external-tools")));
         }
@@ -163,14 +165,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(p => p.DirectoryPath == ExpectedProjectDirectory),
                 DefaultDirectory,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             _processServiceMock.Verify(
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     ExpectedProjectDirectory,
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -181,7 +183,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(p => p.DirectoryPath == ExpectedProjectDirectory),
                 ExpectedStagingDirectoryPath,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             _gcloudWrapperMock.Verify(
@@ -198,14 +200,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>())).Returns(Task.FromResult(commandResult));
 
             bool result = await _objectUnderTest.CreateAppBundleAsync(
                 Mock.Of<IParsedProject>(p => p.DirectoryPath == ExpectedProjectDirectory),
                 DefaultDirectory,
-                s => { },
+                _defaultOutputAction,
                 DefaultConfiguration);
 
             Assert.AreEqual(result, commandResult);
@@ -213,19 +215,24 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
         private void SetupRunDotnetWithOutputLine(string outputLine)
         {
-            Action<string, string, EventHandler<OutputHandlerEventArgs>, string, IDictionary<string, string>>
-                outputLineToHandler =
-                    (file, args, handler, workingDir, env) =>
-                    handler(null, new OutputHandlerEventArgs(outputLine, OutputStream.None));
 
             _processServiceMock.Setup(
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
-                .Callback(outputLineToHandler).Returns(Task.FromResult(true));
+                .Callback<string, string, Func<string, OutputStream, Task>, string, IDictionary<string, string>>(
+                    OutputLineToHandler)
+                .Returns(Task.FromResult(true));
+
+            void OutputLineToHandler(
+                string file,
+                string args,
+                Func<string, OutputStream, Task> handler,
+                string workingDir,
+                IDictionary<string, string> env) => handler(outputLine, OutputStream.None);
         }
     }
 }

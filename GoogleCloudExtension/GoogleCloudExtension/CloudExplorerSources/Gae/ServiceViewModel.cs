@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -135,26 +136,40 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new ProtectedCommand(OnOpenService) },
+                new MenuItem
+                {
+                    Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                    Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand)
+                },
+                new MenuItem
+                {
+                    Header = Resources.UiPropertiesMenuHeader,
+                    Command = new ProtectedAsyncCommand(OnPropertiesWindowCommandAsync)
+                },
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerGaeServiceOpen,
+                    Command = new ProtectedCommand(OnOpenService)
+                },
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerGaeSplitTraffic,
+                    Command = new ProtectedAsyncCommand(OnSplitTrafficAsync, canExecuteCommand: _versions.Count > 1)
+                },
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader,
+                    Command = new ProtectedAsyncCommand(OnBrowseStackdriverLogCommandAsync)
+                },
+                new Separator(),
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerGaeDeleteService,
+                    Command = new ProtectedAsyncCommand(
+                        OnDeleteServiceAsync,
+                        canExecuteCommand: Service.Id != GaeUtils.AppEngineDefaultServiceName)
+                }
             };
-
-            menuItems.Add(new MenuItem
-            {
-                Header = Resources.CloudExplorerGaeSplitTraffic,
-                Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: _versions.Count > 1)
-            });
-
-            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
-            menuItems.Add(new Separator());
-
-            menuItems.Add(new MenuItem
-            {
-                Header = Resources.CloudExplorerGaeDeleteService,
-                Command = new ProtectedCommand(OnDeleteService, canExecuteCommand: Service.Id != GaeUtils.AppEngineDefaultServiceName)
-            });
-
 
             if (ShowOnlyFlexVersions)
             {
@@ -233,7 +248,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// Opens the dialog to manage traffic splitting for the GAE service and 
         /// updates the traffic split if the user makes a change.
         /// </summary>
-        private void OnSplitTraffic()
+        private async Task OnSplitTrafficAsync()
         {
             SplitTrafficChange change = SplitTrafficWindow.PromptUser(Service, _versions.Select(x => x.Version));
             if (change == null)
@@ -246,13 +261,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 ShardBy = change.ShardBy,
                 Allocations = change.Allocations,
             };
-            UpdateTrafficSplit(split);
+            await UpdateTrafficSplitAsync(split);
         }
 
         /// <summary>
         /// Promptes the user if they would like to delete this service.
         /// </summary>
-        private void OnDeleteService()
+        private async Task OnDeleteServiceAsync()
         {
             string confirmationMessage = String.Format(
                Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, Service.Id);
@@ -266,12 +281,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
-            DeleteService();
+            await DeleteServiceAsync();
         }
 
-        private void OnBrowseStackdriverLogCommand()
+        private async Task OnBrowseStackdriverLogCommandAsync()
         {
-            var window = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
             window?.FilterGAEServiceLog(Service.Id);
         }
 
@@ -311,9 +326,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(url);
         }
 
-        private void OnPropertiesWindowCommand()
+        private async Task OnPropertiesWindowCommandAsync()
         {
-            _owner.Context.ShowPropertiesWindow(GetItem());
+            await _owner.Context.ShowPropertiesWindowAsync(GetItem());
         }
 
         private void OnOpenService()
@@ -324,7 +339,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// <summary>
         /// Update a service's traffic split.
         /// </summary>
-        private async void UpdateTrafficSplit(TrafficSplit split)
+        private async Task UpdateTrafficSplitAsync(TrafficSplit split)
         {
             IsLoading = true;
             Children.Clear();
@@ -335,7 +350,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                _owner.InvalidateService(_service.Id);
+                await _owner.InvalidateServiceAsync(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
@@ -369,7 +384,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// <summary>
         /// Deletes 'this' service.
         /// </summary>
-        private async void DeleteService()
+        private async Task DeleteServiceAsync()
         {
             IsLoading = true;
             Children.Clear();

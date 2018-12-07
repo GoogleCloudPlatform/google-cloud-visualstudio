@@ -63,7 +63,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Task<bool> _runCommandTask;
         private string _path;
         private string _parameters;
-        private EventHandler<OutputHandlerEventArgs> _handler;
+        private Func<string, OutputStream, Task> _handler;
 
         [TestInitialize]
         public void BeforeEach()
@@ -88,10 +88,10 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     ps => ps.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
-                .Callback<string, string, EventHandler<OutputHandlerEventArgs>, string, IDictionary<string, string>>(
+                .Callback<string, string, Func<string, OutputStream, Task>, string, IDictionary<string, string>>(
                     (path, parameters, handler, workingDir, env) =>
                     {
                         _path = path;
@@ -352,13 +352,17 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultConfigurationName);
 
             _statusbarServiceMock.Verify(
-                sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)));
+                sb => sb.FreezeTextAsync(string.Format(Resources.GcePublishProgressMessage, expectedName)));
         }
 
         [TestMethod]
         public async Task TestPublishProjectAsync_UnFreezesStatusbarText()
         {
             const string expectedName = "Expected Name";
+            var disposableMock = new Mock<IDisposable>();
+            _statusbarServiceMock
+                .Setup(sb => sb.FreezeTextAsync(string.Format(Resources.GcePublishProgressMessage, expectedName)))
+                .ReturnsResult(disposableMock.Object);
 
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
@@ -367,8 +371,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultWebSite,
                 DefaultConfigurationName);
 
-            _statusbarServiceMock.Verify(
-                sb => sb.FreezeText(string.Format(Resources.GcePublishProgressMessage, expectedName)).Dispose());
+            disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -384,12 +387,15 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultWebSite,
                 DefaultConfigurationName);
 
-            _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation());
+            _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimationAsync());
         }
 
         [TestMethod]
         public async Task TestPublishProjectAsync_EndsDeployAnimation()
         {
+            var disposableMock = new Mock<IDisposable>();
+            _statusbarServiceMock.Setup(sb => sb.ShowDeployAnimationAsync()).ReturnsResult(disposableMock.Object);
+
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
                 s_defaultInstance,
@@ -397,7 +403,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultWebSite,
                 DefaultConfigurationName);
 
-            _statusbarServiceMock.Verify(sb => sb.ShowDeployAnimation().Dispose());
+            disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -413,12 +419,15 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultWebSite,
                 DefaultConfigurationName);
 
-            _shellUtilsMock.Verify(s => s.SetShellUIBusy());
+            _shellUtilsMock.Verify(s => s.SetShellUIBusyAsync());
         }
 
         [TestMethod]
         public async Task TestPublishProjectAsync_UnsetsUIBusy()
         {
+            var disposableMock = new Mock<IDisposable>();
+            _shellUtilsMock.Setup(s => s.SetShellUIBusyAsync()).ReturnsResult(disposableMock.Object);
+
             await _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
                 s_defaultInstance,
@@ -426,7 +435,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 DefaultWebSite,
                 DefaultConfigurationName);
 
-            _shellUtilsMock.Verify(s => s.SetShellUIBusy().Dispose());
+            disposableMock.Verify(d => d.Dispose());
         }
 
         [TestMethod]
@@ -435,7 +444,9 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         public async Task TestPublishProjectAsync_ReturnsResultOfRunCommand(bool result)
         {
             var taskSource = new TaskCompletionSource<bool>();
+            taskSource.SetResult(result);
             _runCommandTask = taskSource.Task;
+            _runCommandTask = Task.FromResult(result);
 
             Task<bool> t = _objectUnderTest.PublishProjectAsync(
                 _dteProjectMock.Object,
@@ -443,8 +454,6 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 s_defaultCredentials,
                 DefaultWebSite,
                 DefaultConfigurationName);
-
-            taskSource.SetResult(result);
 
             Assert.AreEqual(result, await t);
         }

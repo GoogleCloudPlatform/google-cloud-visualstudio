@@ -16,7 +16,7 @@ using GoogleCloudExtension.Accounts;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -29,25 +29,20 @@ namespace GoogleCloudExtension.Utils
         /// Shows the tool window, either existing or new.
         /// </summary>
         /// <returns>The tool window object.</returns>
-        public static TToolWindow ShowToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
+        public static Task<TToolWindow> ShowToolWindowAsync<TToolWindow>() where TToolWindow : ToolWindowPane
         {
-            return ShowToolWindow<TToolWindow>(0);
+            return ShowToolWindowAsync<TToolWindow>(0);
         }
 
         /// <summary>
         /// Shows the tool window for a given id, either existing or new.
         /// </summary>
         /// <returns>The tool window object.</returns>
-        public static TToolWindow ShowToolWindow<TToolWindow>(int id) where TToolWindow : ToolWindowPane
+        public static async Task<TToolWindow> ShowToolWindowAsync<TToolWindow>(int id) where TToolWindow : ToolWindowPane
         {
-            if (GoogleCloudExtensionPackage.Instance == null)
-            {
-                Debug.WriteLine("GoogleCloudExtensionPackage.Instance is null, unexpected error");
-                return null;
-            }
-
             // The last flag is set to true so that if the tool window does not exists it will be created.
             var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(true, id);
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             var windowFrame = (IVsWindowFrame)window?.Frame;
             if (windowFrame == null)
             {
@@ -62,17 +57,16 @@ namespace GoogleCloudExtension.Utils
         /// Creates a new instance of a multi-instance tool window.
         /// </summary>
         /// <returns>The tool window object if it is found.</returns>
-        public static TToolWindow AddToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
+        public static async Task<TToolWindow> AddToolWindowAsync<TToolWindow>() where TToolWindow : ToolWindowPane
         {
             // Find the first unused tool window id.
             for (var id = 0; true; id++)
             {
-                ToolWindowPane window =
-                    GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(false, id);
+                var window = GoogleCloudExtensionPackage.Instance.FindToolWindow<TToolWindow>(false, id);
                 if (window == null)
                 {
                     // Create a new tool window at the unused id.
-                    return ShowToolWindow<TToolWindow>(id);
+                    return await ShowToolWindowAsync<TToolWindow>(id);
                 }
             }
         }

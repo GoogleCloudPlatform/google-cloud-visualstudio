@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             _isLoadedState = false;
-            LoadingTask = LoadDataWrapper();
+            LoadingTask = LoadDataWrapperAsync();
         }
 
         public virtual void InvalidateProjectOrAccount()
@@ -131,16 +131,16 @@ namespace GoogleCloudExtension.CloudExplorer
 
             if (newValue && !_isLoadedState)
             {
-                LoadingTask = LoadDataWrapper();
+                LoadingTask = LoadDataWrapperAsync();
             }
         }
 
         /// <summary>
         /// Override this function to load and display the data in the control.
         /// </summary>
-        protected abstract Task LoadDataOverride();
+        protected abstract Task LoadDataOverrideAsync();
 
-        private async Task LoadDataWrapper()
+        private async Task LoadDataWrapperAsync()
         {
             try
             {
@@ -168,7 +168,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     return;
                 }
 
-                await LoadDataOverride();
+                await LoadDataOverrideAsync();
                 if (Children.Count == 0)
                 {
                     Children.Add(NoItemsPlaceholder);

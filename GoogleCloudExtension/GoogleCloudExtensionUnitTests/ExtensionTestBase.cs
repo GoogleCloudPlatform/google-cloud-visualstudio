@@ -15,6 +15,10 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtensionUnitTests.FakeServices;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -22,6 +26,7 @@ namespace GoogleCloudExtensionUnitTests
 {
     public abstract class ExtensionTestBase
     {
+        private Mock<IServiceProvider> _serviceProviderMock;
         protected Mock<IGoogleCloudExtensionPackage> PackageMock { get; private set; }
 
         protected Mock<ICredentialsStore> CredentialStoreMock { get; private set; }
@@ -29,7 +34,19 @@ namespace GoogleCloudExtensionUnitTests
         [TestInitialize]
         public void InitializeGlobalsForTest()
         {
+
             PackageMock = new Mock<IGoogleCloudExtensionPackage> { DefaultValue = DefaultValue.Mock };
+            PackageMock.Setup(p => p.JoinableTaskFactory).Returns(AssemblyInitialize.JoinableApplicationContext.Factory);
+
+            _serviceProviderMock = new Mock<IServiceProvider>();
+            _serviceProviderMock.SetupService<SVsActivityLog, IVsActivityLog>();
+            _serviceProviderMock.SetupService<SVsTaskSchedulerService>(new FakeIVsTaskSchedulerService());
+            _serviceProviderMock.SetupDefaultServices();
+
+            ServiceProvider oldProvider = ServiceProvider.GlobalProvider;
+            ServiceProvider.CreateFromSetSite(_serviceProviderMock.Object);
+            Assert.AreNotEqual(oldProvider, ServiceProvider.GlobalProvider);
+
             GoogleCloudExtensionPackage.Instance = PackageMock.Object;
 
             CredentialStoreMock = Mock.Get(CredentialsStore.Default);
@@ -41,6 +58,10 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestCleanup]
-        public void CleanupGlobalsForTest() => GoogleCloudExtensionPackage.Instance = null;
+        public void CleanupGlobalsForTest()
+        {
+            _serviceProviderMock.Dispose();
+            GoogleCloudExtensionPackage.Instance = null;
+        }
     }
 }

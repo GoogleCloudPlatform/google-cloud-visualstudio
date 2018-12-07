@@ -15,6 +15,8 @@
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -80,6 +82,13 @@ namespace GoogleCloudExtension.Utils
         /// Open a create solution dialog on the given path.
         /// </summary>
         /// <param name="path">The initial path in the create solution dialog.</param>
-        void LaunchCreateSolutionDialog(string path);
+        Task LaunchCreateSolutionDialogAsync(string path);
+
+        /// <summary>
+        /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
+        /// to a variable in a using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
+        Task<IDisposable> SetShellUIBusyAsync();
     }
 }

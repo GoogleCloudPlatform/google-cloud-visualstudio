@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
+using Microsoft.VisualStudio.Shell;
 using System.IO;
 
 namespace GoogleCloudExtension.Projects.DotNetCore
@@ -30,11 +31,32 @@ namespace GoogleCloudExtension.Projects.DotNetCore
 
         public Project Project { get; }
 
-        public string DirectoryPath => Path.GetDirectoryName(FullPath);
+        public string DirectoryPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Path.GetDirectoryName(FullPath);
+            }
+        }
 
-        public string FullPath => Project.FullName;
+        public string FullPath
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Project.FullName;
+            }
+        }
 
-        public string Name => Path.GetFileName(Path.GetDirectoryName(FullPath));
+        public string Name
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return Path.GetFileName(Path.GetDirectoryName(FullPath));
+            }
+        }
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
 

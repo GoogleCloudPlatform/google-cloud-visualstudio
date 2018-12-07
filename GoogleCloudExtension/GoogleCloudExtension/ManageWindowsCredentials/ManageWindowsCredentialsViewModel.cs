@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         /// <summary>
         /// Command to execute when adding a new set of credentials.
         /// </summary>
-        public ProtectedCommand AddCredentialsCommand { get; }
+        public ProtectedAsyncCommand AddCredentialsCommand { get; }
 
         /// <summary>
         /// Command to execute when deleting credentials.
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
             CredentialsList = LoadCredentialsForInstance(instance);
 
-            AddCredentialsCommand = new ProtectedCommand(OnAddCredentialsCommand);
+            AddCredentialsCommand = new ProtectedAsyncCommand(OnAddCredentialsCommandAsync);
             DeleteCredentialsCommand = new ProtectedCommand(OnDeleteCredentialsCommand, canExecuteCommand: false);
             ShowCredentialsCommand = new ProtectedCommand(OnShowCredentialsCommand, canExecuteCommand: false);
         }
@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
         }
 
-        private async void OnAddCredentialsCommand()
+        private async Task OnAddCredentialsCommandAsync()
         {
             var request = AddWindowsCredentialWindow.PromptUser(_instance);
             if (request == null)
@@ -137,8 +137,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             WindowsInstanceCredentials credentials;
             if (request.GeneratePassword)
             {
-                var resetCredentialsTask = CreateOrResetCredentials(request.User);
-                credentials = await ProgressDialogWindow.PromptUser(
+                var resetCredentialsTask = CreateOrResetCredentialsAsync(request.User);
+                credentials = await ProgressDialogWindow.PromptUserAsync(
                     resetCredentialsTask,
                     new ProgressDialogWindow.Options
                     {
@@ -171,7 +171,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
         }
 
-        private async Task<WindowsInstanceCredentials> CreateOrResetCredentials(string user)
+        private async Task<WindowsInstanceCredentials> CreateOrResetCredentialsAsync(string user)
         {
             try
             {

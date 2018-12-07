@@ -18,12 +18,14 @@ using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -57,6 +59,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="logItem">The log item to search for source file.</param>
         public static async Task NavigateToSourceLineCommandAsync(LogItem logItem)
         {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
             EnvDTE.Window window = null;
             try
             {
@@ -67,7 +70,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     {
                         return;
                     }
-                    window = await ProgressDialogWindow.PromptUser(
+                    window = await ProgressDialogWindow.PromptUserAsync(
                         SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath),
                         s_gitOperationOption);
                 }
@@ -132,6 +135,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </returns>
         private static ProjectHelper FindOrOpenProject(LogItem logItem)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (String.IsNullOrWhiteSpace(logItem.AssemblyName) || String.IsNullOrWhiteSpace(logItem.AssemblyVersion))
             {
                 LogEntryVersionInfoMissingPrompt();
@@ -250,7 +254,11 @@ namespace GoogleCloudExtension.SourceBrowsing
             return StackdriverLogsViewerStates.Current.ContinueWithVersionMismatchAssemblyFlag;
         }
 
-        private static bool IsCurrentSolutionOpen() => SolutionHelper.CurrentSolution?.Projects?.Count > 0;
+        private static bool IsCurrentSolutionOpen()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return SolutionHelper.CurrentSolution?.Projects?.Count > 0;
+        }
 
         private static async Task<bool> SearchCommitAtPathAsync(string filePath, string sha)
         {
@@ -296,7 +304,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            return await OpenGitFile.Current.Open(
+            return await OpenGitFile.Current.OpenAsync(
                 commit.Sha,
                 relativePath,
                 async (tmpFile) => await commit.SaveTempFileAsync(tmpFile, relativePath));

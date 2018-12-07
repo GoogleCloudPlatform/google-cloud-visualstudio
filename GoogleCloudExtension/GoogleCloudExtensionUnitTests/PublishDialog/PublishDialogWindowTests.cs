@@ -19,6 +19,7 @@ using GoogleCloudExtension.PublishDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
@@ -66,9 +67,9 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog
         }
 
         [TestMethod]
-        public void TestTitle_DataBound()
+        public async Task TestTitle_DataBound()
         {
-            GetWindow(() => _objectUnderTest.ShowModal());
+            await GetWindowAsync(() => _objectUnderTest.ShowModal());
             StringAssert.Contains(_objectUnderTest.Title, ExpectedProjectName);
         }
 

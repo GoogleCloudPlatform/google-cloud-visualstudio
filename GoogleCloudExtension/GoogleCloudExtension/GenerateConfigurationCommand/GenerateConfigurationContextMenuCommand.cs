@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Services.Configuration;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
@@ -21,6 +22,8 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.GenerateConfigurationCommand
 {
@@ -28,7 +31,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
     /// This class implements the command handler for the generate app.yaml and Dockerfile menu item shown in the project's context
     /// menu in the "Solution Exlorer".
     /// </summary>
-    internal sealed class GenerateConfigurationContextMenuCommand
+    internal static class GenerateConfigurationContextMenuCommand
     {
         /// <summary>
         /// Command ID.
@@ -41,55 +44,22 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package _package;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GoogleCloudExtension.PublishDialog.PublishProjectMainMenuCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
+        /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private GenerateConfigurationContextMenuCommand(Package package)
+        /// <param name="token"></param>
+        public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
-            _package = package ?? throw new ArgumentNullException(nameof(package));
+            package.ThrowIfNull(nameof(package));
 
-            if (ServiceProvider.GetService(typeof(IMenuCommandService)) is IMenuCommandService commandService)
+            if (await package.GetServiceAsync(typeof(IMenuCommandService)) is IMenuCommandService commandService)
             {
+                await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(OnGenerateConfiguration, menuCommandID);
                 menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
-        }
-
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static GenerateConfigurationContextMenuCommand Instance
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return _package;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
-        {
-            Instance = new GenerateConfigurationContextMenuCommand(package);
         }
 
         /// <summary>
@@ -99,16 +69,18 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void OnGenerateConfiguration(object sender, EventArgs e) => ErrorHandlerUtils.HandleExceptions(GenerateConfiguration);
+        private static void OnGenerateConfiguration(object sender, EventArgs e) =>
+            ErrorHandlerUtils.HandleExceptionsAsync(GenerateConfigurationAsync);
 
         /// <summary>
         /// Queries the user and generates an app.yaml and Docker file.
         /// </summary>
-        private void GenerateConfiguration()
+        private static async Task GenerateConfigurationAsync()
         {
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            IParsedDteProject selectedProject = SolutionHelper.CurrentSolution.SelectedProject.ParsedProject;
             Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
-            var appEngineConfiguration = GoogleCloudExtensionPackage.Instance.GetMefService<IAppEngineConfiguration>();
+            IAppEngineConfiguration appEngineConfiguration = GoogleCloudExtensionPackage.Instance.GetMefService<IAppEngineConfiguration>();
             ProjectConfigurationStatus configurationStatus = appEngineConfiguration.CheckProjectConfiguration(selectedProject);
 
             // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
@@ -136,7 +108,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     return;
                 }
 
-                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(Resources.GenerateConfigurationAppYamlGeneratedMessage);
             }
 
             // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
@@ -164,12 +136,13 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                     return;
                 }
 
-                GcpOutputWindow.Default.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                await GcpOutputWindow.Default.OutputLineAsync(Resources.GenerateConfigurationDockerfileGeneratedMessage);
             }
         }
 
-        private void OnBeforeQueryStatus(object sender, EventArgs e)
+        private static void OnBeforeQueryStatus(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (!(sender is OleMenuCommand menuCommand))
             {
                 return;

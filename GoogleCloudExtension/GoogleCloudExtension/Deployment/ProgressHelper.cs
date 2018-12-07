@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="deployTask">The task to wait.</param>
         /// <param name="from">The initial value.</param>
         /// <param name="to">The final value.</param>
-        public static async Task<T> UpdateProgress<T>(
+        public static async Task<T> UpdateProgressAsync<T>(
             this IProgress<double> progress,
             Task<T> deployTask,
             double from,
@@ -42,18 +42,24 @@ namespace GoogleCloudExtension.Deployment
             double current = from;
             while (true)
             {
-                progress.Report(current);
+                await progress.ReportAsync(current);
 
                 Task resultTask = await Task.WhenAny(deployTask, Task.Delay(DefaultTaskWaitMilliseconds));
                 if (resultTask == deployTask)
                 {
-                    progress.Report(to);
+                    await progress.ReportAsync(to);
                     return await deployTask;
                 }
 
                 current += DefaultProgressIncrement;
                 current = Math.Min(current, to);
             }
+        }
+
+        public static async Task ReportAsync(this IProgress<double> progress, double value)
+        {
+            await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+            progress.Report(value);
         }
     }
 }

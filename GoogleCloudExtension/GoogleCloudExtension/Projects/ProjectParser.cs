@@ -15,6 +15,7 @@
 using EnvDTE;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -61,6 +62,7 @@ namespace GoogleCloudExtension.Projects
         /// <returns>The resulting <seealso cref="IParsedDteProject"/> or null if the project is not supported.</returns>
         public static IParsedDteProject ParseProject(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string extension = Path.GetExtension(project.FullName);
             switch (extension)
             {
@@ -81,6 +83,7 @@ namespace GoogleCloudExtension.Projects
         {
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 var fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
                 XDocument dom = fileSystem.XDocument.Load(project.FullName);
                 XAttribute sdk = dom.Root?.Attribute(SdkAttributeName);
@@ -122,6 +125,7 @@ namespace GoogleCloudExtension.Projects
 
         private static IParsedDteProject ParseJsonProject(Project project)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string projectDir = Path.GetDirectoryName(project.FullName);
             string projectJsonPath = Path.Combine(projectDir, ProjectJsonFileName);
 

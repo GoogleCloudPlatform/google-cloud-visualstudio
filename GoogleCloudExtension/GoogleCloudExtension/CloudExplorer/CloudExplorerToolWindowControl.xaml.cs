@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -37,7 +38,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ErrorHandlerUtils.HandleExceptionsAsync(async () =>
             {
                 var oldItemSource = e.OldValue as ICloudExplorerItemSource;
                 if (oldItemSource != null)
@@ -48,22 +50,25 @@ namespace GoogleCloudExtension.CloudExplorer
                 var newItemSource = e.NewValue as ICloudExplorerItemSource;
                 if (newItemSource == null)
                 {
-                    _selectionUtils.ClearSelection();
-                    return;
+                    await _selectionUtils.ClearSelectionAsync();
                 }
-                newItemSource.ItemChanged += OnItemChanged;
-
-                _selectionUtils.SelectItem(newItemSource.Item);
+                else
+                {
+                    newItemSource.ItemChanged += OnItemChanged;
+                    await _selectionUtils.SelectItemAsync(newItemSource.Item);
+                }
             });
         }
 
         private void OnItemChanged(object sender, EventArgs e)
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                var itemSource = (ICloudExplorerItemSource)sender;
-                _selectionUtils.SelectItem(itemSource.Item);
-            });
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ErrorHandlerUtils.HandleExceptionsAsync(
+                async () =>
+                {
+                    var itemSource = (ICloudExplorerItemSource)sender;
+                    await _selectionUtils.SelectItemAsync(itemSource.Item);
+                });
         }
 
         private void TreeView_KeyDown(object sender, KeyEventArgs e)

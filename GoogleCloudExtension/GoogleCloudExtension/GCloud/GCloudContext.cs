@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
-        public Task<bool> DeployAppAsync(string appYaml, string version, bool promote, Action<string> outputAction)
+        public Task<bool> DeployAppAsync(string appYaml, string version, bool promote, Func<string, Task> outputAction)
         {
             string versionParameter = version != null ? $"--version={version}" : "";
             string promoteParameter = promote ? "--promote" : "--no-promote";
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="imageTag">The name of the image to build.</param>
         /// <param name="contentsPath">The contents of the container, including the Dockerfile.</param>
         /// <param name="outputAction">The action to perform on each line of output.</param>
-        public async Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Action<string> outputAction)
+        public async Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Func<string, Task> outputAction)
         {
             CloudSdkVersions sdkVersions = await _versionsTask;
             string group = sdkVersions.SdkVersion >= s_gCloudBuildsMinimumVersion ? "builds" : "container builds";
@@ -134,6 +134,27 @@ namespace GoogleCloudExtension.GCloud
                 file: "cmd.exe",
                 args: $"/c {actualCommand}",
                 handler: (o, e) => outputAction?.Invoke(e.Line),
+                environment: Environment);
+        }
+
+        /// <summary>
+        /// Runs the given gcloud command.
+        /// </summary>
+        /// <param name="command">The subcommand and arguments to run.</param>
+        /// <param name="outputAction">The action for outputting lines.</param>
+        /// <returns>True if the command succeeds, false otherwise.</returns>
+        protected Task<bool> RunGcloudCommandAsync(
+            string command,
+            Func<string, Task> outputAction)
+        {
+            string actualCommand = FormatGcloudCommand(command);
+
+            // This code depends on the fact that gcloud.cmd is a batch file.
+            Debug.Write($"Executing gcloud command: {actualCommand}");
+            return ProcessUtils.Default.RunCommandAsync(
+                file: "cmd.exe",
+                args: $"/c {actualCommand}",
+                handler: (line, stream) => outputAction?.Invoke(line),
                 environment: Environment);
         }
 

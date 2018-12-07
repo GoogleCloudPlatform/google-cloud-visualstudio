@@ -18,35 +18,34 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {
     [TestClass]
-    public class ErrorReportingToolWindowCommandTests
+    public class ErrorReportingToolWindowCommandTests : ExtensionTestBase
     {
         private Mock<IMenuCommandService> _menuCommandServiceMock;
-        private Package _mockPackage;
 
         [TestInitialize]
         public void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
-            var packageMock = new Mock<Package>();
-            packageMock.As<IServiceProvider>().Setup(sp => sp.GetService(typeof(IMenuCommandService)))
-                .Returns(_menuCommandServiceMock.Object);
-            _mockPackage = packageMock.Object;
+            PackageMock.Setup(sp => sp.GetServiceAsync<IMenuCommandService, IMenuCommandService>())
+                .Returns(Task.FromResult(_menuCommandServiceMock.Object));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void TestInitializeNullPackage() => ErrorReportingToolWindowCommand.Initialize(null);
+        public async Task TestInitializeNullPackage() =>
+            await ErrorReportingToolWindowCommand.InitializeAsync(null, CancellationToken.None);
 
         [TestMethod]
-        public void TestInitialize()
+        public async Task TestInitialize()
         {
-            ErrorReportingToolWindowCommand.Initialize(_mockPackage);
+            await ErrorReportingToolWindowCommand.InitializeAsync(PackageMock.Object, CancellationToken.None);
 
-            Assert.IsNotNull(ErrorReportingToolWindowCommand.Instance);
             _menuCommandServiceMock.Verify(
                 s => s.AddCommand(
                     It.Is<OleMenuCommand>(

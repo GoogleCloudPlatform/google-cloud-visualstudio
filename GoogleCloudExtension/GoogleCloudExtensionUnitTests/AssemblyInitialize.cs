@@ -15,8 +15,12 @@
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.Threading;
 using Moq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -25,7 +29,11 @@ namespace GoogleCloudExtensionUnitTests
     [TestClass]
     public static class AssemblyInitialize
     {
-        private static IGoogleCloudExtensionPackage s_packageToRestore;
+        /// <summary>
+        /// Static field prevents garbage collection.
+        /// </summary>
+        private static SimpleIServiceProvider s_simpleIServiceProvider;
+        public static JoinableTaskContext JoinableApplicationContext { get; private set; }
 
         [AssemblyInitialize]
         public static void InitializeAssembly(TestContext context)
@@ -36,19 +44,32 @@ namespace GoogleCloudExtensionUnitTests
                 .Returns(Mock.Of<ISettingsSubset>());
 
             EventsReporterWrapper.DisableReporting();
-            s_packageToRestore = GoogleCloudExtensionPackage.Instance;
             GoogleCloudExtensionPackage.Instance = null;
             // Enable pack URIs.
             Assert.AreEqual(new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown }, Application.Current);
+
+            JoinableApplicationContext = Application.Current.Dispatcher.Invoke(() => new JoinableTaskContext());
+            ApplicationTaskScheduler = Application.Current.Dispatcher.Invoke(TaskScheduler.FromCurrentSynchronizationContext);
+
+            // Initalize VsTaskLibraryHelper.ServiceInstance to a service that delegates to the current service.
+            IVsTaskSchedulerService delegatinTaskSchedulerService = new DelegatingTaskSchedulerService();
+            s_simpleIServiceProvider = new SimpleIServiceProvider
+            {
+                {typeof(SVsTaskSchedulerService), delegatinTaskSchedulerService},
+                {typeof(SVsActivityLog), Mock.Of<IVsActivityLog>()}
+            };
+            ServiceProvider.CreateFromSetSite(s_simpleIServiceProvider);
+            Assert.AreEqual(delegatinTaskSchedulerService, VsTaskLibraryHelper.ServiceInstance);
+            ServiceProvider.GlobalProvider.Dispose();
         }
+
+        public static TaskScheduler ApplicationTaskScheduler { get; private set; }
 
         [AssemblyCleanup]
         public static void CleanupAfterAllTests()
         {
-            GoogleCloudExtensionPackage.Instance = s_packageToRestore;
             Application.Current.Shutdown();
             Dispatcher.CurrentDispatcher.InvokeShutdown();
-
         }
     }
 }

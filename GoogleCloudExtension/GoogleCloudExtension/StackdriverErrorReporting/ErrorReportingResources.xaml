@@ -5,8 +5,8 @@
     xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"                                     
     xmlns:sys="clr-namespace:System;assembly=mscorlib"                 
-    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0" 
-    xmlns:vsshellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0">
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" 
+    xmlns:vsshellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="../Theming/CommonResources.xaml" />

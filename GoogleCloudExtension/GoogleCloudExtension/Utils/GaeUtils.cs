@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.Utils
 
             try
             {
-                await ProgressDialogWindow.PromptUser(
+                await ProgressDialogWindow.PromptUserAsync(
                     dataSource.CreateApplicationAsync(selectedLocation),
                     new ProgressDialogWindow.Options
                     {

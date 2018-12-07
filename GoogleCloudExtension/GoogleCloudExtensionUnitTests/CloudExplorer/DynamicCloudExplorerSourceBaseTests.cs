@@ -65,7 +65,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             /// <summary>
             /// Override this function to load and display the data in the control.
             /// </summary>
-            protected override Task LoadDataOverride() => throw new NotImplementedException();
+            protected override Task LoadDataOverrideAsync() => throw new NotImplementedException();
 
             #endregion NotImplemented
 

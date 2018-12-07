@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using EnvDTE80;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -29,7 +30,6 @@ using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using Microsoft.Internal.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -42,6 +42,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension
 {
@@ -62,7 +65,7 @@ namespace GoogleCloudExtension
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
@@ -70,12 +73,14 @@ namespace GoogleCloudExtension
     [ProvideToolWindow(typeof(LogsViewerToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingToolWindow), DocumentLikeTool = true, Transient = true)]
     [ProvideToolWindow(typeof(ErrorReportingDetailToolWindow), DocumentLikeTool = true, Transient = true)]
-    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(AnalyticsOptions), OptionsCategoryName, AnalyticsOptions.PageName, 1, 2, false)]
     [ProvideUIProvider(GcpMenuBarControlFactory.GuidString, "GCP Main Frame Control Factory", PackageGuidString)]
-    [ProvideMainWindowFrameControl(typeof(GcpMenuBarControl), GcpMenuBarControlFactory.GcpMenuBarControlCommandId,
+    [ProvideMainWindowFrameControl(
+        typeof(GcpMenuBarControl),
+        GcpMenuBarControlFactory.GcpMenuBarControlCommandId,
         typeof(GcpMenuBarControlFactory))]
-    public sealed class GoogleCloudExtensionPackage : Package, IGoogleCloudExtensionPackage
+    public sealed class GoogleCloudExtensionPackage : AsyncPackage, IGoogleCloudExtensionPackage
     {
         private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -102,15 +107,29 @@ namespace GoogleCloudExtension
             new SolutionUserOptions(AttachDebuggerSettings.Current)
         };
 
-        private DTE _dteInstance;
         private Lazy<IShellUtils> _shellUtilsLazy;
         private Lazy<IGcpOutputWindow> _gcpOutputWindowLazy;
         private Lazy<IProcessService> _processService;
         private Lazy<IStatusbarService> _statusbarService;
         private Lazy<IUserPromptService> _userPromptService;
         private Lazy<IDataSourceFactory> _dataSourceFactory;
+        private IComponentModel _componentModel;
 
         private event EventHandler ClosingEvent;
+
+        /// <summary>
+        /// The initalized instance of the package.
+        /// </summary>
+        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
+
+        public AnalyticsOptions GeneralSettings
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return GetDialogPage<AnalyticsOptions>();
+            }
+        }
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -125,17 +144,19 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The version of Visual Studio currently running.
         /// </summary>
-        public string VsVersion { get; private set; }
+        public string VsVersion => Dte.Version;
 
         /// <summary>
         /// The edition of Visual Studio currently running.
         /// </summary>
-        public static string VsEdition { get; private set; }
+        public string VsEdition => Dte.Edition;
 
         /// <summary>
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         public string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
+        public DTE2 Dte { get; private set; }
 
         /// <summary>
         /// The default <see cref="IShellUtils"/> service.
@@ -172,11 +193,6 @@ namespace GoogleCloudExtension
         /// </summary>
         public ICredentialsStore CredentialsStore { get; private set; }
 
-        /// <summary>
-        /// The initalized instance of the package.
-        /// </summary>
-        public static IGoogleCloudExtensionPackage Instance { get; internal set; }
-
         public GoogleCloudExtensionPackage()
         {
             // Register all of the properties.
@@ -203,10 +219,7 @@ namespace GoogleCloudExtension
         /// Check whether the main window is not minimized.
         /// </summary>
         /// <returns>true/false based on whether window is minimized or not</returns>
-        public bool IsWindowActive()
-        {
-            return _dteInstance.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
-        }
+        public bool IsWindowActive() => Dte.MainWindow?.WindowState != vsWindowState.vsWindowStateMinimize;
 
         protected override int QueryClose(out bool canClose)
         {
@@ -274,56 +287,62 @@ namespace GoogleCloudExtension
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override async Task InitializeAsync(CancellationToken token, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            try
+            {
+                _componentModel = await GetServiceAsync<SComponentModel, IComponentModel>();
+                CredentialsStore = _componentModel.GetService<ICredentialsStore>();
+                ExportProvider mefExportProvider = _componentModel.DefaultExportProvider;
+                _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
+                _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
+                _processService = mefExportProvider.GetExport<IProcessService>();
+                _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
+                _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
+                _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
 
-            // An remember the package.
-            Instance = this;
+                Dte = await GetServiceAsync<SDTE, DTE2>();
 
-            // Register the command handlers.
-            CloudExplorerCommand.Initialize(this);
-            ManageAccountsCommand.Initialize(this);
-            PublishProjectMainMenuCommand.Initialize(this);
-            PublishProjectContextMenuCommand.Initialize(this);
-            LogsViewerToolWindowCommand.Initialize(this);
-            GenerateConfigurationContextMenuCommand.Initialize(this);
-            ErrorReportingToolWindowCommand.Initialize(this);
+                // Remember the package.
+                Instance = this;
 
-            // Activity log utils, to aid in debugging.
-            ActivityLogUtils.Initialize(this);
-            ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
+                // Activity log utils, to aid in debugging.
+                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await activityLog.LogInfoAsync("Starting Google Cloud Tools.");
 
-            _dteInstance = (DTE)GetService(typeof(DTE));
-            VsVersion = _dteInstance.Version;
-            VsEdition = _dteInstance.Edition;
+                // Register the command handlers.
+                await Task.WhenAll(
+                    CloudExplorerCommand.InitializeAsync(this, token),
+                    ManageAccountsCommand.InitializeAsync(this, token),
+                    PublishProjectMainMenuCommand.InitializeAsync(this, token),
+                    PublishProjectContextMenuCommand.InitializeAsync(this, token),
+                    LogsViewerToolWindowCommand.InitializeAsync(this, token),
+                    GenerateConfigurationContextMenuCommand.InitializeAsync(this, token),
+                    ErrorReportingToolWindowCommand.InitializeAsync(this, token));
 
-            // With this setting we allow more concurrent connections from each HttpClient instance created
-            // in the process. This will allow all GCP API services to have more concurrent connections with
-            // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
-            ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-            IComponentModel componentModel = GetService<SComponentModel, IComponentModel>();
-            CredentialsStore = componentModel.GetService<ICredentialsStore>();
-            ExportProvider mefExportProvider = componentModel.DefaultExportProvider;
-            _shellUtilsLazy = mefExportProvider.GetExport<IShellUtils>();
-            _gcpOutputWindowLazy = mefExportProvider.GetExport<IGcpOutputWindow>();
-            _processService = mefExportProvider.GetExport<IProcessService>();
-            _statusbarService = mefExportProvider.GetExport<IStatusbarService>();
-            _userPromptService = mefExportProvider.GetExport<IUserPromptService>();
-            _dataSourceFactory = mefExportProvider.GetExport<IDataSourceFactory>();
+                // Update the installation status of the package.
+                await CheckInstallationStatusAsync();
 
-            // Ensure the commands UI state is updated when the GCP project changes.
-            CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
+                // Ensure the commands UI state is updated when the GCP project changes.
+                CredentialsStore.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
 
-            // Update the installation status of the package.
-            CheckInstallationStatus();
+                // With this setting we allow more concurrent connections from each HttpClient instance created
+                // in the process. This will allow all GCP API services to have more concurrent connections with
+                // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
+                ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
 
-            ErrorHandler.ThrowOnFailure(
-                GetService<SVsUIFactory, IVsRegisterUIFactories>()
-                    .RegisterUIFactory(
-                        typeof(GcpMenuBarControlFactory).GUID,
-                        componentModel.GetService<GcpMenuBarControlFactory>()));
+                IVsRegisterUIFactories registerUIFactories =
+                    await GetServiceAsync<SVsUIFactory, IVsRegisterUIFactories>();
+                var controlFactory = _componentModel.GetService<GcpMenuBarControlFactory>();
+                await registerUIFactories.RegisterUIFactoryAsync(controlFactory, token);
+            }
+            catch (Exception e)
+            {
+                IVsActivityLog activityLog = await GetServiceAsync<SVsActivityLog, IVsActivityLog>();
+                await activityLog.LogErrorAsync(e.Message);
+                await activityLog.LogErrorAsync(e.StackTrace);
+            }
         }
 
         /// <summary>Gets type-based services from the VSPackage service container.</summary>
@@ -350,39 +369,45 @@ namespace GoogleCloudExtension
         }
 
         /// <summary>
+        /// Gets a service registered as one type and used as a different type.
+        /// </summary>
+        /// <typeparam name="I">The type the service is used as (e.g. IVsService).</typeparam>
+        /// <typeparam name="S">The type the service is registered as (e.g. SVsService).</typeparam>
+        /// <returns>The service.</returns>
+        public async Task<I> GetServiceAsync<S, I>()
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            return (I)await GetServiceAsync(typeof(S));
+        }
+
+        /// <summary>
         /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
         /// <typeparam name="T">The type the service is exported as.</typeparam>
         /// <returns>The service.</returns>
-        public T GetMefService<T>() where T : class
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return GetService<SComponentModel, IComponentModel>().GetService<T>();
-        }
+        public T GetMefService<T>() where T : class => _componentModel.GetService<T>();
 
         /// <summary>
         /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
         /// <typeparam name="T">The type the service is exported as.</typeparam>
         /// <returns>The <see cref="Lazy{T}"/> that initalizes the service.</returns>
-        public Lazy<T> GetMefServiceLazy<T>() where T : class
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return GetService<SComponentModel, IComponentModel>().DefaultExportProvider.GetExport<T>();
-        }
+        public Lazy<T> GetMefServiceLazy<T>() where T : class => _componentModel.DefaultExportProvider.GetExport<T>();
 
         #endregion
 
         #region User Settings
-
-        public AnalyticsOptions GeneralSettings => GetDialogPage<AnalyticsOptions>();
 
         /// <summary>
         /// Gets the options page of the given type.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="DialogPage"/> to get.</typeparam>
         /// <returns>The options page of the given type.</returns>
-        public T GetDialogPage<T>() where T : DialogPage => (T)GetDialogPage(typeof(T));
+        public T GetDialogPage<T>() where T : DialogPage
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return (T)GetDialogPage(typeof(T));
+        }
 
         /// <summary>
         /// Displays the options page of the given type.
@@ -401,9 +426,12 @@ namespace GoogleCloudExtension
         /// <returns>
         /// The tool window instance, or null if the given id does not already exist and create was false.
         /// </returns>
-        public TToolWindow FindToolWindow<TToolWindow>(bool create, int id = 0) where TToolWindow : ToolWindowPane
+        public TToolWindow FindToolWindow<TToolWindow>(
+            bool create,
+            int id = 0) where TToolWindow : ToolWindowPane
         {
-            return FindToolWindow(typeof(TToolWindow), id, create) as TToolWindow;
+            ToolWindowPane toolWindowPane = FindToolWindow(typeof(TToolWindow), id, create);
+            return toolWindowPane as TToolWindow;
         }
 
         /// <summary>
@@ -411,8 +439,9 @@ namespace GoogleCloudExtension
         /// if no previous version is found, or an upgrade if a lower version is found. If the same version
         /// is found, nothing is reported.
         /// </summary>
-        private void CheckInstallationStatus()
+        private async Task CheckInstallationStatusAsync()
         {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             AnalyticsOptions settings = GeneralSettings;
             if (settings.InstalledVersion == null)
             {
@@ -425,13 +454,12 @@ namespace GoogleCloudExtension
                 // This is an upgrade (or different version installed).
                 Debug.WriteLine($"Found new version {settings.InstalledVersion} different than current {ApplicationVersion}");
 
-                Version current, installed;
-                if (!Version.TryParse(ApplicationVersion, out current))
+                if (!Version.TryParse(ApplicationVersion, out Version current))
                 {
                     Debug.WriteLine($"Invalid application version: {ApplicationVersion}");
                     return;
                 }
-                if (!Version.TryParse(settings.InstalledVersion, out installed))
+                if (!Version.TryParse(settings.InstalledVersion, out Version installed))
                 {
                     Debug.WriteLine($"Invalid installed version: {settings.InstalledVersion}");
                     return;

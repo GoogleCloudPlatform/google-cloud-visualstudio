@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.ProgressDialog
         public ProtectedCommand CancelCommand { get; }
 
         /// <summary>
-        /// Wether the operation was cancelled or not.
+        /// Whether the operation was cancelled or not.
         /// </summary>
         public bool WasCancelled { get; set; }
 
@@ -56,16 +56,15 @@ namespace GoogleCloudExtension.ProgressDialog
         }
 
         /// <summary>
-        /// This method will wait for the task to complete (whether succesfully or not) and then it will
+        /// This method will wait for the task to complete (whether successfully or not) and then it will
         /// close the dialog.
         /// </summary>
-        private void CloseOnTaskCompletion()
-        {
-            _task.ContinueWith(t =>
+        private void CloseOnTaskCompletion() => ErrorHandlerUtils.HandleExceptionsAsync(
+            async () =>
             {
-                _owner.Dispatcher.Invoke(CloseOwner);
+                await _task;
+                CloseOwner();
             });
-        }
 
         private void CloseOwner()
         {

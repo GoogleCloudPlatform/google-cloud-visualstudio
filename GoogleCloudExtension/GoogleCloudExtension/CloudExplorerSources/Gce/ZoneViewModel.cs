@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -61,14 +62,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedAsyncCommand(OnPropertiesCommandAsync) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private void OnPropertiesCommand()
+        private async Task OnPropertiesCommandAsync()
         {
-            _owner.Context.ShowPropertiesWindow(GetItem());
+            await _owner.Context.ShowPropertiesWindowAsync(GetItem());
         }
 
         private void OnNewInstanceCommand()

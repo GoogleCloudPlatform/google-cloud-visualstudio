@@ -103,7 +103,6 @@
     <Compile Include="KnownProjectTypes.cs" />
     <Compile Include="ProjectConfigurationStatus.cs" />
     <Compile Include="AppEngineFlexDeploymentResult.cs" />
-    <Compile Include="ProgressHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

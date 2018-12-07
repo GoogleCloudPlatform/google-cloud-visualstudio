@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             EnablePortHelpLinkCommand = new ProtectedCommand(() => Process.Start(EnablePortHelpLink));
         }
 
-        protected abstract Task<IAttachDebuggerStep> GetNextStep();
+        protected abstract Task<IAttachDebuggerStep> GetNextStepAsync();
 
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
@@ -99,9 +99,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
             SetStage(Stage.CheckingFirewallRule);
-            if (await _port.IsPortEnabled())
+            if (await _port.IsPortEnabledAsync())
             {
-                return await GetNextStep();
+                return await GetNextStepAsync();
             }
             else
             {
@@ -116,10 +116,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             if (!_portEnabled)
             {
                 SetStage(Stage.AddingFirewallRule);
-                await _port.EnablePort();
+                await _port.EnablePortAsync();
                 _portEnabled = true;
             }
-            return await GetNextStep();
+            return await GetNextStepAsync();
         }
         #endregion
 

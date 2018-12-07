@@ -1,0 +1,4 @@
+﻿[GoogleCloudExtension.IGoogleCloudExtensionPackage]::GetService
+[GoogleCloudExtension.CloudExplorer.ICloudExplorerItemSource]::ItemChanged
+[GoogleCloudExtension.Accounts.ICredentialsStore]::Reset
+[GoogleCloudExtension.Accounts.ICredentialsStore]::CurrentProjectIdChanged

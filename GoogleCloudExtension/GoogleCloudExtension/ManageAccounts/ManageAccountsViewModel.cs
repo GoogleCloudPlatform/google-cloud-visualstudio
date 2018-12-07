@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.ManageAccounts
 
             SetAsCurrentAccountCommand = new ProtectedCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             DeleteAccountCommand = new ProtectedCommand(OnDeleteAccountCommand);
-            AddAccountCommand = new ProtectedCommand(OnAddAccountCommand);
+            AddAccountCommand = new ProtectedAsyncCommand(OnAddAccountCommandAsync);
 
             EventsReporterWrapper.EnsureAnalyticsOptIn();
         }
@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Close?.Invoke();
         }
 
-        private async void OnAddAccountCommand()
+        private async System.Threading.Tasks.Task OnAddAccountCommandAsync()
         {
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())

@@ -18,19 +18,16 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ErrorReportingToolWindowCommand
+    internal static class ErrorReportingToolWindowCommand
     {
-        /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package _package;
-
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -42,52 +39,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorReportingToolWindowCommand"/> class.
-        /// Adds our command handlers for menu (commands must exist in the command table file)
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        private ErrorReportingToolWindowCommand(Package package)
-        {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
-
-            _package = package;
-
-            IMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
-            if (commandService != null)
-            {
-                var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(
-                    (sender, e) =>
-                    {
-                        ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>();
-                        EventsReporterWrapper.ReportEvent(ErrorsViewerOpenEvent.Create());
-                    },
-                    menuCommandID);
-                menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
-                commandService.AddCommand(menuItem);
-            }
-        }
-
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static ErrorReportingToolWindowCommand Instance { get; private set; }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider => _package;
-
-        /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        /// <param name="token">The token to cancel adding the command.</param>
+        public static async Task InitializeAsync(IGoogleCloudExtensionPackage package, CancellationToken token)
         {
-            Instance = new ErrorReportingToolWindowCommand(package);
+            package.ThrowIfNull(nameof(package));
+
+            IMenuCommandService commandService =
+                await package.GetServiceAsync<IMenuCommandService, IMenuCommandService>();
+            await package.JoinableTaskFactory.SwitchToMainThreadAsync(token);
+            var menuCommandID = new CommandID(CommandSet, CommandId);
+            var menuItem = new OleMenuCommand(
+                async (sender, e) =>
+                {
+                    await ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingToolWindow>();
+                    EventsReporterWrapper.ReportEvent(ErrorsViewerOpenEvent.Create());
+                },
+                menuCommandID);
+            menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
+            commandService.AddCommand(menuItem);
         }
     }
 }

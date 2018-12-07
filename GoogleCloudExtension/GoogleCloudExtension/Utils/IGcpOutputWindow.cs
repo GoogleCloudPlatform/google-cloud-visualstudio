@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
+
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Service interface for controling the Google Cloud Tools output window pane.
+    /// Service interface for controlling the Google Cloud Tools output window pane.
     /// </summary>
     public interface IGcpOutputWindow
     {
@@ -47,5 +49,31 @@ namespace GoogleCloudExtension.Utils
         /// <param name="sender">The sender this event comes from.</param>
         /// <param name="args">The <see cref="OutputHandlerEventArgs"/> for the event.</param>
         void OutputLine(object sender, OutputHandlerEventArgs args);
+
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="str">The line of text to output.</param>
+        Task OutputLineAsync(string str);
+
+        /// <summary>
+        /// Activates the GCP output window pane, making sure it is visible for the user.
+        /// </summary>
+        Task ActivateAsync();
+
+        /// <summary>
+        /// Clears all of the content from the GCP window pane.
+        /// </summary>
+        Task ClearAsync();
+
+        /// <summary>
+        /// Outputs a line to the GCP output window pane.
+        /// </summary>
+        /// <param name="line">The line of text to output.</param>
+        /// <param name="sourceStream">The source stream of the output (stderr or stdout). This value is ignored.</param>
+        /// <returns>
+        /// A <see cref="Task"/> that completes when the line has been output to the Gcp Output window.
+        /// </returns>
+        Task OutputLineAsync(string line, OutputStream sourceStream);
     }
 }

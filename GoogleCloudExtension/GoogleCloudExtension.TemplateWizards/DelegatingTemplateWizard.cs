@@ -38,6 +38,7 @@ namespace GoogleCloudExtension.TemplateWizards
             WizardRunKind runKind,
             object[] customParams)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var provider = (IServiceProvider)automationObject;
             var model = (IComponentModel)provider.QueryService<SComponentModel>();
             _wizard = model.GetService<T>();

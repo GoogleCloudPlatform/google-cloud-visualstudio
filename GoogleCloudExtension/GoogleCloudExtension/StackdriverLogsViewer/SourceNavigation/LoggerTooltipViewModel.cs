@@ -15,6 +15,7 @@
 using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation
 {
@@ -33,7 +34,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation
         /// <summary>
         /// Command responses to the back to logs viewer button.
         /// </summary>
-        public ProtectedCommand BackToLogsViewerCommand { get; }
+        public ProtectedAsyncCommand BackToLogsViewerCommand { get; }
 
         /// <summary>
         /// Indicate if it opens an advanced
@@ -56,13 +57,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation
         public LoggerTooltipViewModel(LogItem logItem)
         {
             OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);
-            BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
+            BackToLogsViewerCommand = new ProtectedAsyncCommand(BackToLogsViewerAsync);
             Log = logItem;
         }
 
-        private void BackToLogsViewer()
+        private async Task BackToLogsViewerAsync()
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(Log.ParentToolWindowId);
+            LogsViewerToolWindow window =
+                await ToolWindowCommandUtils.ShowToolWindowAsync<LogsViewerToolWindow>(Log.ParentToolWindowId);
             if (Log.Entry == null || window == null)
             {
                 Debug.WriteLine("Entry or window is null, this is likely a code bug");

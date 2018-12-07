@@ -14,10 +14,12 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -62,7 +64,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="relativePath">Relative path of the target file.</param>
         /// <param name="saveAction">The callback to save the content of the file to the temporary file path.</param>
         /// <returns>The document window that opens the temporary file.</returns>
-        public async Task<Window> Open(string gitSha, string relativePath, Func<string, Task> saveAction)
+        public async Task<Window> OpenAsync(string gitSha, string relativePath, Func<string, Task> saveAction)
         {
             gitSha.ThrowIfNullOrEmpty(nameof(gitSha));
             relativePath.ThrowIfNullOrEmpty(nameof(relativePath));
@@ -83,6 +85,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 var extention = Path.GetExtension(relativePath);
                 var filePath = Path.Combine(tmpFolder, $"tmp.{name}.{gitSha.GetHashCode():x}{extention}");
                 await saveAction(filePath);
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
                 window = OpenDocument(filePath, key);
 
                 try
@@ -105,6 +108,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private Window OpenDocument(string filePath, string key)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var window = ShellUtils.Default.Open(filePath);
             window.Document.ReadOnly = true;
             _fileRevisionWindowMap[key] = window;

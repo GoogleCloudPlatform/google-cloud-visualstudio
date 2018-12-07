@@ -21,7 +21,7 @@ using UIElement = System.Windows.UIElement;
 namespace GoogleCloudExtensionUnitTests.Options
 {
     [TestClass]
-    public class AnalyticsOptionsTests
+    public class AnalyticsOptionsTests : ExtensionTestBase
     {
         private AnalyticsOptions _objectUnderTest;
 

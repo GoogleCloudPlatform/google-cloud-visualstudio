@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2018 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,9 +29,11 @@ namespace GoogleCloudExtension.Utils
             _action = action;
         }
 
-        void IDisposable.Dispose()
-        {
-            _action?.Invoke();
-        }
+        void IDisposable.Dispose() => GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.Run(
+            async () =>
+            {
+                await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
+                _action?.Invoke();
+            });
     }
 }

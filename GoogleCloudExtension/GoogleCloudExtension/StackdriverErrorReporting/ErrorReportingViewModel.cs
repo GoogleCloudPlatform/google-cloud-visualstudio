@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// If the current project id is reset to null or empty, hide the grid.
         /// </summary>
-        public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
+        public bool IsGridVisible => !string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
 
         /// <summary>
         /// Gets the list of <seealso cref="TimeRangeItem"/> as data source for time range selector.
@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Navigate to detail view window command.
         /// </summary>
-        public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
+        public ProtectedAsyncCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
 
         /// <summary>
         /// Responds to auto reload command.
@@ -145,7 +145,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Selected time range caption.
         /// </summary>
-        public string CurrentTimeRangeCaption => String.Format(
+        public string CurrentTimeRangeCaption => string.Format(
             Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
         internal ErrorReportingViewModel(IStackdriverErrorReportingDataSource dataSource) : this()
@@ -164,7 +164,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             SelectedTimeRangeItem = TimeRangeItemList.Last();
-            OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
+            OnGotoDetailCommand = new ProtectedAsyncCommand<ErrorGroupItem>(NavigateToDetailWindowAsync);
             OnAutoReloadCommand = new ProtectedCommand(Reload);
 
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
@@ -299,9 +299,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
         }
 
-        private void NavigateToDetailWindow(ErrorGroupItem groupItem)
+        private async Task NavigateToDetailWindowAsync(ErrorGroupItem groupItem)
         {
-            var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
+            ErrorReportingDetailToolWindow window =
+                await ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingDetailToolWindow>();
             window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
 
             EventsReporterWrapper.ReportEvent(ErrorsViewerNavigateToDetailWindowEvent.Create());
@@ -309,7 +310,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private StackdriverErrorReportingDataSource CreateDataSource()
         {
-            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
+            if (string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
             {
                 return null;
             }

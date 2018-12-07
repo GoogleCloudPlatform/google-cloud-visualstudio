@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the command that filters log entris on a detail tree view field value.
         /// </summary>
-        public ProtectedCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
+        public ProtectedAsyncCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
 
         /// <summary>
         /// Indicates whether the view is visible or not
@@ -386,7 +386,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
             };
 
-            OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
+            OnDetailTreeNodeFilterCommand = new ProtectedAsyncCommand<ObjectNodeTree>(FilterOnTreeNodeValueAsync);
             OnAutoReloadCommand = new ProtectedCommand(AutoReload);
         }
 
@@ -462,7 +462,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// The filter has format of root_node_name.node_name...node_name = "node.value".
         /// Example: jsonPayload.serviceContext.service="frontend"
         /// </summary>
-        private void FilterOnTreeNodeValue(ObjectNodeTree node)
+        private async Task FilterOnTreeNodeValueAsync(ObjectNodeTree node)
         {
             IsAutoReloadChecked = false;
 
@@ -489,7 +489,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 newFilter.Insert(0, ComposeSimpleFilters());
             }
 
-            var newWindow = ToolWindowCommandUtils.AddToolWindow<LogsViewerToolWindow>();
+            var newWindow = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
             newWindow.ViewModel.FilterLog(newFilter.ToString());
         }
 

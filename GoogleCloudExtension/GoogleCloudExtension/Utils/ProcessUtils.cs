@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -95,35 +96,70 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
-        public Task<bool> RunCommandAsync(
+        public async Task<bool> RunCommandAsync(
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
             string workingDir = null,
             IDictionary<string, string> environment = null)
         {
-            var startInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment);
-
-            return Task.Run(async () =>
+            await TaskScheduler.Default;
+            var process = new Process
             {
-                var process = Process.Start(startInfo);
-                var readErrorsTask = ReadLinesFromOutput(OutputStream.StandardError, process.StandardError, handler);
-                var readOutputTask = ReadLinesFromOutput(OutputStream.StandardOutput, process.StandardOutput, handler);
-                await readErrorsTask;
-                await readOutputTask;
-                process.WaitForExit();
-                return process.ExitCode == 0;
-            });
+                StartInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment),
+                EnableRaisingEvents = true
+            };
+
+            Task executeTask = process.ExecuteAsync();
+            Task readErrorsTask = ReadLinesFromOutputAsync(OutputStream.StandardError, process.StandardError, handler);
+            var readOutputTask = ReadLinesFromOutputAsync(OutputStream.StandardOutput, process.StandardOutput, handler);
+            await Task.WhenAll(readErrorsTask, readOutputTask, executeTask);
+            await executeTask;
+            return process.ExitCode == 0;
+        }
+
+        /// <summary>
+        /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
+        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
+        /// by the process.
+        /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
+        /// </summary>
+        /// <param name="file">The path to the binary to execute, it must not be null.</param>
+        /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
+        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
+        /// of the UI thread. Must not be null.</param>
+        /// <param name="workingDir">The working directory to use, optional.</param>
+        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        public async Task<bool> RunCommandAsync(
+            string file,
+            string args,
+            Func<string, OutputStream, Task> handler,
+            string workingDir = null,
+            IDictionary<string, string> environment = null)
+        {
+            await TaskScheduler.Default;
+            var process = new Process
+            {
+                StartInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment),
+                EnableRaisingEvents = true
+            };
+
+            Task executeTask = process.ExecuteAsync();
+            var readErrorsTask = ReadLinesFromOutputAsync(OutputStream.StandardError, process.StandardError, handler);
+            var readOutputTask = ReadLinesFromOutputAsync(OutputStream.StandardOutput, process.StandardOutput, handler);
+            await Task.WhenAll(readErrorsTask, readOutputTask, executeTask);
+            await executeTask;
+            return process.ExitCode == 0;
         }
 
         /// <summary>
         /// Runs a process until it exists, returns it's complete output.
         /// </summary>
-        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="file">The path to the executable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
@@ -158,7 +194,7 @@ namespace GoogleCloudExtension.Utils
         /// Launches a process and parses its stdout stream as a json value to an instance of <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to use to deserialize the stdout stream.</typeparam>
-        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="file">The path to the executable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment to use for the executable.</param>
@@ -219,16 +255,28 @@ namespace GoogleCloudExtension.Utils
             return startInfo;
         }
 
-        private static Task ReadLinesFromOutput(OutputStream outputStream, StreamReader stream, EventHandler<OutputHandlerEventArgs> handler)
+        private static async Task ReadLinesFromOutputAsync(
+            OutputStream outputStream,
+            StreamReader stream,
+            EventHandler<OutputHandlerEventArgs> handler)
         {
-            return Task.Run(() =>
+            while (!stream.EndOfStream)
             {
-                while (!stream.EndOfStream)
-                {
-                    string line = stream.ReadLine();
-                    handler(null, new OutputHandlerEventArgs(line, outputStream));
-                }
-            });
+                string line = await stream.ReadLineAsync();
+                handler(null, new OutputHandlerEventArgs(line, outputStream));
+            }
+        }
+
+        private static async Task ReadLinesFromOutputAsync(
+            OutputStream outputStream,
+            StreamReader stream,
+            Func<string, OutputStream, Task> handler)
+        {
+            while (!stream.EndOfStream)
+            {
+                string line = await stream.ReadLineAsync();
+                await handler(line, outputStream);
+            }
         }
     }
 }

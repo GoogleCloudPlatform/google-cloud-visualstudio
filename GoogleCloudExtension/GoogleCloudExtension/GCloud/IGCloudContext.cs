@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
-        Task<bool> DeployAppAsync(string appYaml, string version, bool promote, Action<string> outputAction);
+        Task<bool> DeployAppAsync(string appYaml, string version, bool promote, Func<string, Task> outputAction);
 
         /// <summary>
         /// Builds a container using the Container Builder service.
@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="imageTag">The name of the image to build.</param>
         /// <param name="contentsPath">The contents of the container, including the Dockerfile.</param>
         /// <param name="outputAction">The action to perform on each line of output.</param>
-        Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Action<string> outputAction);
+        Task<bool> BuildContainerAsync(string imageTag, string contentsPath, Func<string, Task> outputAction);
 
         /// <summary>
         /// The path to the credentials .json file to use for the call. The .json file should be a

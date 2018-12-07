@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.ProgressDialog
         /// <param name="task">The <seealso cref="Task"/> instance to show progress for.</param>
         /// <param name="options">The options for the dialog.</param>
         /// <returns>A task that can be awaited to get the result of the operation.</returns>
-        public static async Task PromptUser(Task task, Options options)
+        public static async Task PromptUserAsync(Task task, Options options)
         {
             var dialog = new ProgressDialogWindow(task, options);
             dialog.ShowModal();
@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.ProgressDialog
         /// <param name="task">The <seealso cref="Task{TResult}"/> instance to show progress for.</param>
         /// <param name="options">The options for the dialog.</param>
         /// <returns>A task that can be awaited to get the result of the operation.</returns>
-        public static async Task<T> PromptUser<T>(Task<T> task, Options options)
+        public static async Task<T> PromptUserAsync<T>(Task<T> task, Options options)
         {
             var dialog = new ProgressDialogWindow(task, options);
             dialog.ShowModal();

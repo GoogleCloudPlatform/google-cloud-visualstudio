@@ -56,7 +56,7 @@
             <TextBlock Margin="0,5,0,0"
                        Foreground="Red"
                        TextWrapping="Wrap"
-                       Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}"
+                       Visibility="{Binding ApisAreEnabled.Value, Converter={utils:VisibilityConverter IsNegated=True}}"
                        Style="{StaticResource CommonTextStyle}">
                 <TextBlock Text="{x:Static ext:Resources.CsrEnableApiMessage}" 
                            TextWrapping="Wrap"/>
@@ -119,12 +119,16 @@
                         <Style TargetType="ContentControl">
                             <Setter Property="Content" Value="{StaticResource LoadingList}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="NoItems" >
-                                    <Setter Property="Content" Value="{StaticResource EmptyList}" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RepositoriesAsync.DisplayState}" Value="HasItems" >
+                                <DataTrigger Binding="{Binding RepositoriesAsync.IsSuccess}" Value="True">
                                     <Setter Property="Content" Value="{StaticResource NormalList}" />
                                 </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RepositoriesAsync.IsSuccess}" Value="True" />
+                                        <Condition Binding="{Binding RepositoriesAsync.Value.Count}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Content" Value="{StaticResource EmptyList}" />
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ContentControl.Style>

@@ -70,6 +70,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             ErrorGroupItem errorGroupItem,
             ErrorReporting.StackFrame stackFrame)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
             {
                 throw new ArgumentException("Invalid argument");
@@ -118,6 +119,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="line">The line number of the source file.</param>
         private static void GotoLine(Window window, int line)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             window.Visible = true;
             TextSelection selection = window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
@@ -150,6 +152,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             ErrorReporting.StackFrame stackFrame,
             Window window)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             GotoLine(window, (int)stackFrame.LineNumber);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
@@ -174,6 +177,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             GotoLine(window, (int)logItem.SourceLine);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
@@ -198,13 +202,13 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <returns>The IVsTextView for this file if it is open. Returns null otherwise.</returns>
         private static IVsTextView GetIVsTextView(string filePath)
         {
-            var sp = ShellUtils.Default.GetGloblalServiceProvider();
-            IVsUIHierarchy uiHierarchy;
-            uint itemID;
-            IVsWindowFrame windowFrame;
             if (VsShellUtilities.IsDocumentOpen(
-                sp, filePath, Guid.Empty,
-                out uiHierarchy, out itemID, out windowFrame))
+                GoogleCloudExtensionPackage.Instance,
+                filePath,
+                Guid.Empty,
+                out IVsUIHierarchy _,
+                out uint _,
+                out IVsWindowFrame windowFrame))
             {
                 // Get the IVsTextView from the windowFrame.
                 return VsShellUtilities.GetTextView(windowFrame);
