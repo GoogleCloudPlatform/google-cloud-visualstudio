@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.Utils
     internal static class ProcessExtensions
     {
         /// <summary>
-        /// Executes the give process.
+        /// Executes the given process asynchronously.
         /// </summary>
         /// <param name="process"> The process to execute.</param>
         /// <returns> A task that completes when the given process exits.</returns>
