@@ -178,14 +178,13 @@ namespace GoogleCloudExtension.Accounts
         /// Deletes the <paramref name="account"/> from the store. The account must exist in the store
         /// or it will throw.
         /// </summary>
-        /// <param name="account">The accound to delete.</param>
+        /// <param name="account">The account to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
         public void DeleteAccount(IUserAccount account)
         {
             string accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
             {
-                Debug.WriteLine($"Should not be here, unknown account name: {account.AccountName}");
                 throw new InvalidOperationException($"Unknown account name: {account.AccountName}");
             }
 
@@ -247,10 +246,19 @@ namespace GoogleCloudExtension.Accounts
             {
                 return new Dictionary<string, StoredUserAccount>();
             }
+
             return Directory.EnumerateFiles(s_credentialsStoreRoot)
-                .Where(x => Path.GetExtension(x) == ".json")
-                .Select(x => new StoredUserAccount { FileName = Path.GetFileName(x), UserAccount = LoadUserAccount(x) })
-                .ToDictionary(x => x.UserAccount.AccountName);
+                .Where(path => Path.GetExtension(path) == ".json")
+                .Select(
+                    path => new StoredUserAccount
+                    {
+                        FileName = Path.GetFileName(path),
+                        UserAccount = LoadUserAccount(path)
+                    })
+                .GroupBy(a => a.UserAccount.AccountName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.OrderBy(account => account.FileName, StringComparer.InvariantCulture).First());
         }
 
         private void EnsureCredentialsRootExist()
