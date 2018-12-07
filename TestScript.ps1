@@ -26,10 +26,10 @@ $testAdapterPath = ls .\GoogleCloudExtension\packages -Recurse -Include $testAda
 
 $testContainerArgs = $testDlls.FullName -join " "
 $testAdapterArg = "/TestAdapterPath:`"$testAdapterPath`""
-$testArgs = $testContainerArgs, "/inisolation",  "/diag:logs\log.txt", "/TestCaseFilter:`"TestCategory!=OFF`"", $testAdapterArg -join " "
+$testArgs = "$testContainerArgs /inisolation /diag:logs\log.txt $testAdapterArg"
 
 if ($env:APPVEYOR) {
-	$testArgs = "$testArgs /logger:Appveyor"
+	$testArgs = "$testArgs /logger:Appveyor /TestCaseFilter:`"TestCategory!=SkipOnAppVeyor`""
 }
 
 $testFilters = ($testDlls.BaseName | % { "-[$_]*"}) -join " "
