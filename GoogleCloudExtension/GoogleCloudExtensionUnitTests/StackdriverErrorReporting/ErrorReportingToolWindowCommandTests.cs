@@ -32,13 +32,14 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
         public void BeforeEach()
         {
             _menuCommandServiceMock = new Mock<IMenuCommandService>();
-            PackageMock.Setup(sp => sp.GetServiceAsync(typeof(IMenuCommandService)))
-                .Returns(Task.FromResult<object>(_menuCommandServiceMock.Object));
+            PackageMock.Setup(sp => sp.GetServiceAsync<IMenuCommandService, IMenuCommandService>())
+                .Returns(Task.FromResult(_menuCommandServiceMock.Object));
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public async Task TestInitializeNullPackage() => await ErrorReportingToolWindowCommand.InitializeAsync(null, CancellationToken.None);
+        public async Task TestInitializeNullPackage() =>
+            await ErrorReportingToolWindowCommand.InitializeAsync(null, CancellationToken.None);
 
         [TestMethod]
         public async Task TestInitialize()
