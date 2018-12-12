@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.Utils.Async
         public bool IsCompleted => ActualTask?.IsCompleted ?? false;
 
         /// <summary>
-        /// True if the task completed without cancelation or exception.
+        /// True if the task completed without cancellation or exception.
         /// </summary>
         public bool IsSuccess => IsCompleted && !IsCanceled && !IsError;
 
