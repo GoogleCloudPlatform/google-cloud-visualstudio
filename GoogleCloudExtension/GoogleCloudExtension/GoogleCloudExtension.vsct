@@ -78,7 +78,10 @@
       </Button>
 
       <!-- This command publishes the current project to Google Cloud from the build menu. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectToolsMenuCommand" priority="0x0500" type="Button">
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet"
+              id="cmdidPublishProjectToolsMenuCommand"
+              priority="0x0500"
+              type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_BUILD_SELECTION" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
