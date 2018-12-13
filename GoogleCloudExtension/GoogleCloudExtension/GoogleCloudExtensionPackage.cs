@@ -118,7 +118,7 @@ namespace GoogleCloudExtension
         private event EventHandler ClosingEvent;
 
         /// <summary>
-        /// The initializes instance of the package.
+        /// The initialized instance of the package.
         /// </summary>
         public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
