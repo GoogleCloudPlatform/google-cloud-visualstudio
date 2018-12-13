@@ -5318,15 +5318,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected {0}: {1}.
-        /// </summary>
-        public static string UnexpectedMessageFormat {
-            get {
-                return ResourceManager.GetString("UnexpectedMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} can not be empty..
         /// </summary>
         public static string ValdiationNotEmptyMessage {
