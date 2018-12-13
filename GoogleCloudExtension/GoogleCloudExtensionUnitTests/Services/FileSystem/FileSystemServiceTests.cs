@@ -25,9 +25,9 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         [TestMethod]
         public void TestConstructor_SetsFile()
         {
-            var file = Mock.Of<IFile>();
+            IFile file = Mock.Of<IFile>();
 
-            var objectUnderTest = new FileSystemService(new Lazy<IFile>(() => file), null, null);
+            var objectUnderTest = new FileSystemService(new Lazy<IFile>(() => file), null, null, null);
 
             Assert.AreEqual(file, objectUnderTest.File);
         }
@@ -35,9 +35,13 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         [TestMethod]
         public void TestConstructor_SetsXDocument()
         {
-            var expectedXDocument = Mock.Of<IXDocument>();
+            IXDocument expectedXDocument = Mock.Of<IXDocument>();
 
-            var objectUnderTest = new FileSystemService(null, new Lazy<IXDocument>(() => expectedXDocument), null);
+            var objectUnderTest = new FileSystemService(
+                null,
+                new Lazy<IXDocument>(() => expectedXDocument),
+                null,
+                null);
 
             Assert.AreEqual(expectedXDocument, objectUnderTest.XDocument);
         }
@@ -45,11 +49,30 @@ namespace GoogleCloudExtensionUnitTests.Services.FileSystem
         [TestMethod]
         public void TestConstructor_SetsDirectory()
         {
-            var expectedDirectory = Mock.Of<IDirectory>();
+            IDirectory expectedDirectory = Mock.Of<IDirectory>();
 
-            var objectUnderTest = new FileSystemService(null, null, new Lazy<IDirectory>(() => expectedDirectory));
+            var objectUnderTest = new FileSystemService(
+                null,
+                null,
+                new Lazy<IDirectory>(() => expectedDirectory),
+                null);
 
             Assert.AreEqual(expectedDirectory, objectUnderTest.Directory);
+        }
+
+        [TestMethod]
+        public void TestConstructor_SetsPath()
+        {
+
+            IPath expectedPath = Mock.Of<IPath>();
+
+            var objectUnderTest = new FileSystemService(
+                null,
+                null,
+                null,
+                new Lazy<IPath>(() => expectedPath));
+
+            Assert.AreEqual(expectedPath, objectUnderTest.Path);
         }
     }
 }

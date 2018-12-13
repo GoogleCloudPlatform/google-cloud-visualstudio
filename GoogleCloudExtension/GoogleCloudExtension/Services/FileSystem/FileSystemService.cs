@@ -26,17 +26,19 @@ namespace GoogleCloudExtension.Services.FileSystem
         private readonly Lazy<IFile> _file;
         private readonly Lazy<IXDocument> _xDocument;
         private readonly Lazy<IDirectory> _directory;
+        private readonly Lazy<IPath> _path;
 
         [ImportingConstructor]
-        public FileSystemService(Lazy<IFile> file, Lazy<IXDocument> xDocument, Lazy<IDirectory> directory)
+        public FileSystemService(Lazy<IFile> file, Lazy<IXDocument> xDocument, Lazy<IDirectory> directory, Lazy<IPath> path)
         {
             _file = file;
             _xDocument = xDocument;
             _directory = directory;
+            _path = path;
         }
 
         /// <summary>
-        /// Subservice for file operations. Matches the static methods of <see cref="System.IO.File"/>.
+        /// File operations. Matches the static methods of <see cref="System.IO.File"/>.
         /// </summary>
         public IFile File => _file.Value;
 
@@ -49,5 +51,10 @@ namespace GoogleCloudExtension.Services.FileSystem
         /// Directory operations. Matches the static members of <see cref="System.IO.Directory"/>.
         /// </summary>
         public IDirectory Directory => _directory.Value;
+
+        /// <summary>
+        /// Path operations. Matches the static members of <see cref="System.IO.Path"/>.
+        /// </summary>
+        public IPath Path => _path.Value;
     }
 }

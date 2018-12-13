@@ -53,6 +53,8 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         public string ProjectId { get; }
 
+        protected IProcessService ProcessService => _processService.Value;
+
         protected readonly Dictionary<string, string> Environment = new Dictionary<string, string>
         {
             [GCloudMetricsVariable] = GoogleCloudExtensionPackage.Instance.ApplicationName,
@@ -60,14 +62,26 @@ namespace GoogleCloudExtension.GCloud
         };
 
         private readonly Task<CloudSdkVersions> _versionsTask;
+        private readonly Lazy<IProcessService> _processService;
 
         /// <summary>
         /// Creates the default GCloud context from the current environment.
         /// </summary>
-        public GCloudContext()
+        public GCloudContext() : this(
+            new Lazy<IProcessService>(() => ProcessUtils.Default),
+            CredentialsStore.Default)
+        { }
+
+        /// <summary>
+        /// Creates the default GCloud context from the current environment.
+        /// </summary>
+        /// <param name="processService">The process service to use.</param>
+        /// <param name="credentialsStore">The credentials store service to use.</param>
+        public GCloudContext(Lazy<IProcessService> processService, ICredentialsStore credentialsStore)
         {
-            CredentialsPath = CredentialsStore.Default.CurrentAccountPath;
-            ProjectId = CredentialsStore.Default.CurrentProjectId;
+            CredentialsPath = credentialsStore.CurrentAccountPath;
+            ProjectId = credentialsStore.CurrentProjectId;
+            _processService = processService;
             _versionsTask = GetGcloudOutputAsync<CloudSdkVersions>("version");
         }
 
@@ -130,7 +144,7 @@ namespace GoogleCloudExtension.GCloud
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
-            return ProcessUtils.Default.RunCommandAsync(
+            return ProcessService.RunCommandAsync(
                 "cmd.exe",
                 $"/c {actualCommand}",
                 outputAction,
@@ -144,7 +158,7 @@ namespace GoogleCloudExtension.GCloud
             {
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.Default.GetJsonOutputAsync<T>(
+                return await ProcessService.GetJsonOutputAsync<T>(
                     file: "cmd.exe",
                     args: $"/c {actualCommand}",
                     environment: Environment);

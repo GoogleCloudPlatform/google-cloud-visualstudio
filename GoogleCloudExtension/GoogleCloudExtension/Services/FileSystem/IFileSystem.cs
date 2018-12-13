@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Services.FileSystem
         IFile File { get; }
 
         /// <summary>
-        /// XDocument load operations. Matches the static methods of <see cref="XDocument"/>.
+        /// XDocument load operations. Matches the static methods of <see cref="System.Xml.Linq.XDocument"/>.
         /// </summary>
         IXDocument XDocument { get; }
 
@@ -33,5 +33,10 @@ namespace GoogleCloudExtension.Services.FileSystem
         /// Directory operations. Matches the static members of <see cref="System.IO.Directory"/>.
         /// </summary>
         IDirectory Directory { get; }
+
+        /// <summary>
+        /// Path operations. Matches the static members of <see cref="System.IO.Path"/>.
+        /// </summary>
+        IPath Path { get; }
     }
 }

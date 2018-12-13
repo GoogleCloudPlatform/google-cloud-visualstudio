@@ -48,7 +48,7 @@ namespace TestingHelpers
         /// <typeparam name="T">The mocked type.</typeparam>
         /// <param name="mock">The <see cref="Mock{T}"/> that defines the mocked <typeparamref name="T"/>.</param>
         /// <returns>
-        /// A <see cref="Lazy{T}"/> that initalizes <see cref="Lazy{T}.Value"/> to
+        /// A <see cref="Lazy{T}"/> that initializes <see cref="Lazy{T}.Value"/> to
         /// <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
         /// </returns>
         public static Lazy<T> ToLazy<T>(this Mock<T> mock) where T : class => new Lazy<T>(() => mock.Object);
@@ -60,7 +60,7 @@ namespace TestingHelpers
         /// <typeparam name="T">The mocked type.</typeparam>
         /// <param name="mock">The <see cref="Mock{T}"/> that defines the mocked <typeparamref name="T"/>.</param>
         /// <returns>
-        /// A <see cref="Task{T}"/> that syncronously results in <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
+        /// A <see cref="Task{T}"/> that synchronously results in <paramref name="mock"/>.<see cref="Mock{T}.Object"/>.
         /// </returns>
         public static Task<T> ToTask<T>(this Mock<T> mock) where T : class => Task.FromResult(mock.Object);
 
@@ -69,9 +69,6 @@ namespace TestingHelpers
         /// <param name="setup">The setup to specify the return value of.</param>
         /// <param name="result">The result to wrap in a task.</param>
         public static IReturnsResult<TMock> ReturnsResult<TMock, TResult>(this IReturns<TMock, Task<TResult>> setup, TResult result)
-            where TMock : class
-        {
-            return setup.Returns(Task.FromResult(result));
-        }
+            where TMock : class => setup.Returns(Task.FromResult(result));
     }
 }

@@ -271,6 +271,8 @@
     <Compile Include="Services\FileSystem\IFileSystem.cs" />
     <Compile Include="Services\FileSystem\IODirectoryService.cs" />
     <Compile Include="Services\FileSystem\IOFileService.cs" />
+    <Compile Include="Services\FileSystem\IOPathService.cs" />
+    <Compile Include="Services\FileSystem\IPath.cs" />
     <Compile Include="Services\FileSystem\IXDocument.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
     <Compile Include="Services\IBrowserService.cs" />

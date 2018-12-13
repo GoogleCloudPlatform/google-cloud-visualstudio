@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         /// </summary>
         public WindowsInstanceCredentials SelectedCredentials
         {
-            get { return _selectedCredentials; }
+            get => _selectedCredentials;
             set
             {
                 SetValueAndRaise(ref _selectedCredentials, value);
@@ -79,8 +79,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         /// </summary>
         public IEnumerable<WindowsInstanceCredentials> CredentialsList
         {
-            get { return _credentials; }
-            set { SetValueAndRaise(ref _credentials, value); }
+            get => _credentials;
+            set => SetValueAndRaise(ref _credentials, value);
         }
 
         public ManageWindowsCredentialsViewModel(Instance instance, ManageWindowsCredentialsWindow owner)
@@ -95,10 +95,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             ShowCredentialsCommand = new ProtectedCommand(OnShowCredentialsCommand, canExecuteCommand: false);
         }
 
-        private IEnumerable<WindowsInstanceCredentials> LoadCredentialsForInstance(Instance instance)
-        {
-            return WindowsCredentialsStore.Default.GetCredentialsForInstance(instance);
-        }
+        private IEnumerable<WindowsInstanceCredentials> LoadCredentialsForInstance(Instance instance) =>
+            WindowsCredentialsStore.Default.GetCredentialsForInstance(instance);
 
         private void OnShowCredentialsCommand()
         {

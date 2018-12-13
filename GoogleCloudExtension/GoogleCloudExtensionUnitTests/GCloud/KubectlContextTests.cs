@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services.FileSystem;
@@ -20,16 +22,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.GCloud
 {
     [TestClass]
     public class KubectlContextTests : ExtensionTestBase
     {
-        private const string DefaultCluster = "default-cluster";
+        private const string DefaultClusterName = "default-cluster";
         private const string DefaultLocation = "default-zone";
-        private const string ExpectedCluster = "expected-cluster";
         private const string DefaultDeploymentName = "default-deployment-name";
         private const string DefaultServiceName = "default-service-name";
         private const string DefaultImageTag = "default-image-tag";
@@ -37,162 +40,55 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private const string ExpectedDeploymentName = "expected-deployment-name";
         private const string ExpectedServiceName = "expected-service-name";
         private const string ExpectedImageTag = "expected-image-tag";
-        private const string ExpectedOutputLine = "expected line";
         private const int ExpectedReplicas = 20;
         private Mock<IProcessService> _processServiceMock;
         private KubectlContext _objectUnderTest;
         private string _kubeConfigPath;
         private Func<string, Task> _mockedOutputAction;
 
+        private static readonly Cluster s_defaultCluster = new Cluster
+        {
+            Name = DefaultClusterName,
+            Location = DefaultLocation,
+            Locations = new[] { DefaultLocation }
+        };
+
+        private Mock<IFileSystem> _fileSystemMock;
+
         [TestInitialize]
         public async Task BeforeEachAsync()
         {
             _processServiceMock = new Mock<IProcessService>();
             PackageMock.Setup(p => p.ProcessService).Returns(_processServiceMock.Object);
+            _fileSystemMock = new Mock<IFileSystem> { DefaultValueProvider = DefaultValueProvider.Mock };
 
-            _kubeConfigPath = null;
-            SetupRunCommandGetEnvironment(
-                defaultInitKubectlEnvironment =>
-                    _kubeConfigPath = _kubeConfigPath ??
-                        defaultInitKubectlEnvironment[KubectlContext.KubeConfigVariable]);
+            _kubeConfigPath = Path.GetTempFileName();
+            _fileSystemMock.Setup(fs => fs.Path.GetTempFileName()).Returns(_kubeConfigPath);
+            _processServiceMock.SetupRunCommandAsync().ReturnsResult(true);
 
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, ClusterLocationType.Zone);
+            _objectUnderTest = new KubectlContext(
+                _fileSystemMock.Object,
+                _processServiceMock.ToLazy(),
+                CredentialsStore.Default);
+            await _objectUnderTest.InitClusterCredentialsAsync(s_defaultCluster);
             _mockedOutputAction = Mock.Of<Func<string, Task>>();
         }
 
-
         [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_RunsGcloudContainerClustersGetCredentials(ClusterLocationType locationType)
+        public void TestDispose_DeletesConfigPath()
         {
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
-
-            VerifyCommandArgsContain("gcloud container clusters get-credentials");
-        }
-
-        [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedCluster(
-            ClusterLocationType locationType)
-        {
-            await KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultLocation, locationType);
-
-            VerifyCommandArgsContain(ExpectedCluster);
-        }
-
-        [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedZone()
-        {
-            const string expectedZone = "expected-zone";
-
-            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedZone, ClusterLocationType.Zone);
-
-            VerifyCommandArgsContain($"--zone={expectedZone}");
-        }
-
-        [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedRegion()
-        {
-            const string expectedRegion = "expected-region";
-
-            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedRegion, ClusterLocationType.Region);
-
-            VerifyCommandArgsContain($"--region={expectedRegion}");
-        }
-
-        [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_ThrowsForInvalidClusterLocationType()
-        {
-
-            await Assert.ThrowsExceptionAsync<ArgumentException>(
-                () => KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, (ClusterLocationType)5));
-        }
-
-        [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedGoogleCredentialsEnvVar(
-            ClusterLocationType locationType)
-        {
-            const string expectedCredentialsPath = "expected-credentials-path";
-            CredentialStoreMock.Setup(cs => cs.CurrentAccountPath).Returns(expectedCredentialsPath);
-            IDictionary<string, string> environment = new Dictionary<string, string>();
-            SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
-
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
-
-            Assert.AreEqual(expectedCredentialsPath, environment[KubectlContext.GoogleApplicationCredentialsVariable]);
-        }
-
-        [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedUseDefaultCredentialsEnvVar(
-            ClusterLocationType locationType)
-        {
-            IDictionary<string, string> environment = new Dictionary<string, string>();
-            SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
-
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
-
-            Assert.AreEqual(
-                KubectlContext.TrueValue,
-                environment[KubectlContext.UseApplicationDefaultCredentialsVariable]);
-        }
-
-        [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithKubeConfigEnvVar(
-            ClusterLocationType locationType)
-        {
-            IDictionary<string, string> environment = new Dictionary<string, string>();
-            SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
-
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
-
-            Assert.IsTrue(environment.ContainsKey(KubectlContext.KubeConfigVariable));
-        }
-
-        [TestMethod]
-        [DataRow(ClusterLocationType.Zone)]
-        [DataRow(ClusterLocationType.Region)]
-        public async Task TestGetKubectlContextForClusterAsync_ThrowsOnCommandFailure(ClusterLocationType locationType)
-        {
-            SetupRunCommandResult(false);
-
-            GCloudException e = await Assert.ThrowsExceptionAsync<GCloudException>(
-                () => KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultLocation, locationType));
-
-            StringAssert.Contains(e.Message, ExpectedCluster);
-        }
-
-        [TestMethod]
-        public async Task TestDispose_DeletesConfigPath()
-        {
-            IDictionary<string, string> environment = new Dictionary<string, string>();
-            SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
-
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, ClusterLocationType.Zone);
             _objectUnderTest.Dispose();
 
-            string expectedDeletePath = environment[KubectlContext.KubeConfigVariable];
-            PackageMock.Verify(p => p.GetMefService<IFileSystem>().File.Delete(expectedDeletePath));
+            _fileSystemMock.Verify(fs => fs.File.Delete(_kubeConfigPath));
         }
 
         [TestMethod]
-        public async Task TestDispose_NonReEntrant()
+        public void TestDispose_NonReEntrant()
         {
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(
-                DefaultCluster,
-                DefaultLocation,
-                ClusterLocationType.Zone);
             _objectUnderTest.Dispose();
             _objectUnderTest.Dispose();
 
-            PackageMock.Verify(p => p.GetMefService<IFileSystem>().File.Delete(It.IsAny<string>()), Times.Once);
+            _fileSystemMock.Verify(fs => fs.File.Delete(It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -204,7 +100,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("run");
+            _processServiceMock.VerifyRunCommandAsyncArgs("kubectl", s => s.Contains("run"));
         }
 
         [TestMethod]
@@ -216,7 +112,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("--port=8080");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains("--port=8080"));
         }
 
         [TestMethod]
@@ -228,7 +124,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain(ExpectedDeploymentName);
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains(ExpectedDeploymentName));
         }
 
         [TestMethod]
@@ -240,7 +136,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--image={ExpectedImageTag}");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--image={ExpectedImageTag}"));
         }
 
         [TestMethod]
@@ -252,21 +148,19 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 ExpectedReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--replicas={ExpectedReplicas}");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--replicas={ExpectedReplicas}"));
         }
 
         [TestMethod]
         public async Task TestCreateDeploymentAsync_PassesHandler()
         {
-            SetupRunKubectlInvokeHandler(ExpectedOutputLine);
-
             await _objectUnderTest.CreateDeploymentAsync(
                 DefaultDeploymentName,
                 DefaultImageTag,
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            _processServiceMock.VerifyRunCommandAsyncHandler(_mockedOutputAction);
         }
 
         [TestMethod]
@@ -278,7 +172,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -286,7 +180,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [DataRow(false)]
         public async Task TestCreateDeploymentAsync_ReturnsResult(bool expectedResult)
         {
-            SetupRunCommandResult(expectedResult);
+            _processServiceMock.SetupRunCommandAsync().ReturnsResult(expectedResult);
 
             bool result = await _objectUnderTest.CreateDeploymentAsync(
                 DefaultDeploymentName,
@@ -305,19 +199,17 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 false,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("expose deployment");
-            VerifyKubectlArgsContain("--target-port=8080");
-            VerifyKubectlArgsContain("--port=80");
+            _processServiceMock.VerifyRunCommandAsyncArgs("kubectl", s => s.Contains("expose deployment"));
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains("--target-port=8080"));
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains("--port=80"));
         }
 
         [TestMethod]
         public async Task TestExposeServiceAsync_PassesHandler()
         {
-            SetupRunKubectlInvokeHandler(ExpectedOutputLine);
-
             await _objectUnderTest.ExposeServiceAsync(DefaultDeploymentName, false, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            _processServiceMock.VerifyRunCommandAsyncHandler(_mockedOutputAction);
         }
 
         [TestMethod]
@@ -325,7 +217,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             await _objectUnderTest.ExposeServiceAsync(DefaultDeploymentName, false, _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -336,7 +228,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 false,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain(ExpectedDeploymentName);
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains(ExpectedDeploymentName));
         }
 
         [TestMethod]
@@ -347,7 +239,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 true,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("--type=LoadBalancer");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains("--type=LoadBalancer"));
         }
 
         [TestMethod]
@@ -358,24 +250,27 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 false,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("--type=ClusterIP");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains("--type=ClusterIP"));
         }
 
         [TestMethod]
         public async Task TestGetServicesAsync_PassesKubeconfig()
         {
-            SetupGetJsonOutput(new GkeList<GkeService>());
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeService>>()
+                .ReturnsResult(new GkeList<GkeService>());
 
             await _objectUnderTest.GetServicesAsync();
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeService>>($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeService>>(
+                s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
         public async Task TestGetServicesAsync_GetsOutputFromCommand()
         {
             IList<GkeService> expectedResult = Mock.Of<IList<GkeService>>();
-            SetupGetJsonOutput(new GkeList<GkeService> { Items = expectedResult });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeService>>()
+                .ReturnsResult(new GkeList<GkeService> { Items = expectedResult });
 
             IList<GkeService> result = await _objectUnderTest.GetServicesAsync();
 
@@ -385,11 +280,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetServicesAsync_ExecutesKubectlGetServices()
         {
-            SetupGetJsonOutput(new GkeList<GkeService>());
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeService>>()
+                .ReturnsResult(new GkeList<GkeService>());
 
             await _objectUnderTest.GetServicesAsync();
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeService>>("get services");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeService>>(
+                "kubectl",
+                s => s.Contains("get services"));
         }
 
         [TestMethod]
@@ -398,14 +296,15 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
             await _objectUnderTest.GetServiceAsync(DefaultServiceName);
 
-            VerifyGetJsonOutputArgsContain<GkeService>($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeService>(
+                s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
         public async Task TestGetServiceAsync_GetsOutputFromCommand()
         {
             var expectedResult = new GkeService();
-            SetupGetJsonOutput(expectedResult);
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(expectedResult);
 
             GkeService result = await _objectUnderTest.GetServiceAsync(DefaultServiceName);
 
@@ -415,48 +314,50 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetServiceAsync_ExecutesKubectlGetService()
         {
-            SetupGetJsonOutput(new GkeService());
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(new GkeService());
 
             await _objectUnderTest.GetServiceAsync(DefaultServiceName);
 
-            VerifyGetJsonOutputArgsContain<GkeService>("get service");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeService>("kubectl", s => s.Contains("get service"));
         }
 
         [TestMethod]
         public async Task TestGetServiceAsync_PassesGivenServiceName()
         {
-            SetupGetJsonOutput(new GkeService());
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(new GkeService());
 
             await _objectUnderTest.GetServiceAsync(ExpectedServiceName);
 
-            VerifyGetJsonOutputArgsContain<GkeService>(ExpectedServiceName);
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeService>(s => s.Contains(ExpectedServiceName));
         }
 
         [TestMethod]
         public async Task TestGetServiceAsync_PassesIgnoreNotFound()
         {
-            SetupGetJsonOutput(new GkeService());
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(new GkeService());
 
             await _objectUnderTest.GetServiceAsync(DefaultServiceName);
 
-            VerifyGetJsonOutputArgsContain<GkeService>("--ignore-not-found");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeService>(s => s.Contains("--ignore-not-found"));
         }
 
         [TestMethod]
         public async Task TestGetDeploymentsAsync_PassesKubeconfig()
         {
-            SetupGetJsonOutput(new GkeList<GkeDeployment>());
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment>());
 
             await _objectUnderTest.GetDeploymentsAsync();
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeDeployment>>($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeDeployment>>(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
         public async Task TestGetDeploymentsAsync_GetsOutputFromCommand()
         {
             var expectedResult = new List<GkeDeployment> { new GkeDeployment() };
-            SetupGetJsonOutput(new GkeList<GkeDeployment> { Items = expectedResult });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment> { Items = expectedResult });
 
             IList<GkeDeployment> result = await _objectUnderTest.GetDeploymentsAsync();
 
@@ -466,21 +367,26 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetDeploymentsAsync_ExecutesKubectlGetDeployments()
         {
-            SetupGetJsonOutput(new GkeList<GkeDeployment>());
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment>());
 
             await _objectUnderTest.GetDeploymentsAsync();
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeDeployment>>("get deployments");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeDeployment>>(
+                "kubectl",
+                s => s.Contains("get deployments"));
         }
 
         [TestMethod]
         public async Task TestDeploymentExistsAsync_PassesKubeconfig()
         {
-            SetupGetJsonOutput(new GkeList<GkeDeployment> { Items = new List<GkeDeployment>() });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment> { Items = new List<GkeDeployment>() });
 
             await _objectUnderTest.DeploymentExistsAsync(DefaultDeploymentName);
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeDeployment>>($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeDeployment>>(
+                s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -488,9 +394,10 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             var expectedResult = new List<GkeDeployment>
             {
-                new GkeDeployment {Metadata = new GkeMetadata {Name = ExpectedDeploymentName}}
+                new GkeDeployment { Metadata = new GkeMetadata { Name = ExpectedDeploymentName } }
             };
-            SetupGetJsonOutput(new GkeList<GkeDeployment> { Items = expectedResult });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment> { Items = expectedResult });
 
             bool result = await _objectUnderTest.DeploymentExistsAsync(ExpectedDeploymentName);
 
@@ -502,9 +409,10 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             var expectedResult = new List<GkeDeployment>
             {
-                new GkeDeployment {Metadata = new GkeMetadata {Name = ExpectedDeploymentName}}
+                new GkeDeployment { Metadata = new GkeMetadata { Name = ExpectedDeploymentName } }
             };
-            SetupGetJsonOutput(new GkeList<GkeDeployment> { Items = expectedResult });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment> { Items = expectedResult });
 
             bool result = await _objectUnderTest.DeploymentExistsAsync(DefaultDeploymentName);
 
@@ -514,11 +422,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestDeploymentExistsAsync_ExecutesKubectlGetDeployments()
         {
-            SetupGetJsonOutput(new GkeList<GkeDeployment> { Items = new List<GkeDeployment>() });
+            _processServiceMock.SetupGetJsonOutput<GkeList<GkeDeployment>>()
+                .ReturnsResult(new GkeList<GkeDeployment> { Items = new List<GkeDeployment>() });
 
             await _objectUnderTest.DeploymentExistsAsync(DefaultDeploymentName);
 
-            VerifyGetJsonOutputArgsContain<GkeList<GkeDeployment>>("get deployments");
+            _processServiceMock.VerifyGetJsonOutputAsyncArgs<GkeList<GkeDeployment>>(
+                "kubectl",
+                s => s.Contains("get deployments"));
         }
 
         [TestMethod]
@@ -529,7 +440,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("set image");
+            _processServiceMock.VerifyRunCommandAsyncArgs("kubectl", s => s.Contains("set image"));
         }
 
         [TestMethod]
@@ -540,7 +451,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -551,7 +462,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"deployment/{ExpectedDeploymentName}");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"deployment/{ExpectedDeploymentName}"));
         }
 
         [TestMethod]
@@ -562,7 +473,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"{ExpectedDeploymentName}=");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"{ExpectedDeploymentName}="));
         }
 
         [TestMethod]
@@ -573,20 +484,18 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 ExpectedImageTag,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"={ExpectedImageTag}");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"={ExpectedImageTag}"));
         }
 
         [TestMethod]
         public async Task TestUpdateDeploymentImageAsync_PassesHandler()
         {
-            SetupRunKubectlInvokeHandler(ExpectedOutputLine);
-
             await _objectUnderTest.UpdateDeploymentImageAsync(
                 DefaultDeploymentName,
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            _processServiceMock.VerifyRunCommandAsyncHandler(_mockedOutputAction);
         }
 
         [TestMethod]
@@ -594,7 +503,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [DataRow(false)]
         public async Task TestUpdateDeploymentImageAsync_ReturnsCommandResult(bool expectedResult)
         {
-            SetupRunCommandResult(expectedResult);
+            _processServiceMock.SetupRunCommandAsync().ReturnsResult(expectedResult);
 
             bool result = await _objectUnderTest.UpdateDeploymentImageAsync(
                 DefaultDeploymentName,
@@ -612,7 +521,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain("scale deployment");
+            _processServiceMock.VerifyRunCommandAsyncArgs("kubectl", s => s.Contains("scale deployment"));
         }
 
         [TestMethod]
@@ -623,7 +532,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -634,7 +543,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain(ExpectedDeploymentName);
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains(ExpectedDeploymentName));
         }
 
         [TestMethod]
@@ -645,20 +554,18 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 ExpectedReplicas,
                 _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--replicas={ExpectedReplicas}");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--replicas={ExpectedReplicas}"));
         }
 
         [TestMethod]
         public async Task TestScaleDeploymentAsync_PassesHandler()
         {
-            SetupRunKubectlInvokeHandler(ExpectedOutputLine);
-
             await _objectUnderTest.ScaleDeploymentAsync(
                 DefaultDeploymentName,
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            _processServiceMock.VerifyRunCommandAsyncHandler(_mockedOutputAction);
         }
 
         [TestMethod]
@@ -666,7 +573,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [DataRow(false)]
         public async Task TestScaleDeploymentAsync_ReturnsCommandResult(bool expectedResult)
         {
-            SetupRunCommandResult(expectedResult);
+            _processServiceMock.SetupRunCommandAsync().ReturnsResult(expectedResult);
 
             bool result = await _objectUnderTest.ScaleDeploymentAsync(
                 DefaultDeploymentName,
@@ -681,7 +588,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
-            VerifyKubectlArgsContain("delete service");
+            _processServiceMock.VerifyRunCommandAsyncArgs("kubectl", s => s.Contains("delete service"));
         }
 
         [TestMethod]
@@ -689,7 +596,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
-            VerifyKubectlArgsContain($"--kubeconfig=\"{_kubeConfigPath}\"");
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains($"--kubeconfig=\"{_kubeConfigPath}\""));
         }
 
         [TestMethod]
@@ -697,17 +604,15 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             await _objectUnderTest.DeleteServiceAsync(ExpectedServiceName, _mockedOutputAction);
 
-            VerifyKubectlArgsContain(ExpectedServiceName);
+            _processServiceMock.VerifyRunCommandAsyncArgs(s => s.Contains(ExpectedServiceName));
         }
 
         [TestMethod]
         public async Task TestDeleteServiceAsync_PassesHandler()
         {
-            SetupRunKubectlInvokeHandler(ExpectedOutputLine);
-
             await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            _processServiceMock.VerifyRunCommandAsyncHandler(_mockedOutputAction);
         }
 
         [TestMethod]
@@ -715,7 +620,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [DataRow(false)]
         public async Task TestDeleteServiceAsync_ReturnsCommandResult(bool expectedResult)
         {
-            SetupRunCommandResult(expectedResult);
+            _processServiceMock.SetupRunCommandAsync().ReturnsResult(expectedResult);
 
             bool result = await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
@@ -726,7 +631,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         public async Task TestGetServiceClusterIpAsync_ReturnsClusterIpFromService()
         {
             const string expectedClusterIP = "expectedClusterIP";
-            SetupGetJsonOutput(new GkeService { Spec = new GkeServiceSpec { ClusterIp = expectedClusterIP } });
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(new GkeService { Spec = new GkeServiceSpec { ClusterIp = expectedClusterIP } });
 
             string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
 
@@ -736,7 +642,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetServiceClusterIpAsync_ReturnsNullForMissingSpec()
         {
-            SetupGetJsonOutput(new GkeService { Spec = null });
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(new GkeService { Spec = null });
 
             string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
 
@@ -746,7 +652,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetServiceClusterIpAsync_ReturnsNullForMissingService()
         {
-            SetupGetJsonOutput<GkeService>(null);
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(null);
 
             string result = await _objectUnderTest.GetServiceClusterIpAsync(DefaultServiceName);
 
@@ -757,20 +663,21 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         public async Task TestGetPublicServiceIpAsync_ReturnsIpFromServiceLoadBalancerIngress()
         {
             const string expectedIpAddress = "expected-ip-address";
-            SetupGetJsonOutput(
-                new GkeService
-                {
-                    Status = new GkeStatus
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(
+                    new GkeService
                     {
-                        LoadBalancer = new GkeLoadBalancer
+                        Status = new GkeStatus
                         {
-                            Ingress = new List<GkeLoadBalancerIngress>
+                            LoadBalancer = new GkeLoadBalancer
                             {
-                                new GkeLoadBalancerIngress {Ip = expectedIpAddress}
+                                Ingress = new List<GkeLoadBalancerIngress>
+                                {
+                                    new GkeLoadBalancerIngress { Ip = expectedIpAddress }
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -781,22 +688,23 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         public async Task TestGetPublicServiceIpAsync_ReturnsIpFromFirstValidIngress()
         {
             const string expectedIpAddress = "expected-ip-address";
-            SetupGetJsonOutput(
-                new GkeService
-                {
-                    Status = new GkeStatus
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(
+                    new GkeService
                     {
-                        LoadBalancer = new GkeLoadBalancer
+                        Status = new GkeStatus
                         {
-                            Ingress = new List<GkeLoadBalancerIngress>
+                            LoadBalancer = new GkeLoadBalancer
                             {
-                                new GkeLoadBalancerIngress(),
-                                new GkeLoadBalancerIngress {Ip = expectedIpAddress},
-                                new GkeLoadBalancerIngress {Ip = "SomeOtherIpAddress"}
+                                Ingress = new List<GkeLoadBalancerIngress>
+                                {
+                                    new GkeLoadBalancerIngress(),
+                                    new GkeLoadBalancerIngress { Ip = expectedIpAddress },
+                                    new GkeLoadBalancerIngress { Ip = "SomeOtherIpAddress" }
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -806,20 +714,18 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForOnlyInvalidIngress()
         {
-            SetupGetJsonOutput(
-                new GkeService
-                {
-                    Status = new GkeStatus
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(
+                    new GkeService
                     {
-                        LoadBalancer = new GkeLoadBalancer
+                        Status = new GkeStatus
                         {
-                            Ingress = new List<GkeLoadBalancerIngress>
+                            LoadBalancer = new GkeLoadBalancer
                             {
-                                new GkeLoadBalancerIngress()
+                                Ingress = new List<GkeLoadBalancerIngress> { new GkeLoadBalancerIngress() }
                             }
                         }
-                    }
-                });
+                    });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -829,17 +735,15 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForEmptyIngressList()
         {
-            SetupGetJsonOutput(
-                new GkeService
-                {
-                    Status = new GkeStatus
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(
+                    new GkeService
                     {
-                        LoadBalancer = new GkeLoadBalancer
+                        Status = new GkeStatus
                         {
-                            Ingress = new List<GkeLoadBalancerIngress>()
+                            LoadBalancer = new GkeLoadBalancer { Ingress = new List<GkeLoadBalancerIngress>() }
                         }
-                    }
-                });
+                    });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -849,7 +753,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullIngressList()
         {
-            SetupGetJsonOutput(new GkeService { Status = new GkeStatus { LoadBalancer = new GkeLoadBalancer() } });
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(new GkeService { Status = new GkeStatus { LoadBalancer = new GkeLoadBalancer() } });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -859,7 +764,8 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullLoadBalancer()
         {
-            SetupGetJsonOutput(new GkeService { Status = new GkeStatus() });
+            _processServiceMock.SetupGetJsonOutput<GkeService>()
+                .ReturnsResult(new GkeService { Status = new GkeStatus() });
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -869,7 +775,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullStatus()
         {
-            SetupGetJsonOutput(new GkeService());
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(new GkeService());
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
@@ -879,109 +785,11 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetPublicServiceIpAsync_ReturnsNullForNullService()
         {
-            SetupGetJsonOutput<GkeService>(null);
+            _processServiceMock.SetupGetJsonOutput<GkeService>().ReturnsResult(null);
 
             string result = await _objectUnderTest.GetPublicServiceIpAsync(DefaultServiceName);
 
             Assert.IsNull(result);
         }
-
-        private void VerifyGetJsonOutputArgsContain<T>(string expectedArg)
-        {
-            _processServiceMock.Verify(
-                p => p.GetJsonOutputAsync<T>(
-                    "kubectl",
-                    It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()));
-        }
-
-        private void SetupGetJsonOutput<T>(T result)
-        {
-            _processServiceMock
-                .Setup(
-                    p => p.GetJsonOutputAsync<T>(
-                        "kubectl",
-                        It.IsAny<string>(),
-                        null,
-                        It.IsAny<Dictionary<string, string>>()))
-                .Returns(Task.FromResult(result));
-        }
-
-        private void VerifyKubectlArgsContain(string expectedArg)
-        {
-            _processServiceMock.Verify(
-                p => p.RunCommandAsync(
-                    "kubectl",
-                    It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<Func<string, Task>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()));
-        }
-
-        private void VerifyCommandArgsContain(string expectedArg)
-        {
-            _processServiceMock.Verify(
-                p => p.RunCommandAsync(
-                    "cmd.exe",
-                    It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<Func<string, Task>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<IDictionary<string, string>>()));
-        }
-
-        private void SetupRunCommandGetEnvironment(Action<IDictionary<string, string>> setEnv)
-        {
-            _processServiceMock
-                .Setup(
-                    p => p.RunCommandAsync(
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<Func<string, Task>>(),
-                        It.IsAny<string>(),
-                        It.IsAny<IDictionary<string, string>>()))
-                .Callback(
-                    (
-                        string file,
-                        string args,
-                        Func<string, Task> handler,
-                        string workingDir,
-                        IDictionary<string, string> env) => setEnv(env))
-                .Returns(Task.FromResult(true));
-        }
-
-        private void SetupRunKubectlInvokeHandler(string expectedOutputLine)
-        {
-            _processServiceMock
-                .Setup(
-                    p => p.RunCommandAsync(
-                        "kubectl",
-                        It.IsAny<string>(),
-                        It.IsAny<Func<string, Task>>(),
-                        It.IsAny<string>(),
-                        It.IsAny<IDictionary<string, string>>()))
-                .Callback(
-                    (
-                        string file,
-                        string args,
-                        Func<string, Task> handler,
-                        string workingDir,
-                        IDictionary<string, string> env) => handler(expectedOutputLine))
-                .Returns(Task.FromResult(true));
-        }
-
-        private void SetupRunCommandResult(bool result)
-        {
-            _processServiceMock
-                .Setup(
-                    p => p.RunCommandAsync(
-                        It.IsAny<string>(),
-                        It.IsAny<string>(),
-                        It.IsAny<Func<string, Task>>(),
-                        It.IsAny<string>(),
-                        It.IsAny<IDictionary<string, string>>()))
-                .Returns(Task.FromResult(result));
-        }
     }
 }
-
