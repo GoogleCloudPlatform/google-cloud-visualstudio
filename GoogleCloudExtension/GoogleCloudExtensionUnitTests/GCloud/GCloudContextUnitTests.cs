@@ -362,7 +362,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "cmd.exe",
                     It.Is(predicateExpression),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -374,7 +374,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Returns(Task.FromResult(result));
@@ -411,16 +411,16 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        Func<string, OutputStream, Task> handler,
+                        Func<string, Task> handler,
                         string workingDir,
-                        IDictionary<string, string> env) => handler.Invoke(expectedOutputLine, OutputStream.StandardOutput))
+                        IDictionary<string, string> env) => handler(expectedOutputLine))
                 .Returns(Task.FromResult(true));
         }
     }

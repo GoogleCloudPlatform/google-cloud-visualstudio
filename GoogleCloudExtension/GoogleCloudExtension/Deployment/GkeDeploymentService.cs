@@ -221,7 +221,7 @@ namespace GoogleCloudExtension.Deployment
                     deploymentDuration = DateTime.Now - deploymentStartTime;
                 }
 
-                OutputResultData(project, options, result);
+                await OutputResultDataAsync(project, options, result);
 
                 if (options.OpenWebsite && result.ServiceExposed && result.ServicePublicIpAddress != null)
                 {
@@ -452,7 +452,7 @@ namespace GoogleCloudExtension.Deployment
             return null;
         }
 
-        private void OutputResultData(
+        private async Task OutputResultDataAsync(
             IParsedProject project,
             Options options,
             Result result)
@@ -461,7 +461,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 if (result.ServicePublicIpAddress != null)
                 {
-                    GcpOutputWindow.OutputLine(
+                    await GcpOutputWindow.OutputLineAsync(
                         string.Format(
                             Resources.GkePublishServiceIpMessage,
                             options.DeploymentName,
@@ -469,11 +469,11 @@ namespace GoogleCloudExtension.Deployment
                 }
                 else if (options.ExposePublicService)
                 {
-                    GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                    await GcpOutputWindow.OutputLineAsync(Resources.GkePublishServiceIpTimeoutMessage);
                 }
                 else
                 {
-                    GcpOutputWindow.OutputLine(
+                    await GcpOutputWindow.OutputLineAsync(
                         string.Format(
                             Resources.GkePublishServiceClusterIpMessage,
                             options.DeploymentName,
@@ -483,12 +483,12 @@ namespace GoogleCloudExtension.Deployment
 
             if (result.Failed)
             {
-                GcpOutputWindow.OutputLine(
+                await GcpOutputWindow.OutputLineAsync(
                     string.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
             }
             else
             {
-                GcpOutputWindow.OutputLine(
+                await GcpOutputWindow.OutputLineAsync(
                     string.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
             }
         }

@@ -43,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Mock<IToolsPathProvider> _toolsPathProviderMock;
         private Mock<IGCloudWrapper> _gcloudWrapperMock;
         private Mock<IEnvironment> _environmentMock;
-        private readonly Func<string, OutputStream, Task> _defaultOutputAction = (s, os) => Task.CompletedTask;
+        private readonly Func<string, Task> _defaultOutputAction = s => Task.CompletedTask;
 
         [TestInitialize]
         public void BeforeEach()
@@ -96,7 +96,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     ExpectedDotnetPath,
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -114,7 +114,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     "publish -o \"expected-stage-directory\" -c expected-configuration",
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -122,8 +122,8 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         [TestMethod]
         public async Task TestCreateAppBundleAsync_PassesOutputActionToDotnetCommand()
         {
-            var mockedOutputAction = Mock.Of<Func<string, OutputStream, Task>>(
-                f => f(It.IsAny<string>(), It.IsAny<OutputStream>()) == Task.CompletedTask);
+            Func<string, Task> mockedOutputAction =
+                Mock.Of<Func<string, Task>>(f => f(It.IsAny<string>()) == Task.CompletedTask);
             const string expectedOutputLine = "expected-output-line";
             SetupRunDotnetWithOutputLine(expectedOutputLine);
 
@@ -133,7 +133,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 mockedOutputAction,
                 DefaultConfiguration);
 
-            Mock.Get(mockedOutputAction).Verify(f => f(expectedOutputLine, It.IsAny<OutputStream>()));
+            Mock.Get(mockedOutputAction).Verify(f => f(expectedOutputLine));
         }
 
         [TestMethod]
@@ -154,7 +154,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.Is<IDictionary<string, string>>(d => d["PATH"] == "expected-path-var;expected-external-tools")));
         }
@@ -172,7 +172,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     ExpectedProjectDirectory,
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -200,7 +200,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>())).Returns(Task.FromResult(commandResult));
 
@@ -215,24 +215,23 @@ namespace GoogleCloudExtensionUnitTests.Deployment
 
         private void SetupRunDotnetWithOutputLine(string outputLine)
         {
-
             _processServiceMock.Setup(
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
-                .Callback<string, string, Func<string, OutputStream, Task>, string, IDictionary<string, string>>(
+                .Callback<string, string, Func<string, Task>, string, IDictionary<string, string>>(
                     OutputLineToHandler)
                 .Returns(Task.FromResult(true));
 
             void OutputLineToHandler(
                 string file,
                 string args,
-                Func<string, OutputStream, Task> handler,
+                Func<string, Task> handler,
                 string workingDir,
-                IDictionary<string, string> env) => handler(outputLine, OutputStream.None);
+                IDictionary<string, string> env) => handler(outputLine);
         }
     }
 }

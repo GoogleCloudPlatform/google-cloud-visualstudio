@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>True if the command succeeds, false otherwise.</returns>
         protected Task<bool> RunGcloudCommandAsync(
             string command,
-            Func<string, OutputStream, Task> outputAction = null)
+            Func<string, Task> outputAction = null)
         {
             string actualCommand = FormatGcloudCommand(command);
 
@@ -134,27 +134,6 @@ namespace GoogleCloudExtension.GCloud
                 "cmd.exe",
                 $"/c {actualCommand}",
                 outputAction,
-                environment: Environment);
-        }
-
-        /// <summary>
-        /// Runs the given gcloud command.
-        /// </summary>
-        /// <param name="command">The subcommand and arguments to run.</param>
-        /// <param name="outputAction">The action for outputting lines.</param>
-        /// <returns>True if the command succeeds, false otherwise.</returns>
-        private Task<bool> RunGcloudCommandAsync(
-            string command,
-            Func<string, Task> outputAction)
-        {
-            string actualCommand = FormatGcloudCommand(command);
-
-            // This code depends on the fact that gcloud.cmd is a batch file.
-            Debug.Write($"Executing gcloud command: {actualCommand}");
-            return ProcessUtils.Default.RunCommandAsync(
-                "cmd.exe",
-                $"/c {actualCommand}",
-                (line, stream) => outputAction?.Invoke(line),
                 environment: Environment);
         }
 

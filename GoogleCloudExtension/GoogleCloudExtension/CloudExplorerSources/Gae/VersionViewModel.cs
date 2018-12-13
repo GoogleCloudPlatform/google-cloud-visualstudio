@@ -37,20 +37,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     internal class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
-        private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";
+        private const string IconStoppedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stopped.png";
         private const string IconTransitionResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
 
         private static readonly Lazy<ImageSource> s_versionRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
-        private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_versionStoppedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStoppedResourcePath));
         private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
         private readonly GaeSourceRootViewModel _owner;
         private readonly Service _service;
-        private readonly Google.Apis.Appengine.v1.Data.Version _version;
         private readonly double _trafficAllocation;
         private readonly bool _isLastVersion;
 
-        public Google.Apis.Appengine.v1.Data.Version Version => _version;
+        public Google.Apis.Appengine.v1.Data.Version Version { get; }
 
         public bool HasTrafficAllocation => _trafficAllocation > 0;
 
@@ -83,8 +82,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             _service = service;
-            _version = version;
-            _trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
+            Version = version;
+            _trafficAllocation = _service.GetTrafficAllocation(Version.Id);
             _isLastVersion = isLastVersion;
 
             // Update the view.
@@ -113,7 +112,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             };
 
             // If the version is running it can be opened.
-            if (_version.IsServing())
+            if (Version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
                 if (_trafficAllocation < 1.0)
@@ -130,11 +129,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 });
             menuItems.Add(new Separator());
 
-            if (_version.IsServing())
+            if (Version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedAsyncCommand(OnStopVersionAsync) });
             }
-            else if (_version.IsStopped())
+            else if (Version.IsStopped())
             {
                 menuItems.Add(new MenuItem
                 {
@@ -157,7 +156,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private async Task OnBrowseStackdriverLogCommandAsync()
         {
             LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
-            window?.FilterGAEServiceLog(_service.Id, _version.Id);
+            window?.FilterGAEServiceLog(_service.Id, Version.Id);
         }
 
         private async Task OnMigrateTrafficCommandAsync()
@@ -165,9 +164,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 IsLoading = true;
-                Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
+                Caption = string.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, Version.Id);
 
-                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
+                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [Version.Id] = 1.0 } };
                 await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
                 await _owner.InvalidateServiceAsync(_service.Id);
             }
@@ -175,24 +174,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 Debug.WriteLine($"Failed to set traffic to 100%: {ex.Message}");
                 IsError = true;
-                Caption = String.Format(Resources.CloudExplorerGaeFailedToMigrateAllTrafficCaption, _version.Id);
+                Caption = string.Format(Resources.CloudExplorerGaeFailedToMigrateAllTrafficCaption, Version.Id);
             }
         }
 
-        private async Task OnStartVersionAsync()
-        {
-            await UpdateServingStatusAsync(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
-        }
+        private async Task OnStartVersionAsync() => await UpdateServingStatusAsync(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
 
-        private async Task OnStopVersionAsync()
-        {
-            await UpdateServingStatusAsync(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
-        }
+        private async Task OnStopVersionAsync() => await UpdateServingStatusAsync(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
 
         private async Task OnDeleteVersionAsync()
         {
-            string confirmationMessage = String.Format(
-                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, _version.Id);
+            string confirmationMessage = string.Format(
+                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, Version.Id);
             if (!UserPromptService.Default.ActionPrompt(
                 confirmationMessage,
                 Resources.CloudExplorerGaeDeleteVersion,
@@ -208,19 +201,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnOpenOnCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/appengine/instances?project={_owner.Context.CurrentProject.ProjectId}&moduleId={_service.Id}&versionId={_version.Id}";
+            string url = "https://console.cloud.google.com/appengine/instances" +
+                $"?project={_owner.Context.CurrentProject.ProjectId}" +
+                $"&moduleId={_service.Id}" +
+                $"&versionId={Version.Id}";
             Process.Start(url);
         }
 
-        private async Task OnPropertiesWindowCommandAsync()
-        {
-            await _owner.Context.ShowPropertiesWindowAsync(GetItem());
-        }
+        private async Task OnPropertiesWindowCommandAsync() => await _owner.Context.ShowPropertiesWindowAsync(GetItem());
 
-        private void OnOpenVersion()
-        {
-            Process.Start(_version.VersionUrl);
-        }
+        private void OnOpenVersion() => Process.Start(Version.VersionUrl);
 
         private async Task DeleteVersionAsync()
         {
@@ -232,7 +222,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
+                await dataSource.DeleteVersionAsync(_service.Id, Version.Id);
                 await _owner.InvalidateServiceAsync(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
@@ -243,17 +233,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IsLoading = false;
                 IsError = true;
 
-                if (ex is DataSourceException)
+                switch (ex)
                 {
-                    Caption = Resources.CloudExplorerGaeDeleteVersionErrorMessage;
-                }
-                else if (ex is TimeoutException)
-                {
-                    Caption = Resources.CloudExploreOperationTimeoutMessage;
-                }
-                else if (ex is OperationCanceledException)
-                {
-                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                    case DataSourceException _:
+                        Caption = Resources.CloudExplorerGaeDeleteVersionErrorMessage;
+                        break;
+                    case TimeoutException _:
+                        Caption = Resources.CloudExploreOperationTimeoutMessage;
+                        break;
+                    case OperationCanceledException _:
+                        Caption = Resources.CloudExploreOperationCanceledMessage;
+                        break;
                 }
             }
         }
@@ -273,7 +263,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                await dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
+                await dataSource.UpdateVersionServingStatus(status, _service.Id, Version.Id);
 
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
@@ -286,44 +276,44 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IsLoading = false;
                 IsError = true;
 
-                if (ex is DataSourceException)
+                switch (ex)
                 {
-                    Caption = Resources.CloudExplorerGaeUpdateServingStatusErrorMessage;
-                }
-                else if (ex is TimeoutException)
-                {
-                    Caption = Resources.CloudExploreOperationTimeoutMessage;
-                }
-                else if (ex is OperationCanceledException)
-                {
-                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                    case DataSourceException _:
+                        Caption = Resources.CloudExplorerGaeUpdateServingStatusErrorMessage;
+                        break;
+                    case TimeoutException _:
+                        Caption = Resources.CloudExploreOperationTimeoutMessage;
+                        break;
+                    case OperationCanceledException _:
+                        Caption = Resources.CloudExploreOperationCanceledMessage;
+                        break;
                 }
             }
         }
 
         /// <summary>
         /// Get a caption for a the version.
-        /// Formated as 'versionId (traffic%)' if a traffic allocation is present, 'versionId' otherwise.
+        /// Formatted as 'versionId (traffic%)' if a traffic allocation is present, 'versionId' otherwise.
         /// </summary>
         private string GetCaption()
         {
             if (!HasTrafficAllocation)
             {
-                return _version.Id;
+                return Version.Id;
             }
             string percent = _trafficAllocation.ToString("P", CultureInfo.InvariantCulture);
-            return String.Format("{0} ({1})", _version.Id, percent);
+            return $"{Version.Id} ({percent})";
         }
 
         private void UpdateIcon()
         {
-            switch (_version.ServingStatus)
+            switch (Version.ServingStatus)
             {
                 case GaeVersionExtensions.ServingStatus:
                     Icon = s_versionRunningIcon.Value;
                     break;
                 case GaeVersionExtensions.StoppedStatus:
-                    Icon = s_versionStopedIcon.Value;
+                    Icon = s_versionStoppedIcon.Value;
                     break;
                 default:
                     Icon = s_versionTransitionIcon.Value;
@@ -331,6 +321,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        private VersionItem GetItem() => new VersionItem(_version);
+        private VersionItem GetItem() => new VersionItem(Version);
     }
 }

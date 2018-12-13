@@ -42,7 +42,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private Mock<IProcessService> _processServiceMock;
         private KubectlContext _objectUnderTest;
         private string _kubeConfigPath;
-        private Func<string, OutputStream, Task> _mockedOutputAction;
+        private Func<string, Task> _mockedOutputAction;
 
         [TestInitialize]
         public async Task BeforeEachAsync()
@@ -57,7 +57,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                         defaultInitKubectlEnvironment[KubectlContext.KubeConfigVariable]);
 
             _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, ClusterLocationType.Zone);
-            _mockedOutputAction = Mock.Of<Func<string, OutputStream, Task>>();
+            _mockedOutputAction = Mock.Of<Func<string, Task>>();
         }
 
 
@@ -266,7 +266,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
         }
 
         [TestMethod]
@@ -317,7 +317,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
             await _objectUnderTest.ExposeServiceAsync(DefaultDeploymentName, false, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
         }
 
         [TestMethod]
@@ -586,7 +586,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
         }
 
         [TestMethod]
@@ -658,7 +658,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
         }
 
         [TestMethod]
@@ -707,7 +707,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
             await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
         }
 
         [TestMethod]
@@ -914,7 +914,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "kubectl",
                     It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -925,7 +925,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "cmd.exe",
                     It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -937,14 +937,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        Func<string, OutputStream, Task> handler,
+                        Func<string, Task> handler,
                         string workingDir,
                         IDictionary<string, string> env) => setEnv(env))
                 .Returns(Task.FromResult(true));
@@ -957,16 +957,16 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         "kubectl",
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        Func<string, OutputStream, Task> handler,
+                        Func<string, Task> handler,
                         string workingDir,
-                        IDictionary<string, string> env) => handler(expectedOutputLine, OutputStream.StandardOutput))
+                        IDictionary<string, string> env) => handler(expectedOutputLine))
                 .Returns(Task.FromResult(true));
         }
 
@@ -977,7 +977,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Returns(Task.FromResult(result));

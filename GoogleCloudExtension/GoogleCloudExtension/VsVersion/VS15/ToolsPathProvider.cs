@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.IO;
 
 namespace GoogleCloudExtension.VsVersion.VS15
@@ -24,11 +23,6 @@ namespace GoogleCloudExtension.VsVersion.VS15
     {
         public const string MSBuildSubPath = @"MSBuild\15.0\Bin\MSBuild.exe";
 
-        public override string GetMsbuildPath()
-        {
-            string result = Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
-            GcpOutputWindow.Default.OutputDebugLine($"Msbuild V15 Path: {result}");
-            return result;
-        }
+        public override string GetMsbuildPath() => Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
     }
 }

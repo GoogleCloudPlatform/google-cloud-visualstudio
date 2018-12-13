@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.GCloud
             string name,
             string imageTag,
             int replicas,
-            Func<string, OutputStream, Task> outputAction)
+            Func<string, Task> outputAction)
         {
             string command = $"run {name} --image={imageTag} --replicas={replicas} --port=8080 --record";
             return await RunKubectlCommandAsync(command, outputAction);
@@ -144,7 +144,7 @@ namespace GoogleCloudExtension.GCloud
         public async Task<bool> ExposeServiceAsync(
             string deployment,
             bool makePublic,
-            Func<string, OutputStream, Task> outputAction)
+            Func<string, Task> outputAction)
         {
 
             string type = makePublic ? "--type=LoadBalancer" : "--type=ClusterIP";
@@ -200,7 +200,7 @@ namespace GoogleCloudExtension.GCloud
         public async Task<bool> UpdateDeploymentImageAsync(
             string name,
             string imageTag,
-            Func<string, OutputStream, Task> outputAction)
+            Func<string, Task> outputAction)
         {
             string command = $"set image deployment/{name} {name}={imageTag} --record";
             return await RunKubectlCommandAsync(command, outputAction);
@@ -213,7 +213,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="replicas">The new number of replicas.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public async Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, OutputStream, Task> outputAction)
+        public async Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, Task> outputAction)
         {
             string command = $"scale deployment {name} --replicas={replicas}";
             return await RunKubectlCommandAsync(command, outputAction);
@@ -225,7 +225,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="name">The name of the service to delete.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public async Task<bool> DeleteServiceAsync(string name, Func<string, OutputStream, Task> outputAction) =>
+        public async Task<bool> DeleteServiceAsync(string name, Func<string, Task> outputAction) =>
             await RunKubectlCommandAsync($"delete service {name}", outputAction);
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace GoogleCloudExtension.GCloud
             return service?.Status?.LoadBalancer?.Ingress?.Select(i => i?.Ip).FirstOrDefault(ip => ip != null);
         }
 
-        private async Task<bool> RunKubectlCommandAsync(string command, Func<string, OutputStream, Task> outputAction)
+        private async Task<bool> RunKubectlCommandAsync(string command, Func<string, Task> outputAction)
         {
             string actualCommand = FormatKubectlCommand(command);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
