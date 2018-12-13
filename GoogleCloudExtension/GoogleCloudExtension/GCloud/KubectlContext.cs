@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,11 +27,6 @@ using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.GCloud
 {
-    /// <summary>
-    /// The types of clusters. Currently there are clusters in a region and clusters in a zone.
-    /// </summary>
-    public enum ClusterLocationType { Zone, Region }
-
     /// <summary>
     /// This class owns the context on which to run kubectl commands. This class owns
     /// the config file, when the instance is disposed it will delete the file.
@@ -58,59 +54,36 @@ namespace GoogleCloudExtension.GCloud
 
         private readonly IFileSystem _fileSystem;
 
-        private KubectlContext()
+        internal KubectlContext(
+            IFileSystem fileSystem,
+            Lazy<IProcessService> processService,
+            ICredentialsStore credentialsStore) : base(processService, credentialsStore)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _configPath = Path.GetTempFileName();
+            _fileSystem = fileSystem;
+            _configPath = _fileSystem.Path.GetTempFileName();
 
             // Add the environment variables to use to invoke kubectl safely. This environment is necessary
             // to ensure that the right credentials are used should the access token need to be refreshed.
             Environment[KubeConfigVariable] = _configPath;
             Environment[UseApplicationDefaultCredentialsVariable] = TrueValue;
             Environment[GoogleApplicationCredentialsVariable] = CredentialsPath;
-            _fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
         }
 
-        /// <summary>
-        /// Returns the <seealso cref="KubectlContext"/> instance to use for the given <paramref name="cluster"/> when
-        /// performing Kubernetes operations.
-        /// </summary>
-        /// <param name="cluster">The name of the cluster for which to create credentials.</param>
-        /// <param name="location">The name of the region or zone of the cluster.</param>
-        /// <param name="clusterLocationType">The type of the cluster, either zonal or regional.</param>
-        /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        /// <remarks>
-        /// Do not use this method directly.
-        /// Use <see cref="IKubectlContextProvider.GetKubectlContextForClusterAsync"/>.
-        /// </remarks>
-        public static async Task<KubectlContext> GetForClusterAsync(string cluster, string location, ClusterLocationType clusterLocationType)
-        {
-            var kubectlContext = new KubectlContext();
-            if (!await kubectlContext.InitClusterCredentialsAsync(cluster, location, clusterLocationType))
-            {
-                throw new GCloudException($"Failed to get credentials for cluster {cluster}");
-            }
-
-            return kubectlContext;
-        }
-
-        private Task<bool> InitClusterCredentialsAsync(string cluster, string location, ClusterLocationType clusterLocationType)
+        internal Task<bool> InitClusterCredentialsAsync(Cluster cluster)
         {
             string locationArg;
-            switch (clusterLocationType)
+            if (cluster.Locations != null &&
+                cluster.Locations.Count == 1 &&
+                cluster.Locations.Single() == cluster.Location)
             {
-                case ClusterLocationType.Zone:
-                    locationArg = $"--zone={location}";
-                    break;
-                case ClusterLocationType.Region:
-                    locationArg = $"--region={location}";
-                    break;
-                default:
-                    throw new ArgumentException(
-                        string.Format(Resources.UnexpectedMessageFormat, nameof(ClusterLocationType), clusterLocationType),
-                        nameof(clusterLocationType));
+                locationArg = $"--zone={cluster.Location}";
             }
-            string command = $"container clusters get-credentials {cluster} {locationArg}";
+            else
+            {
+                locationArg = $"--region={cluster.Location}";
+            }
+
+            string command = $"container clusters get-credentials {cluster.Name} {locationArg}";
             return RunGcloudCommandAsync(command);
         }
 
@@ -255,7 +228,7 @@ namespace GoogleCloudExtension.GCloud
             string actualCommand = FormatKubectlCommand(command);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
 
-            return await ProcessUtils.Default.RunCommandAsync(
+            return await ProcessService.RunCommandAsync(
                 "kubectl",
                 actualCommand,
                 outputAction,
@@ -268,7 +241,7 @@ namespace GoogleCloudExtension.GCloud
             try
             {
                 Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-                return await ProcessUtils.Default.GetJsonOutputAsync<T>(
+                return await ProcessService.GetJsonOutputAsync<T>(
                     "kubectl",
                     actualCommand,
                     environment: Environment);
