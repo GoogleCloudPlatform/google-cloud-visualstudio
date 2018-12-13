@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,7 +23,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources.UnitTests
 {
     [TestClass]
-    public class ResourceManagerDataSourceUnitTests : DataSourceUnitTestsBase
+    public class ResourceManagerDataSourceUnitTests
     {
         private const string SomeProjectName = "SomeProjectName";
         private const string SomeProjectId = "some-project-id";
@@ -52,24 +53,31 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             LifecycleState = ResourceManagerDataSource.LifecycleState.DeleteRequested
         };
 
+        private Mock<CloudResourceManagerService> _serviceMock;
+        private ResourceManagerDataSource _objectUnderTest;
+        private Mock<ProjectsResource> _projectsResourceMock;
+        private static readonly GoogleApiException s_googleApiException = new GoogleApiException(nameof(CloudResourceManagerService), "MockExceptionMessage");
+
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _serviceMock = new Mock<CloudResourceManagerService>();
+            _projectsResourceMock = _serviceMock.Resource(s => s.Projects);
+            _objectUnderTest = new ResourceManagerDataSource(null, init => _serviceMock.Object, null);
+        }
+
         [TestMethod]
-        [ExpectedException(typeof(DataSourceException))]
         public async Task GetProjectsListAsyncTestException()
         {
-            // Empty response list triggers GoogleApiException.
-            var responses = new ListProjectsResponse[0];
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.List()).Response<ListProjectsResponse>().Throws(s_googleApiException);
 
-            await dataSource.GetProjectsListAsync();
+            await Assert.ThrowsExceptionAsync<DataSourceException>(() => _objectUnderTest.GetProjectsListAsync());
         }
 
         [TestMethod]
         public async Task ProjectsListTask()
         {
-            var responses = new[]
-            {
+            ListProjectsResponse[] responses = {
                 new ListProjectsResponse
                 {
                     Projects = new List<Project> {s_someProject, s_disabledProject},
@@ -81,13 +89,10 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                     NextPageToken = null
                 }
             };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects,
-                p => p.List(),
-                responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.List()).ResponseReturns(responses);
+            _objectUnderTest = new ResourceManagerDataSource(null, init => _serviceMock.Object, null);
 
-            IList<Project> projects = await dataSource.ProjectsListTask;
+            IList<Project> projects = await _objectUnderTest.ProjectsListTask;
 
             Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
@@ -96,27 +101,22 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         [TestMethod]
         public async Task RefreshProjects_RestartsProjectsListTask()
         {
-            var responses = new[]
-            {
-                new ListProjectsResponse
-                {
-                    Projects = new List<Project> {s_someProject, s_disabledProject},
-                    NextPageToken = null
-                },
+            ListProjectsResponse[] responses = {
                 new ListProjectsResponse
                 {
                     Projects = new List<Project> {s_aProject},
                     NextPageToken = null
+                },
+                new ListProjectsResponse
+                {
+                    Projects = new List<Project> {s_someProject, s_disabledProject},
+                    NextPageToken = null
                 }
             };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects,
-                p => p.List(),
-                responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.List()).ResponseReturns(responses);
 
-            dataSource.RefreshProjects();
-            IList<Project> projects = await dataSource.ProjectsListTask;
+            _objectUnderTest.RefreshProjects();
+            IList<Project> projects = await _objectUnderTest.ProjectsListTask;
 
             Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(s_aProject, projects[0]);
@@ -125,8 +125,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         [TestMethod]
         public async Task GetProjectsListAsyncTestSinglePage()
         {
-            var responses = new[]
-            {
+            ListProjectsResponse[] responses = {
                 new ListProjectsResponse(),
                 new ListProjectsResponse
                 {
@@ -139,11 +138,10 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                     NextPageToken = null
                 }
             };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.List()).ResponseReturns(responses);
+            _objectUnderTest = new ResourceManagerDataSource(null, init => _serviceMock.Object, null);
 
-            IList<Project> projects = await dataSource.GetProjectsListAsync();
+            IList<Project> projects = await _objectUnderTest.GetProjectsListAsync();
 
             Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
@@ -152,9 +150,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         [TestMethod]
         public async Task GetProjectsListAsyncTestMultiPage()
         {
-            var responses = new[]
-            {
-                new ListProjectsResponse(),
+            ListProjectsResponse[] responses = {
                 new ListProjectsResponse
                 {
                     Projects = new List<Project> {s_someProject, s_disabledProject},
@@ -166,11 +162,9 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                     NextPageToken = null
                 }
             };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.List()).ResponseReturns(responses);
 
-            IList<Project> projects = await dataSource.GetProjectsListAsync();
+            IList<Project> projects = await _objectUnderTest.GetProjectsListAsync();
 
             Assert.AreEqual(2, projects.Count);
             Assert.AreEqual(s_someProject, projects[0]);
@@ -178,48 +172,26 @@ namespace GoogleCloudExtension.DataSources.UnitTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DataSourceException))]
         public async Task GetProjectTestException()
         {
-            // Empty response list triggers GoogleApiException.
-            var responses = new Project[0];
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.Get(It.IsAny<string>()))
+                .Response<Project>()
+                .Throws(s_googleApiException);
 
-            await dataSource.GetProjectAsync(SomeProjectId);
+            await Assert.ThrowsExceptionAsync<DataSourceException>(
+                () => _objectUnderTest.GetProjectAsync(SomeProjectId));
         }
 
         [TestMethod]
         public async Task GetProjectTestSuccess()
         {
-            var responses = new[]
-            {
-                s_someProject
-            };
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.Get(It.IsAny<string>()), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
+            _projectsResourceMock.Request(p => p.Get(It.IsAny<string>())).ResponseReturns(s_someProject);
 
-            Project project = await dataSource.GetProjectAsync(SomeProjectId);
+            Project project = await _objectUnderTest.GetProjectAsync(SomeProjectId);
 
             Assert.AreEqual(s_someProject, project);
-            Mock<ProjectsResource> projectsResource = Mock.Get(service.Projects);
-            projectsResource.Verify(r => r.Get(SomeProjectId), Times.Once);
-            projectsResource.Verify(r => r.Get(It.IsNotIn(SomeProjectId)), Times.Never);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(DataSourceException))]
-        public async Task GetSortedActiveProjectsAsyncTestException()
-        {
-            // Empty response list triggers GoogleApiException.
-            var responses = new ListProjectsResponse[0];
-            CloudResourceManagerService service = GetMockedService(
-                (CloudResourceManagerService s) => s.Projects, p => p.List(), responses);
-            var dataSource = new ResourceManagerDataSource(null, init => service, null);
-
-            await dataSource.GetProjectsListAsync();
+            _projectsResourceMock.Verify(r => r.Get(SomeProjectId), Times.Once);
+            _projectsResourceMock.Verify(r => r.Get(It.IsNotIn(SomeProjectId)), Times.Never);
         }
     }
 }

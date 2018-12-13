@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.Git
         /// Gets the git.exe full path if it is installed properly.
         /// Return null if git.exe is not found.
         /// </summary>
-        public static string GitPath => s_gitPathLazy.Value;
+        private static string GitPath => s_gitPathLazy.Value;
 
         /// <summary>
         /// Get Git.exe path by searching under PATH environment variable.
@@ -50,12 +50,12 @@ namespace GoogleCloudExtension.Git
         public static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
-        /// Returns a <seealso cref="GitRepository"/> object 
-        /// if the <paramref name="dir"/> is a valid locat Git repository path.
+        /// Returns a <seealso cref="GitRepository"/> object
+        /// if the <paramref name="dir"/> is a valid local Git repository path.
         /// </summary>
         /// <param name="dir">The file path to be checked.</param>
         /// <returns>
-        /// <seealso cref="GitRepository"/> object 
+        /// <seealso cref="GitRepository"/> object
         /// Or null if the path is not a valid git repository path.
         /// </returns>
         public static async Task<GitRepository> GetGitCommandWrapperForPathAsync(string dir)
@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.Git
         public Task<List<string>> ListTreeAsync(string sha) => ExecCommandAsync($"ls-tree -r {sha} --name-only");
 
         /// <summary>
-        /// Returns the file content of a givin git SHA revision.
+        /// Returns the file content of a given git SHA revision.
         /// </summary>
         /// <param name="sha">The Git SHA.</param>
         /// <param name="relativePath">Relative path to git repository root.</param>
@@ -126,17 +126,20 @@ namespace GoogleCloudExtension.Git
         /// true: Verified, git-credential-manager command executed successfully.
         /// false: The command failed for some reason.
         /// </returns>
-        public static async Task<bool> IsGitCredentialManagerInstalledAsync() =>
-            (await GitRepository.RunGitCommandAsync(
+        public static async Task<bool> IsGitCredentialManagerInstalledAsync()
+        {
+            List<string> list = await RunGitCommandAsync(
                 "credential-manager version",
                 Directory.GetCurrentDirectory(),
-                throwOnError: false)) != null;
+                throwOnError: false);
+            return list != null;
+        }
 
         /// <summary>
         /// Run a git command and return the output or error output.
         /// </summary>
         /// <param name="command">The git command.</param>
-        /// <param name="gitLocalRoot">The git local reposotiry path.</param>
+        /// <param name="gitLocalRoot">The git local repository path.</param>
         /// <param name="throwOnError">Optional.
         /// By default, it is true.
         /// False: It returns null value if there is error executing the command.
@@ -144,7 +147,7 @@ namespace GoogleCloudExtension.Git
         /// </param>
         /// <returns>
         /// The command execution output.
-        /// If output is empty, returns empty list. 
+        /// If output is empty, returns empty list.
         /// If return value is null, it indicates there are some errors.
         /// </returns>
         internal static async Task<List<string>> RunGitCommandAsync(
@@ -156,11 +159,15 @@ namespace GoogleCloudExtension.Git
             {
                 return null;
             }
-            List<string> output = new List<string>();
+            var output = new List<string>();
             bool commandResult = await ProcessUtils.Default.RunCommandAsync(
                 file: GitPath,
                 args: command,
-                handler: (o, e) => output.Add(e.Line),
+                handler: (o, e) =>
+                {
+                    output.Add(o);
+                    return Task.CompletedTask;
+                },
                 workingDir: gitLocalRoot);
             if (!commandResult && throwOnError)
             {

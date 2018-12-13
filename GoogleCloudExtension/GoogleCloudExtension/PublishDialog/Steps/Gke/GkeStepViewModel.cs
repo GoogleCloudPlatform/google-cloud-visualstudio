@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         internal const string ReplicasDefaultValue = "3";
         internal const string GkeAddClusterUrlFormat = "https://console.cloud.google.com/kubernetes/add?project={0}";
 
-        // The APIs required for a succesful deployment to GKE.
+        // The APIs required for a successful deployment to GKE.
         private static readonly IList<string> s_requiredApis = new List<string>
         {
             // Need the GKE API to be able to list clusters.
@@ -211,7 +211,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gke
         }
 
         /// <summary>
-        /// Whether the website should be open once a succesful deployment happens.
+        /// Whether the website should be open once a successful deployment happens.
         /// </summary>
         public bool OpenWebsite
         {

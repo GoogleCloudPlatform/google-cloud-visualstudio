@@ -2527,6 +2527,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected {0}: {1}.
+        /// </summary>
+        public static string E_UnexpectedTypeFormat {
+            get {
+                return ResourceManager.GetString("E_UnexpectedTypeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
         public static string ErrorReporting1DayButtonCaption {

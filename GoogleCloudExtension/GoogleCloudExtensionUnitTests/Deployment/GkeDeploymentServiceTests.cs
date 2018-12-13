@@ -41,7 +41,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private const int ExpectedReplicas = 20;
         private const string ExpectedPublicIp = "expected-public-ip";
         private const string ExpectedClusterIp = "expected-cluster-ip";
-        private const string DefaultPulblicIp = "default-pulblic-ip";
+        private const string DefaultPublicIp = "default-pulblic-ip";
         private GkeDeploymentService _objectUnderTest;
         private Mock<IGcpOutputWindow> _gcpOutputWindowMock;
         private Mock<IStatusbarService> _statusbarServiceMock;
@@ -93,25 +93,28 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<int>(),
-                        It.IsAny<Action<string>>()))
+                        It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(true);
             _kubectlContextMock
                 .Setup(
                     g => g.UpdateDeploymentImageAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Action<string>>()))
+                        It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(true);
             _kubectlContextMock.Setup(
-                    k => k.ScaleDeploymentAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Action<string>>()))
+                    k => k.ScaleDeploymentAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<
+                        Func<string, OutputStream, Task>>()))
                 .ReturnsResult(true);
-            _kubectlContextMock.Setup(k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Action<string>>()))
+            _kubectlContextMock.Setup(k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<
+                    Func<string, OutputStream, Task>>()))
                 .ReturnsResult(true);
             _kubectlContextMock
-                .Setup(k => k.ExposeServiceAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Action<string>>()))
+                .Setup(k => k.ExposeServiceAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<
+                    Func<string, OutputStream, Task>>()))
                 .ReturnsResult(true);
             _kubectlContextMock.Setup(k => k.GetPublicServiceIpAsync(It.IsAny<string>()))
-                .ReturnsResult(DefaultPulblicIp);
+                .ReturnsResult(DefaultPublicIp);
             _mockedParsedProject = Mock.Of<IParsedProject>();
         }
 
@@ -323,7 +326,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                             s.Contains(ExpectedDeploymentName) &&
                             s.Contains(ExpectedDeploymentVersion)),
                     ExpectedReplicas,
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
@@ -335,7 +338,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<int>(),
-                        It.IsAny<Action<string>>()))
+                        It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
 
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
@@ -362,7 +365,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                         s => s.Contains(ExpectedProjectId) &&
                             s.Contains(ExpectedDeploymentName) &&
                             s.Contains(ExpectedDeploymentVersion)),
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
@@ -372,7 +375,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     g => g.UpdateDeploymentImageAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Action<string>>()))
+                        It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
             GkeDeploymentService.Options options =
                 GetOptionsBuilder().SetExistingDeployment(s_defaultExistingDeployment).Build();
@@ -397,14 +400,15 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 g => g.ScaleDeploymentAsync(
                     ExpectedDeploymentName,
                     ExpectedReplicas,
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
         public async Task TestCreateOrUpdateDeploymentAsync_ScaleDeploymentFailureFailsDeployment()
         {
             _kubectlContextMock.Setup(
-                    g => g.ScaleDeploymentAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Action<string>>()))
+                    g => g.ScaleDeploymentAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<
+                        Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
             GkeDeploymentService.Options options = GetOptionsBuilder()
                 .SetReplicas(ExpectedReplicas)
@@ -435,14 +439,15 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                 k => k.ExposeServiceAsync(
                     ExpectedDeploymentName,
                     exposePublicService,
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
         public async Task TestExposeNewServiceAsync_ExposeServiceFailureFailsDeployment()
         {
             _kubectlContextMock
-                .Setup(k => k.ExposeServiceAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Action<string>>()))
+                .Setup(k => k.ExposeServiceAsync(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<
+                    Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
             _kubectlContextMock.Setup(k => k.GetServiceAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult<GkeService>(null));
@@ -473,10 +478,10 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
             _kubectlContextMock.Verify(
-                k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Action<string>>()), Times.Never);
+                k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Func<string, OutputStream, Task>>()), Times.Never);
             _kubectlContextMock.Verify(
                 k => k.ExposeServiceAsync(
-                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Action<string>>()), Times.Never);
+                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<Func<string, OutputStream, Task>>()), Times.Never);
         }
 
         [TestMethod]
@@ -498,19 +503,19 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
             _kubectlContextMock.Verify(
-                k => k.DeleteServiceAsync(ExpectedDeploymentName, _gcpOutputWindowMock.Object.OutputLine));
+                k => k.DeleteServiceAsync(ExpectedDeploymentName, _gcpOutputWindowMock.Object.OutputLineAsync));
             _kubectlContextMock.Verify(
                 k => k.ExposeServiceAsync(
                     ExpectedDeploymentName,
                     false,
-                    _gcpOutputWindowMock.Object.OutputLine));
+                    _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
         public async Task TestUpdateExistingServiceAsync_FailureToDeleteServiceFailsDeployment()
         {
             _kubectlContextMock.Setup(
-                    k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Action<string>>()))
+                    k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
             _kubectlContextMock.Setup(k => k.GetServiceAsync(It.IsAny<string>()))
                 .ReturnsResult(
@@ -548,14 +553,14 @@ namespace GoogleCloudExtensionUnitTests.Deployment
             await _objectUnderTest.DeployProjectToGkeAsync(_mockedParsedProject, options);
 
             _kubectlContextMock.Verify(
-                k => k.DeleteServiceAsync(ExpectedDeploymentName, _gcpOutputWindowMock.Object.OutputLine));
+                k => k.DeleteServiceAsync(ExpectedDeploymentName, _gcpOutputWindowMock.Object.OutputLineAsync));
         }
 
         [TestMethod]
         public async Task TestDeleteExistingServiceAsync_DeleteServiceFailureFailsDeployment()
         {
             _kubectlContextMock.Setup(
-                    k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Action<string>>()))
+                    k => k.DeleteServiceAsync(It.IsAny<string>(), It.IsAny<Func<string, OutputStream, Task>>()))
                 .ReturnsResult(false);
             _kubectlContextMock.Setup(k => k.GetServiceAsync(It.IsAny<string>()))
                 .ReturnsResult(

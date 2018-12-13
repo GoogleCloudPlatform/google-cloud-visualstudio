@@ -15,6 +15,7 @@
 using Google.Apis.ServiceManagement.v1;
 using Google.Apis.ServiceManagement.v1.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,19 +26,30 @@ namespace GoogleCloudExtension.DataSources.UnitTests
     /// Test class for <seealso cref="ServiceManagementDataSource"/>
     /// </summary>
     [TestClass]
-    public class ServiceManagementDataSourceUnitTests : DataSourceUnitTestsBase
+    public class ServiceManagementDataSourceUnitTests
     {
+        private Mock<ServiceManagementService> _serviceMock;
+        private ServiceManagementDataSource _objectUnderTest;
+        private Mock<ServicesResource> _servicesResource;
         private const string ProjectName = "Project";
         private const string Service1 = "Service1";
         private const string Service2 = "Service2";
         private const string Service3 = "Service3";
         private const string PageToken = "Token";
 
+        [TestInitialize]
+        public void BeforeEach()
+        {
+            _serviceMock = new Mock<ServiceManagementService>();
+            _servicesResource = _serviceMock.Resource(s => s.Services);
+
+            _objectUnderTest = new ServiceManagementDataSource(_serviceMock.Object, ProjectName);
+        }
+
         [TestMethod]
         public async Task TestCheckServicesStatusAsyncSinglePage()
         {
-            var responses = new[]
-            {
+            ListServicesResponse[] responses = {
                 new ListServicesResponse
                 {
                     Services = new List<ManagedService>
@@ -47,29 +59,28 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                     }
                 }
             };
-            ServiceManagementService service = GetMockedService(
-                (ServiceManagementService s) => s.Services,
-                t => t.List(),
-                responses);
+            _servicesResource.Request(s => s.List()).ResponseReturns(responses);
 
-            var dataSource = new ServiceManagementDataSource(service, ProjectName);
-            var actualResults = (await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 })).ToList();
+            IEnumerable<ServiceStatus> actualResults = await _objectUnderTest.CheckServicesStatusAsync(
+                new[]
+                {
+                    Service1,
+                    Service2,
+                    Service3
+                });
 
-            var expectedResults = new[]
-            {
+            ServiceStatus[] expectedResults = {
                 new ServiceStatus(Service1, true),
                 new ServiceStatus(Service2, false),
                 new ServiceStatus(Service3, true)
             };
-            Assert.AreEqual(expectedResults.Length, actualResults.Count);
-            CollectionAssert.AreEqual(expectedResults, actualResults);
+            CollectionAssert.AreEqual(expectedResults, actualResults.ToList());
         }
 
         [TestMethod]
         public async Task TestCheckServicesStatusAsyncMultiplePage()
         {
-            var responses = new[]
-            {
+            ListServicesResponse[] responses = {
                 new ListServicesResponse
                 {
                     NextPageToken = PageToken,
@@ -87,22 +98,22 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                     }
                 }
             };
-            ServiceManagementService service = GetMockedService(
-                (ServiceManagementService s) => s.Services,
-                t => t.List(),
-                responses);
+            _servicesResource.Request(t => t.List()).ResponseReturns(responses);
 
-            var dataSource = new ServiceManagementDataSource(service, ProjectName);
-            var actualResults = (await dataSource.CheckServicesStatusAsync(new[] { Service1, Service2, Service3 })).ToList();
+            IEnumerable<ServiceStatus> actualResults = await _objectUnderTest.CheckServicesStatusAsync(
+                new[]
+                {
+                    Service1,
+                    Service2,
+                    Service3
+                });
 
-            var expectedResults = new[]
-            {
+            ServiceStatus[] expectedResults = {
                 new ServiceStatus(Service1, true),
                 new ServiceStatus(Service2, true),
                 new ServiceStatus(Service3, true)
             };
-            Assert.AreEqual(expectedResults.Length, actualResults.Count);
-            CollectionAssert.AreEqual(expectedResults, actualResults);
+            CollectionAssert.AreEqual(expectedResults, actualResults.ToList());
         }
     }
 }

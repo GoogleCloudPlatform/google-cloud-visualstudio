@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Deployment
     [Export(typeof(IGkeDeploymentService))]
     public class GkeDeploymentService : IGkeDeploymentService
     {
-        // Wait for up to 5 mins when waiting for a new service's IP address.
+        // Wait for up to 5 minuets when waiting for a new service's IP address.
         private static readonly TimeSpan s_newServiceIpTimeout = new TimeSpan(0, 5, 0);
 
         // Wait for up to 2 seconds in between calls when polling.
@@ -304,10 +304,7 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        private async Task<bool> DeleteServiceAsync(string service, Options options)
-        {
-            return await options.KubectlContext.DeleteServiceAsync(service, GcpOutputWindow.OutputLine);
-        }
+        private async Task<bool> DeleteServiceAsync(string service, Options options) => await options.KubectlContext.DeleteServiceAsync(service, GcpOutputWindow.OutputLineAsync);
 
         private async Task<string> BuildImageAsync(IParsedProject project, Options options, IProgress<double> progress)
         {
@@ -374,7 +371,7 @@ namespace GoogleCloudExtension.Deployment
             bool serviceExposed = await options.KubectlContext.ExposeServiceAsync(
                 serviceName,
                 options.ExposePublicService,
-                GcpOutputWindow.OutputLine);
+                GcpOutputWindow.OutputLineAsync);
 
             if (serviceExposed)
             {
@@ -411,7 +408,7 @@ namespace GoogleCloudExtension.Deployment
                         options.DeploymentName,
                         imageTag,
                         options.Replicas,
-                        GcpOutputWindow.OutputLine);
+                        GcpOutputWindow.OutputLineAsync);
                 return deploymentCreated;
             }
             else
@@ -419,7 +416,7 @@ namespace GoogleCloudExtension.Deployment
                 Task<bool> updateImageTask = options.KubectlContext.UpdateDeploymentImageAsync(
                     options.DeploymentName,
                     imageTag,
-                    GcpOutputWindow.OutputLine);
+                    GcpOutputWindow.OutputLineAsync);
 
                 if (options.ExistingDeployment.Spec.Replicas != options.Replicas)
                 {
@@ -427,7 +424,7 @@ namespace GoogleCloudExtension.Deployment
                         await options.KubectlContext.ScaleDeploymentAsync(
                             options.DeploymentName,
                             options.Replicas,
-                            GcpOutputWindow.OutputLine);
+                            GcpOutputWindow.OutputLineAsync);
                     return deploymentScaled && await updateImageTask;
                 }
 

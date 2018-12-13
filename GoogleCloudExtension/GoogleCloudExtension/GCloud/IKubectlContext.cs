@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,28 +26,26 @@ namespace GoogleCloudExtension.GCloud
         /// Creates a deployment for the given image and with the given name. The deployment is created with pods that
         /// contain a single container running <paramref name="imageTag"/>.
         /// </summary>
-        /// <param name="name">The name of the deployemnt to be created.</param>
+        /// <param name="name">The name of the deployment to be created.</param>
         /// <param name="imageTag">The Docker image tag to use for the deployment.</param>
-        /// <param name="replicas">The number of replicas in the deploymnet.</param>
+        /// <param name="replicas">The number of replicas in the deployment.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> CreateDeploymentAsync(string name, string imageTag, int replicas, Action<string> outputAction);
+        Task<bool> CreateDeploymentAsync(
+            string name,
+            string imageTag,
+            int replicas,
+            Func<string, OutputStream, Task> outputAction);
 
         /// <summary>
-        /// Exposes the service targetting the deployemnt <paramref name="deployment"/>. The ports being exposed are fixed
+        /// Exposes the service targeting the deployment <paramref name="deployment"/>. The ports being exposed are fixed
         /// to 80 for the service and 8080 for the target pods.
         /// </summary>
         /// <param name="deployment">The deployment for which to create and expose the service.</param>
         /// <param name="makePublic">True if the service should be made public, false otherwise.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> ExposeServiceAsync(string deployment, bool makePublic, Action<string> outputAction);
-
-        /// <summary>
-        /// Returns the list of services running in the current cluster.
-        /// </summary>
-        /// <returns>The list of services.</returns>
-        Task<IList<GkeService>> GetServicesAsync();
+        Task<bool> ExposeServiceAsync(string deployment, bool makePublic, Func<string, OutputStream, Task> outputAction);
 
         /// <summary>
         /// Returns the service with the given <paramref name="name"/>.
@@ -62,20 +61,16 @@ namespace GoogleCloudExtension.GCloud
         Task<IList<GkeDeployment>> GetDeploymentsAsync();
 
         /// <summary>
-        /// Determines if a deployment with the given name already exists.
-        /// </summary>
-        /// <param name="name">The name of the deployment to check.</param>
-        /// <returns>True if the deployment exists, false otherwise.</returns>
-        Task<bool> DeploymentExistsAsync(string name);
-
-        /// <summary>
-        /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="imageTag"/>.
+        /// Updates an existing deployment given by <paramref name="name"/> with <paramref name="imageTag"/>.
         /// </summary>
         /// <param name="name">The name of the deployment to update.</param>
         /// <param name="imageTag">The Docker image tag to update to.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> UpdateDeploymentImageAsync(string name, string imageTag, Action<string> outputAction);
+        Task<bool> UpdateDeploymentImageAsync(
+            string name,
+            string imageTag,
+            Func<string, OutputStream, Task> outputAction);
 
         /// <summary>
         /// Changes the number of replicas for the given <paramref name="name"/>.
@@ -84,7 +79,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="replicas">The new number of replicas.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> ScaleDeploymentAsync(string name, int replicas, Action<string> outputAction);
+        Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, OutputStream, Task> outputAction);
 
         /// <summary>
         /// Deletes the service given by <paramref name="name"/>.
@@ -92,7 +87,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="name">The name of the service to delete.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> DeleteServiceAsync(string name, Action<string> outputAction);
+        Task<bool> DeleteServiceAsync(string name, Func<string, OutputStream, Task> outputAction);
 
         /// <summary>
         /// Gets the cluster IP address of a service.

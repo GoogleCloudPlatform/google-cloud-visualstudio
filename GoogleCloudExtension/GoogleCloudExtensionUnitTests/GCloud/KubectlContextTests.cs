@@ -28,7 +28,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
     public class KubectlContextTests : ExtensionTestBase
     {
         private const string DefaultCluster = "default-cluster";
-        private const string DefaultZone = "default-zone";
+        private const string DefaultLocation = "default-zone";
         private const string ExpectedCluster = "expected-cluster";
         private const string DefaultDeploymentName = "default-deployment-name";
         private const string DefaultServiceName = "default-service-name";
@@ -42,7 +42,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private Mock<IProcessService> _processServiceMock;
         private KubectlContext _objectUnderTest;
         private string _kubeConfigPath;
-        private Action<string> _mockedOutputAction;
+        private Func<string, OutputStream, Task> _mockedOutputAction;
 
         [TestInitialize]
         public async Task BeforeEachAsync()
@@ -56,22 +56,28 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     _kubeConfigPath = _kubeConfigPath ??
                         defaultInitKubectlEnvironment[KubectlContext.KubeConfigVariable]);
 
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
-            _mockedOutputAction = Mock.Of<Action<string>>();
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, ClusterLocationType.Zone);
+            _mockedOutputAction = Mock.Of<Func<string, OutputStream, Task>>();
         }
 
+
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsGcloudContainerClustersGetCredentials()
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_RunsGcloudContainerClustersGetCredentials(ClusterLocationType locationType)
         {
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
 
             VerifyCommandArgsContain("gcloud container clusters get-credentials");
         }
 
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedCluster()
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedCluster(
+            ClusterLocationType locationType)
         {
-            await KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultLocation, locationType);
 
             VerifyCommandArgsContain(ExpectedCluster);
         }
@@ -81,31 +87,55 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         {
             const string expectedZone = "expected-zone";
 
-            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedZone, ClusterLocationType.Zone);
 
             VerifyCommandArgsContain($"--zone={expectedZone}");
         }
 
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedGoogleCredentialsEnvVar()
+        public async Task TestGetKubectlContextForClusterAsync_RunsCommandAgainstExpectedRegion()
+        {
+            const string expectedRegion = "expected-region";
+
+            await KubectlContext.GetForClusterAsync(DefaultCluster, expectedRegion, ClusterLocationType.Region);
+
+            VerifyCommandArgsContain($"--region={expectedRegion}");
+        }
+
+        [TestMethod]
+        public async Task TestGetKubectlContextForClusterAsync_ThrowsForInvalidClusterLocationType()
+        {
+
+            await Assert.ThrowsExceptionAsync<ArgumentException>(
+                () => KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, (ClusterLocationType)5));
+        }
+
+        [TestMethod]
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedGoogleCredentialsEnvVar(
+            ClusterLocationType locationType)
         {
             const string expectedCredentialsPath = "expected-credentials-path";
             CredentialStoreMock.Setup(cs => cs.CurrentAccountPath).Returns(expectedCredentialsPath);
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
 
             Assert.AreEqual(expectedCredentialsPath, environment[KubectlContext.GoogleApplicationCredentialsVariable]);
         }
 
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedUseDefaultCredentialsEnvVar()
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithExpectedUseDefaultCredentialsEnvVar(
+            ClusterLocationType locationType)
         {
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
 
             Assert.AreEqual(
                 KubectlContext.TrueValue,
@@ -113,23 +143,28 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithKubeConfigEnvVar()
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_RunsCommandWithKubeConfigEnvVar(
+            ClusterLocationType locationType)
         {
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, locationType);
 
             Assert.IsTrue(environment.ContainsKey(KubectlContext.KubeConfigVariable));
         }
 
         [TestMethod]
-        public async Task TestGetKubectlContextForClusterAsync_ThrowsOnCommandFailure()
+        [DataRow(ClusterLocationType.Zone)]
+        [DataRow(ClusterLocationType.Region)]
+        public async Task TestGetKubectlContextForClusterAsync_ThrowsOnCommandFailure(ClusterLocationType locationType)
         {
             SetupRunCommandResult(false);
 
             GCloudException e = await Assert.ThrowsExceptionAsync<GCloudException>(
-                () => KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultZone));
+                () => KubectlContext.GetForClusterAsync(ExpectedCluster, DefaultLocation, locationType));
 
             StringAssert.Contains(e.Message, ExpectedCluster);
         }
@@ -140,7 +175,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
             IDictionary<string, string> environment = new Dictionary<string, string>();
             SetupRunCommandGetEnvironment(commandEnvironment => environment = commandEnvironment);
 
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultLocation, ClusterLocationType.Zone);
             _objectUnderTest.Dispose();
 
             string expectedDeletePath = environment[KubectlContext.KubeConfigVariable];
@@ -148,9 +183,12 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestDispose_NonReentrant()
+        public async Task TestDispose_NonReEntrant()
         {
-            _objectUnderTest = await KubectlContext.GetForClusterAsync(DefaultCluster, DefaultZone);
+            _objectUnderTest = await KubectlContext.GetForClusterAsync(
+                DefaultCluster,
+                DefaultLocation,
+                ClusterLocationType.Zone);
             _objectUnderTest.Dispose();
             _objectUnderTest.Dispose();
 
@@ -158,7 +196,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestCreateDeploymentAsync_RunsKubctlRun()
+        public async Task TestCreateDeploymentAsync_RunsKubectlRun()
         {
             await _objectUnderTest.CreateDeploymentAsync(
                 DefaultDeploymentName,
@@ -228,7 +266,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
         }
 
         [TestMethod]
@@ -260,7 +298,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         }
 
         [TestMethod]
-        public async Task TestExposeServiceAsync_RunsKubctlExposeDeployment()
+        public async Task TestExposeServiceAsync_RunsKubectlExposeDeployment()
         {
             await _objectUnderTest.ExposeServiceAsync(
                 DefaultDeploymentName,
@@ -279,7 +317,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
             await _objectUnderTest.ExposeServiceAsync(DefaultDeploymentName, false, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
         }
 
         [TestMethod]
@@ -336,7 +374,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         [TestMethod]
         public async Task TestGetServicesAsync_GetsOutputFromCommand()
         {
-            var expectedResult = Mock.Of<IList<GkeService>>();
+            IList<GkeService> expectedResult = Mock.Of<IList<GkeService>>();
             SetupGetJsonOutput(new GkeList<GkeService> { Items = expectedResult });
 
             IList<GkeService> result = await _objectUnderTest.GetServicesAsync();
@@ -548,7 +586,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultImageTag,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
         }
 
         [TestMethod]
@@ -620,7 +658,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 DefaultReplicas,
                 _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
         }
 
         [TestMethod]
@@ -669,7 +707,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
             await _objectUnderTest.DeleteServiceAsync(DefaultServiceName, _mockedOutputAction);
 
-            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine));
+            Mock.Get(_mockedOutputAction).Verify(h => h(ExpectedOutputLine, OutputStream.StandardOutput));
         }
 
         [TestMethod]
@@ -876,7 +914,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "kubectl",
                     It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -887,7 +925,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     "cmd.exe",
                     It.Is<string>(s => s.Contains(expectedArg)),
-                    It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                    It.IsAny<Func<string, OutputStream, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -899,14 +937,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        EventHandler<OutputHandlerEventArgs> handler,
+                        Func<string, OutputStream, Task> handler,
                         string workingDir,
                         IDictionary<string, string> env) => setEnv(env))
                 .Returns(Task.FromResult(true));
@@ -914,22 +952,21 @@ namespace GoogleCloudExtensionUnitTests.GCloud
 
         private void SetupRunKubectlInvokeHandler(string expectedOutputLine)
         {
-            var outputHandlerEventArgs = new OutputHandlerEventArgs(expectedOutputLine, OutputStream.StandardOutput);
             _processServiceMock
                 .Setup(
                     p => p.RunCommandAsync(
-                       "kubectl",
+                        "kubectl",
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Callback(
                     (
                         string file,
                         string args,
-                        EventHandler<OutputHandlerEventArgs> handler,
+                        Func<string, OutputStream, Task> handler,
                         string workingDir,
-                        IDictionary<string, string> env) => handler.Invoke(null, outputHandlerEventArgs))
+                        IDictionary<string, string> env) => handler(expectedOutputLine, OutputStream.StandardOutput))
                 .Returns(Task.FromResult(true));
         }
 
@@ -940,7 +977,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                     p => p.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<EventHandler<OutputHandlerEventArgs>>(),
+                        It.IsAny<Func<string, OutputStream, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
                 .Returns(Task.FromResult(result));

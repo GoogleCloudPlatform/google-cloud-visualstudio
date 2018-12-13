@@ -23,17 +23,21 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// Data source that fecthes information from Google Container Engine.
+    /// Data source that fetches information from Google Container Engine.
     /// </summary>
     public class GkeDataSource : DataSourceBase<ContainerService>, IGkeDataSource
     {
         // This value means to fetch data from all the zones, instead of specifying the
         // specific zones.
-        private const string AllZonesValue = "-";
+        private const string AllZonesAllRegionsValue = "-";
 
         public GkeDataSource(string projectId, GoogleCredential credential, string appName) :
             base(projectId, credential, init => new ContainerService(init), appName)
         { }
+
+        // For testing.
+        internal GkeDataSource(ContainerService mockedService, string projectId)
+            : base(projectId, null, init => mockedService, null) { }
 
         /// <summary>
         /// Lists all of the clusters in the current project.
@@ -43,8 +47,10 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var response = await Service.Projects.Zones.Clusters.List(ProjectId, AllZonesValue).ExecuteAsync();
-                return response.Clusters;
+                ListClustersResponse clustersResponse = await Service.Projects.Locations.Clusters
+                    .List($"projects/{ProjectId}/locations/{AllZonesAllRegionsValue}")
+                    .ExecuteAsync();
+                return clustersResponse.Clusters;
             }
             catch (GoogleApiException ex)
             {

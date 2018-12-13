@@ -80,17 +80,6 @@ namespace GoogleCloudExtension.Utils
         public Task OutputLineAsync(string line, OutputStream sourceStream) => OutputLineAsync(line);
 
         /// <summary>
-        /// Outputs the line from the given OutputEventArg to the GCP output window pane.
-        /// </summary>
-        /// <param name="sender">The sender this event comes from.</param>
-        /// <param name="args">The <see cref="OutputHandlerEventArgs"/> for the event.</param>
-        public void OutputLine(object sender, OutputHandlerEventArgs args)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            OutputLine(args.Line);
-        }
-
-        /// <summary>
         /// Outputs debug information to the Visual Studio output window as well as to the
         /// debug output.
         /// </summary>

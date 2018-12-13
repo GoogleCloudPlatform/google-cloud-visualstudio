@@ -45,7 +45,7 @@
         <steps:NeedApiEnabledControl Margin="0,5,0,0"
                                      Visibility="{Binding NeedsApiEnabled, Converter={utils:VisibilityConverter}}" />
 
-        <!-- Message shwon when there is a general error. -->
+        <!-- Message shown when there is a general error. -->
         <steps:GeneralErrorControl Margin="0,5,0,0"
                                    Visibility="{Binding LoadProjectTask.IsError, Converter={utils:VisibilityConverter}}" />
 

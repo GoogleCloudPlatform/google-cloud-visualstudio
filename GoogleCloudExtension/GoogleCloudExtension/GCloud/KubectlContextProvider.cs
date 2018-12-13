@@ -14,6 +14,7 @@
 
 using Google.Apis.Container.v1.Data;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -30,7 +31,19 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="cluster">The cluster to create credentials for.</param>
         /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        public async Task<IKubectlContext> GetKubectlContextForClusterAsync(Cluster cluster) =>
-            await KubectlContext.GetForClusterAsync(cluster.Name, cluster.Zone);
+        public async Task<IKubectlContext> GetKubectlContextForClusterAsync(Cluster cluster)
+        {
+            ClusterLocationType clusterLocationType;
+            if (cluster.Locations == null ||
+                cluster.Locations.Count == 1 && cluster.Locations.Single() == cluster.Location)
+            {
+                clusterLocationType = ClusterLocationType.Zone;
+            }
+            else
+            {
+                clusterLocationType = ClusterLocationType.Region;
+            }
+            return await KubectlContext.GetForClusterAsync(cluster.Name, cluster.Location, clusterLocationType);
+        }
     }
 }
