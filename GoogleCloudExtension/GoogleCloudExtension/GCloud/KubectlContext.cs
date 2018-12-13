@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.GCloud
                     break;
                 default:
                     throw new ArgumentException(
-                        string.Format(Resources.E_UnexpectedTypeFormat, nameof(ClusterLocationType), clusterLocationType),
+                        string.Format(Resources.UnexpectedMessageFormat, nameof(ClusterLocationType), clusterLocationType),
                         nameof(clusterLocationType));
             }
             string command = $"container clusters get-credentials {cluster} {locationArg}";
