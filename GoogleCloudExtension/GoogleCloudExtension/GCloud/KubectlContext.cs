@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.GCloud
 {
@@ -46,50 +48,42 @@ namespace GoogleCloudExtension.GCloud
         internal const string TrueValue = "true";
 
         /// <summary>
-        /// Path to the config file that identifies the cluster for kubcectl commands.
+        /// Path to the config file that identifies the cluster for kubectl commands.
         /// </summary>
         private string _configPath;
 
         private readonly IFileSystem _fileSystem;
 
-        private KubectlContext()
+        internal KubectlContext(
+            IFileSystem fileSystem,
+            Lazy<IProcessService> processService,
+            ICredentialsStore credentialsStore) : base(processService, credentialsStore)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _configPath = Path.GetTempFileName();
+            _fileSystem = fileSystem;
+            _configPath = _fileSystem.Path.GetTempFileName();
 
-            // Add the environment variables to use to invoke kubectl safely. This environemnt is necessary
+            // Add the environment variables to use to invoke kubectl safely. This environment is necessary
             // to ensure that the right credentials are used should the access token need to be refreshed.
             Environment[KubeConfigVariable] = _configPath;
             Environment[UseApplicationDefaultCredentialsVariable] = TrueValue;
             Environment[GoogleApplicationCredentialsVariable] = CredentialsPath;
-            _fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
         }
 
-        /// <summary>
-        /// Returns the <seealso cref="KubectlContext"/> instance to use for the given <paramref name="cluster"/> when
-        /// performing Kubernetes operations.
-        /// </summary>
-        /// <param name="cluster">The name of the cluster for which to create credentials.</param>
-        /// <param name="zone">The zone of the cluster.</param>
-        /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        /// <remarks>
-        /// Do not use this method directly.
-        /// Use <see cref="IKubectlContextProvider.GetKubectlContextForClusterAsync"/>.
-        /// </remarks>
-        internal static async Task<KubectlContext> GetForClusterAsync(string cluster, string zone)
+        internal Task<bool> InitClusterCredentialsAsync(Cluster cluster)
         {
-            var kubctlContext = new KubectlContext();
-            if (!await kubctlContext.InitClusterCredentialsAsync(cluster, zone))
+            string locationArg;
+            if (cluster.Locations != null &&
+                cluster.Locations.Count == 1 &&
+                cluster.Locations.Single() == cluster.Location)
             {
-                throw new GCloudException($"Failed to get credentials for cluster {cluster}");
+                locationArg = $"--zone={cluster.Location}";
+            }
+            else
+            {
+                locationArg = $"--region={cluster.Location}";
             }
 
-            return kubctlContext;
-        }
-
-        private Task<bool> InitClusterCredentialsAsync(string cluster, string zone)
-        {
-            string command = $"container clusters get-credentials {cluster} --zone={zone}";
+            string command = $"container clusters get-credentials {cluster.Name} {locationArg}";
             return RunGcloudCommandAsync(command);
         }
 
@@ -97,31 +91,38 @@ namespace GoogleCloudExtension.GCloud
         /// Creates a deployment for the given image and with the given name. The deployment is created with pods that
         /// contain a single container running <paramref name="imageTag"/>.
         /// </summary>
-        /// <param name="name">The name of the deployemnt to be created.</param>
+        /// <param name="name">The name of the deployment to be created.</param>
         /// <param name="imageTag">The Docker image tag to use for the deployment.</param>
-        /// <param name="replicas">The number of replicas in the deploymnet.</param>
+        /// <param name="replicas">The number of replicas in the deployment.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public Task<bool> CreateDeploymentAsync(string name, string imageTag, int replicas, Action<string> outputAction)
+        public async Task<bool> CreateDeploymentAsync(
+            string name,
+            string imageTag,
+            int replicas,
+            Func<string, OutputStream, Task> outputAction)
         {
             string command = $"run {name} --image={imageTag} --replicas={replicas} --port=8080 --record";
-            return RunKubectlCommandAsync(command, outputAction);
+            return await RunKubectlCommandAsync(command, outputAction);
         }
 
         /// <summary>
-        /// Exposes the service targetting the deployemnt <paramref name="deployment"/>. The ports being exposed are fixed
+        /// Exposes the service targeting the deployment <paramref name="deployment"/>. The ports being exposed are fixed
         /// to 80 for the service and 8080 for the target pods.
         /// </summary>
         /// <param name="deployment">The deployment for which to create and expose the service.</param>
         /// <param name="makePublic">True if the service should be made public, false otherwise.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public Task<bool> ExposeServiceAsync(string deployment, bool makePublic, Action<string> outputAction)
+        public async Task<bool> ExposeServiceAsync(
+            string deployment,
+            bool makePublic,
+            Func<string, OutputStream, Task> outputAction)
         {
 
             string type = makePublic ? "--type=LoadBalancer" : "--type=ClusterIP";
             string command = $"expose deployment {deployment} --port=80 --target-port=8080 {type}";
-            return RunKubectlCommandAsync(command, outputAction);
+            return await RunKubectlCommandAsync(command, outputAction);
         }
 
         /// <summary>
@@ -163,16 +164,19 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="imageTag"/>.
+        /// Updates an existing deployment given by <paramref name="name"/> with <paramref name="imageTag"/>.
         /// </summary>
         /// <param name="name">The name of the deployment to update.</param>
         /// <param name="imageTag">The Docker image tag to update to.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public Task<bool> UpdateDeploymentImageAsync(string name, string imageTag, Action<string> outputAction)
+        public async Task<bool> UpdateDeploymentImageAsync(
+            string name,
+            string imageTag,
+            Func<string, OutputStream, Task> outputAction)
         {
             string command = $"set image deployment/{name} {name}={imageTag} --record";
-            return RunKubectlCommandAsync(command, outputAction);
+            return await RunKubectlCommandAsync(command, outputAction);
         }
 
         /// <summary>
@@ -182,10 +186,10 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="replicas">The new number of replicas.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public Task<bool> ScaleDeploymentAsync(string name, int replicas, Action<string> outputAction)
+        public async Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, OutputStream, Task> outputAction)
         {
             string command = $"scale deployment {name} --replicas={replicas}";
-            return RunKubectlCommandAsync(command, outputAction);
+            return await RunKubectlCommandAsync(command, outputAction);
         }
 
         /// <summary>
@@ -194,8 +198,8 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="name">The name of the service to delete.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public Task<bool> DeleteServiceAsync(string name, Action<string> outputAction) =>
-            RunKubectlCommandAsync($"delete service {name}", outputAction);
+        public async Task<bool> DeleteServiceAsync(string name, Func<string, OutputStream, Task> outputAction) =>
+            await RunKubectlCommandAsync($"delete service {name}", outputAction);
 
         /// <summary>
         /// Gets the cluster IP address of a service.
@@ -219,15 +223,15 @@ namespace GoogleCloudExtension.GCloud
             return service?.Status?.LoadBalancer?.Ingress?.Select(i => i?.Ip).FirstOrDefault(ip => ip != null);
         }
 
-        private Task<bool> RunKubectlCommandAsync(string command, Action<string> outputAction)
+        private async Task<bool> RunKubectlCommandAsync(string command, Func<string, OutputStream, Task> outputAction)
         {
             string actualCommand = FormatKubectlCommand(command);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
 
-            return ProcessUtils.Default.RunCommandAsync(
+            return await ProcessService.RunCommandAsync(
                 "kubectl",
                 actualCommand,
-                (o, e) => outputAction(e.Line),
+                outputAction,
                 environment: Environment);
         }
 
@@ -237,7 +241,7 @@ namespace GoogleCloudExtension.GCloud
             try
             {
                 Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-                return await ProcessUtils.Default.GetJsonOutputAsync<T>(
+                return await ProcessService.GetJsonOutputAsync<T>(
                     "kubectl",
                     actualCommand,
                     environment: Environment);

@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// The task to get the list of projects associated with the account this datasource was configured for.
+        /// The task to get the list of projects associated with the account this data source was configured for.
         /// </summary>
         public Task<IList<Project>> ProjectsListTask { get; private set; }
 
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.DataSources
         public Task<IList<Project>> GetProjectsListAsync()
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     if (string.IsNullOrEmpty(token))
                     {

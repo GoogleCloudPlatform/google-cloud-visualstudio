@@ -44,15 +44,16 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>A task that will contain the collection of <seealso cref="ServiceStatus"/> with the status of each service.</returns>
         public async Task<IEnumerable<ServiceStatus>> CheckServicesStatusAsync(IEnumerable<string> serviceNames)
         {
-            IEnumerable<string> enabledServices = (await GetProjectEnabledServicesAsync()).Select(x => x.ServiceName);
-            return serviceNames.Select(x => new ServiceStatus(x, enabledServices.Contains(x)));
+            IList<ManagedService> enabledServices = await GetProjectEnabledServicesAsync();
+            IEnumerable<string> enabledServiceNames = enabledServices.Select(x => x.ServiceName);
+            return serviceNames.Select(x => new ServiceStatus(x, enabledServiceNames.Contains(x)));
         }
 
         /// <summary>
         /// Enables all of the services in the given collection.
         /// </summary>
         /// <param name="serviceNames">The collection of service names to enable.</param>
-        /// <returns>A task that will be completed once all servides are enabled.</returns>
+        /// <returns>A task that will be completed once all services are enabled.</returns>
         public async Task EnableAllServicesAsync(IEnumerable<string> serviceNames)
         {
             foreach (var service in serviceNames)
@@ -75,7 +76,7 @@ namespace GoogleCloudExtension.DataSources
             request.ConsumerId = $"project:{ProjectId}";
 
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     request.PageToken = token;
                     return request.ExecuteAsync();

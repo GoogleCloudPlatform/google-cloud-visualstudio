@@ -62,21 +62,6 @@ namespace GoogleCloudExtension.Utils
     }
 
     /// <summary>
-    /// Event args passed to the output handler of a process.
-    /// </summary>
-    public class OutputHandlerEventArgs : EventArgs
-    {
-        public string Line { get; }
-        public OutputStream OutputStream { get; }
-
-        public OutputHandlerEventArgs(string line, OutputStream stream)
-        {
-            Line = line;
-            OutputStream = stream;
-        }
-    }
-
-    /// <summary>
     /// This class defines helper methods for starting sub-processes and getting the output from
     /// the processes, including a helper to parse the output as json.
     /// </summary>
@@ -87,40 +72,6 @@ namespace GoogleCloudExtension.Utils
         /// The default <see cref="IProcessService"/>.
         /// </summary>
         public static IProcessService Default => GoogleCloudExtensionPackage.Instance.ProcessService;
-
-        /// <summary>
-        /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
-        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
-        /// by the process.
-        /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
-        /// </summary>
-        /// <param name="file">The path to the binary to execute, it must not be null.</param>
-        /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
-        /// of the UI thread. Must not be null.</param>
-        /// <param name="workingDir">The working directory to use, optional.</param>
-        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
-        public async Task<bool> RunCommandAsync(
-            string file,
-            string args,
-            EventHandler<OutputHandlerEventArgs> handler,
-            string workingDir = null,
-            IDictionary<string, string> environment = null)
-        {
-            await TaskScheduler.Default;
-            var process = new Process
-            {
-                StartInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment),
-                EnableRaisingEvents = true
-            };
-
-            Task executeTask = process.ExecuteAsync();
-            Task readErrorsTask = ReadLinesFromOutputAsync(OutputStream.StandardError, process.StandardError, handler);
-            var readOutputTask = ReadLinesFromOutputAsync(OutputStream.StandardOutput, process.StandardOutput, handler);
-            await Task.WhenAll(readErrorsTask, readOutputTask, executeTask);
-            await executeTask;
-            return process.ExitCode == 0;
-        }
 
         /// <summary>
         /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
@@ -258,24 +209,15 @@ namespace GoogleCloudExtension.Utils
         private static async Task ReadLinesFromOutputAsync(
             OutputStream outputStream,
             StreamReader stream,
-            EventHandler<OutputHandlerEventArgs> handler)
-        {
-            while (!stream.EndOfStream)
-            {
-                string line = await stream.ReadLineAsync();
-                handler(null, new OutputHandlerEventArgs(line, outputStream));
-            }
-        }
-
-        private static async Task ReadLinesFromOutputAsync(
-            OutputStream outputStream,
-            StreamReader stream,
             Func<string, OutputStream, Task> handler)
         {
-            while (!stream.EndOfStream)
+            if (handler != null)
             {
-                string line = await stream.ReadLineAsync();
-                await handler(line, outputStream);
+                while (!stream.EndOfStream)
+                {
+                    string line = await stream.ReadLineAsync();
+                    await handler(line, outputStream);
+                }
             }
         }
     }

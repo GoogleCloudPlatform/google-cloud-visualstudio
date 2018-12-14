@@ -63,6 +63,9 @@
     <Reference Include="Google.Apis.Compute.v1, Version=1.33.1.1231, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.33.1.1231\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Container.v1, Version=1.33.1.1219, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.33.1.1219\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.33.1\lib\net45\Google.Apis.Core.dll</HintPath>
     </Reference>
@@ -112,10 +115,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GkeDataSourceTests.cs" />
+    <Compile Include="GoogleApiMockExtensions.cs" />
     <Compile Include="InstanceExtensionsUnitTests.cs" />
     <Compile Include="OperationUtilsUnitTests.cs" />
     <Compile Include="ResourceManagerDataSourceUnitTests.cs" />
-    <Compile Include="DataSourceUnitTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceManagementDataSourceUnitTests.cs" />
   </ItemGroup>

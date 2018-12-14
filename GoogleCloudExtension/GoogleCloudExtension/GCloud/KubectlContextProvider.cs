@@ -13,6 +13,10 @@
 // limitations under the License.
 
 using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.Utils;
+using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
@@ -24,13 +28,40 @@ namespace GoogleCloudExtension.GCloud
     [Export(typeof(IKubectlContextProvider))]
     public class KubectlContextProvider : IKubectlContextProvider
     {
+        private readonly Lazy<IFileSystem> _fileSystem;
+        private readonly Lazy<IProcessService> _processService;
+        private readonly Lazy<ICredentialsStore> _credentialsStore;
+
+        private ICredentialsStore CredentialsStore => _credentialsStore.Value;
+        private IFileSystem FileSystem => _fileSystem.Value;
+        private IProcessService ProcessService => _processService.Value;
+
+        [ImportingConstructor]
+        public KubectlContextProvider(
+            Lazy<IFileSystem> fileSystem,
+            Lazy<ICredentialsStore> credentialsStore,
+            Lazy<IProcessService> processService)
+        {
+            _fileSystem = fileSystem;
+            _credentialsStore = credentialsStore;
+            _processService = processService;
+        }
+
         /// <summary>
         /// Returns the <seealso cref="KubectlContext"/> instance to use for the given <paramref name="cluster"/> when
         /// performing Kubernetes operations.
         /// </summary>
         /// <param name="cluster">The cluster to create credentials for.</param>
         /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
-        public async Task<IKubectlContext> GetKubectlContextForClusterAsync(Cluster cluster) =>
-            await KubectlContext.GetForClusterAsync(cluster.Name, cluster.Zone);
+        public async Task<IKubectlContext> GetKubectlContextForClusterAsync(Cluster cluster)
+        {
+            var kubectlContext = new KubectlContext(FileSystem, _processService, CredentialsStore);
+            if (!await kubectlContext.InitClusterCredentialsAsync(cluster))
+            {
+                throw new GCloudException($"Failed to get credentials for cluster {cluster.Name}");
+            }
+
+            return kubectlContext;
+        }
     }
 }

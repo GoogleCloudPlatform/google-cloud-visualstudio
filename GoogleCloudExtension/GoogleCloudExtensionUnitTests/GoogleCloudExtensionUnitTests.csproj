@@ -300,7 +300,9 @@
     <Compile Include="FirewallManagement\PortManagerWindowTests.cs" />
     <Compile Include="FirewallManagement\PortModelTests.cs" />
     <Compile Include="FirewallManagement\PortTestHelpers.cs" />
+    <Compile Include="GCloud\KubectlContextProviderTests.cs" />
     <Compile Include="GCloud\KubectlContextTests.cs" />
+    <Compile Include="GCloud\ProcessServiceMockExtensions.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModelTests.cs" />
     <Compile Include="MenuBarControls\GcpMenuBarControlFactoryTests.cs" />
     <Compile Include="MenuBarControls\GcpMenuBarControlTests.cs" />
@@ -338,6 +340,7 @@
     <Compile Include="Services\FileSystem\FileSystemServiceTests.cs" />
     <Compile Include="Services\FileSystem\IODirectoryServiceTests.cs" />
     <Compile Include="Services\FileSystem\IOFileServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IOPathServiceTests.cs" />
     <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
     <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
     <Compile Include="SimpleIServiceProvider.cs" />

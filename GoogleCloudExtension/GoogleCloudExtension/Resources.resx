@@ -2336,9 +2336,9 @@ Delete corrupted file?</value>
     <value>Error Reporting</value>
     <comment>Caption for the cloud console link to Stackdriver Error Reporting</comment>
   </data>
-  <data name="CloudLinkStackdriverProfilerCaption" xml:space="preserve">	
-    <value>Profiler</value>	
-    <comment>Caption for the cloud console link to Stackdriver Profiler</comment>	
+  <data name="CloudLinkStackdriverProfilerCaption" xml:space="preserve">
+    <value>Profiler</value>
+    <comment>Caption for the cloud console link to Stackdriver Profiler</comment>
   </data>
   <data name="CloudLinkSourceRepositoriesCaption" xml:space="preserve">
     <value>Source Repositories</value>
