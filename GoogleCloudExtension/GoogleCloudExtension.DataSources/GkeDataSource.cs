@@ -27,9 +27,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GkeDataSource : DataSourceBase<ContainerService>, IGkeDataSource
     {
-        // This value means to fetch data from all the zones, instead of specifying the
-        // specific zones.
-        private const string AllZonesAllRegionsValue = "-";
+        // This value means to fetch data from all the zones and regions.
+        private const string AllLocationsValue = "-";
 
         public GkeDataSource(string projectId, GoogleCredential credential, string appName) :
             base(projectId, credential, init => new ContainerService(init), appName)
@@ -48,7 +47,7 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 ListClustersResponse clustersResponse = await Service.Projects.Locations.Clusters
-                    .List($"projects/{ProjectId}/locations/{AllZonesAllRegionsValue}")
+                    .List($"projects/{ProjectId}/locations/{AllLocationsValue}")
                     .ExecuteAsync();
                 return clustersResponse.Clusters;
             }
