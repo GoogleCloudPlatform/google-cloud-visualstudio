@@ -15,6 +15,7 @@
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <!-- ReSharper disable MarkupAttributeTypo -->
   <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
@@ -67,7 +68,7 @@
           <ButtonText>Show Google Cloud Explorer</ButtonText>
         </Strings>
       </Button>
-	  
+
       <!-- This command shows the tool window that manages the current account and project, could be a toolbar. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidManageCredentialsCommand" priority="0x0400" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
@@ -76,8 +77,25 @@
         </Strings>
       </Button>
 
+      <!-- This command publishes the current project to Google Cloud from the build menu. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet"
+              id="cmdidPublishProjectToolsMenuCommand"
+              priority="0x0500"
+              type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_BUILD_SELECTION" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Publish project to Google Cloud...</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- This command publishes the current project to Google Cloud from the tools menu. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectToolsMenuCommand" priority="0x0500" type="Button">
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet"
+              id="cmdidPublishProjectToolsMenuCommand"
+              priority="0x0500"
+              type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -88,8 +106,11 @@
       </Button>
 
       <!-- This command publishes the current project from the project's context menu. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectContextMenuCommand" priority="0x0500" type="Button">
-        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" />
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet"
+              id="cmdidPublishProjectContextMenuCommand"
+              priority="0x0500"
+              type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_CTXT_PROJECT_BUILD" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
@@ -124,7 +145,7 @@
         <Strings>
           <ButtonText>Show Stackdriver Error Reporting</ButtonText>
         </Strings>
-      </Button>    
+      </Button>
     </Buttons>
 
     <!-- Add menu icon images. -->
@@ -136,7 +157,6 @@
               href="StackdriverErrorReporting\Resources\eReport_menu_icon.png"
               usedList="stackdriverErrorReportingIcon" />
     </Bitmaps>
-
   </Commands>
 
   <Symbols>
@@ -168,3 +188,4 @@
 
   </Symbols>
 </CommandTable>
+<!-- ReSharper restore MarkupAttributeTypo -->

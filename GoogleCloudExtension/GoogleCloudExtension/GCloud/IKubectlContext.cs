@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

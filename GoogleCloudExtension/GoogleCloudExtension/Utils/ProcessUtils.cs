@@ -229,11 +229,11 @@ namespace GoogleCloudExtension.Utils
             StreamReader stream,
             Func<string, Task> handler)
         {
-            if (handler != null)
+            while (!stream.EndOfStream)
             {
-                while (!stream.EndOfStream)
+                string line = await stream.ReadLineAsync();
+                if (handler != null)
                 {
-                    string line = await stream.ReadLineAsync();
                     await handler(line);
                 }
             }

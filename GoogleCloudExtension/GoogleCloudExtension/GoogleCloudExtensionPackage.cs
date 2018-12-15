@@ -118,7 +118,7 @@ namespace GoogleCloudExtension
         private event EventHandler ClosingEvent;
 
         /// <summary>
-        /// The initalized instance of the package.
+        /// The initialized instance of the package.
         /// </summary>
         public static IGoogleCloudExtensionPackage Instance { get; internal set; }
 
@@ -202,18 +202,12 @@ namespace GoogleCloudExtension
         /// <summary>
         /// Subscribe to the solution/package closing event.
         /// </summary>
-        public void SubscribeClosingEvent(EventHandler handler)
-        {
-            ClosingEvent += handler;
-        }
+        public void SubscribeClosingEvent(EventHandler handler) => ClosingEvent += handler;
 
         /// <summary>
         /// Unsubscribe to the solution/package closing event.
         /// </summary>
-        public void UnsubscribeClosingEvent(EventHandler handler)
-        {
-            ClosingEvent -= handler;
-        }
+        public void UnsubscribeClosingEvent(EventHandler handler) => ClosingEvent -= handler;
 
         /// <summary>
         /// Check whether the main window is not minimized.
@@ -391,7 +385,7 @@ namespace GoogleCloudExtension
         /// Gets an <see href="https://docs.microsoft.com/en-us/dotnet/framework/mef/">MEF</see> service.
         /// </summary>
         /// <typeparam name="T">The type the service is exported as.</typeparam>
-        /// <returns>The <see cref="Lazy{T}"/> that initalizes the service.</returns>
+        /// <returns>The <see cref="Lazy{T}"/> that initializes the service.</returns>
         public Lazy<T> GetMefServiceLazy<T>() where T : class => _componentModel.DefaultExportProvider.GetExport<T>();
 
         #endregion

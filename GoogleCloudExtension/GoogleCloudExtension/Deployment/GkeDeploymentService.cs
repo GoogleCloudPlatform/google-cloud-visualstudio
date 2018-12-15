@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Deployment
     [Export(typeof(IGkeDeploymentService))]
     public class GkeDeploymentService : IGkeDeploymentService
     {
-        // Wait for up to 5 minuets when waiting for a new service's IP address.
+        // Wait for up to 5 minutes when waiting for a new service's IP address.
         private static readonly TimeSpan s_newServiceIpTimeout = new TimeSpan(0, 5, 0);
 
         // Wait for up to 2 seconds in between calls when polling.
