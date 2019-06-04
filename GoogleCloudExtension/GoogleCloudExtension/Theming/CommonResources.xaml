@@ -237,7 +237,7 @@
         </Setter>
     </Style>
 
-    <!-- Style for the radion buttons. -->
+    <!-- Style for the radio buttons. -->
     <Style x:Key="CommonRadioButton" TargetType="{x:Type RadioButton}">
         <Setter Property="ContentTemplate">
             <Setter.Value>
@@ -301,7 +301,7 @@
     <SolidColorBrush x:Key="Validation.Border.Brush" Color="Red"/>
     <SolidColorBrush x:Key="Validation.Background.Brush" Color="#FFDDEE"/>
 
-    <!-- Validation styles and tempaltes -->
+    <!-- Validation styles and templates -->
     <Style x:Key="ValidationPanelStyle" TargetType="StackPanel">
         <Setter Property="Orientation" Value="Vertical" />
         <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -651,7 +651,7 @@
         </Setter>
     </Style>
 
-    <!-- Ultra simple template for the PasswordBox used to display the pasword -->
+    <!-- Ultra simple template for the PasswordBox used to display the password -->
     <Style x:Key="PasswordPartPasswordBoxStyle" TargetType="{x:Type PasswordBox}">
         <Setter Property="Template">
             <Setter.Value>

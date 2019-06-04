@@ -45,14 +45,14 @@ namespace GoogleCloudExtension
         /// </param>
         /// <returns>Returns <see cref="VSConstants.S_OK"/>.</returns>
         /// <seealso cref="IVsRegisterUIFactories.RegisterUIFactory"/>
-        public static async Task<int> RegisterUIFactoryAsync<T>(
+        public static async Task RegisterUIFactoryAsync<T>(
             this IVsRegisterUIFactories registerUIFactories,
             T factory,
             CancellationToken token) where T : IVsUIFactory
         {
             await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync(token);
             Guid guid = typeof(T).GUID;
-            return ErrorHandler.ThrowOnFailure(registerUIFactories.RegisterUIFactory(ref guid, factory));
+            ErrorHandler.ThrowOnFailure(registerUIFactories.RegisterUIFactory(ref guid, factory));
         }
     }
 }

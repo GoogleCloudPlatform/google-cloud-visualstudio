@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -38,31 +37,27 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             ErrorHandlerUtils.HandleExceptionsAsync(async () =>
             {
-                var oldItemSource = e.OldValue as ICloudExplorerItemSource;
-                if (oldItemSource != null)
+                if (e.OldValue is ICloudExplorerItemSource oldItemSource)
                 {
                     oldItemSource.ItemChanged -= OnItemChanged;
                 }
 
-                var newItemSource = e.NewValue as ICloudExplorerItemSource;
-                if (newItemSource == null)
-                {
-                    await _selectionUtils.ClearSelectionAsync();
-                }
-                else
+                if (e.NewValue is ICloudExplorerItemSource newItemSource)
                 {
                     newItemSource.ItemChanged += OnItemChanged;
                     await _selectionUtils.SelectItemAsync(newItemSource.Item);
+                }
+                else
+                {
+                    await _selectionUtils.ClearSelectionAsync();
                 }
             });
         }
 
         private void OnItemChanged(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             ErrorHandlerUtils.HandleExceptionsAsync(
                 async () =>
                 {
@@ -78,11 +73,9 @@ namespace GoogleCloudExtension.CloudExplorer
                 // Detect that Shift+F10 is pressed, open up the context menu.
                 if (e.Key == Key.F10 && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
                 {
-                    var item = _treeView.SelectedItem as TreeHierarchy;
-                    if (item != null)
+                    if (_treeView.SelectedItem is TreeHierarchy item)
                     {
-                        var contextMenu = item.ContextMenu;
-                        contextMenu.IsOpen = true;
+                        item.ContextMenu.IsOpen = true;
                         e.Handled = true;
                     }
                 }
@@ -93,8 +86,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                var item = sender as TreeViewItem;
-                if (item != null)
+                if (sender is TreeViewItem item)
                 {
                     item.IsSelected = true;
                 }
@@ -106,8 +98,7 @@ namespace GoogleCloudExtension.CloudExplorer
             ErrorHandlerUtils.HandleExceptions(() =>
             {
                 var item = sender as TreeViewItem;
-                var node = item?.Header as TreeNode;
-                if (node != null)
+                if (item?.Header is TreeNode node)
                 {
                     // If the node doesn't have a context menu defined then declare the event as
                     // handled so no context menu is shown.

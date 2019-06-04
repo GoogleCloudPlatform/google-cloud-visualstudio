@@ -23,18 +23,15 @@ namespace GoogleCloudExtension.Utils
     public static class PackageUtils
     {
         /// <summary>
-        /// Visual Studio Extention fails to load assembly when it is referenced by xaml file.
+        /// Visual Studio Extension fails to load assembly when it is referenced by xaml file.
         /// This is a helper function that help load the assembly that contains the referenced type.
         /// 
-        /// When the caller pass in the type, it is loaded automatically. 
+        /// When the caller pass in the type, it is loaded automatically.
         /// The trick and sole purpose of this method is to disable the code optimization.
         /// 
         /// </summary>
         /// <param name="referencedType">the type used by the XAML file.</param>
         [MethodImpl(MethodImplOptions.NoOptimization)]
-        public static void ReferenceType(Type referencedType)
-        {
-            referencedType.ToString();
-        }
+        public static void ReferenceType(Type referencedType) => referencedType.ToString();
     }
 }

@@ -339,17 +339,6 @@ namespace GoogleCloudExtension
             }
         }
 
-        /// <summary>Gets type-based services from the VSPackage service container.</summary>
-        /// <param name="serviceType">The type of service to retrieve.</param>
-        /// <returns>An instance of the requested service, or null if the service could not be found.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
-        /// <paramref name="serviceType" /> is null.</exception>
-        protected override object GetService(Type serviceType)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return base.GetService(serviceType) ?? ServiceProvider.GlobalProvider.GetService(serviceType);
-        }
-
         /// <summary>
         /// Gets a service registered as one type and used as a different type.
         /// </summary>
@@ -358,7 +347,6 @@ namespace GoogleCloudExtension
         /// <returns>The service.</returns>
         public I GetService<S, I>()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             return (I)GetService(typeof(S));
         }
 
