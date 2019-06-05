@@ -63,5 +63,26 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
 
             StringAssert.Contains(e.Message, expectedUnknownVersion);
         }
+
+        [TestMethod]
+        [DataRow(VsVersionUtils.VisualStudio2015Version, VsVersionUtils.Vs2015DebuggerPort)]
+        [DataRow(VsVersionUtils.VisualStudio2017Version, VsVersionUtils.Vs2017DebuggerPort)]
+        [DataRow(VsVersionUtils.VisualStudio2019Version, VsVersionUtils.Vs2019DebuggerPort)]
+        public void TestGetRemoteDebuggerPort_Success(string version, int expectedPort)
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns(version);
+
+            int result = VsVersionUtils.GetRemoteDebuggerPort();
+
+            Assert.AreEqual(expectedPort, result);
+        }
+
+        [TestMethod]
+        public void TestGetRemoteDebuggerPort_Throws()
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns("UnknownVersion");
+
+            Assert.ThrowsException<NotSupportedException>(() => VsVersionUtils.GetRemoteDebuggerPort());
+        }
     }
 }
