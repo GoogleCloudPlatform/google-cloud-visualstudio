@@ -28,9 +28,9 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     /// for both VS2015 and VS2017 versions. 
     /// And once we upgrade to .NET 4.6.1, we'll be able to add real code to make VS2017 version work too.
     /// </summary>
-    public class GitExtentionWrapper
+    public class GitExtensionWrapper
     {
-        public GitExtentionWrapper(IServiceProvider serviceProvider)
+        public GitExtensionWrapper(IServiceProvider serviceProvider)
         { }
 
         /// <summary>

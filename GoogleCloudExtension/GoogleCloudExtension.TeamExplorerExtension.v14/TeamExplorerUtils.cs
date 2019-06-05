@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     internal class TeamExplorerUtils : ITeamExplorerUtils
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly GitExtentionWrapper _gitExtension;
+        private readonly GitExtensionWrapper _gitExtension;
 
         /// <summary>
         /// Returns ITeamExplorer interface, return value can be null.
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         public TeamExplorerUtils(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
-            _gitExtension = new GitExtentionWrapper(_serviceProvider);
+            _gitExtension = new GitExtensionWrapper(_serviceProvider);
         }
 
         #region Implement interface ITeamExplorerUtils

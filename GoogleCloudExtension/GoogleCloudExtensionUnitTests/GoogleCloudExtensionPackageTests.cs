@@ -36,6 +36,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Xml.Linq;
+using Microsoft.VisualStudio.ComponentModelHost;
 using TestingHelpers;
 using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
@@ -61,7 +62,7 @@ namespace GoogleCloudExtensionUnitTests
         [TestInitialize]
         public void BeforeEach()
         {
-            // Initalize the export provider to get types exported in GoogleCloudExtension.dll.
+            // Initialize the export provider to get types exported in GoogleCloudExtension.dll.
             var container = new CompositionContainer(
                 new AggregateCatalog(
                     new AssemblyCatalog(typeof(GoogleCloudExtensionPackage).Assembly),
@@ -88,7 +89,7 @@ namespace GoogleCloudExtensionUnitTests
             DteMock.Setup(dte => dte.Version).Returns(mockedVersion);
             DteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             string expectedAssemblyVersion = GetVsixManifestVersion();
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.Instance.VsVersion);
@@ -111,7 +112,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             _objectUnderTest.GeneralSettings.InstalledVersion = "0.1.0.0";
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
@@ -125,7 +126,7 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public async Task TestNewPackageInstallation()
         {
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
@@ -143,7 +144,7 @@ namespace GoogleCloudExtensionUnitTests
             _objectUnderTest.GeneralSettings.InstalledVersion =
                 typeof(GoogleCloudExtensionPackage).Assembly.GetName().Version.ToString();
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.Instance.ApplicationVersion,
@@ -163,7 +164,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateNormal));
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -173,7 +174,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMaximize));
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.IsTrue(_objectUnderTest.IsWindowActive());
         }
@@ -183,7 +184,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             DteMock.Setup(d => d.MainWindow).Returns(Mock.Of<Window>(w => w.WindowState == vsWindowState.vsWindowStateMinimize));
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.IsFalse(_objectUnderTest.IsWindowActive());
         }
@@ -192,7 +193,10 @@ namespace GoogleCloudExtensionUnitTests
         public async Task TestGetServiceSI_GetsServiceOfTypeIRegisteredByS()
         {
             Mock<IVsSolution> solutionMock = ServiceProviderMock.SetupService<SVsSolution, IVsSolution>();
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
+            _objectUnderTest.AddService(
+                typeof(SVsSolution),
+                (container, token, type) => Task.FromResult<object>(solutionMock.Object));
 
             IVsSolution service = _objectUnderTest.GetService<SVsSolution, IVsSolution>();
 
@@ -204,7 +208,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var mockedFileSystemService = Mock.Of<IFileSystem>();
             ComponentModelMock.Setup(s => s.GetService<IFileSystem>()).Returns(mockedFileSystemService);
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             var service = _objectUnderTest.GetMefService<IFileSystem>();
 
@@ -216,7 +220,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var exportProvider = new FakeExportProvider<IFileSystem>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Lazy<IFileSystem> service = _objectUnderTest.GetMefServiceLazy<IFileSystem>();
 
@@ -226,29 +230,29 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public async Task TestShowOptionPage_OptionPage()
         {
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             _objectUnderTest.ShowOptionPage<AnalyticsOptions>();
         }
 
         [TestMethod]
-        public async Task TestShellUtils_Initalized()
+        public async Task TestShellUtils_Initialized()
         {
             var exportProvider = new FakeExportProvider<IShellUtils>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ShellUtils);
         }
 
         [TestMethod]
-        public async Task TestGcpOutputWindow_Initalized()
+        public async Task TestGcpOutputWindow_Initialized()
         {
             var exportProvider = new FakeExportProvider<IGcpOutputWindow>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.GcpOutputWindow);
         }
 
@@ -256,7 +260,7 @@ namespace GoogleCloudExtensionUnitTests
         public async Task TestSubscribeClosingEvent()
         {
             var eventHandlerMock = new Mock<Action<object, EventArgs>>();
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             _objectUnderTest.SubscribeClosingEvent(new EventHandler(eventHandlerMock.Object));
             ((IVsPackage)_objectUnderTest).QueryClose(out _);
@@ -269,7 +273,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var eventHandlerMock = new Mock<Action<object, EventArgs>>();
             var mockedHandler = new EventHandler(eventHandlerMock.Object);
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
             _objectUnderTest.SubscribeClosingEvent(mockedHandler);
 
             _objectUnderTest.UnsubscribeClosingEvent(mockedHandler);
@@ -290,29 +294,7 @@ namespace GoogleCloudExtensionUnitTests
         public async Task TestFindToolWindow_ReturnsInstanceForCreateTrue()
         {
             Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
-            Guid clsid = Guid.Empty;
-            Guid activate = Guid.Empty;
-            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
-            // ReSharper disable once RedundantAssignment
-            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
-            uiShellMock.Setup(
-                shell => shell.CreateToolWindow(
-                    It.IsAny<uint>(), It.IsAny<uint>(), It.IsAny<object>(), ref
-                    clsid, ref persistenceSlot, ref activate, It.IsAny<IServiceProvider>(), It.IsAny<string>(),
-                    It.IsAny<int[]>(),
-                    out frame)).Returns(VSConstants.S_OK);
-
-            await RunPackageInitalizeAsync();
-            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
-
-            Assert.IsNotNull(toolWindow);
-        }
-
-        [TestMethod]
-        public async Task TestFindToolWindow_ReturnsExistingInstance()
-        {
-            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
-            Guid clsid = Guid.Empty;
+            Guid classId = Guid.Empty;
             Guid activate = Guid.Empty;
             Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
             // ReSharper disable once RedundantAssignment
@@ -322,8 +304,7 @@ namespace GoogleCloudExtensionUnitTests
                         It.IsAny<uint>(),
                         It.IsAny<uint>(),
                         It.IsAny<object>(),
-                        ref
-                        clsid,
+                        ref classId,
                         ref persistenceSlot,
                         ref activate,
                         It.IsAny<IServiceProvider>(),
@@ -332,7 +313,42 @@ namespace GoogleCloudExtensionUnitTests
                         out frame))
                 .Returns(VSConstants.S_OK);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
+            _objectUnderTest.AddService(
+                typeof(SVsUIShell),
+                (container, token, type) => Task.FromResult<object>(uiShellMock.Object));
+            var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
+
+            Assert.IsNotNull(toolWindow);
+        }
+
+        [TestMethod]
+        public async Task TestFindToolWindow_ReturnsExistingInstance()
+        {
+            Mock<IVsUIShell> uiShellMock = ServiceProviderMock.SetupService<SVsUIShell, IVsUIShell>();
+            Guid classId = Guid.Empty;
+            Guid activate = Guid.Empty;
+            Guid persistenceSlot = typeof(LogsViewerToolWindow).GUID;
+            // ReSharper disable once RedundantAssignment
+            IVsWindowFrame frame = VsWindowFrameMocks.GetMockedWindowFrame();
+            uiShellMock.Setup(
+                    shell => shell.CreateToolWindow(
+                        It.IsAny<uint>(),
+                        It.IsAny<uint>(),
+                        It.IsAny<object>(),
+                        ref classId,
+                        ref persistenceSlot,
+                        ref activate,
+                        It.IsAny<IServiceProvider>(),
+                        It.IsAny<string>(),
+                        It.IsAny<int[]>(),
+                        out frame))
+                .Returns(VSConstants.S_OK);
+
+            await RunPackageInitializeAsync();
+            _objectUnderTest.AddService(
+                typeof(SVsUIShell),
+                (container, token, type) => Task.FromResult<object>(uiShellMock.Object));
             var toolWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(true);
             var existingWindow = _objectUnderTest.FindToolWindow<LogsViewerToolWindow>(false);
 
@@ -340,56 +356,56 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestMethod]
-        public async Task TestProcessService_Initalized()
+        public async Task TestProcessService_Initialized()
         {
             var exportProvider = new FakeExportProvider<IProcessService>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.ProcessService);
         }
 
         [TestMethod]
-        public async Task TestStatusbarHelper_Initalized()
+        public async Task TestStatusbarHelper_Initialized()
         {
             var exportProvider = new FakeExportProvider<IStatusbarService>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.StatusbarHelper);
         }
 
         [TestMethod]
-        public async Task TestUserPromptService_Initalized()
+        public async Task TestUserPromptService_Initialized()
         {
             var exportProvider = new FakeExportProvider<IUserPromptService>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.UserPromptService);
         }
 
         [TestMethod]
-        public async Task TestDataSourceFactory_Initalized()
+        public async Task TestDataSourceFactory_Initialized()
         {
             var exportProvider = new FakeExportProvider<IDataSourceFactory>();
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(exportProvider.MockedValue, _objectUnderTest.DataSourceFactory);
         }
 
         [TestMethod]
-        public async Task TestCredentialsStore_Initalized()
+        public async Task TestCredentialsStore_Initialized()
         {
             var mockedCredentialStore = Mock.Of<ICredentialsStore>();
             ComponentModelMock.Setup(s => s.GetService<ICredentialsStore>()).Returns(mockedCredentialStore);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Assert.AreEqual(mockedCredentialStore, _objectUnderTest.CredentialsStore);
         }
@@ -402,7 +418,7 @@ namespace GoogleCloudExtensionUnitTests
             ComponentModelMock.Setup(s => s.DefaultExportProvider).Returns(exportProvider);
             ComponentModelMock.Setup(s => s.GetService<ICredentialsStore>()).Returns(credentialsStoreMock.Object);
 
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
             credentialsStoreMock.Raise(cs => cs.CurrentProjectIdChanged += null, EventArgs.Empty);
 
             var shellUtilsMock = (Mock<IShellUtils>)exportProvider.MockObjects[typeof(IShellUtils)];
@@ -410,9 +426,9 @@ namespace GoogleCloudExtensionUnitTests
         }
 
         [TestMethod]
-        public async Task TestInitalize_RegistersGcpMeuBarControlFactory()
+        public async Task TestInitialize_RegistersGcpMeuBarControlFactory()
         {
-            await RunPackageInitalizeAsync();
+            await RunPackageInitializeAsync();
 
             Guid factoryGuid = typeof(GcpMenuBarControlFactory).GUID;
             _registerUiFactoryMock.Verify(
@@ -492,7 +508,7 @@ namespace GoogleCloudExtensionUnitTests
             public object GetService(Type serviceType) => ServiceProvider.GlobalProvider.GetService(serviceType);
         }
 
-        private async Task RunPackageInitalizeAsync()
+        private async Task RunPackageInitializeAsync()
         {
             var asyncServiceProviderMock =
                 new Mock<Microsoft.VisualStudio.Shell.Interop.IAsyncServiceProvider>(MockBehavior.Strict);

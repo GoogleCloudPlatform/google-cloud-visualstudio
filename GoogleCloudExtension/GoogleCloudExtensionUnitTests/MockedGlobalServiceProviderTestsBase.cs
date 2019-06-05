@@ -32,15 +32,15 @@ namespace GoogleCloudExtensionUnitTests
         protected Mock<IComponentModel> ComponentModelMock { get; private set; }
 
         [TestInitialize]
-        public void TestInitalize()
+        public void TestInitialize()
         {
-            var taskSchedularMock = new Mock<IVsTaskSchedulerService>();
-            Mock<IVsTaskSchedulerService2> taskSchedular2Mock = taskSchedularMock.As<IVsTaskSchedulerService2>();
-            taskSchedularMock.Setup(ts => ts.CreateTaskCompletionSource())
+            var taskSchedulerMock = new Mock<IVsTaskSchedulerService>();
+            Mock<IVsTaskSchedulerService2> taskScheduler2Mock = taskSchedulerMock.As<IVsTaskSchedulerService2>();
+            taskSchedulerMock.Setup(ts => ts.CreateTaskCompletionSource())
                 .Returns(() => new FakeIVsTaskCompletionSource());
-            taskSchedular2Mock.Setup(ts => ts.GetAsyncTaskContext())
+            taskScheduler2Mock.Setup(ts => ts.GetAsyncTaskContext())
                 .Returns(AssemblyInitialize.JoinableApplicationContext);
-            taskSchedular2Mock.Setup(ts => ts.GetTaskScheduler(It.IsAny<uint>()))
+            taskScheduler2Mock.Setup(ts => ts.GetTaskScheduler(It.IsAny<uint>()))
                 .Returns((uint context) => FakeIVsTask.GetSchedulerFromContext((__VSTASKRUNCONTEXT)context));
 
             DteMock = new Mock<DTE>().As<DTE2>();
@@ -49,7 +49,7 @@ namespace GoogleCloudExtensionUnitTests
             ServiceProviderMock.SetupService<DTE, DTE2>(DteMock);
             ComponentModelMock =
                 ServiceProviderMock.SetupService<SComponentModel, IComponentModel>(DefaultValueProvider.Mock);
-            ServiceProviderMock.SetupService<SVsTaskSchedulerService, IVsTaskSchedulerService2>(taskSchedular2Mock);
+            ServiceProviderMock.SetupService<SVsTaskSchedulerService, IVsTaskSchedulerService2>(taskScheduler2Mock);
             ServiceProviderMock.SetupDefaultServices();
 
             ServiceProvider oldProvider = ServiceProvider.GlobalProvider;

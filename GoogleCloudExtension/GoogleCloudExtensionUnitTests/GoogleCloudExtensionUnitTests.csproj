@@ -374,6 +374,7 @@
     <Compile Include="Utils\ViewModelBaseTests.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProviderTests.cs" />
+    <Compile Include="VsVersion\VS16\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VsVersionUtilsTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />

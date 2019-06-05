@@ -359,7 +359,12 @@ namespace GoogleCloudExtension
         public async Task<I> GetServiceAsync<S, I>()
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            return (I)await GetServiceAsync(typeof(S));
+            var service = (I)await GetServiceAsync(typeof(S));
+            if (service is null)
+            {
+                return (I)ServiceProvider.GlobalProvider.GetService(typeof(S));
+            }
+            return service;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
@@ -595,6 +596,7 @@
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
     <Compile Include="VsVersion\ToolsPathProviderBase.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VS16\ToolsPathProvider.cs" />
     <Compile Include="VsVersion\VsVersionUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
@@ -675,6 +677,9 @@
     </None>
     <None Include="GoogleCloudExtension.ruleset" />
     <None Include="Key.snk" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
@@ -736,6 +741,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.2.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.2\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\EnvDTE.8.0.2\lib\net10\EnvDTE.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -745,34 +757,211 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.33.1\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.33.1.1226, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.33.1.1226\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.33.1\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.33.1\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.33.1.1219, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.33.1.1219\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.33.1.1229, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.33.1.1229\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.33.1.1223, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.33.1.1223\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.33.1.1231, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.33.1.1231\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Container.v1, Version=1.33.1.1219, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.33.1.1219\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.33.1\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.33.1.1227, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.33.1.1227\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.33.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.33.1\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.33.1.1222, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.33.1.1222\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.ServiceManagement.v1, Version=1.33.1.1230, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.ServiceManagement.v1.1.33.1.1230\lib\net45\Google.Apis.ServiceManagement.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Management.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$('ProgramFiles(x86)')\Reference Assemblies\Microsoft\WMI\v1.0\Microsoft.Management.Infrastructure.dll</HintPath>
+    <Reference Include="Microsoft.Data.ConnectionUI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.ConnectionUI.15.7.27703\lib\net45\Microsoft.Data.ConnectionUI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.ComponentModelHost.15.7.27703\lib\net45\Microsoft.VisualStudio.ComponentModelHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.CoreUtility.15.5.27130\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Data, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Data.15.7.27703\lib\net45\Microsoft.VisualStudio.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.ImageCatalog, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.ImageCatalog.15.7.27703\lib\net45\Microsoft.VisualStudio.ImageCatalog.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Imaging, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Imaging.15.5.27130\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.14.3.26930\lib\net20\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6071\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26201\lib\Microsoft.VisualStudio.Shell.15.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.10.0.15.0.25415\lib\net45\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.14.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.14.0.15.0.25405\lib\net45\Microsoft.VisualStudio.Shell.Immutable.14.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.7.10.6072\lib\net11\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.10.0.10.0.30320\lib\net20\Microsoft.VisualStudio.Shell.Interop.10.0.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.11.0.11.0.61031\lib\net20\Microsoft.VisualStudio.Shell.Interop.11.0.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.12.0.12.0.30111\lib\net20\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime, Version=12.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.12.1.30329.0\lib\net20\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.14.3.26929\lib\net20\Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime, Version=15.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime.15.0.26929\lib\net20\Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime, Version=15.6.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime.15.6.27413\lib\net20\Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.8.0.8.0.50728\lib\net11\Microsoft.VisualStudio.Shell.Interop.8.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30730\lib\net11\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.Data.15.5.27130\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.Logic.15.5.27130\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Text.UI.15.5.27130\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6071\lib\net11\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.8.0.8.0.50728\lib\net11\Microsoft.VisualStudio.TextManager.Interop.8.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=15.6.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.15.6.56\lib\net46\Microsoft.VisualStudio.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Utilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Utilities.15.5.27130\lib\net46\Microsoft.VisualStudio.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation, Version=15.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Validation.15.3.53\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.AeroLite" />
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\stdole.7.0.3303\lib\net10\stdole.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="StreamJsonRpc, Version=1.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\StreamJsonRpc.1.3.23\lib\net45\StreamJsonRpc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
-    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.PowerShell.3.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.3\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net46\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net46\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
+    <Reference Include="YamlDotNet, Version=4.3.1.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.Signed.4.3.1\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -1139,6 +1328,12 @@
       <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
       <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v16\GoogleCloudExtension.TeamExplorerExtension.v16.csproj">
+      <Project>{A101420B-04F8-4480-838A-C2397B36C55A}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v16</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectTemplates\GcpProjectTemplate\GcpProjectTemplate.csproj">
       <Project>{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}</Project>
       <Name>GcpProjectTemplate</Name>
@@ -1148,150 +1343,29 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BouncyCastle">
-      <Version>1.8.2</Version>
-    </PackageReference>
-    <PackageReference Include="EnvDTE">
-      <Version>8.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Appengine.v1">
-      <Version>1.33.1.1226</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Clouderrorreporting.v1beta1">
-      <Version>1.33.1.1219</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.CloudResourceManager.v1">
-      <Version>1.33.1.1229</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.CloudSourceRepositories.v1">
-      <Version>1.33.1.1223</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Compute.v1">
-      <Version>1.33.1.1231</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Container.v1">
-      <Version>1.33.1.1219</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Logging.v2">
-      <Version>1.33.1.1227</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Plus.v1">
-      <Version>1.33.1.1222</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.ServiceManagement.v1">
-      <Version>1.33.1.1230</Version>
-    </PackageReference>
-    <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.PowerShell.3.ReferenceAssemblies">
-      <Version>1.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost">
-      <Version>15.7.27703</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Data">
-      <Version>15.7.27703</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.ImageCatalog">
-      <Version>15.7.27703</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Imaging">
-      <Version>15.5.27130</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
-      <Version>15.8.33</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.17</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
-      <Version>15.0.26201</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Framework">
-      <Version>15.5.27130</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Immutable.10.0">
-      <Version>15.0.25415</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Immutable.11.0">
-      <Version>15.0.25415</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Immutable.12.0">
-      <Version>15.0.25415</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Immutable.14.0">
-      <Version>15.0.25405</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime">
-      <Version>12.1.30329</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime">
-      <Version>14.3.26929</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime">
-      <Version>15.0.26929</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime">
-      <Version>15.6.27413</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.9.0">
-      <Version>9.0.30730</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Text.UI">
-      <Version>15.5.27130</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.6.56</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
-      <Version>15.8.132</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Validation">
-      <Version>15.3.53</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>15.7.109</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="stdole">
-      <Version>7.0.3303</Version>
-    </PackageReference>
-    <PackageReference Include="StreamJsonRpc">
-      <Version>1.3.23</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>1.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Management.Automation.dll">
-      <Version>10.0.10586</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.3</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.Algorithms">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.X509Certificates">
-      <Version>4.3.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="YamlDotNet.Signed">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="Zlib.Portable.Signed">
-      <Version>1.11.0</Version>
-    </PackageReference>
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\analyzers\cs\Microsoft.VisualStudio.SDK.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.132\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target BeforeTargets="ValidateVsixParts" Name="AddSuppressedReferences">
-    <Message Text="Adding file $(OutputPath)Newtonsoft.Json.dll" />
     <ItemGroup>
       <VSIXSourceItem Include="$(OutputPath)Newtonsoft.Json.dll" />
+      <VSIXSourceItem Include="$(OutputPath)YamlDotNet.dll" />
     </ItemGroup>
   </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.17\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.17\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\build\Microsoft.VisualStudio.SDK.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.132\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.132\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
+  </Target>
+  <Import Project="..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.17\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.17\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.132\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.132\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
 </Project>

@@ -44,6 +44,16 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
+        public void TestGetToolsPathProvider_GetsVs16Provider()
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2019Version);
+
+            IToolsPathProvider result = VsVersionUtils.GetToolsPathProvider();
+
+            Assert.IsInstanceOfType(result, typeof(GoogleCloudExtension.VsVersion.VS16.ToolsPathProvider));
+        }
+
+        [TestMethod]
         public void TestGetToolsPathProvider_ThrowsNotSupportedException()
         {
             const string expectedUnknownVersion = "ExpectedUnknownVersion";

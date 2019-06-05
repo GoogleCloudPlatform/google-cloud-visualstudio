@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3FEBB10A-ADAF-4807-B741-030B1F722D35}</ProjectGuid>
+    <ProjectGuid>{A101420B-04F8-4480-838A-C2397B36C55A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleCloudExtension.TeamExplorerExtension</RootNamespace>
-    <AssemblyName>GoogleCloudExtension.TeamExplorerExtension.v14</AssemblyName>
+    <RootNamespace>GoogleCloudExtensions.TeamExplorerExtension</RootNamespace>
+    <AssemblyName>GoogleCloudExtensions.TeamExplorerExtension.v16</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -37,15 +37,9 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.TeamFoundation.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Microsoft.TeamFoundation.Controls.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Git.Provider, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Microsoft.TeamFoundation.Git.Provider.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -58,14 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\Section.cs">
+      <Link>Section.cs</Link>
+    </Compile>
+    <Compile Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\TeamExplorerUtils.cs">
+      <Link>TeamExplorerUtils.cs</Link>
+    </Compile>
     <Compile Include="GitExtensionWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Section.cs" />
-    <Compile Include="TeamExplorerUtils.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <None Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
@@ -79,6 +73,9 @@
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Libs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

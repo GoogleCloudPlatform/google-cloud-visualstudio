@@ -17,9 +17,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +41,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(VisualStudioVersion) == '15.0'">
     <DefineConstants>$(DefineConstants);VS2017</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(VisualStudioVersion) == '16.0'">
+    <DefineConstants>$(DefineConstants);VS2019</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

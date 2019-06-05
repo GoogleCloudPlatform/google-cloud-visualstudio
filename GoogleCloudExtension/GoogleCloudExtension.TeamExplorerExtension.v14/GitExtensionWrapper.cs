@@ -24,13 +24,13 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     /// A wrapper to Microsoft.TeamFoundation.Git.Provider.dll.
     /// VS2015 and VS2017 can implement the wrapper respectively.
     /// </summary>
-    public class GitExtentionWrapper
+    public class GitExtensionWrapper
     {
         private readonly IServiceProvider _serviceProvider;
 
-        private IGitExt GitExtention => _serviceProvider.GetService(typeof(IGitExt)) as IGitExt;
+        private IGitExt GitExtension => _serviceProvider.GetService(typeof(IGitExt)) as IGitExt;
 
-        public GitExtentionWrapper(IServiceProvider serviceProvider)
+        public GitExtensionWrapper(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
         }
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         /// </returns>
         public string GetActiveRepository()
         {
-            IGitRepositoryInfo activeRepoInfo = GitExtention?.ActiveRepositories?.FirstOrDefault();
+            IGitRepositoryInfo activeRepoInfo = GitExtension?.ActiveRepositories?.FirstOrDefault();
             Debug.WriteLine($"GetActiveRepo {activeRepoInfo} {activeRepoInfo?.RepositoryPath} {activeRepoInfo?.CurrentBranch}");
             return activeRepoInfo?.RepositoryPath;
         }
