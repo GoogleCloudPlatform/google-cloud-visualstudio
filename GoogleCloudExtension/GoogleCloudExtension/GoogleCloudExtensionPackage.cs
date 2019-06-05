@@ -360,7 +360,7 @@ namespace GoogleCloudExtension
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
             var service = (I)await GetServiceAsync(typeof(S));
-            if (service is null)
+            if (service == null)
             {
                 return (I)ServiceProvider.GlobalProvider.GetService(typeof(S));
             }

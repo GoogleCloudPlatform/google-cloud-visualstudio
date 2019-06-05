@@ -18,7 +18,7 @@ using System.IO;
 namespace GoogleCloudExtension.VsVersion.VS16
 {
     /// <summary>
-    /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
+    /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2019 (v16.0).
     /// </summary>
     internal class ToolsPathProvider : ToolsPathProviderBase
     {
