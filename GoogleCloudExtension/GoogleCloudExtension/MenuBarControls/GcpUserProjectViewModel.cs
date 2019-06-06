@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.MenuBarControls
         private AsyncProperty<string> _profileNameAsync;
         private AsyncProperty<Project> _currentProject;
         private bool _isPopupOpen;
-        private AsyncProperty<string> _profileEmailAsyc;
+        private AsyncProperty<string> _profileEmailAsync;
 
         public AsyncProperty<Project> CurrentProjectAsync
         {
@@ -64,10 +64,10 @@ namespace GoogleCloudExtension.MenuBarControls
             private set => SetValueAndRaise(ref _profileNameAsync, value);
         }
 
-        public AsyncProperty<string> ProfileEmailAsyc
+        public AsyncProperty<string> ProfileEmailAsync
         {
-            get => _profileEmailAsyc;
-            private set => SetValueAndRaise(ref _profileEmailAsyc, value);
+            get => _profileEmailAsync;
+            private set => SetValueAndRaise(ref _profileEmailAsync, value);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.MenuBarControls
         }
 
         /// <summary>
-        /// Refreshes <see cref="IGcpUserProjectViewModel.ProfileEmailAsyc"/>, <see cref="IGcpUserProjectViewModel.ProfileNameAsync"/> and
+        /// Refreshes <see cref="IGcpUserProjectViewModel.ProfileEmailAsync"/>, <see cref="IGcpUserProjectViewModel.ProfileNameAsync"/> and
         /// <see cref="IGcpUserProjectViewModel.ProfilePictureUrlAsync"/>.
         /// </summary>
         public void UpdateUserProfile()
@@ -140,7 +140,7 @@ namespace GoogleCloudExtension.MenuBarControls
                     profileTask,
                     x => x?.DisplayName,
                     Resources.UiLoadingMessage);
-                ProfileEmailAsyc = AsyncProperty.Create(
+                ProfileEmailAsync = AsyncProperty.Create(
                     profileTask,
                     p => p.Emails.FirstOrDefault()?.Value);
             }
@@ -148,7 +148,7 @@ namespace GoogleCloudExtension.MenuBarControls
             {
                 ProfilePictureUrlAsync = new AsyncProperty<string>(null);
                 ProfileNameAsync = new AsyncProperty<string>(null);
-                ProfileEmailAsyc = new AsyncProperty<string>(null);
+                ProfileEmailAsync = new AsyncProperty<string>(null);
             }
         }
 

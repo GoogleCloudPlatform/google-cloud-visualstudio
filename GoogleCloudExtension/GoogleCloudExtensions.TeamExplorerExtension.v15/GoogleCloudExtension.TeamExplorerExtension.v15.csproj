@@ -59,7 +59,7 @@
     <Compile Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\TeamExplorerUtils.cs">
       <Link>TeamExplorerUtils.cs</Link>
     </Compile>
-    <Compile Include="GitExtentionWrapper.cs" />
+    <Compile Include="GitExtensionWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

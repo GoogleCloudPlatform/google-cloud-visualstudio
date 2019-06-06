@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Windows;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtensionUnitTests.MenuBarControls
 {
@@ -96,6 +97,14 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
             int hrResult = _objectUnderTest.GetFrameworkElement(out object uiObject);
             Assert.AreEqual(VSConstants.S_OK, hrResult);
             Assert.AreEqual(_objectUnderTest, uiObject);
+        }
+
+        [TestMethod]
+        public void TestHitTest()
+        {
+            int result = ((INonClientArea)_objectUnderTest).HitTest(default);
+
+            Assert.AreEqual(GcpMenuBarControl.HTCLIENT, result);
         }
     }
 }

@@ -25,13 +25,13 @@
              xmlns:wpf="clr-namespace:GoogleCloudExtension.Utils.Wpf;assembly=GoogleCloudExtension.Utils"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance local:IGcpUserProjectViewModel}"
+             d:DataContext="{d:DesignInstance local:GcpUserProjectViewModel}"
              Visibility="{Binding Options.HideUserProjectControl, Converter={utils:VisibilityConverter IsNegated=True}}">
     <UserControl.Resources>
         <ControlTemplate x:Key="ContentOnlyTemplate" TargetType="ContentControl">
             <ContentPresenter />
         </ControlTemplate>
-
+        
         <Style x:Key="ContentOnlyButtonStyle" TargetType="Button" >
             <Setter Property="Template" Value="{StaticResource ContentOnlyTemplate}"/>
             <!-- This value is needed, as the button base style was overriding it. -->
@@ -59,7 +59,6 @@
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static platformUi:ThemedDialogColors.WindowBorderBrushKey}}"/>
         </Style>
     </UserControl.Style>
-
     <Button Command="{Binding OpenPopup}"
             MinWidth="50"
             MaxHeight="20"
@@ -68,14 +67,16 @@
             Style="{StaticResource ContentOnlyButtonStyle}">
         <StackPanel Orientation="Horizontal">
             <wpf:AsyncPropertyContent Target="{Binding CurrentProjectAsync}"
-                                        SuccessContent="{Binding CurrentProjectAsync.Value.Name,
-                                            TargetNullValue={x:Static ext:Resources.MenuBarNoProjectMessage},
-                                            FallbackValue={x:Static ext:Resources.MenuBarNoProjectMessage}}"
-                                        PendingContent="{x:Static ext:Resources.UiLoadingMessage}"
-                                        CanceledContent="{StaticResource ProjectLoadErrorPanel}"
-                                        ErrorContent="{StaticResource ProjectLoadErrorPanel}"/>
-            <wpf:AsyncPropertyContent Target="{Binding ProfilePictureUrlAsync}"
-                                        Margin="5,0,0,0">
+                                      PendingContent="{x:Static ext:Resources.UiLoadingMessage}"
+                                      CanceledContent="{StaticResource ProjectLoadErrorPanel}"
+                                      ErrorContent="{StaticResource ProjectLoadErrorPanel}">
+                <wpf:AsyncPropertyContent.SuccessContent>
+                    <Binding Path="CurrentProjectAsync.Value.Name"
+                             TargetNullValue="{x:Static ext:Resources.MenuBarNoProjectMessage}"
+                             FallbackValue="{x:Static ext:Resources.MenuBarNoProjectMessage}" />
+                </wpf:AsyncPropertyContent.SuccessContent>
+            </wpf:AsyncPropertyContent>
+            <wpf:AsyncPropertyContent Target="{Binding ProfilePictureUrlAsync}" Margin="5,0,0,0">
                 <wpf:AsyncPropertyContent.SuccessContent>
                     <Image Source="{Binding ProfilePictureUrlAsync.Value}"
                            ToolTip="{Binding ProfileNameAsync.Value}"/>

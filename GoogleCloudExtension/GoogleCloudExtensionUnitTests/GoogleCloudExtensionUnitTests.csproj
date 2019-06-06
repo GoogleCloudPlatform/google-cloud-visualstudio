@@ -17,6 +17,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <LangVersion>7.3</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
@@ -276,6 +277,7 @@
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindowControlTests.cs" />
     <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBaseTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModelTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
@@ -374,6 +376,7 @@
     <Compile Include="Utils\ViewModelBaseTests.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProviderTests.cs" />
+    <Compile Include="VsVersion\VS16\ToolsPathProviderTests.cs" />
     <Compile Include="VsVersion\VsVersionUtilsTests.cs" />
     <Compile Include="VsWindowFrameMocks.cs" />
     <Compile Include="StackframeParserTests.cs" />

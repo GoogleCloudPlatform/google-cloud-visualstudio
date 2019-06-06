@@ -208,14 +208,14 @@ namespace GoogleCloudExtension.Utils
 
         private static async Task ReadLinesFromOutputAsync(
             OutputStream outputStream,
-            StreamReader stream,
+            TextReader stream,
             Func<string, OutputStream, Task> handler)
         {
             if (handler != null)
             {
-                while (!stream.EndOfStream)
+                string line;
+                while ((line = await stream.ReadLineAsync()) != null)
                 {
-                    string line = await stream.ReadLineAsync();
                     await handler(line, outputStream);
                 }
             }

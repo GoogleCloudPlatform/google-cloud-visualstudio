@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
+using GoogleCloudExtension.VsVersion;
 
 namespace GoogleCloudExtension.Git
 {
@@ -26,10 +27,6 @@ namespace GoogleCloudExtension.Git
     /// </summary>
     public static class VsGitData
     {
-        private const string VisualStudio2015Version = "14.0";
-        private const string VisualStudio2017Version = "15.0";
-        private const string Vs14GitKey = @"Software\Microsoft\VisualStudio\14.0\TeamFoundation\GitSourceControl";
-        private const string Vs15GitKey = @"Software\Microsoft\VisualStudio\15.0\TeamFoundation\GitSourceControl";
 
         /// <summary>
         /// Add local repository to Visual Studio registry.
@@ -39,16 +36,20 @@ namespace GoogleCloudExtension.Git
         /// <param name="localGitRoot">Git local root</param>
         public static void AddLocalRepositories(string vsVersion, string name, string localGitRoot)
         {
+            AddRepository(GetGitKey(vsVersion), name, localGitRoot);
+        }
+
+        private static string GetGitKey(string vsVersion)
+        {
             switch (vsVersion)
             {
-                case VisualStudio2015Version:
-                    AddRepository(Vs14GitKey, name, localGitRoot);
-                    break;
-                case VisualStudio2017Version:
-                    AddRepository(Vs15GitKey, name, localGitRoot);
-                    break;
+                case VsVersionUtils.VisualStudio2015Version:
+                case VsVersionUtils.VisualStudio2017Version:
+                case VsVersionUtils.VisualStudio2019Version:
+                    return $@"Software\Microsoft\VisualStudio\{vsVersion}\TeamFoundation\GitSourceControl";
                 default:
-                    throw new NotSupportedException($"Version {vsVersion} is not supported.");
+                    throw new ArgumentException($"Version {vsVersion} is not supported.", nameof(vsVersion));
+
             }
         }
 
@@ -61,15 +62,7 @@ namespace GoogleCloudExtension.Git
         /// </returns>
         public static IEnumerable<string> GetLocalRepositories(string vsVersion)
         {
-            switch (vsVersion)
-            {
-                case VisualStudio2015Version:
-                    return RepositoryList(Vs14GitKey);
-                case VisualStudio2017Version:
-                    return RepositoryList(Vs15GitKey);
-                default:
-                    throw new NotSupportedException($"Version {vsVersion} is not supported.");
-            }
+            return RepositoryList(GetGitKey(vsVersion));
         }
 
         private static RegistryKey OpenGitKey(string gitKeyPath, string path, bool writable = false)
@@ -81,15 +74,21 @@ namespace GoogleCloudExtension.Git
         {
             try
             {
-                using (var key = OpenGitKey(gitKeyPath, "Repositories"))
+                using (RegistryKey key = OpenGitKey(gitKeyPath, "Repositories"))
                 {
                     return key?.GetSubKeyNames()
                         .Select(x =>
                         {
-                            using (var subkey = key.OpenSubKey(x))
+                            using (RegistryKey subkey = key.OpenSubKey(x))
                             {
-                                var path = subkey?.GetValue("Path") as string;
-                                return path != null && Directory.Exists(path) ? path : null;
+                                if (subkey?.GetValue("Path") is string path && Directory.Exists(path))
+                                {
+                                    return path;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
                             }
                         })
                         .Where(x => x != null)
@@ -111,17 +110,13 @@ namespace GoogleCloudExtension.Git
         {
             try
             {
-                using (var key = OpenGitKey(gitKeyPath, "Repositories", writable: true))
+                using (RegistryKey key = OpenGitKey(gitKeyPath, "Repositories", writable: true))
                 {
-                    if (key == null)
-                    {
-                        return;
-                    }
 
-                    using (var newKey = key.CreateSubKey(Guid.NewGuid().ToString()))
+                    using (RegistryKey newKey = key?.CreateSubKey(Guid.NewGuid().ToString()))
                     {
-                        newKey.SetValue("Name", name);
-                        newKey.SetValue("Path", gitLocalPath);
+                        newKey?.SetValue("Name", name);
+                        newKey?.SetValue("Path", gitLocalPath);
                     }
                 }
             }

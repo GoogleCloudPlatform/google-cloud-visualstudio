@@ -24,6 +24,10 @@ namespace GoogleCloudExtension.VsVersion
     {
         public const string VisualStudio2015Version = "14.0";
         public const string VisualStudio2017Version = "15.0";
+        public const string VisualStudio2019Version = "16.0";
+        public const int Vs2015DebuggerPort = 4020;
+        public const int Vs2017DebuggerPort = 4022;
+        public const int Vs2019DebuggerPort = 4024;
 
         private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider =
             new Lazy<IToolsPathProvider>(GetToolsPathProvider);
@@ -46,25 +50,25 @@ namespace GoogleCloudExtension.VsVersion
             {
                 case VisualStudio2015Version:
                     return new VS14.ToolsPathProvider();
-
                 case VisualStudio2017Version:
                     return new VS15.ToolsPathProvider();
-
+                case VisualStudio2019Version:
+                    return new VS16.ToolsPathProvider();
                 default:
                     throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.Instance.VsVersion} is not supported.");
             }
         }
 
-        private static int GetRemoteDebuggerPort()
+        internal static int GetRemoteDebuggerPort()
         {
             switch (GoogleCloudExtensionPackage.Instance.VsVersion)
             {
                 case VisualStudio2015Version:
-                    return 4020;
-
+                    return Vs2015DebuggerPort;
                 case VisualStudio2017Version:
-                    return 4022;
-
+                    return Vs2017DebuggerPort;
+                case VisualStudio2019Version:
+                    return Vs2019DebuggerPort;
                 default:
                     throw new NotSupportedException($"Version {GoogleCloudExtensionPackage.Instance.VsVersion} is not supported.");
             }
