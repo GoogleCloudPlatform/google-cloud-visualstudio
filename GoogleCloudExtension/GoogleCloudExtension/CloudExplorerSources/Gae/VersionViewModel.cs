@@ -38,16 +38,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     {
         private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
         private const string IconStoppedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stopped.png";
-        private const string IconTransitionResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
 
-        private static readonly Lazy<ImageSource> s_versionRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
-        private static readonly Lazy<ImageSource> s_versionStoppedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStoppedResourcePath));
-        private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
+        private const string IconTransitionResourcePath =
+            "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
 
-        private readonly GaeSourceRootViewModel _owner;
+        public const string CloudConsoleServiceInstanceUrl = "https://console.cloud.google.com/appengine/instances";
+
+        private static readonly Lazy<ImageSource> s_versionRunningIcon =
+            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
+
+        private static readonly Lazy<ImageSource> s_versionStoppedIcon =
+            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStoppedResourcePath));
+
+        private static readonly Lazy<ImageSource> s_versionTransitionIcon =
+            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
+
+        private readonly IGaeSourceRootViewModel _owner;
         private readonly Service _service;
         private readonly double _trafficAllocation;
         private readonly bool _isLastVersion;
+
+        private readonly Lazy<IBrowserService> _browserServiceLazy =
+            GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
 
         public Google.Apis.Appengine.v1.Data.Version Version { get; }
 
@@ -71,11 +83,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         object ICloudExplorerItemSource.Item => GetItem();
+        private IBrowserService BrowserService => _browserServiceLazy.Value;
 
-        #endregion
+#endregion
 
         public VersionViewModel(
-            GaeSourceRootViewModel owner,
+            IGaeSourceRootViewModel owner,
             Service service,
             Google.Apis.Appengine.v1.Data.Version version,
             bool isLastVersion)
@@ -114,10 +127,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             // If the version is running it can be opened.
             if (Version.IsServing())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
+                menuItems.Add(
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerGaeVersionOpen,
+                        Command = new ProtectedCommand(OnOpenVersion)
+                    });
                 if (_trafficAllocation < 1.0)
                 {
-                    menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeMigrateAllTrafficHeader, Command = new ProtectedAsyncCommand(OnMigrateTrafficCommandAsync) });
+                    menuItems.Add(
+                        new MenuItem
+                        {
+                            Header = Resources.CloudExplorerGaeMigrateAllTrafficHeader,
+                            Command = new ProtectedAsyncCommand(OnMigrateTrafficCommandAsync)
+                        });
                 }
             }
 
@@ -131,21 +154,31 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             if (Version.IsServing())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedAsyncCommand(OnStopVersionAsync) });
+                menuItems.Add(
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerGaeStopVersion,
+                        Command = new ProtectedAsyncCommand(OnStopVersionAsync)
+                    });
             }
             else if (Version.IsStopped())
             {
-                menuItems.Add(new MenuItem
-                {
-                    Header = Resources.CloudExplorerGaeStartVersion,
-                    Command = new
-                    ProtectedAsyncCommand(OnStartVersionAsync)
-                });
+                menuItems.Add(
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerGaeStartVersion,
+                        Command = new ProtectedAsyncCommand(OnStartVersionAsync)
+                    });
             }
 
             if (CanDeleteVersion)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedAsyncCommand(OnDeleteVersionAsync) });
+                menuItems.Add(
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerGaeDeleteVersion,
+                        Command = new ProtectedAsyncCommand(OnDeleteVersionAsync)
+                    });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -201,16 +234,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnOpenOnCloudConsoleCommand()
         {
-            string url = "https://console.cloud.google.com/appengine/instances" +
+            string url = CloudConsoleServiceInstanceUrl +
                 $"?project={_owner.Context.CurrentProject.ProjectId}" +
                 $"&moduleId={_service.Id}" +
                 $"&versionId={Version.Id}";
-            Process.Start(url);
+            BrowserService.OpenBrowser(url);
         }
 
         private async Task OnPropertiesWindowCommandAsync() => await _owner.Context.ShowPropertiesWindowAsync(GetItem());
 
-        private void OnOpenVersion() => Process.Start(Version.VersionUrl);
+        private void OnOpenVersion() => BrowserService.OpenBrowser(Version.VersionUrl);
 
         private async Task DeleteVersionAsync()
         {
@@ -218,7 +251,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateMenu();
             Caption = Resources.CloudExplorerGaeVersionDeleteMessage;
-            GaeDataSource dataSource = _owner.DataSource;
+            IGaeDataSource dataSource = _owner.DataSource;
 
             try
             {
@@ -259,7 +292,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateMenu();
             Caption = statusMessage;
-            GaeDataSource dataSource = _owner.DataSource;
+            IGaeDataSource dataSource = _owner.DataSource;
 
             try
             {
@@ -301,7 +334,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 return Version.Id;
             }
-            string percent = _trafficAllocation.ToString("P", CultureInfo.InvariantCulture);
+
+            string percent = _trafficAllocation.ToString("P", CultureInfo.CurrentUICulture);
             return $"{Version.Id} ({percent})";
         }
 

@@ -65,16 +65,19 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
-        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
-        /// by the process.
+        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line
+        /// being output by the process.
         /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
-        /// of the UI thread. Must not be null.</param>
+        /// <param name="handler">
+        /// The callback to call with the line being output by the process, it can be called outside of the UI thread.
+        /// </param>
         /// <param name="workingDir">The working directory to use, optional.</param>
-        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        /// <param name="environment">
+        /// Optional parameter with values for environment variables to pass on to the child process.
+        /// </param>
         public Task<bool> RunCommandAsync(
             string file,
             string args,
@@ -86,7 +89,7 @@ namespace GoogleCloudExtension.Utils
                 args,
                 s =>
                 {
-                    handler(s);
+                    handler?.Invoke(s);
                     return Task.CompletedTask;
                 },
                 workingDir,
@@ -94,16 +97,19 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
-        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
-        /// by the process.
+        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line
+        /// being output by the process.
         /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
         /// </summary>
         /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with the line being output by the process, it can be called outside
-        /// of the UI thread. Must not be null.</param>
+        /// <param name="handler">
+        /// The callback to call with the line being output by the process, it can be called outside of the UI thread.
+        /// </param>
         /// <param name="workingDir">The working directory to use, optional.</param>
-        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        /// <param name="environment">
+        /// Optional parameter with values for environment variables to pass on to the child process.
+        /// </param>
         public async Task<bool> RunCommandAsync(
             string file,
             string args,
@@ -119,8 +125,8 @@ namespace GoogleCloudExtension.Utils
             };
 
             Task executeTask = process.ExecuteAsync();
-            var readErrorsTask = ReadLinesFromOutputAsync(process.StandardError, handler);
-            var readOutputTask = ReadLinesFromOutputAsync(process.StandardOutput, handler);
+            Task readErrorsTask = ReadLinesFromOutputAsync(process.StandardError, handler);
+            Task readOutputTask = ReadLinesFromOutputAsync(process.StandardOutput, handler);
             await Task.WhenAll(readErrorsTask, readOutputTask, executeTask);
             await executeTask;
             return process.ExitCode == 0;
@@ -189,7 +195,9 @@ namespace GoogleCloudExtension.Utils
             }
             catch (JsonException ex)
             {
-                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.StandardOutput}", ex);
+                throw new JsonOutputException(
+                    $"Failed to parse output of command: {file} {args}\n{output.StandardOutput}",
+                    ex);
             }
         }
 

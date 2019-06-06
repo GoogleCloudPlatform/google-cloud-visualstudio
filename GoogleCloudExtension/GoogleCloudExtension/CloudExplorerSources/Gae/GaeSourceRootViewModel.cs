@@ -33,14 +33,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// The root view for Google App Engine for the Cloud Explorer.
     /// </summary>
-    internal class GaeSourceRootViewModel : SourceRootViewModelBase
+    internal class GaeSourceRootViewModel : SourceRootViewModelBase, IGaeSourceRootViewModel
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeLoadingServicesCaption,
             IsLoading = true
         };
-        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
+        private static readonly TreeLeaf s_noItemsPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeNoServicesFoundCaption,
             IsWarning = true
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _browserService = GoogleCloudExtensionPackage.Instance.GetMefService<IBrowserService>();
         }
 
-        public GaeDataSource DataSource => _dataSource.Value;
+        public IGaeDataSource DataSource => _dataSource.Value;
 
         public Application GaeApplication { get; private set; }
 
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
-        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlaceholder;
 
         public override TreeLeaf ApiNotEnabledPlaceholder
             => new TreeLeaf
@@ -210,7 +210,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
                 if (Children.Count == 0)
                 {
-                    Children.Add(s_noItemsPlacehoder);
+                    Children.Add(s_noItemsPlaceholder);
                 }
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Success));
             }
