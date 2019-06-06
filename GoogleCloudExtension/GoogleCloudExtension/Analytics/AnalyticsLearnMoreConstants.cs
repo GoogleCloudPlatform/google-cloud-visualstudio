@@ -22,6 +22,6 @@ namespace GoogleCloudExtension.Analytics
         /// <summary>
         /// Url of the page containing a detailed explanation on how and why we collect Usage Statistics.
         /// </summary>
-        public const string AnalyticsLearnMoreLink = "https://cloud.google.com/tools/visual-studio/docs/usage-reporting";
+        public const string AnalyticsLearnMoreLink = "https://policies.google.com/privacy";
     }
 }
