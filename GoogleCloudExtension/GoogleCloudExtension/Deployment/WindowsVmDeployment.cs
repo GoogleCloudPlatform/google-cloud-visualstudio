@@ -102,7 +102,8 @@ namespace GoogleCloudExtension.Deployment
                 new MSBuildProperty("DeployIisAppPath", targetDeployPath),
                 new MSBuildProperty("UserName", credentials.User),
                 new MSBuildProperty("Password", credentials.Password),
-                new MSBuildProperty("AllowUntrustedCertificate", "True")
+                new MSBuildProperty("AllowUntrustedCertificate", "True"),
+                new MSBuildProperty("GoogleCloudExtensionBuild", "True")
             };
             string publishMessage = string.Format(Resources.GcePublishProgressMessage, targetInstance.Name);
             using (await StatusbarHelper.FreezeTextAsync(publishMessage))
