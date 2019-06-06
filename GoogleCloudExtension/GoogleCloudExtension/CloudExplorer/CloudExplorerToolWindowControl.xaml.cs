@@ -24,12 +24,12 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </summary>
     public partial class CloudExplorerToolWindowControl : UserControl
     {
-        private readonly SelectionUtils _selectionUtils;
+        private readonly ISelectionUtils _selectionUtils;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
         /// </summary>
-        public CloudExplorerToolWindowControl(SelectionUtils selectionUtils)
+        public CloudExplorerToolWindowControl(ISelectionUtils selectionUtils)
         {
             InitializeComponent();
             _selectionUtils = selectionUtils;

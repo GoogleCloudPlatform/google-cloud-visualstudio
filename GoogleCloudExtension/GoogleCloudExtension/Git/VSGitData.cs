@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
+using GoogleCloudExtension.VsVersion;
 
 namespace GoogleCloudExtension.Git
 {
@@ -40,7 +41,16 @@ namespace GoogleCloudExtension.Git
 
         private static string GetGitKey(string vsVersion)
         {
-            return $@"Software\Microsoft\VisualStudio\{vsVersion}\TeamFoundation\GitSourceControl";
+            switch (vsVersion)
+            {
+                case VsVersionUtils.VisualStudio2015Version:
+                case VsVersionUtils.VisualStudio2017Version:
+                case VsVersionUtils.VisualStudio2019Version:
+                    return $@"Software\Microsoft\VisualStudio\{vsVersion}\TeamFoundation\GitSourceControl";
+                default:
+                    throw new ArgumentException($"Version {vsVersion} is not supported.", nameof(vsVersion));
+
+            }
         }
 
         /// <summary>

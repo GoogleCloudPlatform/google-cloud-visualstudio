@@ -277,6 +277,7 @@
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindowControlTests.cs" />
     <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBaseTests.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModelTests.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
