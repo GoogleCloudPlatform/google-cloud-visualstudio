@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -128,13 +127,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public async Task TestRunCommandAsync_ReadsStdout()
         {
             var results = new List<string>();
-            Func<string, OutputStream, Task> handler = (s, os) =>
-            {
-                results.Add(s);
-                return Task.CompletedTask;
-            };
 
-            await _objectUnderTest.RunCommandAsync(EchoAppName, StdOutArgs, handler);
+            await _objectUnderTest.RunCommandAsync(EchoAppName, StdOutArgs, s => results.Add(s));
 
             CollectionAssert.AreEqual(new[] { ProcessOutput }, results);
         }
@@ -143,13 +137,8 @@ namespace GoogleCloudExtensionUnitTests.Utils
         public async Task TestRunCommandAsync_ReadsStderr()
         {
             var results = new List<string>();
-            Func<string, OutputStream, Task> handler = (s, os) =>
-            {
-                results.Add(s);
-                return Task.CompletedTask;
-            };
 
-            await _objectUnderTest.RunCommandAsync(EchoAppName, StdErrArgs, handler);
+            await _objectUnderTest.RunCommandAsync(EchoAppName, StdErrArgs, s => results.Add(s));
 
             CollectionAssert.AreEqual(new[] { ProcessOutput }, results);
         }

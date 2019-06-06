@@ -345,7 +345,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateContextMenu();
             Caption = Resources.CloudExplorerGaeUpdateTrafficSplitMessage;
-            GaeDataSource datasource = _owner.DataSource;
 
             try
             {
@@ -390,7 +389,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateContextMenu();
             Caption = String.Format(Resources.CloudExplorerGaeServiceDeleteMessage, Service.Id);
-            GaeDataSource datasource = _owner.DataSource;
+            IGaeDataSource datasource = _owner.DataSource;
 
             try
             {

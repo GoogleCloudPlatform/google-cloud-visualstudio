@@ -30,7 +30,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -54,7 +54,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.Is(match)));
         }
@@ -67,7 +67,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     It.IsAny<string>(),
                     It.Is(match),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
@@ -81,14 +81,14 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 p => p.RunCommandAsync(
                     command,
                     It.Is(match),
-                    It.IsAny<Func<string, OutputStream, Task>>(),
+                    It.IsAny<Func<string, Task>>(),
                     It.IsAny<string>(),
                     It.IsAny<IDictionary<string, string>>()));
         }
 
         public static void VerifyRunCommandAsyncHandler(
             this Mock<IProcessService> processServiceMock,
-            Func<string, OutputStream, Task> handler)
+            Func<string, Task> handler)
         {
             processServiceMock.Verify(
                 p => p.RunCommandAsync(

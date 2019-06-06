@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
@@ -35,27 +36,18 @@ namespace GoogleCloudExtension.Utils
         private static JoinableTaskFactory JoinableTaskFactory =>
             GoogleCloudExtensionPackage.Instance.JoinableTaskFactory;
 
-        private readonly Lazy<IVsOutputWindowPane> _outputWindowPane = new Lazy<IVsOutputWindowPane>(() =>
+        private readonly AsyncLazy<IVsOutputWindowPane> _outputWindowPane =
+            new AsyncLazy<IVsOutputWindowPane>(GetOutputWindowPaneAsync, JoinableTaskFactory);
+
+        private static async Task<IVsOutputWindowPane> GetOutputWindowPaneAsync()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var outputWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-            outputWindow?.CreatePane(s_windowGuid, WindowTitle, 1, 1);
+            IVsOutputWindow outputWindow =
+                await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SVsOutputWindow, IVsOutputWindow>();
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            ErrorHandler.ThrowOnFailure(outputWindow.CreatePane(s_windowGuid, WindowTitle, 1, 1));
 
-            IVsOutputWindowPane outputWindowPane = null;
-            outputWindow?.GetPane(s_windowGuid, out outputWindowPane);
-
+            ErrorHandler.ThrowOnFailure(outputWindow.GetPane(s_windowGuid, out IVsOutputWindowPane outputWindowPane));
             return outputWindowPane;
-        });
-
-        /// <summary>
-        /// Outputs a line to the GCP output window pane.
-        /// </summary>
-        /// <param name="str">The line of text to output.</param>
-        public void OutputLine(string str)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _outputWindowPane.Value?.OutputString(str);
-            _outputWindowPane.Value?.OutputString("\n");
         }
 
         /// <summary>
@@ -64,40 +56,10 @@ namespace GoogleCloudExtension.Utils
         /// <param name="str">The line of text to output.</param>
         public async Task OutputLineAsync(string str)
         {
+            IVsOutputWindowPane outputWindowPane = await _outputWindowPane.GetValueAsync();
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            _outputWindowPane.Value?.OutputString(str);
-            _outputWindowPane.Value?.OutputString("\n");
-        }
-
-        /// <summary>
-        /// Outputs a line to the GCP output window pane.
-        /// </summary>
-        /// <param name="line">The line of text to output.</param>
-        /// <param name="sourceStream">The source stream of the output (stderr or stdout). This value is ignored.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that completes when the line has been output to the Gcp Output window.
-        /// </returns>
-        public Task OutputLineAsync(string line, OutputStream sourceStream) => OutputLineAsync(line);
-
-        /// <summary>
-        /// Outputs debug information to the Visual Studio output window as well as to the
-        /// debug output.
-        /// </summary>
-        public void OutputDebugLine(string str)
-        {
-#if DEBUG
-            ThreadHelper.ThrowIfNotOnUIThread();
-            OutputLine(str);
-#endif
-        }
-
-        /// <summary>
-        /// Activates the GCP output window pane, making sure it is visible for the user.
-        /// </summary>
-        public void Activate()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _outputWindowPane.Value?.Activate();
+            outputWindowPane.OutputString(str);
+            outputWindowPane.OutputString("\n");
         }
 
         /// <summary>
@@ -105,17 +67,9 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public async Task ActivateAsync()
         {
+            IVsOutputWindowPane outputWindowPane = await _outputWindowPane.GetValueAsync();
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            _outputWindowPane.Value?.Activate();
-        }
-
-        /// <summary>
-        /// Clears all of the content from the GCP window pane.
-        /// </summary>
-        public void Clear()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _outputWindowPane.Value?.Clear();
+            outputWindowPane.Activate();
         }
 
         /// <summary>
@@ -123,8 +77,9 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public async Task ClearAsync()
         {
+            IVsOutputWindowPane outputWindowPane = await _outputWindowPane.GetValueAsync();
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            _outputWindowPane.Value?.Clear();
+            outputWindowPane.Clear();
         }
     }
 }

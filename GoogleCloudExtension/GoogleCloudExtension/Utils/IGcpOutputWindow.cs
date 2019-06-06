@@ -21,17 +21,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public interface IGcpOutputWindow
     {
-        /// <summary>
-        /// Outputs debug information to the Visual Studio output window as well as to the
-        /// debug output.
-        /// </summary>
-        void OutputDebugLine(string str);
-
-        /// <summary>
-        /// Outputs a line to the GCP output window pane.
-        /// </summary>
-        /// <param name="str">The line of text to output.</param>
-        void OutputLine(string str);
 
         /// <summary>
         /// Outputs a line to the GCP output window pane.
@@ -48,15 +37,5 @@ namespace GoogleCloudExtension.Utils
         /// Clears all of the content from the GCP window pane.
         /// </summary>
         Task ClearAsync();
-
-        /// <summary>
-        /// Outputs a line to the GCP output window pane.
-        /// </summary>
-        /// <param name="line">The line of text to output.</param>
-        /// <param name="sourceStream">The source stream of the output (stderr or stdout). This value is ignored.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that completes when the line has been output to the Gcp Output window.
-        /// </returns>
-        Task OutputLineAsync(string line, OutputStream sourceStream);
     }
 }

@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </summary>
     public abstract class SourceRootViewModelBase : TreeHierarchy, ISourceRootViewModelBase
     {
-        private static readonly TreeLeaf s_noCredentialsPlacehodler =
+        private static readonly TreeLeaf s_noCredentialsPlaceholder =
             new TreeLeaf
             {
                 IsError = true,
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 if (CredentialsStore.Default.CurrentAccount == null)
                 {
-                    Children.Add(s_noCredentialsPlacehodler);
+                    Children.Add(s_noCredentialsPlaceholder);
                     return;
                 }
 

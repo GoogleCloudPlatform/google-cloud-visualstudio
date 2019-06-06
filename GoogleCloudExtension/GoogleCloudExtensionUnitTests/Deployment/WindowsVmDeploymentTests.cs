@@ -63,7 +63,7 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         private Task<bool> _runCommandTask;
         private string _path;
         private string _parameters;
-        private Func<string, OutputStream, Task> _handler;
+        private Func<string, Task> _handler;
 
         [TestInitialize]
         public void BeforeEach()
@@ -88,10 +88,10 @@ namespace GoogleCloudExtensionUnitTests.Deployment
                     ps => ps.RunCommandAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
-                        It.IsAny<Func<string, OutputStream, Task>>(),
+                        It.IsAny<Func<string, Task>>(),
                         It.IsAny<string>(),
                         It.IsAny<IDictionary<string, string>>()))
-                .Callback<string, string, Func<string, OutputStream, Task>, string, IDictionary<string, string>>(
+                .Callback<string, string, Func<string, Task>, string, IDictionary<string, string>>(
                     (path, parameters, handler, workingDir, env) =>
                     {
                         _path = path;

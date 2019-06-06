@@ -16,7 +16,6 @@ using EnvDTE80;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.VsVersion
 {
     public abstract class ToolsPathProviderBase : IToolsPathProvider
     {
-        public const string SdkDirectoryName = "sdk";
+        private const string SdkDirectoryName = "sdk";
         public const string NugetFallbackFolderName = "NuGetFallbackFolder";
         public const string DotnetExeSubPath = @"dotnet\dotnet.exe";
         public const string ProgramW6432 = "%ProgramW6432%";
@@ -90,24 +89,15 @@ namespace GoogleCloudExtension.VsVersion
             string ideDirectoryPath = Path.GetDirectoryName(devenvPath);
             Debug.Assert(ideDirectoryPath != null);
             // TODO: add x86 support later
-            string result = Path.Combine(ideDirectoryPath, "Remote Debugger", "x64", "*");
-            GcpOutputWindow.Default.OutputDebugLine($"Debugger remote tools path: {result}");
-            return result;
+            return Path.Combine(ideDirectoryPath, "Remote Debugger", "x64", "*");
         }
 
-        public string GetExternalToolsPath()
-        {
-            string result = Path.Combine(VsRootDirectoryPath, "Web", "External");
-            GcpOutputWindow.Default.OutputDebugLine($"External tools path: {result}");
-            return result;
-        }
+        public string GetExternalToolsPath() => Path.Combine(VsRootDirectoryPath, "Web", "External");
 
         public string GetDotnetPath()
         {
             string programFilesPath = Environment.ExpandEnvironmentVariables(ProgramW6432);
-            string result = Path.Combine(programFilesPath, DotnetExeSubPath);
-            GcpOutputWindow.Default.OutputDebugLine($"Dotnet path: {result}");
-            return result;
+            return Path.Combine(programFilesPath, DotnetExeSubPath);
         }
     }
 }

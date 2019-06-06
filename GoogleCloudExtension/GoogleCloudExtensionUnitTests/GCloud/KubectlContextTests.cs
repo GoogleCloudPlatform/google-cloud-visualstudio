@@ -44,7 +44,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
         private Mock<IProcessService> _processServiceMock;
         private KubectlContext _objectUnderTest;
         private string _kubeConfigPath;
-        private Func<string, OutputStream, Task> _mockedOutputAction;
+        private Func<string, Task> _mockedOutputAction;
 
         private static readonly Cluster s_defaultCluster = new Cluster
         {
@@ -71,7 +71,7 @@ namespace GoogleCloudExtensionUnitTests.GCloud
                 _processServiceMock.ToLazy(),
                 CredentialsStore.Default);
             await _objectUnderTest.InitClusterCredentialsAsync(s_defaultCluster);
-            _mockedOutputAction = Mock.Of<Func<string, OutputStream, Task>>();
+            _mockedOutputAction = Mock.Of<Func<string, Task>>();
         }
 
         [TestMethod]

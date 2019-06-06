@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.GCloud
             string name,
             string imageTag,
             int replicas,
-            Func<string, OutputStream, Task> outputAction);
+            Func<string, Task> outputAction);
 
         /// <summary>
         /// Exposes the service targeting the deployment <paramref name="deployment"/>. The ports being exposed are fixed
@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="makePublic">True if the service should be made public, false otherwise.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> ExposeServiceAsync(string deployment, bool makePublic, Func<string, OutputStream, Task> outputAction);
+        Task<bool> ExposeServiceAsync(string deployment, bool makePublic, Func<string, Task> outputAction);
 
         /// <summary>
         /// Returns the service with the given <paramref name="name"/>.
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.GCloud
         Task<bool> UpdateDeploymentImageAsync(
             string name,
             string imageTag,
-            Func<string, OutputStream, Task> outputAction);
+            Func<string, Task> outputAction);
 
         /// <summary>
         /// Changes the number of replicas for the given <paramref name="name"/>.
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="replicas">The new number of replicas.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, OutputStream, Task> outputAction);
+        Task<bool> ScaleDeploymentAsync(string name, int replicas, Func<string, Task> outputAction);
 
         /// <summary>
         /// Deletes the service given by <paramref name="name"/>.
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="name">The name of the service to delete.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        Task<bool> DeleteServiceAsync(string name, Func<string, OutputStream, Task> outputAction);
+        Task<bool> DeleteServiceAsync(string name, Func<string, Task> outputAction);
 
         /// <summary>
         /// Gets the cluster IP address of a service.
