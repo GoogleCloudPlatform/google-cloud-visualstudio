@@ -12,16 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Analytics
+using GoogleCloudExtension.Utils;
+using System.IO;
+
+namespace GoogleCloudExtension.VsVersion.VS16
 {
     /// <summary>
-    /// Class to hold URL Usage Statistics explanation link and the code for opening it.
+    /// The implementation of <seealso cref="Deployment.IToolsPathProvider"/> for Visual Studio 2019 (v16.0).
     /// </summary>
-    public static class AnalyticsLearnMoreConstants
+    internal class ToolsPathProvider : ToolsPathProviderBase
     {
-        /// <summary>
-        /// Url of the page containing a detailed explanation on how and why we collect Usage Statistics.
-        /// </summary>
-        public const string AnalyticsLearnMoreLink = "https://policies.google.com/privacy";
+        public const string MSBuildSubPath = @"MSBuild\Current\Bin\MSBuild.exe";
+
+        public override string GetMsbuildPath()
+        {
+            string result = Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
+            GcpOutputWindow.Default.OutputDebugLine($"Msbuild V16 Path: {result}");
+            return result;
+        }
     }
 }

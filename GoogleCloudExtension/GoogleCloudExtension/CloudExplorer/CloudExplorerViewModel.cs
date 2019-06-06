@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsReady => !IsBusy;
 
         /// <summary>
-        /// The list list of roots for the hieratchical view, each root contains all of the data
+        /// The list list of roots for the hierarchical view, each root contains all of the data
         /// from a given source.
         /// </summary>
         public IList<ISourceRootViewModelBase> Roots
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public IGcpUserProjectViewModel UserProject { get; }
 
         /// <summary>
-        /// Command to execute when the user clicks on the emtpy state button.
+        /// Command to execute when the user clicks on the empty state button.
         /// </summary>
         public ICommand EmptyStateCommand
         {
@@ -276,7 +276,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 source.Refresh();
             }
 
-            // Wait for a full cycle so the automation server has time to adapt to the chagnes in the UI.
+            // Wait for a full cycle so the automation server has time to adapt to the changes in the UI.
             await Task.Delay(100);
             Roots = _sources.Select(x => x.Root).ToList();
         }

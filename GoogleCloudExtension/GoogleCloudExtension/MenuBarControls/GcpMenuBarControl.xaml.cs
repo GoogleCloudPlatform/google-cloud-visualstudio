@@ -15,7 +15,9 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.MenuBarControls
 {
@@ -25,8 +27,16 @@ namespace GoogleCloudExtension.MenuBarControls
     /// Interaction logic for GcpMenuBarControl.xaml
     /// </summary>
     [Export(typeof(IGcpMenuBarControl))]
-    public partial class GcpMenuBarControl : UserControl, IGcpMenuBarControl
+    public partial class GcpMenuBarControl : UserControl, IGcpMenuBarControl, INonClientArea
     {
+        /// <summary>
+        /// The response to WM_NCHITTEST that defers to the client.
+        /// </summary>
+        /// <seealso cref="http://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-nchittest"/>
+        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once IdentifierTypo
+        internal const int HTCLIENT = 1;
+
         private IVsUISimpleDataSource _vsDataSource;
 
         [ImportingConstructor]
@@ -38,7 +48,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
         /// <summary>Gets the data source for this element.</summary>
         /// <param name="ppDataSource">[out] The data source.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+        /// <returns>If the method succeeds, it returns <see cref="VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
         public int get_DataSource(out IVsUISimpleDataSource ppDataSource)
         {
             ppDataSource = _vsDataSource;
@@ -47,7 +57,7 @@ namespace GoogleCloudExtension.MenuBarControls
 
         /// <summary>Binds the specified data source to this element.</summary>
         /// <param name="pDataSource">The data source.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+        /// <returns>If the method succeeds, it returns <see cref="VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
         public int put_DataSource(IVsUISimpleDataSource pDataSource)
         {
             _vsDataSource = pDataSource;
@@ -55,13 +65,17 @@ namespace GoogleCloudExtension.MenuBarControls
         }
 
         /// <summary>Translates keyboard accelerators.</summary>
-        /// <param name="pAccel">The accelerator.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
-        public int TranslateAccelerator(IVsUIAccelerator pAccel) => VSConstants.S_OK;
+        /// <returns>If the method succeeds, it returns <see cref="VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+        public int TranslateAccelerator(IVsUIAccelerator _) => VSConstants.S_OK;
 
-        /// <summary>Gets the implementation-specific object (for example, an <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsUIWpfElement" /> or an <see cref="T:Microsoft.VisualStudio.Shell.Interop.IVsUIWin32Element" />).</summary>
+        /// <summary>
+        /// Gets the implementation-specific object
+        /// (e.g. <see cref="IVsUIWpfElement" />, <see cref="IVsUIWin32Element" />).
+        /// </summary>
         /// <param name="uiObject">[out] The UI object.</param>
-        /// <returns>If the method succeeds, it returns <see cref="F:Microsoft.VisualStudio.VSConstants.S_OK" />. If it fails, it returns an error code.</returns>
+        /// <returns>
+        /// If the method succeeds, it returns <see cref="VSConstants.S_OK" />. If it fails, it returns an error code.
+        /// </returns>
         public int GetUIObject(out object uiObject)
         {
             uiObject = this;
@@ -84,6 +98,18 @@ namespace GoogleCloudExtension.MenuBarControls
         {
             frameworkElement = this;
             return VSConstants.S_OK;
+        }
+
+        /// <summary>
+        /// Given a point, determines what the hit test result should be for
+        /// WM_NCHITTEST.
+        /// </summary>
+        /// <returns>HTCLIENT</returns>
+        /// <remarks>This method makes the control interactive when placed on the title bar.</remarks>
+        /// <seealso cref="http://docs.microsoft.com/en-us/windows/desktop/inputdev/wm-nchittest"/>
+        int INonClientArea.HitTest(Point _)
+        {
+            return HTCLIENT;
         }
     }
 }

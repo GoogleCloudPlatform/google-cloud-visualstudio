@@ -309,6 +309,19 @@ namespace GoogleCloudExtensionUnitTests.Deployment
         }
 
         [TestMethod]
+        public async Task TestPublishProjectAsync_ParametersIncludeGoogleCloudExtensionBuildProperty()
+        {
+            await _objectUnderTest.PublishProjectAsync(
+                _dteProjectMock.Object,
+                s_defaultInstance,
+                s_defaultCredentials,
+                DefaultWebSite,
+                DefaultConfigurationName);
+
+            StringAssert.Contains(_parameters, "/p:GoogleCloudExtensionBuild=\"True\"");
+        }
+
+        [TestMethod]
         public async Task TestPublishProjectAsync_OutputHandlerWritesToGcpOutputWindow()
         {
             await _objectUnderTest.PublishProjectAsync(

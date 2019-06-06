@@ -144,7 +144,7 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
 
             Assert.IsNull(_objectUnderTest.ProfilePictureUrlAsync.Value);
             Assert.IsNull(_objectUnderTest.ProfileNameAsync.Value);
-            Assert.IsNull(_objectUnderTest.ProfileEmailAsyc.Value);
+            Assert.IsNull(_objectUnderTest.ProfileEmailAsync.Value);
         }
 
         [TestMethod]
@@ -166,11 +166,11 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
 
             await _objectUnderTest.ProfilePictureUrlAsync;
             await _objectUnderTest.ProfileNameAsync;
-            await _objectUnderTest.ProfileEmailAsyc;
+            await _objectUnderTest.ProfileEmailAsync;
 
             Assert.AreEqual(expectedImageUrl, _objectUnderTest.ProfilePictureUrlAsync.Value);
             Assert.AreEqual(expectedDisplayName, _objectUnderTest.ProfileNameAsync.Value);
-            Assert.AreEqual(expectedEmailAdderss, _objectUnderTest.ProfileEmailAsyc.Value);
+            Assert.AreEqual(expectedEmailAdderss, _objectUnderTest.ProfileEmailAsync.Value);
         }
 
         [TestMethod]

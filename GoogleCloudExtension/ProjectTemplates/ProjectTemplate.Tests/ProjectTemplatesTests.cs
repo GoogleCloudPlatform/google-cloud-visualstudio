@@ -41,7 +41,12 @@ namespace ProjectTemplate.Tests
     {
         private const string SolutionName = "TestSolution";
         private const string SolutionFileName = SolutionName + ".sln";
+#if VS2019
+        private const string VsVersion = "16.0";
+#else
         private const string VsVersion = "15.0";
+#endif
+
 
         private static VisualStudioWrapper s_visualStudio;
 

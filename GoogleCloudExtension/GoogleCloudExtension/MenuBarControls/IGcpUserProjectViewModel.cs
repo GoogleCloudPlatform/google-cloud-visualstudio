@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.MenuBarControls
         AsyncProperty<Project> CurrentProjectAsync { get; }
         AsyncProperty<string> ProfileNameAsync { get; }
         AsyncProperty<string> ProfilePictureUrlAsync { get; }
-        AsyncProperty<string> ProfileEmailAsyc { get; }
+        AsyncProperty<string> ProfileEmailAsync { get; }
 
         /// <summary>
         /// Setting this to true opens the GCP Menu Bar Popup.
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.MenuBarControls
         void LoadCurrentProject();
 
         /// <summary>
-        /// Refreshes <see cref="ProfileEmailAsyc"/>, <see cref="ProfileNameAsync"/> and
+        /// Refreshes <see cref="ProfileEmailAsync"/>, <see cref="ProfileNameAsync"/> and
         /// <see cref="ProfilePictureUrlAsync"/>.
         /// </summary>
         void UpdateUserProfile();

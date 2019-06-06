@@ -44,6 +44,16 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
         }
 
         [TestMethod]
+        public void TestGetToolsPathProvider_GetsVs16Provider()
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns(VsVersionUtils.VisualStudio2019Version);
+
+            IToolsPathProvider result = VsVersionUtils.GetToolsPathProvider();
+
+            Assert.IsInstanceOfType(result, typeof(GoogleCloudExtension.VsVersion.VS16.ToolsPathProvider));
+        }
+
+        [TestMethod]
         public void TestGetToolsPathProvider_ThrowsNotSupportedException()
         {
             const string expectedUnknownVersion = "ExpectedUnknownVersion";
@@ -52,6 +62,27 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
             var e = Assert.ThrowsException<NotSupportedException>(VsVersionUtils.GetToolsPathProvider);
 
             StringAssert.Contains(e.Message, expectedUnknownVersion);
+        }
+
+        [TestMethod]
+        [DataRow(VsVersionUtils.VisualStudio2015Version, VsVersionUtils.Vs2015DebuggerPort)]
+        [DataRow(VsVersionUtils.VisualStudio2017Version, VsVersionUtils.Vs2017DebuggerPort)]
+        [DataRow(VsVersionUtils.VisualStudio2019Version, VsVersionUtils.Vs2019DebuggerPort)]
+        public void TestGetRemoteDebuggerPort_Success(string version, int expectedPort)
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns(version);
+
+            int result = VsVersionUtils.GetRemoteDebuggerPort();
+
+            Assert.AreEqual(expectedPort, result);
+        }
+
+        [TestMethod]
+        public void TestGetRemoteDebuggerPort_Throws()
+        {
+            PackageMock.Setup(p => p.VsVersion).Returns("UnknownVersion");
+
+            Assert.ThrowsException<NotSupportedException>(() => VsVersionUtils.GetRemoteDebuggerPort());
         }
     }
 }

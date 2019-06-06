@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.Services.Configuration
         }
 
         /// <summary>
-        /// Updates or generates tha app.yaml file for the given project with the given servie.
+        /// Updates or generates tha app.yaml file for the given project with the given service.
         /// </summary>
         /// <param name="project">The project that contains the app.yaml</param>
         /// <param name="service">The name of the service the app.yaml will target.</param>
@@ -146,9 +146,9 @@ namespace GoogleCloudExtension.Services.Configuration
         {
             string targetAppYaml = GetAppYamlPath(project);
             bool hasAppYaml = FileSystem.File.Exists(targetAppYaml);
-            bool hasDockefile = NetCoreAppUtils.CheckDockerfile(project);
+            bool hasDockerfile = NetCoreAppUtils.CheckDockerfile(project);
 
-            return new ProjectConfigurationStatus(hasAppYaml, hasDockefile);
+            return new ProjectConfigurationStatus(hasAppYaml, hasDockerfile);
         }
 
         /// <summary>
