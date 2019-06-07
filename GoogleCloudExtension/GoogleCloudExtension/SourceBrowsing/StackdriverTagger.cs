@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal class StackdriverTagger : ITagger<StackdriverTag>
     {
-        private static StackdriverTag s_emptyLoggerTag = new StackdriverTag();
+        private static readonly StackdriverTag s_emptyLoggerTag = new StackdriverTag();
         private readonly IToolTipProvider _toolTipProvider;
         private readonly ITextView _view;
         private readonly ITextBuffer _sourceBuffer;
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         }
 
         /// <summary>
-        /// Clear tooptip by clearing <seealso cref="ActiveTagData"/> and  refreshing the taggers.
+        /// Clear tooltip by clearing <seealso cref="ActiveTagData"/> and  refreshing the taggers.
         /// </summary>
         public void ClearTooltip()
         {
@@ -90,10 +90,10 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         public IEnumerable<ITagSpan<StackdriverTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            // Note, keep a local copy of ActiveTagData.Current. 
-            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            // Note, keep a local copy of ActiveTagData.Current.
+            // In case ActiveTagData.Current changes by other thread or by async reentrancy.
             var activeData = ActiveTagData.Current;
-            if (activeData?.TextView != _view || spans.Count == 0)
+            if (activeData == null || activeData.TextView != _view || spans.Count == 0)
             {
                 Debug.WriteLine($"TooltipSource.TextView != _view is {ActiveTagData.Current?.TextView != _view}, spans.Count is {spans.Count}");
                 HideTooltip();
@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)activeData.SourceLine - 1);
             string text = textLine.GetText();
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(activeData.MethodName) || !text.Contains(activeData.MethodName))
+            if (string.IsNullOrWhiteSpace(activeData.MethodName) || !text.Contains(activeData.MethodName))
             {
                 int begin = StringUtils.FirstNonSpaceIndex(text);
                 int end = StringUtils.LastNonSpaceIndex(text);
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             else
             {
-                int pos = text.IndexOf(activeData.MethodName);
+                int pos = text.IndexOf(activeData.MethodName, StringComparison.Ordinal);
                 if (pos < 0)
                 {
                     HideTooltip();
@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             else if (ActiveTagData.Current != null
                 // if tooltip is not shown, or if the view port width changes.
-                && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
+                && (!_isTooltipShown || Math.Abs(e.NewViewState.ViewportWidth - e.OldViewState.ViewportWidth) > .00001))
             {
                 ShowOrUpdateToolTip();
             }
@@ -175,8 +175,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             _toolTipProvider.ClearToolTip();
             _isTooltipShown = true;
-            // Note, keep a local copy of ActiveTagData.Current. 
-            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            // Note, keep a local copy of ActiveTagData.Current.
+            // In case ActiveTagData.Current changes by other thread or by async reentrancy.
             ActiveTagData activeData = ActiveTagData.Current;
             if (activeData == null)
             {

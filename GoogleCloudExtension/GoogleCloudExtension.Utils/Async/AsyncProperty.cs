@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.Utils.Async
         public static AsyncProperty<T> Create<TIn, T>(
             Task<TIn> valueSource,
             Func<TIn, T> func,
-            T defaultValue = default(T))
+            T defaultValue = default)
         {
             Task<T> continuationTask = valueSource.ContinueWith(
                 t => func(GetTaskResultSafe(t)));
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.Utils.Async
             }
         }
 
-        public AsyncProperty(Task<T> valueSource, T defaultValue = default(T)) : base(valueSource)
+        public AsyncProperty(Task<T> valueSource, T defaultValue = default) : base(valueSource)
         {
             Value = ActualTask.IsCompleted ?
                 GetTaskResultSafe(ActualTask, defaultValue) :

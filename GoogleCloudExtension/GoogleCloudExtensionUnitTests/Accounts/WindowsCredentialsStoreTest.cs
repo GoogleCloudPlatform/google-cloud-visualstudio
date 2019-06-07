@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
@@ -19,12 +25,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace GoogleCloudExtensionUnitTests.Accounts
 {

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudSourceRepositories.v1;
-using Google.Apis.CloudSourceRepositories.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Google;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudSourceRepositories.v1;
+using Google.Apis.CloudSourceRepositories.v1.Data;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.DataSources
         public async Task<IList<Repo>> ListReposAsync()
         {
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = Service.Projects.Repos.List(ProjectResourceName);
                     request.PageToken = token;

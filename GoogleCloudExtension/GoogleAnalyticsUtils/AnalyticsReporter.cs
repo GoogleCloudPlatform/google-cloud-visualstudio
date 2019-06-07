@@ -120,7 +120,7 @@ namespace GoogleAnalyticsUtils
             {
                 { HitTypeParam, EventTypeValue },
                 { EventCategoryParam, category },
-                { EventActionParam, action },
+                { EventActionParam, action }
             };
             if (label != null)
             {
@@ -151,7 +151,7 @@ namespace GoogleAnalyticsUtils
             var hitData = new Dictionary<string, string>(_baseHitData)
             {
                 { HitTypeParam, PageViewValue },
-                { DocumentPathParam, page },
+                { DocumentPathParam, page }
             };
 
             if (title != null)
@@ -184,7 +184,7 @@ namespace GoogleAnalyticsUtils
             var hitData = new Dictionary<string, string>(_baseHitData)
             {
                 { HitTypeParam, ScreenViewValue },
-                { ScreenNameParam, name },
+                { ScreenNameParam, name }
             };
             _hitSender.SendHitData(hitData);
         }
@@ -227,7 +227,7 @@ namespace GoogleAnalyticsUtils
                 { VersionParam, VersionValue },
                 { PropertyIdParam, PropertyId },
                 { ClientIdParam, ClientId },
-                { AppNameParam, ApplicationName },
+                { AppNameParam, ApplicationName }
             };
             if (ApplicationVersion != null)
             {

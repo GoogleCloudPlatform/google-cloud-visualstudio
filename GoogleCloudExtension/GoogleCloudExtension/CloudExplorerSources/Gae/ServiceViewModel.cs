@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -21,14 +29,6 @@ using GoogleCloudExtension.Services;
 using GoogleCloudExtension.SplitTrafficManagement;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -41,23 +41,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private static readonly Lazy<ImageSource> s_serviceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconServiceResourcePath));
 
-        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
+        private static readonly TreeLeaf s_noItemsPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeNoVersionsFoundCaption,
             IsWarning = true
         };
 
         private readonly GaeSourceRootViewModel _owner;
-        private readonly Service _service;
         private readonly IList<VersionViewModel> _versions;
 
         private bool _showOnlyFlexVersions = false;
         private bool _showOnlyDotNetRuntimes = false;
         private bool _showOnlyVersionsWithTraffic = false;
 
-        public Service Service => _service;
+        public Service Service { get; }
 
-        #region ICloudExplorerItemSource implementation
+#region ICloudExplorerItemSource implementation
 
         event EventHandler ICloudExplorerItemSource.ItemChanged
         {
@@ -120,7 +119,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             _versions = versions;
-            _service = service;
+            Service = service;
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
@@ -240,12 +239,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             if (Children.Count == 0)
             {
-                Children.Add(s_noItemsPlacehoder);
+                Children.Add(s_noItemsPlaceholder);
             }
         }
 
         /// <summary>
-        /// Opens the dialog to manage traffic splitting for the GAE service and 
+        /// Opens the dialog to manage traffic splitting for the GAE service and
         /// updates the traffic split if the user makes a change.
         /// </summary>
         private async Task OnSplitTrafficAsync()
@@ -256,20 +255,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
-            TrafficSplit split = new TrafficSplit()
+            TrafficSplit split = new TrafficSplit
             {
                 ShardBy = change.ShardBy,
-                Allocations = change.Allocations,
+                Allocations = change.Allocations
             };
             await UpdateTrafficSplitAsync(split);
         }
 
         /// <summary>
-        /// Promptes the user if they would like to delete this service.
+        /// Prompts the user if they would like to delete this service.
         /// </summary>
         private async Task OnDeleteServiceAsync()
         {
-            string confirmationMessage = String.Format(
+            string confirmationMessage = string.Format(
                Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, Service.Id);
             if (!UserPromptService.Default.ActionPrompt(
                 prompt: confirmationMessage,
@@ -287,7 +286,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private async Task OnBrowseStackdriverLogCommandAsync()
         {
             LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
-            window?.FilterGAEServiceLog(Service.Id);
+            window?.FilterGaeServiceLog(Service.Id);
         }
 
         private void OnShowOnlyFlexVersions()
@@ -345,12 +344,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateContextMenu();
             Caption = Resources.CloudExplorerGaeUpdateTrafficSplitMessage;
-            GaeDataSource datasource = _owner.DataSource;
 
             try
             {
                 await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                await _owner.InvalidateServiceAsync(_service.Id);
+                await _owner.InvalidateServiceAsync(Service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
@@ -359,17 +357,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
 
-                if (ex is DataSourceException)
-                {
-                    Caption = Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage;
-                }
-                else if (ex is TimeoutException)
-                {
-                    Caption = Resources.CloudExploreOperationTimeoutMessage;
-                }
-                else if (ex is OperationCanceledException)
-                {
-                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                switch (ex) {
+                    case DataSourceException _:
+                        Caption = Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage;
+                        break;
+                    case TimeoutException _:
+                        Caption = Resources.CloudExploreOperationTimeoutMessage;
+                        break;
+                    case OperationCanceledException _:
+                        Caption = Resources.CloudExploreOperationCanceledMessage;
+                        break;
                 }
             }
             finally
@@ -389,12 +386,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsLoading = true;
             Children.Clear();
             UpdateContextMenu();
-            Caption = String.Format(Resources.CloudExplorerGaeServiceDeleteMessage, Service.Id);
-            GaeDataSource datasource = _owner.DataSource;
+            Caption = string.Format(Resources.CloudExplorerGaeServiceDeleteMessage, Service.Id);
+            IGaeDataSource dataSource = _owner.DataSource;
 
             try
             {
-                await datasource.DeleteServiceAsync(Service.Id);
+                await dataSource.DeleteServiceAsync(Service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }
@@ -403,17 +400,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
 
-                if (ex is DataSourceException)
-                {
-                    Caption = Resources.CloudExplorerGaeDeleteServiceErrorMessage;
-                }
-                else if (ex is TimeoutException)
-                {
-                    Caption = Resources.CloudExploreOperationTimeoutMessage;
-                }
-                else if (ex is OperationCanceledException)
-                {
-                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                switch (ex) {
+                    case DataSourceException _:
+                        Caption = Resources.CloudExplorerGaeDeleteServiceErrorMessage;
+                        break;
+                    case TimeoutException _:
+                        Caption = Resources.CloudExploreOperationTimeoutMessage;
+                        break;
+                    case OperationCanceledException _:
+                        Caption = Resources.CloudExploreOperationCanceledMessage;
+                        break;
                 }
             }
             finally
@@ -427,6 +423,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        public ServiceItem GetItem() => new ServiceItem(Service);
+        private ServiceItem GetItem() => new ServiceItem(Service);
     }
 }

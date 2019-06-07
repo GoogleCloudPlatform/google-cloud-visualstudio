@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Utils
     {
         public static string ThrowIfNullOrEmpty(this string arg, string message)
         {
-            if (String.IsNullOrWhiteSpace(arg))
+            if (string.IsNullOrWhiteSpace(arg))
             {
                 throw new ArgumentException(message ?? "");
             }

@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using stdole;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtensionUnitTests

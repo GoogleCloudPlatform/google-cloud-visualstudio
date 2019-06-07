@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.FirewallManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtensionUnitTests.FirewallManagement
 {

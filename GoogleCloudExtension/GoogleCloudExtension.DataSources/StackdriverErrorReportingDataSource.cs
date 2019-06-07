@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
@@ -40,12 +40,12 @@ namespace GoogleCloudExtension.DataSources
 
         /// <summary>
         /// Get a page of <seealso cref="ErrorGroupStats"/> for the given <paramref name="groupId"/>.
-        /// The result is divided into pages when the result set is too large. 
+        /// The result is divided into pages when the result set is too large.
         /// This call get one page of results.
         /// </summary>
         /// <param name="timeRange">Specifiy the time range of the query.</param>
         /// <param name="timedCountDuration">
-        /// The preferred duration for a single returned `TimedCount`. 
+        /// The preferred duration for a single returned `TimedCount`.
         /// Optional, If not set, no timed counts are returned.
         /// </param>
         /// <param name="groupId">Optional, The error group id.</param>
@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.DataSources
 
         /// <summary>
         /// Gets a page of <seealso cref="ErrorEvent"/> for an error group.
-        /// The result is divided into pages when the result set is too large. 
+        /// The result is divided into pages when the result set is too large.
         /// This call get one page of results.
         /// </summary>
         /// <param name="errorGroup">An error group. <seealso cref="ErrorGroupStats"/>.</param>

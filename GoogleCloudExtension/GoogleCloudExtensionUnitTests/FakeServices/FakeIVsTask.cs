@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtensionUnitTests.FakeServices
 {
@@ -48,7 +48,7 @@ namespace GoogleCloudExtensionUnitTests.FakeServices
                     return result;
                 },
                 asyncState,
-                default(CancellationToken),
+                default,
                 continuationOptions,
                 scheduler);
             parent.OnMarkedAsBlocking?.Invoke(parent, new BlockingTaskEventArgs(parent, this));
@@ -153,7 +153,7 @@ namespace GoogleCloudExtensionUnitTests.FakeServices
         }
 
         /// <summary>Gets the cancellation token used for this task.</summary>
-        public CancellationToken CancellationToken => default(CancellationToken);
+        public CancellationToken CancellationToken => default;
 
         public static TaskScheduler GetSchedulerFromContext(__VSTASKRUNCONTEXT context)
         {

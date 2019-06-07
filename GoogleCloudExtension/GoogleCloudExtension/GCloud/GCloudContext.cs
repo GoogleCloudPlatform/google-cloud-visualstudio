@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.GCloud.Models;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.GCloud
 {

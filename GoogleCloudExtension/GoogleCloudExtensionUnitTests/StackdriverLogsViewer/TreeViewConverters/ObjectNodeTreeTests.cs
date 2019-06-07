@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.TreeViewConverters
 {

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils.Validation;
 
 namespace GoogleCloudExtension.Utils
 {

@@ -13,13 +13,14 @@
 // limitations under the License.
 
 using System.Windows;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Controls
 {
     /// <summary>
     /// This control represents a label with a help anchor to show help messages to the user.
     /// </summary>
-    public class LabelWithHelp : System.Windows.Controls.Label
+    public class LabelWithHelp : Label
     {
         public static readonly DependencyProperty HelpContentProperty =
             DependencyProperty.Register(

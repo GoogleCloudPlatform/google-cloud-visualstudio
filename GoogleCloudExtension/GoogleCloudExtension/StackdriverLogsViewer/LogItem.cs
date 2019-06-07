@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.SourceBrowsing;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.SourceBrowsing;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
-    /// An adaptor to LogEntry so as to provide properties for data binding.
+    /// An adapter to LogEntry so as to provide properties for data binding.
     /// </summary>
     internal class LogItem : Model
     {
@@ -127,7 +128,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public List<ObjectNodeTree> TreeViewObjects => _treeViewObjects.Value;
 
         /// <summary>
-        /// Gets the formated source location as content of data grid column.
+        /// Gets the formatted source location as content of data grid column.
         /// </summary>
         public string SourceLinkCaption { get; }
 
@@ -191,7 +192,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ParentToolWindowId = parentToolWindowId;
             if (logEntry == null)
             {
-                // Todo(jimwp): Change to NullArgumentException. Protect caller from null.
+                // Todo(JimWP): Change to NullArgumentException. Protect caller from null.
                 return;
             }
 
@@ -199,9 +200,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             TimeStamp = ConvertTimestamp(logEntry.Timestamp, timeZoneInfo);
             Message = ComposeMessage();
 
-            LogSeverity severity;
             if (string.IsNullOrWhiteSpace(Entry.Severity) ||
-                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out severity))
+                !Enum.TryParse(Entry.Severity, ignoreCase: true, result: out LogSeverity severity))
             {
                 severity = LogSeverity.Default;
             }
@@ -227,7 +227,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this));
                 SourceLinkCaption = string.Format(
                     Resources.LogsViewerSourceLinkCaptionFormat,
-                    System.IO.Path.GetFileName(SourceFilePath),
+                    Path.GetFileName(SourceFilePath),
                     SourceLine);
             }
         }
@@ -241,11 +241,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
             RaisePropertyChanged(nameof(Date));
-        }
-
-        private string GetSourceLocationField(string fieldName)
-        {
-            return Entry.Labels.ContainsKey(fieldName) ? Entry.Labels[fieldName] : null;
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
@@ -269,7 +264,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             string message = null;
             if (Entry?.JsonPayload != null)
             {
-                // If the JsonPload has message filed, display this field.
+                // If the JsonPayload has message filed, display this field.
                 if (Entry.JsonPayload.ContainsKey(JsonPayloadMessageFieldName))
                 {
                     message = Entry.JsonPayload[JsonPayloadMessageFieldName].ToString();
@@ -298,7 +293,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             // http://stackoverflow.com/questions/11654190/ienumerablechar-to-string
             // The discussion here suggests to use new string() that performs well.
-            return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray<char>());
+            return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray());
         }
 
         private DateTime ConvertTimestamp(object timestamp, TimeZoneInfo timeZoneInfo)
@@ -306,17 +301,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTime datetime;
             if (timestamp == null)
             {
-                Debug.Assert(false, "Entry Timestamp is null");
-                datetime = DateTime.MaxValue;
+                throw new ArgumentNullException(nameof(timestamp));
             }
-            else if (timestamp is DateTime)
+            else if (timestamp is DateTime time)
             {
-                datetime = (DateTime)timestamp;
+                datetime = time;
             }
             else
             {
                 // From Stackdriver Logging API reference,
-                // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. 
+                // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds.
                 // Example: "2014-10-02T15:01:23.045123456Z".
                 if (!DateTime.TryParse(timestamp.ToString(),
                     CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out datetime))

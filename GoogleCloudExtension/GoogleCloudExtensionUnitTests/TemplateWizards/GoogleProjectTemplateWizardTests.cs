@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using EnvDTE;
 using GoogleCloudExtension.PickProjectDialog;
 using GoogleCloudExtension.Services;
@@ -19,8 +21,6 @@ using GoogleCloudExtension.TemplateWizards;
 using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
 using TestingHelpers;
 using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 using VsProject = EnvDTE.Project;

@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Theming
 {
     /// <summary>
     /// Contains the information necessary to create a button in the dialog. This class is a
-    /// <seealso cref="DependencyObject"/> to allow bindings to be set on the properties. Specially 
+    /// <seealso cref="DependencyObject"/> to allow bindings to be set on the properties. Specially
     /// usefull for the <seealso cref="Command"/> property.
     /// </summary>
     public class DialogButtonInfo : FrameworkElement

@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </returns>
         public static async Task<PSDataCollection<PSObject>> InvokeAsync(
             this PowerShell powerShell,
-            CancellationToken cancelToken = default(CancellationToken))
+            CancellationToken cancelToken = default)
         {
             cancelToken.ThrowIfCancellationRequested();
 

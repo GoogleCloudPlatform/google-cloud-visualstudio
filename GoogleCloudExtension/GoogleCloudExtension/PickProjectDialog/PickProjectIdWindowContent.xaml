@@ -5,7 +5,7 @@
     * Use sample:LoadingState to see the UI in the loading state.
     * Use sample:LoadedState to see the UI in the loaded state, with projects in the DataGrid.
     * Use sample:NeedsAccountState to see the UI in the needs account state.
-    Remember to change back to local:PickProjectIdViewModel before checkin.
+    Remember to change back to local:PickProjectIdViewModel before check-in.
 -->
 <theming:CommonWindowContent x:TypeArguments="local:IPickProjectIdViewModel"
                              x:Class="GoogleCloudExtension.PickProjectDialog.PickProjectIdWindowContent"
@@ -27,12 +27,6 @@
                 <ResourceDictionary Source="../Theming/DefaultStylesResource.xaml"/>
                 <ResourceDictionary Source="../Theming/CommonDataTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- The collection view to maniuplate the list of projects. -->
-            <CollectionViewSource x:Key="{x:Static local:PickProjectIdWindowContent.CvsKey}"
-                                  Source="{Binding Projects}"
-                                  Filter="OnFilterItemInCollectionView"
-                                  IsLiveFilteringRequested="True" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -144,7 +138,8 @@
             <!-- The data row. -->
             <DataGrid Grid.Row="2"
                       Grid.ColumnSpan="2"
-                      ItemsSource="{Binding Source={StaticResource {x:Static local:PickProjectIdWindowContent.CvsKey}}}"
+                      Name="_dataGrid"
+                      ItemsSource="{Binding Projects}"
                       SelectedItem="{Binding SelectedProject}"
                       SelectionMode="Single"
                       SelectionUnit="FullRow"
@@ -159,13 +154,16 @@
                       IsReadOnly="True"
                       utils:ControlBehaviors.DoubleClickCommand="{Binding OkCommand}"
                       Visibility="{Binding LoadTask.IsSuccess, FallbackValue=Collapsed, Converter={utils:VisibilityConverter}}"
-                      Margin="0,5,0,0">
+                      Margin="0,5,0,0"
+                      
+                      >
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Header="{x:Static ext:Resources.GcpProjectNameHeader}"
                         Binding="{Binding Name}"
                         Width="*"
-                        MinWidth="5"/>
+                        MinWidth="5" >
+                    </DataGridTextColumn>
                     <DataGridTextColumn
                         Header="{x:Static ext:Resources.GcpProjectIdHeader}"
                         Binding="{Binding ProjectId}"

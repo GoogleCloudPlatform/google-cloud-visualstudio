@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.IO;
+using System.Text.RegularExpressions;
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using Microsoft.VisualStudio.Shell;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Projects.DotNetCore
 {

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
 using System;
 using System.Windows.Media;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.UserPrompt
 {
     /// <summary>
-    /// This class represents a user prompt dialog, which replaces the VS built-in dialog with a 
+    /// This class represents a user prompt dialog, which replaces the VS built-in dialog with a
     /// styled one.
     /// </summary>
     public class UserPromptWindow : CommonDialogWindowBase

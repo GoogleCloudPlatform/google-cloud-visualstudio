@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Accounts;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -49,7 +50,7 @@ namespace GoogleCloudExtension.Utils
                 throw new NotSupportedException("Failed to create the tool window");
             }
 
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
             return window;
         }
 

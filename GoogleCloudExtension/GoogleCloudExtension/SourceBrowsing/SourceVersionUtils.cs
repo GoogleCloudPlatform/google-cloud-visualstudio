@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Git;
-using GoogleCloudExtension.ProgressDialog;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.SolutionUtils;
-using GoogleCloudExtension.StackdriverLogsViewer;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EnvDTE;
+using GoogleCloudExtension.Git;
+using GoogleCloudExtension.PickFileDialog;
+using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.SolutionUtils;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.SourceBrowsing
@@ -60,7 +62,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         public static async Task NavigateToSourceLineCommandAsync(LogItem logItem)
         {
             await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
-            EnvDTE.Window window = null;
+            Window window = null;
             try
             {
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIdLabel) == true)
@@ -75,7 +77,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                         s_gitOperationOption);
                 }
                 else
-                {   // If the log item does not contain revision id, 
+                {   // If the log item does not contain revision id,
                     // fallback to using assembly version information.
                     var project = FindOrOpenProject(logItem);
                     if (project == null)
@@ -111,7 +113,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         public static void FileItemNotFoundPrompt(string filePath)
         {
             UserPromptService.Default.ErrorPrompt(
-                message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
+                message: string.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
                 title: Resources.SourceVersionUtilsUnalbeFindFileTitle);
         }
 
@@ -121,7 +123,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         public static void FailedToOpenFilePrompt(string filePath)
         {
             UserPromptService.Default.ErrorPrompt(
-                message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
+                message: string.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
                 title: Resources.UiDefaultPromptTitle);
         }
 
@@ -136,7 +138,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         private static ProjectHelper FindOrOpenProject(LogItem logItem)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (String.IsNullOrWhiteSpace(logItem.AssemblyName) || String.IsNullOrWhiteSpace(logItem.AssemblyVersion))
+            if (string.IsNullOrWhiteSpace(logItem.AssemblyName) || string.IsNullOrWhiteSpace(logItem.AssemblyVersion))
             {
                 LogEntryVersionInfoMissingPrompt();
                 return null;
@@ -147,12 +149,12 @@ namespace GoogleCloudExtension.SourceBrowsing
                 OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
             }
 
-            ProjectHelper project = null;
             Func<ProjectHelper> getProject =
                 () => SolutionHelper.CurrentSolution.Projects?
                 .Where(x => x.AssemblyName?.ToLowerInvariant() == logItem.AssemblyName.ToLowerInvariant())
                 .FirstOrDefault();
 
+            ProjectHelper project;
             if ((project = getProject()) == null)
             {
                 OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
@@ -174,7 +176,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         private static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
             if (UserPromptService.Default.ActionPrompt(
-                    prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
+                    prompt: string.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
                     title: Resources.UiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
@@ -204,7 +206,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// null: Operation is cancelled or failed to open the file revision.
         /// </returns>
         /// <exception cref="FileNotFoundException">Does not find the revision of file.</exception>
-        private static async Task<EnvDTE.Window> SearchGitRepoAndOpenFileAsync(string sha, string filePath)
+        private static async Task<Window> SearchGitRepoAndOpenFileAsync(string sha, string filePath)
         {
             if (s_localCache.ContainsKey(sha))
             {
@@ -237,7 +239,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             if (!StackdriverLogsViewerStates.Current.ContinueWithVersionMismatchAssemblyFlag)
             {
-                var prompt = String.Format(
+                var prompt = string.Format(
                     Resources.LogsViewerVersionMismatchPrompt,
                     project.UniqueName,
                     project.Version,
@@ -271,22 +273,22 @@ namespace GoogleCloudExtension.SourceBrowsing
             return false;
         }
 
-        private static async Task<EnvDTE.Window> OpenGitFileAsync(GitCommit commit, string filePath)
+        private static async Task<Window> OpenGitFileAsync(GitCommit commit, string filePath)
         {
             string relativePath;
-            var matchingFiles = await commit.FindMatchingEntryAsync(filePath);
-            if (matchingFiles.Count() == 0)
+            var matchingFiles = (await commit.FindMatchingEntryAsync(filePath)).ToList();
+            if (matchingFiles.Count == 0)
             {
                 UserPromptService.Default.ErrorPrompt(
-                    message: String.Format(
+                    message: string.Format(
                         Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                         filePath, commit.Sha, commit.Root),
                     title: Resources.UiDefaultPromptTitle);
                 relativePath = null;
             }
-            else if (matchingFiles.Count() > 1)
+            else if (matchingFiles.Count > 1)
             {
-                var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles);
+                var index = PickFileWindow.PromptUser(matchingFiles);
                 if (index < 0)
                 {
                     return null;
@@ -307,7 +309,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             return await OpenGitFile.Current.OpenAsync(
                 commit.Sha,
                 relativePath,
-                async (tmpFile) => await commit.SaveTempFileAsync(tmpFile, relativePath));
+                async tmpFile => await commit.SaveTempFileAsync(tmpFile, relativePath));
         }
     }
 }

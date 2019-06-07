@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.AddWindowsCredential;
@@ -23,10 +26,6 @@ using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ManageWindowsCredentials
 {
@@ -36,7 +35,6 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
     /// </summary>
     public class ManageWindowsCredentialsViewModel : ViewModelBase
     {
-        private readonly ManageWindowsCredentialsWindow _owner;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private readonly Instance _instance;
         private WindowsInstanceCredentials _selectedCredentials;
@@ -59,7 +57,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         /// <summary>
         /// The message to show at the top of the dialog.
         /// </summary>
-        public string Message => String.Format(Resources.ManageWindowsCredentialsWindowMessage, _instance.Name);
+        public string Message => string.Format(Resources.ManageWindowsCredentialsWindowMessage, _instance.Name);
 
         /// <summary>
         /// The currently selected credentials in the dialog.
@@ -83,10 +81,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             set => SetValueAndRaise(ref _credentials, value);
         }
 
-        public ManageWindowsCredentialsViewModel(Instance instance, ManageWindowsCredentialsWindow owner)
+        public ManageWindowsCredentialsViewModel(Instance instance)
         {
             _instance = instance;
-            _owner = owner;
 
             CredentialsList = LoadCredentialsForInstance(instance);
 
@@ -103,16 +100,16 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             ShowPasswordWindow.PromptUser(
                 new ShowPasswordWindow.Options
                 {
-                    Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                    Title = string.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
                     Password = SelectedCredentials.Password,
-                    Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User)
+                    Message = string.Format(Resources.ShowPasswordMessage, SelectedCredentials.User)
                 });
         }
 
         private void OnDeleteCredentialsCommand()
         {
             if (!UserPromptService.Default.ActionPrompt(
-                    String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
+                    string.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
                     Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle,
                     message: Resources.UiOperationCannotBeUndone,
                     actionCaption: Resources.UiDeleteButtonCaption))
@@ -126,7 +123,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private async Task OnAddCredentialsCommandAsync()
         {
-            var request = AddWindowsCredentialWindow.PromptUser(_instance);
+            var request = AddWindowsCredentialWindow.PromptUser();
             if (request == null)
             {
                 return;
@@ -141,7 +138,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     new ProgressDialogWindow.Options
                     {
                         Title = Resources.ResetPasswordProgressTitle,
-                        Message = String.Format(Resources.ResetPasswordProgressMessage, request.User),
+                        Message = string.Format(Resources.ResetPasswordProgressMessage, request.User),
                         IsCancellable = false
                     });
                 if (credentials != null)
@@ -149,9 +146,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     ShowPasswordWindow.PromptUser(
                         new ShowPasswordWindow.Options
                         {
-                            Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
-                            Message = String.Format(Resources.ShowPasswordNewPasswordMessage, credentials.User),
-                            Password = credentials.Password,
+                            Title = string.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                            Message = string.Format(Resources.ShowPasswordNewPasswordMessage, credentials.User),
+                            Password = credentials.Password
                         });
                 }
             }
@@ -175,7 +172,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             {
                 Debug.WriteLine("The user requested the password to be generated.");
                 if (!UserPromptService.Default.ActionPrompt(
-                        prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
+                        prompt: string.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
                         title: Resources.ResetPasswordConfirmationPromptTitle,
                         message: Resources.UiOperationCannotBeUndone,
                         actionCaption: Resources.UiResetButtonCaption,
@@ -198,7 +195,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             catch (GCloudException ex)
             {
                 UserPromptService.Default.ErrorPrompt(
-                    message: String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name),
+                    message: string.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name),
                     title: Resources.ResetPasswordConfirmationPromptTitle,
                     errorDetails: ex.Message);
                 return null;

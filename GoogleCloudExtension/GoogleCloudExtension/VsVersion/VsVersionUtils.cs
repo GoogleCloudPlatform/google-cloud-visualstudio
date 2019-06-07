@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
 using System;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.VsVersion.VS14;
 
 namespace GoogleCloudExtension.VsVersion
 {
@@ -49,7 +50,7 @@ namespace GoogleCloudExtension.VsVersion
             switch (GoogleCloudExtensionPackage.Instance.VsVersion)
             {
                 case VisualStudio2015Version:
-                    return new VS14.ToolsPathProvider();
+                    return new ToolsPathProvider();
                 case VisualStudio2017Version:
                     return new VS15.ToolsPathProvider();
                 case VisualStudio2019Version:

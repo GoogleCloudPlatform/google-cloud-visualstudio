@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.Utils.Async
         /// <param name="task">The task to get the result from.</param>
         /// <param name="defaultValue">The default value to return on a task error.</param>
         /// <returns>The value of the task, or the default value.</returns>
-        protected static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default(TIn))
+        protected static TIn GetTaskResultSafe<TIn>(Task<TIn> task, TIn defaultValue = default)
         {
             try
             {

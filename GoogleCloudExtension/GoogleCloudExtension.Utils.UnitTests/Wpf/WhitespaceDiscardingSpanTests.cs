@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Documents;
 using GoogleCloudExtension.Utils.Wpf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows.Documents;
 using TestingHelpers;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Wpf

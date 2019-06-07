@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 
@@ -171,7 +171,7 @@ namespace GoogleCloudExtension.Utils
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             DTE2 dte2 = GoogleCloudExtensionPackage.Instance.Dte;
-            dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
+            dte2.Events.WindowEvents.WindowClosing += window => onWindowCloseEventHandler(window);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.Utils
             try
             {
                 dte.Solution.Create(localPath, name);
-                dte.Solution.Close(false);
+                dte.Solution.Close();
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             { }

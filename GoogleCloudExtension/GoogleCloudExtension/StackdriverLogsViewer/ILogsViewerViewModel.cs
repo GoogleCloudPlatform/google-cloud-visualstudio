@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Windows.Data;
+using GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -124,7 +126,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the tool tip for Toggle Expand All button.
         /// </summary>
-        string ToggleExapandAllToolTip { get; }
+        string ToggleExpandAllToolTip { get; }
 
         /// <summary>
         /// Gets the LogItem collection

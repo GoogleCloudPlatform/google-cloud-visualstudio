@@ -12,11 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Http;
-using Google.Apis.Requests;
-using Google.Apis.Services;
-using Moq;
-using Moq.Language.Flow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +19,11 @@ using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Http;
+using Google.Apis.Requests;
+using Google.Apis.Services;
+using Moq;
+using Moq.Language.Flow;
 
 namespace GoogleCloudExtension.DataSources.UnitTests
 {

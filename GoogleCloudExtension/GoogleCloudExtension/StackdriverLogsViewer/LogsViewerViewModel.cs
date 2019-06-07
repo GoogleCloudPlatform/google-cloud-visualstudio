@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,6 +21,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -66,7 +68,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.FirstOrDefault();
         private string _simpleSearchText;
-        private string _advacedFilterText;
+        private string _advancedFilterText;
         private bool _showAdvancedFilter;
         private LogIdsList _logIdList;
         private bool _isAutoReloadChecked;
@@ -123,7 +125,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ProtectedCommand FilterSwitchCommand { get; }
 
         /// <summary>
-        /// Gets the command that filters log entris on a detail tree view field value.
+        /// Gets the command that filters log entries on a detail tree view field value.
         /// </summary>
         public ProtectedAsyncCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
 
@@ -137,12 +139,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string AdvancedFilterText
         {
-            get { return _advacedFilterText; }
-            set { SetValueAndRaise(ref _advacedFilterText, value); }
+            get { return _advancedFilterText; }
+            set { SetValueAndRaise(ref _advancedFilterText, value); }
         }
 
         /// <summary>
-        /// Gets the visbility of advanced filter or simple filter.
+        /// Gets the visibility of advanced filter or simple filter.
         /// </summary>
         public bool ShowAdvancedFilter
         {
@@ -224,14 +226,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             set
             {
                 SetValueAndRaise(ref _toggleExpandAllExpanded, value);
-                RaisePropertyChanged(nameof(ToggleExapandAllToolTip));
+                RaisePropertyChanged(nameof(ToggleExpandAllToolTip));
             }
         }
 
         /// <summary>
         /// Gets the tool tip for Toggle Expand All button.
         /// </summary>
-        public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
+        public string ToggleExpandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
 
         /// <summary>
@@ -574,7 +576,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 do
                 {
                     // Here, it does not do pageSize: _defaultPageSize - count,
-                    // Because this is requried to use same page size for getting next page.
+                    // Because this is required to use same page size for getting next page.
                     LogEntryRequestResult results = await DataSource.ListLogEntriesAsync(
                         _filter, order,
                         pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
@@ -722,8 +724,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             CancellationTokenSource = null;
-            var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
-            List<string> keys = item == null ? null : new List<string> { item.ResourceValue };
+            List<string> keys;
+            if (ResourceTypeSelector.SelectedMenuItem is ResourceValueItemViewModel item)
+            {
+                keys = new List<string> { item.ResourceValue };
+            }
+            else
+            {
+                keys = null;
+            }
+
             IList<string> logIdRequestResult =
                 await DataSource.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
@@ -753,8 +763,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 filter.AppendLine($"resource.type=\"{ResourceTypeSelector.SelectedResourceType.ResourceTypeKeys.Type}\"");
 
-                var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
-                if (valueItem != null)
+                if (ResourceTypeSelector.SelectedMenuItem is ResourceValueItemViewModel valueItem)
                 {
                     // Example: resource.labels.module_id="my_gae_default_service"
                     filter.AppendLine(

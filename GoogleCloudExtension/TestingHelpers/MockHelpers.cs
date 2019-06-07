@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Moq;
-using Moq.Language;
-using Moq.Language.Flow;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Moq;
+using Moq.Language;
+using Moq.Language.Flow;
 
 namespace TestingHelpers
 {

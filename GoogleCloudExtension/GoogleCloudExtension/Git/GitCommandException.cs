@@ -20,8 +20,5 @@ namespace GoogleCloudExtension.Git
     /// Exception if git command fails
     /// </summary>
     public class GitCommandException : Exception
-    {
-        public GitCommandException()
-        { }
-    }
+    { }
 }

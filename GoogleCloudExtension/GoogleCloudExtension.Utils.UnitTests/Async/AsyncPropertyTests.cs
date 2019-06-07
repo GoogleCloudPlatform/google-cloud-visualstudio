@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils.Async;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils.Async;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
 {

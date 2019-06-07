@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -74,7 +73,7 @@ namespace GoogleAnalyticsUtils
                 { IsInternalUserIndex, FalseValue },
                 { EventTypeIndex, eventType },
                 { EventNameIndex, eventName },
-                { IsEventHitIndex, TrueValue },
+                { IsEventHitIndex, TrueValue }
             };
             if (projectNumber != null)
             {
@@ -83,7 +82,7 @@ namespace GoogleAnalyticsUtils
             var serializedMetadata = metadata != null ? SerializeEventMetadata(metadata) : null;
 
             _reporter.ReportPageView(
-                page: GetPageViewURI(eventType: eventType, eventName: eventName),
+                page: GetPageViewUri(eventType: eventType, eventName: eventName),
                 title: serializedMetadata,
                 host: source,
                 customDimensions: customDimensions);
@@ -106,14 +105,14 @@ namespace GoogleAnalyticsUtils
 
         private static string SerializeEventMetadata(Dictionary<string, string> metadata)
         {
-            return String.Join(",", metadata.Select(SerializeMetadataEntry));
+            return string.Join(",", metadata.Select(SerializeMetadataEntry));
         }
 
         private static string SerializeMetadataEntry(KeyValuePair<string, string> entry) =>
             $"{entry.Key}={EscapeValue(entry.Value)}";
 
         /// <summary>
-        /// Escapes a value so it can be included in the GA hit and being able to parse them again on 
+        /// Escapes a value so it can be included in the GA hit and being able to parse them again on
         /// the backend Only the ',', '=' and '\\' characters need to be escaped as those are the separators
         /// for the values, in the string.
         /// </summary>
@@ -138,7 +137,7 @@ namespace GoogleAnalyticsUtils
             return result.ToString();
         }
 
-        private static string GetPageViewURI(string eventType, string eventName) =>
+        private static string GetPageViewUri(string eventType, string eventName) =>
             $"/virtual/{eventType}/{eventName}";
     }
 }

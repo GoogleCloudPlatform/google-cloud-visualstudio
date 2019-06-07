@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.ApiManagement;
-using GoogleCloudExtension.Theming;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// This class implements the basic behaviors for a cloud source's root view model. All source view models
     /// _should_ derive from this class but it is not mandatory. This class offers all place holder functionality,
-    /// common credentials and project check and setting the right state depending on the results from the 
+    /// common credentials and project check and setting the right state depending on the results from the
     /// underlying data source.
     /// </summary>
     public abstract class SourceRootViewModelBase : TreeHierarchy, ISourceRootViewModelBase
@@ -33,13 +33,13 @@ namespace GoogleCloudExtension.CloudExplorer
             new TreeLeaf
             {
                 IsError = true,
-                Caption = Resources.CloudExplorerNoLoggedInMessage,
+                Caption = Resources.CloudExplorerNoLoggedInMessage
             };
         private static readonly TreeLeaf s_noProjectPlaceholder =
             new TreeLeaf
             {
                 IsError = true,
-                Caption = Resources.CloudExplorerNoProjectSelectedMessage,
+                Caption = Resources.CloudExplorerNoProjectSelectedMessage
             };
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         /// <summary>
         /// Returns the icon to use for the root for this data source. By default all sources use the
-        /// default <seealso cref="CommonImageResources.s_logoIcon"/>. 
+        /// default <seealso cref="CommonImageResources.s_logoIcon"/>.
         /// Each node can override the icon with a custom one if desired.
         /// </summary>
         public virtual ImageSource RootIcon => CommonImageResources.CloudLogo16By16;

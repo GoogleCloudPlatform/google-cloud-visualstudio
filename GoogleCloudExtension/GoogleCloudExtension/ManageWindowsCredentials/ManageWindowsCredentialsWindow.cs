@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
     {
         private ManageWindowsCredentialsWindow(Instance instance) : base(GoogleCloudExtension.Resources.ManageWindowsCredentialsWindowTitle)
         {
-            Content = new ManageWindowsCredentialsWindowContent { DataContext = new ManageWindowsCredentialsViewModel(instance, this) };
+            Content = new ManageWindowsCredentialsWindowContent { DataContext = new ManageWindowsCredentialsViewModel(instance) };
         }
 
         public static void PromptUser(Instance instance)

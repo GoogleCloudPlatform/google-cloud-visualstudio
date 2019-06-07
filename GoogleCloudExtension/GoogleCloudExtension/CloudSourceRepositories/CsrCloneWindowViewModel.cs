@@ -12,6 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
@@ -23,16 +33,6 @@ using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtension.Utils.Validation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         }
 
         /// <summary>
-        /// The local path to clone the repository to 
+        /// The local path to clone the repository to
         /// </summary>
         public string LocalPath
         {
@@ -266,7 +266,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                     message: Resources.CsrCloneFailedMessage,
                     title: Resources.UiDefaultPromptTitle);
                 EventsReporterWrapper.ReportEvent(CsrClonedEvent.Create(CommandStatus.Failure));
-                return;
             }
         }
 
@@ -279,12 +278,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private void PickFoloder()
         {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            using (var dialog = new FolderBrowserDialog())
             {
                 dialog.SelectedPath = LocalPath;
                 dialog.ShowNewFolderButton = true;
                 DialogResult result = dialog.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK)
+                if (result == DialogResult.OK)
                 {
                     LocalPath = dialog.SelectedPath;
                 }

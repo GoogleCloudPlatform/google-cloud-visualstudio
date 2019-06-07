@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem
 {
     /// <summary>
     /// View model for SearchMenuItem control.
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Indicate if the submenu list is populated.
         /// Set to true disables loading submenu items.
         /// False: It loads submenu items when the popup menu item opens.
-        /// Default is true. 
+        /// Default is true.
         /// </summary>
         public bool IsSubmenuPopulated
         {
@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             => MenuItemParent?.CommandBubblingHandler(originalSource);
 
         /// <summary>
-        /// Inherited classes implement this to perform delay loading of sub menu items. 
+        /// Inherited classes implement this to perform delay loading of sub menu items.
         /// </summary>
         protected virtual Task LoadSubMenuAsync()
         {

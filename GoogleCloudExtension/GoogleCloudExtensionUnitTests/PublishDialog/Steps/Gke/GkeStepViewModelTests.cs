@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EnvDTE;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.Deployment;
@@ -26,10 +31,6 @@ using GoogleCloudExtension.Utils.Async;
 using GoogleCloudExtensionUnitTests.Projects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
@@ -654,7 +655,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.DeploymentProjectPropertyName,
+                    It.IsAny<Project>(), GkeStepViewModel.DeploymentProjectPropertyName,
                     It.IsAny<string>()), Times.Never);
         }
 
@@ -681,7 +682,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.VersionProjectPropertyName,
+                    It.IsAny<Project>(), GkeStepViewModel.VersionProjectPropertyName,
                     It.IsAny<string>()), Times.Never);
         }
 
@@ -709,7 +710,7 @@ namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.Gke
 
             _propertyServiceMock.Verify(
                 s => s.SaveUserProperty(
-                    It.IsAny<EnvDTE.Project>(), GkeStepViewModel.ReplicasProjectPropertyName,
+                    It.IsAny<Project>(), GkeStepViewModel.ReplicasProjectPropertyName,
                     It.IsAny<string>()), Times.Never);
         }
 

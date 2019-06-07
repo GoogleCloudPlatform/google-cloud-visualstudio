@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.StackdriverErrorReporting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -34,7 +34,7 @@ namespace GoogleCloudExtensionUnitTests
             var exception = GenerateException(() => Loop(3));
             var stackTrace = new StackTrace(exception, fNeedFileInfo: true);
             var parsedException = new ParsedException(exception.ToString());
-            Assert.AreEqual(stackTrace.FrameCount, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
+            Assert.AreEqual(stackTrace.FrameCount, parsedException.StackFrames.Count(x => x.IsWellParsed));
             Assert.AreEqual(s_exceptionHeader, parsedException.Header);
         }
 
@@ -43,7 +43,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var exception = GenerateException(() => GenerateInnerException(3));
             var parsedException = new ParsedException(exception.ToString());
-            Assert.AreEqual(14, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
+            Assert.AreEqual(14, parsedException.StackFrames.Count(x => x.IsWellParsed));
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var exception = GenerateException(() => File.Create(@"file://kkk\..\..\..\this is invalid path"));
             var parsedException = new ParsedException(exception.ToString());
-            Assert.AreEqual(2, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
+            Assert.AreEqual(2, parsedException.StackFrames.Count(x => x.IsWellParsed));
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]

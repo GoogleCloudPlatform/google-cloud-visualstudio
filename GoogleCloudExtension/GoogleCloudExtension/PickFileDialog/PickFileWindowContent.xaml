@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PickFileDialog"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:PickFileWindowViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">

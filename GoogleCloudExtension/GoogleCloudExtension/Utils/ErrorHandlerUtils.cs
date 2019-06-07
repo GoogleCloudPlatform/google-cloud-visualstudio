@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
+using System;
+using System.Threading.Tasks;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Services;
 using Microsoft.VisualStudio;
-using System;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -42,7 +41,7 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex) when (!IsCriticalException(ex))
             {
-                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
+                UnhandledExceptionEvent.Report(ex);
                 UserPromptService.Default.ExceptionPrompt(ex);
             }
         }
@@ -86,7 +85,7 @@ namespace GoogleCloudExtension.Utils
             }
             catch (Exception ex) when (!IsCriticalException(ex))
             {
-                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
+                UnhandledExceptionEvent.Report(ex);
                 UserPromptService.Default.ExceptionPrompt(ex);
             }
         }

@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using EnvDTE80;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +19,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using EnvDTE;
+using EnvDTE80;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class ListProcessStepViewModel : AttachDebuggerStepBase
     {
-        private readonly static string s_detectEngineTypeItemName = Resources.AttachDebuggerAutomaticallyDetectEngineTypeItemName;
+        private static readonly string s_detectEngineTypeItemName = Resources.AttachDebuggerAutomaticallyDetectEngineTypeItemName;
 
         private string _message;
         private ProcessItem _selectedProcess;
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Indicates if user wants to save the current selection preference 
+        /// Indicates if user wants to save the current selection preference
         /// so that user does not need to see the dialog again.
         /// </summary>
         public bool SaveSelection
@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 WindowsCredentialManager.CredentialPersistence.Session))
             {
                 Debug.WriteLine($"Failed to save credential for {Context.PublicIp}, last error is {Marshal.GetLastWin32Error()}");
-                // It's OKay to continue, the Debugger2 will prompt UI to ask for credential. 
+                // It's OKay to continue, the Debugger2 will prompt UI to ask for credential.
             }
             if (!await GetAllProcessesListAsync())
             {
@@ -155,7 +155,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             if (SelectedProcess == null || SelectedEngine == null)
             {
-                Debug.WriteLine($"ListProcessStep, OnOkCommandAsync, unexpected error. SelectedProcess or SelectedEngine is null.");
+                Debug.WriteLine("ListProcessStep, OnOkCommandAsync, unexpected error. SelectedProcess or SelectedEngine is null.");
                 // The code won't be reached. Just to be safe, return null.
                 return Task.FromResult<IAttachDebuggerStep>(null);
             }
@@ -184,7 +184,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private IAttachDebuggerStep Attach()
         {
             IsListVisible = false;
-            ProgressMessage = String.Format(
+            ProgressMessage = string.Format(
                 Resources.AttachDebuggerAttachingProcessMessageFormat,
                 SelectedProcess.Name);
 
@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
                 Debug.WriteLine($"Attach debugger got exception. {ex}");
                 UserPromptService.Default.ErrorPrompt(
-                    message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
+                    message: string.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.UiDefaultPromptTitle);
                 ResetDefaultSelection();
                 return HelpStepViewModel.CreateStep(Context);
@@ -227,7 +227,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void EnableSelection()
         {
             IsCancelButtonEnabled = true;
-            IsOKButtonEnabled = true;
+            IsOkButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerPickingProcessMessage;
             IsListVisible = true;
         }
@@ -236,16 +236,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             var dte = await GoogleCloudExtensionPackage.Instance.GetServiceAsync<SDTE, DTE>();
             await GoogleCloudExtensionPackage.Instance.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var debugger = dte.Debugger as Debugger2;
+            var debugger = (Debugger2)dte.Debugger;
             var transport = debugger.Transports.Item("Default");
 
             // Show engine types
-            EngineTypes = new List<string>();
-            EngineTypes.Add(Resources.AttachDebuggerAutomaticallyDetectEngineTypeItemName);
-            foreach (var engineType in transport.Engines)
+            EngineTypes = new List<string> { Resources.AttachDebuggerAutomaticallyDetectEngineTypeItemName };
+            foreach (object engineType in transport.Engines)
             {
-                var engine = engineType as Engine;
-                if (engine == null)
+                if (!(engineType is Engine engine))
                 {
                     Debug.WriteLine("engine is null, might be a code bug.");
                     continue;
@@ -270,20 +268,23 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 return false;
             }
 
-            if (!String.IsNullOrWhiteSpace(AttachDebuggerSettings.Current.DefaultDebuggeeProcessName))
+            if (!string.IsNullOrWhiteSpace(AttachDebuggerSettings.Current.DefaultDebuggeeProcessName))
             {
-                var matching = _allProcesses
-                    .Where(x => x.Name.ToLowerInvariant() == AttachDebuggerSettings.Current.DefaultDebuggeeProcessName.ToLowerInvariant());
-                if (!matching.Any())
-                {
-                    ResetDefaultSelection();
-                }
-                else if (matching.Count() == 1)
-                {
-                    Processes = matching;
-                    SelectedProcess = matching.First();
-                    SelectedEngine = AttachDebuggerSettings.Current.DefaultDebuggerEngineType;
-                    return true;
+                var matching = _allProcesses.Where(
+                        x => string.Equals(
+                            x.Name,
+                            AttachDebuggerSettings.Current.DefaultDebuggeeProcessName,
+                            StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+                switch (matching.Count) {
+                    case 0:
+                        ResetDefaultSelection();
+                        break;
+                    case 1:
+                        Processes = matching;
+                        SelectedProcess = matching.First();
+                        SelectedEngine = AttachDebuggerSettings.Current.DefaultDebuggerEngineType;
+                        return true;
                 }
             }
 

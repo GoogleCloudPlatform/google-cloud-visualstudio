@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.BarChart
 {
     /// <summary>
     /// Base class for bar chart control on a collection of <seealso cref="TimedCount"/>
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private ItemsControl _timedCountItemsControl;
         private ItemsControl _lineItemsControl;
         private double _heightMultiplier;
-        private double _rowHeight => BarMaxHeight / RowNumber;
+        private double RowHeight => BarMaxHeight / RowNumber;
 
         public static readonly DependencyProperty BarMaxHeightProperty =
             DependencyProperty.Register(
@@ -182,7 +182,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             double countScaleUnit = (double)maxCount / RowNumber;
             for (int i = RowNumber; i > 0; --i)
             {
-                lineItems.Add(new XLineItem(countScaleUnit * i, _rowHeight));
+                lineItems.Add(new XLineItem(countScaleUnit * i, RowHeight));
             }
 
             _lineItemsControl.ItemsSource = lineItems;

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.ProgressDialog
 {
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.ProgressDialog
             // Check if the dialog closed because the task completed or because the user cancelled the operation.
             if (dialog.ViewModel.WasCancelled)
             {
-                return default(T);
+                return default;
             }
             else
             {

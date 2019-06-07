@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils.Validation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +19,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Utils.Validation

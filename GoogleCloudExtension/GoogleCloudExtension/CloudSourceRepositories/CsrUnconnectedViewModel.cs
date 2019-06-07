@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -22,8 +22,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrUnconnectedViewModel : ViewModelBase
     {
-        private CsrSectionControlViewModel _parent;
-
         /// <summary>
         /// Respond to Connect link button
         /// </summary>
@@ -31,7 +29,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         public CsrUnconnectedViewModel(CsrSectionControlViewModel parent)
         {
-            _parent = parent;
             ConnectCommand = new ProtectedCommand(parent.SignIn);
         }
     }

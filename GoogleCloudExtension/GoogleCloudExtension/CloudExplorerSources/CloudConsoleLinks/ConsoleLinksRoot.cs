@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
 {

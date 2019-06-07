@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting

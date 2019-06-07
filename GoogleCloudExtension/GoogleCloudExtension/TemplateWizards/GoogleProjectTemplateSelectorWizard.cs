@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TemplateWizard;
-using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using EnvDTE;
+using GoogleCloudExtension.Interop;
+using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TemplateWizard;
+using Newtonsoft.Json;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards

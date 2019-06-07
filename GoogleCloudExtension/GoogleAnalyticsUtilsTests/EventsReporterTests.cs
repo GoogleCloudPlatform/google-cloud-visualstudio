@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using GoogleAnalyticsUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace GoogleAnalyticsUtilsTests
 {
@@ -32,13 +32,13 @@ namespace GoogleAnalyticsUtilsTests
         // SHA1 hash of project number 1234.
         private const string ExpectedProjectNumberHash = "7110eda4d09e062aa5e4a390b0a572ac0d2c0220";
 
-        private readonly static Dictionary<string, string> s_metadata = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_metadata = new Dictionary<string, string>
             {
                 { "thing", "1" },
                 { "status", "success" },
                 { "complex1", "this=that" },
                 { "complex2", "this,that" },
-                { "complex3", @"this\that" },
+                { "complex3", @"this\that" }
             };
 
         public TestContext TestContext { get; set; }

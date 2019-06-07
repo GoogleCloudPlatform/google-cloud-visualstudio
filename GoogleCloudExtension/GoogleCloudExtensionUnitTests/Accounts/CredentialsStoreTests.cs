@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.IO;
+using System.Linq;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
@@ -20,9 +23,6 @@ using GoogleCloudExtension.Services.FileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Linq;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Accounts

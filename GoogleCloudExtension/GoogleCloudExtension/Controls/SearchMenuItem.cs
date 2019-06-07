@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Controls
 {
     /// <summary>
     /// Custom menu item that uses a search box to filter the list of items.
-    /// It shows menu items whose prefix matches the search box text. 
+    /// It shows menu items whose prefix matches the search box text.
     /// If the search box text is null, show all menu items.
     /// </summary>
     [TemplatePart(Name = "PART_searchTextBox", Type = typeof(TextBox))]
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.Controls
                 new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
 
         /// <summary>
-        /// Gets or sets the choose all menu item header depenedency propoerty, <seealso cref="ChooseAllHeaderProperty"/>
+        /// Gets or sets the choose all menu item header dependency property, <seealso cref="ChooseAllHeaderProperty"/>
         /// </summary>
         public string ChooseAllHeader
         {
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.Controls
         }
 
         /// <summary>
-        /// Gets or sets the dependency propoerty <seealso cref="IsSubmenuPopulatedProperty"/>
+        /// Gets or sets the dependency property <seealso cref="IsSubmenuPopulatedProperty"/>
         /// It indicates if the submenu items are populated.
         /// This property supports delay load submenu items.
         /// </summary>
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.Controls
         }
 
         /// <summary>
-        /// By default <seealso cref="MenuItem.GetContainerForItemOverride"/> returns MenuItem object. 
+        /// By default <seealso cref="MenuItem.GetContainerForItemOverride"/> returns MenuItem object.
         /// Override to return SearchMenuItem object.
         /// The is the key part to make the HierarchicalDataTemplate data binding work.
         /// </summary>
@@ -113,14 +113,14 @@ namespace GoogleCloudExtension.Controls
         }
 
         /// <summary>
-        /// Loop through all menu items, 
-        /// if the prefix of the header text of the menu item matches the search string, the menu item is shown. 
+        /// Loop through all menu items,
+        /// if the prefix of the header text of the menu item matches the search string, the menu item is shown.
         /// Otherwise, hide the menu item.
         /// If the search text is empty or whitespace only, it does not filter out any menu item.
         /// </summary>
         private void OnSearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            var prefix = _searchBox.Text?.Trim();
+            var prefix = _searchBox.Text.Trim();
             for (int i = 0; i < Items.Count; i++)
             {
                 MenuItem menuItem = ItemContainerGenerator.ContainerFromIndex(i) as MenuItem;
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.Controls
                     continue;
                 }
 
-                menuItem.Visibility = String.IsNullOrEmpty(prefix) ||
+                menuItem.Visibility = string.IsNullOrEmpty(prefix) ||
                     label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?
                     Visibility.Visible : Visibility.Collapsed;
             }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,7 +30,7 @@ namespace GoogleCloudExtensionUnitTests.Analytics.AnalyticsOptInDialog
         public void TestConstructor_CreatesViewModel() => Assert.IsNotNull(_objectUnderTest.ViewModel);
 
         [TestMethod]
-        public void TestConstructor_SetsTitle() => Assert.AreEqual(GoogleCloudExtension.Resources.AnalyticsPromptTitle, _objectUnderTest.Title);
+        public void TestConstructor_SetsTitle() => Assert.AreEqual(Resources.AnalyticsPromptTitle, _objectUnderTest.Title);
 
         [TestMethod]
         public void TestConstructor_InitializesComponent() => Assert.IsTrue(_objectUnderTest.IsInitialized);

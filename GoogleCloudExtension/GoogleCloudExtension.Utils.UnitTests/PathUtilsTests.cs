@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static GoogleCloudExtension.Utils.PathUtils;
 
 namespace GoogleCloudExtension.Utils.UnitTests
@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
         [TestMethod]
         public void GetCommandPathFromPATHValidPathTest()
         {
-            var notepad = GetCommandPathFromPATH("notepad.exe");
+            var notepad = GetCommandPathFromPath("notepad.exe");
             Assert.IsNotNull(notepad);
             Assert.IsTrue(notepad.Contains("notepad.exe"));
         }
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Utils.UnitTests
                 Environment.SetEnvironmentVariable("PATH", modifiedPath);
 
                 // This verifies GetCommandPathFromPATH does not throw exception.
-                var testPath = GetCommandPathFromPATH("does-not-exist-such.exe");
+                var testPath = GetCommandPathFromPath("does-not-exist-such.exe");
                 Assert.IsNull(testPath);
             }
             finally

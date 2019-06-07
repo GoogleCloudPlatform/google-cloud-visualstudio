@@ -15,7 +15,7 @@
 using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation
 {
     /// <summary>
     /// View model to <seealso cref="ErrorFrameTooltipControl"/>.

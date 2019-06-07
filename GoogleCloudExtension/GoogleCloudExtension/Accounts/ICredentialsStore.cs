@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1.Data;
 using System;
 using System.Collections.Generic;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1.Data;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -76,8 +76,7 @@ namespace GoogleCloudExtension.Accounts
 
         /// <summary>
         /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
-        /// given <paramref name="projectId"/>. The <seealso cref="Reset"/> event will be raised to notify
-        /// listeners on this.
+        /// given <paramref name="projectId"/>.
         /// If <paramref name="accountName"/> cannot be found in the store then the credentials will be reset
         /// to empty.
         /// </summary>

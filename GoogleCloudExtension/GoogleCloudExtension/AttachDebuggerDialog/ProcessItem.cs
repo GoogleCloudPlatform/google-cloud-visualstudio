@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE80;
-using GoogleCloudExtension.Utils;
 using System;
 using System.IO;
+using EnvDTE80;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// The process id.
         /// </summary>
-        public int PID => Process.ProcessID;
+        public int Pid => Process.ProcessID;
 
         /// <summary>
         /// The username that started the process.

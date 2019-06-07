@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
     public enum PortProtocol
     {
         Tcp,
-        Udp,
+        Udp
     }
 
     /// <summary>

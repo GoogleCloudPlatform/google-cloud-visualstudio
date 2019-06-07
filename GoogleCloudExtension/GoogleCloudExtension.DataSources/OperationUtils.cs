@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Google;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.DataSources
             Func<TOperation, bool> isFinished,
             Func<TOperation, TErrorData> getErrorData,
             Func<TErrorData, string> getErrorMessage,
-            CancellationToken token = default(CancellationToken),
+            CancellationToken token = default,
             TimeSpan? delay = null)
         {
             try

@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Git
 {
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.Git
         /// <returns>
         /// The full path or NULL if not found.
         /// </returns>
-        public static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
+        public static string GetGitPath() => PathUtils.GetCommandPathFromPath(GitExecutable);
 
         /// <summary>
         /// Returns a <seealso cref="GitRepository"/> object

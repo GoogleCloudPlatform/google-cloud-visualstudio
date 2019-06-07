@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.CopyablePrompt
             var viewModel = new CopyablePromptDialogWindowViewModel(text, copyableText);
             Content = new CopyablePromptDialogWindowContent
             {
-                DataContext = viewModel,
+                DataContext = viewModel
             };
         }
 

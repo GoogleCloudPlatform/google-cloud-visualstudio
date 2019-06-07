@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.Theming
         Unknown,
         Light,
         Blue,
-        Dark,
+        Dark
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.Theming
         {
             { s_lightThemeId, VsTheme.Light },
             { s_blueThemeId, VsTheme.Blue },
-            { s_darkThemeId, VsTheme.Dark },
+            { s_darkThemeId, VsTheme.Dark }
         };
 
         // This service is not available directly, this is a common technique to obtain the current theme

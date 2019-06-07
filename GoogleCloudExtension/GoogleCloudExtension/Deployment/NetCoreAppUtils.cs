@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 
 namespace GoogleCloudExtension.Deployment
 {

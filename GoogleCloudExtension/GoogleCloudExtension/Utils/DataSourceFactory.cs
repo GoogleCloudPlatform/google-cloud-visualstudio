@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Composition;
 using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using System;
-using System.ComponentModel.Composition;
 
 namespace GoogleCloudExtension.Utils
 {

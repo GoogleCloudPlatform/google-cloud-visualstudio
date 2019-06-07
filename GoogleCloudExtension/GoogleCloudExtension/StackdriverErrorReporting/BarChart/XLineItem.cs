@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.BarChart
 {
     /// <summary>
     /// Bar chart shows horizontal lines with error count as scale.
@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class XLineItem : Model
     {
         /// <summary>
-        /// The fromated scale value the line represents.
+        /// The formatted scale value the line represents.
         /// Example: 5, 10, 20;  or  0.5, 1, 1.5, 2;
         /// </summary>
         public string CountScale { get; }
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public XLineItem(double scale, double rowHeight)
         {
             CountScale = scale == 0 ? null :
-                String.Format(((Math.Round(scale) == scale) ? "{0:0}" : "{0:0.00}"), scale);
+                string.Format((Math.Round(scale) == scale ? "{0:0}" : "{0:0.00}"), scale);
             RowHeight = rowHeight;
         }
     }

@@ -18,7 +18,7 @@ using System.Windows.Media;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// This class contains helpers for DataGrid control code behind. 
+    /// This class contains helpers for DataGrid control code behind.
     /// </summary>
     internal static class DataGridUtils
     {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.Utils
                 obj = VisualTreeHelper.GetParent(obj);
             }
 
-            return obj as TUIElement;  // Note, "null as TUIElement" is valid and returns null. 
+            return obj as TUIElement;  // Note, "null as TUIElement" is valid and returns null.
         }
     }
 }

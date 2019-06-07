@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Auth.OAuth2;
-using Newtonsoft.Json;
 using System.IO;
 using System.Text;
+using Google.Apis.Auth.OAuth2;
+using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.Accounts
 {

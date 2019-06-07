@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1;
-using Google.Apis.Compute.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Google;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.DataSources
 
                 //  2) Request in parallel the instances in each zone.
                 var requestResults = zones
-                    .Select(async (x) => new InstancesPerZone(await GetInstancesInZoneListAsync(x.Name), x));
+                    .Select(async x => new InstancesPerZone(await GetInstancesInZoneListAsync(x.Name), x));
 
                 return await Task.WhenAll(requestResults);
             }
@@ -218,7 +218,7 @@ namespace GoogleCloudExtension.DataSources
         public Task<IList<Firewall>> GetFirewallListAsync()
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     if (token == null)
                     {
@@ -249,7 +249,7 @@ namespace GoogleCloudExtension.DataSources
                 {
                     Name = port.Name,
                     Allowed = EnablePort(port),
-                    TargetTags = new List<string> { port.Name },
+                    TargetTags = new List<string> { port.Name }
                 };
 
                 var operation = await Service.Firewalls.Insert(newFirewall, ProjectId).ExecuteAsync();
@@ -267,7 +267,7 @@ namespace GoogleCloudExtension.DataSources
             var allowedData = new Firewall.AllowedData
             {
                 IPProtocol = port.ProtocolString,
-                Ports = new List<string> { port.Port.ToString() },
+                Ports = new List<string> { port.Port.ToString() }
             };
             return new List<Firewall.AllowedData> { allowedData };
         }
@@ -296,7 +296,7 @@ namespace GoogleCloudExtension.DataSources
                 var newTags = new Tags
                 {
                     Items = tags,
-                    Fingerprint = instance.Tags.Fingerprint,
+                    Fingerprint = instance.Tags.Fingerprint
                 };
                 return Service.Instances.SetTags(newTags, ProjectId, instance.GetZoneName(), instance.Name).ExecuteAsync();
             });
@@ -365,9 +365,9 @@ namespace GoogleCloudExtension.DataSources
         private Task<IList<Zone>> GetZoneListAsync()
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
-                    if (String.IsNullOrEmpty(token))
+                    if (string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetZoneListAsync)}: Fetching the first page.");
                         return Service.Zones.List(ProjectId).ExecuteAsync();
@@ -387,9 +387,9 @@ namespace GoogleCloudExtension.DataSources
         private Task<IList<Instance>> GetInstancesInZoneListAsync(string zoneName)
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
-                    if (String.IsNullOrEmpty(token))
+                    if (string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetInstancesInZoneListAsync)}: Fetching first page.");
                         return Service.Instances.List(ProjectId, zoneName).ExecuteAsync();
@@ -435,7 +435,7 @@ namespace GoogleCloudExtension.DataSources
             }
 
             return operation.AwaitOperationAsync(
-                refreshOperation: (op) =>
+                refreshOperation: op =>
                 {
                     if (zoneName != null)
                     {

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils.Async;
 using System.Collections.Generic;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.CloudExplorer.SampleData
 {
@@ -34,21 +34,21 @@ namespace GoogleCloudExtension.CloudExplorer.SampleData
         {
             new TreeHierarchy(new List<TreeNode>
             {
-                new TreeLeaf { Caption = ("Node 1"), Icon = s_instanceIcon.Value },
-                new TreeLeaf { Caption = ("Node 2"), Icon = s_instanceIcon.Value }
+                new TreeLeaf { Caption = ("Node 1"), Icon = InstanceIcon.Value },
+                new TreeLeaf { Caption = ("Node 2"), Icon = InstanceIcon.Value }
             })
             {
                 Caption = ("Container 1"),
-                Icon = s_containerIcon.Value,
-                IsExpanded = true,
+                Icon = ContainerIcon.Value,
+                IsExpanded = true
             },
             new TreeHierarchy(new List<TreeNode>
             {
-                new TreeLeaf { Caption = ("Node1"), Icon = s_instanceIcon.Value }
+                new TreeLeaf { Caption = ("Node1"), Icon = InstanceIcon.Value }
             })
             {
                 Caption = ("Container 2"),
-                Icon = s_containerIcon.Value,
+                Icon = ContainerIcon.Value
             },
             new TreeHierarchy(new List<TreeNode>
             {
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.CloudExplorer.SampleData
             })
             {
                 Caption = ("Variants"),
-                Icon = s_containerIcon.Value,
+                Icon = ContainerIcon.Value,
                 IsExpanded = true
             }
         };

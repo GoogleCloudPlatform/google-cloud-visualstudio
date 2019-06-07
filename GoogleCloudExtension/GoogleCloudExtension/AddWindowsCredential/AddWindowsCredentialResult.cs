@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
 namespace GoogleCloudExtension.AddWindowsCredential
 {
     public class AddWindowsCredentialResult
@@ -32,7 +30,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// Whether the user requested the password to be generated. This is mutually exclusive with
         /// specifying the password.
         /// </summary>
-        public bool GeneratePassword => String.IsNullOrEmpty(Password);
+        public bool GeneratePassword => string.IsNullOrEmpty(Password);
 
         public AddWindowsCredentialResult(string user, string password = null)
         {

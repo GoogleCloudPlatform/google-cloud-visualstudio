@@ -15,7 +15,7 @@
 using System;
 using System.Linq;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation
 {
     /// <summary>
     /// Utility methods for helping parsing exception message.
@@ -28,14 +28,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// "\n" (\u000A) for Unix
         /// "\r" (\u000D) for some caess.
         /// </summary>
-        private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
-        private static readonly string[] s_lineBreaksAndInnerErrorSeparator = new string[] { InnderExceptionSeparator, "\r\n", "\n", "\r" };
+        private static readonly string[] s_lineBreaks = { "\r\n", "\n", "\r" };
+        private static readonly string[] s_lineBreaksAndInnerErrorSeparator = { InnderExceptionSeparator, "\r\n", "\n", "\r" };
 
         /// <summary>
         /// Extract the head summary from exception string.
         /// Example:
-        ///     System.ArgumentException: this is a test error \r\n at void testmethod() ....  
-        ///     This returns   "System.ArgumentException: this is a test error "  
+        ///     System.ArgumentException: this is a test error \r\n at void testmethod() ....
+        ///     This returns   "System.ArgumentException: this is a test error "
         /// 
         ///     System.ArgumentException: this is another exception ---> System.ArgumentException with inner exception \r\n ....
         ///     This returns    "System.ArgumentException: this is another exception"

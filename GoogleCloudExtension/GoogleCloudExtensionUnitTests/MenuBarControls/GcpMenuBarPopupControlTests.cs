@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
+using System.Windows.Controls;
 using GoogleCloudExtension.MenuBarControls;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtensionUnitTests.MenuBarControls
 {

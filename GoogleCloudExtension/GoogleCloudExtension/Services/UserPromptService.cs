@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.UserPrompt;
-using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Media;
+using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.UserPrompt;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Services
 {

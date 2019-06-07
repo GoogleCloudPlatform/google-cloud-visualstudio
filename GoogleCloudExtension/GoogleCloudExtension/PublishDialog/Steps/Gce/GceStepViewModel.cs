@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.ApiManagement;
+using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 {
@@ -248,7 +249,7 @@ namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 
                     if (LaunchRemoteDebugger)
                     {
-                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(selectedInstance);
+                        AttachDebuggerWindow.PromptUser(selectedInstance);
                     }
                 }
                 else

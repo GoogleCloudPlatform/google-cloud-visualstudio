@@ -22,6 +22,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorReportingException : Exception
     {
         public ErrorReportingException(string message) : base(message) { }
-        public ErrorReportingException(Exception innerException) : base(String.Empty, innerException: innerException) { }
+        public ErrorReportingException(Exception innerException) : base(string.Empty, innerException: innerException) { }
     }
 }

@@ -9,6 +9,8 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:barChart="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.BarChart"
+             xmlns:timeRangeButtons="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              x:Name="_errorReportingWindow"
@@ -24,9 +26,6 @@
                 <ResourceDictionary Source="./BarChart/TimedCountMiniBarChart.xaml" />
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
 
             <DataTemplate x:Key="MessageStackTemplate" DataType="local:ErrorGroupItem">
                 <StackPanel>
@@ -46,9 +45,9 @@
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate x:Key="OccurancesTemplate" DataType="local:ErrorGroupItem" >
+            <DataTemplate x:Key="OccurrencesTemplate" DataType="local:ErrorGroupItem" >
                 <StackPanel Orientation="Horizontal">
-                    <local:TimedCountBarChartControl 
+                    <barChart:TimedCountBarChartControl 
                         VerticalAlignment="Center"
                         Style="{StaticResource TimedCountMiniBarChartStyle}"
                         TimedCountList="{Binding TimedCountList}"
@@ -68,7 +67,7 @@
         <tb:TitleBar />
 
         <Grid Margin="12,0,12,12" 
-              Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
+              Visibility="{Binding IsGridVisible, Converter={utils:VisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -102,7 +101,7 @@
                     Style="{StaticResource CommonTextStyle}"
                     TextWrapping="WrapWithOverflow"/>
                 
-                <local:TimeRangeButtons 
+                <timeRangeButtons:TimeRangeButtons 
                     Grid.Column="1" 
                     ItemsSource="{Binding TimeRangeItemList}"
                     SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" />
@@ -112,9 +111,9 @@
                 Grid.Row="2"
                 HeadersVisibility="Column"
                 AutoGenerateColumns="False"
-                ItemsSource="{Binding GroupStatsView}"
+                ItemsSource="{Binding GroupStats}"
                 IsEnabled="{Binding IsLoadingComplete}"
-                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverterNegated}}"
+                Visibility="{Binding ShowError, Converter={utils:VisibilityConverter IsNegated=True}}"
                 SelectionUnit="CellOrRowHeader"
                 SelectionMode="Extended"
                 IsReadOnly="True"
@@ -125,7 +124,7 @@
                 <DataGrid.Columns>
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" 
-                        CellTemplate="{StaticResource OccurancesTemplate}" 
+                        CellTemplate="{StaticResource OccurrencesTemplate}" 
                         SortMemberPath="ErrorCount"
                         ClipboardContentBinding="{Binding ErrorCount, Mode=OneWay}"/>
 
@@ -173,7 +172,7 @@
                 Margin="0,60,0,0"
                 HorizontalAlignment="Center"                       
                 VerticalAlignment="Top" 
-                Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
+                Visibility="{Binding IsRefreshing, Converter={utils:VisibilityConverter}}" />
 
             <TextBox Grid.Row="2"                
                 Panel.ZIndex="15"
@@ -184,7 +183,7 @@
                 TextWrapping="Wrap"
                 Foreground="Red" 
                 Text="{Binding ErrorString, Mode=OneWay}" 
-                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverter}}" 
+                Visibility="{Binding ShowError, Converter={utils:VisibilityConverter}}" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 IsReadOnly="True" />
 
@@ -194,7 +193,7 @@
                 Panel.ZIndex="10"
                 Margin="0,-60,0,0"
                 HorizontalAlignment="Center"                       
-                Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
+                Visibility="{Binding IsLoadingNextPage, Converter={utils:VisibilityConverter}}" />
 
         </Grid>
     </StackPanel>

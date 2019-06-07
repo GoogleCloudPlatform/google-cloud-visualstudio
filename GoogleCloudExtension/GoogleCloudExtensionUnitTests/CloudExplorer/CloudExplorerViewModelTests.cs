@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
@@ -21,8 +23,6 @@ using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {

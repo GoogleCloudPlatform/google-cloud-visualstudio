@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Apis.CloudSourceRepositories.v1.Data;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +19,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.CloudSourceRepositories.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public int NameMaxLength => 63;
 
         /// <summary>
-        /// The repository name 
+        /// The repository name
         /// </summary>
         public string RepositoryName
         {
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Add repo for the project message
         /// </summary>
         public string AddRepoForProjectMessage =>
-            String.Format(Resources.CsrAddRepoForProjectMessageFormat, _project.Name);
+            string.Format(Resources.CsrAddRepoForProjectMessageFormat, _project.Name);
 
         /// <summary>
         /// Indicates if there is async task running that UI should be disabled.
@@ -103,13 +103,13 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         private async Task CreateRepoAsync()
         {
-            var csrDatasource = CsrUtils.CreateCsrDataSource(_project.ProjectId);
+            var csrDataSource = CsrUtils.CreateCsrDataSource(_project.ProjectId);
             IsReady = false;
             try
             {
                 var watch = Stopwatch.StartNew();
-                // No null check. By the time user gets here, csrDatasource won't be null.
-                Result = await csrDatasource.CreateRepoAsync(RepositoryName.Trim());
+                // No null check. By the time user gets here, csrDataSource won't be null.
+                Result = await csrDataSource.CreateRepoAsync(RepositoryName.Trim());
                 EventsReporterWrapper.ReportEvent(
                     CsrCreatedEvent.Create(CommandStatus.Success, duration: watch.Elapsed));
                 _owner.Close();
@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         {
             SetValidationResults(ValidateRepoName(), nameof(RepositoryName));
             // Note, we have only one text box input, no error when it's empty or null, just disable OK button.
-            OkCommand.CanExecuteCommand = !(String.IsNullOrWhiteSpace(RepositoryName) || HasErrors);
+            OkCommand.CanExecuteCommand = !(string.IsNullOrWhiteSpace(RepositoryName) || HasErrors);
         }
 
         internal IEnumerable<ValidationResult> ValidateRepoName()
@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             string name = RepositoryName?.Trim();
 
             // Note, we have only one text box input, no error when it's empty or null
-            if (String.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 yield break;
             }
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameLengthLimitMessage));
             }
 
-            if (_repos.Any(x => String.Compare(x.GetRepoName(), name, ignoreCase: true) == 0))
+            if (_repos.Any(x => string.Compare(x.GetRepoName(), name, StringComparison.OrdinalIgnoreCase) == 0))
             {
                 yield return StringValidationResult.FromResource(nameof(Resources.CsrRepoNameExistsMessage));
             }

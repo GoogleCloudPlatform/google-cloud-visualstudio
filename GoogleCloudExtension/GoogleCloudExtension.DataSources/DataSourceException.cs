@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using System;
 using System.Runtime.Serialization;
+using Google;
 
 namespace GoogleCloudExtension.DataSources
 {

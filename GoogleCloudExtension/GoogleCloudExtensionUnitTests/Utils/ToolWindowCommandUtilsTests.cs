@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension;
+using System;
+using System.ComponentModel.Design;
+using System.Runtime.InteropServices;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.ComponentModel.Design;
-using System.Runtime.InteropServices;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.Utils

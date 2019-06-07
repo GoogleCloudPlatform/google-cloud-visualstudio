@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Concurrent;
+using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-using System;
-using System.Collections.Concurrent;
-using System.ComponentModel.Composition;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         /// <summary>
         /// Gets text view to taggers map.
-        /// The data structure is used by CreateTagger that is exposed to Visual Studio. 
+        /// The data structure is used by CreateTagger that is exposed to Visual Studio.
         /// VS may call it at any thread.
         /// Using concurrent dictionary so as to syncronize access to the map from different threads.
         /// </summary>
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipProviderFactory));
+            var tagger = AllLoggerTaggers.GetOrAdd(textView, x => new StackdriverTagger(x, buffer, ToolTipProviderFactory));
             return tagger as ITagger<T>;
         }
     }

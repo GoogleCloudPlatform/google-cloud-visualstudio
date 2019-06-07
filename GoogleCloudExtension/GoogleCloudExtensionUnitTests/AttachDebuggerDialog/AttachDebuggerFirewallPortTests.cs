@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.DataSources;
@@ -19,10 +23,6 @@ using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtensionUnitTests.FirewallManagement;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.AttachDebuggerDialog

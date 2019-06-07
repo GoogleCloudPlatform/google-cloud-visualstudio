@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudSourceRepositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 {
@@ -88,7 +88,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
-                .Returns(Task.FromResult<bool>(false))
+                .Returns(Task.FromResult(false))
                 .Verifiable();
             _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
@@ -102,7 +102,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             _apiManagerMock.Setup(
                 x => x.AreServicesEnabledAsync(It.IsAny<IList<string>>()))
-                .Returns(Task.FromResult<bool>(false));
+                .Returns(Task.FromResult(false));
             _cloneWindowViewModel.SelectedProject = _testProjectMock.Object;
             await WaitForBackgroundAsyncTask(_cloneWindowViewModel);
 

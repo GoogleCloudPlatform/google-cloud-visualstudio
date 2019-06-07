@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </para>
     /// </remarks>
     [Guid("4b3c62b4-2121-40a1-8cd5-8f794760b35e")]
-    public class ErrorReportingToolWindow : ToolWindowPane
+    public sealed class ErrorReportingToolWindow : ToolWindowPane
     {
         /// <summary>
         /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
@@ -41,15 +41,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingToolWindow() : base(null)
         {
-            this.Caption = Resources.ErrorReportingToolWindowCaption;
+            Caption = Resources.ErrorReportingToolWindowCaption;
 
+            ViewModel = new ErrorReportingViewModel();
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new ErrorReportingToolWindowControl();
-
-            ViewModel = new ErrorReportingViewModel();
-            (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
+            Content = new ErrorReportingToolWindowControl()
+            {
+                DataContext = ViewModel
+            };
         }
 
         protected override void OnClose()

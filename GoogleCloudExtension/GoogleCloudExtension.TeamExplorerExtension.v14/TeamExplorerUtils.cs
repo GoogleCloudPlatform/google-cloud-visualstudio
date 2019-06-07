@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using Microsoft.TeamFoundation.Controls;
 using System;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
+using Microsoft.TeamFoundation.Controls;
 
 namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
-    /// Implement interface <seealso cref="ITeamExplorerUtils"/>. 
+    /// Implement interface <seealso cref="ITeamExplorerUtils"/>.
     /// These methods has dependencies on Microsoft.TeamFoundation.Controls.dll.
     /// VS2015 and VS2017 have different versions of Microsoft.TeamFoundation.Controls.dll.
-    /// This source code will be compiled into two separate assemblies. 
-    /// One is with VS2015 version of Microsoft.TeamFoundation.Controls.dll, 
+    /// This source code will be compiled into two separate assemblies.
+    /// One is with VS2015 version of Microsoft.TeamFoundation.Controls.dll,
     /// The other one is with VS2017 version of Microsoft.TeamFoundation.Controls.dll.
     /// </summary>
     internal class TeamExplorerUtils : ITeamExplorerUtils
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
                 NotificationType.Information,
                 NotificationFlags.None,
                 command,
-                default(Guid));
+                default);
 
         public void ShowError(string message) =>
             NotificationManager?.ShowNotification(
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
                 NotificationType.Error,
                 NotificationFlags.RequiresConfirmation,
                 null,
-                default(Guid));
+                default);
 
         #endregion
     }

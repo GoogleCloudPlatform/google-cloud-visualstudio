@@ -9,6 +9,8 @@
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
+             xmlns:treeViewConverters="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
+             xmlns:searchMenuItem="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -79,7 +81,7 @@
                 </DockPanel>
             </DataTemplate>
 
-            <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
+            <HierarchicalDataTemplate DataType="{x:Type treeViewConverters:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeTextStyle}" />
@@ -283,7 +285,7 @@
 
                                     <controls:SearchMenuItem.ItemTemplate>
                                         <HierarchicalDataTemplate 
-                                        DataType="{x:Type local:MenuItemViewModel}" 
+                                        DataType="{x:Type searchMenuItem:MenuItemViewModel}" 
                                         ItemsSource="{Binding MenuItems}">
                                         </HierarchicalDataTemplate>
                                     </controls:SearchMenuItem.ItemTemplate>
@@ -395,7 +397,7 @@
                 VerticalAlignment="Top" 
                 IsExpanded="{Binding ToggleExpandAllExpanded}">
                     <Expander.ToolTip>
-                        <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                        <ToolTip Content="{Binding ToggleExpandAllToolTip}" 
                                  Style="{StaticResource CommonTooltipStyle}"/>
                     </Expander.ToolTip>
             </Expander>
@@ -488,7 +490,7 @@
                                             <Setter Property="ContextMenu">
                                                 <Setter.Value>
                                                     <ContextMenu
-                                                        d:DataContext="{d:DesignInstance local:ObjectNodeTree}">
+                                                        d:DataContext="{d:DesignInstance treeViewConverters:ObjectNodeTree}">
                                                         <MenuItem Header="{x:Static ext:Resources.UiCopyMenuHeader}"
                                                                   Command="{Binding CopyCommand}" />
                                                     </ContextMenu>

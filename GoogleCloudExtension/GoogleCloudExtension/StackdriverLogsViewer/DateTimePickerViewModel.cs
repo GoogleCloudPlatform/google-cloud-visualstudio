@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeSpan _uiElementTime;
 
         /// <summary>
-        /// The current selected time zone. 
+        /// The current selected time zone.
         /// </summary>
         private TimeZoneInfo _timeZone;
 
@@ -41,12 +41,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private int _uiSelectedOrderIndex;
 
         /// <summary>
-        /// The boolean data that binds to the IsDropDown property of the ComboBox. 
+        /// The boolean data that binds to the IsDropDown property of the ComboBox.
         /// </summary>
         private bool _isDropDownOpen = false;
 
-        /// <summary>   
-        /// Gets or sets if using descending order by timestamp. 
+        /// <summary>
+        /// Gets or sets if using descending order by timestamp.
         /// true: descending order,  false: ascending order.
         /// When the Go button is clicked, the value is set to the UI selection.
         /// While the cancel button click event won't change this value.
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool IsDescendingOrder { get; set; }
 
         /// <summary>
-        /// Gets or sets the datetime in UTC.  
+        /// Gets or sets the datetime in UTC.
         /// The current active date time.
         /// When Go button is clicked, the value is set to the UI selection.
         /// While cancel button click event won't change this value.

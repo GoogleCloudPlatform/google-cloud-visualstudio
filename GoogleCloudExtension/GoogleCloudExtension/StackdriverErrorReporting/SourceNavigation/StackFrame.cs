@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Text.RegularExpressions;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation
 {
     /// <summary>
     /// Stack frame may or may not contain source file name and line number.
     /// For those that does, they are parsed and set Parsed flag to true.
     /// 
-    /// This class only attempt to parse C# stacks. 
+    /// This class only attempt to parse C# stacks.
     /// For non-C# language stack, it remain not parsed.
     /// 
     /// The Regex is defined as:
@@ -84,11 +84,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         public StackFrame(string raw)
         {
-            if (raw == null)
-            {
-                throw new ErrorReportingException(new ArgumentNullException(nameof(raw)));
-            }
-            RawData = raw;
+            RawData = raw ?? throw new ErrorReportingException(new ArgumentNullException(nameof(raw)));
             ParseStackFrame();
         }
 

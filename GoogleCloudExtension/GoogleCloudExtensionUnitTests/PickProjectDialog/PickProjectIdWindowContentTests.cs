@@ -12,14 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
+using System.ComponentModel;
 using GoogleCloudExtension.PickProjectDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Data;
-using System.Windows.Threading;
 
 namespace GoogleCloudExtensionUnitTests.PickProjectDialog
 {
@@ -34,36 +30,13 @@ namespace GoogleCloudExtensionUnitTests.PickProjectDialog
         {
             _viewModelMock = new Mock<IPickProjectIdViewModel>();
             _objectUnderTest = new PickProjectIdWindowContent(_viewModelMock.Object);
-            // Initalize data bindings. See https://stackoverflow.com/questions/5396805/force-binding-in-wpf
-            _objectUnderTest.Dispatcher.Invoke(() => { }, DispatcherPriority.SystemIdle);
         }
 
         [TestMethod]
-        public void TestInitalConditions()
+        public void TestInitialConditions()
         {
             Assert.AreEqual(_objectUnderTest.DataContext, _viewModelMock.Object);
             Assert.IsTrue(_objectUnderTest._filter.IsFocused);
-        }
-
-        [TestMethod]
-        public void TestFilterUpdated()
-        {
-            var visibleProject = new Project { Name = "Visible", ProjectId = "2" };
-            _viewModelMock.Setup(vm => vm.FilterItem(It.IsAny<Project>())).Returns(false);
-            _viewModelMock.Setup(vm => vm.FilterItem(visibleProject)).Returns(true);
-
-            _viewModelMock.SetupGet(vm => vm.Projects).Returns(
-                new[]
-                {
-                    new Project {Name = "Filtered Out", ProjectId = "1"},
-                    visibleProject
-                });
-            _viewModelMock.Raise(
-                vm => vm.PropertyChanged += null,
-                new PropertyChangedEventArgs(nameof(IPickProjectIdViewModel.Projects)));
-
-            var cvs = (CollectionViewSource)_objectUnderTest.Resources[PickProjectIdWindowContent.CvsKey];
-            CollectionAssert.AreEqual(new[] { visibleProject }, cvs.View.Cast<Project>().ToList());
         }
 
         [TestMethod]

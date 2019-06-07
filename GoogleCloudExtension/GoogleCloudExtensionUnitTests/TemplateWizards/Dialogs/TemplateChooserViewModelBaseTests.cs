@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
 {
@@ -132,9 +132,9 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards.Dialogs
             {
             }
 
-            public override FrameworkType GetSelectedFramework() => default(FrameworkType);
+            public override FrameworkType GetSelectedFramework() => default;
 
-            public override AspNetVersion GetSelectedVersion() => default(AspNetVersion);
+            public override AspNetVersion GetSelectedVersion() => default;
         }
     }
 }

@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +19,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Services;
 
 namespace GoogleCloudExtension.Accounts
 {

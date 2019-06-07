@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Task = System.Threading.Tasks.Task;
+using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -46,15 +45,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         #endregion
 
-        internal ZoneViewModel(GceSourceRootViewModel owner, Zone zone, IEnumerable<GceInstanceViewModel> instances)
+        internal ZoneViewModel(GceSourceRootViewModel owner, Zone zone, IReadOnlyCollection<GceInstanceViewModel> instances)
         {
             _owner = owner;
             _zone = zone;
 
-            Caption = String.Format(Resources.CloudExplorerGceZoneCaption, zone.Name, instances.Count());
+            Caption = string.Format(Resources.CloudExplorerGceZoneCaption, zone.Name, instances.Count);
             Icon = s_zoneIcon.Value;
 
-            foreach (var instance in instances)
+            foreach (GceInstanceViewModel instance in instances)
             {
                 Children.Add(instance);
             }
@@ -62,7 +61,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedAsyncCommand(OnPropertiesCommandAsync) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedAsyncCommand(OnPropertiesCommandAsync) }
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }

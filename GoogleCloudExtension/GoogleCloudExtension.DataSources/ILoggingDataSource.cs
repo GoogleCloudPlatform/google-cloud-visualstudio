@@ -1,8 +1,7 @@
-﻿using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Data.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Logging.v2.Data;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -47,7 +46,7 @@ namespace GoogleCloudExtension.DataSources
             string orderBy = null,
             int? pageSize = null,
             string nextPageToken = null,
-            CancellationToken cancelToken = default(CancellationToken));
+            CancellationToken cancelToken = default);
 
         /// <summary>
         /// Returns a list of log names of the current Google Cloud project.

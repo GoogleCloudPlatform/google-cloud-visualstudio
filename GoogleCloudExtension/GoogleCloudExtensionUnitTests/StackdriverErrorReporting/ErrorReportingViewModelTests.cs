@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using GroupTimeRangePeriodEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
@@ -59,7 +60,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             Assert.IsFalse(_objectUnderTest.IsLoadingNextPage);
             CollectionAssert.AreEqual(TimeRangeItem.CreateTimeRanges(), _objectUnderTest.TimeRangeItemList);
             Assert.AreEqual(_objectUnderTest.TimeRangeItemList.Last(), _objectUnderTest.SelectedTimeRangeItem);
-            Assert.AreEqual(0, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(0, _objectUnderTest.GroupStats.Count);
             Assert.IsTrue(_objectUnderTest.OnGotoDetailCommand.CanExecuteCommand);
             Assert.IsTrue(_objectUnderTest.OnAutoReloadCommand.CanExecuteCommand);
             Assert.IsNotNull(_objectUnderTest.CurrentTimeRangeCaption);
@@ -145,7 +146,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.AreEqual(0, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(0, _objectUnderTest.GroupStats.Count);
             Assert.IsFalse(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsTrue(_objectUnderTest.IsRefreshing);
@@ -187,7 +188,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.AreEqual(0, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(0, _objectUnderTest.GroupStats.Count);
             Assert.IsTrue(_objectUnderTest.IsLoadingComplete);
             Assert.IsTrue(_objectUnderTest.ShowError);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);
@@ -206,7 +207,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.AreEqual(0, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(0, _objectUnderTest.GroupStats.Count);
             Assert.IsTrue(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);
@@ -224,7 +225,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.OnAutoReloadCommand.Execute(null);
 
-            Assert.AreEqual(1, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(1, _objectUnderTest.GroupStats.Count);
             Assert.IsTrue(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);
@@ -252,7 +253,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.LoadNextPage();
 
-            Assert.AreEqual(1, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(1, _objectUnderTest.GroupStats.Count);
             Assert.IsFalse(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);
@@ -278,7 +279,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 
             _objectUnderTest.LoadNextPage();
 
-            Assert.AreEqual(2, _objectUnderTest.GroupStatsView.Count);
+            Assert.AreEqual(2, _objectUnderTest.GroupStats.Count);
             Assert.IsTrue(_objectUnderTest.IsLoadingComplete);
             Assert.IsFalse(_objectUnderTest.ShowError);
             Assert.IsFalse(_objectUnderTest.IsRefreshing);

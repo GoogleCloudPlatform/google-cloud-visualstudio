@@ -15,6 +15,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -25,7 +26,7 @@ namespace GoogleCloudExtension.Utils
     public static class WindowsCredentialManager
     {
         /// <summary>
-        /// Write credential to Windows Credential Manager 
+        /// Write credential to Windows Credential Manager
         /// </summary>
         /// <param name="targetName">
         /// This can be a remote computer name, a web service address, remote computer IP.
@@ -75,10 +76,10 @@ namespace GoogleCloudExtension.Utils
         }
 
         [DllImport("Advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] UInt32 flags);
+        private static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] uint flags);
 
         /// <summary>
-        /// For more detail, 
+        /// For more detail,
         /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
         /// CREDENTIAL structure</see>
         /// Checkout Persist field.
@@ -91,7 +92,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// For more detail, 
+        /// For more detail,
         /// <see href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa374788(v=vs.85).aspx">
         /// CREDENTIAL structure</see>
         /// Checkout Type field.
@@ -105,7 +106,7 @@ namespace GoogleCloudExtension.Utils
             GenericCertificate,
             DomainExtended,
             Maximum,
-            MaximumEx = Maximum + 1000,
+            MaximumEx = Maximum + 1000
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -115,7 +116,7 @@ namespace GoogleCloudExtension.Utils
             public CredentialType Type;
             public IntPtr TargetName;
             public IntPtr Comment;
-            public System.Runtime.InteropServices.ComTypes.FILETIME LastWritten;
+            public FILETIME LastWritten;
             public uint CredentialBlobSize;
             public IntPtr CredentialBlob;
             public uint Persist;

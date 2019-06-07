@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.Threading;
-using Moq;
 using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Internal.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.Threading;
+using Moq;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -54,14 +55,14 @@ namespace GoogleCloudExtensionUnitTests
             ServiceProviderMock.SetupService<IVsUIShell, IVsUIShell>();
 
             // Reset the service provider in an internal microsoft class.
-            Type windowHelper = typeof(Microsoft.Internal.VisualStudio.PlatformUI.WindowHelper);
+            Type windowHelper = typeof(WindowHelper);
             PropertyInfo serviceProviderProperty =
                 windowHelper.GetProperty("ServiceProvider", BindingFlags.NonPublic | BindingFlags.Static);
             Debug.Assert(serviceProviderProperty != null);
             serviceProviderProperty.SetMethod.Invoke(null, new object[] { null });
 
             // Set the global service provider.
-            //            RunPackageInitalize();
+            //            RunPackageInitialize();
         }
 
         /// <summary>

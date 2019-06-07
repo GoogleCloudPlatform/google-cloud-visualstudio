@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Git;
 using GoogleCloudExtension.LinkPrompt;
-using System;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -37,7 +36,7 @@ namespace GoogleCloudExtension.Utils
         /// </returns>
         public static bool ValidateGitForWindowsInstalled()
         {
-            if (String.IsNullOrWhiteSpace(GitRepository.GetGitPath()))
+            if (string.IsNullOrWhiteSpace(GitRepository.GetGitPath()))
             {
                 LinkPromptDialogWindow.PromptUser(
                         Resources.GitUtilsMissingGitErrorTitle,

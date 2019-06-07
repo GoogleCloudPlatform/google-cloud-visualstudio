@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Threading;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.CloudExplorer
@@ -79,7 +80,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 await package.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var windowFrame = (IVsWindowFrame)window.Frame;
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                ErrorHandler.ThrowOnFailure(windowFrame.Show());
             }
         }
     }

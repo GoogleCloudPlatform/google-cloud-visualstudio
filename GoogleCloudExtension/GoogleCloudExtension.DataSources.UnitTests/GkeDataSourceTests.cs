@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google;
 using Google.Apis.Container.v1;
 using Google.Apis.Container.v1.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources.UnitTests
 {

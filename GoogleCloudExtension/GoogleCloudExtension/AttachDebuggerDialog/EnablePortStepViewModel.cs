@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -128,7 +127,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = null;
             IsAskingToConfirm = false;
             IsAskingToTestConnectivityLater = false;
-            IsOKButtonEnabled = false;
+            IsOkButtonEnabled = false;
             IsCancelButtonEnabled = false;
             switch (newStage)
             {
@@ -140,30 +139,30 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     break;
                 case Stage.AskingPermitToAddRule:
                     IsAskingToConfirm = true;
-                    IsOKButtonEnabled = true;
+                    IsOkButtonEnabled = true;
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.AddingFirewallRule:
                     ProgressMessage = Resources.AttachDebuggerAddingFirewallRuleMessage;
-                    IsOKButtonEnabled = true;
+                    IsOkButtonEnabled = true;
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.CheckingConnectivity:
-                    ProgressMessage = String.Format(
+                    ProgressMessage = string.Format(
                         Resources.AttachDebuggerTestConnectPortMessageFormat,
                         _port.Description, Context.PublicIp, _port.PortInfo.Port);
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.AskToCheckConnectivityLater:
                     IsCancelButtonEnabled = true;
-                    IsOKButtonEnabled = true;
+                    IsOkButtonEnabled = true;
                     IsAskingToTestConnectivityLater = true;
                     break;
             }
         }
 
         /// <summary>
-        /// Define operation stages inside this class. 
+        /// Define operation stages inside this class.
         /// This is to help properly display progress message.
         /// </summary>
         protected enum Stage
@@ -196,7 +195,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             /// <summary>
             /// If firewall is just added, ask user to retry testing connectivity.
             /// </summary>
-            AskToCheckConnectivityLater,
+            AskToCheckConnectivityLater
         }
     }
 }

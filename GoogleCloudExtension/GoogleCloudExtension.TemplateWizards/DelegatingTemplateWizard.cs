@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using EnvDTE;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.TemplateWizards
     public abstract class DelegatingTemplateWizard<T> : IWizard where T : class, IWizard
     {
         [Import]
-        private T _wizard = default(T);
+        private T _wizard = default;
 
         ///<inheritdoc />
         public void RunStarted(

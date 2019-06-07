@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Google;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.DataSources
             Service = serviceFactory(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credentials,
-                ApplicationName = appName,
+                ApplicationName = appName
             });
         }
 

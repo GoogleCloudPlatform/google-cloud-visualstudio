@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.DataSources;
-using System;
 
 namespace GoogleCloudExtension.Utils
 {

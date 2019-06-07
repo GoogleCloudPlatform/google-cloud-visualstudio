@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// The command to execute when OK button is pressed.
         /// </summary>
-        public ProtectedAsyncCommand OKCommand { get; }
+        public ProtectedAsyncCommand OkCommand { get; }
 
         /// <summary>
         /// Show or hide progress indicator
@@ -84,15 +84,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)
         {
-            OKCommand = new ProtectedAsyncCommand(() => ExceuteAsync(OnOKCommandAsync), canExecuteCommand: false);
+            OkCommand = new ProtectedAsyncCommand(() => ExecuteAsync(OnOkCommandAsync), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: false);
 
             var context = new AttachDebuggerContext(gceInstance, dialogWindow);
             var firstStep = SetCredentialStepViewModel.CreateStep(context);
-            ErrorHandlerUtils.HandleExceptionsAsync(() => ExceuteAsync(() => GotoStepAsync(firstStep)));
+            ErrorHandlerUtils.HandleExceptionsAsync(() => ExecuteAsync(() => GotoStepAsync(firstStep)));
         }
 
-        private async Task OnOKCommandAsync()
+        private async Task OnOkCommandAsync()
         {
             if (_currentStep == null)
             {
@@ -129,8 +129,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 case nameof(IAttachDebuggerStep.IsCancelButtonEnabled):
                     CancelCommand.CanExecuteCommand = _currentStep.IsCancelButtonEnabled;
                     break;
-                case nameof(IAttachDebuggerStep.IsOKButtonEnabled):
-                    OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOKButtonEnabled;
+                case nameof(IAttachDebuggerStep.IsOkButtonEnabled):
+                    OkCommand.CanExecuteCommand = IsReady && _currentStep.IsOkButtonEnabled;
                     break;
             }
         }
@@ -138,7 +138,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void UpdateButtons()
         {
             CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled ?? false;
-            OKCommand.CanExecuteCommand = IsReady && (_currentStep?.IsOKButtonEnabled ?? false);
+            OkCommand.CanExecuteCommand = IsReady && (_currentStep?.IsOkButtonEnabled ?? false);
             ShowCancelButton = _currentStep?.IsCancelButtonVisible ?? false;
         }
 
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
         }
 
-        private async Task ExceuteAsync(Func<Task> task)
+        private async Task ExecuteAsync(Func<Task> task)
         {
             IsReady = false;
             UpdateButtons();

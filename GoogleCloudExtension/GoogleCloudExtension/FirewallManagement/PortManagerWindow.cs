@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.FirewallManagement
             var viewModel = new PortManagerViewModel(Close, instance);
             Content = new PortManagerWindowContent
             {
-                DataContext = viewModel,
+                DataContext = viewModel
             };
         }
 

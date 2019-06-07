@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.FirewallManagement;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +19,9 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.FirewallManagement;
 using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
@@ -73,8 +73,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public async Task EnablePortAsync()
         {
-            // Get a refreshed list of firewall rules. 
-            // If not refreshed, UpdateInstancePorts may fail. 
+            // Get a refreshed list of firewall rules.
+            // If not refreshed, UpdateInstancePorts may fail.
             _gceInstance = await DataSource.RefreshInstance(_gceInstance);
             string portTag = PortInfo.GetTag(_gceInstance.Name);
 
@@ -90,10 +90,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         /// <summary>
         /// Gets how long to wait for firewall rule to take effect.
-        /// There are several cases here. 
+        /// There are several cases here.
         /// 1) Firewall was already enabled, we did not enable it. Then we don't wait.
         /// 2) Need to wait for some time.
-        /// 3) Waited for too long, stop waiting. 
+        /// 3) Waited for too long, stop waiting.
         /// Case 1) and 3) , it returns value less than or equal to 0.
         /// case 2, it returns positive value.
         /// </summary>
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         /// <summary>
         /// Check if GCE firewall rules include a rule that enables the port to target GCE VM.
-        /// If a firewall rule contains tag, 
+        /// If a firewall rule contains tag,
         /// and the GCE instance also has the tag, the rule is applied to the GCE instance.
         /// </summary>
         public async Task<bool> IsPortEnabledAsync()
@@ -131,8 +131,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Checks if current machine can establish TCP connection to the remote applicaton.
-        /// The test succeeds only if 
+        /// Checks if current machine can establish TCP connection to the remote application.
+        /// The test succeeds only if
         ///   (a) The network is connected (i.e no firewall blocks it),
         ///   (b) The target application is started and listening at the TCP port.
         /// </summary>
@@ -162,10 +162,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 }
                 catch (SocketException ex)
                 {
-                    var socketError = ex as SocketException;
-                    Debug.WriteLine($"ConnectivityTest {socketError?.ErrorCode}, {ex}");
-                    if (socketError?.SocketErrorCode == SocketError.ConnectionRefused
-                        || socketError?.SocketErrorCode == SocketError.TimedOut)
+                    var socketError = ex;
+                    Debug.WriteLine($"ConnectivityTest {socketError.ErrorCode}, {ex}");
+                    if (socketError.SocketErrorCode == SocketError.ConnectionRefused
+                        || socketError.SocketErrorCode == SocketError.TimedOut)
                     {
                         return false;
                     }

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.Services.Configuration;
-using GoogleCloudExtension.SolutionUtils;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Threading;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Services.Configuration;
+using GoogleCloudExtension.SolutionUtils;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.GenerateConfigurationCommand

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
 using System.Diagnostics;
 using System.Text;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -31,7 +32,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         /// <param name="window">A <seealso cref="LogsViewerToolWindow"/> object. </param>
         /// <param name="instanceId">The VM instance Id.</param>
-        public static void FilterVMInstanceLog(this LogsViewerToolWindow window, string instanceId)
+        public static void FilterVmInstanceLog(this LogsViewerToolWindow window, string instanceId)
         {
             if (window?.ViewModel == null || string.IsNullOrWhiteSpace(instanceId))
             {
@@ -54,7 +55,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="version">
         /// GAE service version. Null is valid input, that it will then return logs of all versions.
         /// </param>
-        public static void FilterGAEServiceLog(this LogsViewerToolWindow window, string serviceId, string version = null)
+        public static void FilterGaeServiceLog(this LogsViewerToolWindow window, string serviceId, string version = null)
         {
             if (window?.ViewModel == null || string.IsNullOrWhiteSpace(serviceId))
             {

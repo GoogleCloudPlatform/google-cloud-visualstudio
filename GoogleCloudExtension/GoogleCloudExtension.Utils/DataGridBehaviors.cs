@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -117,7 +118,7 @@ namespace GoogleCloudExtension.Utils
                 return;
             }
 
-            var oldIsDescending = column.SortDirection == System.ComponentModel.ListSortDirection.Descending;
+            var oldIsDescending = column.SortDirection == ListSortDirection.Descending;
             var newIsDescending = !oldIsDescending;
 
             var collectionView = self.ItemsSource as ListCollectionView;
@@ -127,7 +128,7 @@ namespace GoogleCloudExtension.Utils
                 return;
             }
 
-            column.SortDirection = newIsDescending ? System.ComponentModel.ListSortDirection.Descending : System.ComponentModel.ListSortDirection.Ascending;
+            column.SortDirection = newIsDescending ? ListSortDirection.Descending : ListSortDirection.Ascending;
             collectionView.CustomSort = new DataGridColumnCustomSorter(customSorter, newIsDescending);
 
             e.Handled = true;

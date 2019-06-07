@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
+using System.Threading;
 using System.Windows.Controls;
-using System.Windows.Data;
+using GoogleCloudExtension.Theming;
+using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.PickProjectDialog
 {
@@ -23,8 +24,7 @@ namespace GoogleCloudExtension.PickProjectDialog
     /// </summary>
     public partial class PickProjectIdWindowContent : CommonWindowContent<IPickProjectIdViewModel>
     {
-        // ReSharper disable once MemberCanBePrivate.Global
-        public const string CvsKey = "cvs";
+        private int _onFilterFlag = 0;
 
         public PickProjectIdWindowContent(string helpText, bool allowAccountChange) : this(
             new PickProjectIdViewModel(helpText, allowAccountChange))
@@ -38,15 +38,19 @@ namespace GoogleCloudExtension.PickProjectDialog
 
             // Ensure the focus is in the filter textbox.
             _filter.Focus();
+
+            _dataGrid.Items.Filter = viewModel.FilterItem;
         }
 
-        private void OnFilterItemInCollectionView(object sender, FilterEventArgs e) =>
-            e.Accepted = ViewModel?.FilterItem(e.Item) ?? false;
-
-        private void OnFilterTextChanged(object sender, TextChangedEventArgs e)
+        private async void OnFilterTextChanged(object sender, TextChangedEventArgs e)
         {
-            var collectionViewSource = Resources[CvsKey] as CollectionViewSource;
-            collectionViewSource?.View?.Refresh();
+            Interlocked.Increment(ref _onFilterFlag);
+            await Task.Delay(100);
+            if (Interlocked.Decrement(ref _onFilterFlag) == 0)
+            {
+                // Refresh the filter.
+                _dataGrid.Items.Filter = ViewModel.FilterItem;
+            }
         }
     }
 }

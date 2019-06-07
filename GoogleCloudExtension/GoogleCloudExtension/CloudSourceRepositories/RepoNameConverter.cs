@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudSourceRepositories.v1.Data;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using Google.Apis.CloudSourceRepositories.v1.Data;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -30,9 +30,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Repo)
+            if (value is Repo repo)
             {
-                return (value as Repo).GetRepoName();
+                return repo.GetRepoName();
             }
             Debug.WriteLine($"Value should be {nameof(Repo)} type");
             return DependencyProperty.UnsetValue;
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider) => this;

@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.PublishDialog.Steps;
-using GoogleCloudExtension.PublishDialog.Steps.Choice;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.PublishDialog.Steps;
+using GoogleCloudExtension.PublishDialog.Steps.Choice;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 
 namespace GoogleCloudExtension.PublishDialog
 {

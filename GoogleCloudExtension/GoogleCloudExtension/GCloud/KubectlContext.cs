@@ -12,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Container.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.GCloud.Models;
-using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
+using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.GCloud
 {

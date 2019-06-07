@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private readonly Dictionary<string, string> _logShortNameToIdLookup = new Dictionary<string, string>();
 
         /// <summary>
-        /// Gets the list of log id short name as the selector items source. 
+        /// Gets the list of log id short name as the selector items source.
         /// </summary>
         public List<string> LogIDs { get; }
 
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void AddLogId(string logId)
         {
-            if (String.IsNullOrWhiteSpace(logId))
+            if (string.IsNullOrWhiteSpace(logId))
             {
                 return;
             }
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var splits = logId.Split(new string[] { "/", "%2F", "%2f" }, StringSplitOptions.RemoveEmptyEntries);
+            var splits = logId.Split(new[] { "/", "%2F", "%2f" }, StringSplitOptions.RemoveEmptyEntries);
             string shortName = splits.LastOrDefault();
             _logIDs[lowerCaseLogID] = shortName;
             if (_logShortNameToIdLookup.ContainsKey(shortName))

@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using GoogleCloudExtension.Services.FileSystem;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using EnvDTE;
+using GoogleCloudExtension.Projects.DotNetCore;
+using GoogleCloudExtension.Services.FileSystem;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.Projects
 {
@@ -55,7 +56,7 @@ namespace GoogleCloudExtension.Projects
         public const string SdkAttributeName = "Sdk";
 
         /// <summary>
-        /// Parses the given <seealso cref="Project"/> instance and resturns a friendlier and more usable type to use for
+        /// Parses the given <seealso cref="Project"/> instance and returns a friendlier and more usable type to use for
         /// deployment and other operations.
         /// </summary>
         /// <param name="project">The <seealso cref="Project"/> instance to parse.</param>
@@ -96,7 +97,7 @@ namespace GoogleCloudExtension.Projects
                             .Descendants(TargetFrameworkElementName)
                             .Select(x => x.Value)
                             .FirstOrDefault();
-                        return new DotNetCore.CsprojProject(project, targetFramework);
+                        return new CsprojProject(project, targetFramework);
                     }
                 }
 
@@ -127,6 +128,7 @@ namespace GoogleCloudExtension.Projects
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string projectDir = Path.GetDirectoryName(project.FullName);
+            Debug.Assert(projectDir != null, nameof(projectDir) + " != null");
             string projectJsonPath = Path.Combine(projectDir, ProjectJsonFileName);
 
             var fileSystem = GoogleCloudExtensionPackage.Instance.GetMefService<IFileSystem>();
@@ -136,7 +138,7 @@ namespace GoogleCloudExtension.Projects
                 return null;
             }
 
-            return new DotNetCore.JsonProject(project);
+            return new JsonProject(project);
         }
     }
 }

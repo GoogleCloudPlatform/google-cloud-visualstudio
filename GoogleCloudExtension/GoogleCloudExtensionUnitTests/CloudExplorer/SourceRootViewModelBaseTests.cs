@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
@@ -88,12 +88,12 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorer
             /// <summary>
             /// Returns the tree node to use when we detect that the necessary APIs are not enabled.
             /// </summary>
-            public override TreeLeaf ApiNotEnabledPlaceholder { get; }
+            public override TreeLeaf ApiNotEnabledPlaceholder { get; } = null;
 
             /// <summary>
             /// Returns the names of the required APIs for the source.
             /// </summary>
-            public override IList<string> RequiredApis { get; }
+            public override IList<string> RequiredApis { get; } = new List<string>();
 
             /// <summary>
             /// Override this function to load and display the data in the control.

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
-using System;
 
 namespace GoogleCloudExtension.Services
 {
@@ -73,7 +73,6 @@ namespace GoogleCloudExtension.Services
         /// <summary>
         /// Prompts the user with the given content.
         /// </summary>
-        /// <typeparam name="T">The type of the view model behind the prompt.</typeparam>
         /// <param name="content">The content to display to the user.</param>
         void PromptUser(ICommonWindowContent<ICloseSource> content);
     }

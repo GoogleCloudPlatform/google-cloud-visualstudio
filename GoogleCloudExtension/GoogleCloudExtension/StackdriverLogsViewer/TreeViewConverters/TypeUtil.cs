@@ -14,10 +14,10 @@
 
 using System;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
-    /// Utility methods primarily used by ObjectNodeTree 
+    /// Utility methods primarily used by ObjectNodeTree
     /// </summary>
     public static class TypeUtil
     {

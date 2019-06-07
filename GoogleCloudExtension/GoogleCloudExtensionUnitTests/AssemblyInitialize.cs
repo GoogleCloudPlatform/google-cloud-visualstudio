@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Settings;
@@ -20,9 +23,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.Threading;
 using Moq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace GoogleCloudExtensionUnitTests
 {

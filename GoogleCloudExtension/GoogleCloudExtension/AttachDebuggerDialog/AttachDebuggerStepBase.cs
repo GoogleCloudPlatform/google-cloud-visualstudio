@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -26,14 +26,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private readonly CancellationTokenSource _cancellationTokenSource;
         private bool _isCancelButtonEnabled;
-        private bool _isOKButtonEnabled;
+        private bool _isOkButtonEnabled;
         private bool _isCancelButtonVisible = true;
 
         protected CancellationToken CancelToken { get; }
 
         protected AttachDebuggerContext Context { get; }
 
-        public AttachDebuggerStepBase(AttachDebuggerContext context)
+        protected AttachDebuggerStepBase(AttachDebuggerContext context)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             CancelToken = _cancellationTokenSource.Token;
@@ -56,10 +56,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public virtual ContentControl Content => null;
 
-        public virtual bool IsOKButtonEnabled
+        public virtual bool IsOkButtonEnabled
         {
-            get { return _isOKButtonEnabled; }
-            protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
+            get { return _isOkButtonEnabled; }
+            protected set { SetValueAndRaise(ref _isOkButtonEnabled, value); }
         }
 
         public virtual void OnCancelCommand()

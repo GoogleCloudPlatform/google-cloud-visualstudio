@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using GoogleCloudExtension.Projects;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using EnvDTE;
+using GoogleCloudExtension.Projects;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
     /// <summary>
-    /// An wrapper on top of Visual Studio extenstion API Project interface. 
+    /// An wrapper on top of Visual Studio extenstion API Project interface.
     /// </summary>
     internal class ProjectHelper
     {
@@ -34,8 +34,8 @@ namespace GoogleCloudExtension.SolutionUtils
         private readonly Project _project;
 
         /// <summary>
-        /// Get a list of c# source files. 
-        /// It refresh and enumerates the list of files each time it is called. 
+        /// Get a list of c# source files.
+        /// It refresh and enumerates the list of files each time it is called.
         /// </summary>
         public List<ProjectSourceFile> SourceFiles
         {
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.SolutionUtils
         public string UniqueName { get; }
 
         /// <summary>
-        /// The project root directory. 
+        /// The project root directory.
         /// </summary>
         public string ProjectRoot { get; }
 
@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.SolutionUtils
             {
                 FullName = _project.FullName.ToLowerInvariant();
                 UniqueName = _project.UniqueName.ToLowerInvariant();
-                if (FullName.EndsWith(UniqueName))
+                if (FullName.EndsWith(UniqueName, StringComparison.Ordinal))
                 {
                     int len = FullName.Length - UniqueName.Length;
                     if (len > 0 && FullName[len - 1] == Path.DirectorySeparatorChar)
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 // Fallback to project directory.
                 ProjectRoot = ProjectRoot ?? Path.GetDirectoryName(FullName);
 
-                GetAssembyInfoFromProperties();
+                GetAssemblyInfoFromProperties();
             }
             catch (COMException ex)
             {
@@ -160,8 +160,8 @@ namespace GoogleCloudExtension.SolutionUtils
                 || project.Kind == Constants.vsProjectKindMisc
                 // The project does not represent a folder.
                 || project.Kind == Constants.vsProjectKindSolutionItems
-                // The project is not an unmolded project. Unmolded projects do not support
-                // automation. Several Project properties that are used acros the extension are not available
+                // The project is not an unmodeled project. Unmodeled projects do not support
+                // automation. Several Project properties that are used across the extension are not available
                 // for unmodeled projects.
                 // Unloaded projects are unmodeled projects.
                 // Some third party project types and some old database project are also unmodeled.
@@ -210,7 +210,7 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
-        private void GetAssembyInfoFromProperties()
+        private void GetAssemblyInfoFromProperties()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             foreach (Property property in _project.Properties)

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Input;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.MenuBarControls
 {

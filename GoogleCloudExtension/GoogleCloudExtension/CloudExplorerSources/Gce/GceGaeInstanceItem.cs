@@ -19,7 +19,7 @@ using GoogleCloudExtension.Utils;
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     /// <summary>
-    /// This class represents a GCE instance that is serving App Engine traffic in the 
+    /// This class represents a GCE instance that is serving App Engine traffic in the
     /// Properties window.
     /// </summary>
     public class GceGaeInstanceItem : GceInstanceItem

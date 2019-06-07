@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
+using System.Xml.Linq;
 using EnvDTE;
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension;
@@ -30,18 +36,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Xml.Linq;
-using Microsoft.VisualStudio.ComponentModelHost;
 using TestingHelpers;
-using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.Interop.IAsyncServiceProvider;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Task = System.Threading.Tasks.Task;
-using Window = EnvDTE.Window;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -511,8 +509,8 @@ namespace GoogleCloudExtensionUnitTests
         private async Task RunPackageInitializeAsync()
         {
             var asyncServiceProviderMock =
-                new Mock<Microsoft.VisualStudio.Shell.Interop.IAsyncServiceProvider>(MockBehavior.Strict);
-            asyncServiceProviderMock.As<IAsyncServiceProvider>()
+                new Mock<IAsyncServiceProvider>(MockBehavior.Strict);
+            asyncServiceProviderMock.As<Microsoft.VisualStudio.Shell.IAsyncServiceProvider>()
                 .Setup(sp => sp.GetServiceAsync(It.IsAny<Type>()))
                 .Returns(
                     async (Type t) =>

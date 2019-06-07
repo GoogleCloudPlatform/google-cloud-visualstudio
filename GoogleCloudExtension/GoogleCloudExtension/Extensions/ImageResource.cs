@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows.Markup;
 using System.Windows.Media;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Extensions
 {
@@ -48,8 +48,7 @@ namespace GoogleCloudExtension.Extensions
         /// <param name="serviceProvider"></param>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            ImageSource result = null;
-            if (!s_cache.TryGetValue(Path, out result))
+            if (!s_cache.TryGetValue(Path, out ImageSource result))
             {
                 result = ResourceUtils.LoadImage(Path);
                 s_cache[Path] = result;

@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.CloudSourceRepositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows;
-
 
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 {
@@ -38,7 +37,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         public void ConvertSucceedsTest()
         {
             string testName = "test-repo";
-            var testRepo = new Repo() { Name = $"projects/test-project-id/repos/{testName}" };
+            var testRepo = new Repo { Name = $"projects/test-project-id/repos/{testName}" };
             var converted = _testConverter.Convert(testRepo, null, null, null);
             Assert.AreEqual(testName, converted);
         }

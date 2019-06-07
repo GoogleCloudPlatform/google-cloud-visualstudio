@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Linq;
 using EnvDTE;
+using GoogleCloudExtension.PickFileDialog;
 using GoogleCloudExtension.SolutionUtils;
-using GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation;
 using GoogleCloudExtension.Utils;
@@ -24,11 +27,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
-using System;
-using System.Linq;
 using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
-using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using static GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation.LogWritterNameConstants;
 using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
+using StackFrame = GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation.StackFrame;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -42,7 +44,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         /// <param name="logLevel">The log entry severity, <seealso cref="LogSeverity"/></param>
         /// <returns>The method name if it is of known log level.  Or empty if not known log level value.</returns>
-        public static string GetLoggerMethodName(this LogSeverity logLevel)
+        private static string GetLoggerMethodName(this LogSeverity logLevel)
         {
             switch (logLevel)
             {
@@ -67,8 +69,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         public static void ErrorFrameToSourceLine(
-            ErrorGroupItem errorGroupItem,
-            ErrorReporting.StackFrame stackFrame)
+            ErrorReporting.ErrorGroupItem errorGroupItem,
+            StackFrame stackFrame)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
@@ -83,7 +85,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 var items = solution.FindMatchingSourceFile(stackFrame.SourceFile);
                 if (items.Count > 1)
                 {
-                    var index = PickFileDialog.PickFileWindow.PromptUser(items.Select(x => x.FullName));
+                    var index = PickFileWindow.PromptUser(items.Select(x => x.FullName).ToList());
                     if (index < 0)
                     {
                         return;
@@ -98,7 +100,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
             if (projectFile == null)
             {
-                SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
+                FileItemNotFoundPrompt(stackFrame.SourceFile);
                 return;
             }
 
@@ -121,9 +123,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             window.Visible = true;
-            TextSelection selection = window.Document.Selection as TextSelection;
-            TextPoint tp = selection.TopPoint;
-            selection.GotoLine(line, Select: false);
+            var selection = (TextSelection)window.Document.Selection;
+            selection.GotoLine(line);
         }
 
         /// <summary>
@@ -147,9 +148,9 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         /// <param name="window">The Visual Studio Document window that opens the source file.</param>
-        public static void ShowToolTip(
-            ErrorGroupItem errorGroupItem,
-            ErrorReporting.StackFrame stackFrame,
+        private static void ShowToolTip(
+            ErrorReporting.ErrorGroupItem errorGroupItem,
+            StackFrame stackFrame,
             Window window)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -174,11 +175,15 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// Show the Logger method tooltip.
         /// </summary>
         /// <param name="logItem">The <seealso cref="LogItem"/> that has the source line information.</param>
-        /// <param name="window">The Visual Studio doucment window of the source file.</param>
+        /// <param name="window">The Visual Studio document window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            GotoLine(window, (int)logItem.SourceLine);
+            if (logItem.SourceLine.HasValue)
+            {
+                GotoLine(window, (int)logItem.SourceLine);
+            }
+
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)
@@ -189,7 +194,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             control.DataContext = new LoggerTooltipViewModel(logItem);
             ActiveTagData.SetCurrent(
                 wpfView,
-                logItem.SourceLine.Value,
+                logItem.SourceLine.GetValueOrDefault(),
                 control,
                 logItem.LogLevel.GetLoggerMethodName());
             TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
@@ -223,15 +228,12 @@ namespace GoogleCloudExtension.SourceBrowsing
         private static IWpfTextView GetWpfTextView(IVsTextView textView)
         {
             IWpfTextView view = null;
-            IVsUserData userData = textView as IVsUserData;
-            if (userData != null)
+            if (textView is IVsUserData userData)
             {
-                IWpfTextViewHost viewHost;
-                object holder;
                 Guid guidViewHost = DefGuidList.guidIWpfTextViewHost;
-                if (VSConstants.S_OK == userData.GetData(ref guidViewHost, out holder))
+                if (VSConstants.S_OK == userData.GetData(ref guidViewHost, out object holder))
                 {
-                    viewHost = (IWpfTextViewHost)holder;
+                    var viewHost = (IWpfTextViewHost)holder;
                     view = viewHost.TextView;
                 }
             }
@@ -240,8 +242,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static StackdriverTagger TryFindTagger(IWpfTextView wpfView)
         {
-            StackdriverTagger tagger = null;
-            LoggerTaggerProvider.AllLoggerTaggers.TryGetValue(wpfView, out tagger);
+            LoggerTaggerProvider.AllLoggerTaggers.TryGetValue(wpfView, out StackdriverTagger tagger);
             return tagger;
         }
     }

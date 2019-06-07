@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Wpf calendar holds the mouse clicking event. 
+        /// Wpf calendar holds the mouse clicking event.
         /// Once focus is inside the calendar control, clicking outside won't respond.
         /// This is a workaround to fix the problem.
         /// For more information, refer to:

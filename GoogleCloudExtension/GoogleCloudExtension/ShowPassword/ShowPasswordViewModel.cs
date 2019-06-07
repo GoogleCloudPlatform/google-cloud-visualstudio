@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.ShowPassword
 {

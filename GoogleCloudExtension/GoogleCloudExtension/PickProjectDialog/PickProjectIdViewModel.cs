@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PickProjectDialog
 {
@@ -92,8 +92,14 @@ namespace GoogleCloudExtension.PickProjectDialog
         public string Filter
         {
             get { return _filter; }
-            set { SetValueAndRaise(ref _filter, value); }
+            set
+            {
+                SetValueAndRaise(ref _filter, value);
+                RaisePropertyChanged(nameof(ItemFilter));
+            }
         }
+
+        public Predicate<object> ItemFilter { get; }
 
         public bool AllowAccountChange
         {
@@ -115,6 +121,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         public PickProjectIdViewModel(string helpText, bool allowAccountChange)
         {
             AllowAccountChange = allowAccountChange;
+            ItemFilter = FilterItem;
             HelpText = helpText;
 
             ChangeUserCommand = new ProtectedCommand(OnChangeUserCommand);
@@ -163,7 +170,7 @@ namespace GoogleCloudExtension.PickProjectDialog
             Projects = Enumerable.Empty<Project>();
             RefreshCommand.CanExecuteCommand = false;
 
-            // Updat the to loaded list of projects.
+            // Update the to loaded list of projects.
             Projects = (await DataSourceFactory.Default.ResourceManagerDataSource.ProjectsListTask) ?? Enumerable.Empty<Project>();
             RefreshCommand.CanExecuteCommand = true;
 

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +20,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Controls
 {
@@ -71,12 +71,12 @@ namespace GoogleCloudExtension.Controls
             }
         }
 
-        private static ObjectAnimationUsingKeyFrames CreateAnimation(IList<ImageSource> imageFrames)
+        private static ObjectAnimationUsingKeyFrames CreateAnimation(IEnumerable<ImageSource> imageFrames)
         {
             // Initialize the animation for this object.
             var result = new ObjectAnimationUsingKeyFrames
             {
-                Duration = s_animationDuration,
+                Duration = s_animationDuration
             };
 
             // Creates the frames for the animation.
@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.Controls
                 var keyFrame = new DiscreteObjectKeyFrame
                 {
                     KeyTime = new TimeSpan(0, 0, 0, 0, framePoint),
-                    Value = frame,
+                    Value = frame
                 };
                 keyFrames.Add(keyFrame);
 
@@ -117,7 +117,7 @@ namespace GoogleCloudExtension.Controls
         {
             base.EndInit();
 
-            // Avoid doing any initializaiton until the constructor is finished.
+            // Avoid doing any initialization until the constructor is finished.
             if (_initializing)
             {
                 return;
@@ -137,8 +137,8 @@ namespace GoogleCloudExtension.Controls
                 _storyboard = new Storyboard();
                 _storyboard.Children.Add(animation);
 
-                Storyboard.SetTargetName(animation, "_image");
-                Storyboard.SetTargetProperty(animation, new PropertyPath("Source"));
+                Storyboard.SetTargetName(animation, nameof(_image));
+                Storyboard.SetTargetProperty(animation, new PropertyPath(nameof(_image.Source)));
 
                 _storyboard.Completed += (s, e) => StartAnimation();
             }
