@@ -154,13 +154,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks
         public ProtectedCommand NavigateCommand { get; }
 
         /// <summary>
-        /// Creates a new <see cref="ConsoleLinksRoot"/>. Initalizes the root with all of the links.
+        /// Creates a new <see cref="ConsoleLinksRoot"/>. Initializes the root with all of the links.
         /// </summary>
         /// <param name="context">The <see cref="ICloudSourceContext"/> to get the current project id from.</param>
         public ConsoleLinksRoot(ICloudSourceContext context) : this(context, Process.Start) { }
 
         /// <summary>
-        /// Internal constructior used for testing.
+        /// Internal constructor used for testing.
         /// </summary>
         /// <param name="context">The <see cref="ICloudSourceContext"/> to get the current project id from.</param>
         /// <param name="startProcess">The injected mock implementation of <see cref="Process.Start(string)"/>.</param>

@@ -23,11 +23,6 @@ namespace GoogleCloudExtension.VsVersion.VS16
     {
         public const string MSBuildSubPath = @"MSBuild\Current\Bin\MSBuild.exe";
 
-        public override string GetMsbuildPath()
-        {
-            string result = Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
-            GcpOutputWindow.Default.OutputDebugLine($"Msbuild V16 Path: {result}");
-            return result;
-        }
+        public override string GetMsbuildPath() => Path.Combine(VsRootDirectoryPath, MSBuildSubPath);
     }
 }

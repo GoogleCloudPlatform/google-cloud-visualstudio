@@ -159,14 +159,11 @@ namespace GoogleCloudExtension.GCloud
 
         private Task<bool> RunCommandAsync(string command)
         {
-            Task DebugOutputHandler(string s, OutputStream outputStream)
-            {
-                Debug.WriteLine(s);
-                return Task.CompletedTask;
-            }
-
             // This code depends on the fact that gcloud.cmd is a batch file.
-            return ProcessService.RunCommandAsync("cmd.exe", $"/c gcloud {command}", DebugOutputHandler);
+            return ProcessService.RunCommandAsync(
+                "cmd.exe",
+                $"/c gcloud {command}",
+                s => Debug.WriteLine(s));
         }
     }
 }

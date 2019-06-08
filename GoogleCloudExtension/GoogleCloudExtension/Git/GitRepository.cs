@@ -73,13 +73,13 @@ namespace GoogleCloudExtension.Git
         /// Returns true if the directory is under a local git repository folder.
         /// </summary>
         /// <param name="dir">The file directory.</param>
-        public static async Task<bool> IsGitRepositoryAsync(string dir) =>
-            (await RunGitCommandAsync("rev-parse", dir, throwOnError: false)) != null;
+        private static async Task<bool> IsGitRepositoryAsync(string dir) =>
+            null != await RunGitCommandAsync("rev-parse", dir, throwOnError: false);
 
         /// <summary>
         /// Returns a list of remote names. Example: {"origin", "GoogleCloudPlatform"}
         /// </summary>
-        public async Task<IList<string>> GetRemotesAsync() => await ExecCommandAsync("remote");
+        private async Task<IList<string>> GetRemotesAsync() => await ExecCommandAsync("remote");
 
         /// <summary>
         /// Returns a list of remote urls.
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.Git
         public Task<List<string>> GetRevisionFileAsync(string sha, string relativePath)
             => ExecCommandAsync($"show {sha}:{relativePath.Replace('\\', '/')}");
 
-        public Task<List<string>> ExecCommandAsync(string command) =>
+        private Task<List<string>> ExecCommandAsync(string command) =>
             RunGitCommandAsync(command, Root, throwOnError: false);
 
         /// <summary>
@@ -161,14 +161,10 @@ namespace GoogleCloudExtension.Git
             }
             var output = new List<string>();
             bool commandResult = await ProcessUtils.Default.RunCommandAsync(
-                file: GitPath,
-                args: command,
-                handler: (o, e) =>
-                {
-                    output.Add(o);
-                    return Task.CompletedTask;
-                },
-                workingDir: gitLocalRoot);
+                GitPath,
+                command,
+                o => output.Add(o),
+                gitLocalRoot);
             if (!commandResult && throwOnError)
             {
                 throw new GitCommandException();

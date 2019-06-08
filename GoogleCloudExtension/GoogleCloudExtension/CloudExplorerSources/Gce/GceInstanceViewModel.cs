@@ -28,7 +28,6 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
-using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.TerminalServer;
@@ -43,11 +42,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TimeSpan s_pollTimeout = new TimeSpan(0, 0, 10);
 
         private const string IconRunningResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_running.png";
-        private const string IconStopedResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_stoped.png";
+        private const string IconStoppedResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_stopped.png";
         private const string IconTransitionResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_transition.png";
 
         private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
-        private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceStoppedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStoppedResourcePath));
         private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
         private readonly GceSourceRootViewModel _owner;
@@ -56,7 +55,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private Instance Instance
         {
-            get { return _instance; }
+            get => _instance;
             set
             {
                 _instance = value;
@@ -97,7 +96,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public override void OnMenuItemOpen()
         {
             // In current code, _attachDebuggerCommand won't be null
-            // To be safe and in case the constructor/initiailzation code could be modified in the future.
+            // To be safe and in case the constructor/initialization code could be modified in the future.
             if (_attachDebuggerCommand != null)
             {
                 _attachDebuggerCommand.CanExecuteCommand =
@@ -147,19 +146,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 switch (pendingOperation.OperationType)
                 {
                     case OperationType.StartInstance:
-                        Caption = String.Format(Resources.CloudExplorerGceInstanceStartingCaption, Instance.Name);
+                        Caption = string.Format(Resources.CloudExplorerGceInstanceStartingCaption, Instance.Name);
                         break;
 
                     case OperationType.StopInstance:
-                        Caption = String.Format(Resources.CloudExplorerGceInstanceStoppingCaption, Instance.Name);
+                        Caption = string.Format(Resources.CloudExplorerGceInstanceStoppingCaption, Instance.Name);
                         break;
 
                     case OperationType.SettingTags:
-                        Caption = String.Format(Resources.CloudExplorerGceInstanceSettingTagsCaption, Instance.Name);
+                        Caption = string.Format(Resources.CloudExplorerGceInstanceSettingTagsCaption, Instance.Name);
                         break;
 
                     case OperationType.ModifyingFirewall:
-                        Caption = String.Format(Resources.CloudExplorerGceInstanceUpdatingFirewallCaption, Instance.Name);
+                        Caption = string.Format(Resources.CloudExplorerGceInstanceUpdatingFirewallCaption, Instance.Name);
                         break;
                 }
 
@@ -184,11 +183,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
-                            await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
+                            await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
                             break;
 
                         case OperationType.StopInstance:
-                            await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
+                            await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
                             break;
                     }
 
@@ -231,7 +230,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void UpdateContextMenu()
         {
-            var getPublishSettingsCommand = new ProtectedCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
+            var getPublishSettingsCommand = new ProtectedAsyncCommand(OnSavePublishSettingsCommandAsync, canExecuteCommand: Instance.IsAspnetInstance());
             var openWebSite = new ProtectedCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
             var openTerminalServerSessionCommand = new ProtectedCommand(
                 OnOpenTerminalServerSessionCommand,
@@ -302,7 +301,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             await RefreshInstanceStateAsync();
         }
 
-        private void OnSavePublishSettingsCommand()
+        private async Task OnSavePublishSettingsCommandAsync()
         {
             Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
 
@@ -333,13 +332,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 userName: credentials.User,
                 password: credentials.Password);
             File.WriteAllText(storePath, profile);
-            GcpOutputWindow.Default.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
+            await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
-        private void OnManageWindowsCredentialsCommand()
-        {
-            ManageWindowsCredentialsWindow.PromptUser(Instance);
-        }
+        private void OnManageWindowsCredentialsCommand() => ManageWindowsCredentialsWindow.PromptUser(Instance);
 
         private void OnOpenOnCloudConsoleCommand()
         {
@@ -349,10 +345,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start(url);
         }
 
-        private async Task OnPropertiesWindowCommandAsync()
-        {
-            await _owner.Context.ShowPropertiesWindowAsync(Item);
-        }
+        private async Task OnPropertiesWindowCommandAsync() => await _owner.Context.ShowPropertiesWindowAsync(Item);
 
         private async Task OnManageFirewallPortsCommandAsync()
         {
@@ -382,8 +375,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptService.Default.ActionPrompt(
-                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
+                    string.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
+                    string.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStopButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
@@ -398,17 +391,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 await GcpOutputWindow.Default.ActivateAsync();
-                await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
+                await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
                 EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Failure));
             }
-        }
-
-        private static void ShowOAuthErrorDialog(OAuthException ex)
-        {
-            Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
-            UserPromptService.Default.OkPrompt(
-                String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, CredentialsStore.Default.CurrentAccount.AccountName),
-                Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
         }
 
         private async Task OnStartInstanceCommandAsync()
@@ -416,8 +401,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptService.Default.ActionPrompt(
-                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
+                    string.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
+                    string.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
                     actionCaption: Resources.UiStartButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
@@ -432,7 +417,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 await GcpOutputWindow.Default.ActivateAsync();
-                await GcpOutputWindow.Default.OutputLineAsync(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
+                await GcpOutputWindow.Default.OutputLineAsync(string.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
 
                 EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Failure));
             }
@@ -483,7 +468,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             return Registry.GetValue(
                 @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
                 "{374DE290-123F-4565-9164-39C4925E467B}",
-                String.Empty).ToString();
+                string.Empty).ToString();
         }
 
         private void UpdateIcon()
@@ -495,7 +480,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     break;
 
                 case InstanceExtensions.TerminatedStatus:
-                    Icon = s_instanceStopedIcon.Value;
+                    Icon = s_instanceStoppedIcon.Value;
                     break;
 
                 default:

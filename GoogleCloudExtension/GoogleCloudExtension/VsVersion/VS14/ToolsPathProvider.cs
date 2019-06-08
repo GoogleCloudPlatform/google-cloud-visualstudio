@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.IO;
 
 namespace GoogleCloudExtension.VsVersion.VS14
@@ -27,9 +26,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
         public override string GetMsbuildPath()
         {
             string programFilesPath = Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
-            string result = Path.Combine(programFilesPath, MSBuildSubPath);
-            GcpOutputWindow.Default.OutputDebugLine($"Msbuild path: {result}");
-            return result;
+            return Path.Combine(programFilesPath, MSBuildSubPath);
         }
     }
 }

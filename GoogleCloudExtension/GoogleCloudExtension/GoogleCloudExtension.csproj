@@ -168,6 +168,7 @@
     <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroup.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\IGaeSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
@@ -681,7 +682,7 @@
       <SubType>Designer</SubType>
     </None>
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
-    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stopped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
@@ -725,7 +726,7 @@
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />
-    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stoped.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stopped.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_transition.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -837,7 +838,9 @@
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26201\lib\Microsoft.VisualStudio.Shell.15.0.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Shell.Framework.15.5.27130\lib\net45\Microsoft.VisualStudio.Shell.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Immutable.10.0.15.0.25415\lib\net45\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
     </Reference>

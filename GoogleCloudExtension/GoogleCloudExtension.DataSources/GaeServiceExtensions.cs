@@ -38,8 +38,7 @@ namespace GoogleCloudExtension.DataSources
         public static double GetTrafficAllocation(this Service service, string versionId)
         {
             IDictionary<string, double?> allocations = service.Split.Allocations;
-            double? allocation;
-            return allocations.TryGetValue(versionId, out allocation) ? allocation.Value : 0.0;
+            return allocations.TryGetValue(versionId, out double? allocation) ? allocation.GetValueOrDefault() : 0.0;
         }
     }
 }
