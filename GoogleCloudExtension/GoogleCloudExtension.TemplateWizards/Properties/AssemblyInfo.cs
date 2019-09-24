@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TemplateWizards")]
 [assembly: AssemblyDescription("Wizards for Visual Studio Project Templates.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Google Inc.")]
+[assembly: AssemblyCompany("Google Cloud")]
 [assembly: AssemblyProduct("TemplateWizards")]
 [assembly: AssemblyCopyright("Copyright \u00A9  2017")]
 [assembly: AssemblyTrademark("")]

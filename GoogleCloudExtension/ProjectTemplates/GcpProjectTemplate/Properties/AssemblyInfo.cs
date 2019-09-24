@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GcpProjectTemplate")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Google Inc.")]
+[assembly: AssemblyCompany("Google Cloud")]
 [assembly: AssemblyProduct("GoogleCloudExtension")]
 [assembly: AssemblyCopyright("Copyright \u00A9 Google Inc. 2017")]
 [assembly: AssemblyTrademark("")]
