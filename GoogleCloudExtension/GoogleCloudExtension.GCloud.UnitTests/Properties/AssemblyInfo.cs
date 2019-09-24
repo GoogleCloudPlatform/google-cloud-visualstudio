@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GoogleCloudExtension.GCloud.UnitTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Google Inc.")]
+[assembly: AssemblyCompany("Google Cloud")]
 [assembly: AssemblyProduct("Cloud Tools for Visual Studio")]
 [assembly: AssemblyCopyright("Copyright © Google Inc. 2018")]
 [assembly: AssemblyTrademark("")]

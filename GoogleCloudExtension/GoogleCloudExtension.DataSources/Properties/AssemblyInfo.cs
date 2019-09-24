@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GoogleCloudExtension.DataSources")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Google Inc.")]
+[assembly: AssemblyCompany("Google Cloud")]
 [assembly: AssemblyProduct("GoogleCloudExtension.DataSources")]
 [assembly: AssemblyCopyright("Copyright \u00A9 Google Inc. 2016")]
 [assembly: AssemblyTrademark("")]
