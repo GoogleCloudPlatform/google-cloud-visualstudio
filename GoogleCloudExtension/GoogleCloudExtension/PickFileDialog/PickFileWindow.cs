@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
 using System.Collections.Generic;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.PickFileDialog
 {
@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.PickFileDialog
     {
         private PickFileWindowViewModel ViewModel { get; }
 
-        private PickFileWindow(IEnumerable<string> fileList)
+        private PickFileWindow(IReadOnlyCollection<string> fileList)
             : base(GoogleCloudExtension.Resources.SourceVersionPickFileDialogCaption)
         {
             ViewModel = new PickFileWindowViewModel(this, fileList);
@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.PickFileDialog
         /// The picked file index.
         /// Or -1 if Cancel button is clicked.
         /// </returns>
-        public static int PromptUser(IEnumerable<string> fileList)
+        public static int PromptUser(IReadOnlyCollection<string> fileList)
         {
             var dialog = new PickFileWindow(fileList);
             dialog.ShowModal();

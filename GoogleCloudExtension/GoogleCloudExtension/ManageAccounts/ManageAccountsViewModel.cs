@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
@@ -107,7 +108,7 @@ namespace GoogleCloudExtension.ManageAccounts
                 Resources.ManageAccountsDeleteAccountPromptTitle,
                 actionCaption: Resources.UiDeleteButtonCaption))
             {
-                Debug.WriteLine($"The user cancelled the deletion of the account.");
+                Debug.WriteLine("The user cancelled the deletion of the account.");
                 return;
             }
 
@@ -123,7 +124,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Close?.Invoke();
         }
 
-        private async System.Threading.Tasks.Task OnAddAccountCommandAsync()
+        private async Task OnAddAccountCommandAsync()
         {
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())

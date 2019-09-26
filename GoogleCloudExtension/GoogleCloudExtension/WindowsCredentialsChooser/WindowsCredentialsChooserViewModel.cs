@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Utils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.WindowsCredentialsChooser
 {

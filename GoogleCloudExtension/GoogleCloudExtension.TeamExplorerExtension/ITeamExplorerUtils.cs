@@ -22,14 +22,14 @@ namespace GoogleCloudExtension.TeamExplorerExtension
     public interface ITeamExplorerUtils
     {
         /// <summary>
-        /// Show a message on top of the Team Explorer 
+        /// Show a message on top of the Team Explorer
         /// </summary>
         /// <param name="message">The message to display.</param>
         /// <param name="command">The command that can be executed when clicking at the message.</param>
         void ShowMessage(string message, ICommand command);
 
         /// <summary>
-        /// Show an error message on top of the Team Explorer 
+        /// Show an error message on top of the Team Explorer
         /// </summary>
         /// <param name="message">The error message to display.</param>
         void ShowError(string message);

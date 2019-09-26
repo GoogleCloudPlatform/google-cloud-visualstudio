@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons
 {
     /// <summary>
     /// Define time range selection control.
-    /// It is a list of buttons with time range as caption. 
+    /// It is a list of buttons with time range as caption.
     /// User can click on button to select/change the time range.
     /// </summary>
     public class TimeRangeButtons : Selector
@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            OnItemSelectedCommand = new ProtectedCommand<TimeRangeItem>((item) => SelectedItem = item);
+            OnItemSelectedCommand = new ProtectedCommand<TimeRangeItem>(item => SelectedItem = item);
             SelectionChanged += OnSelectionChanged;
         }
 

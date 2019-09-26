@@ -14,7 +14,7 @@
 
 using Microsoft.VisualStudio.TemplateWizard;
 
-namespace GoogleCloudExtension.TemplateWizards
+namespace GoogleCloudExtension.Interop
 {
     /// <summary>
     /// This interface is the export target of GoogleProjectTemplateSelectorWizard.

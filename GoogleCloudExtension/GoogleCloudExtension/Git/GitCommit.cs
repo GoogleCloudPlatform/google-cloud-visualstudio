@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Threading;
 
 namespace GoogleCloudExtension.Git
 {
@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.Git
         /// </summary>
         public string Root => _repo.Root;
 
-        internal GitCommit(GitRepository gitCommand, string sha)
+        private GitCommit(GitRepository gitCommand, string sha)
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
             Sha = sha.ThrowIfNullOrEmpty(nameof(sha));
@@ -86,8 +86,7 @@ namespace GoogleCloudExtension.Git
             return SubPaths(filePath)
                 .Select(x =>
                 {
-                    string y;
-                    fileTree.TryGetValue(x, out y);
+                    fileTree.TryGetValue(x, out string y);
                     return y;
                 })
                 .Where(x => x != null);

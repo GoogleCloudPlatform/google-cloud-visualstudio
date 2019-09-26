@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Services.FileSystem;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Services.FileSystem;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 {

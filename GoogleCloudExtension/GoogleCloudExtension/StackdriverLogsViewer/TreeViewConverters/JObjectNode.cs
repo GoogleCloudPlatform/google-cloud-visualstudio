@@ -14,7 +14,7 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
     /// Parse <seealso cref="JObject"/> properties.

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -20,6 +19,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Controls
 {
@@ -34,8 +34,7 @@ namespace GoogleCloudExtension.Controls
     public class TimeBox : Control
     {
         /// <summary>
-        /// Define a TextBox, Dependecies pair. 
-        /// TODO: use named Tuple in C# 7
+        /// Define a TextBox, Dependencies pair.
         /// </summary>
         private class TextBoxDependencyPropertyPair
         {
@@ -61,7 +60,6 @@ namespace GoogleCloudExtension.Controls
 
         private RepeatButton _upButton, _downButton;
         private TextBox _hourBox, _minuteBox, _secondBox;
-        private ComboBox _timeTypeCombo;
         private List<TextBoxDependencyPropertyPair> _timePartsBoxes;
 
         public static readonly DependencyProperty TimeProperty =
@@ -153,12 +151,11 @@ namespace GoogleCloudExtension.Controls
             _minuteBox = Template.FindName("PART_MinuteBox", this) as TextBox;
             _secondBox = Template.FindName("PART_SecondBox", this) as TextBox;
             _timePartsBoxes = new List<TextBoxDependencyPropertyPair>(
-                new TextBoxDependencyPropertyPair[] {
+                new[] {
                 new TextBoxDependencyPropertyPair(_hourBox, HourProperty),
                 new TextBoxDependencyPropertyPair(_minuteBox, MinuteProperty),
                 new TextBoxDependencyPropertyPair(_secondBox, SecondProperty)
             });
-            _timeTypeCombo = Template.FindName("PART_TimeType", this) as ComboBox;
             if (_upButton != null && _downButton != null)
             {
                 _upButton.Click += RepeatButton_Click;
@@ -176,12 +173,12 @@ namespace GoogleCloudExtension.Controls
 
         private static void OnTimePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
-            TimeBox control = source as TimeBox;
+            TimeBox control = (TimeBox)source;
             TimeSpan newValue = (TimeSpan)e.NewValue;
             TimeSpan oldValue = (TimeSpan)e.OldValue;
             // SetTimeParts triggers OnTimePartPropertyChanged
             // And it sets control.Time that calls back to current method OnTimePropertyChanged.
-            // This must be checked to avoid such a deadloop. 
+            // This must be checked to avoid such a infinite loop.
             if (newValue != oldValue)
             {
                 control.SetTimeParts(newValue);
@@ -190,12 +187,12 @@ namespace GoogleCloudExtension.Controls
 
         private static void OnTimePartPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
-            TimeBox control = source as TimeBox;
+            TimeBox control = (TimeBox)source;
             int newValue = (int)e.NewValue;
             int oldValue = (int)e.OldValue;
             // Setting control.Time triggers OnTimePropertyChanged
             // And SetTimePars inside OnTimePropertyChanged  may call back to current method OnTimePartPropertyChanged.
-            // This must be checked to avoid such a deadloop. 
+            // This must be checked to avoid such a infinite loop.
             if (newValue != oldValue)
             {
                 control.Time = control.ComposeTime();
@@ -212,8 +209,8 @@ namespace GoogleCloudExtension.Controls
 
         /// <summary>
         /// Set time parts value when <seealso cref="TimeProperty"/> changes.
-        /// Checking if the time parts value differ is critical to avoid deadloop.
-        /// Without doing so, OnTimePartPropertyChanged and OnTimePropertyChanged may call to each other indefinitely. 
+        /// Checking if the time parts value differ is critical to avoid infinite loop.
+        /// Without doing so, OnTimePartPropertyChanged and OnTimePropertyChanged may call to each other indefinitely.
         /// </summary>
         private void SetTimeParts(TimeSpan time)
         {
@@ -249,7 +246,6 @@ namespace GoogleCloudExtension.Controls
             if (!StringUtils.IsDigitsOnly(e.Text))
             {
                 e.Handled = true;
-                return;
             }
         }
 
@@ -287,12 +283,12 @@ namespace GoogleCloudExtension.Controls
                 dp = SecondProperty;
             }
 
-            UpDownPropertyValue(dp, e.Source == _upButton);
+            UpDownPropertyValue(dp, Equals(e.Source, _upButton));
         }
 
         /// <summary>
         /// There are three boxes in the time control. Hour, Minute, Second.
-        /// (1) Left arrow key move to the prior box, if the caet is at the beginning of the input text.
+        /// (1) Left arrow key move to the prior box, if the caret is at the beginning of the input text.
         /// (2) Right arrow key move to the next box, if the caret is at the end of the input text.
         /// (3) Press Enter key moves to the next box.
         /// (4) Down arrow key increases the box value.
@@ -305,7 +301,7 @@ namespace GoogleCloudExtension.Controls
                 return;
             }
 
-            var textBox = sender as TextBox;
+            var textBox = (TextBox)sender;
             int index = GetTimePartTextBoxesIndex(sender);
             if (index < 0)
             {
@@ -326,7 +322,7 @@ namespace GoogleCloudExtension.Controls
             {
                 _timePartsBoxes[index + 1].TextBox.Focus();
             }
-            // Left arrow, if the caret is at the begining of the current text box, move to the prior box.
+            // Left arrow, if the caret is at the beginning of the current text box, move to the prior box.
             else if (e.Key == Key.Left && textBox.CaretIndex == 0 && index > 0)
             {
                 _timePartsBoxes[index - 1].TextBox.Focus();

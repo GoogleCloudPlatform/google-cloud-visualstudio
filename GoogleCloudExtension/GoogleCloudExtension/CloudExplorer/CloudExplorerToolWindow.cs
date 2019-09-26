@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Runtime.InteropServices;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
-using System;
-using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -34,10 +34,8 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </para>
     /// </remarks>
     [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
-    public class CloudExplorerToolWindow : ToolWindowPane
+    public sealed class CloudExplorerToolWindow : ToolWindowPane
     {
-        private readonly SelectionUtils _selectionUtils;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindow"/> class.
         /// </summary>
@@ -45,12 +43,12 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             SetCaption();
 
-            _selectionUtils = new SelectionUtils(this);
+            var selectionUtils = new SelectionUtils(this);
 
-            var model = new CloudExplorerViewModel(_selectionUtils);
-            Content = new CloudExplorerToolWindowControl(_selectionUtils)
+            var model = new CloudExplorerViewModel(selectionUtils);
+            Content = new CloudExplorerToolWindowControl(selectionUtils)
             {
-                DataContext = model,
+                DataContext = model
             };
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
@@ -60,17 +58,14 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)
         {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                SetCaption();
-            });
+            ErrorHandlerUtils.HandleExceptions(SetCaption);
         }
 
         private void SetCaption()
         {
             if (CredentialsStore.Default.CurrentAccount?.AccountName != null)
             {
-                Caption = String.Format(Resources.CloudExplorerToolWindowCaption, CredentialsStore.Default.CurrentAccount.AccountName);
+                Caption = string.Format(Resources.CloudExplorerToolWindowCaption, CredentialsStore.Default.CurrentAccount.AccountName);
             }
             else
             {

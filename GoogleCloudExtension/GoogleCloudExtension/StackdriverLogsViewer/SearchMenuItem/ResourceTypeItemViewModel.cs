@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data.Extensions;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem
 {
     /// <summary>
     /// View model for resource type menu item.
@@ -40,7 +39,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Choose all submenu item header.
         /// Example:  All instance_id.
         /// </summary>
-        public string ChooseAllHeader => GetKeyAt(0) == null ? null : String.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeyAt(0));
+        public string ChooseAllHeader => GetKeyAt(0) == null ? null : string.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeyAt(0));
 
         /// <summary>
         /// Create an instance of <seealso cref="ResourceTypeItemViewModel"/> class.
@@ -59,7 +58,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // By setting this role, popup is visible. Otherwise popup is invisible.
             if (!IsSubmenuPopulated)
             {
-                MenuItems.Add(MenuItemViewModel.InvisibleItem);
+                MenuItems.Add(InvisibleItem);
             }
         }
 
@@ -76,7 +75,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         protected override async Task LoadSubMenuAsync()
         {
             var values = await _dataSource().ListResourceTypeValuesAsync(ResourceTypeKeys.Type);
-            var trimedValues = values?.Select(x => x.Trim(new char[] { '/' })).Where(y => !String.IsNullOrWhiteSpace(y));
+            var trimedValues = values?.Select(x => x.Trim('/')).Where(y => !string.IsNullOrWhiteSpace(y));
             if (trimedValues?.FirstOrDefault() == null)
             {
                 return;
@@ -103,7 +102,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.Instance.ApplicationName);
             var allInstances = await dataSource.GetInstanceListAsync();
-            // Left join instanceIds to allInstances on Id.  
+            // Left join instanceIds to allInstances on Id.
             // Select instance name if id is found in allInstances.
             var menuItems =
                 from id in instanceIds

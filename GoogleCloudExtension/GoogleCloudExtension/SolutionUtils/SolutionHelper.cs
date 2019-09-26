@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Constants = EnvDTE.Constants;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
@@ -31,8 +32,6 @@ namespace GoogleCloudExtension.SolutionUtils
     /// </summary>
     internal class SolutionHelper
     {
-        private const string ProjectJsonName = "project.json";
-
         private readonly Solution _solution;
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace GoogleCloudExtension.SolutionUtils
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
-            return query.ToList<ProjectSourceFile>();
+            return query.ToList();
         }
 
         private ProjectHelper GetSelectedProject()
@@ -128,6 +127,7 @@ namespace GoogleCloudExtension.SolutionUtils
             foreach (Project p in projects)
             {
                 var projectDirectory = Path.GetDirectoryName(p.FullName);
+                Debug.Assert(projectDirectory != null, nameof(projectDirectory) + " != null");
                 if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
                 {
                     return new ProjectHelper(p);
@@ -142,7 +142,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// Uses COM interop to find out what is the selected node in the Solution Explorer and from that what
         /// is the path to the directory that contains it.
-        /// Note: This method does not guarantee that the selected node is a projet, the caller should ensure that
+        /// Note: This method does not guarantee that the selected node is a project, the caller should ensure that
         /// it is called in a context in which it will.
         /// </summary>
         /// <returns>The path to the directory that contains the project.</returns>
@@ -156,27 +156,23 @@ namespace GoogleCloudExtension.SolutionUtils
                 return null;
             }
 
-            IVsMultiItemSelect select = null;
-            uint itemid = 0;
             IntPtr hierarchyPtr = IntPtr.Zero;
             IntPtr selectionContainerPtr = IntPtr.Zero;
 
             try
             {
-                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr, out itemid, out select, out selectionContainerPtr);
-                if (ErrorHandler.Failed(hr) || hierarchyPtr == IntPtr.Zero || itemid == VSConstants.VSITEMID_NIL)
+                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr, out uint itemId, out IVsMultiItemSelect _, out selectionContainerPtr);
+                if (ErrorHandler.Failed(hr) || hierarchyPtr == IntPtr.Zero || itemId == VSConstants.VSITEMID_NIL)
                 {
                     return null;
                 }
 
-                var hierarchy = Marshal.GetObjectForIUnknown(hierarchyPtr) as IVsHierarchy;
-                if (hierarchy == null)
+                if (!(Marshal.GetObjectForIUnknown(hierarchyPtr) is IVsHierarchy hierarchy))
                 {
                     return null;
                 }
 
-                object result = null;
-                hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectDir, out result);
+                hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectDir, out object result);
                 return (string)result;
             }
             finally
@@ -202,14 +198,12 @@ namespace GoogleCloudExtension.SolutionUtils
                 return null;
             }
 
-            var startupProjects = sb.StartupProjects as Array;
-            if (startupProjects == null)
+            if (!(sb.StartupProjects is Array startupProjects))
             {
                 return null;
             }
 
-            string startupProjectFilePath = startupProjects.GetValue(0) as string;
-            if (startupProjectFilePath == null)
+            if (!(startupProjects.GetValue(0) is string startupProjectFilePath))
             {
                 return null;
             }
@@ -256,7 +250,7 @@ namespace GoogleCloudExtension.SolutionUtils
             foreach (Project item in rootProjects)
             {
                 // If it's a folder, search projects under it.
-                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                if (item.Kind == Constants.vsProjectKindSolutionItems)
                 {
                     result.AddRange(GetSolutionFolderProjects(item));
                 }
@@ -288,7 +282,7 @@ namespace GoogleCloudExtension.SolutionUtils
                     continue;
                 }
                 // If it's a folder, search projects under it.
-                if (item.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                if (item.Kind == Constants.vsProjectKindSolutionItems)
                 {
                     result.AddRange(GetSolutionFolderProjects(item));
                 }

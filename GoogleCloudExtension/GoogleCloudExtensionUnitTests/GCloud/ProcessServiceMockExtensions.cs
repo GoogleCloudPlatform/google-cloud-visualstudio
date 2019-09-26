@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using Moq;
-using Moq.Language.Flow;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils;
+using Moq;
+using Moq.Language.Flow;
 
 namespace GoogleCloudExtensionUnitTests.GCloud
 {

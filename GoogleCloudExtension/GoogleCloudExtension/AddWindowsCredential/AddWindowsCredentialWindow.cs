@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.AddWindowsCredential
@@ -22,12 +21,12 @@ namespace GoogleCloudExtension.AddWindowsCredential
     /// </summary>
     public class AddWindowsCredentialWindow : CommonDialogWindowBase
     {
-        public AddWindowsCredentialViewModel ViewModel { get; }
+        private AddWindowsCredentialViewModel ViewModel { get; }
 
-        private AddWindowsCredentialWindow(Instance instance)
+        private AddWindowsCredentialWindow()
             : base(GoogleCloudExtension.Resources.AddWindowsCredentialTitle)
         {
-            ViewModel = new AddWindowsCredentialViewModel(this, instance);
+            ViewModel = new AddWindowsCredentialViewModel(this);
             Content = new AddWindowsCredentialWindowContent
             {
                 DataContext = ViewModel
@@ -37,11 +36,12 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// <summary>
         /// Prompt the user for the Windows credentials to use, returns the result of the operation.
         /// </summary>
-        /// <param name="instance">The instance for which the credentials are added.</param>
-        /// <returns>An instance of <seealso cref="AddWindowsCredentialResult"/> if the user accepeted, null if canceled.</returns>
-        public static AddWindowsCredentialResult PromptUser(Instance instance)
+        /// <returns>
+        /// An instance of <seealso cref="AddWindowsCredentialResult"/> if the user accepted, null if canceled.
+        /// </returns>
+        public static AddWindowsCredentialResult PromptUser()
         {
-            var dialog = new AddWindowsCredentialWindow(instance);
+            var dialog = new AddWindowsCredentialWindow();
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

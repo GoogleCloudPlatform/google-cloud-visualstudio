@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Git;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     public static class CsrUtils
     {
         /// <summary>
-        /// Gets repository name 
+        /// Gets repository name
         /// The Cloud Repository name has format $"projects/{ProjectId}/repos/{repoName}" };
         /// Returns the last part which is the repo name.
         /// </summary>
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public static CsrDataSource CreateCsrDataSource(string projectId)
         {
-            if (String.IsNullOrWhiteSpace(projectId) || CredentialsStore.Default.CurrentGoogleCredential == null)
+            if (string.IsNullOrWhiteSpace(projectId) || CredentialsStore.Default.CurrentGoogleCredential == null)
             {
                 return null;
             }

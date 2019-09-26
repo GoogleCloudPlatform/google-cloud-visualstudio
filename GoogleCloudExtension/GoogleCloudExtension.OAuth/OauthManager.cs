@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -21,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.OAuth
 {
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.OAuth
                 { ResponseTypeKey, CodeValue },
                 { ClientIdKey, credentials.ClientId },
                 { RedirectUriKey, redirectUrl },
-                { ScopeKey, String.Join(ScopesSeparator, scopes) },
+                { ScopeKey, string.Join(ScopesSeparator, scopes) }
             };
             return $"https://accounts.google.com/o/oauth2/auth?{ToQueryString(form)}";
         }
@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.OAuth
                 { ClientIdKey, credentials.ClientId },
                 { ClientSecretKey, credentials.ClientSecret },
                 { RedirectUriKey, redirectUrl },
-                { GrantTypeKey, AuthorizationCodeValue },
+                { GrantTypeKey, AuthorizationCodeValue }
             };
 
             try
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.OAuth
         }
 
         private static string ToQueryString(IDictionary<string, string> form) =>
-            String.Join(
+            string.Join(
                 "&",
                 form.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
     }

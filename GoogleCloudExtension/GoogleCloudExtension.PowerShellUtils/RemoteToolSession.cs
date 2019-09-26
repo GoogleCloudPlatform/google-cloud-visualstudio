@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         /// <summary>
         /// Start the session and start the remote tool.
-        /// This starts a backgroud task and leave it running till it is cancelled or stopped. 
+        /// This starts a backgroud task and leave it running till it is cancelled or stopped.
         /// </summary>
         /// <param name="computerName">The ipaddress of debugging target machine.</param>
         /// <param name="username">The username for authentication.</param>
@@ -70,12 +70,12 @@ namespace GoogleCloudExtension.PowerShellUtils
         {
             if (!IsStopped)
             {
-                Debug.WriteLine($"_cancelTokenSource.Cancel() ");
+                Debug.WriteLine("_cancelTokenSource.Cancel() ");
                 _cancelTokenSource.Cancel();
             }
-            Debug.WriteLine($"_powerShellTask.Wait() ");
+            Debug.WriteLine("_powerShellTask.Wait() ");
             _powerShellTask.Wait();
-            Debug.WriteLine($"_powerShellTask.Wait() complete.");
+            Debug.WriteLine("_powerShellTask.Wait() complete.");
         }
 
 

@@ -1,10 +1,10 @@
+using System;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
@@ -18,7 +18,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         [TestInitialize]
         public void BeforeEach()
         {
-            _frameMock = VsWindowFrameMocks.GetWindowFrameMock(MockBehavior.Loose);
+            _frameMock = VsWindowFrameMocks.GetWindowFrameMock();
             _objectUnderTest = new LogsViewerToolWindow();
         }
 

@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Plus.v1;
 using Google.Apis.Plus.v1.Data;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {

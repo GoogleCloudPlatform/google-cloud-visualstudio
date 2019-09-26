@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
 using GoogleCloudExtension.VsVersion;
+using Microsoft.Win32;
 
 namespace GoogleCloudExtension.Git
 {
@@ -27,18 +27,6 @@ namespace GoogleCloudExtension.Git
     /// </summary>
     public static class VsGitData
     {
-
-        /// <summary>
-        /// Add local repository to Visual Studio registry.
-        /// </summary>
-        /// <param name="vsVersion">The current Visual Studio version passed in by caller.</param>
-        /// <param name="name">The git repository name</param>
-        /// <param name="localGitRoot">Git local root</param>
-        public static void AddLocalRepositories(string vsVersion, string name, string localGitRoot)
-        {
-            AddRepository(GetGitKey(vsVersion), name, localGitRoot);
-        }
-
         private static string GetGitKey(string vsVersion)
         {
             switch (vsVersion)
@@ -104,29 +92,6 @@ namespace GoogleCloudExtension.Git
             {
                 return null;
             }
-        }
-
-        private static void AddRepository(string gitKeyPath, string name, string gitLocalPath)
-        {
-            try
-            {
-                using (RegistryKey key = OpenGitKey(gitKeyPath, "Repositories", writable: true))
-                {
-
-                    using (RegistryKey newKey = key?.CreateSubKey(Guid.NewGuid().ToString()))
-                    {
-                        newKey?.SetValue("Name", name);
-                        newKey?.SetValue("Path", gitLocalPath);
-                    }
-                }
-            }
-            catch (Exception ex) when (
-                ex is SecurityException ||
-                ex is ObjectDisposedException || // The RegistryKey is closed (closed keys cannot be accessed).
-                ex is UnauthorizedAccessException ||
-                ex is IOException
-                )
-            { }
         }
     }
 }

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.SolutionUtils;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Threading;
+using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.SolutionUtils;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.PublishDialog

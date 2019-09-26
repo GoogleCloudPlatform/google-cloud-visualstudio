@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleAnalyticsUtils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using GoogleAnalyticsUtils;
 
 namespace GoogleCloudExtension.Analytics
 {
@@ -55,7 +54,7 @@ namespace GoogleCloudExtension.Analytics
                 return "(No metadata)";
             }
 
-            return String.Join(",", metadata.Select(x => $"{x.Key}={x.Value}"));
+            return string.Join(",", metadata.Select(x => $"{x.Key}={x.Value}"));
         }
     }
 }

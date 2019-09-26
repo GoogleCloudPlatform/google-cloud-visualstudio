@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Google.Apis.Compute.v1.Data;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="instance">The instance to check.</param>
         /// <returns>True if the instance is a App Engine Flex instance, false otherwise.</returns>
-        public static bool IsAppEngineFlexInstance(this Instance instance) => !String.IsNullOrEmpty(instance.GetAppEngineFlexService());
+        public static bool IsAppEngineFlexInstance(this Instance instance) => !string.IsNullOrEmpty(instance.GetAppEngineFlexService());
 
         /// <summary>
         /// Determines if the given instance is a Windows instance.
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.DataSources
         /// Returns the instance information for this instance, if it is a Windows instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
-        /// <returns>If the instance is a Windows instance the <seealso cref="WindowsInstanceInfo"/> for 
+        /// <returns>If the instance is a Windows instance the <seealso cref="WindowsInstanceInfo"/> for
         /// the instance, null otherwise</returns>
         public static WindowsInstanceInfo GetWindowsInstanceInfo(this Instance instance)
         {
@@ -162,7 +162,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="instance">The instance to inspect.</param>
         /// <returns>The tags.</returns>
         public static string GetTags(this Instance instance) =>
-            String.Join(", ", instance.Tags?.Items ?? Enumerable.Empty<string>());
+            string.Join(", ", instance.Tags?.Items ?? Enumerable.Empty<string>());
 
         /// <summary>
         /// Generates the publishsettings information for a given GCE instance.

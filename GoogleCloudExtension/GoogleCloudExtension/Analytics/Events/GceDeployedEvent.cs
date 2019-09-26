@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 
 namespace GoogleCloudExtension.Analytics.Events
 {
@@ -24,12 +25,12 @@ namespace GoogleCloudExtension.Analytics.Events
         private const string GceDeployedEventName = "gceDeployment";
         private const string DeploymentDurationProperty = "duration";
 
-        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
+        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default)
         {
             return new AnalyticsEvent(
                 GceDeployedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
-                DeploymentDurationProperty, duration.TotalSeconds.ToString());
+                DeploymentDurationProperty, duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

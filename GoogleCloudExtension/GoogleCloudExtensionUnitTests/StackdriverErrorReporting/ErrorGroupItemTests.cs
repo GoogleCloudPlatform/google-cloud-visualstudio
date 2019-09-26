@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1;
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.StackdriverErrorReporting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Apis.Clouderrorreporting.v1beta1;
+using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
 {

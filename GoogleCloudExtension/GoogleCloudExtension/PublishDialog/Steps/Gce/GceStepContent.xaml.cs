@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Windows.Controls;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using System;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.Gce
 {

@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// Intializes an instance.
         /// </summary>
         /// <param name="computerName">
-        /// The remote machine name. In the case name resolution does not work, 
+        /// The remote machine name. In the case name resolution does not work,
         /// use public ip address.
         /// </param>
         /// <param name="credential">The credential for authentication to the remote target.</param>
@@ -60,19 +60,19 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         /// <summary>
         /// This method firstly establishes a session to the remote target.
-        /// Then executes the <paramref name="script"/>. 
+        /// Then executes the <paramref name="script"/>.
         /// When execution is done, the session is closed.
         /// </summary>
         /// <param name="script">
         /// The powershell script to be executed inside PSSession.
         /// </param>
         /// <param name="cancelToken">
-        /// Long execution can be terminated by the cancelToken. 
+        /// Long execution can be terminated by the cancelToken.
         /// This will also terminate the PSSession.
         /// </param>
         public async Task EnterSessionExecute(string script, CancellationToken cancelToken)
         {
-            if (String.IsNullOrWhiteSpace(script))
+            if (string.IsNullOrWhiteSpace(script))
             {
                 throw new ArgumentNullException(nameof(script));
             }

@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
-using Google.Apis.Appengine.v1;
-using Google.Apis.Appengine.v1.Data;
-using Google.Apis.Auth.OAuth2;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google;
+using Google.Apis.Appengine.v1;
+using Google.Apis.Appengine.v1.Data;
+using Google.Apis.Auth.OAuth2;
+using Version = Google.Apis.Appengine.v1.Data.Version;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -77,10 +78,10 @@ namespace GoogleCloudExtension.DataSources
         public async Task<IList<Service>> GetServiceListAsync()
         {
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = Service.Apps.Services.List(ProjectId);
-                    if (!String.IsNullOrEmpty(token))
+                    if (!string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine($"{nameof(GaeDataSource)}, {nameof(GetServiceListAsync)}: Fetching page: {token}");
                         request.PageToken = token;
@@ -177,13 +178,13 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
         /// <returns>The list of GAE versions.</returns>
-        public async Task<IList<Google.Apis.Appengine.v1.Data.Version>> GetVersionListAsync(string serviceId)
+        public async Task<IList<Version>> GetVersionListAsync(string serviceId)
         {
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = Service.Apps.Services.Versions.List(ProjectId, serviceId);
-                    if (!String.IsNullOrEmpty(token))
+                    if (!string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine($"{nameof(GaeDataSource)}, {nameof(GetVersionListAsync)}: Fetching page: {token}");
                         request.PageToken = token;
@@ -204,7 +205,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
         /// <returns>The GAE version.</returns>
-        public async Task<Google.Apis.Appengine.v1.Data.Version> GetVersionAsync(string serviceId, string versionId)
+        public async Task<Version> GetVersionAsync(string serviceId, string versionId)
         {
             try
             {
@@ -256,9 +257,9 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 // Create a version with just the service status set.
-                Google.Apis.Appengine.v1.Data.Version version = new Google.Apis.Appengine.v1.Data.Version()
+                Version version = new Version
                 {
-                    ServingStatus = status,
+                    ServingStatus = status
                 };
                 var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
                 // Only update the service status.
@@ -287,10 +288,10 @@ namespace GoogleCloudExtension.DataSources
         public async Task<IList<Instance>> GetInstanceListAsync(string serviceId, string versionId)
         {
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = Service.Apps.Services.Versions.Instances.List(ProjectId, serviceId, versionId);
-                    if (!String.IsNullOrEmpty(token))
+                    if (!string.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine($"{nameof(GaeDataSource)}, {nameof(GetInstanceListAsync)}: Fetching page: {token}");
                         request.PageToken = token;

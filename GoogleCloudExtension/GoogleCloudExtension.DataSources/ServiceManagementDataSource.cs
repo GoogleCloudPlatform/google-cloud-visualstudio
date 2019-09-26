@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.ServiceManagement.v1;
-using Google.Apis.ServiceManagement.v1.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.ServiceManagement.v1;
+using Google.Apis.ServiceManagement.v1.Data;
 
 namespace GoogleCloudExtension.DataSources
 {

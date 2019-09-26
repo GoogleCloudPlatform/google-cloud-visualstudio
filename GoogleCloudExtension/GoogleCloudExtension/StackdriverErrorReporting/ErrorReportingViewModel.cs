@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,6 +19,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -42,7 +43,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _isLoadingNextPage;
         private bool _showException;
         private string _exceptionString;
-        private readonly ObservableCollection<ErrorGroupItem> _groupStatsCollection;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the <seealso cref="ListCollectionView"/> that contains a list of <seealso cref="ErrorGroupItem"/>.
         /// </summary>
-        public ListCollectionView GroupStatsView { get; }
+        public ObservableCollection<ErrorGroupItem> GroupStats { get; }
 
         /// <summary>
         /// Navigate to detail view window command.
@@ -161,8 +161,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             IsVisibleUnbound = true;
             _package = GoogleCloudExtensionPackage.Instance;
             _dataSourceLazy = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
-            _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
-            GroupStatsView = new ListCollectionView(_groupStatsCollection);
+            GroupStats = new ObservableCollection<ErrorGroupItem>();
             SelectedTimeRangeItem = TimeRangeItemList.Last();
             OnGotoDetailCommand = new ProtectedAsyncCommand<ErrorGroupItem>(NavigateToDetailWindowAsync);
             OnAutoReloadCommand = new ProtectedCommand(Reload);
@@ -212,7 +211,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            _groupStatsCollection.Clear();
+            GroupStats.Clear();
             _nextPageToken = null;
             ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
         }
@@ -295,7 +294,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     return;
                 }
-                _groupStatsCollection.Add(new ErrorGroupItem(item, SelectedTimeRangeItem));
+
+                GroupStats.Add(new ErrorGroupItem(item, SelectedTimeRangeItem));
             }
         }
 

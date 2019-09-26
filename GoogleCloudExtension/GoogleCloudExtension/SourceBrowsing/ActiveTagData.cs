@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Text.Editor;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     internal class ActiveTagData
     {
         /// <summary>
-        /// The associated <seealso cref="IWpfTextView"/> interface 
+        /// The associated <seealso cref="IWpfTextView"/> interface
         /// to the source file that generates the <seealso cref="StackdriverLogsViewer.LogItem"/>.
         /// </summary>
         public IWpfTextView TextView { get; private set; }
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         public long SourceLine { get; private set; } = -1;
 
         /// <summary>
-        /// The method name to be highlighted. 
+        /// The method name to be highlighted.
         /// The name can be the method that produces the log or the method name in stack frame.
         /// Optional, if the value is null or empty, the entire source line is highlighted.
         /// </summary>
@@ -58,8 +58,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         private ActiveTagData() { }
 
         /// <summary>
-        /// The active tag data. 
-        /// If it is null, there is no active tag.  
+        /// The active tag data.
+        /// If it is null, there is no active tag.
         /// StackdriverTagger should delete all tags or tool tips.
         /// </summary>
         public static ActiveTagData Current { get; private set; }
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         public static void SetCurrent(IWpfTextView view, long line, UserControl control, string method = null)
         {
-            Current = new ActiveTagData()
+            Current = new ActiveTagData
             {
                 TextView = view,
                 SourceLine = line,

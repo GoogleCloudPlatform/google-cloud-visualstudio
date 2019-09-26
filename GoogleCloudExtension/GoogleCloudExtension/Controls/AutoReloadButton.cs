@@ -14,7 +14,6 @@
 
 using System;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -31,7 +30,7 @@ namespace GoogleCloudExtension.Controls
         static AutoReloadButton()
         {
             // Override IsChecked property to add a handler when the state changes.
-            ToggleButton.IsCheckedProperty.OverrideMetadata(
+            IsCheckedProperty.OverrideMetadata(
                 typeof(AutoReloadButton),
                 new FrameworkPropertyMetadata(false, OnIsCheckedChanged));
         }
@@ -86,17 +85,17 @@ namespace GoogleCloudExtension.Controls
 
         private static void OnIntervalSecondsChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
-            // WPF framework makes the call and value type is int. 
+            // WPF framework makes the call and value type is int.
             // Does not need to check the type.
             int newIntervalSeconds = (int)e.NewValue;
-            AutoReloadButton button = source as AutoReloadButton;
+            var button = (AutoReloadButton)source;
             button._timer.Interval = TimeSpan.FromSeconds(newIntervalSeconds);
         }
 
         private static void OnIsCheckedChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
             bool isChecked = (bool)e.NewValue;
-            AutoReloadButton button = source as AutoReloadButton;
+            var button = (AutoReloadButton)source;
             if (isChecked)
             {
                 button._timer.Start();

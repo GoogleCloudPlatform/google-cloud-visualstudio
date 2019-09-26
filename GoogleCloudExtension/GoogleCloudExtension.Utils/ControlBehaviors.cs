@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.Utils
         #region Double click command paramater.
 
         /// <summary>
-        /// This attached property will contain the parameter to be passed to the command stored in 
+        /// This attached property will contain the parameter to be passed to the command stored in
         /// <seealso cref="DoubleClickCommandProperty"/>. It can be any object.
         /// </summary>
         public static readonly DependencyProperty DoubleClickCommandParameterProperty =
@@ -109,6 +109,6 @@ namespace GoogleCloudExtension.Utils
             self.SetValue(DoubleClickCommandParameterProperty, value);
         }
 
-        #endregion 
+        #endregion
     }
 }

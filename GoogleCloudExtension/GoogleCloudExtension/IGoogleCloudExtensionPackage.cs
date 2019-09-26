@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Design;
+using System.Threading.Tasks;
 using EnvDTE80;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Options;
@@ -21,9 +24,6 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
-using System;
-using System.ComponentModel.Design;
-using System.Threading.Tasks;
 using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
 using IServiceProvider = System.IServiceProvider;
 using IVsServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;

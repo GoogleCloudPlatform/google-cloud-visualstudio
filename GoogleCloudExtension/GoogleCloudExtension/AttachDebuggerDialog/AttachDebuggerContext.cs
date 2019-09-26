@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
-using System;
-using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
@@ -27,7 +26,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// <summary>
     /// This class contains common data for attach remote debugger steps.
     /// It is in particular useful for passing some state, data among steps.
-    /// The context is valid when a AttachDebuggerWindow is shown, 
+    /// The context is valid when a AttachDebuggerWindow is shown,
     /// and become invalid when the dialog dissmissed.
     /// </summary>
     public class AttachDebuggerContext
@@ -72,7 +71,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string PublicIp { get; }
 
         /// <summary>
-        /// The Visual Studio Remote Debugger tool port. 
+        /// The Visual Studio Remote Debugger tool port.
         /// </summary>
         public AttachDebuggerFirewallPort DebuggerPort { get; }
 

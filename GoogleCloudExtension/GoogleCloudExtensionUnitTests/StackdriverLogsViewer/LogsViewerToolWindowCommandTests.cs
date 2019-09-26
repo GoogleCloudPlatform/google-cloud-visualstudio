@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel.Design;
+using System.Threading;
+using System.Threading.Tasks;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.ComponentModel.Design;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {

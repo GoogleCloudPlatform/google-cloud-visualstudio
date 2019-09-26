@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -35,7 +36,7 @@ namespace GoogleCloudExtension.CloudExplorer
             _selectionUtils = selectionUtils;
         }
 
-        private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             ErrorHandlerUtils.HandleExceptionsAsync(async () =>
             {

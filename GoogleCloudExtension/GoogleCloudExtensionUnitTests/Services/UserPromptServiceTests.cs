@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Theming;
@@ -19,9 +22,6 @@ using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Services

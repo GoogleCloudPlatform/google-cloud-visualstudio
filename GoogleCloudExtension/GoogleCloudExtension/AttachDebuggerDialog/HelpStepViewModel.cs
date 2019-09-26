@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public override Task<IAttachDebuggerStep> OnStartAsync()
         {
             IsCancelButtonVisible = false;
-            IsOKButtonEnabled = true;
+            IsOkButtonEnabled = true;
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 

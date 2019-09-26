@@ -55,7 +55,6 @@
             <!-- Message shown when the API needs to be enabled. -->
             <TextBlock Margin="0,5,0,0"
                        Foreground="Red"
-                       TextWrapping="Wrap"
                        Visibility="{Binding ApisAreEnabled.Value, Converter={utils:VisibilityConverter IsNegated=True}}"
                        Style="{StaticResource CommonTextStyle}">
                 <TextBlock Text="{x:Static ext:Resources.CsrEnableApiMessage}" 
@@ -102,7 +101,6 @@
 
                         <ComboBox
                             x:Key="NormalList"
-                            x:Name="_repositoryComboBox"
                             ItemsSource="{Binding RepositoriesAsync.Value}"
                             SelectedItem="{Binding SelectedRepository}"
                             IsSynchronizedWithCurrentItem="True"

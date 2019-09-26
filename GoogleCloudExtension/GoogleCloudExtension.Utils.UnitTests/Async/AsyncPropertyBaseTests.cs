@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils.Async;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils.Async;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestingHelpers;
 
 namespace GoogleCloudExtension.Utils.UnitTests.Async
@@ -340,7 +340,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         {
             string actualResult = TestAsyncPropertyBase.GetTaskResultSafe2(Task.FromException<string>(new Exception()));
 
-            Assert.AreEqual(default(string), actualResult);
+            Assert.AreEqual(default, actualResult);
         }
 
         [TestMethod]

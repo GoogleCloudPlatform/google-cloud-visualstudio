@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtension.DataSources.UnitTests
 {
@@ -31,8 +31,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             int count = 0;
             object operationPlaceholder = new object();
 
-            await OperationUtils.AwaitOperationAsync<object, object>(
-                operationPlaceholder,
+            await operationPlaceholder.AwaitOperationAsync<object, object>(
                 refreshOperation: x => { count++; return Task.FromResult(x); },
                 isFinished: x => count >= 5,
                 getErrorData: x => null,
@@ -49,8 +48,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
 
             try
             {
-                await OperationUtils.AwaitOperationAsync(
-                    operationPlaceholder,
+                await operationPlaceholder.AwaitOperationAsync(
                     refreshOperation: x => Task.FromResult(x),
                     isFinished: _ => true,
                     getErrorData: x => { getErrorDataCalled = true; return x; },
@@ -76,8 +74,7 @@ namespace GoogleCloudExtension.DataSources.UnitTests
                 object operationPlaceholder = new object();
                 CancellationTokenSource source = new CancellationTokenSource();
 
-                Task operationTask = OperationUtils.AwaitOperationAsync<object, object>(
-                    operationPlaceholder,
+                Task operationTask = operationPlaceholder.AwaitOperationAsync<object, object>(
                     refreshOperation: x => Task.FromResult(x),
                     isFinished: x => false,
                     getErrorData: x => null,

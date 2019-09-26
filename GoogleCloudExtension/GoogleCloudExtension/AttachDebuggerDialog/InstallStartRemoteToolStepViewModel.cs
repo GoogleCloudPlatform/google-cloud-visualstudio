@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.PowerShellUtils;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.PowerShellUtils;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     throw;
                 }
 
-                ProgressMessage = String.Format(
+                ProgressMessage = string.Format(
                     Resources.AttachDebuggerTestConnectPortMessageFormat,
                     Context.DebuggerPort.Description,
                     Context.PublicIp,

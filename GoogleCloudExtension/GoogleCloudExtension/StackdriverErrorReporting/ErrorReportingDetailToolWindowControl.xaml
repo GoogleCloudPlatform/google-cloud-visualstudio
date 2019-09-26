@@ -11,6 +11,9 @@
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:barChart="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.BarChart"
+             xmlns:sourceNavigation="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation"
+             xmlns:timeRangeButtons="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -26,10 +29,6 @@
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-            <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
 
             <ContextMenu x:Key="CopyContextMenu">
                 <MenuItem
@@ -52,7 +51,7 @@
             Margin="12"
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
-            Visibility="{Binding IsAccountChanged, Converter={StaticResource visibilityConverter}}" >
+            Visibility="{Binding IsAccountChanged, Converter={utils:VisibilityConverter}}" >
 
             <TextBlock 
                 Margin="6"
@@ -68,7 +67,7 @@
         <Grid
             Grid.Row="1"
             Margin="12,0,12,12"
-            Visibility="{Binding IsAccountChanged, Converter={StaticResource visibilityConverterNegated}}"
+            Visibility="{Binding IsAccountChanged, Converter={utils:VisibilityConverter IsNegated=True}}"
             IsEnabled="{Binding IsControlEnabled}">
 
             <Grid.RowDefinitions>
@@ -114,13 +113,13 @@
                                 Text="{Binding GroupItem.ErrorMessage, Mode=OneWay}"
                                 IsReadOnly="True"
                                 BorderThickness="0"/>
-                            <local:StackFrameControl 
+                            <sourceNavigation:StackFrameControl 
                                 Margin="0,0,36,0"
                                 DataContext="{Binding GroupItem.FirstStackFrame}"
-                                Visibility="{Binding GroupItem.FirstStackFrame, Converter={StaticResource nullEmptyInvisibleConverter}}" />
+                                Visibility="{Binding Converter={utils:NullEmptyInvisibleConverter}}" />
                         </StackPanel>
 
-                        <local:TimeRangeButtons 
+                        <timeRangeButtons:TimeRangeButtons 
                             Grid.Column="1" 
                             SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
                             ItemsSource="{Binding AllTimeRangeItems}"/>
@@ -180,7 +179,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0"
-                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={StaticResource nullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingAffectedUsersLongerHeader}" />
                                         <TextBox Text="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" />
@@ -188,7 +187,7 @@
                                 </Border>
 
                                 <Border Grid.Column="3" 
-                                        Visibility="{Binding AffectedUsersCount, Converter={StaticResource nullEmptyInvisibleConverter}}" />
+                                        Visibility="{Binding AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}" />
 
                                 <Border 
                                     Grid.Column="4"
@@ -210,7 +209,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0" 
-                                    Visibility="{Binding GroupItem.Status, Converter={StaticResource nullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" />
                                         <TextBox Text="{Binding GroupItem.Status, Mode=OneWay}" IsReadOnly="True" BorderThickness="0"/>
@@ -218,7 +217,7 @@
                                 </Border>
 
                                 <Border Grid.Column="7" 
-                                        Visibility="{Binding GroupItem.Status, Converter={StaticResource nullEmptyInvisibleConverter}}"/>
+                                        Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
 
                                 <Border 
                                     Grid.Column="8"
@@ -260,7 +259,7 @@
                                     Margin="6"
                                     Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
 
-                                <local:TimedCountBarChartControl
+                                <barChart:TimedCountBarChartControl
                                     Style="{StaticResource TimedCountBarChartStyle}"
                                     TimedCountList="{Binding GroupItem.TimedCountList}" 
                                     GroupTimeRange="{Binding SelectedTimeRangeItem.GroupTimeRange}" />
@@ -271,7 +270,7 @@
                         <!-- stack trace sample -->
                         <Border Style="{StaticResource DetailViewBorderStyle}" >
                             <Border Style="{StaticResource DetailViewBorderStyle}" >
-                                <local:StackControl
+                                <sourceNavigation:StackControl
                                     Margin="6" 
                                     DataContext="{Binding GroupItem.ParsedException}" />
                             </Border>
@@ -353,7 +352,7 @@
                                     Margin="0,20,0,0"
                                     HorizontalAlignment="Center"                       
                                     VerticalAlignment="Top" 
-                                    Visibility="{Binding IsEventLoading, Converter={StaticResource visibilityConverter}}" />
+                                    Visibility="{Binding IsEventLoading, Converter={utils:VisibilityConverter}}" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>

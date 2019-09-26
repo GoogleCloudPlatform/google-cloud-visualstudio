@@ -3,10 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"    
     xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
-    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"                                     
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"                 
-    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" 
-    xmlns:vsshellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
+    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="../Theming/CommonResources.xaml" />

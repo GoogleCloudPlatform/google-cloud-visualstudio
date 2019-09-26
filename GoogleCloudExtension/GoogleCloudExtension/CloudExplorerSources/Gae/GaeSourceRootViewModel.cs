@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -21,12 +27,6 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -106,7 +106,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) }
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -120,7 +120,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             int idx = 0;
             ServiceViewModel oldService = null;
-            foreach (ServiceViewModel service in Children)
+            foreach (ServiceViewModel service in Children.OfType<ServiceViewModel>())
             {
                 if (service.Service.Id == id)
                 {
@@ -243,7 +243,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
             var versionModels = versions
                 .Select(x => new VersionViewModel(this, service, x, isLastVersion: versions.Count == 1))
-                .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id))
+                .OrderByDescending(x => service.GetTrafficAllocation(x.Version.Id))
                 .ToList();
             return new ServiceViewModel(this, service, versionModels);
         }

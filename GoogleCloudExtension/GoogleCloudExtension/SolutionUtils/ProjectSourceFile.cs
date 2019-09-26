@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
     /// <summary>
-    /// This class represents a project source file. 
-    /// Typlically .cs file.
+    /// This class represents a project source file.
+    /// Typically .cs file.
     /// </summary>
     internal class ProjectSourceFile
     {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// The <seealso cref="ProjectItem"/> object.
         /// </summary>
-        public ProjectItem ProjectItem { get; }
+        private ProjectItem ProjectItem { get; }
 
         /// <summary>
         /// The file path.
@@ -54,14 +54,9 @@ namespace GoogleCloudExtension.SolutionUtils
             {
                 throw new ArgumentException(nameof(projectItem));
             }
-            if (project == null)
-            {
-                throw new ArgumentNullException(nameof(project));
-            }
-
             ProjectItem = projectItem;
+            _owningProject = project ?? throw new ArgumentNullException(nameof(project));
             FullName = ProjectItem.FileNames[0].ToLowerInvariant();
-            _owningProject = project;
             _relativePath = new Lazy<string>(GetRelativePath);
         }
 
@@ -73,8 +68,8 @@ namespace GoogleCloudExtension.SolutionUtils
         public static bool IsValidSupportedItem(ProjectItem projectItem)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
-                !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
+            if (Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
+                !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name), StringComparer.OrdinalIgnoreCase))
             {
                 return false;
             }
@@ -94,24 +89,24 @@ namespace GoogleCloudExtension.SolutionUtils
         public bool IsMatchingPath(string filePath)
         {
             var path = filePath.ToLowerInvariant();
-            return path.EndsWith(_relativePath.Value);
+            return path.EndsWith(_relativePath.Value, StringComparison.Ordinal);
         }
 
         /// <summary>
-        /// Get the project item path relative to the project root. 
+        /// Get the project item path relative to the project root.
         /// The relative path starts with '\' character.
-        /// (1) If the file path of the project item starts with the project root path. 
+        /// (1) If the file path of the project item starts with the project root path.
         ///     The part after the root path is the relative file path.
-        ///     Example:  project root is c:\aa\bb,  file item path is c:\aa\bb\cce.cs.  
+        ///     Example:  project root is c:\aa\bb,  file item path is c:\aa\bb\cce.cs.
         ///               relative path is \cce.cs
-        /// (2) Fallback is to compare every subpath of the project full path and full path of this project item,
+        /// (2) Fallback is to compare every sub-path of the project full path and full path of this project item,
         ///     from the start of the path.  Starting from the part that differs are the relative path.
-        ///     Example:  c:\aa\bb\cc.csproj   c:\aa\bb\mm\ff.cs  --> the common parts are "c:" "aa", 
+        ///     Example:  c:\aa\bb\cc.csproj   c:\aa\bb\mm\ff.cs  --> the common parts are "c:" "aa",
         ///               relative path is \mm\ff.cs
         /// </summary>
         private string GetRelativePath()
         {
-            if (_owningProject.ProjectRoot != null && FullName.StartsWith(_owningProject.ProjectRoot))
+            if (_owningProject.ProjectRoot != null && FullName.StartsWith(_owningProject.ProjectRoot, StringComparison.Ordinal))
             {
                 return FullName.Substring(_owningProject.ProjectRoot.Length);
             }

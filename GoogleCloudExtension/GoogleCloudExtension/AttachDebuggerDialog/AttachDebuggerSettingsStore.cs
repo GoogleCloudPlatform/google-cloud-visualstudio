@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using GoogleCloudExtension.Utils;
+using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.Theming
@@ -26,9 +27,9 @@ namespace GoogleCloudExtension.Theming
             Title = title;
 
             // Common to all dyanmically sized dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            ResizeMode = ResizeMode.NoResize;
+            SizeToContent = SizeToContent.WidthAndHeight;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
         }
     }

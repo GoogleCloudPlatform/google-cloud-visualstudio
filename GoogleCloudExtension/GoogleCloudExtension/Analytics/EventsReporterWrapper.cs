@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Diagnostics;
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using GoogleCloudExtension.Options;
-using System;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.Analytics
 {

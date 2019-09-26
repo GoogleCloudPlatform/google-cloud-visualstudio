@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.StackdriverLogsViewer.SourceNavigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer.SourceNavigation
 {

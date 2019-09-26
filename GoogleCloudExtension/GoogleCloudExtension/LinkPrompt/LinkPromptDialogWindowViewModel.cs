@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Input;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.LinkPrompt
 {

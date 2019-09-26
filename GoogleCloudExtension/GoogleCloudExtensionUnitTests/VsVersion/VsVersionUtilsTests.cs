@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.VsVersion;
+using GoogleCloudExtension.VsVersion.VS14;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.VsVersion
 {
@@ -30,7 +31,7 @@ namespace GoogleCloudExtensionUnitTests.VsVersion
 
             IToolsPathProvider result = VsVersionUtils.GetToolsPathProvider();
 
-            Assert.IsInstanceOfType(result, typeof(GoogleCloudExtension.VsVersion.VS14.ToolsPathProvider));
+            Assert.IsInstanceOfType(result, typeof(ToolsPathProvider));
         }
 
         [TestMethod]

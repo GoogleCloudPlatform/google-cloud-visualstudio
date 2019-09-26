@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Composition;
+using System.IO;
+using System.Threading.Tasks;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
-using System;
-using System.ComponentModel.Composition;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {

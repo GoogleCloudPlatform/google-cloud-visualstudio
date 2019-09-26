@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GoogleCloudExtension.Services.FileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 
 namespace GoogleCloudExtensionUnitTests.Services.FileSystem
 {

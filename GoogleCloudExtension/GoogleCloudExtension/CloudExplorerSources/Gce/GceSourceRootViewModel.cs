@@ -12,6 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -20,13 +28,6 @@ using GoogleCloudExtension.ApiManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -155,7 +156,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new ProtectedCommand(OnNewAspNetInstanceCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
-                new Separator(),
+                new Separator()
             };
 
             if (ShowOnlyWindowsInstances)
@@ -255,17 +256,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                var innerEx = ex.InnerException as GoogleApiException;
-                if (innerEx != null && innerEx.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
+                if (ex.InnerException is GoogleApiException innerEx &&
+                    innerEx.HttpStatusCode == HttpStatusCode.Forbidden)
                 {
                     Debug.WriteLine("The GCE API is not enabled.");
 
                     // Show the node that notifies users that the API is disabled.
                     Children.Clear();
-                    Children.Add(new DisabledApiWarning(
-                        apiName: ComputeApiName,
-                        caption: Resources.CloudExplorerGceSourceApiDisabledMessage,
-                        project: Context.CurrentProject));
+                    Children.Add(
+                        new DisabledApiWarning(
+                            apiName: ComputeApiName,
+                            caption: Resources.CloudExplorerGceSourceApiDisabledMessage,
+                            project: Context.CurrentProject));
                     return;
                 }
 
@@ -292,27 +294,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 //   * Sort the resulting zones by the zone name.
                 //   * Create the view model for each zone, containing the instances for that zone.
                 viewModels = _instancesPerZone
-                    .Select(x => new
-                    {
-                        Zone = x.Zone,
-                        Instances = x.Instances
-                            .Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true)
-                            .OrderBy(i => i.Name)
-                    })
-                    .Where(x => x.Instances.Count() > 0)
+                    .Select(
+                        x => new
+                        {
+                            x.Zone,
+                            Instances = x.Instances
+                                .Where(i => i.IsWindowsInstance() || !_showOnlyWindowsInstances)
+                                .OrderBy(i => i.Name)
+                        })
+                    .Where(x => x.Instances.Any())
                     .OrderBy(x => x.Zone.Name)
-                    .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
+                    .Select(
+                        x => new ZoneViewModel(
+                            this,
+                            x.Zone,
+                            x.Instances.Select(i => new GceInstanceViewModel(this, i)).ToList()));
             }
             else
             {
-                // This query gets the list of view models for the instnaces with the following steps:
+                // This query gets the list of view models for the instances with the following steps:
                 //   * Select all of the instances in all of the zones in a source list.
                 //   * Filters the instances according to the _showOnlyWindowsInstances setting.
                 //   * Sorts the resulting instances by name.
                 //   * Creates the view model for each instance.
                 viewModels = _instancesPerZone
                     .SelectMany(x => x.Instances)
-                    .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
+                    .Where(x => x.IsWindowsInstance() || !_showOnlyWindowsInstances)
                     .OrderBy(x => x.Name)
                     .Select(x => new GceInstanceViewModel(this, x));
             }

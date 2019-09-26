@@ -8,7 +8,7 @@
 @using (Html.BeginForm("VerifyPhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.Hidden("phoneNumber", @Model.PhoneNumber)
+    @Html.Hidden("phoneNumber", Model.PhoneNumber)
     <h4>Enter verification code</h4>
     <h5>@ViewBag.Status</h5>
     <hr />

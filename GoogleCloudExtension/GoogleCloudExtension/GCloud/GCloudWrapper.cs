@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GCloud.Models;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.GCloud
 {
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.GCloud
         private static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
-            string gcloudPath = PathUtils.GetCommandPathFromPATH("gcloud.cmd");
+            string gcloudPath = PathUtils.GetCommandPathFromPath("gcloud.cmd");
             Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
             Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
             return gcloudPath != null;

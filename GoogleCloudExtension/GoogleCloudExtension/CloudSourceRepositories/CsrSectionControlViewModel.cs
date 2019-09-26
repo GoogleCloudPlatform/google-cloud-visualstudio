@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
@@ -19,11 +24,6 @@ using GoogleCloudExtension.Git;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
-using System;
-using System.ComponentModel.Composition;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -117,7 +117,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         #region implement interface ISectionViewModel
 
         /// <summary>
-        /// Implicit implementation to ISectionViewModel.Refresh. 
+        /// Implicit implementation to ISectionViewModel.Refresh.
         /// Using implicit declaration so that it can be accessed by 'this' object too.
         /// </summary>
         public void Refresh()

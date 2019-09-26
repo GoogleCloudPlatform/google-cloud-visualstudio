@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Validation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 
 namespace GoogleCloudExtension.AddTrafficSplit
 {
@@ -83,7 +82,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
 
             Result = new AddTrafficSplitResult(
                 version: SelectedVersion,
-                allocation: Int32.Parse(Allocation));
+                allocation: int.Parse(Allocation));
             _owner.Close();
         }
 
@@ -103,10 +102,10 @@ namespace GoogleCloudExtension.AddTrafficSplit
         private bool Validate()
         {
             int allocationValue;
-            if (!Int32.TryParse(Allocation, out allocationValue))
+            if (!int.TryParse(Allocation, out allocationValue))
             {
                 UserPromptService.Default.ErrorPrompt(
-                    message: String.Format(Resources.AddGaeTrafficSplitInvalidValueMessage, Allocation),
+                    message: string.Format(Resources.AddGaeTrafficSplitInvalidValueMessage, Allocation),
                     title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;
             }
@@ -114,7 +113,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
             if (allocationValue > 100 || allocationValue < 0)
             {
                 UserPromptService.Default.ErrorPrompt(
-                    message: String.Format(Resources.AddGaeTrafficSplitValueOutOfRangeMessage, Allocation),
+                    message: string.Format(Resources.AddGaeTrafficSplitValueOutOfRangeMessage, Allocation),
                     title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;
             }

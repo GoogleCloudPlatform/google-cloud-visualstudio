@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Utils;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtension.PickProjectDialog.SampleData
 {
@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.PickProjectDialog.SampleData
         public IList<Project> Projects { get; } = new List<Project>
         {
             new Project { Name="Project1", ProjectId="Id1" },
-            new Project { Name="Project2", ProjectId="Id2" },
+            new Project { Name="Project2", ProjectId="Id2" }
         };
 
         public MockAsyncProperty LoadTask { get; } = new MockAsyncProperty { IsCompleted = true };

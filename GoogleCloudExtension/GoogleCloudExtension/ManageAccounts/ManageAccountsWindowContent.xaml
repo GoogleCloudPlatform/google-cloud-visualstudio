@@ -11,13 +11,7 @@
                              mc:Ignorable="d" 
                              d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-        </ResourceDictionary>
+        <ResourceDictionary Source="../Theming/CommonResources.xaml" />
     </UserControl.Resources>
 
     <UserControl.Style>
@@ -77,7 +71,7 @@
                             <Rectangle Width="50"
                                    Height="50"
                                    Fill="#FFCCE3F7"
-                                   Visibility="{Binding ProfilePictureAsync.IsPending, Converter={StaticResource visibilityConverter}}"
+                                   Visibility="{Binding ProfilePictureAsync.IsPending, Converter={utils:VisibilityConverter}}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
 
@@ -96,7 +90,7 @@
 
                             <!-- The label for the current account -->
                             <TextBlock Grid.Column="2"
-                                       Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
+                                       Visibility="{Binding IsCurrentAccount, Converter={utils:VisibilityConverter}}"
                                        VerticalAlignment="Center"
                                        Text="{x:Static ext:Resources.ManageAccountsCurrentAccountMessage}"
                                        Style="{StaticResource CommonTextStyle}"/>

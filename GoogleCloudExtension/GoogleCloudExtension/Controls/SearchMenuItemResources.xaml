@@ -8,7 +8,7 @@
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#CBE8F6" />
     <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
-    <SolidColorBrush x:Key="HightlightBorderBrush" Color="#7eb4ea" />
+    <SolidColorBrush x:Key="HighlightBorderBrush" Color="#7eb4ea" />
     <SolidColorBrush x:Key="SolidBorderBrush" Color="#ACACAC" />
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="White" />
 
@@ -151,7 +151,7 @@
                                         <Setter Property="OverridesDefaultStyle" Value="True" />
                                         <Setter Property="Focusable" Value="False" />
                                         <Setter Property="IsTabStop" Value="False" />
-                                        <Setter Property="Control.Template">
+                                        <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ToggleButton">
                                                     <Path Data="M 0 0 L 3 3 L 6 0"  
@@ -198,7 +198,7 @@
                 <Setter TargetName="Popup" Property="PopupAnimation" Value="None"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="true">
-                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HightlightBorderBrush}"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightBorderBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
@@ -247,7 +247,7 @@
                     Fill="{StaticResource GlyphBrush}"
                     Margin="0,0,9,0" />
 
-                <Popup 
+                <Popup
                     Name="Popup"
                     Placement="Right"
                     HorizontalOffset="2" 
@@ -294,7 +294,7 @@
             </Trigger>
             <Trigger Property="IsHighlighted" Value="true">
                 <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HightlightBorderBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightBorderBrush}" />
             </Trigger>
             <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
                 <Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="4"/>
@@ -313,7 +313,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource HightlightBorderBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderBrush}" />
             </Trigger>
         </Style.Triggers>
     </Style>

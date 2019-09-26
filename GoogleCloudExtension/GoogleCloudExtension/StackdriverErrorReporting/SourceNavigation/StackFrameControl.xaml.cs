@@ -14,7 +14,7 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation
 {
     /// <summary>
     /// Interaction logic for StackFrameControl.xaml

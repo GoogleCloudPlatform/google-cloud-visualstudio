@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation
 {
     /// <summary>
     /// Exact header and stack frames from the Stackdriver Error Reporting error event message.
@@ -56,11 +56,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         public ParsedException(string exceptionMessage)
         {
-            if (exceptionMessage == null)
-            {
-                throw new ErrorReportingException(new ArgumentNullException(nameof(exceptionMessage)));
-            }
-            RawMessage = exceptionMessage;
+            RawMessage = exceptionMessage ?? throw new ErrorReportingException(new ArgumentNullException(nameof(exceptionMessage)));
             _lines = ParserUtils.SplitLines(exceptionMessage);
             Header = ParserUtils.SeparateHeaderFromInnerError(_lines.FirstOrDefault());
         }

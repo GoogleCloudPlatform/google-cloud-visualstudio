@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
-using GoogleCloudExtension.CloudExplorerSources.Gae;
-using GoogleCloudExtension.CloudExplorerSources.Gce;
-using GoogleCloudExtension.MenuBarControls;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +19,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.CloudExplorerSources.CloudConsoleLinks;
+using GoogleCloudExtension.CloudExplorerSources.Gae;
+using GoogleCloudExtension.CloudExplorerSources.Gce;
+using GoogleCloudExtension.MenuBarControls;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorer
 {

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.ProgressDialog;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.ProgressDialog;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.ApiManagement
 {

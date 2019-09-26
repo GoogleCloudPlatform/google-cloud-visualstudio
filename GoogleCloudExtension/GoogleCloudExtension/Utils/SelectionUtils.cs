@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtension.Utils
@@ -140,11 +141,11 @@ namespace GoogleCloudExtension.Utils
                 return;
             }
 
-            // Tickle the properties window, change the focus to force the 
+            // Tickle the properties window, change the focus to force the
             // properties window to update. This apparently only needs to be done once.
             await Task.Delay(1);
             var frame = GetPropertiesWindow(_owner);
-            if (frame == null || frame.IsVisible() != Microsoft.VisualStudio.VSConstants.S_OK)
+            if (frame == null || frame.IsVisible() != VSConstants.S_OK)
             {
                 // If there's no properties frame, or it is not visible, then there's nothing todo.
                 return;

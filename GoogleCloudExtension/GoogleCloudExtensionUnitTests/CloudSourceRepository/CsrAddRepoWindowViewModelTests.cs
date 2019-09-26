@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.CloudSourceRepositories.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudSourceRepositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 {
@@ -110,7 +110,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
         {
             for (char ch = low; ch <= high; ++ch)
             {
-                TestValidRepoName(ch.ToString() + "valid_name" + ch.ToString());
+                TestValidRepoName(ch + "valid_name" + ch);
             }
         }
 
@@ -131,7 +131,7 @@ namespace GoogleCloudExtensionUnitTests.CloudSourceRepository
 
         private void TestInvalidRepoNameChar(char ch)
         {
-            _testViewModel.RepositoryName = "valid" + ch.ToString() + "valid";
+            _testViewModel.RepositoryName = "valid" + ch + "valid";
             Assert.IsFalse(_testViewModel.OkCommand.CanExecuteCommand);
             var error = _testViewModel.ValidateRepoName()?.FirstOrDefault();
             Assert.IsNotNull(error);

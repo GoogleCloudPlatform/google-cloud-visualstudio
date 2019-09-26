@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.ManageWindowsCredentials;
-using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.ManageWindowsCredentials;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
-    /// Ask user to choose an account 
+    /// Ask user to choose an account
     /// </summary>
     public class SetCredentialStepViewModel : AttachDebuggerStepBase
     {
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             ShowSelection = true;
             IsCancelButtonEnabled = true;
-            IsOKButtonEnabled = Credentials.Any();
+            IsOkButtonEnabled = Credentials.Any();
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 
@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
                 UpdateCredentials();
-                IsOKButtonEnabled = Credentials.Any();
+                IsOkButtonEnabled = Credentials.Any();
             });
         }
 

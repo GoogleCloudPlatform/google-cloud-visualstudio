@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
@@ -27,13 +34,6 @@ using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.WindowsCredentialsChooser;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -167,23 +167,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 try
                 {
-                    // Await the end of the task. We can also get here if the task is faulted, 
-                    // in which case we need to handle that case.
-                    while (true)
-                    {
-                        // Refresh the instance before waiting for the operation to finish.
-                        Instance = await _owner.DataSource.RefreshInstance(Instance);
-
-                        // Wait for the operation to finish up to the timeout, which we will use to refresh the
-                        // state of the instance.
-                        var result = await Task.WhenAny(pendingOperation.OperationTask, Task.Delay(s_pollTimeout));
-                        if (result == pendingOperation.OperationTask)
-                        {
-                            // Await the task again to get any possible exception.
-                            await pendingOperation.OperationTask;
-                            break;
-                        }
-                    }
+                    await WhenOperationAsync(pendingOperation);
 
                     // Refresh the instance state after the operation is finished.
                     Instance = await _owner.DataSource.RefreshInstance(Instance);
@@ -195,7 +179,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     IsError = true;
                     UpdateContextMenu();
 
-                    Debug.WriteLine($"Previous operation failed.");
+                    Debug.WriteLine("Previous operation failed.");
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
@@ -219,6 +203,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             IsLoading = false;
             Caption = Instance.Name;
             UpdateContextMenu();
+        }
+
+        ///<summary>
+        /// Awaits the end of the pending operation.
+        /// We can also get here if the task is faulted, in which case we need to handle that case.
+        /// </summary>
+        private async Task WhenOperationAsync(GceOperation pendingOperation)
+        {
+            while (true)
+            {
+                // Refresh the instance before waiting for the operation to finish.
+                Instance = await _owner.DataSource.RefreshInstance(Instance);
+
+                // Wait for the operation to finish up to the timeout, which we will use to refresh the
+                // state of the instance.
+                var result = await Task.WhenAny(pendingOperation.OperationTask, Task.Delay(s_pollTimeout));
+                if (result == pendingOperation.OperationTask)
+                {
+                    // Await the task again to get any possible exception.
+                    await pendingOperation.OperationTask;
+                    break;
+                }
+            }
         }
 
         private void UpdateContextMenu()
@@ -284,7 +291,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private async Task OnBrowseStackdriverLogCommandAsync()
         {
             LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
-            window?.FilterVMInstanceLog(Instance.Id.ToString());
+            window?.FilterVmInstanceLog(Instance.Id.ToString());
         }
 
         private async Task OnAttachDebuggerAsync()

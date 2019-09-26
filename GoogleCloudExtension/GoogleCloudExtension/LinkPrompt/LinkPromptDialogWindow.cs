@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.LinkPrompt
             var viewModel = new LinkPromptDialogWindowViewModel(text, link);
             Content = new LinkPromptDialogWindowContent
             {
-                DataContext = viewModel,
+                DataContext = viewModel
             };
         }
 

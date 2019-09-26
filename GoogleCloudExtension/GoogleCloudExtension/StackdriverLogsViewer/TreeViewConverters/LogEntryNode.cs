@@ -13,9 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using System;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
     /// Parse <seealso cref="LogEntry"/> object.
@@ -26,7 +25,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Create an instance of the <seealso cref="LogEntryNode"/> class.
         /// </summary>
         /// <param name="logEntry">A <seealso cref="LogEntry"/> object.</param>
-        public LogEntryNode(LogEntry logEntry) : base(String.Empty, logEntry, null) { }
+        public LogEntryNode(LogEntry logEntry) : base(string.Empty, logEntry, null) { }
 
         /// <summary>
         /// Override <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.

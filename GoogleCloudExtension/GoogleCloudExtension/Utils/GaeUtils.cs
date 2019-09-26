@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
+using System.Threading.Tasks;
 using GoogleCloudExtension.AppEngineManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Services;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {

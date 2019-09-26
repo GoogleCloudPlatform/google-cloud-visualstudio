@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.IO;
 using EnvDTE;
 using GoogleCloudExtension.SolutionUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.IO;
 
 namespace GoogleCloudExtensionUnitTests.SolutionUtils
 {
@@ -75,7 +75,7 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             assemblyNamePropMock.Setup(v => v.Value).Returns(AssemblyNameValue);
 
             _propertiesMock.Setup(ps => ps.Count).Returns(2);
-            _propertiesMock.Setup(ps => ps.GetEnumerator()).Returns(new Property[]
+            _propertiesMock.Setup(ps => ps.GetEnumerator()).Returns(new[]
             {
                 assemblyVersionPropMock.Object,
                 assemblyNamePropMock.Object
@@ -110,7 +110,7 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             TestConstructorEmptyProperties(Constants.vsProjectKindUnmodeled, ProjectFullName, UniqueNameNoSeparator);
 
         /// <summary>
-        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.FullName"/>.        
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.FullName"/>.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]
@@ -118,7 +118,7 @@ namespace GoogleCloudExtensionUnitTests.SolutionUtils
             TestConstructorEmptyProperties(WebApplicationProjectKind, null, UniqueNameNoSeparator);
 
         /// <summary>
-        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.UniqueName"/>.        
+        /// Tests that the <seealso cref="ProjectHelper"/> constructor correctly throws if the project has no <seealso cref="Project.UniqueName"/>.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentException), AllowDerivedTypes = true)]

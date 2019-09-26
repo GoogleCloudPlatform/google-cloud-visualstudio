@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.TeamExplorerExtension;
-using GoogleCloudExtension.Utils;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
+using GoogleCloudExtension.TeamExplorerExtension;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {

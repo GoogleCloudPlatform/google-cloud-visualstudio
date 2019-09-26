@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
@@ -24,7 +25,6 @@ using GoogleCloudExtension.Services.VsProject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using TestingHelpers;
-using Project = EnvDTE.Project;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog.Steps.CoreGceWarning
 {

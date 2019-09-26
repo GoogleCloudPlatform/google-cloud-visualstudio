@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -49,7 +51,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public long ErrorCount => ErrorGroup.Count ?? 0;
 
         /// <summary>
-        /// Show service context. 
+        /// Show service context.
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>
         public string SeenIn
@@ -62,9 +64,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
                 var query = ErrorGroup.AffectedServices
                     .Where(x => x.Service != null)
-                    .Select(x => FormatServiceContext(x))
+                    .Select(FormatServiceContext)
                     .Distinct(StringComparer.InvariantCulture);
-                return String.Join(Environment.NewLine, query);
+                return string.Join(Environment.NewLine, query);
             }
         }
 
@@ -94,12 +96,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string AffectedUsersCount => ErrorGroup.AffectedUsersCount?.ToString() ?? "-";
 
         /// <summary>
-        /// Gets the formated <seealso cref="ErrorGroupStats.FirstSeenTime"/>.
+        /// Gets the formatted <seealso cref="ErrorGroupStats.FirstSeenTime"/>.
         /// </summary>
         public string FirstSeenTime => FormatErrorGroupDateTime(ErrorGroup.FirstSeenTime);
 
         /// <summary>
-        /// Gets the formated <seealso cref="ErrorGroupStats.LastSeenTime"/>.
+        /// Gets the formatted <seealso cref="ErrorGroupStats.LastSeenTime"/>.
         /// </summary>
         public string LastSeenTime => FormatErrorGroupDateTime(ErrorGroup.LastSeenTime);
 
@@ -115,11 +117,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         public ErrorGroupItem(ErrorGroupStats errorGroup, TimeRangeItem timeRange)
         {
-            if (errorGroup == null)
-            {
-                throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroup)));
-            }
-            ErrorGroup = errorGroup;
+            ErrorGroup = errorGroup ?? throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroup)));
             if (ErrorGroup.Representative?.Message != null)
             {
                 ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
@@ -152,16 +150,19 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private static string FormatErrorGroupDateTime(object datetime)
         {
             // Assign a value that is never used.
-            // Otherwise compiler complains "used not initialized local variable". 
+            // Otherwise compiler complains "used not initialized local variable".
             DateTime dt = DateTime.MinValue;
             if (datetime is DateTime)
             {
                 dt = (DateTime)datetime;
             }
-            else if (datetime is string)
+            else if (datetime is string dateTimeString)
             {
-                if (!DateTime.TryParse(datetime as string,
-                    CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dt))
+                if (!DateTime.TryParse(
+                    dateTimeString,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AdjustToUniversal,
+                    out dt))
                 {
                     return null;
                 }
@@ -177,7 +178,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(serviceContext.Service);
-            if (!String.IsNullOrWhiteSpace(serviceContext.Version))
+            if (!string.IsNullOrWhiteSpace(serviceContext.Version))
             {
                 builder.Append($":{serviceContext.Version}");
             }

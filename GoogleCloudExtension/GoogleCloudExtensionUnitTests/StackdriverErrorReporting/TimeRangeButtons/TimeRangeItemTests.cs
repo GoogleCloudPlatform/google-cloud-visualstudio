@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.StackdriverErrorReporting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EventTimeRangePeriodEnum =
     Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using GroupTimeRangePeriodEnum =
@@ -26,7 +26,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting.TimeRangeButto
     public class TimeRangeItemTests
     {
         [TestMethod]
-        public void TestInitalConditions()
+        public void TestInitialConditions()
         {
             const string durationString = "duration";
             const string captionString = "caption";

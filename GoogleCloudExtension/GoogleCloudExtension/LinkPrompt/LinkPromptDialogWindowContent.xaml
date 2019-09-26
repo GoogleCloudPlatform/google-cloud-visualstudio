@@ -26,7 +26,7 @@
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}" IsDefault="True" IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <TextBlock TextWrapping="Wrap" Style="{StaticResource CommonTextStyle}">
+        <TextBlock Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
             <Hyperlink Command="{Binding NavigateCommand}" Style="{StaticResource CommonHyperlinkStyle}">
                 <TextBlock Text="{Binding LinkCaption}" />

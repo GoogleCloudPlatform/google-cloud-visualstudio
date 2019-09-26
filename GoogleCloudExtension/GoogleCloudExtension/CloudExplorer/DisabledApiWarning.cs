@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Controls;
+using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExploreDisabledApiEnableApiMenuHeader, Command=new ProtectedCommand(OnEnableApiCommand) },
+                new MenuItem { Header = Resources.CloudExploreDisabledApiEnableApiMenuHeader, Command=new ProtectedCommand(OnEnableApiCommand) }
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

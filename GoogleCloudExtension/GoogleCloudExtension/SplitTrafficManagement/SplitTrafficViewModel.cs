@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.AddTrafficSplit;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.AddTrafficSplit;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
+using Version = Google.Apis.Appengine.v1.Data.Version;
 
 namespace GoogleCloudExtension.SplitTrafficManagement
 {
@@ -53,7 +54,6 @@ namespace GoogleCloudExtension.SplitTrafficManagement
     public class SplitTrafficViewModel : ViewModelBase
     {
         private readonly SplitTrafficWindow _owner;
-        private readonly Service _service;
         private readonly IList<string> _availableVersions;
 
         private bool _isIpChecked;
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// <summary>
         /// The list of traffic allocations.
         /// </summary>
-        public ObservableCollection<SplitTrafficModel> Allocations { get; } = new ObservableCollection<SplitTrafficModel>();
+        public ObservableCollection<SplitTrafficModel> Allocations { get; }
 
         public SplitTrafficModel SelectedSplit
         {
@@ -116,16 +116,15 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// </summary>
         public ProtectedCommand AddTrafficAllocationCommand { get; }
 
-        public SplitTrafficViewModel(SplitTrafficWindow owner, Service service, IEnumerable<Google.Apis.Appengine.v1.Data.Version> versions)
+        public SplitTrafficViewModel(SplitTrafficWindow owner, Service service, IEnumerable<Version> versions)
         {
             _owner = owner;
-            _service = service;
 
             // Set up the radio buttons properly.  Default to "IP" splitting if none is set.
             IsCookieChecked = GaeServiceExtensions.ShardByCookie.Equals(service?.Split?.ShardBy);
             IsIpChecked = !IsCookieChecked;
 
-            // Set up the current allocations and avaible versions.
+            // Set up the current allocations and available versions.
             Allocations = GetAllocations(service);
             _availableVersions = GetAvailableVersions(service, versions);
 
@@ -151,7 +150,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
                 new Dictionary<string, double?>();
             IEnumerable<SplitTrafficModel> models = allocations
                 .Where(x => x.Value != null)
-                .Select((x) => new SplitTrafficModel(x.Key, Convert.ToInt32(x.Value * 100)));
+                .Select(x => new SplitTrafficModel(x.Key, Convert.ToInt32(x.Value * 100)));
             return new ObservableCollection<SplitTrafficModel>(models);
         }
 
@@ -159,9 +158,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// Get a list of versions that are not allocated traffic in a service.
         /// </summary>
         private IList<string> GetAvailableVersions(
-            Service service, IEnumerable<Google.Apis.Appengine.v1.Data.Version> versions)
+            Service service, IEnumerable<Version> versions)
         {
-            ICollection<string> keys = service?.Split?.Allocations?.Keys;
+            ICollection<string> keys = service.Split.Allocations.Keys;
             return versions
                 .Where(x => !keys.Contains(x.Id))
                 .Select(x => x.Id)
@@ -206,7 +205,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         }
 
         /// <summary>
-        /// Called when the user clicks the Save button.  This handles error checks, 
+        /// Called when the user clicks the Save button.  This handles error checks,
         /// populates the <seealso cref="Result"/> field and closes the dialog.
         /// </summary>
         private void OnSaveCommand()
@@ -221,7 +220,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
                 if (percent <= 0 || percent > 100)
                 {
                     UserPromptService.Default.ErrorPrompt(
-                        message: String.Format(Resources.SplitTrafficWindowInvalidPercentRangeErrorMessage, allocation.VersionId),
+                        message: string.Format(Resources.SplitTrafficWindowInvalidPercentRangeErrorMessage, allocation.VersionId),
                         title: Resources.SplitTrafficWindowInvalidPercentTitle);
                     return;
                 }

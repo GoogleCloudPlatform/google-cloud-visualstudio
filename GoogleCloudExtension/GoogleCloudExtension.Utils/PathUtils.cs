@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="commandName">The command name.</param>
         /// <returns>The full path to the command.</returns>
-        public static string GetCommandPathFromPATH(string commandName)
+        public static string GetCommandPathFromPath(string commandName)
         {
             var paths = Environment.GetEnvironmentVariable("PATH")?.Split(';');
             foreach (var path in paths)
@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.Utils
                         return fullPath;
                     }
                 }
-                catch (Exception ex) when (ex is ArgumentException || ex is ArgumentNullException)
+                catch (Exception ex) when (ex is ArgumentException)
                 {
                     Debug.WriteLine($"{path} is considered as invalid path");
                 }
@@ -85,7 +85,8 @@ namespace GoogleCloudExtension.Utils
         public static string EnsureEndSeparator(this string directoryString)
         {
             directoryString.ThrowIfNull(nameof(directoryString));
-            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) && !directoryString.EndsWith("/"))
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) &&
+                !directoryString.EndsWith("/", StringComparison.Ordinal))
             {
                 return directoryString + Path.DirectorySeparatorChar;
             }

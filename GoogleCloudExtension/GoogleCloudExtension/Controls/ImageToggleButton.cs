@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.Controls
 
         /// <summary>
         /// The image to show in the unchecked state.
-        /// </summary>  
+        /// </summary>
         public ImageSource UncheckedImage
         {
             get { return (ImageSource)GetValue(UncheckedImageProperty); }

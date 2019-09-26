@@ -12,15 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.SourceBrowsing;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -29,7 +31,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingDetailViewModel : ViewModelBase, IDisposable
     {
-        private Lazy<IStackdriverErrorReportingDataSource> _datasource;
+        private Lazy<IStackdriverErrorReportingDataSource> _dataSource;
         private bool _isGroupLoading;
         private bool _isEventLoading;
         private bool _isControlEnabled = true;
@@ -37,19 +39,19 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private string _errorString;
         private bool _isAccountChanged;
         private ErrorGroupItem _groupItem;
-        private CollectionView _eventItemCollection;
+        private ObservableCollection<EventItem> _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private readonly IGoogleCloudExtensionPackage _package;
 
         // References to static method dependencies. Mockable for testing.
-        internal Action<ErrorGroupItem, StackFrame> ErrorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
-        internal Func<Task<ErrorReportingToolWindow>> ShowErrorReportingToolWindow =
+        internal Action<ErrorGroupItem, StackFrame> _errorFrameToSourceLine = ShowTooltipUtils.ErrorFrameToSourceLine;
+        internal Func<Task<ErrorReportingToolWindow>> _showErrorReportingToolWindow =
             ToolWindowCommandUtils.ShowToolWindowAsync<ErrorReportingToolWindow>;
 
         private readonly IStackdriverErrorReportingDataSource _dataSourceOverride = null;
 
-        private IStackdriverErrorReportingDataSource DataSource => _dataSourceOverride ?? _datasource?.Value;
+        private IStackdriverErrorReportingDataSource DataSource => _dataSourceOverride ?? _dataSource?.Value;
 
         /// <summary>
         /// Indicate the Google account is set.
@@ -117,7 +119,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// The data collection of event item list.
         /// </summary>
-        public CollectionView EventItemCollection
+        public ObservableCollection<EventItem> EventItemCollection
         {
             get { return _eventItemCollection; }
             private set { SetValueAndRaise(ref _eventItemCollection, value); }
@@ -176,10 +178,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _package = GoogleCloudExtensionPackage.Instance;
             IsVisibleUnbound = true;
-            OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => ErrorFrameToSourceLine(GroupItem, frame));
-            OnBackToOverViewCommand = new ProtectedAsyncCommand(async () => await ShowErrorReportingToolWindow());
+            OnGotoSourceCommand = new ProtectedCommand<StackFrame>(frame => _errorFrameToSourceLine(GroupItem, frame));
+            OnBackToOverViewCommand = new ProtectedAsyncCommand(async () => await _showErrorReportingToolWindow());
             OnAutoReloadCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleExceptionsAsync(UpdateGroupAndEventAsync));
-            _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
+            _dataSource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
 
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectChanged;
         }
@@ -199,7 +201,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private void OnCurrentProjectChanged(object sender, EventArgs e)
         {
             IsAccountChanged = true;
-            _datasource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
+            _dataSource = new Lazy<IStackdriverErrorReportingDataSource>(CreateDataSource);
         }
 
         /// <summary>
@@ -209,24 +211,20 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <param name="groupSelectedTimeRangeItem">The selected time range.</param>
         public void UpdateView(ErrorGroupItem errorGroupItem, TimeRangeItem groupSelectedTimeRangeItem)
         {
-            if (errorGroupItem == null)
-            {
-                throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroupItem)));
-            }
+            GroupItem = errorGroupItem ?? throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroupItem)));
             if (groupSelectedTimeRangeItem == null)
             {
                 throw new ErrorReportingException(new ArgumentNullException(nameof(groupSelectedTimeRangeItem)));
             }
 
             IsAccountChanged = false;
-            GroupItem = errorGroupItem;
             if (groupSelectedTimeRangeItem.GroupTimeRange == SelectedTimeRangeItem?.GroupTimeRange)
             {
                 ErrorHandlerUtils.HandleExceptionsAsync(UpdateEventAsync);
             }
             else
             {
-                // This will triger a call to UpdateGroupAndEventAsync().
+                // This will trigger a call to UpdateGroupAndEventAsync().
                 SelectedTimeRangeItem = AllTimeRangeItems.First(x => x.GroupTimeRange == groupSelectedTimeRangeItem.GroupTimeRange);
             }
         }
@@ -325,8 +323,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                         SelectedTimeRangeItem.EventTimeRange);
                     if (events?.ErrorEvents != null)
                     {
-                        EventItemCollection = CollectionViewSource.GetDefaultView(
-                            events.ErrorEvents.Where(x => x != null).Select(x => new EventItem(x))) as CollectionView;
+                        EventItemCollection = new ObservableCollection<EventItem>(
+                            events.ErrorEvents.Where(x => x != null).Select(x => new EventItem(x)));
                     }
                 }
                 catch (DataSourceException)
@@ -349,7 +347,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private StackdriverErrorReportingDataSource CreateDataSource()
         {
-            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
+            if (string.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
             {
                 return null;
             }

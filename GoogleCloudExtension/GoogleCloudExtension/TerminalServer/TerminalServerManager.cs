@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GCloud;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
 
 namespace GoogleCloudExtension.TerminalServer
 {

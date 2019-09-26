@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Windows;
 using GoogleCloudExtension.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using TestingHelpers;
-using UIElement = System.Windows.UIElement;
 
 namespace GoogleCloudExtensionUnitTests.Options
 {

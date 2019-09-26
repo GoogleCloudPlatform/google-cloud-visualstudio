@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.Theming
     public class ButtonTemplateSelector : DataTemplateSelector
     {
         /// <summary>
-        /// Choose between the Wide and Standard sizes for a button depending on the information on 
+        /// Choose between the Wide and Standard sizes for a button depending on the information on
         /// the button info.
         /// </summary>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)

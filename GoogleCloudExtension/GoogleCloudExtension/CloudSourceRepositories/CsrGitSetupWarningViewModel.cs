@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Git;
-using GoogleCloudExtension.Utils;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GoogleCloudExtension.Git;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -26,7 +25,6 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// </summary>
     public class CsrGitSetupWarningViewModel : ViewModelBase
     {
-        private readonly CsrSectionControlViewModel _parent;
         private bool _isEnabled = true;
         private string _errorMessage;
 
@@ -65,21 +63,20 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         public CsrGitSetupWarningViewModel(CsrSectionControlViewModel parent)
         {
-            _parent = parent;
             InstallGitCommand = new ProtectedCommand(
                 () => Process.Start(ValidateGitDependencyHelper.GitInstallationLink));
             VerifyCommand = new ProtectedAsyncCommand(async () =>
             {
                 if (await CheckInstallationAsync())
                 {
-                    _parent.OnGitInstallationCheckSuccess();
+                    parent.OnGitInstallationCheckSuccess();
                 }
             });
         }
 
         /// <summary>
         /// Check if Git for Windows dependency is installed properly.
-        /// Set ErrorMessage so that the error shows 
+        /// Set ErrorMessage so that the error shows
         /// </summary>
         /// <returns>
         /// true: Verified git is installed.  false: git is not installed properly.
@@ -91,7 +88,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 return true;
             }
 
-            if (String.IsNullOrWhiteSpace(GitRepository.GetGitPath()))
+            if (string.IsNullOrWhiteSpace(GitRepository.GetGitPath()))
             {
                 ErrorMessage = Resources.GitUtilsMissingGitErrorTitle;
                 return false;

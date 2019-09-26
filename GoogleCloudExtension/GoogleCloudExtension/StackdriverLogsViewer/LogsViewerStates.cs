@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private StackdriverLogsViewerStates() { }
 
         /// <summary>
-        /// Gets the global states for Stackdriver logs viewer feature. 
+        /// Gets the global states for Stackdriver logs viewer feature.
         /// </summary>
         public static StackdriverLogsViewerStates Current => s_logsViewerStates.Value;
 

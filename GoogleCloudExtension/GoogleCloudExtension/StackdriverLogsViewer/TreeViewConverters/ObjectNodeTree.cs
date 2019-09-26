@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,8 +19,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
     /// Log Viewer detail tree view object node.
@@ -42,8 +42,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The list of supported classes.
         /// </summary>
-        private readonly static Type[] s_supportedTypes = new Type[]
-        {
+        private static readonly Type[] s_supportedTypes = {
             typeof(MonitoredResource),
             typeof(HttpRequest),
             typeof(LogEntryOperation),
@@ -63,15 +62,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Gets the DisplayValue
-        /// Tree node displays label in format of Name : DisplayValue.  
+        /// Tree node displays label in format of Name : DisplayValue.
         /// </summary>
         public string NodeValue { get; private set; }
 
         /// <summary>
         /// Gets the object name with optional colon.
         /// </summary>
-        public string Name => String.IsNullOrWhiteSpace(NodeValue) ? _name :
-            String.Format(Resources.LogViewerDetailTreeViewNameLabelFormat, _name);
+        public string Name => string.IsNullOrWhiteSpace(NodeValue) ? _name :
+            string.Format(Resources.LogViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
         /// Gets the label name for showing maching logs filter.
@@ -125,7 +124,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             Type type = obj.GetType();
 
-            if (obj.IsNumericType() || obj is string || obj is Boolean)
+            if (obj.IsNumericType() || obj is string || obj is bool)
             {
                 NodeValue = obj.ToString();
             }
@@ -184,7 +183,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             int i = 0;
             foreach (var element in enumerable)
             {
-                var node = AddChildren(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
+                var node = AddChildren(string.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
                 node._filterLabelOverride = "";
                 ++i;
             }

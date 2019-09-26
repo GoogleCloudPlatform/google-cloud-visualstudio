@@ -5,10 +5,10 @@
 
 <h2>@ViewBag.Title.</h2>
 
-@using (Html.BeginForm("VerifyCode", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
+@using (Html.BeginForm("VerifyCode", "Account", new { Model.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" })) {
     @Html.AntiForgeryToken()
-    @Html.Hidden("provider", @Model.Provider)
-    @Html.Hidden("rememberMe", @Model.RememberMe)
+    @Html.Hidden("provider", Model.Provider)
+    @Html.Hidden("rememberMe", Model.RememberMe)
     <h4>Enter verification code</h4>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })

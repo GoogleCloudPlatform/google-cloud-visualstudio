@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         public string FilePath { get; }
 
-        public FileNotFoundException(string filePath) : base()
+        public FileNotFoundException(string filePath)
         {
             FilePath = filePath;
         }

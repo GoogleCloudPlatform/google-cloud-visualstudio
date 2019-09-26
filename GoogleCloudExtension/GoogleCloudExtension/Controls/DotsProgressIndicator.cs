@@ -53,11 +53,11 @@ namespace GoogleCloudExtension.Controls
 
         private static void OnStepChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
-            // WPF framework makes the call and value type must be int. 
+            // WPF framework makes the call and value type must be int.
             // Does not need to check the type.
             int step = (int)e.NewValue;
-            DotsProgressIndicator window = source as DotsProgressIndicator;
-            foreach (var dot in window._dots)
+            var window = (DotsProgressIndicator)source;
+            foreach (Ellipse dot in window._dots)
             {
                 dot.Visibility = Visibility.Hidden;
             }
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.Controls
 
             var storyboard = new Storyboard();
             storyboard.Children.Add(animation);
-            this.BeginAnimation(DotsProgressIndicator.StepProperty, animation);
+            BeginAnimation(StepProperty, animation);
         }
     }
 }

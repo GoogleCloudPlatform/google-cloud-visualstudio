@@ -1,14 +1,13 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting;assembly=GoogleCloudExtension"
-    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
+    xmlns:barChart="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting.BarChart">
 
-    <Style x:Key="TimedCountMiniBarChartStyle" TargetType="local:TimedCountBarChartControl" >
+    <Style x:Key="TimedCountMiniBarChartStyle" TargetType="barChart:TimedCountBarChartControl" >
         <Setter Property="BarMaxHeight" Value="15" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:TimedCountBarChartControl">
+                <ControlTemplate TargetType="barChart:TimedCountBarChartControl">
                     <StackPanel>
                         <ItemsControl 
                             x:Name="PART_TimedCountItemsControl"

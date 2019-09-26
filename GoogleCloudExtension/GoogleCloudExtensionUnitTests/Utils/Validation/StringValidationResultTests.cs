@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension;
-using GoogleCloudExtension.Utils.Validation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
+using GoogleCloudExtension;
+using GoogleCloudExtension.Utils.Validation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests.Utils.Validation
 {
@@ -66,7 +66,7 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
         public static IEnumerable<object> NotEqualObjects { get; } = new[]
         {
             new object[] {null},
-            new object[] {new object()},
+            new[] {new object()},
             new object[] {ValidationResult.ValidResult},
             new object[]
             {

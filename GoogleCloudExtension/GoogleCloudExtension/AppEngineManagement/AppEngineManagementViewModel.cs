@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineManagement
 {
@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.AppEngineManagement
         /// The placeholder for the list of regions being loaded.
         /// Note: This variable is internal so it can be accessed by tests.
         /// </summary>
-        internal static readonly IEnumerable<string> s_loadingPlaceholder = new string[]
+        internal static readonly IEnumerable<string> s_loadingPlaceholder = new[]
         {
             Resources.AppEngineManagementLoadingRegionsPlaceholder
         };

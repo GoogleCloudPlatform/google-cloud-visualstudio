@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.AnalyticsOptInDialog;
 using GoogleCloudExtension.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
 using TestingHelpers;
 
 namespace GoogleCloudExtensionUnitTests.Analytics

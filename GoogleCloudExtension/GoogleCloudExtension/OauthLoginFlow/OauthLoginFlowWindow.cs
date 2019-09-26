@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.OAuth;
-using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
+using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.OauthLoginFlow
 {
@@ -48,7 +49,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
             ViewModel = new OAuthLoginFlowViewModel(this);
             var windowContent = new OauthLoginFlowWindowContent
             {
-                DataContext = ViewModel,
+                DataContext = ViewModel
             };
 
             Content = windowContent;
@@ -56,7 +57,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
             ErrorHandlerUtils.HandleExceptionsAsync(StartLoginFlowAsync);
         }
 
-        private async System.Threading.Tasks.Task StartLoginFlowAsync()
+        private async Task StartLoginFlowAsync()
         {
             try
             {

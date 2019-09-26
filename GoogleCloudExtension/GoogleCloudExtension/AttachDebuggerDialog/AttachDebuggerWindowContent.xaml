@@ -19,8 +19,6 @@
                 <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-
             <!-- Small dialog, fixed on the width but allows it to grow vertically. -->
             <Style x:Key="DebuggerDialogStyle" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
                 <Setter Property="MinWidth" Value="320px" />
@@ -38,11 +36,11 @@
     <theming:CommonDialogWindowBaseContent HasBanner="True" >
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
-                                      Command="{Binding OKCommand}" />
+                                      Command="{Binding OkCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                                       Command="{Binding CancelCommand}"
                                       IsCancel="True"
-                                      Visibility="{Binding ShowCancelButton, Converter={StaticResource visibilityConverter}}"/>
+                                      Visibility="{Binding ShowCancelButton, Converter={utils:VisibilityConverter}}"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel IsEnabled="{Binding IsReady}">
@@ -52,7 +50,7 @@
                 Margin="0,12,0,6"
                 Width="86"
                 HorizontalAlignment="Left"
-                Visibility="{Binding ShowProgressIndicator, Converter={StaticResource visibilityConverter}}" />
+                Visibility="{Binding ShowProgressIndicator, Converter={utils:VisibilityConverter}}" />
         </StackPanel>
 
     </theming:CommonDialogWindowBaseContent>

@@ -13,20 +13,20 @@
 // limitations under the License.
 
 using System;
-using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.CloudExplorerSources.Gae;
-using GoogleCloudExtension.StackdriverLogsViewer;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Google.Apis.Appengine.v1.Data;
 using Google.Apis.CloudResourceManager.v1.Data;
+using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Services;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using TestingHelpers;
 using Resources = GoogleCloudExtension.Resources;
 using Version = Google.Apis.Appengine.v1.Data.Version;

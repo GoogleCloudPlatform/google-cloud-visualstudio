@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
-namespace UnitTestProject
+namespace GoogleCloudExtensionUnitTests
 {
     [TestClass]
     public class SplitStringBySpaceOrQuoteTests
@@ -25,7 +25,7 @@ namespace UnitTestProject
         public void General()
         {
             Verify("\"This is a search string\"  And This  ",
-                new string[]
+                new[]
                 {
                     "This is a search string",
                     "And",
@@ -34,7 +34,7 @@ namespace UnitTestProject
                 );
 
             Verify("\"This is a search string  And This  ",
-                new string[]
+                new[]
                 {
                     "This",
                     "is",
@@ -47,20 +47,20 @@ namespace UnitTestProject
                 );
 
             Verify("This is search    ",
-                new string[]
+                new[]
                 {
                     "This",
                     "is",
-                    "search",
+                    "search"
                 }
                 );
 
             Verify(@"This is \search    ",
-                new string[]
+                new[]
                 {
                     "This",
                     "is",
-                    @"\\search",
+                    @"\\search"
                 }
                 );
         }
@@ -73,24 +73,24 @@ namespace UnitTestProject
             Verify(null, null);
             Verify("\"", null);
             Verify("   \"  ", null);
-            Verify("\"  \"", new string[] { "  " });
-            Verify("\"  \"   ", new string[] { "  " });
-            Verify("  \"  \"   ", new string[] { "  " });
+            Verify("\"  \"", new[] { "  " });
+            Verify("\"  \"   ", new[] { "  " });
+            Verify("  \"  \"   ", new[] { "  " });
             Verify("  \"\"   ", null);
         }
 
         [TestMethod]
         public void SingleQuote()
         {
-            Verify("'", new string[] { "'" });
-            Verify("'    '", new string[] { "'", "'" });
+            Verify("'", new[] { "'" });
+            Verify("'    '", new[] { "'", "'" });
         }
 
         [TestMethod]
         public void MoreQuotes()
         {
             Verify("\"string 1\"   And  \"String 2\"   more   ",
-                new string[] {
+                new[] {
                     "string 1",
                     "And",
                     "String 2",
@@ -98,7 +98,7 @@ namespace UnitTestProject
                 });
 
             Verify("\"string 1\"   \"  And  \"String 2\"   more   ",
-                new string[] {
+                new[] {
                     "string 1",
                     "  And  ",
                     "String",
@@ -107,7 +107,7 @@ namespace UnitTestProject
                 });
 
             Verify(" string after \"    ",
-                new string[] {
+                new[] {
                     "string",
                     "after"
                 });
@@ -117,8 +117,8 @@ namespace UnitTestProject
         public void StringEscaping()
         {
             Verify("\"a\\\"\"",
-                new string[] {
-                    "a\\\"",
+                new[] {
+                    "a\\\""
                 });
         }
 
@@ -126,7 +126,7 @@ namespace UnitTestProject
         public void StringEscapingMore()
         {
             Verify("\"string 1\\\"   And  \"String 2\"   more   ",
-                new string[] {
+                new[] {
                     "string 1\\\"   And  ",
                     "String",
                     "2",

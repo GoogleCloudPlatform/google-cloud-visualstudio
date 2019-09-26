@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.Git
 {
@@ -116,14 +116,14 @@ namespace GoogleCloudExtension.Git
         public enum StoreCredentialPathOption
         {
             /// <summary>
-            /// Store credential for the host. 
+            /// Store credential for the host.
             /// Example: https://source.developers.google.com
             /// </summary>
             UrlHost,
 
             /// <summary>
-            /// Store credential for the UrlPath. 
-            /// Example: https://source.developers.google.com/p/project-id/r/repo1 
+            /// Store credential for the UrlPath.
+            /// Example: https://source.developers.google.com/p/project-id/r/repo1
             /// </summary>
             UrlPath
         }

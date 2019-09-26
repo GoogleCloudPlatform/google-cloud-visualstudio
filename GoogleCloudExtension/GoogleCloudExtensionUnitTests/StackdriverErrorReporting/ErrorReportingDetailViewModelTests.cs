@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.StackdriverErrorReporting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverErrorReporting.SourceNavigation;
+using GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using EventTimeRangePeriodEnum =
     Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using GroupTimeRangePeriodEnum =
@@ -71,8 +73,8 @@ namespace GoogleCloudExtensionUnitTests.StackdriverErrorReporting
             _objectUnderTest = new ErrorReportingDetailViewModel(_dataSourceMock.Object);
 
             _objectUnderTest.PropertyChanged += (sender, args) => _propertiesChanged.Add(args.PropertyName);
-            _objectUnderTest.ErrorFrameToSourceLine = _errorFrameToSourceLineMock.Object;
-            _objectUnderTest.ShowErrorReportingToolWindow = _showErrorReportingToolWindowMock.Object;
+            _objectUnderTest._errorFrameToSourceLine = _errorFrameToSourceLineMock.Object;
+            _objectUnderTest._showErrorReportingToolWindow = _showErrorReportingToolWindowMock.Object;
 
             _defaultTimeRangeItem = _objectUnderTest.AllTimeRangeItems.First();
             _defaultErrorGroupItem = new ErrorGroupItem(

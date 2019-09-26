@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Services.FileSystem;
 using GoogleCloudExtension.Utils;
-using System;
-using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
 {
@@ -34,7 +34,6 @@ namespace GoogleCloudExtension.GCloud
 
         private ICredentialsStore CredentialsStore => _credentialsStore.Value;
         private IFileSystem FileSystem => _fileSystem.Value;
-        private IProcessService ProcessService => _processService.Value;
 
         [ImportingConstructor]
         public KubectlContextProvider(

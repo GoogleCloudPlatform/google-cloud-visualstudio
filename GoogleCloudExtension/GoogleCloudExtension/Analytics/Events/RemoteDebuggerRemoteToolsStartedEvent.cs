@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 
 namespace GoogleCloudExtension.Analytics.Events
 {
@@ -21,12 +22,12 @@ namespace GoogleCloudExtension.Analytics.Events
         private const string RemoteDebuggerRemoteToolsStartedEventName = "remoteDebuggerRemoteToolsStarted";
         private const string DurationProperty = "duration";
 
-        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
+        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default)
         {
             return new AnalyticsEvent(
                 RemoteDebuggerRemoteToolsStartedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
-                DurationProperty, duration.TotalSeconds.ToString());
+                DurationProperty, duration.TotalSeconds.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

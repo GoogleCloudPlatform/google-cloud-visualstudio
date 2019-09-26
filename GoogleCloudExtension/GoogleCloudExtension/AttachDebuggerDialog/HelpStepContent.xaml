@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance local:HelpStepContent,IsDesignTimeCreatable=False}"             
+             d:DataContext="{d:DesignInstance local:HelpStepViewModel,IsDesignTimeCreatable=False}"             
              d:DesignHeight="150" d:DesignWidth="320"
              MaxWidth="320">
 

@@ -12,44 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.Controls
 {
     /// <summary>
     /// A customized ComboBox.
-    /// This is to override the Loaded event so as to set the combo box backgroud correctly.
+    /// This is to override the Loaded event so as to set the combo box background correctly.
     /// </summary>
     public class FixBackgroundComboBox : ComboBox
     {
         /// <summary>
-        /// Inistantialize an new instance of <seealso cref="FixBackgroundComboBox"/> class.
+        /// Instantiate an new instance of <seealso cref="FixBackgroundComboBox"/> class.
         /// </summary>
-        public FixBackgroundComboBox() : base()
+        public FixBackgroundComboBox()
         {
-            this.Loaded += OnComboBoxLoaded;
+            Loaded += OnComboBoxLoaded;
         }
 
         /// <summary>
-        /// On Windows8, Windows10, the combobox backgroud property does not work.
+        /// On Windows8, Windows10, the combobox background property does not work.
         /// This is a workaround to fix the problem.
         /// </summary>
-        private void OnComboBoxLoaded(Object sender, RoutedEventArgs e)
+        private void OnComboBoxLoaded(object sender, RoutedEventArgs e)
         {
-            var comboBox = sender as ComboBox;
+            var comboBox = (ComboBox)sender;
             var comboBoxTemplate = comboBox.Template;
-            var toggleButton = comboBoxTemplate.FindName("toggleButton", comboBox) as ToggleButton;
-            if (toggleButton == null)
+            if (!(comboBoxTemplate.FindName("toggleButton", comboBox) is ToggleButton toggleButton))
             {
                 return;
             }
-            var toggleButtonTemplate = toggleButton.Template;
-            var border = toggleButtonTemplate.FindName("templateRoot", toggleButton) as Border;
-            var backgroud = comboBox.Background;
-            border.Background = backgroud;
+            ControlTemplate toggleButtonTemplate = toggleButton.Template;
+            var border = (Border)toggleButtonTemplate.FindName("templateRoot", toggleButton);
+            Brush background = comboBox.Background;
+            border.Background = background;
         }
     }
 }

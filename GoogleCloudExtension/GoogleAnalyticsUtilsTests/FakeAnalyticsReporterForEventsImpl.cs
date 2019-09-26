@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleAnalyticsUtils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GoogleAnalyticsUtils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleAnalyticsUtilsTests
 {
@@ -55,15 +55,14 @@ namespace GoogleAnalyticsUtilsTests
             _expectedMetadata = expectedMetadata;
         }
 
-        public void ReportEvent(string category, string action, string label = null, int? value = default(int?))
+        public void ReportEvent(string category, string action, string label = null, int? value = default)
         {
             throw new NotImplementedException();
         }
 
         public void ReportPageView(string page, string title, string host, Dictionary<int, string> customDimensions = null)
         {
-            string actualEventType, actualEventName;
-            ParsePageUrl(page, out actualEventType, out actualEventName);
+            ParsePageUrl(page, out string actualEventType, out string actualEventName);
 
             Assert.IsNotNull(customDimensions);
             Assert.AreEqual(_expectedEventType, actualEventType);
@@ -74,7 +73,7 @@ namespace GoogleAnalyticsUtilsTests
             {
                 Assert.IsNotNull(title);
                 var actualMetadata = ParseTitle(title);
-                CollectionAssert.AreEqual(_expectedMetadata, actualMetadata, $"Invalid metadata.");
+                CollectionAssert.AreEqual(_expectedMetadata, actualMetadata, "Invalid metadata.");
             }
 
             Assert.AreEqual(_expectedUserLoggedIn ? "true" : "false", customDimensions[IsUserSignedInIndex]);
@@ -148,7 +147,7 @@ namespace GoogleAnalyticsUtilsTests
         private static void ParsePageUrl(string page, out string eventType, out string eventName)
         {
             Assert.IsNotNull(page);
-            Assert.IsTrue(page.StartsWith(VirtualUrlPrefix));
+            Assert.IsTrue(page.StartsWith(VirtualUrlPrefix, StringComparison.Ordinal));
 
             var parts = page.Substring(VirtualUrlPrefix.Length).Split('/');
             Assert.AreEqual(2, parts.Length, $"Invalid page URL '{page}', invalid number of parts {parts.Length}");

@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.Utils
         /// <remarks>
         /// Used by <see cref="System.Windows.Controls.DataGrid"/> when adding new rows.
         /// </remarks>
-        public EditableModel() : this(default(T)) { }
+        public EditableModel() : this(default) { }
 
         /// <inheritdoc />
         public override string ToString()
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.Utils
         /// <inheritdoc />
         public void EndEdit()
         {
-            _uneditedValue = default(T);
+            _uneditedValue = default;
             _isEdit = false;
         }
 

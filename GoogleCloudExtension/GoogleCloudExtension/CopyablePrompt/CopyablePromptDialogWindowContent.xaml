@@ -9,7 +9,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:CopyablePromptDialogWindowContent}}">
+             d:DataContext="{d:DesignInstance {x:Type local:CopyablePromptDialogWindowViewModel}}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -29,7 +29,7 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel>
-            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Style="{StaticResource CommonTextStyle}"/>
+            <TextBlock Text="{Binding Message}" Style="{StaticResource CommonTextStyle}"/>
             <StackPanel Orientation="Horizontal">
                 <TextBox 
                     Text="{Binding CopyableText, Mode=OneTime}" 

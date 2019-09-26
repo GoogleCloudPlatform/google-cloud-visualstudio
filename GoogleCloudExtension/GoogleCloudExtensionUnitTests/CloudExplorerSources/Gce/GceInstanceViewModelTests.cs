@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Linq;
+using System.Windows.Controls;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
@@ -19,8 +21,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Linq;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.Gce
 {

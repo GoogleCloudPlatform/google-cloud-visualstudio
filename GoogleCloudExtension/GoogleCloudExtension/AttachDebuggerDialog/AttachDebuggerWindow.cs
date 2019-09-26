@@ -18,7 +18,6 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Theming;
-using System;
 using StringResources = GoogleCloudExtension.Resources;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
@@ -45,7 +44,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <param name="gceInstance">A GCE windows VM <seealso cref="Instance"/> object.</param>
         public static void PromptUser(Instance gceInstance)
         {
-            if (String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
+            if (string.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
             {
                 UserPromptService.Default.OkPrompt(
                     message: StringResources.AttachDebuggerAddPublicIpAddressMessage,

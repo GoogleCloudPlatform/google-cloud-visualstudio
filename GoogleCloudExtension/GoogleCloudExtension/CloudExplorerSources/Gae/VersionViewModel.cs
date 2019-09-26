@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
-using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.StackdriverLogsViewer;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +20,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.Utils;
+using Version = Google.Apis.Appengine.v1.Data.Version;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -61,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private readonly Lazy<IBrowserService> _browserServiceLazy =
             GoogleCloudExtensionPackage.Instance.GetMefServiceLazy<IBrowserService>();
 
-        public Google.Apis.Appengine.v1.Data.Version Version { get; }
+        public Version Version { get; }
 
         public bool HasTrafficAllocation => _trafficAllocation > 0;
 
@@ -90,7 +91,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public VersionViewModel(
             IGaeSourceRootViewModel owner,
             Service service,
-            Google.Apis.Appengine.v1.Data.Version version,
+            Version version,
             bool isLastVersion)
         {
             _owner = owner;
@@ -189,7 +190,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private async Task OnBrowseStackdriverLogCommandAsync()
         {
             LogsViewerToolWindow window = await ToolWindowCommandUtils.AddToolWindowAsync<LogsViewerToolWindow>();
-            window?.FilterGAEServiceLog(_service.Id, Version.Id);
+            window?.FilterGaeServiceLog(_service.Id, Version.Id);
         }
 
         private async Task OnMigrateTrafficCommandAsync()

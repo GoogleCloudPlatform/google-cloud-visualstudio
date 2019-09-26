@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE80;
-using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Services.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using EnvDTE80;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Services.FileSystem;
 
 namespace GoogleCloudExtension.VsVersion
 {

@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using GoogleCloudExtension.PickProjectDialog;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using EnvDTE;
+using GoogleCloudExtension.Interop;
+using GoogleCloudExtension.PickProjectDialog;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.TemplateWizard;
 using GcpProject = Google.Apis.CloudResourceManager.v1.Data.Project;
 using VsProject = EnvDTE.Project;
 

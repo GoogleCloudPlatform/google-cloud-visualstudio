@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.SolutionUtils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoogleCloudExtension.SolutionUtils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -105,7 +105,7 @@ namespace GoogleCloudExtensionUnitTests
             List<SolutionUserOptions> options = new List<SolutionUserOptions>
             {
                 userOptionsOntestOptions,
-                new SolutionUserOptions(new TestOptionsValid2()),
+                new SolutionUserOptions(new TestOptionsValid2())
             };
 
             List<string> expectedResults = new List<string>
@@ -113,7 +113,7 @@ namespace GoogleCloudExtensionUnitTests
                 "google_string_1",
                 "google_string_2",
                 "google_string_3",
-                "google_string_4",
+                "google_string_4"
             };
             List<string> optionKeys = new List<string>();
 

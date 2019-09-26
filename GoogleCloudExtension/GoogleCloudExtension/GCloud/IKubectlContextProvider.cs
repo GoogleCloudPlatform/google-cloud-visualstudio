@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Container.v1.Data;
 using System.Threading.Tasks;
+using Google.Apis.Container.v1.Data;
 
 namespace GoogleCloudExtension.GCloud
 {

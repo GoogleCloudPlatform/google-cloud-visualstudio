@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Services;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.Utils.Validation;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GoogleCloudExtension.Services;
+using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 
 namespace GoogleCloudExtension.AddWindowsCredential
 {
@@ -39,7 +37,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
         private bool _generatePassword = true;
         private bool _manualPassword;
         private readonly AddWindowsCredentialWindow _owner;
-        private readonly Instance _instance;
 
         /// <summary>
         /// The username requested by the user.
@@ -59,7 +56,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// </summary>
         public string Password
         {
-            get { return _password; }
+            private get => _password;
             set
             {
                 SetValueAndRaise(ref _password, value);
@@ -94,12 +91,12 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// <summary>
         /// Whether there is a user name, for validation.
         /// </summary>
-        public bool HasUserName => !String.IsNullOrEmpty(UserName);
+        private bool HasUserName => !string.IsNullOrEmpty(UserName);
 
         /// <summary>
         /// Whether there is a password.
         /// </summary>
-        public bool HasPassword => !String.IsNullOrEmpty(Password);
+        private bool HasPassword => !string.IsNullOrEmpty(Password);
 
         /// <summary>
         /// The command to execute to accept the changes.
@@ -108,10 +105,9 @@ namespace GoogleCloudExtension.AddWindowsCredential
 
         public AddWindowsCredentialResult Result { get; private set; }
 
-        public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner, Instance instance)
+        public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner)
         {
             _owner = owner;
-            _instance = instance;
 
             SaveCommand = new ProtectedCommand(OnSaveCommand);
         }
@@ -135,7 +131,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
             }
 
             _owner.Close();
-            return;
         }
 
         private IEnumerable<ValidationResult> ValidateUserName(string value)
@@ -157,7 +152,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
 
         private bool Validate()
         {
-            if (String.IsNullOrEmpty(UserName))
+            if (string.IsNullOrEmpty(UserName))
             {
                 UserPromptService.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyUser,
@@ -169,12 +164,12 @@ namespace GoogleCloudExtension.AddWindowsCredential
             if (invalidChars.Length > 0)
             {
                 UserPromptService.Default.ErrorPrompt(
-                    String.Format(Resources.AddWindowsCredentialValidationInvalidChars, new string(invalidChars)),
+                    string.Format(Resources.AddWindowsCredentialValidationInvalidChars, new string(invalidChars)),
                     Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
             }
 
-            if (ManualPassword && String.IsNullOrEmpty(Password))
+            if (ManualPassword && string.IsNullOrEmpty(Password))
             {
                 UserPromptService.Default.ErrorPrompt(
                     Resources.AddWindowsCredentialValidationEmptyPassword,

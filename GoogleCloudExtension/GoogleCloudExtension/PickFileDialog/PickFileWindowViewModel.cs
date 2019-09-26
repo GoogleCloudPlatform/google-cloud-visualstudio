@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GoogleCloudExtension.PickFileDialog
 {
@@ -48,15 +47,15 @@ namespace GoogleCloudExtension.PickFileDialog
         public ProtectedCommand SelectFileCommand { get; }
 
         /// <summary>
-        /// The final selected file index. 
+        /// The final selected file index.
         /// -1 if cancelled.
         /// </summary>
         public int Result { get; private set; }
 
-        public PickFileWindowViewModel(PickFileWindow owner, IEnumerable<string> fileList)
+        public PickFileWindowViewModel(PickFileWindow owner, IReadOnlyCollection<string> fileList)
         {
             _owner = owner.ThrowIfNull(nameof(owner));
-            if (fileList?.Count() < 2)
+            if (fileList?.Count < 2)
             {
                 throw new ArgumentException($"{nameof(fileList)} is null or count is less than 2.");
             }

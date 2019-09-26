@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Data.Extensions;
-using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.DataSources;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem
 {
     /// <summary>
     /// The class is the view model for Resource Type, resource key value selector.
@@ -30,12 +29,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public class ResourceTypeMenuViewModel : MenuItemViewModel
     {
         /// <summary>
-        /// The default resource types to show. 
-        /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
+        /// The default resource types to show.
+        /// Order matters, if a resource type in the list does not have logs, fall back to the next one.
         /// First item shows first.
         /// </summary>
         private static readonly string[] s_defaultResourceSelections =
-            new string[] {
+            {
                 ResourceTypeNameConsts.GceInstanceType,
                 ResourceTypeNameConsts.GaeAppType,
                 ResourceTypeNameConsts.GlobalType

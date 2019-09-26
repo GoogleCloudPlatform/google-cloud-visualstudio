@@ -33,6 +33,6 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// The kubectl component, which installs the necessary tools to work with Kubernetes clusters.
         /// </summary>
-        Kubectl,
+        Kubectl
     }
 }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using GoogleCloudExtension.Options;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog.Steps.Choice;
@@ -19,7 +20,6 @@ using GoogleCloudExtension.PublishDialog.Steps.Gce;
 using GoogleCloudExtension.Services;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
-using System;
 
 namespace GoogleCloudExtension.PublishDialog.Steps.CoreGceWarning
 {

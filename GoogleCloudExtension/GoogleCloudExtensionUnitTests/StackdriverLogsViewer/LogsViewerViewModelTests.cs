@@ -12,29 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.StackdriverLogsViewer;
+using GoogleCloudExtension.StackdriverLogsViewer.SearchMenuItem;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils.Async;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Process = System.Diagnostics.Process;
-using Task = System.Threading.Tasks.Task;
 
 namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
 {
     [TestClass]
     public class LogsViewerViewModelTests : ExtensionTestBase
     {
-        private const string DefaultAccountName = "default-account";
         private ILoggingDataSource _mockedLoggingDataSource;
         private TaskCompletionSource<LogEntryRequestResult> _listLogEntriesSource;
         private TaskCompletionSource<IList<MonitoredResourceDescriptor>> _getResourceDescriptorsSource;
@@ -42,7 +41,6 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         private TaskCompletionSource<IList<string>> _listProjectLogNamesSource;
         private LogsViewerViewModel _objectUnderTest;
         private List<string> _propertiesChanged;
-        private static readonly UserAccount s_defaultUserAccount = new UserAccount { AccountName = DefaultAccountName };
 
         [TestInitialize]
         public void BeforeEach()
@@ -70,7 +68,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
         }
 
         [TestMethod]
-        public void TestInitalConditions()
+        public void TestInitialConditions()
         {
             const string testAccountName = "test-account";
             const string testProjectName = "test-project";
@@ -97,7 +95,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             Assert.AreEqual(testAccountName, _objectUnderTest.Account);
             Assert.AreEqual(testProjectName, _objectUnderTest.Project);
             Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExpandAllToolTip);
             Assert.IsNotNull(_objectUnderTest.LogItemCollection);
             Assert.IsTrue(_objectUnderTest.CancelRequestCommand.CanExecuteCommand);
             Assert.IsFalse(_objectUnderTest.ShowCancelRequestButton);
@@ -115,7 +113,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.ToggleExpandAllExpanded = true;
 
             Assert.IsTrue(_objectUnderTest.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerCollapseAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+            Assert.AreEqual(Resources.LogViewerCollapseAllTip, _objectUnderTest.ToggleExpandAllToolTip);
         }
 
         [TestMethod]
@@ -126,7 +124,7 @@ namespace GoogleCloudExtensionUnitTests.StackdriverLogsViewer
             _objectUnderTest.ToggleExpandAllExpanded = false;
 
             Assert.IsFalse(_objectUnderTest.ToggleExpandAllExpanded);
-            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExapandAllToolTip);
+            Assert.AreEqual(Resources.LogViewerExpandAllTip, _objectUnderTest.ToggleExpandAllToolTip);
         }
 
         [TestMethod]

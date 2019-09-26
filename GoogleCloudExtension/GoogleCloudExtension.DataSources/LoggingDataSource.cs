@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Logging.v2;
-using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Data.Extensions;
-using Google.Apis.Logging.v2.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using LogsResource = Google.Apis.Logging.v2.Extensions.LogsResource;
+using Google;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2;
+using Google.Apis.Logging.v2.Data;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -53,7 +50,7 @@ namespace GoogleCloudExtension.DataSources
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
         {
-            _resourceNames = new List<string>(new string[] { ProjectFilter });
+            _resourceNames = new List<string>(new[] { ProjectFilter });
             _resourceKeysResource = new ResourceKeysResource(Service);
             _resourceTypesResource = new ResourceTypesResource(Service);
             _logsResource = new LogsResource(Service);
@@ -65,7 +62,7 @@ namespace GoogleCloudExtension.DataSources
         public async Task<IList<ResourceKeys>> ListResourceKeysAsync()
         {
             return await LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = _resourceKeysResource.List(ProjectFilter);
                     request.PageToken = token;
@@ -91,7 +88,7 @@ namespace GoogleCloudExtension.DataSources
             }
             string parentParam = $"{ProjectFilter}/resourceTypes/{resourceType}";
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = _resourceTypesResource.Values.List(parentParam);
                     request.PageToken = token;
@@ -110,7 +107,7 @@ namespace GoogleCloudExtension.DataSources
         public Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = Service.MonitoredResourceDescriptors.List();
                     request.PageToken = token;
@@ -123,25 +120,25 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Returns a list of log names of current Google Cloud project.
         /// Only logs that have entries are listed.
-        /// The size of entire set of log names is small. 
+        /// The size of entire set of log names is small.
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
         /// <param name="resourceType">The resource type, i.e gce_instance.</param>
         /// <param name="resourcePrefixList">
-        /// Optional, can be null. 
-        /// A list of resource prefixes. 
-        /// i.e,  for resource type app engine, the prefixe can be the module ids. 
+        /// Optional, can be null.
+        /// A list of resource prefixes.
+        /// i.e,  for resource type app engine, the prefix can be the module ids.
         /// </param>
         public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IEnumerable<string> resourcePrefixList = null)
         {
             return LoadPagedListAsync(
-                (token) =>
+                token =>
                 {
                     var request = _logsResource.List(ProjectFilter);
                     request.PageToken = token;
                     request.ResourceType = resourceType;
                     request.ResourceIndexPrefix = resourcePrefixList == null ? null :
-                        String.Join("", resourcePrefixList.Select(x => $"/{x}"));
+                        string.Join("", resourcePrefixList.Select(x => $"/{x}"));
                     return request.ExecuteAsync();
                 },
                 x => x.LogNames,
@@ -153,14 +150,14 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="filter">
         /// Optional,
-        /// Refert to https://cloud.google.com/logging/docs/view/advanced_filters. 
+        /// Refer to https://cloud.google.com/logging/docs/view/advanced_filters.
         /// </param>
         /// <param name="orderBy">
         /// Optional, "timestamp desc" or "timestamp asc"
         /// </param>
         /// <param name="pageSize">
         /// Optional,
-        /// If page size is not specified, a server side default value is used. 
+        /// If page size is not specified, a server side default value is used.
         /// </param>
         /// <param name="nextPageToken">
         /// Optional,
@@ -175,7 +172,7 @@ namespace GoogleCloudExtension.DataSources
         /// </returns>
         public async Task<LogEntryRequestResult> ListLogEntriesAsync(
             string filter = null, string orderBy = null, int? pageSize = null, string nextPageToken = null,
-            CancellationToken cancelToken = default(CancellationToken))
+            CancellationToken cancelToken = default)
         {
             try
             {

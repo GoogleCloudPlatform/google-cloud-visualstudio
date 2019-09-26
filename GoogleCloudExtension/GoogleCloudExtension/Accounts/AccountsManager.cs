@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.OAuth;
-using GoogleCloudExtension.OauthLoginFlow;
-using GoogleCloudExtension.Services;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.OauthLoginFlow;
+using GoogleCloudExtension.Services;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -29,8 +28,6 @@ namespace GoogleCloudExtension.Accounts
     /// </summary>
     public static class AccountsManager
     {
-        private const string OAuthEventCategory = "OAUTH";
-
         /// <summary>
         /// The OAUTH credentials to use for the VS extension.
         /// </summary>
@@ -49,13 +46,13 @@ namespace GoogleCloudExtension.Accounts
                 "https://www.googleapis.com/auth/cloud-platform",
                 "https://www.googleapis.com/auth/appengine.admin",
                 "https://www.googleapis.com/auth/compute",
-                "https://www.googleapis.com/auth/plus.me",
+                "https://www.googleapis.com/auth/plus.me"
             };
 
         /// <summary>
         /// Starts the flow to add a new account to the credentials store.
         /// </summary>
-        /// <returns>Will return true if the accound was added, false if the user cancelled.</returns>
+        /// <returns>Will return true if the account was added, false if the user cancelled.</returns>
         public static async Task<bool> StartAddAccountFlowAsync()
         {
             try
@@ -89,7 +86,7 @@ namespace GoogleCloudExtension.Accounts
             catch (OAuthException ex)
             {
                 UserPromptService.Default.ErrorPrompt(
-                    String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, ex.Message),
+                    string.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, ex.Message),
                     Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
                 return false;
             }

@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.InteropServices;
 using EnvDTE;
 using GoogleCloudExtension.TemplateWizards;
 using GoogleCloudExtension.TemplateWizards.Dialogs.TemplateChooserDialog;
@@ -22,12 +28,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
 using stdole;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.InteropServices;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtensionUnitTests.TemplateWizards
@@ -46,9 +46,6 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         private const string DefaultAspDotNetTemplatePath =
                 @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNet.vstemplate";
-
-        private const string DefaultAspDotNetCoreTemplatePath =
-                @"c:\ProjectTemplates\CSharp\Google Cloud Platform\1033\Gcp\Gcp.AspNetCore.vstemplate";
 
         private const string DefaultProjectName = "DefaultProjectName";
         private const string DefaultProjectId = "default-project-id";
@@ -269,7 +266,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
         [TestMethod]
         [ExpectedException(typeof(WizardBackoutException))]
-        public void TestBackout()
+        public void TestBackOut()
         {
             _promptResult = null;
             try

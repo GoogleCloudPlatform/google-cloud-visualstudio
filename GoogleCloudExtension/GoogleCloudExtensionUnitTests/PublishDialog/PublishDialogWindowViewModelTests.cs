@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using EnvDTE;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.PublishDialog;
@@ -21,10 +25,6 @@ using GoogleCloudExtension.PublishDialog.Steps.Gke;
 using GoogleCloudExtension.Services.VsProject;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace GoogleCloudExtensionUnitTests.PublishDialog
 {

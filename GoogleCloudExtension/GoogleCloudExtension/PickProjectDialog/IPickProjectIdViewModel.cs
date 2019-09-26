@@ -1,7 +1,8 @@
-﻿using Google.Apis.CloudResourceManager.v1.Data;
+﻿using System;
+using System.Collections.Generic;
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Async;
-using System.Collections.Generic;
 
 namespace GoogleCloudExtension.PickProjectDialog
 {
@@ -44,6 +45,7 @@ namespace GoogleCloudExtension.PickProjectDialog
         string Filter { get; set; }
         bool AllowAccountChange { get; }
         string HelpText { get; }
+        Predicate<object> ItemFilter { get; }
 
         bool FilterItem(object item);
     }

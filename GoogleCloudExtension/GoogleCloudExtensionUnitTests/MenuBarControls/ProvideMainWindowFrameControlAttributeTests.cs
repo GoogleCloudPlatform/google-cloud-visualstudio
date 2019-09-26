@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Runtime.InteropServices;
 using GoogleCloudExtension.MenuBarControls;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Runtime.InteropServices;
-using RegistrationContext = Microsoft.VisualStudio.Shell.RegistrationAttribute.RegistrationContext;
 
 namespace GoogleCloudExtensionUnitTests.MenuBarControls
 {
@@ -28,13 +27,13 @@ namespace GoogleCloudExtensionUnitTests.MenuBarControls
         private const int ViewId = 456;
         private const string TestTypeRegKey = @"MainWindowFrameControls\{" + TestType.Guid + "}";
         private const string TestFactoryTypeRegGuid = "{" + TestFactoryType.Guid + "}";
-        private Mock<RegistrationContext> _contextMock;
+        private Mock<RegistrationAttribute.RegistrationContext> _contextMock;
         private ProvideMainWindowFrameControlAttribute _objectUnderTest;
 
         [TestInitialize]
         public void BeforeEach()
         {
-            _contextMock = new Mock<RegistrationContext> { DefaultValueProvider = DefaultValueProvider.Mock };
+            _contextMock = new Mock<RegistrationAttribute.RegistrationContext> { DefaultValueProvider = DefaultValueProvider.Mock };
 
             _objectUnderTest = new ProvideMainWindowFrameControlAttribute(
                 typeof(TestType),

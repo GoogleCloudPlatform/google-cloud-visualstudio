@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using EnvDTE;
+using EnvDTE80;
+using Microsoft.Win32;
 using Process = System.Diagnostics.Process;
 using Thread = System.Threading.Thread;
 
 namespace ProjectTemplate.Tests
 {
     /// <summary>
-    /// A class that wraps a Visual Studio <see cref="Process"/>,
+    /// A class that wraps a Visual Studio <see cref="System.Diagnostics.Process"/>,
     /// the <see cref="DTE2"/> automation object,
     /// and a <see cref="ComMessageFilter"/>.
     /// </summary>

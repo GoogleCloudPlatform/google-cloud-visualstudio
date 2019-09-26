@@ -145,9 +145,9 @@ namespace GoogleCloudExtension.OAuth
                         // operation.
                         using (var response = context.Response)
                         {
-                            Debug.WriteLineIf(String.IsNullOrEmpty(accessCode), $"Failed to authenticate the user OAUTH login flow.");
+                            Debug.WriteLineIf(string.IsNullOrEmpty(accessCode), "Failed to authenticate the user OAUTH login flow.");
                             response.StatusCode = 303;
-                            response.RedirectLocation = String.IsNullOrEmpty(accessCode) ? _failureUrl : _successUrl;
+                            response.RedirectLocation = string.IsNullOrEmpty(accessCode) ? _failureUrl : _successUrl;
                         }
 
                         // Wait for a bit for the reponse to be sent.
@@ -187,15 +187,15 @@ namespace GoogleCloudExtension.OAuth
         /// <summary>
         /// Returns a task that can be awaited to get the task with the data. (There are two levels of await here). If
         /// the operation completed normally then <paramref name="sourceTask"/> is returend and when awaited the result of the
-        /// operation is returned. If the operation is cancelled then a cancelled dummy task is returned, when awaited 
-        /// <seealso cref="OperationCanceledException"/> is thrown. This way any task can be made cancellable if the original 
+        /// operation is returned. If the operation is cancelled then a cancelled dummy task is returned, when awaited
+        /// <seealso cref="OperationCanceledException"/> is thrown. This way any task can be made cancellable if the original
         /// source of the task doesn't support cancellation.
         /// </summary>
         private static Task<Task<T>> GetCancellableTaskAsync<T>(Task<T> sourceTask, CancellationToken token)
         {
             var taskSource = new TaskCompletionSource<T>();
             token.Register(() => taskSource.TrySetCanceled());
-            return Task.WhenAny<T>(sourceTask, taskSource.Task);
+            return Task.WhenAny(sourceTask, taskSource.Task);
         }
     }
 }

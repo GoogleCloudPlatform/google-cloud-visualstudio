@@ -39,21 +39,21 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// This function can be called twice.
         /// 
-        /// First time, it simply check connectivity with a short timeout. 
-        /// If it does not connect, there are two possibilities. 
+        /// First time, it simply check connectivity with a short timeout.
+        /// If it does not connect, there are two possibilities.
         ///   1) Firewall was just enabled, let's check for longer time.
         ///   2) Remote powershell is disabled on target machine etc.
         /// 
-        /// Since we are not clear which is the case, we return null. It will then show 
+        /// Since we are not clear which is the case, we return null. It will then show
         /// the dialog UI to ask user to choose if he wants to retry testing connectivity.
         /// 
         /// If the user choose yes for retry, this method is called the second time.
         /// The second time, we keep testing connectivity with a longer period of time.
         /// 
-        /// Both times, 
+        /// Both times,
         /// if remote powershell can be connected, go to install, start remote debugger step.
         /// 
-        /// If it is determined it won't connect successfully, 
+        /// If it is determined it won't connect successfully,
         /// go to a help page with a link to our documentation.
         /// </summary>
         protected override async Task<IAttachDebuggerStep> GetNextStepAsync()
