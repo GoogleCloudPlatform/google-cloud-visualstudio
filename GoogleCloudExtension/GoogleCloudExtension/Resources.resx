@@ -2523,4 +2523,7 @@ Delete corrupted file?</value>
     <value>Kubernetes Engine Code Lab</value>
     <comment>The tooltip of the info link of the kubernetes console link.</comment>
   </data>
+  <data name="FailedLoadingCsr" xml:space="preserve">
+    <value>Failed to load Cloud Source Repository.</value>
+  </data>
 </root>
