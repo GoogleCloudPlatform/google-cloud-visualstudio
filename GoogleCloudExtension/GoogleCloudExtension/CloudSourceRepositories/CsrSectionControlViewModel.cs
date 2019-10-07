@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
                 retryAttempts -= 0;
             }
 
-            if (GoogleCloudExtensionPackage.Instance != null)
+            if (GoogleCloudExtensionPackage.Instance == null)
             {
                 teamExplorerService.ShowError(Resources.FailedLoadingCsr);
                 return;
