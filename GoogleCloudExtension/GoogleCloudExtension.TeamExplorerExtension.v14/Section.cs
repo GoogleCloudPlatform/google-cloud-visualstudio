@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         private readonly ISectionViewModel _viewModel;
         private IServiceProvider _serviceProvider;
-        private TeamExplorerUtils _teamExploerServices;
+        private TeamExplorerUtils _teamExplorerServices;
         private bool _isBusy;
         private bool _isExpanded = true;
         private bool _isVisible = true;
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
                 // When this get_SectionContent is called, Team Explorer is trying to refresh the section content.
                 // This is the chance to update the section view with new active repo.
                 Debug.WriteLine($"CsrTeamExplorerSection.SectionContent");
-                string newActive = _teamExploerServices?.GetActiveRepository();
+                string newActive = _teamExplorerServices?.GetActiveRepository();
                 if (string.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     _viewModel.UpdateActiveRepo(newActive);
@@ -140,12 +140,12 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             Debug.WriteLine($"CsrTeamExplorerSection.Loaded {sender.GetType().Name} {sender.ToString()}, {e}");
         }
 
-        void ITeamExplorerSection.Initialize(object sender, SectionInitializeEventArgs e)
+        async void ITeamExplorerSection.Initialize(object sender, SectionInitializeEventArgs e)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Initialize");
             _serviceProvider = e.ServiceProvider;
-            _teamExploerServices = new TeamExplorerUtils(_serviceProvider);
-            _viewModel.Initialize(_teamExploerServices);
+            _teamExplorerServices = new TeamExplorerUtils(_serviceProvider);
+            await _viewModel.InitializeAsync(_teamExplorerServices);
         }
 
         void ITeamExplorerSection.Cancel()

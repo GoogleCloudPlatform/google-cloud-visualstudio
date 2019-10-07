@@ -13,6 +13,8 @@
 // limitations under the License.
 
 
+using System.Threading.Tasks;
+
 namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
@@ -28,7 +30,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         /// <summary>
         /// Initializes the view model with <paramref name="teamExplorerService"/> input.
         /// </summary>
-        void Initialize(ITeamExplorerUtils teamExplorerService);
+        Task InitializeAsync(ITeamExplorerUtils teamExplorerService);
 
         /// <summary>
         /// Notifies that the current active repository changed

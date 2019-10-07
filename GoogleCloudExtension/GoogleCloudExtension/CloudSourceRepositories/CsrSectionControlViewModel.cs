@@ -142,8 +142,12 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
+        async Task ISectionViewModel.InitializeAsync(ITeamExplorerUtils teamExplorerService)
         {
+            while (GoogleCloudExtensionPackage.Instance == null)
+            {
+                await Task.Delay(500);
+            }
             EventsReporterWrapper.ReportEvent(CsrConnectSectionOpenEvent.Create());
             Debug.WriteLine("CsrSectionControlViewModel Initialize");
 
