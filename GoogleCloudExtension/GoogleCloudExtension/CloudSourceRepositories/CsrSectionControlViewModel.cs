@@ -142,8 +142,24 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             }
         }
 
-        void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
+        async Task ISectionViewModel.InitializeAsync(ITeamExplorerUtils teamExplorerService)
         {
+            // When the user switches to TeamExplorer immediately after opening Visual Studio,
+            // sometimes, GoogleCloudExtensionPackage is not initialized. This is a hack to
+            // retry until the instance is initialized. 
+            int retryAttempts = 3;
+            while (retryAttempts > 0 && GoogleCloudExtensionPackage.Instance == null)
+            {
+                await Task.Delay(2000);
+                retryAttempts--;
+            }
+
+            if (GoogleCloudExtensionPackage.Instance == null)
+            {
+                teamExplorerService.ShowError(Resources.FailedLoadingCsr);
+                return;
+            }
+
             EventsReporterWrapper.ReportEvent(CsrConnectSectionOpenEvent.Create());
             Debug.WriteLine("CsrSectionControlViewModel Initialize");
 
