@@ -144,11 +144,14 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         async Task ISectionViewModel.InitializeAsync(ITeamExplorerUtils teamExplorerService)
         {
-            int retryAttempts = 30;
+            // When the user switches to TeamExplorer immediately after opening Visual Studio,
+            // sometimes, GoogleCloudExtensionPackage is not initialized. This is a hack to
+            // retry until the instance is initialized. 
+            int retryAttempts = 3;
             while (retryAttempts > 0 && GoogleCloudExtensionPackage.Instance == null)
             {
                 await Task.Delay(2000);
-                retryAttempts -= 0;
+                retryAttempts--;
             }
 
             if (GoogleCloudExtensionPackage.Instance == null)
