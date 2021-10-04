@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.TemplateWizards
                 switch (result.SelectedFramework)
                 {
                     case FrameworkType.NetFramework:
-                        const string targetFramework = "net461";
+                        const string targetFramework = "net4721";
                         additionalCustomParams.Add($"netcoreapp{result.SelectedVersion.Version}={targetFramework}");
                         break;
                     case FrameworkType.NetCore:
