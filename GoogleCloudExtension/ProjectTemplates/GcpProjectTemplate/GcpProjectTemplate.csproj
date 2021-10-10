@@ -493,9 +493,6 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
       <Version>15.8.33</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
-      <Version>15.8.132</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
       <Version>15.7.109</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
