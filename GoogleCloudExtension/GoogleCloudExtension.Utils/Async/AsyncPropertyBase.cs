@@ -71,10 +71,10 @@ namespace GoogleCloudExtension.Utils.Async
         protected AsyncPropertyBase(T task)
         {
             ActualTask = task;
-            SafeTask = WaitTask();
+            SafeTask = AsyncWaitTask();
         }
 
-        private async Task WaitTask()
+        private async Task AsyncWaitTask()
         {
             if (ActualTask != null)
             {
