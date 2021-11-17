@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         }
 
         [TestMethod]
-        public async Task TestTarget_RegistersOnPropertyChangedSetsContent()
+        public async Task TestTarget_RegistersOnPropertyChangedSetsContentAsync()
         {
             var source = new TaskCompletionSource<string>();
             _objectUnderTest.SuccessContent = ExpectedContent;
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Wpf
         }
 
         [TestMethod]
-        public async Task TestTarget_UnregistersOnPropertyChanged()
+        public async Task TestTarget_UnregistersOnPropertyChangedAsync()
         {
             var oldPropertySource = new TaskCompletionSource<string>();
             var newPropertySource = new TaskCompletionSource<string>();

@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestSafeTask_DoesNotThrowWithNullTask()
+        public async Task TestSafeTask_DoesNotThrowWithNullTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(null);
 
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestIsPending_CompletedTask()
+        public async Task TestIsPending_CompletedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.CompletedTask);
 
@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestIsCompleted_CompletedTask()
+        public async Task TestIsCompleted_CompletedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.CompletedTask);
 
@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestIsSuccess_CompletedTask()
+        public async Task TestIsSuccess_CompletedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.CompletedTask);
 
@@ -134,7 +134,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestIsCanceled_CanceledTask()
+        public async Task TestIsCanceled_CanceledTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.FromCanceled(new CancellationToken(true)));
 
@@ -144,7 +144,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestIsError_FaultedTask()
+        public async Task TestIsError_FaultedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.FromException(new Exception()));
 
@@ -154,7 +154,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestErrorMessage_SingleException()
+        public async Task TestErrorMessage_SingleExceptionAsync()
         {
             const string testExceptionMessage = "Test Exception Message";
             var objectUnderTest = new TestAsyncPropertyBase(Task.FromException(new Exception(testExceptionMessage)));
@@ -165,7 +165,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestErrorMessage_IsFirstNonNullEmptyMessageOfAggregateInnerExceptions()
+        public async Task TestErrorMessage_IsFirstNonNullEmptyMessageOfAggregateInnerExceptionsAsync()
         {
             const string testExceptionMessage = "Test Multi Exception Message";
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
@@ -177,7 +177,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestErrorMessage_IsAggregateMessageWithOnlyNullEmptyMessages()
+        public async Task TestErrorMessage_IsAggregateMessageWithOnlyNullEmptyMessagesAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(Task.FromException(new ExceptionWithNullMessage()));
 
@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestOnTaskComplete_NotCalledForNullask()
+        public async Task TestOnTaskComplete_NotCalledForNullaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(null);
 
@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestOnTaskComplete_CalledForSuccessTask()
+        public async Task TestOnTaskComplete_CalledForSuccessTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             _tcs.SetResult(null);
@@ -216,7 +216,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestOnTaskComplete_CalledForFaultedTask()
+        public async Task TestOnTaskComplete_CalledForFaultedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             _tcs.SetException(new Exception());
@@ -226,7 +226,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestOnTaskComplete_CalledForCanceledTask()
+        public async Task TestOnTaskComplete_CalledForCanceledTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             _tcs.SetCanceled();
@@ -236,7 +236,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestPropertyChangedRaised_NullTask()
+        public async Task TestPropertyChangedRaised_NullTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(null);
             var changedProperties = new List<string>();
@@ -258,7 +258,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestPropertyChangedRaised_SuccessTask()
+        public async Task TestPropertyChangedRaised_SuccessTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             var changedProperties = new List<string>();
@@ -277,7 +277,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestPropertyChangedRaised_FaultedTask()
+        public async Task TestPropertyChangedRaised_FaultedTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             var changedProperties = new List<string>();
@@ -297,7 +297,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestPropertyChangedRaised_CanceledTask()
+        public async Task TestPropertyChangedRaised_CanceledTaskAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             var changedProperties = new List<string>();
@@ -316,7 +316,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
         }
 
         [TestMethod]
-        public async Task TestSafeTask_DoesNotThrowOnPropertyChangedHandlerError()
+        public async Task TestSafeTask_DoesNotThrowOnPropertyChangedHandlerErrorAsync()
         {
             var objectUnderTest = new TestAsyncPropertyBase(_tcs.Task);
             objectUnderTest.PropertyChanged += (sender, args) => throw new Exception();

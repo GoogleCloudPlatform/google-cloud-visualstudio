@@ -43,6 +43,7 @@ namespace GoogleCloudExtension.Utils.Async
             Func<TIn, T> func,
             T defaultValue = default(T))
         {
+#pragma warning disable
             Task<T> continuationTask = valueSource.ContinueWith(
                 t => func(GetTaskResultSafe(t)));
             return new AsyncProperty<T>(continuationTask, defaultValue);
