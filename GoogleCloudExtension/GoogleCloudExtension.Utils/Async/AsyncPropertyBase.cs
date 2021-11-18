@@ -71,10 +71,10 @@ namespace GoogleCloudExtension.Utils.Async
         protected AsyncPropertyBase(T task)
         {
             ActualTask = task;
-            SafeTask = WaitTask();
+            SafeTask = WaitTaskAsync();
         }
 
-        private async Task WaitTask()
+        private async Task WaitTaskAsync()
         {
             if (ActualTask != null)
             {
@@ -153,6 +153,7 @@ namespace GoogleCloudExtension.Utils.Async
         {
             try
             {
+#pragma warning disable
                 return task.Result;
             }
             catch

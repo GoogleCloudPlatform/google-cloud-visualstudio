@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// Import <seealso cref="IToolTipProviderFactory"/>.
         /// </summary>
         [Import]
-        public IToolTipProviderFactory ToolTipProviderFactory { get; set; }
+        public IToolTipService ToolTipService { get; set; }
 
         /// <summary>
         /// Implement <see cref="IViewTaggerProvider"/> interface.
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipProviderFactory));
+            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipService));
             return tagger as ITagger<T>;
         }
     }

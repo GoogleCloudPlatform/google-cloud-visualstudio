@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             }
 
             [TestMethod]
-            public async Task TestCreate_SetsResultantValue()
+            public async Task TestCreate_SetsResultantValueAsync()
             {
                 const string expectedResult = "Expected Result";
 
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             }
 
             [TestMethod]
-            public async Task TestOnTaskComplete_SetsValueToResult()
+            public async Task TestOnTaskComplete_SetsValueToResultAsync()
             {
                 const string defaultObject = "default";
                 const string resultObject = "result";
@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             }
 
             [TestMethod]
-            public async Task TestOnTaskComplete_KeepsValueDefaultOnException()
+            public async Task TestOnTaskComplete_KeepsValueDefaultOnExceptionAsync()
             {
                 var defaultObject = new object();
                 var objectUnderTest = new AsyncProperty<object>(_tcs.Task, defaultObject);
@@ -141,7 +141,7 @@ namespace GoogleCloudExtension.Utils.UnitTests.Async
             }
 
             [TestMethod]
-            public async Task TestValue_RaisesPropertyChangedWhenSet()
+            public async Task TestValue_RaisesPropertyChangedWhenSetAsync()
             {
                 const string defaultObject = "default";
                 const string resultObject = "result";

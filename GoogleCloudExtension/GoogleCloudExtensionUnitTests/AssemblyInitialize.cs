@@ -48,7 +48,7 @@ namespace GoogleCloudExtensionUnitTests
             // Enable pack URIs.
             Assert.AreEqual(new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown }, Application.Current);
 
-            JoinableApplicationContext = Application.Current.Dispatcher.Invoke(() => new JoinableTaskContext());
+            JoinableApplicationContext = Application.Current.Dispatcher.Invoke(() => ThreadHelper.JoinableTaskContext);
             ApplicationTaskScheduler = Application.Current.Dispatcher.Invoke(TaskScheduler.FromCurrentSynchronizationContext);
 
             // Initalize VsTaskLibraryHelper.ServiceInstance to a service that delegates to the current service.
