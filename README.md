@@ -70,3 +70,6 @@ Apache 2.0. See [LICENSE](LICENSE) for more information.
 [BuildArtifact]: https://ci.appveyor.com/api/projects/GoogleCloudPlatform/google-cloud-visualstudio/artifacts/GoogleCloudExtension/GoogleCloudExtension/bin/Release/GoogleCloudExtension.vsix?branch=master
 [CoverageBadge]: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio/branch/master/graph/badge.svg
 [Coverage]: https://codecov.io/gh/GoogleCloudPlatform/google-cloud-visualstudio
+
+This extension allows you to opt-in to collect usage data and send it to Google to help improve our products and services. 
+For more information, refer to the Google [Privacy Policy](https://policies.google.com/privacy).
