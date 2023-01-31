@@ -97,7 +97,7 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _dteMock = new Mock<DTE>();
             Guid guidService = typeof(SVsSolution).GUID;
-            Guid uuid = typeof(IUnknown).GUID;
+            Guid uuid = new Guid();
             _newHierarchy = Mock.Of<IVsHierarchy>();
             _solutionMock = new Mock<IVsSolution6>();
             _solutionMock.Setup(

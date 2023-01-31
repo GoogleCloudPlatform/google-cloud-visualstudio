@@ -523,7 +523,7 @@ namespace GoogleCloudExtensionUnitTests
 
             IAsyncLoadablePackageInitialize packageInit = _objectUnderTest;
             // This runs the AsyncPackage.InitializeAsync() method.
-            await packageInit.Initialize(asyncServiceProviderMock.Object, null, null);
+            object p = await packageInit.Initialize((Microsoft.VisualStudio.Shell.Interop.COMAsyncServiceProvider.IAsyncServiceProvider)asyncServiceProviderMock.Object, null, null);
         }
     }
 }
