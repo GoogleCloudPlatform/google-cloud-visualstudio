@@ -61,7 +61,8 @@ namespace GoogleCloudExtensionUnitTests
             IMock<IVsType> serviceMock) where IVsType : class
         {
             Guid serviceGuid = typeof(SVsType).GUID;
-            Guid iUnknownGuid = new Guid();
+            // GUID ID taken from http://pinvoke.net/default.aspx/Interfaces/IUnknown.html
+            Guid iUnknownGuid = new Guid("00000000-0000-0000-C000-000000000046");
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(serviceMock.Object);
             serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
@@ -76,7 +77,8 @@ namespace GoogleCloudExtensionUnitTests
         public static void SetupService<SVsType>(this Mock<IServiceProvider> serviceProviderMock, object service)
         {
             Guid serviceGuid = typeof(SVsType).GUID;
-            Guid iUnknownGuid = new Guid();
+            // GUID ID taken from http://pinvoke.net/default.aspx/Interfaces/IUnknown.html
+            Guid iUnknownGuid = new Guid("00000000-0000-0000-C000-000000000046");
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(service);
             serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref iUnknownGuid, out interfacePtr))
