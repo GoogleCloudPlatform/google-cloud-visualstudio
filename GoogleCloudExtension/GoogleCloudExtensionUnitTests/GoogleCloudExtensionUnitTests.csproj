@@ -310,7 +310,7 @@
       <Version>1.33.1.1222</Version>
     </PackageReference>
     <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
+      <Version>2.0.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>17.0.31902.203</Version>
