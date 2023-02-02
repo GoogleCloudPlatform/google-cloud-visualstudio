@@ -97,7 +97,8 @@ namespace GoogleCloudExtensionUnitTests.TemplateWizards
 
             _dteMock = new Mock<DTE>();
             Guid guidService = typeof(SVsSolution).GUID;
-            Guid uuid = typeof(IUnknown).GUID;
+            // GUID ID taken from http://pinvoke.net/default.aspx/Interfaces/IUnknown.html
+            Guid uuid = new Guid("00000000-0000-0000-C000-000000000046");
             _newHierarchy = Mock.Of<IVsHierarchy>();
             _solutionMock = new Mock<IVsSolution6>();
             _solutionMock.Setup(
